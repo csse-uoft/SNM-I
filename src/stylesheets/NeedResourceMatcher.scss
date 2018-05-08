@@ -1,0 +1,73 @@
+.need {
+
+  .type-select {
+    width: 50%
+  }
+
+  .requirements .input-group {
+    width: 40%;
+    margin-bottom: 15px;
+  }
+
+}
+
+ul.provider-resources {
+  list-style-type: none;
+  padding: 0;
+  
+  li.provider {
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row-reverse;
+    background-color: tomato;
+    border-radius: 10px;
+
+    .resources {
+      width: 100%;
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .resource {
+        margin-bottom: 5px;
+        background-color: aliceblue;
+        border-radius: 5px;
+        padding: 5px 10px 1px 10px;
+
+        .dropdown {
+          float: right;
+          font-size: 16px;
+
+          a:focus {
+            outline: none;
+          }
+
+          .current-state {
+            font-weight: bold;
+            color: darkgreen;
+          }
+
+          .glyphicon {
+            color: darkgreen;
+            // background-color: lightsalmon;
+            // padding: 5px;
+            // border-radius: 15px;
+
+            &.glyphicon-pushpin {
+              font-size: 17px;
+              color: green;
+            }
+          }
+        }
+      }
+    }
+
+    .contact-info {
+      min-width: 150px;
+      padding-left: 10px;
+    }
+  }
+}

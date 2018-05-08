@@ -1,0 +1,47 @@
+.navbar {
+  border-radius: 0 0 4px 4px;
+
+  .navbar-brand {
+    color: #fff;
+  }
+}
+
+.clients,  .resources, .providers {
+  button {
+    float: right;
+  }
+
+  tr {
+
+    .glyphicon {
+      visibility: hidden;
+    }
+
+    &:hover {
+      .glyphicon {
+        visibility: visible;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.content {
+  width: 85%;
+  margin: auto;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #222;
+  color: #aaa;
+  text-align: center;
+  border-radius: 2px 2px 0 0;
+}
+
+/*@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}*/
