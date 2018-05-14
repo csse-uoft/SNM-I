@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { Row, Col } from 'react-bootstrap';
 
 // components
-import LoginForm from './login/LoginForm.js';
 import LoginButtons from './login/LoginButtons.js';
 
 // styles
