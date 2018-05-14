@@ -1,8 +1,12 @@
-.navbar {
-  border-radius: 0 0 4px 4px;
 
+.navbar {
+  border: none;
+  margin-bottom: 0;
+  background-color: white;
+  color: #064b74;
   .navbar-brand {
-    color: #fff;
+    color: #064b74;
+    font-weight: 500;
   }
 }
 
@@ -27,18 +31,32 @@
 }
 
 .content {
-  width: 85%;
+  padding: 10px 0px;
+  padding-bottom: 80px;
+  width: 80%;
   margin: auto;
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
+  left: 0;
   bottom: 0;
+  padding: 10px;
+  height: 60px;
   width: 100%;
   background-color: #222;
   color: #aaa;
   text-align: center;
   border-radius: 2px 2px 0 0;
+}
+
+.landing {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../assets/landing.jpg) no-repeat center center;
+  background-size: cover;
+}
+
+.intro-placeholder {
+  height: 700px;
 }
 
 /*@keyframes App-logo-spin {

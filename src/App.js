@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { IndexLinkContainer } from 'react-router-bootstrap';
-import { serverHost } from './store/defaults.js';
 
 // components
+import Landing from './components/Landing.js';
+import Login from './components/Login.js';
+import LoginPane from './components/LoginPane.js';
 import Dashboard from './components/Dashboard.js';
-import Clients from './components/Clients.js';
-import Resources from './components/Resources.js';
-import Providers from './components/Providers.js';
-import ClientNeeds from './components/ClientNeeds.js';
-import Goods from './components/Goods.js';
+import Clients from './components/Clients';
+import Client from './components/clients/Client';
+import ClientForm from './components/clients/ClientForm'
+import AnonymousClientForm from './components/clients/AnonymousClientForm'
 
-// style 
+// style
 import './stylesheets/App.css';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 class App extends Component {
   render() {
-    const clientsReportPath = serverHost + '/clients.csv',
-          needsReportPath = serverHost + '/needs.csv'
-
     return (
       <div className="App">
         <Navbar inverse collapseOnSelect>
@@ -34,34 +32,36 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <IndexLinkContainer to={`/`}>
-                <NavItem eventKey={1} href="#">Dashboard</NavItem>
+              <IndexLinkContainer to={`/clients`}>
+                <NavItem eventKey={1} href="#">Client Management System</NavItem>
               </IndexLinkContainer>
-              <IndexLinkContainer to={`/clients/`}>
-                <NavItem eventKey={2} href="#">Clients</NavItem>
+              <IndexLinkContainer to={`/services`}>
+                <NavItem eventKey={2} href="#">Service Management System</NavItem>
               </IndexLinkContainer>
-              <NavDropdown eventKey={6} title = "Resources" id="basic-nav-dropdown2">
-                <MenuItem eventKey={6.1} href="/resources/">Services</MenuItem>
-                <MenuItem eventKey={6.2} href="/goods/">Goods</MenuItem>
-              </NavDropdown>
-              <IndexLinkContainer to={`/providers/`}>
-                <NavItem eventKey={4} href="#">Providers</NavItem>
-              </IndexLinkContainer> 
             </Nav>
             <Nav pullRight>
-              <NavDropdown eventKey={5} title="Reports" id="basic-nav-dropdown">
-                <MenuItem eventKey={5.1} href={clientsReportPath}>Clients</MenuItem>
-                <MenuItem eventKey={5.2} href={needsReportPath}>Client Needs</MenuItem>
-              </NavDropdown>
+              <IndexLinkContainer to={`/login`}>
+                <NavItem eventKey={3} href="#">Log In</NavItem>
+              </IndexLinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <Route exact path='/' component={Dashboard}/>
-        <Route exact path='/clients/' component={Clients}/>
-        <Route exact path='/resources/' component={Resources}/>
-        <Route exact path='/goods/' component={Goods}/>
-        <Route exact path='/providers/' component={Providers}/>
-        <Route exact path='/client/:id' component={ClientNeeds}/>
+        <Route exact path='/' component={Landing} />
+        <Route exact path='/login' component={Login} />
+        <Route exact path='/login-pane' component={LoginPane} />
+        <Route exact path='/dashboard' component={Dashboard} />
+        <Route exact path='/clients' component={Clients} />
+        <Route exact path='/client/:id' component={Client} />
+        <Route exact path='/clients/new' component={ClientForm} />
+        <Route exact path='/clients/anonymous/new' component={AnonymousClientForm} />
+        <Route exact path='/clients/edit' component={ClientForm} />
+        <div className='footer'>
+          <h5>
+            <a href='http://csse.utoronto.ca/' target='_blank'>
+              Centre for Social Services Engineering
+            </a>, University of Toronto
+          </h5>
+        </div>
       </div>
     );
   }
