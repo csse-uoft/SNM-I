@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import _ from 'lodash'
 
 class Landing extends Component {
   render() {
     return(
       <div className='landing'>
+        <div className='container'>
+            <div className='intro-placeholder'>
+            </div>
+        </div>
       </div>
     )
   }

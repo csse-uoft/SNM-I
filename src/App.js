@@ -5,6 +5,7 @@ import { IndexLinkContainer } from 'react-router-bootstrap';
 // components
 import Landing from './components/Landing.js';
 import Login from './components/Login.js';
+import LoginPane from './components/LoginPane.js';
 
 // style
 import './stylesheets/App.css';
@@ -32,8 +33,16 @@ class App extends Component {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <Route exact path='/' component={Landing}/>
-        <Route exact path='/login' component={Login}/>
+        <Route exact path='/' component={Landing} />
+        <Route exact path='/login' component={Login} />
+        <Route exact path='/login-pane' component={LoginPane} />
+        <div className='footer'>
+          <h5>
+            <a href='http://csse.utoronto.ca/' target='_blank'>
+              Centre for Social Services Engineering
+            </a>, University of Toronto
+          </h5>
+        </div>
       </div>
     );
   }
