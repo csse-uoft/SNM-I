@@ -1,208 +1,252 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
-import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
-
-// Mapping
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
-
 
 export default class ClientForm extends Component {
-  constructor(props) {
-    super(props);
-    const client = this.props.client,
-          lk = client.location;
-    this.state = { 
-      form: {
-        id: client.id || '',
-        first_name: client.first_name || '',
-        last_name: client.last_name || '',
-        email: client.email || '',
-        home_phone: client.home_phone || '',
-        cell_phone: client.cell_phone || '',
-        birthdate: client.birthdate || '',
-        location: {
-          lng_lat: (lk && parsePointCoordinates(lk.geometry.coordinates)) || '',
-          address: (lk && lk.properties.address) || ''
-        }
-      },
-      mapZoom: 10
-    } 
-  }
-
   render() {
-    const isEnabled = 
-    this.state.form.first_name.length > 0 &&
-    this.state.form.last_name.length > 0 &&
-    this.state.form.home_phone.length > 0 
-
-    const s = this.state,
-          torontoCentroid = { lat: 43.6870, lng: -79.4132 },
-          autoCompleteInputProps = {
-            value: this.state.form.location.address, 
-            onChange: this.addressValChange
-          };
-    const GMap = withGoogleMap(props => (
-      <GoogleMap
-        defaultZoom={s.mapZoom}
-        defaultCenter={this.hasLocation() ? s.form.location.lng_lat : torontoCentroid} >
-        {this.hasLocation() &&
-          <Marker position={s.form.location.lng_lat} />
-        }
-      </GoogleMap>
-    ));
     return (
-      <Row>
-        <Col sm={8}>
-          <Form horizontal>
-          <FormGroup controlId="first_name">
-            <Col componentClass={ControlLabel} sm={3}>
-              First name (required)
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" value={this.state.form.first_name} 
-                placeholder="Aravind"
-                onChange={this.formValChange} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="last_name">
-            <Col componentClass={ControlLabel} sm={3}>
-              Last name (required)
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" value={this.state.form.last_name} 
-                placeholder="Adiga"
-                onChange={this.formValChange} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="email">
-            <Col componentClass={ControlLabel} sm={3}>
-              Email
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" value={this.state.form.email} 
-                placeholder="aravind.adiga.gmail.com"
-                onChange={this.formValChange} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="cell_phone">
-            <Col componentClass={ControlLabel} sm={3}>
-              Cell Phone
-            </Col>
-            <Col sm={9}>
-              <FormControl type="tel" value={this.state.form.cell_phone} 
-                onChange={this.formValChange} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="home_phone">
-            <Col componentClass={ControlLabel} sm={3}>
-              Home Phone (required)
-            </Col>
-            <Col sm={9}>
-              <FormControl type="tel" value={this.state.form.home_phone} 
-                onChange={this.formValChange} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="birthdate">
-            <Col componentClass={ControlLabel} sm={3}>
-              Birthdate
-            </Col>
-            <Col sm={9}>
-              <FormControl type="date" value={this.state.form.birthdate} 
-                onChange={this.formValChange} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="address">
-            <Col componentClass={ControlLabel} sm={3}>
-              Address
-            </Col>
-            <Col sm={9}>
-              <PlacesAutocomplete inputProps={autoCompleteInputProps} onSelect={this.addressSelected}
-                styles={{root: { zIndex: 1 }}} />
-            </Col>
-          </FormGroup>
-
-          <FormGroup>
-            <Col smOffset={3} sm={9}>
-              <Button disabled = {!isEnabled} type="submit" onClick={this.submit}>
-                Submit
-              </Button>
-            </Col>
-          </FormGroup>
-          </Form>
+      <Row className="content">
+        <Col sm={12}>
+          <h3>New Named Client Profile</h3>
+          <hr/>
         </Col>
-        <Col sm={4}>
-          <div style={{width: '100%', height: '190px'}}>
-            <GMap
-              containerElement={
-                <div style={{ height: `100%` }} />
-              }
-              mapElement={
-                <div style={{ height: `100%` }} />
-              }
-            />
-          </div>
+        <Col sm={12}>
+          <Form horizontal>
+            <FormGroup controlId="first_name">
+              <Col componentClass={ControlLabel} sm={3}>
+                First name (required)
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue=""
+                  placeholder="Aravind" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="last_name">
+              <Col componentClass={ControlLabel} sm={3}>
+                Last name (required)
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue=""
+                  placeholder="Adiga" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="gender">
+              <Col componentClass={ControlLabel} sm={3}>
+                Gender
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="preferred_name">
+              <Col componentClass={ControlLabel} sm={3}>
+                Preferred Name
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="date_of_birth">
+              <Col componentClass={ControlLabel} sm={3}>
+                Date of Birth
+              </Col>
+              <Col sm={9}>
+                <FormControl type="date" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Marital Status
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                  <option value="married">Married</option>
+                  <option value="single">Single</option>
+                  <option value="divorced">Divorced</option>
+                  <option value="widowed">Widowed</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="email">
+              <Col componentClass={ControlLabel} sm={3}>
+                Email
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue=""
+                  placeholder="aravind.adiga.gmail.com" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="cell_phone">
+              <Col componentClass={ControlLabel} sm={3}>
+                Cell Phone
+              </Col>
+              <Col sm={9}>
+                <FormControl type="tel" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="home_phone">
+              <Col componentClass={ControlLabel} sm={3}>
+                Home Phone (required)
+              </Col>
+              <Col sm={9}>
+                <FormControl type="tel" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="address">
+              <Col componentClass={ControlLabel} sm={3}>
+                Address
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="family_code">
+              <Col componentClass={ControlLabel} sm={3}>
+                Family Code
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="landing_date">
+              <Col componentClass={ControlLabel} sm={3}>
+                Landing Date
+              </Col>
+              <Col sm={9}>
+                <FormControl type="date" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="arrival_date">
+              <Col componentClass={ControlLabel} sm={3}>
+                Arrival Date
+              </Col>
+              <Col sm={9}>
+                <FormControl type="date" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="re-entry_date">
+              <Col componentClass={ControlLabel} sm={3}>
+                Re-entry Date
+              </Col>
+              <Col sm={9}>
+                <FormControl type="date" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="initial_destination">
+              <Col componentClass={ControlLabel} sm={3}>
+                Inital Destination
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" defaultValue="" />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Country of Origin
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Last Residence
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Immi. Class
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Immi. Status
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Immi. Card Type
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Aboriginal Status
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Preferred Official Language
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="select">-- Not Set --</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup>
+              <Col smOffset={3} sm={9}>
+                <Button disabled={false} type="submit">
+                  Submit
+                </Button>
+              </Col>
+            </FormGroup>
+          </Form>
         </Col>
       </Row>
     )
-  }
-
-  
-
-  submit = () => {
-    let form = this.state.form;
-    
-    if (this.hasLocation()) { 
-      form.location.lng_lat = encodePointCoordinates(form.location.lng_lat);
-    } else {
-      form.location = null;
-    }
-
-    if (_.isEmpty(form.birthdate)) form.birthdate = null;
-
-    this.props.action(form);
-  }
-
-  formValChange = (e) => {
-    let nextForm = {...this.state.form, [e.target.id]: e.target.value};
-    this.setState({ form: nextForm });    
-  }
-
-  addressValChange = (val) => {
-    let updateVals = {address: val};
-    if (_.isEmpty(_.trim(val))) updateVals.lng_lat = '';
-    let nextLocation = {...this.state.form.location, ...updateVals};
-    let nextForm = {...this.state.form, location: nextLocation};
-    this.setState({ form: nextForm });    
-  }
-
-  addressSelected = (address) => {
-    this.addressValChange(address);
-
-    geocodeByAddress(address)
-      .then((results) => {
-          return getLatLng(results[0])
-        }
-      )
-      .then(({ lat, lng }) => {
-        let nextLngLat = {lat, lng},
-            nextLocation = {...this.state.form.location, lng_lat: nextLngLat},
-            nextForm = {...this.state.form, location: nextLocation};
-        this.setState({ form: nextForm, mapZoom: 14 })
-      })
-      .catch((error) => {
-        console.log('Oh no!', error)
-      })
-  }
-
-  hasLocation = () => {
-    return !_.isEmpty(_.trim(this.state.form.location.lng_lat));
   }
 }

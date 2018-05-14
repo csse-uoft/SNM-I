@@ -1,127 +1,84 @@
 import React, { Component } from 'react'
-import _ from 'lodash'
+import { Link } from 'react-router-dom';
 
-// components
-import ClientsIndex from './clients/ClientsIndex.js'
-import CrupdateModal from './shared/CrupdateModal.js'
-import ClientForm from './clients/ClientForm.js'
-import ClientRow from './clients/ClientRow.js'
+import { Table, Button, Glyphicon } from 'react-bootstrap';
 
-// redux
-import { connect } from 'react-redux'
-import { fetchClients, createClient, updateClient, deleteClient } from '../store/actions.js'
-import ReactFileReader from 'react-file-reader'
+import '../stylesheets/Client.css';
 
-// styles
-import { Button } from 'react-bootstrap'
-
-class Clients extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { 
-      showCrupdateModal: false,
-      activeClient: {}
-    } 
-  }
-
+class ClientDashboard extends Component {
   render() {
-    const p = this.props, s = this.state;
     return(
-      <div className='clients content'>
-        <Button bsStyle="primary" onClick={this.showCrupdateModal}>New Client</Button> 
-
-
-        <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.csv'}>
-          <Button style={{marginRight:'5px'}} id="myButton" bsStyle="primary" className='btn'>Import</Button>
-        </ReactFileReader> 
-
-        <h3 className='title'>Clients</h3>
-        { p.clientsLoaded &&
-          <ClientsIndex>{
-            p.clients.map((client) => {
-              return <ClientRow key={ client.id } client={ client }
-                        showUpdateModal={this.showCrupdateModal} delete={this.deleteClient} />
-            })
-          }</ClientsIndex>
-        }
-        <CrupdateModal  show={s.showCrupdateModal} hide={this.hideCrupdateModal} 
-          title={this.modalTitle()}>
-          <ClientForm action={this.formAction()} client={s.activeClient} />
-        </CrupdateModal>
+      <div className='clients-table content'>
+        <div>
+          <h1>Clients</h1>
+          <Link to={`/clients/new`}>
+            <Button bsStyle="default">
+              Add new named client profile
+            </Button>
+          </Link>
+          <Link to={`/clients/anonymous/new`}>
+            <Button bsStyle="default">
+              Add new anonymous client profile
+            </Button>
+          </Link>
+          <hr/>
+          <Table striped bordered condensed hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>
+                  <Link to={`/client/1`}>
+                    Leonardo Dicaprio
+                  </Link>
+                </td>
+                <td>example@gmail.com</td>
+                <td>
+                  <Link to={`/clients/edit`}>
+                    <Button bsStyle="primary">
+                      <Glyphicon glyph="edit" />
+                    </Button>
+                  </Link>
+                </td>
+                <td>
+                  <Button bsStyle="danger">
+                    <Glyphicon glyph="trash" />
+                  </Button>
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>
+                  <Link to={`/client/2`}>
+                  Robert Downey
+                  </Link>
+                </td>
+                <td>example@gmail.com</td>
+                <td>
+                  <Button bsStyle="primary">
+                    <Glyphicon glyph="edit" />
+                  </Button>
+                </td>
+                <td>
+                  <Button bsStyle="danger">
+                    <Glyphicon glyph="trash" />
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </div>
       </div>
     )
   }
-
-  componentWillMount() {
-    this.props.dispatch(fetchClients());
-  }
-
-  createClient = (params) => {
-    this.props.dispatch(createClient(params));
-  }
-
-  createClients = (csvtext) => {
-
-  }
-
-  updateClient = (params) => {
-    const id = params.id;
-    delete params.id;
-    this.props.dispatch(updateClient(id, params));
-  
-  }
-
-  deleteClient = (id) => {
-    this.props.dispatch(deleteClient(id));
-  }
-
-  showCrupdateModal = (client={}) => {
-    this.setState({ showCrupdateModal: true, activeClient: client })
-  } 
-
-  handleFiles = files => {
-    var reader = new FileReader();
-    var propper = this.props
-    
-    reader.onload = function(e) {
-      console.log(reader.result)
-      propper.dispatch(createClient(reader.result))
-    }
-    reader.readAsText(files[0]);
-    
-  }
-
-
-
-  hideCrupdateModal = () => {
-    this.setState({ showCrupdateModal: false })
-  } 
-
-  activeClientIsNew = () => {
-    return(_.isUndefined(this.state.activeClient.id));
-  }
-
-  formAction = () => {
-    return(this.activeClientIsNew() ? this.createClient : this.updateClient);
-  }
-
-
-
-
-
-  modalTitle = () => {
-    let title = this.activeClientIsNew() ? "New" : "Update"
-    return(title + " Client");
-  }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    clients: state.clients.index,
-    clientsLoaded: state.clients.indexLoaded
-  }
-}
-
-export default connect(
-  mapStateToProps
-)(Clients);
+export default ClientDashboard;
