@@ -8,7 +8,7 @@ class Dashboard extends Component {
     return(
       <div>
         <div className='dashboard content'>
-          <img src={calendarPlaceholder} className='calendar-placeholder' />
+          <img alt='placeholder' src={calendarPlaceholder} className='calendar-placeholder' />
         </div>
       </div>
     )
