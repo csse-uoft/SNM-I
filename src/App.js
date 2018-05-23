@@ -1,51 +1,26 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { IndexLinkContainer } from 'react-router-bootstrap';
 
 // components
-import Landing from './components/Landing.js';
-import Login from './components/Login.js';
-import LoginPane from './components/LoginPane.js';
-import Dashboard from './components/Dashboard.js';
+import Landing from './components/Landing';
+import Login from './components/Login';
+import LoginPane from './components/LoginPane';
+import Dashboard from './components/Dashboard';
 import Clients from './components/Clients';
 import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm'
 import AnonymousClientForm from './components/clients/AnonymousClientForm'
+import TopNavbar from './components/layouts/TopNavbar'
 
 // style
 import './stylesheets/App.css';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Navbar inverse collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <IndexLinkContainer to={`/`}>
-                <div>
-                  <span>SNM Impact</span>
-                </div>
-              </IndexLinkContainer>
-            </Navbar.Brand>
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav>
-              <IndexLinkContainer to={`/clients`}>
-                <NavItem eventKey={1} href="#">Client Management System</NavItem>
-              </IndexLinkContainer>
-              <IndexLinkContainer to={`/services`}>
-                <NavItem eventKey={2} href="#">Service Management System</NavItem>
-              </IndexLinkContainer>
-            </Nav>
-            <Nav pullRight>
-              <IndexLinkContainer to={`/login`}>
-                <NavItem eventKey={3} href="#">Log In</NavItem>
-              </IndexLinkContainer>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+        <TopNavbar />
         <Route exact path='/' component={Landing} />
         <Route exact path='/login' component={Login} />
         <Route exact path='/login-pane' component={LoginPane} />

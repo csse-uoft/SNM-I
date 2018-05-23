@@ -4,11 +4,13 @@ import { Table } from 'react-bootstrap';
 export default class ClientsIndex extends Component {
   render() {
     return(
-      <Table striped condensed hover>
+      <Table striped bordered condensed hover>
         <thead>
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>Email</th>
+            <th></th>
             <th></th>
           </tr>
         </thead>

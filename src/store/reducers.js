@@ -7,6 +7,7 @@ import { SEARCH_REQUESTED, SEARCH_RESPONSE_RECEIVED, REQUEST_CLIENT,
           RECEIVE_NEW_PROVIDER, REMOVE_CLIENT, REMOVE_PROVIDER,
           REMOVE_RESOURCE, RECEIVE_NEW_GOOD, REQUEST_GOODS, RECEIVE_GOODS, REMOVE_GOODS} from './actions.js'
 import { needs } from './reducers/needReducers.js';
+import { auth } from './reducers/authReducer.js';
 import _ from 'lodash';
 
 function searchResultsByNeedId(state = {}, action) {
@@ -118,5 +119,6 @@ export const rootReducer = combineReducers({
   goods,
   needs,
   resources,
-  providers
+  providers,
+  auth
 });

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import CustomToggle from '../shared/CustomToggle.js';
 import { Link } from 'react-router-dom';
-import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
+import { Glyphicon, Button } from 'react-bootstrap';
 
 export default class ClientRow extends Component {
   render() {
     const c = this.props.client;
     return(
       <tr>
+        <td>{c.id}</td>
         <td>
           <Link to={`/client/${c.id}`}>
             {c.first_name} {c.last_name}
@@ -17,31 +17,18 @@ export default class ClientRow extends Component {
           {c.email}
         </td>
         <td>
-          <Dropdown id='action-menu' pullRight>
-          <CustomToggle bsRole="toggle">
-            <Glyphicon glyph="option-vertical" /> 
-          </CustomToggle>
-          <Dropdown.Menu>
-            <MenuItem eventKey="1" onClick={this.update}>
-              <span>Update</span>
-            </MenuItem>
-            <MenuItem eventKey="2" onClick={this.delete}>
-              <span>Delete</span>
-            </MenuItem>
-          </Dropdown.Menu>
-        </Dropdown>
+          <Link to={`/clients/edit`}>
+            <Button bsStyle="primary">
+              <Glyphicon glyph="edit" />
+            </Button>
+          </Link>
+        </td>
+        <td>
+          <Button bsStyle="danger">
+            <Glyphicon glyph="trash" />
+          </Button>
         </td>
       </tr>
     )
-  }
-
-  delete = () => {
-    const p = this.props;
-    p.delete(p.client.id);
-  }
-
-  update = () => {
-    const p = this.props;
-    p.showUpdateModal(p.client);
   }
 }
