@@ -194,13 +194,13 @@ export function fetchProviderResources(needId, params) {
 
 export function createClient(params) {
   return dispatch => {
-    
     const url = serverHost + '/clients/';
     return fetch(url, {
       method: "POST",
       body: JSON.stringify(params),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
       .then(json => dispatch(receiveNewClient(json)));
@@ -254,12 +254,14 @@ export function fetchClient(id) {
     dispatch(requestClient(id))
     const url = serverHost + '/client/' + id + '/';
 
-    return fetch(url).then(response => response.json())
+    return fetch(url, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        }), 
+      }).then(response => response.json())
       .then(json => {
-        const needs = json.needs;
-        delete json.needs;
         dispatch(receiveClient(id, json))
-        dispatch(receiveNeeds(id, needs))
       })
   }
 }
@@ -269,7 +271,12 @@ export function fetchClients() {
     dispatch(requestClients())
     const url = serverHost + '/clients/';
 
-    return fetch(url).then(response => response.json())
+    return fetch(url, {
+        method: 'get',
+        headers: new Headers({
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        }), 
+      }).then(response => response.json())
       .then(json => {
         dispatch(receiveClients(json))
       })
