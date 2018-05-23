@@ -1,6 +1,4 @@
-//export const serverHost = 'https://sleepy-scrubland-24958.herokuapp.com';
-export const serverHost = 'http://127.0.0.1:8000';
-//export const serverHost = '138.51.253.171';
+export const serverHost = 'https://snm-impact-server.herokuapp.com';
 
 const languageMap = [ 
   {value: "AR", label: "Arabic"},
