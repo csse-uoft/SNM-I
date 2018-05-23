@@ -21,6 +21,16 @@ class Client extends Component {
     const p = this.props,
           id = p.match.params.id,
           client = p.clientsById[id];
+
+    function getPhoneNumber(phoneNumbers, phoneType) {
+      let matchedNumber = null
+      phoneNumbers.forEach(function(phoneNumber) {
+        if (phoneNumber.phone_type == phoneType) {
+          matchedNumber = phoneNumber.phone_number
+        }
+      });
+      return matchedNumber
+    }
     return (
       <div className="content">
         <h3>Client Profile</h3>
@@ -57,15 +67,15 @@ class Client extends Component {
               </tr>
               <tr>
                 <td><b>Cell Phone</b></td>
-                <td>123-456-789</td>
+                <td>{(client.phone_numbers.length > 0) ? getPhoneNumber(client.phone_numbers, 'mobile') : null}</td>
               </tr>
               <tr>
                 <td><b>Home Phone</b></td>
-                <td>123-456-789</td>
+                <td>{(client.phone_numbers.length > 0) ? getPhoneNumber(client.phone_numbers, 'home') : null}</td>
               </tr>
               <tr>
                 <td><b>Address</b></td>
-                <td>27 Kings College Circle Toronto, Ontario M5S 1A1 Canada</td>
+                <td>{(client.locations.length > 0) ? client.locations[0].properties.address : null}</td>
               </tr>
               {/*
               <tr>
