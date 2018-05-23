@@ -1,17 +1,33 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import ClientsIndex from './clients/ClientsIndex.js'
+import ClientRow from './clients/ClientRow.js'
 
+// redux
+import { connect } from 'react-redux'
+import { fetchClients, createClient, updateClient, deleteClient } from '../store/actions.js'
+
+// styles
+import { Table, Button, Glyphicon } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
-class ClientDashboard extends Component {
+class Clients extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchClients());
+  }
+
   render() {
+    const p = this.props;
     return(
       <div className='clients-table content'>
         <div>
           <h1>Clients</h1>
-          <Link to={`/clients/new`}>
+          <Link to={{ pathname: '/clients/new', state: { foo: 'bar'} }}>
             <Button bsStyle="default">
               Add new named client profile
             </Button>
@@ -22,63 +38,26 @@ class ClientDashboard extends Component {
             </Button>
           </Link>
           <hr/>
-          <Table striped bordered condensed hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>
-                  <Link to={`/client/1`}>
-                    Leonardo Dicaprio
-                  </Link>
-                </td>
-                <td>example@gmail.com</td>
-                <td>
-                  <Link to={`/clients/edit`}>
-                    <Button bsStyle="primary">
-                      <Glyphicon glyph="edit" />
-                    </Button>
-                  </Link>
-                </td>
-                <td>
-                  <Button bsStyle="danger">
-                    <Glyphicon glyph="trash" />
-                  </Button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>
-                  <Link to={`/client/2`}>
-                  Robert Downey
-                  </Link>
-                </td>
-                <td>example@gmail.com</td>
-                <td>
-                  <Button bsStyle="primary">
-                    <Glyphicon glyph="edit" />
-                  </Button>
-                </td>
-                <td>
-                  <Button bsStyle="danger">
-                    <Glyphicon glyph="trash" />
-                  </Button>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          { p.clientsLoaded &&
+            <ClientsIndex>{
+              p.clients.map((client) => {
+                return <ClientRow key={ client.id } client={ client } />
+              })
+            }</ClientsIndex>
+          }
         </div>
       </div>
     )
   }
 }
 
-export default ClientDashboard;
+const mapStateToProps = (state) => {
+  return {
+    clients: state.clients.index,
+    clientsLoaded: state.clients.indexLoaded
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(Clients);

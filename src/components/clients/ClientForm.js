@@ -1,14 +1,50 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+
+// redux
+import { connect } from 'react-redux'
+import { createClient } from '../../store/actions.js'
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
-export default class ClientForm extends Component {
+class ClientForm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { 
+      form: { 
+        first_name: '',
+        last_name: '',
+        preferred_name: '',
+        gender: '',
+        birth_date: '',
+        email: '',
+        mobile_phone: '',
+        home_phone: '',
+        address: '',
+      }
+    }
+
+    this.formValChange = this.formValChange.bind(this);
+    this.submit = this.submit.bind(this);
+  }
+
+  formValChange(e) {
+    let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+    this.setState({ form: nextForm });    
+  }
+
+  submit() {
+    this.props.dispatch(createClient(this.state.form));
+    this.props.history.push('/clients')
+  }
+
   render() {
     return (
       <Row className="content">
         <Col sm={12}>
           <h3>New Named Client Profile</h3>
-          <hr/>
+          <hr />
         </Col>
         <Col sm={12}>
           <Form horizontal>
@@ -17,8 +53,7 @@ export default class ClientForm extends Component {
                 First name (required)
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="Aravind" />
+                <FormControl type="text" placeholder="Aravind" value={this.state.first_name} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -27,21 +62,12 @@ export default class ClientForm extends Component {
                 Last name (required)
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="Adiga" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="gender">
-              <Col componentClass={ControlLabel} sm={3}>
-                Gender
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                  <option value="female">Female</option>
-                  <option value="male">Male</option>
-                </FormControl>
+                <FormControl
+                  type="text"
+                  value={this.state.last_name}
+                  placeholder="Adiga"
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -50,31 +76,29 @@ export default class ClientForm extends Component {
                 Preferred Name
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue="" />
+                <FormControl type="text" value={this.state.preferred_name} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="date_of_birth">
+            <FormGroup controlId="gender">
+              <Col componentClass={ControlLabel} sm={3}>
+                Gender
+              </Col>
+              <Col sm={9}>
+                <FormControl componentClass="select" placeholder="select" value={this.state.gender} onChange={this.formValChange}>
+                  <option value="select">-- Not Set --</option>
+                  <option value="0">Female</option>
+                  <option value="1">Male</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="birth_date">
               <Col componentClass={ControlLabel} sm={3}>
                 Date of Birth
               </Col>
               <Col sm={9}>
-                <FormControl type="date" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Marital Status
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                  <option value="married">Married</option>
-                  <option value="single">Single</option>
-                  <option value="divorced">Divorced</option>
-                  <option value="widowed">Widowed</option>
-                </FormControl>
+                <FormControl type="date" value={this.state.birth_date} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -83,17 +107,21 @@ export default class ClientForm extends Component {
                 Email
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="aravind.adiga.gmail.com" />
+                <FormControl
+                  type="text"
+                  value={this.state.email}
+                  placeholder="aravind.adiga.gmail.com"
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="cell_phone">
+            <FormGroup controlId="mobile_phone">
               <Col componentClass={ControlLabel} sm={3}>
                 Cell Phone
               </Col>
               <Col sm={9}>
-                <FormControl type="tel" defaultValue="" />
+                <FormControl type="tel" value={this.state.mobile_phone} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -102,7 +130,7 @@ export default class ClientForm extends Component {
                 Home Phone (required)
               </Col>
               <Col sm={9}>
-                <FormControl type="tel" defaultValue="" />
+                <FormControl type="tel" value={this.state.home_phone} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -111,135 +139,13 @@ export default class ClientForm extends Component {
                 Address
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="family_code">
-              <Col componentClass={ControlLabel} sm={3}>
-                Family Code
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="landing_date">
-              <Col componentClass={ControlLabel} sm={3}>
-                Landing Date
-              </Col>
-              <Col sm={9}>
-                <FormControl type="date" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="arrival_date">
-              <Col componentClass={ControlLabel} sm={3}>
-                Arrival Date
-              </Col>
-              <Col sm={9}>
-                <FormControl type="date" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="re-entry_date">
-              <Col componentClass={ControlLabel} sm={3}>
-                Re-entry Date
-              </Col>
-              <Col sm={9}>
-                <FormControl type="date" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="initial_destination">
-              <Col componentClass={ControlLabel} sm={3}>
-                Inital Destination
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue="" />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Country of Origin
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Last Residence
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Immi. Class
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Immi. Status
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Immi. Card Type
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Aboriginal Status
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Preferred Official Language
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="select">-- Not Set --</option>
-                </FormControl>
+                <FormControl type="text" value={this.state.address} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
-                <Button disabled={false} type="submit">
+                <Button onClick={this.submit}>
                   Submit
                 </Button>
               </Col>
@@ -247,6 +153,8 @@ export default class ClientForm extends Component {
           </Form>
         </Col>
       </Row>
-    )
+    );
   }
 }
+
+export default connect()(withRouter(ClientForm));
