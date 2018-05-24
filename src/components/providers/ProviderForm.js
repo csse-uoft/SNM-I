@@ -21,36 +21,34 @@ export default class ProviderForm extends Component {
         home_phone: provider.home_phone || '',
         cell_phone: provider.cell_phone || '',
         referrer: provider.referrer || '',
-        location: {
-          lng_lat: (lk && parsePointCoordinates(lk.geometry.coordinates)) || '',
-          address: (lk && lk.properties.address) || ''
-        }
+        location: ''
+          // lng_lat: (lk && parsePointCoordinates(lk.geometry.coordinates)) || '',
+          // address: (lk && lk.properties.address) || ''
       },
       mapZoom: 10
     } 
   }
 
   render() {
-    const s = this.state,
-          torontoCentroid = { lat: 43.6870, lng: -79.4132 },
-          autoCompleteInputProps = {
-            value: this.state.form.location.address, 
-            onChange: this.addressValChange
-          };
+    const s = this.state;
+          //torontoCentroid = { lat: 43.6870, lng: -79.4132 },
+          //autoCompleteInputProps = {
+          // value: this.state.form.location.address, 
+          //  onChange: this.addressValChange
+          // };
     const isEnabled = 
       this.state.form.home_phone.length > 0 &&
       this.state.form.email.length > 0 &&
       this.state.form.first_name.length > 0 &&
       this.state.form.last_name.length > 0
-    const GMap = withGoogleMap(props => (
-      <GoogleMap
-        defaultZoom={s.mapZoom}
-        defaultCenter={this.hasLocation() ? s.form.location.lng_lat : torontoCentroid} >
-        {this.hasLocation() &&
-          <Marker position={s.form.location.lng_lat} />
-        }
-      </GoogleMap>
-    ));
+    // const GMap = withGoogleMap(props => (
+    //   <GoogleMap
+    //     defaultZoom={s.mapZoom}
+    //     defaultCenter={this.hasLocation() ? s.form.location.lng_lat : torontoCentroid} >
+    //     {this.hasLocation() &&
+    //       <Marker position={s.form.location.lng_lat} />
+    //     }
+    //   </GoogleMap>
     return (
       <Row>
         <Col sm={8}>
@@ -108,7 +106,7 @@ export default class ProviderForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="address">
+            {/*<FormGroup controlId="address">
               <Col componentClass={ControlLabel} sm={3}>
                 Address
               </Col>
@@ -116,7 +114,7 @@ export default class ProviderForm extends Component {
                 <PlacesAutocomplete inputProps={autoCompleteInputProps} onSelect={this.addressSelected}
                   styles={{root: { zIndex: 1 }}} />
               </Col>
-            </FormGroup>
+            </FormGroup>*/}
 
             <FormGroup controlId="referrer">
               <Col componentClass={ControlLabel} sm={3}>
@@ -135,21 +133,10 @@ export default class ProviderForm extends Component {
                 </Button>
               </Col>
             </FormGroup>
+
           </Form>
         </Col>
-        <Col sm={4}>
-            <div style={{width: '100%', height: '190px'}}>
-              <GMap
-                containerElement={
-                  <div style={{ height: `100%` }} />
-                }
-                mapElement={
-                  <div style={{ height: `100%` }} />
-                }
-              />
-          </div>
-        </Col>
-      </Row>
+        </Row>
     )
   }
 

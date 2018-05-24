@@ -16,6 +16,7 @@ export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';
 export const REQUEST_PROVIDERS = 'REQUEST_PROVIDERS';
 export const RECEIVE_PROVIDERS = 'RECEIVE_PROVIDERS';
 export const REMOVE_PROVIDER = 'REMOVE_PROVIDER';
+export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
 
 export const REQUEST_DASHBOARD_CLIENT_DATA = 'REQUEST_DASHBOARD_CLIENT_DATA';
 export const RECEIEVE_DASHBOARD_CLIENT_DATA = 'RECEIEVE_DASHBOARD_CLIENT_DATA';
@@ -332,7 +333,7 @@ export function fetchProviders() {
 export function createProvider(params) {
   return dispatch => {
     const url = serverHost + '/providers/';
-          
+          debugger
     return fetch(url, {
       method: "POST",
       body: JSON.stringify(params),
@@ -340,7 +341,7 @@ export function createProvider(params) {
         "Content-Type": "application/json"
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewProvider(json)));
+      .then(json => {debugger; dispatch(receiveNewProvider(json))});
   }
 }
 

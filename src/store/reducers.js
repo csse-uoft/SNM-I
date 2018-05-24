@@ -10,6 +10,7 @@ import { needs } from './reducers/needReducers.js';
 import { auth } from './reducers/authReducer.js';
 import { users } from './reducers/userReducers.js';
 import _ from 'lodash';
+import { RECEIVE_PROVIDER, REQUEST_PROVIDER } from './ProviderActions.js'
 
 function searchResultsByNeedId(state = {}, action) {
   let nextResultObj;
@@ -94,8 +95,8 @@ function goods(state = {index: [], loaded: false}, action) {
 
 
 
-function providers(state = {index: [], loaded: false}, action) {
-  let nextIndex;
+function providers(state = {index: [], byId: {}, loaded: false}, action) {
+  let nextIndex, nextById;
   switch (action.type) {
     case REQUEST_PROVIDERS:
       return {...state, loaded: false};
@@ -108,6 +109,12 @@ function providers(state = {index: [], loaded: false}, action) {
       nextIndex = _.clone(state.index);
       _.remove(nextIndex, (n) => { return n.id === action.id });
       return {...state, index: nextIndex}
+    case RECEIVE_PROVIDER: 
+      nextById = {...state.byId, [action.id]: { ...action.provider, loaded: true }}
+      return {...state, byId: nextById }
+    case REQUEST_PROVIDER:
+      nextById = { ...state.byId, [action.id]: { loaded: false } }
+      return {...state, byId: nextById }
     default:
       return state
   }

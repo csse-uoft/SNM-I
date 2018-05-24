@@ -13,34 +13,35 @@ import { fetchProviders, createProvider, updateProvider, deleteProvider } from '
 
 // styles
 import { Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom';
+
 
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      showCrupdateModal: false,
-      activeProvider: {}
-    } 
   }
 
   render() {
     const p = this.props, s = this.state;
     return(
       <div className='providers content'>
-        <Button bsStyle="primary" onClick={this.showCrupdateModal}>New Provider</Button>
         <h3 className='title'>Providers</h3>
+          <div>
+          <Link to={`/providers/new`}>
+            <Button bsStyle="default">
+            Add new provider
+            </Button>
+          </Link>
+          </div>
+
         { p.providersLoaded &&
           <ProvidersIndex>{
             p.providers.map((provider) => {
               return <ProviderRow key={ provider.id } provider={ provider }
-                        showUpdateModal={this.showCrupdateModal} delete={this.deleteProvider} />
+                      delete={this.deleteProvider} />
             })
           }</ProvidersIndex>
         }
-        <CrupdateModal  show={s.showCrupdateModal} hide={this.hideCrupdateModal} 
-          title={this.modalTitle()}>
-          <ProviderForm action={this.formAction()} provider={s.activeProvider} />
-        </CrupdateModal>
       </div>
     )
   }
@@ -61,30 +62,8 @@ class Providers extends Component {
 
   deleteProvider = (id) => {
     this.props.dispatch(deleteProvider(id));
+    }
   }
-
-  showCrupdateModal = (provider={}) => {
-    this.setState({ showCrupdateModal: true, activeProvider: provider })
-  } 
-
-  hideCrupdateModal = () => {
-    this.setState({ showCrupdateModal: false })
-  }
-
-  activeProviderIsNew = () => {
-    return(_.isUndefined(this.state.activeProvider.id));
-  }
-
-  formAction = () => {
-    return(this.activeProviderIsNew() ? this.createProvider : this.updateProvider);
-  }
-
-  modalTitle = () => {
-    let title = this.activeProviderIsNew() ? "New" : "Update"
-    return(title + " Provider");
-  }
-
-}
 
 const mapStateToProps = (state) => {
   return {
