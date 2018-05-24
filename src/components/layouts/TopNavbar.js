@@ -38,9 +38,6 @@ class TopNavbar extends Component {
         <IndexLinkContainer to={`/services`}>
           <NavItem eventKey={2} href="#">Services</NavItem>
         </IndexLinkContainer>
-        <IndexLinkContainer to={`/users`}>
-          <NavItem eventKey={3} href="#">Users</NavItem>
-        </IndexLinkContainer>
       </Nav>
       )
       : (null);
@@ -49,11 +46,19 @@ class TopNavbar extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <IndexLinkContainer to={`/`}>
-              <div>
-                <span>SNM Impact</span>
-              </div>
-            </IndexLinkContainer>
+            {(this.props.isLoggedin && this.props.currentUser.is_admin) ? (
+              <IndexLinkContainer to='/dashboard'>
+                <div>
+                  <span>SNM Impact</span>
+                </div>
+              </IndexLinkContainer>
+            ) : (
+              <IndexLinkContainer to='/'>
+                <div>
+                  <span>SNM Impact</span>
+                </div>
+              </IndexLinkContainer>
+            )}
           </Navbar.Brand>
         </Navbar.Header>
         <Navbar.Collapse>
