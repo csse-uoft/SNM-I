@@ -23,6 +23,7 @@
     "react-star-rating": "^1.4.2",
     "react-star-rating-component": "^1.4.1",
     "redux": "^3.6.0",
+    "redux-persist": "^5.9.1",
     "redux-thunk": "^2.2.0",
     "timeago.js": "^3.0.2"
   },
