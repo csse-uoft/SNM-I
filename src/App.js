@@ -10,6 +10,9 @@ import Clients from './components/Clients';
 import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm'
 import AnonymousClientForm from './components/clients/AnonymousClientForm'
+import Users from './components/Users';
+import User from './components/users/User';
+import UserForm from './components/users/UserForm'
 import TopNavbar from './components/layouts/TopNavbar'
 
 // style
@@ -30,6 +33,11 @@ class App extends Component {
         <Route exact path='/clients/new' component={ClientForm} />
         <Route exact path='/clients/anonymous/new' component={AnonymousClientForm} />
         <Route exact path='/clients/edit' component={ClientForm} />
+        <Route exact path='/users' component={Users} />
+        <Route exact path='/user/:id' component={User} />
+        <Route exact path='/users/new' component={UserForm} />
+        <Route exact path='/users/:id/edit' component={UserForm} />
+
         <div className='footer'>
           <h5>
             <a href='http://csse.utoronto.ca/' target='_blank'>
