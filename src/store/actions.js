@@ -319,11 +319,17 @@ export function deleteResource(id) {
 }
 
 export function fetchProviders() {
+  debugger
   return dispatch => {
     dispatch(requestProviders())
     const url = serverHost + '/providers/';
 
-    return fetch(url).then(response => response.json())
+    return fetch(url, {
+        method: 'get',
+        headers: new Headers({
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        }), 
+      }).then(response => response.json())
       .then(json => {
         dispatch(receiveProviders(json))
       })
@@ -333,15 +339,15 @@ export function fetchProviders() {
 export function createProvider(params) {
   return dispatch => {
     const url = serverHost + '/providers/';
-          debugger
     return fetch(url, {
       method: "POST",
       body: JSON.stringify(params),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => {debugger; dispatch(receiveNewProvider(json))});
+      .then(json => dispatch(receiveNewProvider(json)));
   }
 }
 

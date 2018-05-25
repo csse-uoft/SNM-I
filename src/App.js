@@ -28,22 +28,10 @@ import './stylesheets/App.css';
 
 
 class App extends Component {
-  // async componentDidMount() {
-  //   try{
-  //     const res = await fetch('http://127.0.0.1:8000/');
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
-
-
   render() {
-    const clientsReportPath = serverHost + '/clients.csv',
-          needsReportPath = serverHost + '/needs.csv'
     return (
       <div className="App">
         <TopNavbar />
-
         <Route exact path='/' component={Landing} />
         <Route exact path='/login' component={Login} />
         <Route exact path='/login-pane' component={LoginPane} />
@@ -58,7 +46,7 @@ class App extends Component {
         <Route exact path='/users/new' component={UserForm} />
         <Route exact path='/users/:id/edit' component={UserForm} />
 
-        <Route exact path='/providers' component={Providers} />
+        <Route exact path='/providers' component={ Providers} />
         <Route exact path='/providers/new' component={ProviderForm} />
         <Route exact path='/providers/new/add-service' component={AddServicePrompt} />
         <Route exact path='/services' component={Resources} />

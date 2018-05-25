@@ -26,7 +26,12 @@ export function fetchProvider(id) {
     dispatch(requestProvider(id))
     const url = serverHost + '/provider/' + id + '/';
 
-    return fetch(url).then(response => response.json())
+    return fetch(url, {
+        method: 'GET',
+        headers: new Headers({
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        }), 
+      }).then(response => response.json())
       .then(json => {
         dispatch(receiveProvider(id, json))
       })

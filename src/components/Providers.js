@@ -50,10 +50,6 @@ class Providers extends Component {
     this.props.dispatch(fetchProviders());
   }
 
-  createProvider = (params) => {
-    this.props.dispatch(createProvider(params));
-  }
-
   updateProvider = (params) => {
     const id = params.id;
     delete params.id;
