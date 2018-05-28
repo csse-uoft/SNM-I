@@ -53,12 +53,20 @@ function receiveUpdatedNeedMatchState(needId, json) {
   }
 }
 
-export function createClientNeed(clientId) {
+export function createClientNeed(clientId, params) {
   return dispatch => {
-    const url = serverHost + '/client/' + clientId + '/needs/';
-          
-    return fetch(url, {method: "POST"}).then(response => response.json())
-      .then(json => dispatch(receiveNewClientNeed(clientId, json)));
+    const url = serverHost + '/clients/' + clientId + '/needs/';
+
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(json => dispatch(receiveNewClientNeed(clientId, json)));
   }
 }
 
