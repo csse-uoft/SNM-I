@@ -1,5 +1,5 @@
 import { REQUEST_USERS, RECEIVE_USERS, REMOVE_USER,
-         REQUEST_USER, RECEIVE_USER, UPDATE_USER } from '../actions/userActions.js';
+         REQUEST_USER, RECEIVE_USER } from '../actions/userActions.js';
 import _ from 'lodash';
 
 export function users(state = { usersLoaded: false, byId: {} }, action) {
@@ -19,9 +19,6 @@ export function users(state = { usersLoaded: false, byId: {} }, action) {
       return { ...state, byId: nextById }
     case RECEIVE_USER:
       nextById = {...state.byId, [action.id]: { ...action.user, loaded: true }}
-      return { ...state, byId: nextById }
-    case UPDATE_USER:
-      nextById = {...state.byId, [action.user.id]: { ...action.user, loaded: true }}
       return { ...state, byId: nextById }
     default:
       return state

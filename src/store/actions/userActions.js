@@ -6,15 +6,7 @@ export const RECEIVE_USER = 'RECEIVE_USER';
 export const REQUEST_USERS = 'REQUEST_USERS';
 export const RECEIVE_USERS = 'RECEIVE_USERS';
 export const REMOVE_USER = 'REMOVE_USER';
-export const UPDATE_USER = 'UPDATE_USER';
 
-
-function updatedUser(json) {
-  return {
-    type: UPDATE_USER,
-    user: json
-  }
-}
 
 function requestUser(id) {
   return {
@@ -90,7 +82,7 @@ export function updateUser(id, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(updatedUser(json)));
+      .then(json => dispatch(receiveUser(id, json)));
   }
 }
 
@@ -131,6 +123,7 @@ export function fetchUsers() {
 export function deleteUser(id) {
   return dispatch => {
     const url = serverHost + '/user/' + id + '/';
+
     return fetch(url, {
       method: 'DELETE',
       headers: {

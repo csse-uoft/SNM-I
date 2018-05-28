@@ -7,7 +7,7 @@ import UserRow from './users/UserRow'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchUsers, deleteUser } from '../store/actions/userActions.js'
+import { fetchUsers } from '../store/actions/userActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
@@ -18,7 +18,7 @@ class Users extends Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.props.dispatch(fetchUsers());
   }
 
