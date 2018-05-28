@@ -33,7 +33,7 @@ class App extends Component {
         <Route exact path='/client/:id' component={Client} />
         <Route exact path='/clients/new' component={ClientForm} />
         <Route exact path='/clients/anonymous/new' component={AnonymousClientForm} />
-        <Route exact path='/clients/edit' component={ClientForm} />
+        <Route exact path='/clients/:id/edit' component={ClientForm} />
         <Route exact path='/users' component={Users} />
         <Route exact path='/user/:id' component={User} />
         <Route exact path='/users/new' component={UserForm} />
