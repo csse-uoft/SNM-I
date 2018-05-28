@@ -6,7 +6,7 @@ import ClientRow from './clients/ClientRow.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchClients, createClient, updateClient, deleteClient } from '../store/actions.js'
+import { fetchClients, createClient, updateClient, deleteClient } from '../store/actions/clientActions.js'
 
 // styles
 import { Table, Button, Glyphicon } from 'react-bootstrap';

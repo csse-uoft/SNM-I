@@ -5,7 +5,7 @@ import ClientNeeds from '../ClientNeeds';
 
 // redux
 import { connect } from 'react-redux'
-import { fetchClient } from '../../store/actions.js'
+import { fetchClient } from '../../store/actions/clientActions.js'
 
 import { Table, Button, Glyphicon } from 'react-bootstrap';
 

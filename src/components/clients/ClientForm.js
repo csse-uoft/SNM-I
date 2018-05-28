@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 
 // redux
 import { connect } from 'react-redux'
-import { createClient } from '../../store/actions.js'
+import { createClient } from '../../store/actions/clientActions.js'
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
