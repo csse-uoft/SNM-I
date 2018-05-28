@@ -7,7 +7,7 @@ import ClientNeeds from '../ClientNeeds';
 import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
 
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 class Client extends Component {
   constructor(props) {  
