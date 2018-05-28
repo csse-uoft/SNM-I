@@ -9,6 +9,7 @@ import { SEARCH_REQUESTED, SEARCH_RESPONSE_RECEIVED, REQUEST_CLIENT,
 import { needs } from './reducers/needReducers.js';
 import { auth } from './reducers/authReducer.js';
 import { users } from './reducers/userReducers.js';
+import { ontology } from './reducers/ontologyReducers.js';
 import _ from 'lodash';
 
 function searchResultsByNeedId(state = {}, action) {
@@ -122,5 +123,6 @@ export const rootReducer = combineReducers({
   resources,
   providers,
   auth,
-  users
+  users,
+  ontology
 });

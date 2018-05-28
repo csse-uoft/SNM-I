@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import ClientNeeds from '../ClientNeeds';
+
 // redux
 import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions.js'
@@ -31,6 +33,7 @@ class Client extends Component {
       });
       return matchedNumber
     }
+
     return (
       <div className="content">
         <h3>Client Profile</h3>
@@ -131,70 +134,8 @@ class Client extends Component {
           </Table>
         }
         <hr />
-        <h3>Needs</h3>
-        <Link to="/needs/new">
-          <Button bsStyle="default">
-            Add need
-          </Button>
-        </Link>
-        <hr />
-        <Table striped bordered condensed hover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th />
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>
-                <Link to="/client/1">
-                  Food
-                </Link>
-              </td>
-              <td>Baby food</td>
-              <td>Unfulfilled</td>
-              <td>
-                <Link to="/clients/edit">
-                  <Button bsStyle="primary">
-                    <Glyphicon glyph="edit" />
-                  </Button>
-                </Link>
-              </td>
-              <td>
-                <Button bsStyle="danger">
-                  <Glyphicon glyph="trash" />
-                </Button>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>
-                <Link to="/client/2">
-                  Language
-                </Link>
-              </td>
-              <td>Klingon</td>
-              <td>Unfulfilled</td>
-              <td>
-                <Button bsStyle="primary">
-                  <Glyphicon glyph="edit" />
-                </Button>
-              </td>
-              <td>
-                <Button bsStyle="danger">
-                  <Glyphicon glyph="trash" />
-                </Button>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      </div>  
+        <ClientNeeds clientId={client.id} needs={client.needs} />
+      </div>
     );
   }
 }

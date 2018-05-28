@@ -13,6 +13,7 @@ import AnonymousClientForm from './components/clients/AnonymousClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
+import NeedForm from './components/client_needs/NeedForm'
 import TopNavbar from './components/layouts/TopNavbar'
 
 // style
@@ -37,6 +38,7 @@ class App extends Component {
         <Route exact path='/user/:id' component={User} />
         <Route exact path='/users/new' component={UserForm} />
         <Route exact path='/users/:id/edit' component={UserForm} />
+        <Route exact path='/clients/:id/needs/new' component={NeedForm} />
 
         <div className='footer'>
           <h5>

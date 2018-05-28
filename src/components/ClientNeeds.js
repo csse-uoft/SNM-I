@@ -1,42 +1,32 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchClient } from '../store/actions.js';
-import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
-import ClientBio from './client_needs/ClientBio.js';
-import NeedsByStatus from './client_needs/NeedsByStatus.js';
+import NeedsIndex from './client_needs/NeedsIndex'
+
+import { Table, Button, Glyphicon } from 'react-bootstrap';
 
 import '../stylesheets/ClientNeeds.css';
 
 class ClientNeeds extends Component {
-  render() { 
+  constructor(props) {
+    super(props)
+  }
+  render() {
     const p = this.props,
-          clientId = p.match.params.id,
-          client = p.clientsById[clientId];
+          clientId = p.clientId;
     return(
       <div>
-        {client && client.loaded &&
-          <div className='client-needs'>
-            <ClientBio client={client} />
-            <NeedsByStatus />
-          </div>
-        }
+        <h3>Needs</h3>
+        <Link to={`/clients/${clientId}/needs/new`}>
+          <Button bsStyle="default">
+            Add need
+          </Button>
+        </Link>
+        <hr />
+        <NeedsIndex needs={p.needs}/>
       </div>
     )
   }
-
-  componentWillMount() { 
-    const clientId = this.props.match.params.id;
-    this.props.dispatch(fetchClient(clientId));
-  } 
 }
 
-const mapStateToProps = (state) => {
-  return {
-    clientsById: state.clients.byId
-  }
-}
-
-export default connect(
-  mapStateToProps
-)(ClientNeeds);
+export default ClientNeeds;
