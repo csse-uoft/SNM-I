@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { fetchUser } from '../../store/actions/userActions.js'
 
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 class User extends Component {
   constructor(props) {

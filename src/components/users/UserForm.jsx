@@ -10,12 +10,14 @@ import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } f
 class UserForm extends Component {
   constructor(props) {
     super(props);
-
-    const user = (this.props.location.state && this.props.location.state.user) || {};
+    let user = {};
+    if (this.props.match.params.id) {
+      user = this.props.usersById[this.props.match.params.id]
+    }
 
     this.state = {
-      userId: this.props.match.params.id,
-      mode: (this.props.match.params.id) ? 'edit' : 'new',
+      userId: user.id,
+      mode: (user.id) ? 'edit' : 'new',
       form: {
         first_name: user.first_name || '',
         last_name: user.last_name || '',
@@ -149,4 +151,10 @@ class UserForm extends Component {
   }
 }
 
-export default connect()(withRouter(UserForm));
+const mapStateToProps = (state) => {
+  return {
+    usersById: state.users.byId
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(UserForm));
