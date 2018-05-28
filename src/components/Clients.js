@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import ClientsIndex from './clients/ClientsIndex.js'
 import ClientRow from './clients/ClientRow.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchClients, createClient, updateClient, deleteClient } from '../store/actions/clientActions.js'
+import { fetchClients } from '../store/actions/clientActions.js'
 
 // styles
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 class Clients extends Component {
@@ -27,7 +28,7 @@ class Clients extends Component {
       <div className='clients-table content'>
         <div>
           <h1>Clients</h1>
-          <Link to={{ pathname: '/clients/new', state: { foo: 'bar'} }}>
+          <Link to='/clients/new'>
             <Button bsStyle="default">
               Add new named client profile
             </Button>
@@ -40,7 +41,7 @@ class Clients extends Component {
           <hr/>
           { p.clientsLoaded &&
             <ClientsIndex>{
-              p.clients.map((client) => {
+              _.map(p.clients, (client) => {
                 return <ClientRow key={ client.id } client={ client } />
               })
             }</ClientsIndex>
@@ -53,8 +54,8 @@ class Clients extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    clients: state.clients.index,
-    clientsLoaded: state.clients.indexLoaded
+    clients: state.clients.byId,
+    clientsLoaded: state.clients.clientsLoaded
   }
 }
 

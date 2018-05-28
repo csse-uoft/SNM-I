@@ -9,13 +9,6 @@ export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
 export const REMOVE_CLIENT = 'REMOVE_CLIENT';
 
 
-function receiveNewClient(json) {
-  return {
-    type: RECEIVE_NEW_CLIENT,
-    client: json
-  }
-}
-
 function requestClient(id) {
   return {
     type: REQUEST_CLIENT,
@@ -27,22 +20,21 @@ function receiveClient(id, json) {
   return {
     type: RECEIVE_CLIENT,
     id: id,
-    client: json,
-    receivedAt: Date.now()
+    client: json
   }
 }
 
-function requestClients() {
+function requestClients(json) {
   return {
-    type: REQUEST_CLIENTS
+    type: REQUEST_CLIENTS,
+    clients: json
   }
 }
 
 function receiveClients(json) {
   return {
     type: RECEIVE_CLIENTS,
-    clients: json,
-    receivedAt: Date.now()
+    clients: json
   }
 }
 
@@ -61,9 +53,9 @@ export function fetchClient(id) {
 
     return fetch(url, {
         method: 'GET',
-        headers: new Headers({
+        headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }),
+        },
       }).then(response => response.json())
       .then(json => {
         dispatch(receiveClient(id, json))
@@ -77,10 +69,10 @@ export function fetchClients() {
     const url = serverHost + '/clients/';
 
     return fetch(url, {
-        method: 'get',
-        headers: new Headers({
+        method: 'GET',
+        headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }),
+        },
       }).then(response => response.json())
       .then(json => {
         dispatch(receiveClients(json))
@@ -91,7 +83,13 @@ export function fetchClients() {
 export function deleteClient(id) {
   return dispatch => {
     const url = serverHost + '/client/' + id + '/';
-    return fetch(url, {method: "DELETE"}).then(response => {
+
+    return fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      },
+    }).then(response => {
       if (response.status === 204) {
         dispatch(removeClient(id))
       }
@@ -103,14 +101,14 @@ export function createClient(params) {
   return dispatch => {
     const url = serverHost + '/clients/';
     return fetch(url, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(params),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewClient(json)));
+      .then(client => dispatch(receiveClient(client.id, client)));
   }
 }
 
@@ -118,7 +116,7 @@ export function createClients(params) {
   return dispatch => {
     const url = serverHost + '/clients/';
     return fetch(url, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({csv: params})
     })
   }
@@ -129,13 +127,14 @@ export function updateClient(id, params) {
     const url = serverHost + '/client/' + id + '/';
 
     return fetch(url, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(params),
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewClient(json)));
+      .then(client => dispatch(receiveClient(id, client)));
   }
   console.log(params)
 }
