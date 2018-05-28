@@ -111,20 +111,6 @@ function removeResource(id) {
   }
 }
 
-function requestDashboardClientData() {
-  return {
-    type: REQUEST_DASHBOARD_CLIENT_DATA
-  }
-}
-
-function receieveDashboardClientData(json) {
-  return {
-    type: RECEIEVE_DASHBOARD_CLIENT_DATA,
-    clients: json,
-    receivedAt: Date.now()
-  }
-}
-
 export function fetchProviderResources(needId, params) {
   return dispatch => {
     dispatch(resourceSearchRequested(needId))
@@ -226,16 +212,6 @@ export function deleteProvider(id) {
         dispatch(removeProvider(id))
       }
     });
-  }
-}
-
-export function fetchDashboardClientData(id) {
-  return dispatch => {
-    dispatch(requestDashboardClientData())
-    const url = serverHost + '/dashboard/clients/';
-
-    return fetch(url).then(response => response.json())
-      .then(json => dispatch(receieveDashboardClientData(json)))
   }
 }
 
