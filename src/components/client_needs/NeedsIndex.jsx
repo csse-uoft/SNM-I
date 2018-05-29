@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+
 import NeedRow from './NeedRow.js'
 import { Table } from 'react-bootstrap';
 
@@ -22,8 +24,8 @@ export default class NeedGroup extends Component {
         </thead>
         <tbody>
           { p.needs &&
-            p.needs.map((need) => {
-              return <NeedRow key={ need.id } need={ need } />
+            _.map(p.needs, (need) => {
+              return <NeedRow key={ need.id } clientId={ p.clientId } need={ need } />
             })
           }
         </tbody>

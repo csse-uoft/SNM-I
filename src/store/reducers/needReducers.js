@@ -1,30 +1,21 @@
-import { RECEIVE_NEEDS, RECEIVE_NEW_CLIENT_NEED, RECEIVE_UPDATED_CLIENT_NEED, 
-          REMOVE_CLIENT_NEED, RECEIVE_UPDATED_NEED_MATCH_STATE } from '../actions/needActions.js';
+import { RECEIVE_CLIENT_NEEDS, RECEIVE_CLIENT_NEED,
+         REMOVE_CLIENT_NEED } from '../actions/needActions.js';
 import _ from 'lodash';
 
-export function needs(state = {index: {}, clientId: null, loaded: false}, action) {
-  let nextIndex;
+export function needs(state = { byId: {}, clientId: null, loaded: false }, action) {
+  let nextById;
   switch (action.type) {
-    case RECEIVE_NEEDS:
-      return {index: action.needs, clientId: action.clientId, loaded: true};
-    case RECEIVE_NEW_CLIENT_NEED:
-      nextIndex = [action.need, ...state.index]
-      return {...state, index: nextIndex} 
-    case RECEIVE_UPDATED_CLIENT_NEED:
-      nextIndex = _.clone(state.index);
-      _.remove(nextIndex, (n) => { return n.id === action.needId });
-      nextIndex = [action.need, ...nextIndex];
-      return {...state, index: nextIndex}
+    case RECEIVE_CLIENT_NEEDS:
+      nextById = _.keyBy(action.needs, need => need.id);
+      return {...state, byId: nextById, loaded: true, clientId: action.clientId }
+    case RECEIVE_CLIENT_NEED:
+      nextById = {...state.byId, [action.id]: { ...action.need }}
+      return {...state, byId: nextById }
     case REMOVE_CLIENT_NEED:
-      nextIndex = _.clone(state.index);
-      _.remove(nextIndex, (n) => { return n.id === action.needId });
-      return {...state, index: nextIndex}
-    case RECEIVE_UPDATED_NEED_MATCH_STATE:
-      nextIndex = _.clone(state.index);
-      _.remove(nextIndex, (n) => { return n.id === action.id });
-      nextIndex = [action.need, ...nextIndex]
-      return {...state, index: nextIndex}
-    default: 
+      nextById = _.clone(state.byId);
+      delete nextById[action.needId]
+      return { ...state, byId: nextById }
+    default:
       return state
   }
 }
