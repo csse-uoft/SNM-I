@@ -10,7 +10,7 @@ import ProviderForm from './providers/ProviderForm.js'
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions.js'
-
+import { searchProviders } from '../store/ProviderActions.js'
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
@@ -35,19 +35,20 @@ class Providers extends Component {
           </div>
 
         { p.providersLoaded &&
-          <ProvidersIndex>{
+          <ProvidersIndex> {
             p.providers.map((provider) => {
               return <ProviderRow key={ provider.id } provider={ provider }
                       delete={this.deleteProvider} />
             })
-          }</ProvidersIndex>
+          }
+          </ProvidersIndex>
         }
       </div>
     )
   }
 
   componentWillMount() {
-    this.props.dispatch(fetchProviders());
+    this.props.dispatch(fetchProviders(''));
   }
 
   updateProvider = (params) => {
@@ -63,7 +64,7 @@ class Providers extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    providers: state.providers.index,
+    providers: state.providers.filteredProviders || [], //array of json 
     providersLoaded: state.providers.loaded
   }
 }
