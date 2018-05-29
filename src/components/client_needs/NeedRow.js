@@ -1,31 +1,45 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+// redux
+import { connect } from 'react-redux'
+import { deleteClientNeed } from '../../store/actions/needActions.js'
+
+
+// styles
 import { Button, Glyphicon } from 'react-bootstrap';
 
-// utilities
-import _ from 'lodash';
 
+class NeedRow extends Component {
+  constructor(props) {
+    super(props);
 
-export default class NeedRow extends Component {
+    this.delete = this.delete.bind(this);
+  }
+
+  delete(clientId, id) {
+    this.props.dispatch(deleteClientNeed(clientId, id));
+  }
+
   render() {
     const need = this.props.need
+    const clientId = this.props.clientId
 
     return(
       <tr>
-        <td>1</td>
+        <td>{need.id}</td>
         <td>{need.category}</td>
         <td>{need.description}</td>
         <td>{need.status}</td>
         <td>
-          <Link to="/clients/edit">
+          <Link to={`/needs/${need.id}/edit`}>
             <Button bsStyle="primary">
               <Glyphicon glyph="edit" />
             </Button>
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger">
+          <Button bsStyle="danger" onClick={() => this.delete(clientId, need.id)}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>
@@ -33,3 +47,5 @@ export default class NeedRow extends Component {
     )
   }
 }
+
+export default connect()(NeedRow);
