@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import NeedsIndex from './client_needs/NeedsIndex'
 
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import '../stylesheets/ClientNeeds.css';
 
