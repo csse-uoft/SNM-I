@@ -1,37 +1,24 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 
-export const RECEIVE_NEEDS = 'RECEIVE_NEEDS';
-export const RECEIVE_NEW_CLIENT_NEED = 'RECEIVE_NEW_CLIENT_NEED';
-export const RECEIVE_UPDATED_CLIENT_NEED = 'RECEIVE_UPDATED_CLIENT_NEED';
+export const RECEIVE_CLIENT_NEEDS = 'RECEIVE_CLIENT_NEEDS';
+export const RECEIVE_CLIENT_NEED = 'RECEIVE_CLIENT_NEED';
 export const REMOVE_CLIENT_NEED = 'REMOVE_CLIENT_NEED';
-export const RECEIVE_UPDATED_NEED_MATCH_STATE = 'RECEIVE_UPDATED_NEED_MATCH_STATE';
 
-export function receiveNeeds(clientId, json) {
+export function receiveClientNeeds(clientId, json) {
   return {
-    type: RECEIVE_NEEDS,
+    type: RECEIVE_CLIENT_NEEDS,
     clientId: clientId,
-    needs: json,
-    receivedAt: Date.now()
+    needs: json
   }
 }
 
-function receiveNewClientNeed(clientId, json) {
+function receiveClientNeed(clientId, needId, json) {
   return {
-    type: RECEIVE_NEW_CLIENT_NEED,
-    clientId: clientId,
-    need: json,
-    receivedAt: Date.now()
-  }
-}
-
-function receiveUpdatedClientNeed(clientId, needId, json) {
-  return {
-    type: RECEIVE_UPDATED_CLIENT_NEED,
+    type: RECEIVE_CLIENT_NEED,
     clientId: clientId,
     needId: needId,
-    need: json,
-    receivedAt: Date.now()
+    need: json
   }
 }
 
@@ -39,17 +26,7 @@ function removeClientNeed(clientId, needId) {
   return {
     type: REMOVE_CLIENT_NEED,
     clientId: clientId,
-    needId: needId,
-    receivedAt: Date.now()
-  }
-}
-
-function receiveUpdatedNeedMatchState(needId, json) {
-  return {
-    type: RECEIVE_UPDATED_NEED_MATCH_STATE,
-    id: needId,
-    need: json,
-    receivedAt: Date.now()
+    needId: needId
   }
 }
 
@@ -66,56 +43,38 @@ export function createClientNeed(clientId, params) {
       }
     })
     .then(response => response.json())
-    .then(json => dispatch(receiveNewClientNeed(clientId, json)));
+    .then(need => dispatch(receiveClientNeed(clientId, need.id, need)));
   }
 }
 
 export function updateClientNeed(clientId, needId, params) {
   return dispatch => {
-    const url = serverHost + '/client/' + clientId + '/need/' + needId + '/';
-          
+    const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
+
     return fetch(url, {
       method: "PUT",
       body: JSON.stringify(params),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveUpdatedClientNeed(clientId, needId, json)));
+      .then(json => dispatch(receiveClientNeed(clientId, needId, json)));
   }
 }
 
 export function deleteClientNeed(clientId, needId) {
   return dispatch => {
-    const url = serverHost + '/client/' + clientId + '/need/' + needId + '/';
-    return fetch(url, {method: "DELETE"}).then(response => {
-      if (response.status === 200) {
+    const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
+    return fetch(url, {
+      method: "DELETE",
+      headers: {
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    }).then(response => {
+      if (response.status === 204) {
         dispatch(removeClientNeed(clientId, needId))
       }
     });
-  }
-}
-
-export function saveNeedMatchState(resourceId, needId, pending, fulfilled) {
-  return dispatch => {
-    const url = serverHost + '/need/' + needId + '/resource/' + resourceId + '/',
-          params = { pending: pending, fulfilled: fulfilled };
-    return fetch(url, {
-      method: "POST",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveUpdatedNeedMatchState(needId, json)));
-  }
-}
-
-export function deleteNeedMatchState(resourceId, needId) {
-  return dispatch => {
-    const url = serverHost + '/need/' + needId + '/resource/' + resourceId + '/';
-    return fetch(url, {method: "DELETE"})
-      .then(response => response.json())
-      .then(json => dispatch(receiveUpdatedNeedMatchState(needId, json)));
   }
 }

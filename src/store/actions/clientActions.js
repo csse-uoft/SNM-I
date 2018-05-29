@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 
+import {receiveClientNeeds} from './needActions'
+
 export const RECEIVE_NEW_CLIENT = 'RECEIVE_NEW_CLIENT';
 export const REQUEST_CLIENT = 'REQUEST_CLIENT';
 export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
@@ -50,7 +52,7 @@ export function fetchClient(id) {
   return dispatch => {
     dispatch(requestClient(id))
     const url = serverHost + '/client/' + id + '/';
-
+    let client = null;
     return fetch(url, {
         method: 'GET',
         headers: {
@@ -58,7 +60,11 @@ export function fetchClient(id) {
         },
       }).then(response => response.json())
       .then(json => {
+        client = json
         dispatch(receiveClient(id, json))
+      })
+      .then(() => {
+        dispatch(receiveClientNeeds(id, client['needs']))
       })
   }
 }
