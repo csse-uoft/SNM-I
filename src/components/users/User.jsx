@@ -7,10 +7,6 @@ import { fetchUser } from '../../store/actions/userActions.js'
 import { Table } from 'react-bootstrap';
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     const id = this.props.match.params.id;
     this.props.dispatch(fetchUser(id));

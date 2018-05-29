@@ -9,10 +9,6 @@ import { fetchClient } from '../../store/actions/clientActions.js'
 import { Table } from 'react-bootstrap';
 
 class Client extends Component {
-  constructor(props) {  
-    super(props);  
-  }
-
   componentWillMount() {
     const id = this.props.match.params.id
     this.props.dispatch(fetchClient(id));

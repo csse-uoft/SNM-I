@@ -5,9 +5,6 @@ import NeedRow from './NeedRow.js'
 import { Table } from 'react-bootstrap';
 
 export default class NeedGroup extends Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     const p = this.props;
     return (
