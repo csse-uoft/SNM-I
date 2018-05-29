@@ -22,7 +22,7 @@ class Client extends Component {
     function getPhoneNumber(phoneNumbers, phoneType) {
       let matchedNumber = null
       phoneNumbers.forEach(function(phoneNumber) {
-        if (phoneNumber.phone_type == phoneType) {
+        if (phoneNumber.phone_type === phoneType) {
           matchedNumber = phoneNumber.phone_number
         }
       });
