@@ -9,7 +9,7 @@ export function needs(state = { byId: {}, clientId: null, loaded: false }, actio
       nextById = _.keyBy(action.needs, need => need.id);
       return {...state, byId: nextById, loaded: true, clientId: action.clientId }
     case RECEIVE_CLIENT_NEED:
-      nextById = {...state.byId, [action.id]: { ...action.need }}
+      nextById = {...state.byId, [action.needId]: { ...action.need }}
       return {...state, byId: nextById }
     case REMOVE_CLIENT_NEED:
       nextById = _.clone(state.byId);
