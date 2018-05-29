@@ -10,7 +10,7 @@ import { needs } from './reducers/needReducers.js';
 import { auth } from './reducers/authReducer.js';
 import { users } from './reducers/userReducers.js';
 import _ from 'lodash';
-import { RECEIVE_PROVIDER, REQUEST_PROVIDER } from './ProviderActions.js'
+import { RECEIVE_PROVIDER, REQUEST_PROVIDER, SEARCH_PROVIDERS } from './ProviderActions.js'
 
 function searchResultsByNeedId(state = {}, action) {
   let nextResultObj;
@@ -95,13 +95,13 @@ function goods(state = {index: [], loaded: false}, action) {
 
 
 
-function providers(state = {index: [], byId: {}, loaded: false}, action) {
-  let nextIndex, nextById;
+function providers(state = {index: [], byId: {}, loaded: false, value: '', filteredProviders: []}, action) {
+  let nextIndex, nextById, providers, prevIndex;
   switch (action.type) {
     case REQUEST_PROVIDERS:
       return {...state, loaded: false};
     case RECEIVE_PROVIDERS:
-      return {index: action.providers, loaded: true}
+      return {index: action.providers, filteredProviders: action.providers, loaded: true};
     case RECEIVE_NEW_PROVIDER:
       nextIndex = [action.provider, ...state.index]
       return {...state, index: nextIndex}
@@ -115,6 +115,14 @@ function providers(state = {index: [], byId: {}, loaded: false}, action) {
     case REQUEST_PROVIDER:
       nextById = { ...state.byId, [action.id]: { loaded: false } }
       return {...state, byId: nextById }
+    case SEARCH_PROVIDERS:
+      if (action.value === '') {
+        return {index: [...state.index], filteredProviders: [...state.index], loaded: true}
+      }
+      else {
+        providers = [...state.index].filter((provider) => (provider.first_name).includes(action.value));
+        return {index: [...state.index], filteredProviders: providers, loaded: true}
+      }
     default:
       return state
   }

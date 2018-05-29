@@ -105,7 +105,7 @@ function receiveProviders(json) {
   return {
     type: RECEIVE_PROVIDERS,
     providers: json,
-    receivedAt: Date.now()
+    receivedAt: Date.now(),
   }
 }
 
@@ -318,8 +318,7 @@ export function deleteResource(id) {
   }
 }
 
-export function fetchProviders() {
-  debugger
+export function fetchProviders(value) {
   return dispatch => {
     dispatch(requestProviders())
     const url = serverHost + '/providers/';
@@ -359,7 +358,8 @@ export function updateProvider(id, params) {
       method: "PUT",
       body: JSON.stringify(params),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
       .then(json => dispatch(receiveNewProvider(json)));
@@ -369,7 +369,12 @@ export function updateProvider(id, params) {
 export function deleteProvider(id) {
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
-    return fetch(url, {method: "DELETE"}).then(response => {
+    return fetch(url, {
+      method: "DELETE", 
+      headers: new Headers({
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        }), 
+    }).then(response => {
       if (response.status === 204) {
         dispatch(removeProvider(id))
       }

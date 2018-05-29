@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
-
+import SearchBar from './ProviderSearchBar.js';
 
 {/*class SearchBar extends Component{
   constructor(props) {
@@ -61,23 +61,48 @@ class FilterableProviderTable extends Component {
   }
 }*/}
 
+// export default class ProvidersIndex extends Component {
+//   render() {
+//     return(
+//       <Table striped condensed hover>
+//         <thead>
+//           <tr>
+//             <th>Name</th>
+//             <th>Type</th>
+//             <th>Email</th>
+//             <th>Phone</th>
+//             <th></th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           { this.props.children }
+//         </tbody>
+//       </Table>
+//     )
+//   }
+// }
+
 export default class ProvidersIndex extends Component {
   render() {
     return(
-      <Table striped condensed hover>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          { this.props.children }
-        </tbody>
-      </Table>
+      <div> 
+        <SearchBar> 
+        </SearchBar>
+        <Table striped condensed hover>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            { this.props.children }
+          </tbody>
+        </Table>
+      </div>
     )
   }
 }

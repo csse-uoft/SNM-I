@@ -20,16 +20,22 @@ class EditIndividualProvider extends Component {
 
 	  this.formValChange = this.formValChange.bind(this);
 	  this.submit = this.submit.bind(this);
-	  this.state= { id: this.props.match.params.id, form : {
-	    	provider_type: 'Individual',
-	        id: '',
-	        first_name: '',
-	        last_name: '',
+    const id = this.props.match.params.id;
+    console.log(id);
+    const provider = this.props.providersById[id];
+    console.log(provider);
+
+	  this.state= {
+      form : {
+	    	provider_type: provider.provider_type,
+	        id: id,
+	        first_name: provider.first_name,
+	        last_name: provider.last_name,
 	        gender: '',
-	        email: '',
-	        phone: '',
-	        phone_extension: '',
-	        referrer: '',
+	        email: provider.email,
+	        phone: provider.phone,
+	        phone_extension: provider.phone_extension,
+	        referrer: provider.referrer,
 	        location: 'Canada',
 	        visibility: 'select'
 	        }
@@ -41,17 +47,17 @@ class EditIndividualProvider extends Component {
 	  this.props.dispatch(fetchProvider(id));
 	}
 
-    formValChange(e) {
-      let next = {...this.state.form, [e.target.id] : e.target.value};
-      this.setState({ form : next });
-    }
+  formValChange(e) {
+    let next = {...this.state.form, [e.target.id] : e.target.value};
+    this.setState({ form : next });
+  }
 
-    submit(e) {
-      //this.props.action(form);
-      e.preventDefault();
-      this.props.dispatch(updateProvider(this.state.form));
-      this.props.history.push('/providers/');
-    }
+  submit(e) {
+    //this.props.action(form);
+    e.preventDefault();
+    this.props.dispatch(updateProvider(this.state.form.id, this.state.form));
+    this.props.history.push('/providers/');
+  }
 
 	render() {
 		const id = this.props.match.params.id;
@@ -76,6 +82,18 @@ class EditIndividualProvider extends Component {
           	<div>
 			  <Form horizontal>
 
+          {provider.provider_type === "Organization" && 
+            <FormGroup controlId="company">
+              <Col componentClass={ControlLabel} sm={3}>
+                Company (required)
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text"
+                  placeholder="Company name" defaultValue={provider.company} onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+          }
+
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
                 First name (required)
@@ -96,6 +114,7 @@ class EditIndividualProvider extends Component {
               </Col>
             </FormGroup>
 
+          {provider.provider_type === "Individual" &&
             <FormGroup controlId="preferred_name">
               <Col componentClass={ControlLabel} sm={3}>
                 Preferred Name
@@ -104,6 +123,7 @@ class EditIndividualProvider extends Component {
                 <FormControl type="text" defaultValue= {provider.preferred_name} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
+          }
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
@@ -141,7 +161,8 @@ class EditIndividualProvider extends Component {
                 <FormControl type="text" defaultValue={this.state.location} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
-
+          
+          {provider.provider_type === "Individual" &&
             <FormGroup controlId="referrer">
               <Col componentClass={ControlLabel} sm={3}>
                 Referrer
@@ -150,6 +171,7 @@ class EditIndividualProvider extends Component {
                 <FormControl type="text" defaultValue={provider.referrer} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
+          }
 
             <FormGroup controlId="visibility">
               <Col componentClass={ControlLabel} sm={3}>

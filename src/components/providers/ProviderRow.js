@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import CustomToggle from '../shared/CustomToggle.js';
 import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'; 
 
 export default class ProviderRow extends Component {
+  constructor(props) {
+    super(props);
+    this.delete = this.delete.bind(this);
+    this.update = this.update.bind(this);
+    console.log(this.props)
+  }
+
+
   render() {
     const p = this.props.provider;
+    const url = '/provider' + p.id + '/edit/' + p.provider_type.toLowerCase();
+
     return(
       <tr>
       <Link to={`/provider/${p.id}`}>
@@ -31,9 +42,11 @@ export default class ProviderRow extends Component {
             <Glyphicon glyph="option-vertical" /> 
           </CustomToggle>
           <Dropdown.Menu>
-            <MenuItem eventKey="1" onClick={this.update}>
+          {/*<Link to={`/provider/${p.id}/edit/${p.provider_type.toLowerCase()}`}>
+            <MenuItem eventKey="1">
               <span>Update</span>
             </MenuItem>
+          </Link>*/}
             <MenuItem eventKey="2" onClick={this.delete}>
               <span>Delete</span>
             </MenuItem>
@@ -44,13 +57,17 @@ export default class ProviderRow extends Component {
     )
   }
 
-  delete = () => {
+  delete() {
     const p = this.props;
     p.delete(p.provider.id);
   }
 
-  update = () => {
+  update() {
     const p = this.props;
+  }
 
+  updateProvider() {
+    const url = '/provider' + this.props.provider.id + '/edit/' + this.props.provider.provider_type.toLowerCase();
+    this.props.history.push(url);
   }
 }

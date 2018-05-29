@@ -10,23 +10,22 @@ import { connect } from 'react-redux'
 
 class OrganizationProviderForm extends Component {
   constructor(props) {
-      super(props);
-      const provider = this.props.provider
-      this.formValChange = this.formValChange.bind(this);
-      this.submit=this.submit.bind(this);
-      //this.visibilityChange = this.visibilityChange.bind(this);
-      this.state= { form : {
-          provider_type: 'Organization',
-          id: '',
-          first_name: '',
-          last_name: '',
-          email: '',
-          phone: '',
-          phone_extension: '',
-          location: '',
-          visibility: 'select'
-          }
-        }
+    super(props);
+    const provider = this.props.provider
+    this.formValChange = this.formValChange.bind(this);
+    this.submit=this.submit.bind(this);
+    this.state= { form : {
+      provider_type: 'Organization',
+      id: '',
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      phone_extension: '',
+      location: '',
+      visibility: 'select'
+      }
+    }
   }
 
   formValChange(e) {

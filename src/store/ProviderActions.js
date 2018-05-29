@@ -4,6 +4,7 @@ import { receiveNeeds } from './actions/needActions.js'
 
 export const RECEIVE_PROVIDER = 'RECEIVE_PROVIDER';
 export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
+export const SEARCH_PROVIDERS = 'SEARCH_PROVIDERS';
 
 function receiveProvider(id, json) {
   return {
@@ -18,6 +19,13 @@ function requestProvider(id) {
     type: REQUEST_PROVIDER,
     id: id
   }
+}
+
+export function searchProviders(value) {
+  return {
+    type: SEARCH_PROVIDERS,
+    value: value
+  };
 }
 
 

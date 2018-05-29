@@ -10,59 +10,55 @@ import { connect } from 'react-redux'
 import { fetchProvider } from '../../store/ProviderActions.js'
 
 class IndividualProviderForm extends Component {
-	constructor(props) {
-	    super(props);
-	    const provider = this.props.provider
-	    this.formValChange = this.formValChange.bind(this);
-	    this.submit = this.submit.bind(this);
-	    this.state= { form : {
-	    	provider_type: 'Individual',
-	        id: '',
-	        first_name: '',
-	        last_name: '',
-	        gender: '',
-	        email: '',
-	        phone: '',
-	        phone_extension: '',
-	        referrer: '',
-	        location: 'Canada',
-	        visibility: 'select'
-	        }
-        } 
-    }
+  constructor(props) {
+  	super(props);
+	const provider = this.props.provider
+    this.formValChange = this.formValChange.bind(this);
+    this.submit = this.submit.bind(this);
+    this.state= { form : {
+      provider_type: 'Individual',
+      id: '',
+      first_name: '',
+      last_name: '',
+      gender: '',
+	  email: '',
+      phone: '',
+      phone_extension: '',
+      referrer: '',
+      location: 'Canada',
+	  visibility: 'select'
+      }
+    } 
+  }
 
-    formValChange(e) {
-      let next = {...this.state.form, [e.target.id] : e.target.value};
-      this.setState({ form : next });
-    }
+  formValChange(e) {
+    let next = {...this.state.form, [e.target.id] : e.target.value};
+    this.setState({ form : next });
+  }
 
-    submit(e) {
-      //this.props.action(form);
-      e.preventDefault();
-      this.props.dispatch(createProvider(this.state.form));
-      this.props.history.push('/providers/new/add-service');
-    }
+  submit(e) {
+    e.preventDefault();
+    this.props.dispatch(createProvider(this.state.form));
+    this.props.history.push('/providers/new/add-service');
+  }
 
+  render() {
+	const isEnabled = 
+    this.state.form.phone.length > 0 &&
+    this.state.form.email.length > 0 &&
+    this.state.form.first_name.length > 0 &&
+    this.state.form.last_name.length > 0 && 
+    this.state.form.location.length > 0 &&
+    this.state.form.visibility !== 'select';
 
-	render() {
-		const isEnabled = 
-        this.state.form.phone.length > 0 &&
-        this.state.form.email.length > 0 &&
-        this.state.form.first_name.length > 0 &&
-        this.state.form.last_name.length > 0 && 
-        this.state.form.location.length > 0 &&
-        this.state.form.visibility !== 'select';
-
-		return (
-	      <Row className="content">
-	        <Col sm={12}>
-	          <h3>New Provider Profile</h3>
-	          <hr/>
-	        </Col>
-	        <Col sm={12}>
-
-			<Form horizontal>
-
+	return (
+	  <Row className="content">
+	    <Col sm={12}>
+	      <h3>New Provider Profile</h3>
+	      <hr/>
+	    </Col>
+	    <Col sm={12}>
+	      <Form horizontal>
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
                 First name (required)
@@ -152,7 +148,6 @@ class IndividualProviderForm extends Component {
               </Col>
             </FormGroup>
 
-
             <FormGroup controlId="visibility">
               <Col componentClass={ControlLabel} sm={3}>
                 Allow other agencies to see this provider?
@@ -168,18 +163,15 @@ class IndividualProviderForm extends Component {
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
-              {/*<Link to={`/providers/new/add-service`}> */}
                 <Button disabled = {!isEnabled} type="submit" onClick={this.submit}>
                   Submit
                 </Button>
-               {/*</Link>*/}
               </Col>
             </FormGroup>
-
           </Form>
-          </Col>
-        </Row>
-	  );
-	}
+        </Col>
+      </Row>
+	);
+  }
 }
 export default connect()(withRouter(IndividualProviderForm));
