@@ -2,29 +2,44 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Glyphicon, Button } from 'react-bootstrap';
 
-export default class ClientRow extends Component {
+// redux
+import { connect } from 'react-redux'
+import { deleteClient } from '../../store/actions/clientActions.js'
+
+class ClientRow extends Component {
+  constructor(props) {
+    super(props);
+
+    this.delete = this.delete.bind(this);
+  }
+
+  delete(id) {
+    this.props.dispatch(deleteClient(id));
+  }
+
   render() {
-    const c = this.props.client;
+    const client = this.props.client;
+
     return(
       <tr>
-        <td>{c.id}</td>
+        <td>{client.id}</td>
         <td>
-          <Link to={`/client/${c.id}`}>
-            {c.first_name} {c.last_name}
+          <Link to={`/client/${client.id}`}>
+            {client.first_name} {client.last_name}
           </Link>
         </td>
         <td className='centered-text'>
-          {c.email}
+          {client.email}
         </td>
         <td>
-          <Link to={`/clients/edit`}>
+          <Link to={`/clients/${client.id}/edit`}>
             <Button bsStyle="primary">
               <Glyphicon glyph="edit" />
             </Button>
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger">
+          <Button bsStyle="danger" onClick={() => this.delete(client.id)}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>
@@ -32,3 +47,5 @@ export default class ClientRow extends Component {
     )
   }
 }
+
+export default connect()(ClientRow);

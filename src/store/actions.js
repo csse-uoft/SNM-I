@@ -5,13 +5,6 @@ import { receiveNeeds } from './actions/needActions.js'
 export const SEARCH_REQUESTED = 'SEARCH_REQUESTED';
 export const SEARCH_RESPONSE_RECEIVED = 'SEARCH_RESPONSE_RECEIVED';
 
-export const RECEIVE_NEW_CLIENT = 'RECEIVE_NEW_CLIENT';
-export const REQUEST_CLIENT = 'REQUEST_CLIENT';
-export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
-export const REQUEST_CLIENTS = 'REQUEST_CLIENTS';
-export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
-export const REMOVE_CLIENT = 'REMOVE_CLIENT';
-
 export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';
 export const REQUEST_PROVIDERS = 'REQUEST_PROVIDERS';
 export const RECEIVE_PROVIDERS = 'RECEIVE_PROVIDERS';
@@ -32,7 +25,6 @@ export const RECEIVE_GOODS = 'RECEIVE_GOODS';
 export const REMOVE_GOODS = 'REMOVE_GOODS';
 
 
-
 function resourceSearchRequested(needId) {
   return {
     type: SEARCH_REQUESTED,
@@ -46,52 +38,6 @@ function resourceSearchResponseReceived(needId, json) {
     needId: needId,
     providers: json,
     receivedAt: Date.now()
-  }
-}
-
-function receiveNewClient(json) {
-  return {
-    type: RECEIVE_NEW_CLIENT,
-    client: json
-  }
-}
-
-
-
-function requestClient(id) {
-  return {
-    type: REQUEST_CLIENT,
-    id: id
-  }
-}
-
-function receiveClient(id, json) {
-  return {
-    type: RECEIVE_CLIENT,
-    id: id,
-    client: json,
-    receivedAt: Date.now()
-  }
-}
-
-function requestClients() {
-  return {
-    type: REQUEST_CLIENTS
-  }
-}
-
-function receiveClients(json) {
-  return {
-    type: RECEIVE_CLIENTS,
-    clients: json,
-    receivedAt: Date.now()
-  }
-}
-
-function removeClient(id) {
-  return {
-    type: REMOVE_CLIENT,
-    id: id
   }
 }
 
@@ -155,7 +101,7 @@ export function updateResource(id, params) {
         "Content-Type": "application/json"
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewClient(json)));
+      .then(json => dispatch(receiveNewResource(json)));
   }
 }
 
@@ -163,20 +109,6 @@ function removeResource(id) {
   return {
     type: REMOVE_RESOURCE,
     id: id
-  }
-}
-
-function requestDashboardClientData() {
-  return {
-    type: REQUEST_DASHBOARD_CLIENT_DATA
-  }
-}
-
-function receieveDashboardClientData(json) {
-  return {
-    type: RECEIEVE_DASHBOARD_CLIENT_DATA,
-    clients: json,
-    receivedAt: Date.now()
   }
 }
 
@@ -193,52 +125,10 @@ export function fetchProviderResources(needId, params) {
   }
 }
 
-export function createClient(params) {
-  return dispatch => {
-    const url = serverHost + '/clients/';
-    return fetch(url, {
-      method: "POST",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewClient(json)));
-  }
-}
-
-export function createClients(params) {
-  return dispatch => {
-    const url = serverHost + '/clients/';
-    return fetch(url, {
-      method: "POST",
-      body: JSON.stringify({csv: params})
-    })
-  }
-}
-
-
-export function updateClient(id, params) {
-  return dispatch => {
-    const url = serverHost + '/client/' + id + '/';
-
-    return fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewClient(json)));
-  }
-  console.log(params)
-}
-
 export function createResource(params) {
   return dispatch => {
     const url = serverHost + '/resource/';
-          
+
     return fetch(url, {
       method: "POST",
       body: JSON.stringify(params),
@@ -247,51 +137,6 @@ export function createResource(params) {
       }
     }).then(response => response.json())
       .then(json => dispatch(receiveNewResource(json)));
-  }
-}
-
-export function fetchClient(id) {
-  return dispatch => {
-    dispatch(requestClient(id))
-    const url = serverHost + '/client/' + id + '/';
-
-    return fetch(url, {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
-      }).then(response => response.json())
-      .then(json => {
-        dispatch(receiveClient(id, json))
-      })
-  }
-}
-
-export function fetchClients() {
-  return dispatch => {
-    dispatch(requestClients())
-    const url = serverHost + '/clients/';
-
-    return fetch(url, {
-        method: 'get',
-        headers: new Headers({
-          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
-      }).then(response => response.json())
-      .then(json => {
-        dispatch(receiveClients(json))
-      })
-  }
-}
-
-export function deleteClient(id) {
-  return dispatch => {
-    const url = serverHost + '/client/' + id + '/';
-    return fetch(url, {method: "DELETE"}).then(response => {
-      if (response.status === 204) {
-        dispatch(removeClient(id))
-      }
-    });
   }
 }
 
@@ -382,16 +227,6 @@ export function deleteProvider(id) {
   }
 }
 
-export function fetchDashboardClientData(id) {
-  return dispatch => {
-    dispatch(requestDashboardClientData())
-    const url = serverHost + '/dashboard/clients/';
-
-    return fetch(url).then(response => response.json())
-      .then(json => dispatch(receieveDashboardClientData(json)))
-  }
-}
-
 export function fetchGoods() {
   return dispatch => {
     dispatch(requestGoods())
@@ -450,7 +285,7 @@ export function updateGood(id, params) {
         "Content-Type": "application/json"
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewClient(json)));
+      .then(json => dispatch(receiveNewGood(json)));
   }
 }
 
@@ -471,4 +306,3 @@ function removeGood(id) {
     id: id
   }
 }
-

@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import UsersIndex from './users/UsersIndex'
 import UserRow from './users/UserRow'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchUsers, createUser, updateUser, deleteUser } from '../store/actions/userActions.js'
+import { fetchUsers } from '../store/actions/userActions.js'
 
 // styles
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 class Users extends Component {
@@ -35,7 +36,7 @@ class Users extends Component {
           <hr/>
           { p.usersLoaded &&
             <UsersIndex>{
-              p.users.map((user) => {
+              _.map(p.usersById, (user) => {
                 return <UserRow key={ user.id } user={ user } />
               })
             }</UsersIndex>
@@ -48,8 +49,8 @@ class Users extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.users.index,
-    usersLoaded: state.users.indexLoaded
+    usersById: state.users.byId,
+    usersLoaded: state.users.usersLoaded
   }
 }
 

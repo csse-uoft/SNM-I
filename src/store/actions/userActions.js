@@ -1,27 +1,12 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 
-export const RECEIVE_NEW_USER = 'RECEIVE_NEW_USER';
 export const REQUEST_USER = 'REQUEST_USER';
 export const RECEIVE_USER = 'RECEIVE_USER';
 export const REQUEST_USERS = 'REQUEST_USERS';
 export const RECEIVE_USERS = 'RECEIVE_USERS';
 export const REMOVE_USER = 'REMOVE_USER';
-export const UPDATE_USER = 'UPDATE_USER';
 
-function receiveNewUser(json) {
-  return {
-    type: RECEIVE_NEW_USER,
-    user: json
-  }
-}
-
-function updatedUser(json) {
-  return {
-    type: UPDATE_USER,
-    user: json
-  }
-}
 
 function requestUser(id) {
   return {
@@ -71,7 +56,7 @@ export function createUser(params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewUser(json)));
+      .then(user => dispatch(receiveUser(user.id, user)));
   }
 }
 
@@ -97,7 +82,7 @@ export function updateUser(id, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(updatedUser(json)));
+      .then(json => dispatch(receiveUser(id, json)));
   }
 }
 
@@ -138,6 +123,7 @@ export function fetchUsers() {
 export function deleteUser(id) {
   return dispatch => {
     const url = serverHost + '/user/' + id + '/';
+
     return fetch(url, {
       method: 'DELETE',
       headers: {
