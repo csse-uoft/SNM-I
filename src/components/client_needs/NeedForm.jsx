@@ -42,12 +42,6 @@ class NeedForm extends Component {
   }
 
   submit() {
-    const clientId = this.props.match.params.id
-    this.props.dispatch(createClientNeed(clientId, this.state.form));
-    this.props.history.push(`/client/${clientId}`)
-  }
-
-  submit() {
     if (this.state.mode === 'edit') {
       this.props.dispatch(updateClientNeed(this.props.clientId, this.state.needId, this.state.form));
     } else {
@@ -69,7 +63,7 @@ class NeedForm extends Component {
     return (
       <Row className="content">
         <Col sm={12}>
-          {/* <h3>{formTitle}</h3> */}
+          <h3>{formTitle}</h3>
           <hr />
         </Col>
         <Col sm={12}>
