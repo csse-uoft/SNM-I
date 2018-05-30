@@ -7,7 +7,7 @@ import ServiceRow from './services/ServiceRow.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchClients } from '../store/actions/serviceActions.js'
+import { fetchServices } from '../store/actions/serviceActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
@@ -15,7 +15,7 @@ import '../stylesheets/Client.css';
 
 class Services extends Component {
   componentWillMount() {
-    this.props.dispatch(fetchClients());
+    this.props.dispatch(fetchServices());
   }
 
   render() {
@@ -30,10 +30,10 @@ class Services extends Component {
             </Button>
           </Link>
           <hr/>
-          { p.clientsLoaded &&
+          { p.servicesLoaded &&
             <ServicesIndex>{
-              _.map(p.clients, (client) => {
-                return <ServiceRow key={ client.id } client={ client } />
+              _.map(p.services, (service) => {
+                return <ServiceRow key={ service.id } service={ service } />
               })
             }</ServicesIndex>
           }
@@ -45,8 +45,8 @@ class Services extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    clients: state.clients.byId,
-    clientsLoaded: state.clients.clientsLoaded
+    services: state.services.byId,
+    servicesLoaded: state.services.servicesLoaded
   }
 }
 
