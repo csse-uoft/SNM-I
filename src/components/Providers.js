@@ -4,8 +4,6 @@ import _ from 'lodash'
 // components
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
-import CrupdateModal from './shared/CrupdateModal.js'
-import ProviderForm from './providers/ProviderForm.js'
 
 // redux
 import { connect } from 'react-redux'

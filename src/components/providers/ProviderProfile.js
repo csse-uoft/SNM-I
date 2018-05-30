@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom';
+import StarRatingComponent from 'react-star-rating-component';
 import _ from 'lodash'
 
 // components
 import ProvidersIndex from './ProvidersIndex.js'
 import ProviderRow from './ProviderRow.js'
-import ProviderForm from './ProviderForm.js'
 
 // styles
 import { Table, Button, Row, Glyphicon } from 'react-bootstrap'
@@ -36,6 +37,11 @@ class ProviderProfile extends Component {
          <Link to={`/provider/${id}/edit/${provider.provider_type.toLowerCase()}`}>
           <Button bsStyle="default">
             Edit
+          </Button>
+        </Link>
+        <Link to={`/provider/${id}/rate`}>
+          <Button bsStyle="default">
+            Rate Provider
           </Button>
         </Link>
 
@@ -102,6 +108,18 @@ class ProviderProfile extends Component {
             <td>{provider.referrer}</td>
           </tr>
           }
+          <tr>
+            <td><b>Provider Reviews</b></td>
+            <td>{
+              <StarRatingComponent
+              name="provider-rating"
+              editing={false}
+              starCount={5}
+              value={4}
+              />
+            }
+            </td>
+          </tr>
 
          </tbody>
         </Table>

@@ -10,7 +10,7 @@ import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-au
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
 
-export default class ProviderForm extends Component {
+export default class ProviderTypePrompt extends Component {
   constructor(){
     super();
     this.setProviderType = this.setProviderType.bind(this);
