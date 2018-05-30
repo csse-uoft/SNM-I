@@ -23,7 +23,7 @@ import IndividualProviderForm from './components/providers/IndividualProviderFor
 import OrganizationProviderForm from './components/providers/OrganizationProviderForm.js'
 import ProviderProfile from './components/providers/ProviderProfile.js'
 import EditProvider from './components/providers/EditProviderProfile.js'
-
+import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 // style
 import './stylesheets/App.css';
 
@@ -58,6 +58,7 @@ class App extends Component {
         <Route exact path='/provider/:id' component={ProviderProfile} />
         <Route exact path='/provider/:id/edit/individual' component={EditProvider} />
         <Route exact path='/provider/:id/edit/organization' component={EditProvider} />
+        <Route exact path='/provider/:id/rate' component={ProviderRatingForm} />
         <div className='footer'>
           <h5>
             <a href='http://csse.utoronto.ca/' target='_blank'>
