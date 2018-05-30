@@ -1,58 +1,56 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 
-import {receiveClientNeeds} from './needActions'
-
-export const RECEIVE_NEW_CLIENT = 'RECEIVE_NEW_CLIENT';
-export const REQUEST_CLIENT = 'REQUEST_CLIENT';
-export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
-export const REQUEST_CLIENTS = 'REQUEST_CLIENTS';
-export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
-export const REMOVE_CLIENT = 'REMOVE_CLIENT';
+export const RECEIVE_NEW_SERVICE = 'RECEIVE_NEW_SERVICE';
+export const REQUEST_SERVICE = 'REQUEST_SERVICE';
+export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
+export const REQUEST_SERVICES = 'REQUEST_SERVICES';
+export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
+export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 
 
-function requestClient(id) {
+function requestService(id) {
   return {
-    type: REQUEST_CLIENT,
+    type: REQUEST_SERVICE,
     id: id
   }
 }
 
-function receiveClient(id, json) {
+function receiveService(id, json) {
   return {
-    type: RECEIVE_CLIENT,
+    type: RECEIVE_SERVICE,
     id: id,
-    client: json
+    service: json
   }
 }
 
-function requestClients(json) {
+function requestServices(json) {
   return {
-    type: REQUEST_CLIENTS,
-    clients: json
+    type: REQUEST_SERVICES,
+    services: json
   }
 }
 
-function receiveClients(json) {
+function receiveServices(json) {
   return {
-    type: RECEIVE_CLIENTS,
-    clients: json
+    type: RECEIVE_SERVICES,
+    services: json
   }
 }
 
-function removeClient(id) {
+function removeService(id) {
   return {
-    type: REMOVE_CLIENT,
+    type: REMOVE_SERVICE,
     id: id
   }
 }
 
 
-export function fetchClient(id) {
+export function fetchService(id) {
   return dispatch => {
-    dispatch(requestClient(id))
+    dispatch(requestService(id))
     const url = serverHost + '/service/' + id + '/';
-    let client = null;
+    let service = null;
     return fetch(url, {
         method: 'GET',
         headers: {
@@ -60,18 +58,15 @@ export function fetchClient(id) {
         },
       }).then(response => response.json())
       .then(json => {
-        client = json
-        dispatch(receiveClient(id, json))
-      })
-      .then(() => {
-        dispatch(receiveClientNeeds(id, client['needs']))
+        service = json
+        dispatch(receiveService(id, json))
       })
   }
 }
 
-export function fetchClients() {
+export function fetchServices() {
   return dispatch => {
-    dispatch(requestClients())
+    dispatch(requestServices())
     const url = serverHost + '/services/';
 
     return fetch(url, {
@@ -81,12 +76,12 @@ export function fetchClients() {
         },
       }).then(response => response.json())
       .then(json => {
-        dispatch(receiveClients(json))
+        dispatch(receiveServices(json))
       })
   }
 }
 
-export function deleteClient(id) {
+export function deleteService(id) {
   return dispatch => {
     const url = serverHost + '/service/' + id + '/';
 
@@ -97,13 +92,13 @@ export function deleteClient(id) {
       },
     }).then(response => {
       if (response.status === 204) {
-        dispatch(removeClient(id))
+        dispatch(removeService(id))
       }
     });
   }
 }
 
-export function createClient(params) {
+export function createService(params) {
   return dispatch => {
     const url = serverHost + '/services/';
     return fetch(url, {
@@ -114,13 +109,13 @@ export function createClient(params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(client => dispatch(receiveClient(client.id, client)));
+      .then(service => dispatch(receiveService(service.id, service)));
   }
 }
 
-export function createClients(params) {
+export function createServices(params) {
   return dispatch => {
-    const url = serverHost + '/clients/';
+    const url = serverHost + '/services/';
     return fetch(url, {
       method: 'POST',
       body: JSON.stringify({csv: params})
@@ -128,9 +123,9 @@ export function createClients(params) {
   }
 }
 
-export function updateClient(id, params) {
+export function updateService(id, params) {
   return dispatch => {
-    const url = serverHost + '/client/' + id + '/';
+    const url = serverHost + '/service/' + id + '/';
 
     return fetch(url, {
       method: 'PUT',
@@ -140,7 +135,7 @@ export function updateClient(id, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(client => dispatch(receiveClient(id, client)));
+      .then(service => dispatch(receiveService(id, service)));
   }
   console.log(params)
 }
