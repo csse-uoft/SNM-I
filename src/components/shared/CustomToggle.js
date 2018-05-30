@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 
 export default class CustomToggle extends Component {
-  handleClick = (e) => {
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(e) {
     e.preventDefault();
     this.props.onClick(e);
   }

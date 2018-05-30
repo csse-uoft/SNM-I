@@ -1,9 +1,9 @@
-import { LOGGED_IN, LOGGED_OUT } from '../actions/authAction.js';
+import { LOGIN_SUCCESS, LOGGED_OUT } from '../actions/authAction.js';
 import _ from 'lodash';
 
 export function auth(state = {currentUser: null, isLoggedin: false}, action) {
   switch (action.type) {
-    case LOGGED_IN:
+    case LOGIN_SUCCESS:
       return Object.assign({}, state, {
         currentUser: action.user,
         isLoggedin: true

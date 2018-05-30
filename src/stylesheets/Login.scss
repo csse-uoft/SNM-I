@@ -19,10 +19,18 @@
     box-shadow: initial;
     padding: 6px 12px;
     margin-bottom: 15px;
+    width: 100%;
   }
 
-  button[type="submit"] {
-    width: 100%;
+  .flash-error {
+    color: #eb644d;
+    background-color: rgba(235,100,77,0.05);
+    border: 0.125em solid;
+    margin-bottom: 15px;
+    padding: 15px;
+    .glyphicon {
+      margin-right: 10px;
+    }
   }
 
   .forgot-password{
