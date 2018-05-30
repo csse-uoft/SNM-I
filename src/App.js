@@ -23,6 +23,9 @@ import IndividualProviderForm from './components/providers/IndividualProviderFor
 import OrganizationProviderForm from './components/providers/OrganizationProviderForm.js'
 import ProviderProfile from './components/providers/ProviderProfile.js'
 import EditProvider from './components/providers/EditProviderProfile.js'
+import Services from './components/Services';
+import Service from './components/services/Service';
+import ServiceForm from './components/services/ServiceForm'
 
 // style
 import './stylesheets/App.css';
