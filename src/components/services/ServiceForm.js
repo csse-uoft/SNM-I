@@ -59,10 +59,12 @@ class ServiceForm extends Component {
   }
 
   render() {
+    const p = this.props;
+    
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Service Profile' : 'New Service'
 
-    function cateogiresIntoOptions(categories) {
+    function categoriesIntoOptions(categories) {
       return categories.map((category) => {
         return <option key={category} value={ category }>{category}</option>
       })
@@ -113,7 +115,7 @@ class ServiceForm extends Component {
                 >
                   <option value="select">-- Not Set --</option>
                   { p.categoriesLoaded &&
-                    cateogiresIntoOptions(p.needsCategories)
+                    categoriesIntoOptions(p.needsCategories)
                   }
                 </FormControl>
               </Col>
