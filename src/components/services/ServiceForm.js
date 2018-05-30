@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 
 // redux
 import { connect } from 'react-redux'
@@ -21,6 +22,9 @@ class ServiceForm extends Component {
       form: {
         name: service.name || '',
         desc: service.desc || '',
+        category: service.category || '',
+        language: need.language || '',
+        capacity: need.capacity || '',
         email: service.email || '',
         mobile_phone: (service.phone_numbers && service.phone_numbers.length > 0) ?
           getPhoneNumber(service.phone_numbers, 'mobile') : '',
@@ -33,6 +37,10 @@ class ServiceForm extends Component {
 
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchOntologyCategories('services'));
   }
 
   formValChange(e) {
@@ -53,6 +61,14 @@ class ServiceForm extends Component {
   render() {
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Service Profile' : 'New Service'
+
+    function cateogiresIntoOptions(categories) {
+      return categories.map((category) => {
+        return <option key={category} value={ category }>{category}</option>
+      })
+    }
+
+
     return (
       <Row className="content">
         <Col sm={12}>
@@ -81,6 +97,53 @@ class ServiceForm extends Component {
               </Col>
               <Col sm={9}>
                 <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange} />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="category">
+              <Col componentClass={ControlLabel} sm={3}>
+                Category
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.category}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  { p.categoriesLoaded &&
+                    cateogiresIntoOptions(p.needsCategories)
+                  }
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="language">
+              <Col componentClass={ControlLabel} sm={3}>
+                Language
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.language}
+                  placeholder=""
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="capacity">
+              <Col componentClass={ControlLabel} sm={3}>
+                Capacity
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.capacity}
+                  placeholder=""
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -113,7 +176,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="home_phone">
               <Col componentClass={ControlLabel} sm={3}>
-                Home Phone (required)
+                Main Phone (required)
               </Col>
               <Col sm={9}>
                 <FormControl

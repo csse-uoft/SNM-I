@@ -42,6 +42,18 @@ class Service extends Component {
                 <td>{service.desc}</td>
               </tr>
               <tr>
+                <td><b>Category</b></td>
+                <td>{service.category}</td>
+              </tr>
+              <tr>
+                <td><b>Language</b></td>
+                <td>{service.language}</td>
+              </tr>
+              <tr>
+                <td><b>Capacity</b></td>
+                <td>{service.capacity}</td>
+              </tr>
+              <tr>
                 <td><b>Email</b></td>
                 <td>{service.email}</td>
               </tr>
@@ -50,7 +62,7 @@ class Service extends Component {
                 <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'mobile') : null}</td>
               </tr>
               <tr>
-                <td><b>Home Phone</b></td>
+                <td><b>Main Phone</b></td>
                 <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'home') : null}</td>
               </tr>
               <tr>
