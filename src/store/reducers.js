@@ -1,14 +1,15 @@
 import { combineReducers } from 'redux'
 import { SEARCH_REQUESTED, SEARCH_RESPONSE_RECEIVED,
           REQUEST_RESOURCES, RECEIVE_RESOURCES,
-          RECEIVE_NEW_RESOURCE,
+          RECEIVE_NEW_RESOURCE, REQUEST_PROVIDERS, RECEIVE_PROVIDERS,
+          RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER,
           REMOVE_RESOURCE, RECEIVE_NEW_GOOD, REQUEST_GOODS, RECEIVE_GOODS, REMOVE_GOODS} from './actions.js'
 import { needs } from './reducers/needReducers.js';
 import { auth } from './reducers/authReducer.js';
 import { users } from './reducers/userReducers.js';
 import { ontology } from './reducers/ontologyReducers.js';
 import { clients } from './reducers/clientReducer.js';
-import { providers } from './reducers/providerReducers.js';
+import { services } from './reducers/serviceReducer.js';
 import _ from 'lodash';
 
 function searchResultsByNeedId(state = {}, action) {
@@ -63,8 +64,31 @@ function goods(state = {index: [], loaded: false}, action) {
   }
 }
 
+
+
+function providers(state = {index: [], loaded: false}, action) {
+  let nextIndex;
+  switch (action.type) {
+    case REQUEST_PROVIDERS:
+      return {...state, loaded: false};
+    case RECEIVE_PROVIDERS:
+      return {index: action.providers, loaded: true}
+    case RECEIVE_NEW_PROVIDER:
+      nextIndex = [action.provider, ...state.index]
+      return {...state, index: nextIndex}
+    case REMOVE_PROVIDER:
+      nextIndex = _.clone(state.index);
+      _.remove(nextIndex, (n) => { return n.id === action.id });
+      return {...state, index: nextIndex}
+    default:
+      return state
+  }
+}
+
+
 export const rootReducer = combineReducers({
   searchResultsByNeedId,
+  services,
   clients,
   goods,
   needs,
