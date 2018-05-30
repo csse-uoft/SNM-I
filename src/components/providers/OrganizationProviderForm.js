@@ -36,7 +36,7 @@ class OrganizationProviderForm extends Component {
   submit(e) {
     e.preventDefault();
     this.props.dispatch(createProvider(this.state.form));
-    this.props.history.push('/new/add-service');
+    this.props.history.push('/providers/new/add-service');
   }
 
 	render() {

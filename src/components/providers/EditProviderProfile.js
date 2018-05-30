@@ -8,9 +8,8 @@ import ProviderForm from './ProviderForm.js'
 
 // styles
 import { Table, Button, Row, Glyphicon, Form, FormGroup, Col, ControlLabel, FormControl} from 'react-bootstrap'
-import { fetchProvider } from '../../store/ProviderActions.js'
 import { connect } from 'react-redux'
-import { updateProvider } from '../../store/actions.js'
+import { updateProvider, fetchProvider } from '../../store/actions/providerActions.js'
 
 import { Link } from 'react-router-dom';
 
@@ -53,10 +52,10 @@ class EditIndividualProvider extends Component {
   }
 
   submit(e) {
-    //this.props.action(form);
     e.preventDefault();
+    const id = this.props.match.params.id
     this.props.dispatch(updateProvider(this.state.form.id, this.state.form));
-    this.props.history.push('/providers/');
+    this.props.history.push('/provider/' + id);
   }
 
 	render() {

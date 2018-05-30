@@ -8,7 +8,7 @@ import ProviderForm from './ProviderForm.js'
 
 // styles
 import { Table, Button, Row, Glyphicon } from 'react-bootstrap'
-import { fetchProvider } from '../../store/ProviderActions.js'
+import { fetchProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom';

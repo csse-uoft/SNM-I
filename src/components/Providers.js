@@ -9,8 +9,7 @@ import ProviderForm from './providers/ProviderForm.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions.js'
-import { searchProviders } from '../store/ProviderActions.js'
+import { searchProviders, fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions/providerActions.js'
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
