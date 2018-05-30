@@ -18,7 +18,6 @@ import TopNavbar from './components/layouts/TopNavbar'
 import Providers from './components/Providers.js';
 import ProviderTypePrompt from './components/providers/ProviderTypePrompt.js'
 import AddServicePrompt from './components/providers/AddServicePrompt.js'
-import Resources from './components/Resources.js'
 import IndividualProviderForm from './components/providers/IndividualProviderForm.js'
 import OrganizationProviderForm from './components/providers/OrganizationProviderForm.js'
 import ProviderProfile from './components/providers/ProviderProfile.js'
@@ -59,7 +58,6 @@ class App extends Component {
         <Route exact path='/providers' component={ Providers} />
         <Route exact path='/providers/new' component={ProviderTypePrompt} />
         <Route exact path='/providers/new/add-service' component={AddServicePrompt} />
-        <Route exact path='/services' component={Resources} />
         <Route exact path='/providers/new/individual' component={IndividualProviderForm} />
         <Route exact path='/providers/new/organization' component={OrganizationProviderForm} />
         <Route exact path='/provider/:id' component={ProviderProfile} />
