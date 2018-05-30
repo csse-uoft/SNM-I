@@ -11,7 +11,7 @@ import { searchProviders, fetchProviders, createProvider, updateProvider, delete
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-//import '../stylesheets/Providers.css';
+import '../stylesheets/Providers.css';
 
 
 class Providers extends Component {
@@ -22,7 +22,7 @@ class Providers extends Component {
   render() {
     const p = this.props, s = this.state;
     return(
-      <div className='providers-content'>
+      <div className='providers content'>
         <h3 className='title'>Providers</h3>
           <div>
             <Link to={`/providers/new`}>
