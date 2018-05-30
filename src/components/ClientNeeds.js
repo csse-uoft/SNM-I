@@ -8,13 +8,10 @@ import { Button } from 'react-bootstrap';
 import '../stylesheets/ClientNeeds.css';
 
 class ClientNeeds extends Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     const p = this.props,
           clientId = p.clientId;
-    return(
+    return (
       <div>
         <h3>Needs</h3>
         <Link to={`/clients/${clientId}/needs/new`}>
