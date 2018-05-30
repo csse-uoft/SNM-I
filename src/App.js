@@ -13,11 +13,11 @@ class App extends Component {
     return (
       <div className="App">
         <TopNavbar />
+
         {routes}
         <Footer />
       </div>
     );
   }
 }
-
 export default App;

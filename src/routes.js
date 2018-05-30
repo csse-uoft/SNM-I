@@ -24,6 +24,7 @@ import IndividualProviderForm from './components/providers/IndividualProviderFor
 import OrganizationProviderForm from './components/providers/OrganizationProviderForm'
 import ProviderProfile from './components/providers/ProviderProfile'
 import EditProvider from './components/providers/EditProviderProfile'
+import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
 import Service from './components/services/Service';
 import ServiceForm from './components/services/ServiceForm'
@@ -48,7 +49,8 @@ const routes = (
     <AdminRoute path='/users' component={Users} />
 
     <PrivateRoute path='/needs/:need_id/edit' component={NeedForm} />
-
+    
+    <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
     <PrivateRoute path='/providers/new/individual' component={IndividualProviderForm} />
     <PrivateRoute path='/providers/new/organization' component={OrganizationProviderForm} />
