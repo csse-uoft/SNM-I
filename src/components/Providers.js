@@ -27,11 +27,11 @@ class Providers extends Component {
       <div className='providers content'>
         <h3 className='title'>Providers</h3>
           <div>
-          <Link to={`/providers/new`}>
-            <Button bsStyle="default">
-            Add new provider
-            </Button>
-          </Link>
+            <Link to={`/providers/new`}>
+              <Button bsStyle="default">
+              Add new provider
+              </Button>
+            </Link>
           </div>
 
         { p.providersLoaded &&

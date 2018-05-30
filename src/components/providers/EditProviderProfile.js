@@ -61,28 +61,28 @@ class EditIndividualProvider extends Component {
 
 	render() {
 		const id = this.props.match.params.id;
-        const provider = this.props.providersById[id];
+    const provider = this.props.providersById[id];
 		
 		const isEnabled = 
-        this.state.form.phone.length > 0 &&
-        this.state.form.email.length > 0 &&
-        this.state.form.first_name.length > 0 &&
-        this.state.form.last_name.length > 0 && 
-        this.state.form.location.length > 0 &&
-        this.state.form.visibility !== 'select';
+      this.state.form.phone.length > 0 &&
+      this.state.form.email.length > 0 &&
+      this.state.form.first_name.length > 0 &&
+      this.state.form.last_name.length > 0 && 
+      this.state.form.location.length > 0 &&
+      this.state.form.visibility !== 'select';
 
 		return (
-	      <Row className="content">
-	        <Col sm={12}>
-	          <h3>Edit Provider Profile</h3>
-	          <hr/>
-	        </Col>
+	    <Row className="content">
+	      <Col sm={12}>
+	        <h3>Edit Provider Profile</h3>
+	        <hr/>
+	      </Col>
 
-          { provider && provider.loaded &&
-          	<div>
-			  <Form horizontal>
-
-          {provider.provider_type === "Organization" && 
+        { provider && provider.loaded &&
+        <div>
+			    <Form horizontal>
+            
+            {provider.provider_type === "Organization" && 
             <FormGroup controlId="company">
               <Col componentClass={ControlLabel} sm={3}>
                 Company (required)
@@ -90,9 +90,9 @@ class EditIndividualProvider extends Component {
               <Col sm={9}>
                 <FormControl type="text"
                   placeholder="Company name" defaultValue={provider.company} onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-          }
+              </Col>
+            </FormGroup>
+            }
 
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
@@ -114,7 +114,7 @@ class EditIndividualProvider extends Component {
               </Col>
             </FormGroup>
 
-          {provider.provider_type === "Individual" &&
+            {provider.provider_type === "Individual" &&
             <FormGroup controlId="preferred_name">
               <Col componentClass={ControlLabel} sm={3}>
                 Preferred Name
@@ -123,7 +123,7 @@ class EditIndividualProvider extends Component {
                 <FormControl type="text" defaultValue= {provider.preferred_name} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
-          }
+            }
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
@@ -144,12 +144,12 @@ class EditIndividualProvider extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="extension">
+            <FormGroup controlId="phone_extension">
               <Col componentClass={ControlLabel} sm={3}>
                 Extension
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue={provider.extension} onChange={this.formValChange}/>
+                <FormControl type="text" defaultValue={provider.phone_extension} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
 
@@ -162,7 +162,7 @@ class EditIndividualProvider extends Component {
               </Col>
             </FormGroup>
           
-          {provider.provider_type === "Individual" &&
+            {provider.provider_type === "Individual" &&
             <FormGroup controlId="referrer">
               <Col componentClass={ControlLabel} sm={3}>
                 Referrer
@@ -171,7 +171,7 @@ class EditIndividualProvider extends Component {
                 <FormControl type="text" defaultValue={provider.referrer} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
-          }
+            }
 
             <FormGroup controlId="visibility">
               <Col componentClass={ControlLabel} sm={3}>
@@ -188,16 +188,14 @@ class EditIndividualProvider extends Component {
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
-              {/*<Link to={`/providers/new/add-service`}> */}
                 <Button disabled = {!isEnabled} type="submit" onClick={this.submit}>
                   Submit
                 </Button>
-               {/*</Link>*/}
               </Col>
             </FormGroup>
-            </Form>
+          </Form>
         </div>
-       }
+        }
       </Row>
     );
   }

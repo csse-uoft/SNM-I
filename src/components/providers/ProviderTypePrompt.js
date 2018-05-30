@@ -13,7 +13,6 @@ import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 export default class ProviderForm extends Component {
   constructor(){
    	super();
-//   	this.handleContinue = this.handleContinue.bind(this);
    	this.setProviderType = this.setProviderType.bind(this);
    	this.state = { providerType: 'select'};
    }
@@ -31,9 +30,9 @@ export default class ProviderForm extends Component {
           <h3>New Provider Profile</h3>
           <hr/>
         </Col>
+
         <Col sm={12}>
           <Form horizontal>
-
           	<FormGroup controlId="providerType">
               <Col componentClass={ControlLabel} sm={3}>
                 Please select a provider type
@@ -47,28 +46,21 @@ export default class ProviderForm extends Component {
               </Col>
             </FormGroup>
           </Form>
-       </Col>
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
-              <Link to={`/providers/new/${this.state.providerType}`}>
-                <Button disabled={!isEnabled} type="submit">
-                  Continue
-                </Button>
-               </Link>
-              </Col>
-            </FormGroup>
+        </Col>
+        <div>
+          <Link to={`/providers/new/${this.state.providerType}`}>
+            <Button disabled={!isEnabled} type="submit">
+              Continue
+            </Button>
+          </Link>
 
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
-              <Link to={`/providers/`}>
-                <Button disabled={false} type="submit">
-                  Cancel
-                </Button>
-               </Link>
-              </Col>
-            </FormGroup>
-
+          <Link to={`/providers/`}>
+            <Button disabled={false} type="submit">
+              Cancel
+            </Button>
+         </Link>
+        </div>
       </Row>
-   )
+    );
   }
 }

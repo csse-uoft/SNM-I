@@ -34,7 +34,6 @@ class OrganizationProviderForm extends Component {
     }
 
   submit(e) {
-    //this.props.action(form);
     e.preventDefault();
     this.props.dispatch(createProvider(this.state.form));
     this.props.history.push('/new/add-service');
@@ -42,123 +41,119 @@ class OrganizationProviderForm extends Component {
 
 	render() {
     const isEnabled = 
-        this.state.form.phone.length > 0 &&
-        this.state.form.email.length > 0 &&
-        this.state.form.first_name.length > 0 &&
-        this.state.form.last_name.length > 0 && 
-        this.state.form.address.length > 0 &&
-        this.state.form.visibility !== 'select';
+      this.state.form.phone.length > 0 &&
+      this.state.form.email.length > 0 &&
+      this.state.form.first_name.length > 0 &&
+      this.state.form.last_name.length > 0 && 
+      this.state.form.address.length > 0 &&
+      this.state.form.visibility !== 'select';
 
-		return (
-	      <Row className="content">
-	        <Col sm={12}>
-	          <h3>New Provider Profile</h3>
-	          <hr/>
-	        </Col>
-	        <Col sm={12}>
+	return (
+	  <Row className="content">
+	    <Col sm={12}>
+        <h3>New Provider Profile</h3>
+	        <hr/>
+	    </Col>
 
-			<Form horizontal>
-            <FormGroup controlId="company">
-              <Col componentClass={ControlLabel} sm={3}>
-                Company/Organization Name
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="Company Name" onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+      <Col sm={12}>
+			  <Form horizontal>
+          <FormGroup controlId="company">
+            <Col componentClass={ControlLabel} sm={3}>
+              Company/Organization Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="Company Name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
 
-            <FormGroup controlId="address">
-              <Col componentClass={ControlLabel} sm={3}>
-                Location
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue="" onChange={this.formValChange} />
-              </Col>
-            </FormGroup>
+          <FormGroup controlId="address">
+            <Col componentClass={ControlLabel} sm={3}>
+              Location
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue="" onChange={this.formValChange} />
+            </Col>
+          </FormGroup>
 
-            <hr/>
-            <h4> Contact Information </h4>
-            <hr/>
+          <hr/>
+          <h4> Contact Information </h4>
+          <hr/>
 
-            <FormGroup controlId="first_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Contact Person First Name
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="First name" onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+          <FormGroup controlId="first_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Contact Person First Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="First name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
 
-            <FormGroup controlId="last_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Contact Person Last Name
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="Last name" onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+          <FormGroup controlId="last_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Contact Person Last Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="Last name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
 
+          <FormGroup controlId="email">
+            <Col componentClass={ControlLabel} sm={3}>
+              Email (required)
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="youremail@gmail.com" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
 
-            <FormGroup controlId="email">
-              <Col componentClass={ControlLabel} sm={3}>
-                Email (required)
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="youremail@gmail.com" onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+          <FormGroup controlId="phone">
+            <Col componentClass={ControlLabel} sm={3}>
+              Phone (required)
+            </Col>
+            <Col sm={9}>
+              <FormControl type="tel" defaultValue="" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
 
-            <FormGroup controlId="phone">
-              <Col componentClass={ControlLabel} sm={3}>
-                Phone (required)
-              </Col>
-              <Col sm={9}>
-                <FormControl type="tel" defaultValue="" onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+          <FormGroup controlId="phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension
+            </Col>
+            <Col sm={9}>
+              <FormControl type="tel" defaultValue="" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
 
-            <FormGroup controlId="phone_extension">
-              <Col componentClass={ControlLabel} sm={3}>
-                Extension
-              </Col>
-              <Col sm={9}>
-                <FormControl type="tel" defaultValue="" onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+          <FormGroup controlId="visibility">
+            <Col componentClass={ControlLabel} sm={3}>
+              Allow other agencies to see this provider?
+            </Col>
+            <Col sm={9}>
+              <FormControl componentClass="select" placeholder="select" onChange={this.formValChange}>
+                <option value="select">-- Not Set --</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </FormControl>
+            </Col>
+          </FormGroup>
 
-
-            <FormGroup controlId="visibility">
-              <Col componentClass={ControlLabel} sm={3}>
-                Allow other agencies to see this provider?
-              </Col>
-              <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select" onChange={this.formValChange}>
-                  <option value="select">-- Not Set --</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
+          <FormGroup>
+            <Col smOffset={3} sm={9}>
               <Link to={`/providers/new/add-service`}>
                 <Button disabled={false} type="submit" onClick={this.submit}>
                   Submit
                 </Button>
-               </Link>
-              </Col>
-            </FormGroup>
-
-
-          </Form>
-          </Col>
-        </Row>
-			)
+              </Link>
+            </Col>
+          </FormGroup>
+        </Form>
+      </Col>
+    </Row>
+		);
 	}
 }
 
