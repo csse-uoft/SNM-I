@@ -31,7 +31,9 @@ class App extends Component {
         <Route exact path='/dashboard' component={Dashboard} />
         <Route exact path='/clients' component={Clients} />
         <Route exact path='/client/:id' component={Client} />
+        <Route exact path='/service/:id' component={Service} />
         <Route exact path='/clients/new' component={ClientForm} />
+        <Route exact path='/services/new' component={ServiceForm} />
         <Route exact path='/clients/anonymous/new' component={AnonymousClientForm} />
         <Route exact path='/clients/:id/edit' component={ClientForm} />
         <Route exact path='/users' component={Users} />
@@ -40,6 +42,7 @@ class App extends Component {
         <Route exact path='/users/:id/edit' component={UserForm} />
         <Route exact path='/clients/:id/needs/new' component={NeedForm} />
         <Route exact path='/needs/:need_id/edit' component={NeedForm} />
+        <Route exact path='/services' component={Services} />
 
         <div className='footer'>
           <h5>
