@@ -25,10 +25,10 @@ import EditProvider from './components/providers/EditProviderProfile.js'
 import Services from './components/Services';
 import Service from './components/services/Service';
 import ServiceForm from './components/services/ServiceForm'
+import Footer from './components/layouts/Footer'
 
 // style
 import './stylesheets/App.css';
-
 
 class App extends Component {
   render() {
@@ -63,13 +63,7 @@ class App extends Component {
         <Route exact path='/provider/:id' component={ProviderProfile} />
         <Route exact path='/provider/:id/edit/individual' component={EditProvider} />
         <Route exact path='/provider/:id/edit/organization' component={EditProvider} />
-        <div className='footer'>
-          <h5>
-            <a href='http://csse.utoronto.ca/' target='_blank'>
-              Centre for Social Services Engineering
-            </a>, University of Toronto
-          </h5>
-        </div>
+        <Footer />
       </div>
     );
   }
