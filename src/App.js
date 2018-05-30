@@ -51,6 +51,7 @@ class App extends Component {
         <Route exact path='/clients/:id/needs/new' component={NeedForm} />
         <Route exact path='/needs/:need_id/edit' component={NeedForm} />
         <Route exact path='/services' component={Services} />
+        <Route exact path='/services/:id/edit' component={ServiceForm} />
 
         <Route exact path='/providers' component={ Providers} />
         <Route exact path='/providers/new' component={ProviderTypePrompt} />
