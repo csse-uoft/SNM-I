@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 
 // redux
 import { connect } from 'react-redux';
-import { login } from '../../store/actions/authAction';
-import { FormGroup, Form, Col, FormControl, Button, HelpBlock } from 'react-bootstrap';
+import { login, LOGIN_SUCCESS } from '../../store/actions/authAction';
+import { FormGroup, Form, Col, FormControl, Button, HelpBlock, Glyphicon } from 'react-bootstrap';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -14,7 +14,8 @@ class LoginForm extends Component {
       form: {
         username: '',
         password: ''
-      } 
+      },
+      displayError: false
     }
 
     this.submit = this.submit.bind(this);
@@ -22,25 +23,39 @@ class LoginForm extends Component {
   }
 
   submit() {
-    this.props.dispatch(login(this.state.form));
+    this.props.dispatch(login(this.state.form)).then((status) => {
+      const p = this.props
+      if (status === LOGIN_SUCCESS) {
+        p.history.push('/dashboard')
+      } else {
+        this.setState({ displayError: true });
+      }
+    });
   }
 
   formValChange(e) {
     let nextForm = {...this.state.form, [e.target.id]: e.target.value};
     this.setState({ form: nextForm });    
   }
-  
-  render() {
 
+  render() {
+    const s = this.state;
     return (
       <Form horizontal>
+        { s.displayError &&
+          <div className="flash-error">
+            <Glyphicon glyph="exclamation-sign" />
+            The username or password you entered is incorrect.
+            Please try again.
+          </div>
+        }
         <FormGroup controlId="username">
           <Col sm={12}>
             <FormControl type="text" placeholder="username" value={this.state.form.username} onChange={this.formValChange} />
           </Col>
         </FormGroup>
 
-        <FormGroup controlId="password">
+        <FormGroup className="password" controlId="password">
           <Col sm={12}>
             <FormControl type="password" placeholder="Password" value={this.state.form.password} onChange={this.formValChange} />
           </Col>
@@ -48,11 +63,9 @@ class LoginForm extends Component {
 
         <FormGroup>
           <Col sm={12}>
-            <Link to="/dashboard">
-              <Button type="submit" onClick={this.submit}>
-                Sign in
-              </Button>
-            </Link>
+            <Button onClick={this.submit}>
+              Sign in
+            </Button>
           </Col>
           <HelpBlock className="forgot-password">
             Forgot password?
@@ -63,4 +76,4 @@ class LoginForm extends Component {
   }
 }
 
-export default connect()(LoginForm); 
+export default connect()(withRouter(LoginForm));

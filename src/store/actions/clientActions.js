@@ -142,5 +142,4 @@ export function updateClient(id, params) {
     }).then(response => response.json())
       .then(client => dispatch(receiveClient(id, client)));
   }
-  console.log(params)
 }
