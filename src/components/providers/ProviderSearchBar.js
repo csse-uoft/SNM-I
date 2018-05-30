@@ -8,14 +8,14 @@ import { searchProviders, fetchProviders, createProvider, updateProvider, delete
 import { connect } from 'react-redux';
 
 
-class SearchBar extends Component {
+class ProviderSearchBar extends Component {
   constructor(props) {
     super(props);
     this.handleInput=this.handleInput.bind(this);
     this.handleTypeChange=this.handleTypeChange.bind(this);
     this.state = {
       searchText: '',
-      searchType: 'Name'
+      searchType: 'name'
     }
   }
   
@@ -27,6 +27,7 @@ class SearchBar extends Component {
 
   handleTypeChange(event) {
     const value = event.target.value;
+    console.log(value);
     this.setState({searchType: value});
     this.props.dispatch(searchProviders(this.state.searchText, value));
   }
@@ -40,6 +41,11 @@ class SearchBar extends Component {
           value={this.state.value}
           onChange={this.handleInput}
         />
+
+        <FormControl componentClass="select" placeholder="select" onChange={this.handleTypeChange}>
+          <option value="name"> Name </option>
+          <option value="email"> Email </option>
+        </FormControl>
       </form>
     );
   }
@@ -54,4 +60,4 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps
-)(SearchBar);
+)(ProviderSearchBar);

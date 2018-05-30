@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
-import SearchBar from './ProviderSearchBar.js';
+import ProviderSearchBar from './ProviderSearchBar.js';
 
 export default class ProvidersIndex extends Component {
   render() {
     return(
       <div> 
-        <SearchBar> 
-        </SearchBar>
+        <ProviderSearchBar> 
+        </ProviderSearchBar>
         <Table striped condensed hover>
           <thead>
             <tr>

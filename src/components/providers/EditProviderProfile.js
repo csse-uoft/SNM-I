@@ -4,7 +4,6 @@ import _ from 'lodash'
 // components
 import ProvidersIndex from './ProvidersIndex.js'
 import ProviderRow from './ProviderRow.js'
-import ProviderForm from './ProviderForm.js'
 
 // styles
 import { Table, Button, Row, Glyphicon, Form, FormGroup, Col, ControlLabel, FormControl} from 'react-bootstrap'
@@ -12,7 +11,7 @@ import { connect } from 'react-redux'
 import { updateProvider, fetchProvider } from '../../store/actions/providerActions.js'
 import { Link } from 'react-router-dom';
 
-class EditIndividualProvider extends Component {
+class EditProvider extends Component {
     constructor(props) {
     super(props);
 
@@ -207,4 +206,4 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps  
-)(EditIndividualProvider);
+)(EditProvider);

@@ -28,12 +28,12 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
       if (action.searchValue === '') {
         return {index: [...state.index], filteredProviders: [...state.index], loaded: true}
       }
-      else if (action.searchType === "Name") {
+      else if (action.searchType === "name") {
         providers = [...state.index].filter((provider) => ((provider.first_name).includes(action.searchValue) || 
           (provider.last_name).includes(action.searchValue) ));
         return {index: [...state.index], filteredProviders: providers, loaded: true}
       }
-      else if (action.searchType === "Email") {
+      else if (action.searchType === "email") {
         providers = [...state.index].filter((provider) => (provider.email).includes(action.searchValue));
         return {index: [...state.index], filteredProviders: providers, loaded: true}
       }
