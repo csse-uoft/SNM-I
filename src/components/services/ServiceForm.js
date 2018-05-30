@@ -60,7 +60,7 @@ class ServiceForm extends Component {
 
   render() {
     const p = this.props;
-    
+
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Service Profile' : 'New Service'
 
@@ -115,7 +115,7 @@ class ServiceForm extends Component {
                 >
                   <option value="select">-- Not Set --</option>
                   { p.categoriesLoaded &&
-                    categoriesIntoOptions(p.needsCategories)
+                    categoriesIntoOptions(p.servicesCategories)
                   }
                 </FormControl>
               </Col>
