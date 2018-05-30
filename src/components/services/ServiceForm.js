@@ -84,9 +84,6 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
-            
-            </FormGroup>
-
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
                 Email
