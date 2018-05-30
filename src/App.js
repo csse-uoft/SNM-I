@@ -23,6 +23,9 @@ import IndividualProviderForm from './components/providers/IndividualProviderFor
 import OrganizationProviderForm from './components/providers/OrganizationProviderForm.js'
 import ProviderProfile from './components/providers/ProviderProfile.js'
 import EditProvider from './components/providers/EditProviderProfile.js'
+import Services from './components/Services';
+import Service from './components/services/Service';
+import ServiceForm from './components/services/ServiceForm'
 
 // style
 import './stylesheets/App.css';
@@ -51,6 +54,7 @@ class App extends Component {
         <Route exact path='/clients/:id/needs/new' component={NeedForm} />
         <Route exact path='/needs/:need_id/edit' component={NeedForm} />
         <Route exact path='/services' component={Services} />
+        <Route exact path='/services/:id/edit' component={ServiceForm} />
 
         <Route exact path='/providers' component={ Providers} />
         <Route exact path='/providers/new' component={ProviderTypePrompt} />

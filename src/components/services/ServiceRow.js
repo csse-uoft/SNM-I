@@ -4,7 +4,7 @@ import { Glyphicon, Button } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'
-import { deleteClient } from '../../store/actions/clientActions.js'
+import { deleteService } from '../../store/actions/serviceActions.js'
 
 class ServiceRow extends Component {
   constructor(props) {
@@ -14,32 +14,32 @@ class ServiceRow extends Component {
   }
 
   delete(id) {
-    this.props.dispatch(deleteClient(id));
+    this.props.dispatch(deleteService(id));
   }
 
   render() {
-    const client = this.props.client;
+    const service = this.props.service;
 
     return(
       <tr>
-        <td>{client.id}</td>
+        <td>{service.id}</td>
         <td>
-          <Link to={`/service/${client.id}`}>
-            {client.first_name} {client.last_name}
+          <Link to={`/service/${service.id}`}>
+            {service.name}
           </Link>
         </td>
         <td className='centered-text'>
-          {client.email}
+          {service.email}
         </td>
         <td>
-          <Link to={`/services/${client.id}/edit`}>
+          <Link to={`/services/${service.id}/edit`}>
             <Button bsStyle="primary">
               <Glyphicon glyph="edit" />
             </Button>
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger" onClick={() => this.delete(client.id)}>
+          <Button bsStyle="danger" onClick={() => this.delete(service.id)}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>
