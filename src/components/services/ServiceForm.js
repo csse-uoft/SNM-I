@@ -23,8 +23,8 @@ class ServiceForm extends Component {
         name: service.name || '',
         desc: service.desc || '',
         category: service.category || '',
-        language: need.language || '',
-        capacity: need.capacity || '',
+        language: service.language || '',
+        capacity: service.capacity || '',
         email: service.email || '',
         mobile_phone: (service.phone_numbers && service.phone_numbers.length > 0) ?
           getPhoneNumber(service.phone_numbers, 'mobile') : '',
