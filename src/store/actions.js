@@ -4,12 +4,6 @@ import { receiveNeeds } from './actions/needActions.js'
 
 export const SEARCH_REQUESTED = 'SEARCH_REQUESTED';
 export const SEARCH_RESPONSE_RECEIVED = 'SEARCH_RESPONSE_RECEIVED';
-
-export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';
-export const REQUEST_PROVIDERS = 'REQUEST_PROVIDERS';
-export const RECEIVE_PROVIDERS = 'RECEIVE_PROVIDERS';
-export const REMOVE_PROVIDER = 'REMOVE_PROVIDER';
-
 export const REQUEST_DASHBOARD_CLIENT_DATA = 'REQUEST_DASHBOARD_CLIENT_DATA';
 export const RECEIEVE_DASHBOARD_CLIENT_DATA = 'RECEIEVE_DASHBOARD_CLIENT_DATA';
 
@@ -40,33 +34,6 @@ function resourceSearchResponseReceived(needId, json) {
   }
 }
 
-function requestProviders() {
-  return {
-    type: REQUEST_PROVIDERS
-  }
-}
-
-function receiveProviders(json) {
-  return {
-    type: RECEIVE_PROVIDERS,
-    providers: json,
-    receivedAt: Date.now()
-  }
-}
-
-function receiveNewProvider(json) {
-  return {
-    type: RECEIVE_NEW_PROVIDER,
-    provider: json
-  }
-}
-
-function removeProvider(id) {
-  return {
-    type: REMOVE_PROVIDER,
-    id: id
-  }
-}
 
 function requestResources() {
   return {
@@ -162,58 +129,6 @@ export function deleteResource(id) {
   }
 }
 
-export function fetchProviders() {
-  return dispatch => {
-    dispatch(requestProviders())
-    const url = serverHost + '/providers/';
-
-    return fetch(url).then(response => response.json())
-      .then(json => {
-        dispatch(receiveProviders(json))
-      })
-  }
-}
-
-export function createProvider(params) {
-  return dispatch => {
-    const url = serverHost + '/providers/';
-          
-    return fetch(url, {
-      method: "POST",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewProvider(json)));
-  }
-}
-
-export function updateProvider(id, params) {
-  return dispatch => {
-    const url = serverHost + '/provider/' + id + '/';
-          
-    return fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewProvider(json)));
-  }
-}
-
-export function deleteProvider(id) {
-  return dispatch => {
-    const url = serverHost + '/provider/' + id + '/';
-    return fetch(url, {method: "DELETE"}).then(response => {
-      if (response.status === 204) {
-        dispatch(removeProvider(id))
-      }
-    });
-  }
-}
 
 export function fetchGoods() {
   return dispatch => {

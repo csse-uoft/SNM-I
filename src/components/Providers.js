@@ -9,48 +9,45 @@ import ProviderForm from './providers/ProviderForm.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions.js'
-
+import { searchProviders, fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions/providerActions.js'
 // styles
 import { Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom';
+
 
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      showCrupdateModal: false,
-      activeProvider: {}
-    } 
   }
 
   render() {
     const p = this.props, s = this.state;
     return(
       <div className='providers content'>
-        <Button bsStyle="primary" onClick={this.showCrupdateModal}>New Provider</Button>
         <h3 className='title'>Providers</h3>
+          <div>
+            <Link to={`/providers/new`}>
+              <Button bsStyle="default">
+              Add new provider
+              </Button>
+            </Link>
+          </div>
+
         { p.providersLoaded &&
-          <ProvidersIndex>{
+          <ProvidersIndex> {
             p.providers.map((provider) => {
               return <ProviderRow key={ provider.id } provider={ provider }
-                        showUpdateModal={this.showCrupdateModal} delete={this.deleteProvider} />
+                      delete={this.deleteProvider} />
             })
-          }</ProvidersIndex>
+          }
+          </ProvidersIndex>
         }
-        <CrupdateModal  show={s.showCrupdateModal} hide={this.hideCrupdateModal} 
-          title={this.modalTitle()}>
-          <ProviderForm action={this.formAction()} provider={s.activeProvider} />
-        </CrupdateModal>
       </div>
     )
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
-  }
-
-  createProvider = (params) => {
-    this.props.dispatch(createProvider(params));
   }
 
   updateProvider = (params) => {
@@ -62,33 +59,11 @@ class Providers extends Component {
   deleteProvider = (id) => {
     this.props.dispatch(deleteProvider(id));
   }
-
-  showCrupdateModal = (provider={}) => {
-    this.setState({ showCrupdateModal: true, activeProvider: provider })
-  } 
-
-  hideCrupdateModal = () => {
-    this.setState({ showCrupdateModal: false })
-  }
-
-  activeProviderIsNew = () => {
-    return(_.isUndefined(this.state.activeProvider.id));
-  }
-
-  formAction = () => {
-    return(this.activeProviderIsNew() ? this.createProvider : this.updateProvider);
-  }
-
-  modalTitle = () => {
-    let title = this.activeProviderIsNew() ? "New" : "Update"
-    return(title + " Provider");
-  }
-
 }
 
 const mapStateToProps = (state) => {
   return {
-    providers: state.providers.index,
+    providers: state.providers.filteredProviders || [], //array of json 
     providersLoaded: state.providers.loaded
   }
 }
