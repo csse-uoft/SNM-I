@@ -4,21 +4,27 @@ import { withRouter } from 'react-router';
 // redux
 import { connect } from 'react-redux'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { createClientNeed } from '../../store/actions/needActions.js'
+import { createClientNeed, updateClientNeed } from '../../store/actions/needActions.js'
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
 class NeedForm extends Component {
   constructor(props) {
     super(props);
+    let need = {};
+    if (this.props.match.params.need_id) {
+      need = this.props.needsById[this.props.match.params.need_id]
+    }
 
     this.state = {
+      needId: need.id,
+      mode: (need.id) ? 'edit' : 'new',
       form: {
-        category: '',
-        description: '',
-        needed_by: '',
-        condition: '',
-        status: ''
+        category: need.category || '',
+        description: need.description || '',
+        needed_by: need.needed_by || '',
+        condition: need.condition || '',
+        status: need.status || ''
       }
     }
 
@@ -36,13 +42,17 @@ class NeedForm extends Component {
   }
 
   submit() {
-    const clientId = this.props.match.params.id
-    this.props.dispatch(createClientNeed(clientId, this.state.form));
-    this.props.history.push(`/client/${clientId}`)
+    if (this.state.mode === 'edit') {
+      this.props.dispatch(updateClientNeed(this.props.clientId, this.state.needId, this.state.form));
+    } else {
+      this.props.dispatch(createClientNeed(this.props.clientId, this.state.form));
+    }
+    this.props.history.push(`/client/${this.props.clientId}`)
   }
 
   render() {
     const p = this.props;
+    const formTitle = (this.state.mode === 'edit') ? 'Edit Need' : 'Create Need'
 
     function cateogiresIntoOptions(categories) {
       return categories.map((category) => {
@@ -53,7 +63,7 @@ class NeedForm extends Component {
     return (
       <Row className="content">
         <Col sm={12}>
-          <h3>New Need</h3>
+          <h3>{formTitle}</h3>
           <hr />
         </Col>
         <Col sm={12}>
@@ -70,8 +80,8 @@ class NeedForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
-                  { p.categories_loaded &&
-                    cateogiresIntoOptions(p.needs_categories)
+                  { p.categoriesLoaded &&
+                    cateogiresIntoOptions(p.needsCategories)
                   }
                 </FormControl>
               </Col>
@@ -137,8 +147,10 @@ class NeedForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    needs_categories: state.ontology.needs.categories,
-    categories_loaded: state.ontology.needs.loaded
+    needsById: state.needs.byId,
+    clientId: state.needs.clientId,
+    needsCategories: state.ontology.needs.categories,
+    categoriesLoaded: state.ontology.needs.loaded
   }
 }
 

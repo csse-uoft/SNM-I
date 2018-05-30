@@ -34,7 +34,7 @@ class UserRow extends Component {
           {user.is_superuser ? 'Admin' : 'User'}
         </td>
         <td>
-          <Link to={{ pathname: `/users/${user.id}/edit`, state: { user: user } }}>
+          <Link to={`/users/${user.id}/edit`}>
             <Button bsStyle="primary">
               <Glyphicon glyph="edit" />
             </Button>

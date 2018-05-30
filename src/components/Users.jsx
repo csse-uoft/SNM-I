@@ -14,10 +14,6 @@ import { Button } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 class Users extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     this.props.dispatch(fetchUsers());
   }

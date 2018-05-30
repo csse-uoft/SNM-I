@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 import ClientNeeds from '../ClientNeeds';
 
@@ -10,10 +9,6 @@ import { fetchClient } from '../../store/actions/clientActions.js'
 import { Table } from 'react-bootstrap';
 
 class Client extends Component {
-  constructor(props) {  
-    super(props);  
-  }
-
   componentWillMount() {
     const id = this.props.match.params.id
     this.props.dispatch(fetchClient(id));
@@ -27,7 +22,7 @@ class Client extends Component {
     function getPhoneNumber(phoneNumbers, phoneType) {
       let matchedNumber = null
       phoneNumbers.forEach(function(phoneNumber) {
-        if (phoneNumber.phone_type == phoneType) {
+        if (phoneNumber.phone_type === phoneType) {
           matchedNumber = phoneNumber.phone_number
         }
       });
@@ -134,7 +129,9 @@ class Client extends Component {
           </Table>
         }
         <hr />
-        <ClientNeeds clientId={client.id} needs={client.needs} />
+        { p.needsLoaded &&
+          <ClientNeeds clientId={client.id} needs={p.needsById} />
+        }
       </div>
     );
   }
@@ -142,11 +139,13 @@ class Client extends Component {
 
 const mapStateToProps = (state) => {
   return { 
+    needsById: state.needs.byId,
+    needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
     clientLoaded: state.clients.indexLoaded 
   }  
 }
 
 export default connect(
-  mapStateToProps  
+  mapStateToProps
 )(Client);
