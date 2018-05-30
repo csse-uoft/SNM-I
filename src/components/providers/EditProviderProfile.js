@@ -10,41 +10,40 @@ import ProviderForm from './ProviderForm.js'
 import { Table, Button, Row, Glyphicon, Form, FormGroup, Col, ControlLabel, FormControl} from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { updateProvider, fetchProvider } from '../../store/actions/providerActions.js'
-
 import { Link } from 'react-router-dom';
 
 class EditIndividualProvider extends Component {
     constructor(props) {
-	  super(props);
+    super(props);
 
-	  this.formValChange = this.formValChange.bind(this);
-	  this.submit = this.submit.bind(this);
+    this.formValChange = this.formValChange.bind(this);
+    this.submit = this.submit.bind(this);
     const id = this.props.match.params.id;
     console.log(id);
     const provider = this.props.providersById[id];
     console.log(provider);
 
-	  this.state= {
+    this.state= {
       form : {
-	    	provider_type: provider.provider_type,
-	        id: id,
-	        first_name: provider.first_name,
-	        last_name: provider.last_name,
-	        gender: '',
-	        email: provider.email,
-	        phone: provider.phone,
-	        phone_extension: provider.phone_extension,
-	        referrer: provider.referrer,
-	        location: 'Canada',
-	        visibility: 'select'
-	        }
+        provider_type: provider.provider_type,
+          id: id,
+          first_name: provider.first_name,
+          last_name: provider.last_name,
+          gender: '',
+          email: provider.email,
+          phone: provider.phone,
+          phone_extension: provider.phone_extension,
+          referrer: provider.referrer,
+          location: 'Canada',
+          visibility: 'select'
+          }
         } 
     }
 
-	componentWillMount() { 
-	  const id = this.props.match.params.id
-	  this.props.dispatch(fetchProvider(id));
-	}
+  componentWillMount() { 
+    const id = this.props.match.params.id
+    this.props.dispatch(fetchProvider(id));
+  }
 
   formValChange(e) {
     let next = {...this.state.form, [e.target.id] : e.target.value};
@@ -58,11 +57,10 @@ class EditIndividualProvider extends Component {
     this.props.history.push('/provider/' + id);
   }
 
-	render() {
-		const id = this.props.match.params.id;
+  render() {
+    const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-		
-		const isEnabled = 
+    const isEnabled = 
       this.state.form.phone.length > 0 &&
       this.state.form.email.length > 0 &&
       this.state.form.first_name.length > 0 &&
@@ -70,16 +68,16 @@ class EditIndividualProvider extends Component {
       this.state.form.location.length > 0 &&
       this.state.form.visibility !== 'select';
 
-		return (
-	    <Row className="content">
-	      <Col sm={12}>
-	        <h3>Edit Provider Profile</h3>
-	        <hr/>
-	      </Col>
+    return (
+      <Row className="content">
+        <Col sm={12}>
+          <h3>Edit Provider Profile</h3>
+          <hr/>
+        </Col>
 
         { provider && provider.loaded &&
         <div>
-			    <Form horizontal>
+          <Form horizontal>
             
             {provider.provider_type === "Organization" && 
             <FormGroup controlId="company">

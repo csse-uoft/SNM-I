@@ -47,7 +47,7 @@ class Providers extends Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(fetchProviders(''));
+    this.props.dispatch(fetchProviders());
   }
 
   updateProvider = (params) => {
@@ -58,8 +58,8 @@ class Providers extends Component {
 
   deleteProvider = (id) => {
     this.props.dispatch(deleteProvider(id));
-    }
   }
+}
 
 const mapStateToProps = (state) => {
   return {

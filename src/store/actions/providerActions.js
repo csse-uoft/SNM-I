@@ -54,10 +54,11 @@ function requestProvider(id) {
   }
 }
 
-export function searchProviders(value) {
+export function searchProviders(searchValue, searchType) {
   return {
     type: SEARCH_PROVIDERS,
-    value: value
+    searchValue: searchValue,
+    searchType: searchType
   };
 }
 
@@ -79,7 +80,7 @@ export function fetchProvider(id) {
   }
 }
 
-export function fetchProviders(value) {
+export function fetchProviders() {
   return dispatch => {
     dispatch(requestProviders())
     const url = serverHost + '/providers/';

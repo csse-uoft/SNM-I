@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-
 import { Table, Button, Glyphicon } from 'react-bootstrap';
-
-//import '../stylesheets/Client.css';
 
 export default class AddServicePrompt extends Component {
   render() {
-  	return(
+    return(
       <div>
         <h2>Would you like to add a service for this provider?</h2>
         <Link to={`/service/new`}>
@@ -21,6 +18,6 @@ export default class AddServicePrompt extends Component {
           </Button>
         </Link>
       </div>
-  	)
+    )
   }
 }

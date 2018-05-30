@@ -25,11 +25,16 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
       nextById = { ...state.byId, [action.id]: { loaded: false } }
       return {...state, byId: nextById }
     case SEARCH_PROVIDERS:
-      if (action.value === '') {
+      if (action.searchValue === '') {
         return {index: [...state.index], filteredProviders: [...state.index], loaded: true}
       }
-      else {
-        providers = [...state.index].filter((provider) => (provider.first_name).includes(action.value));
+      else if (action.searchType === "Name") {
+        providers = [...state.index].filter((provider) => ((provider.first_name).includes(action.searchValue) || 
+          (provider.last_name).includes(action.searchValue) ));
+        return {index: [...state.index], filteredProviders: providers, loaded: true}
+      }
+      else if (action.searchType === "Email") {
+        providers = [...state.index].filter((provider) => (provider.email).includes(action.searchValue));
         return {index: [...state.index], filteredProviders: providers, loaded: true}
       }
     default:

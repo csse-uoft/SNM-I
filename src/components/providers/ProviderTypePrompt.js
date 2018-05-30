@@ -12,14 +12,14 @@ import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
 export default class ProviderForm extends Component {
   constructor(){
-   	super();
-   	this.setProviderType = this.setProviderType.bind(this);
-   	this.state = { providerType: 'select'};
-   }
+    super();
+    this.setProviderType = this.setProviderType.bind(this);
+    this.state = { providerType: 'select'};
+  }
 
-   setProviderType(e) {
-   	this.setState({providerType: e.target.value})
-   }
+  setProviderType(e) {
+    this.setState({providerType: e.target.value})
+  }
 
   render() {
     const isEnabled = (this.state.providerType !== 'select');
@@ -33,7 +33,7 @@ export default class ProviderForm extends Component {
 
         <Col sm={12}>
           <Form horizontal>
-          	<FormGroup controlId="providerType">
+            <FormGroup controlId="providerType">
               <Col componentClass={ControlLabel} sm={3}>
                 Please select a provider type
               </Col>

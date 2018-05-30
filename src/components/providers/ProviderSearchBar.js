@@ -12,15 +12,23 @@ class SearchBar extends Component {
   constructor(props) {
     super(props);
     this.handleInput=this.handleInput.bind(this);
+    this.handleTypeChange=this.handleTypeChange.bind(this);
     this.state = {
       searchText: '',
+      searchType: 'Name'
     }
   }
   
   handleInput(event) {
     const value = event.target.value;
     this.setState({ searchText: value});
-    this.props.dispatch(searchProviders(value))
+    this.props.dispatch(searchProviders(value, this.state.searchType));
+  }
+
+  handleTypeChange(event) {
+    const value = event.target.value;
+    this.setState({searchType: value});
+    this.props.dispatch(searchProviders(this.state.searchText, value));
   }
 
   render() {

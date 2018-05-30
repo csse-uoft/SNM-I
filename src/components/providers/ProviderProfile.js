@@ -14,16 +14,16 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
 
 class ProviderProfile extends Component {
-	constructor(props) {
-		super(props);
-	}
+  constructor(props) {
+    super(props);
+  }
 
-	componentWillMount() { 
-		const id = this.props.match.params.id
-		this.props.dispatch(fetchProvider(id));
-	}
+  componentWillMount() { 
+    const id = this.props.match.params.id
+    this.props.dispatch(fetchProvider(id));
+  }
 
-	render() {
+  render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
 
@@ -32,7 +32,7 @@ class ProviderProfile extends Component {
         <h3>Provider Profile</h3>
 
       { provider && provider.loaded &&
-      	<div>
+        <div>
          <Link to={`/provider/${id}/edit/${provider.provider_type.toLowerCase()}`}>
           <Button bsStyle="default">
             Edit

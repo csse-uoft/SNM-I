@@ -10,7 +10,7 @@ import { fetchProvider, fetchProviders, createProvider, updateProvider, deletePr
 
 class IndividualProviderForm extends Component {
   constructor(props) {
-  	super(props);
+    super(props);
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
     this.state= { form : {
@@ -19,12 +19,12 @@ class IndividualProviderForm extends Component {
       first_name: '',
       last_name: '',
       gender: '',
-	    email: '',
+      email: '',
       phone: '',
       phone_extension: '',
       referrer: '',
       location: '',
-	    visibility: 'select'
+      visibility: 'select'
       }
     } 
   }
@@ -41,7 +41,7 @@ class IndividualProviderForm extends Component {
   }
 
   render() {
-	const isEnabled = 
+  const isEnabled = 
     this.state.form.phone.length > 0 &&
     this.state.form.email.length > 0 &&
     this.state.form.first_name.length > 0 &&
@@ -170,7 +170,7 @@ class IndividualProviderForm extends Component {
         </Form>
       </Col>
     </Row>
-	  );
+    );
   }
 }
 export default connect()(withRouter(IndividualProviderForm));

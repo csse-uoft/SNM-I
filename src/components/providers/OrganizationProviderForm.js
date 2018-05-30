@@ -39,7 +39,7 @@ class OrganizationProviderForm extends Component {
     this.props.history.push('/providers/new/add-service');
   }
 
-	render() {
+  render() {
     const isEnabled = 
       this.state.form.phone.length > 0 &&
       this.state.form.email.length > 0 &&
@@ -48,15 +48,15 @@ class OrganizationProviderForm extends Component {
       this.state.form.address.length > 0 &&
       this.state.form.visibility !== 'select';
 
-	return (
-	  <Row className="content">
-	    <Col sm={12}>
+  return (
+    <Row className="content">
+      <Col sm={12}>
         <h3>New Provider Profile</h3>
-	        <hr/>
-	    </Col>
+        <hr/>
+      </Col>
 
       <Col sm={12}>
-			  <Form horizontal>
+        <Form horizontal>
           <FormGroup controlId="company">
             <Col componentClass={ControlLabel} sm={3}>
               Company/Organization Name
@@ -153,8 +153,8 @@ class OrganizationProviderForm extends Component {
         </Form>
       </Col>
     </Row>
-		);
-	}
+    );
+  }
 }
 
 export default connect()(withRouter(OrganizationProviderForm));
