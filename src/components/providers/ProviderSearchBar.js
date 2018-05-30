@@ -6,7 +6,7 @@ import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { Link } from 'react-router-dom';
 import { searchProviders, fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux';
-import '../../stylesheets/Providers.css';
+//import '../../stylesheets/Providers.css';
 
 
 class ProviderSearchBar extends Component {

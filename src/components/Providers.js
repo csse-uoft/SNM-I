@@ -11,7 +11,7 @@ import { searchProviders, fetchProviders, createProvider, updateProvider, delete
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-import '../stylesheets/Providers.css';
+//import '../stylesheets/Providers.css';
 
 
 class Providers extends Component {

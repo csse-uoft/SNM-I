@@ -19,7 +19,7 @@ class ProviderProfile extends Component {
     super(props);
   }
 
-  componentWillMount() { 
+  componentWillMount() {
     const id = this.props.match.params.id
     this.props.dispatch(fetchProvider(id));
   }
@@ -27,6 +27,7 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
+    console.log(provider);
 
     return (
       <div className="content">

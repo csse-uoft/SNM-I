@@ -64,6 +64,7 @@ export function searchProviders(searchValue, searchType) {
 
 
 export function fetchProvider(id) {
+  debugger
   return dispatch => {
     dispatch(requestProvider(id))
     const url = serverHost + '/provider/' + id + '/';

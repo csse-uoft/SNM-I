@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
 import ProviderSearchBar from './ProviderSearchBar.js';
-import '../../stylesheets/Providers.css';
 
 export default class ProvidersIndex extends Component {
   render() {
