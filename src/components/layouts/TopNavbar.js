@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { IndexLinkContainer } from 'react-router-bootstrap';
 import { withRouter } from 'react-router';
 
@@ -7,7 +6,7 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux';
-import { login, logout } from '../../store/actions/authAction.js';
+import { logout } from '../../store/actions/authAction.js';
 
 class TopNavbar extends Component {
   constructor(props) {
@@ -18,18 +17,11 @@ class TopNavbar extends Component {
     this.signout = this.signout.bind(this);
   }
 
-  componentWillReceiveProps(nextProps){
-    if(!nextProps.isLoggedin) { 
-      this.props.history.push('/login')
-    }
-  }
-
   signout() {
     this.props.dispatch(logout())
   }
 
   render() {
-    const p = this.props
     const navItems = (this.props.isLoggedin) ? (
       <Nav>
         <IndexLinkContainer to={`/clients`}>
@@ -49,7 +41,7 @@ class TopNavbar extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            {(this.props.isLoggedin && this.props.currentUser.is_admin) ? (
+            {(this.props.isLoggedin) ? (
               <IndexLinkContainer to='/dashboard'>
                 <div>
                   <span>SNM Impact</span>

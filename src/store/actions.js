@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from './defaults.js';
-import { receiveNeeds } from './actions/needActions.js'
 
 export const SEARCH_REQUESTED = 'SEARCH_REQUESTED';
 export const SEARCH_RESPONSE_RECEIVED = 'SEARCH_RESPONSE_RECEIVED';
