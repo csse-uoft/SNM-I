@@ -27,7 +27,6 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-    console.log(provider);
 
     return (
       <div className="content">
