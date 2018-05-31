@@ -81,12 +81,12 @@ class ServiceForm extends Component {
           <Form horizontal>
             <FormGroup controlId="name">
               <Col componentClass={ControlLabel} sm={3}>
-                Name (required)
+                Name
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  placeholder="Aravind"
+                  placeholder=""
                   value={this.state.form.name}
                   onChange={this.formValChange}
                 />
@@ -98,7 +98,7 @@ class ServiceForm extends Component {
                 Description
               </Col>
               <Col sm={9}>
-                <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange} />
+                <FormControl type="text" value={this.state.form.desc} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -151,13 +151,13 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
-                Email
+                Contact Person Email
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
                   value={this.state.form.email}
-                  placeholder="aravind.adiga.gmail.com"
+                  placeholder=""
                   onChange={this.formValChange}
                 />
               </Col>
@@ -165,7 +165,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="mobile_phone">
               <Col componentClass={ControlLabel} sm={3}>
-                Cell Phone
+                Contact Person Phone
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -178,7 +178,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="home_phone">
               <Col componentClass={ControlLabel} sm={3}>
-                Main Phone (required)
+                Secondary Phone
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -191,7 +191,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="address">
               <Col componentClass={ControlLabel} sm={3}>
-                Address
+                Provider
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -218,7 +218,9 @@ class ServiceForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    servicesById: state.services.byId
+    servicesById: state.services.byId,
+    servicesCategories: state.ontology.services.categories,
+    categoriesLoaded: state.ontology.needs.loaded
   }
 }
 
