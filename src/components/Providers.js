@@ -11,12 +11,21 @@ import { searchProviders, fetchProviders, createProvider, updateProvider, delete
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-import '../stylesheets/Providers.css';
-
+//import '../stylesheets/Providers.css';
+//git push heroku origin/master
 
 class Providers extends Component {
   constructor(props) {
     super(props);
+    this.deleteProvider=this.deleteProvider.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchProviders());
+  }
+
+  deleteProvider(id) {
+    this.props.dispatch(deleteProvider(id));
   }
 
   render() {
@@ -44,20 +53,6 @@ class Providers extends Component {
       </div>
     )
   }
-
-  componentWillMount() {
-    this.props.dispatch(fetchProviders());
-  }
-
-  updateProvider = (params) => {
-    const id = params.id;
-    delete params.id;
-    this.props.dispatch(updateProvider(id, params));
-  }
-
-  deleteProvider = (id) => {
-    this.props.dispatch(deleteProvider(id));
-  }
 }
 
 const mapStateToProps = (state) => {
@@ -70,3 +65,5 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps
 )(Providers);
+
+

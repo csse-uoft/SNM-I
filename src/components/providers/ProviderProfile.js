@@ -39,6 +39,7 @@ class ProviderProfile extends Component {
             Edit
           </Button>
         </Link>
+        &nbsp; 
         <Link to={`/provider/${id}/rate`}>
           <Button bsStyle="default">
             Rate Provider

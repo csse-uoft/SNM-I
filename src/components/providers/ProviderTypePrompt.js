@@ -47,19 +47,20 @@ export default class ProviderTypePrompt extends Component {
             </FormGroup>
           </Form>
         </Col>
-        <div>
+        <Col sm={12}>
+          <hr/>
           <Link to={`/providers/new/${this.state.providerType}`}>
             <Button disabled={!isEnabled} type="submit">
               Continue
             </Button>
           </Link>
-
+          &nbsp; &nbsp;
           <Link to={`/providers/`}>
             <Button disabled={false} type="submit">
               Cancel
             </Button>
          </Link>
-        </div>
+        </Col>
       </Row>
     );
   }

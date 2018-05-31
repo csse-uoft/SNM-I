@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { Link } from 'react-router-dom';
-import { fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions.js'
+import { fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions/providerActions.js'
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
@@ -34,7 +34,6 @@ class OrganizationProviderForm extends Component {
     }
 
   submit(e) {
-    e.preventDefault();
     this.props.dispatch(createProvider(this.state.form));
     this.props.history.push('/providers/new/add-service');
   }
@@ -143,11 +142,9 @@ class OrganizationProviderForm extends Component {
 
           <FormGroup>
             <Col smOffset={3} sm={9}>
-              <Link to={`/providers/new/add-service`}>
-                <Button disabled={false} type="submit" onClick={this.submit}>
-                  Submit
-                </Button>
-              </Link>
+              <Button disabled = {!isEnabled} type="submit" onClick={this.submit}>
+                Submit
+              </Button>
             </Col>
           </FormGroup>
         </Form>

@@ -1,9 +1,8 @@
 import { combineReducers } from 'redux'
 import { SEARCH_REQUESTED, SEARCH_RESPONSE_RECEIVED,
           REQUEST_RESOURCES, RECEIVE_RESOURCES,
-          RECEIVE_NEW_RESOURCE, REQUEST_PROVIDERS, RECEIVE_PROVIDERS,
-          RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER,
-          REMOVE_RESOURCE, RECEIVE_NEW_GOOD, REQUEST_GOODS, RECEIVE_GOODS, REMOVE_GOODS} from './actions.js'
+          RECEIVE_NEW_RESOURCE, REMOVE_RESOURCE, 
+          RECEIVE_NEW_GOOD, REQUEST_GOODS, RECEIVE_GOODS, REMOVE_GOODS} from './actions.js'
 import { needs } from './reducers/needReducers.js';
 import { auth } from './reducers/authReducer.js';
 import { users } from './reducers/userReducers.js';

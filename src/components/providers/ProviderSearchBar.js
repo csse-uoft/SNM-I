@@ -6,7 +6,6 @@ import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { Link } from 'react-router-dom';
 import { searchProviders, fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux';
-//import '../../stylesheets/Providers.css';
 
 
 class ProviderSearchBar extends Component {
@@ -35,19 +34,23 @@ class ProviderSearchBar extends Component {
 
   render() {
     return (
-      <form>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={this.state.value}
-          onChange={this.handleInput}
-        />
-
-        <FormControl componentClass="select" placeholder="select" onChange={this.handleTypeChange}>
-          <option value="name"> Name </option>
-          <option value="email"> Email </option>
-        </FormControl>
-      </form>
+      <Form inline>
+        <FormGroup controlId="searchBar">
+          <FormControl 
+            type='text' 
+            placeholder="Search..." 
+            value={this.state.value}
+            onChange={this.handleInput}
+          />
+        </FormGroup> {' '}
+        <FormGroup controlId="searchBy">
+          <ControlLabel> Search by: </ControlLabel>{' '}
+          <FormControl componentClass="select" placeholder="select" onChange={this.handleTypeChange}>
+            <option value="name"> Name </option>
+            <option value="email"> Email </option>
+          </FormControl>
+        </FormGroup>{' '}
+      </Form>
     );
   }
 };
