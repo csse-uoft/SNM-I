@@ -133,9 +133,9 @@ export function deleteProvider(id) {
     const url = serverHost + '/provider/' + id + '/';
     return fetch(url, {
       method: "DELETE", 
-      headers: new Headers({
+      headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
+        }, 
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeProvider(id))

@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
 import CustomToggle from '../shared/CustomToggle.js';
-import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
+import { Glyphicon, Dropdown, MenuItem, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'; 
 
-export default class ProviderRow extends Component {
+class ProviderRow extends Component {
   constructor(props) {
     super(props);
     this.delete = this.delete.bind(this);
     this.update = this.update.bind(this);
-    console.log(this.props)
   }
 
+  delete() {
+    const p = this.props;
+    p.delete(p.provider.id);
+  }
 
   render() {
     const p = this.props.provider;
-    const url = '/provider' + p.id + '/edit/' + p.provider_type.toLowerCase();
+    const url = '/provider/' + p.id + '/edit/' + p.provider_type.toLowerCase();
 
     return(
       <tr>
@@ -35,31 +38,21 @@ export default class ProviderRow extends Component {
         <td className='centered-text'>
           {p.phone}
         </td>
-
         <td>
-          <Dropdown id='action-menu' pullRight>
-          <CustomToggle bsRole="toggle">
-            <Glyphicon glyph="option-vertical" /> 
-          </CustomToggle>
-          <Dropdown.Menu>
-          {/*<Link to={`/provider/${p.id}/edit/${p.provider_type.toLowerCase()}`}>
-            <MenuItem eventKey="1">
-              <span>Update</span>
-            </MenuItem>
-          </Link>*/}
-            <MenuItem eventKey="2" onClick={this.delete}>
-              <span>Delete</span>
-            </MenuItem>
-          </Dropdown.Menu>
-        </Dropdown>
+         <Link to={`${url}`}>
+            <Button bsStyle="primary">
+              <Glyphicon glyph="edit" />
+            </Button>
+          </Link>
         </td>
+        <td>
+          <Button bsStyle="danger" onClick={this.delete}>
+            <Glyphicon glyph="trash" />
+          </Button>
+        </td>
+
       </tr>
     )
-  }
-
-  delete() {
-    const p = this.props;
-    p.delete(p.provider.id);
   }
 
   update() {
@@ -71,3 +64,10 @@ export default class ProviderRow extends Component {
     this.props.history.push(url);
   }
 }
+const mapStateToProps = (state) => {
+  return { 
+    providerLoaded: state.providers.indexLoaded
+  } 
+}
+
+export default connect()(ProviderRow);

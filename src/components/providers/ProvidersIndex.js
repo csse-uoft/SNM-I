@@ -8,13 +8,15 @@ export default class ProvidersIndex extends Component {
       <div> 
         <ProviderSearchBar> 
         </ProviderSearchBar>
-        <Table striped condensed hover>
+        <hr/>
+        <Table striped bordered condensed hover>
           <thead>
             <tr>
               <th>Name</th>
               <th>Type</th>
               <th>Email</th>
               <th>Phone</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>

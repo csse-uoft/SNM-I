@@ -12,7 +12,7 @@ import { updateProvider, fetchProvider } from '../../store/actions/providerActio
 import { Link } from 'react-router-dom';
 
 class EditProvider extends Component {
-    constructor(props) {
+  constructor(props) {
     super(props);
 
     this.formValChange = this.formValChange.bind(this);
@@ -21,23 +21,24 @@ class EditProvider extends Component {
     console.log(id);
     const provider = this.props.providersById[id];
     console.log(provider);
+    console.log(this.props.providersById)
 
     this.state= {
       form : {
         provider_type: provider.provider_type,
-          id: id,
-          first_name: provider.first_name,
-          last_name: provider.last_name,
-          gender: '',
-          email: provider.email,
-          phone: provider.phone,
-          phone_extension: provider.phone_extension,
-          referrer: provider.referrer,
-          location: 'Canada',
-          visibility: 'select'
-          }
-        } 
-    }
+        id: id,
+        first_name: provider.first_name,
+        last_name: provider.last_name,
+        gender: '',
+        email: provider.email,
+        phone: provider.phone,
+        phone_extension: provider.phone_extension,
+        referrer: provider.referrer,
+        location: 'Canada',
+        visibility: 'select'
+        }
+      } 
+  }
 
   componentWillMount() { 
     const id = this.props.match.params.id

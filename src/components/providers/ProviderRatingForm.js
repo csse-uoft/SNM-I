@@ -37,13 +37,14 @@ export default class ProviderRatingForm extends Component {
 
   render() {
     return (
-      <div>
+      <div className="content">
         <Col sm={9}>
           <h3> Rate Provider </h3>
+          <hr/>
         </Col>
-        <hr/>
+
         <FormGroup controlId="rating">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col componentClass={ControlLabel} sm={5}>
             Rate this provider (0-5)
           </Col>
           <Col sm={9}>
@@ -51,7 +52,8 @@ export default class ProviderRatingForm extends Component {
               type="text"
               placeholder="A number between 0 and 5" 
               value={this.state.rating}
-              onChange={this.handleTextRating}/>
+              onChange={this.handleTextRating}
+            />
           </Col>
         </FormGroup>
         <Col sm={9}>
@@ -61,10 +63,9 @@ export default class ProviderRatingForm extends Component {
             value={this.state.rating}
             onStarClick={this.handleStarSelection}
           />
-        </Col>
-        <hr/>
-        
+        </Col>        
         <Col sm={9}>
+          <hr/>
           <FormGroup controlId="comments">
             <ControlLabel>Comments</ControlLabel>
             <FormControl componentClass="textarea" placeholder="Comments about this provider..." />
