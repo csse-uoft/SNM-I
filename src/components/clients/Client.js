@@ -45,7 +45,7 @@ class Client extends Component {
               </tr>
               <tr>
                 <td><b>Gender</b></td>
-                <td>{client.gender}</td>
+                <td>{client.gender === 0 ? 'Female' : 'Male'}</td>
               </tr>
               <tr>
                 <td><b>Preferred Name</b></td>

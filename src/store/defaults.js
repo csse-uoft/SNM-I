@@ -11,6 +11,14 @@ const languageMap = [
   {value: "HI", label: "Hindi"}
 ]
 
+const needStatus = {
+  0: "Unmatched",
+  1: "Pending",
+  2: "In Progress",
+  3: "Matched",
+  4: "Fulfilled"
+}
+
 const resourceTypeMap = [
   {value: "interpreter", label: "Interpreter"},
   {value: "translator", label: "Translator"},
@@ -142,6 +150,6 @@ export const defaults = {
   housingTypeMap: housingTypeMap,
   mentalhealthTypeMap: mentalhealthTypeMap,
   familylifeTypeMap: familylifeTypeMap,
-  educationTypeMap: educationTypeMap
-
+  educationTypeMap: educationTypeMap,
+  needStatus: needStatus
 }
