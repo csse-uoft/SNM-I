@@ -15,6 +15,7 @@ import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
 import NeedForm from './components/client_needs/NeedForm'
+import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
 import AdminRoute from './components/routes/AdminRoute'
 import Providers from './components/Providers';
@@ -49,7 +50,8 @@ const routes = (
     <AdminRoute path='/users' component={Users} />
 
     <PrivateRoute path='/needs/:need_id/edit' component={NeedForm} />
-    
+    <PrivateRoute path='/needs/:need_id' component={Need} />
+
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
     <PrivateRoute path='/providers/new/individual' component={IndividualProviderForm} />

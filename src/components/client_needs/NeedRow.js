@@ -28,7 +28,11 @@ class NeedRow extends Component {
 
     return(
       <tr>
-        <td>{need.id}</td>
+        <td>
+          <Link to={`/needs/${need.id}`}>
+            {need.id}
+          </Link>
+        </td>
         <td>{need.category}</td>
         <td>{need.description}</td>
         <td>{defaults['needStatus'][need.status]}</td>
