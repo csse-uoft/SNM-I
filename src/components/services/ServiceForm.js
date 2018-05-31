@@ -98,7 +98,7 @@ class ServiceForm extends Component {
                 Description
               </Col>
               <Col sm={9}>
-                <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange} />
+                <FormControl type="text" value={this.state.form.desc} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
