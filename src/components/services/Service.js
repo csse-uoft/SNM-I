@@ -54,19 +54,19 @@ class Service extends Component {
                 <td>{service.capacity}</td>
               </tr>
               <tr>
-                <td><b>Email</b></td>
+                <td><b>Contact Person Email</b></td>
                 <td>{service.email}</td>
               </tr>
               <tr>
-                <td><b>Cell Phone</b></td>
+                <td><b>Contact Person Phone</b></td>
                 <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'mobile') : null}</td>
               </tr>
               <tr>
-                <td><b>Main Phone</b></td>
+                <td><b>Secondary Phone</b></td>
                 <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'home') : null}</td>
               </tr>
               <tr>
-                <td><b>Address</b></td>
+                <td><b>Provider</b></td>
                 <td>{(service.locations.length > 0) ? service.locations[0].properties.address : null}</td>
               </tr>
             </tbody>
