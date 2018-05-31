@@ -19,16 +19,6 @@ class Client extends Component {
           id = p.match.params.id,
           client = p.clientsById[id];
 
-    function getPhoneNumber(phoneNumbers, phoneType) {
-      let matchedNumber = null
-      phoneNumbers.forEach(function(phoneNumber) {
-        if (phoneNumber.phone_type === phoneType) {
-          matchedNumber = phoneNumber.phone_number
-        }
-      });
-      return matchedNumber
-    }
-
     return (
       <div className="content">
         <h3>Client Profile</h3>
@@ -64,12 +54,12 @@ class Client extends Component {
                 <td>{client.email}</td>
               </tr>
               <tr>
-                <td><b>Cell Phone</b></td>
-                <td>{(client.phone_numbers.length > 0) ? getPhoneNumber(client.phone_numbers, 'mobile') : null}</td>
+                <td><b>Phone Number</b></td>
+                <td>{client.primary_phone_number}</td>
               </tr>
               <tr>
-                <td><b>Home Phone</b></td>
-                <td>{(client.phone_numbers.length > 0) ? getPhoneNumber(client.phone_numbers, 'home') : null}</td>
+                <td><b>Alternative Phone Number</b></td>
+                <td>{client.alt_phone_number}</td>
               </tr>
               <tr>
                 <td><b>Address</b></td>

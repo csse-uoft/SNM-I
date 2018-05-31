@@ -25,10 +25,8 @@ class ClientForm extends Component {
         gender: (client.gender !== undefined) ? client.gender.toString() : '',
         birth_date: client.birth_date || '',
         email: client.email || '',
-        mobile_phone: (client.phone_numbers && client.phone_numbers.length > 0) ?
-          getPhoneNumber(client.phone_numbers, 'mobile') : '',
-        home_phone: (client.phone_numbers && client.phone_numbers.length > 0) ?
-          getPhoneNumber(client.phone_numbers, 'home') : '',
+        primary_phone_number: client.primary_phone_number,
+        alt_phone_number: client.alt_phone_number,
         address: (client.locations && client.locations.length > 0) ?
           client.locations[0].properties.address : '',
       }
@@ -147,27 +145,27 @@ class ClientForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="mobile_phone">
+            <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Cell Phone
+                Telephone
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  value={this.state.form.mobile_phone}
+                  value={this.state.form.primary_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="home_phone">
+            <FormGroup controlId="alt_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Home Phone (required)
+                Alternative Phone Number
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  value={this.state.form.home_phone}
+                  value={this.state.form.alt_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
@@ -204,16 +202,6 @@ const mapStateToProps = (state) => {
   return {
     clientsById: state.clients.byId
   }
-}
-
-function getPhoneNumber(phoneNumbers, phoneType) {
-  let matchedNumber = null
-  phoneNumbers.forEach(function(phoneNumber) {
-    if (phoneNumber.phone_type === phoneType) {
-      matchedNumber = phoneNumber.phone_number
-    }
-  });
-  return matchedNumber
 }
 
 export default connect(mapStateToProps)(withRouter(ClientForm));
