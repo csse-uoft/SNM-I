@@ -17,16 +17,6 @@ class Service extends Component {
           id = p.match.params.id,
           service = p.servicesById[id];
 
-    function getPhoneNumber(phoneNumbers, phoneType) {
-      let matchedNumber = null
-      phoneNumbers.forEach(function(phoneNumber) {
-        if (phoneNumber.phone_type === phoneType) {
-          matchedNumber = phoneNumber.phone_number
-        }
-      });
-      return matchedNumber
-    }
-
     return (
       <div className="content">
         <h3>Service Profile</h3>
@@ -59,11 +49,11 @@ class Service extends Component {
               </tr>
               <tr>
                 <td><b>Contact Person Phone</b></td>
-                <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'mobile') : null}</td>
+                <td>{service.primary_phone_number}</td>
               </tr>
               <tr>
                 <td><b>Secondary Phone</b></td>
-                <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'home') : null}</td>
+                <td>{service.alt_phone_number}</td>
               </tr>
               <tr>
                 <td><b>Provider</b></td>
