@@ -29,11 +29,11 @@ class Clients extends Component {
               Add new named client profile
             </Button>
           </Link>
-          <Link to={`/clients/anonymous/new`}>
+          {/* <Link to={`/clients/anonymous/new`}>
             <Button bsStyle="default">
               Add new anonymous client profile
             </Button>
-          </Link>
+          </Link> */}
           <hr/>
           { p.clientsLoaded &&
             <ClientsIndex>{

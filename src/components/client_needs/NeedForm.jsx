@@ -12,6 +12,7 @@ class NeedForm extends Component {
   constructor(props) {
     super(props);
     let need = {};
+
     if (this.props.match.params.need_id) {
       need = this.props.needsById[this.props.match.params.need_id]
     }
@@ -24,7 +25,7 @@ class NeedForm extends Component {
         description: need.description || '',
         needed_by: need.needed_by || '',
         condition: need.condition || '',
-        status: need.status || ''
+        status: (need.status !== undefined) ? need.status.toString() : '' || ''
       }
     }
 
@@ -45,13 +46,15 @@ class NeedForm extends Component {
     if (this.state.mode === 'edit') {
       this.props.dispatch(updateClientNeed(this.props.clientId, this.state.needId, this.state.form));
     } else {
-      this.props.dispatch(createClientNeed(this.props.clientId, this.state.form));
+      let form = Object.assign({}, this.state.form);
+      delete form['status']
+      this.props.dispatch(createClientNeed(this.props.clientId, form));
     }
     this.props.history.push(`/client/${this.props.clientId}`)
   }
 
   render() {
-    const p = this.props;
+    const p = this.props, s = this.state;
     const formTitle = (this.state.mode === 'edit') ? 'Edit Need' : 'Create Need'
 
     function cateogiresIntoOptions(categories) {
@@ -122,14 +125,28 @@ class NeedForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Status
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text" value={this.state.form.status} onChange={this.formValChange} />
-              </Col>
-            </FormGroup>
+            { s.mode === 'edit' &&
+              <FormGroup controlId="status">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Status
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    placeholder="select"
+                    value={this.state.form.status}
+                    onChange={this.formValChange}
+                  >
+                    <option value="select">-- Not Set --</option>
+                    <option value="0">Unmatched</option>
+                    <option value="1">Pending</option>
+                    <option value="2">In progress</option>
+                    <option value="3">Matched</option>
+                    <option value="4">Fulfilled</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
+            }
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
