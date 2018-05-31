@@ -11,8 +11,6 @@ import { searchProviders, fetchProviders, createProvider, updateProvider, delete
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-//import '../stylesheets/Providers.css';
-//git push heroku origin/master
 
 class Providers extends Component {
   constructor(props) {
