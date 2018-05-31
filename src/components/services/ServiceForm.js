@@ -26,10 +26,8 @@ class ServiceForm extends Component {
         language: service.language || '',
         capacity: service.capacity || '',
         email: service.email || '',
-        mobile_phone: (service.phone_numbers && service.phone_numbers.length > 0) ?
-          getPhoneNumber(service.phone_numbers, 'mobile') : '',
-        home_phone: (service.phone_numbers && service.phone_numbers.length > 0) ?
-          getPhoneNumber(service.phone_numbers, 'home') : '',
+        primary_phone_number: service.primary_phone_number || '',
+        alt_phone_number: service.alt_phone_number || '',
         address: (service.locations && service.locations.length > 0) ?
           service.locations[0].properties.address : '',
       }
@@ -163,27 +161,27 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="mobile_phone">
+            <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Contact Person Phone
+                Telephone
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  value={this.state.form.mobile_phone}
+                  value={this.state.form.primary_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="home_phone">
+            <FormGroup controlId="alt_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Secondary Phone
+                Alternative Phone Number
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  value={this.state.form.home_phone}
+                  value={this.state.form.alt_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
@@ -222,16 +220,6 @@ const mapStateToProps = (state) => {
     servicesCategories: state.ontology.services.categories,
     categoriesLoaded: state.ontology.needs.loaded
   }
-}
-
-function getPhoneNumber(phoneNumbers, phoneType) {
-  let matchedNumber = null
-  phoneNumbers.forEach(function(phoneNumber) {
-    if (phoneNumber.phone_type === phoneType) {
-      matchedNumber = phoneNumber.phone_number
-    }
-  });
-  return matchedNumber
 }
 
 export default connect(mapStateToProps)(withRouter(ServiceForm));
