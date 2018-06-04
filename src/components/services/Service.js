@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 // redux
 import { connect } from 'react-redux'
@@ -22,7 +23,7 @@ class Service extends Component {
     return (
       <div className="content">
         <h3>Service Profile</h3>
-        { service && service.loaded &&
+        { service && service.servicesLoaded &&
           <Table striped bordered condensed hover>
             <tbody>
               <tr>
@@ -60,6 +61,14 @@ class Service extends Component {
               <tr>
                 <td><b>Location</b></td>
                 <td>{formatLocation(service.location)}</td>
+              </tr>
+              <tr>
+                <td><b>Provider</b></td>
+                <td>
+                  <Link to={`/provider/${service.provider.id}`}>
+                    {`${service.provider.first_name} ${service.provider.last_name}`}
+                  </Link>
+                </td>
               </tr>
             </tbody>
           </Table>
