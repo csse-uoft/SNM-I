@@ -46,6 +46,14 @@ function removeService(id) {
   }
 }
 
+export function searchServices(searchValue, searchType) {
+  return {
+    type: SEARCH_SERVICES,
+    searchValue: searchValue,
+    searchType: searchType
+  };
+}
+
 
 export function fetchService(id) {
   return dispatch => {
