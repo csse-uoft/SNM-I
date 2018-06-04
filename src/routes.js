@@ -10,7 +10,6 @@ import Dashboard from './components/Dashboard';
 import Clients from './components/Clients';
 import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm'
-import AnonymousClientForm from './components/clients/AnonymousClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
@@ -41,7 +40,6 @@ const routes = (
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm} />
     <PrivateRoute path='/client/:id' component={Client} />
     <PrivateRoute path='/clients/new' component={ClientForm} />
-    <PrivateRoute path='/clients/anonymous/new' component={AnonymousClientForm} />
     <PrivateRoute path='/clients' component={Clients} />
 
     <AdminRoute path='/users/:id/edit' component={UserForm} />
