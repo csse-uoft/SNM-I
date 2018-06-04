@@ -6,6 +6,8 @@ import ClientNeeds from '../ClientNeeds';
 import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
 
+import { formatLocation } from '../../helpers/location_helpers'
+
 import { Table } from 'react-bootstrap';
 
 class Client extends Component {
@@ -63,58 +65,8 @@ class Client extends Component {
               </tr>
               <tr>
                 <td><b>Address</b></td>
-                <td>{(client.locations.length > 0) ? client.locations[0].properties.address : null}</td>
+                <td>{formatLocation(client.address)}</td>
               </tr>
-              {/*
-              <tr>
-                <td><b>Family Code</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Landing Date</b></td>
-                <td>2018-01-01</td>
-              </tr>
-              <tr>
-                <td><b>Arrival Date</b></td>
-                <td>2018-01-01</td>
-              </tr>
-              <tr>
-                <td><b>Re-entry Date</b></td>
-                <td>2018-01-03</td>
-              </tr>
-              <tr>
-                <td><b>Initial Destination</b></td>
-                <td>Toronto</td>
-              </tr>
-              <tr>
-                <td><b>Country of Origin</b></td>
-                <td>US</td>
-              </tr>
-              <tr>
-                <td><b>Last Residence</b></td>
-                <td>New York</td>
-              </tr>
-              <tr>
-                <td><b>Immi. Class</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Immi. Status</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Immi. Card Type</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Aboriginal Status</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Preferred Official Language</b></td>
-                <td>English</td>
-              </tr>
-              */}
             </tbody>
           </Table>
         }
