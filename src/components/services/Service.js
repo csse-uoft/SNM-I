@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { fetchService } from '../../store/actions/serviceActions.js'
 
+import { formatLocation } from '../../helpers/location_helpers'
+
 import { Table } from 'react-bootstrap';
 
 class Service extends Component {
@@ -56,8 +58,8 @@ class Service extends Component {
                 <td>{service.alt_phone_number}</td>
               </tr>
               <tr>
-                <td><b>Provider</b></td>
-                <td>{(service.locations.length > 0) ? service.locations[0].properties.address : null}</td>
+                <td><b>Location</b></td>
+                <td>{formatLocation(service.location)}</td>
               </tr>
             </tbody>
           </Table>
