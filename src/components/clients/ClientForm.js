@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import _ from 'lodash';
 
 // redux
 import { connect } from 'react-redux'
@@ -25,19 +26,31 @@ class ClientForm extends Component {
         gender: (client.gender !== undefined) ? client.gender.toString() : '',
         birth_date: client.birth_date || '',
         email: client.email || '',
-        primary_phone_number: client.primary_phone_number,
-        alt_phone_number: client.alt_phone_number,
-        address: (client.locations && client.locations.length > 0) ?
-          client.locations[0].properties.address : '',
+        primary_phone_number: client.primary_phone_number || '',
+        alt_phone_number: client.alt_phone_number || '',
+        address: Object.assign({
+          street_address: '',
+          apt_number: '',
+          city: '',
+          province: '',
+          postal_code: ''
+        }, client.address)
       }
     }
 
     this.formValChange = this.formValChange.bind(this);
+    this.addressChange = this.addressChange.bind(this);
     this.submit = this.submit.bind(this);
   }
 
   formValChange(e) {
     let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+    this.setState({ form: nextForm });
+  }
+
+  addressChange(e) {
+    let nextForm = _.clone(this.state.form);
+    nextForm['address'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
   }
 
@@ -171,15 +184,67 @@ class ClientForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="address">
+            <FormGroup controlId="street_address">
               <Col componentClass={ControlLabel} sm={3}>
-                Address
+                Street Address
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address}
-                  onChange={this.formValChange}
+                  value={this.state.form.address.street_address}
+                  onChange={this.addressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="apt_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Apt. #
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.address.apt_number}
+                  onChange={this.addressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="city">
+              <Col componentClass={ControlLabel} sm={3}>
+                City
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.address.city}
+                  onChange={this.addressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="province">
+              <Col componentClass={ControlLabel} sm={3}>
+                Province
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.address.province}
+                  onChange={this.addressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="postal_code">
+              <Col componentClass={ControlLabel} sm={3}>
+                Postal Code
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.address.postal_code}
+                  onChange={this.addressChange}
                 />
               </Col>
             </FormGroup>
