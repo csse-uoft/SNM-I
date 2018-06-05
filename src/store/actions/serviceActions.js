@@ -148,11 +148,3 @@ export function updateService(id, params) {
   }
   console.log(params)
 }
-
-export function searchServices(searchValue, searchType) {
-  return {
-    type: SEARCH_SERVICES,
-    searchValue: searchValue,
-    searchType: searchType
-  };
-}
