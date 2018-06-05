@@ -23,7 +23,7 @@ class ClientForm extends Component {
         first_name: client.first_name || '',
         last_name: client.last_name || '',
         preferred_name: client.preferred_name || '',
-        gender: (client.gender !== undefined) ? client.gender.toString() : '',
+        gender: client.gender,
         birth_date: client.birth_date || '',
         email: client.email || '',
         primary_phone_number: client.primary_phone_number || '',
@@ -125,8 +125,9 @@ class ClientForm extends Component {
                 >
 
                   <option value="select">--- Not Set ---</option>
-                  <option value="0">Female</option>
-                  <option value="1">Male</option>
+                  <option value="Other">Other</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </FormControl>
               </Col>
             </FormGroup>
