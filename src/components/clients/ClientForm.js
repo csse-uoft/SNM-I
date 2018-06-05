@@ -28,6 +28,7 @@ class ClientForm extends Component {
         email: client.email || '',
         primary_phone_number: client.primary_phone_number || '',
         alt_phone_number: client.alt_phone_number || '',
+        marital_status: client.marital_status || '',
         address: Object.assign({
           street_address: '',
           apt_number: '',
@@ -182,6 +183,28 @@ class ClientForm extends Component {
                   value={this.state.form.alt_phone_number}
                   onChange={this.formValChange}
                 />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="marital_status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Marital Status
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.marital_status}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">--- Not Set ---</option>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Common Law">Common Law</option>
+                  <option value="Separated">Separated</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </FormControl>
               </Col>
             </FormGroup>
 

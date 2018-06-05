@@ -49,7 +49,7 @@ class Client extends Component {
               </tr>
               <tr>
                 <td><b>Marital Status</b></td>
-                <td>Single</td>
+                <td>{client.marital_status}</td>
               </tr>
               <tr>
                 <td><b>Email</b></td>
