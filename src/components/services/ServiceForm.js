@@ -6,6 +6,8 @@ import _ from 'lodash';
 // redux
 import { connect } from 'react-redux'
 import { createService, updateService } from '../../store/actions/serviceActions.js'
+import { fetchProviders } from '../../store/actions/providerActions.js'
+
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
@@ -35,7 +37,8 @@ class ServiceForm extends Component {
           city: '',
           province: '',
           postal_code: ''
-        }, service.location)
+        }, service.location),
+        provider_id: (service.provider && service.provider.id) || ''
       }
     }
 
@@ -46,6 +49,8 @@ class ServiceForm extends Component {
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('services'));
+    this.props.dispatch(fetchOntologyCategories('languages'));
+    this.props.dispatch(fetchProviders());
   }
 
   formValChange(e) {
@@ -138,11 +143,16 @@ class ServiceForm extends Component {
               </Col>
               <Col sm={9}>
                 <FormControl
-                  type="text"
+                  componentClass="select"
+                  placeholder="select"
                   value={this.state.form.language}
-                  placeholder=""
                   onChange={this.formValChange}
-                />
+                >
+                  <option value="select">-- Not Set --</option>
+                  { p.languagesLoaded &&
+                    categoriesIntoOptions(p.languagesCategories)
+                  }
+                </FormControl>
               </Col>
             </FormGroup>
 
@@ -265,6 +275,27 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
+            <FormGroup controlId="provider_id">
+              <Col componentClass={ControlLabel} sm={3}>
+                Provider
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.provider_id}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  {p.providers.map(provider =>
+                    <option key={provider.id} value={provider.id}>
+                      {provider.first_name + " " + provider.last_name}
+                    </option>
+                  )}
+                </FormControl>
+              </Col>
+            </FormGroup>
+
             <FormGroup>
               <Col smOffset={3} sm={9}>
                 <Button onClick={this.submit}>
@@ -283,7 +314,11 @@ const mapStateToProps = (state) => {
   return {
     servicesById: state.services.byId,
     servicesCategories: state.ontology.services.categories,
-    categoriesLoaded: state.ontology.needs.loaded
+    categoriesLoaded: state.ontology.services.loaded,
+    languagesCategories: state.ontology.languages.categories,
+    languagesLoaded: state.ontology.languages.loaded,
+    providers: state.providers.filteredProviders || [],
+    providersLoaded: state.providers.loaded
   }
 }
 
