@@ -33,6 +33,7 @@ class NeedRow extends Component {
             {need.id}
           </Link>
         </td>
+        <td>{need.type}</td>
         <td>{need.category}</td>
         <td>{need.description}</td>
         <td>{defaults['needStatus'][need.status]}</td>

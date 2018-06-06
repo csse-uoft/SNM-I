@@ -26,7 +26,7 @@ class Clients extends Component {
           <h1>Clients</h1>
           <Link to='/clients/new'>
             <Button bsStyle="default">
-              Add new named client profile
+              Add new client profile
             </Button>
           </Link>
           <hr/>
