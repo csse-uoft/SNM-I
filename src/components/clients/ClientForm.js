@@ -6,7 +6,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux'
 import { createClient, updateClient } from '../../store/actions/clientActions.js'
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
+  Radio } from 'react-bootstrap';
 
 class ClientForm extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class ClientForm extends Component {
       mode: (client.id) ? 'edit' : 'new',
       form: {
         first_name: client.first_name || '',
+        middle_name: client.middle_name || '',
         last_name: client.last_name || '',
         preferred_name: client.preferred_name || '',
         gender: client.gender,
@@ -35,7 +37,17 @@ class ClientForm extends Component {
           city: '',
           province: '',
           postal_code: ''
-        }, client.address)
+        }, client.address),
+        has_children: client.has_children || false,
+        num_of_children: client.num_of_children || '',
+        country_of_origin: client.country_of_origin || '',
+        country_of_last_residence: client.country_of_last_residence || '',
+        first_language: client.first_language || '',
+        other_languages: client.other_languages || '',
+        pr_number: client.pr_number || '',
+        immigration_doc_number: client.immigration_doc_number || '',
+        landing_date: client.landing_date || '',
+        arrival_date: client.arrival_date || ''
       }
     }
 
@@ -44,8 +56,8 @@ class ClientForm extends Component {
     this.submit = this.submit.bind(this);
   }
 
-  formValChange(e) {
-    let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+  formValChange(e, id=e.target.id) {
+    let nextForm = {...this.state.form, [id]: e.target.value};
     this.setState({ form: nextForm });
   }
 
@@ -67,24 +79,42 @@ class ClientForm extends Component {
 
   render() {
     const formTitle = (this.state.mode === 'edit') ?
-      'Edit Client Profile' : 'New Named Client Profile'
+      'Edit Client Profile' : 'New Client Profile'
     return (
-      <Row className="content">
-        <Col sm={12}>
-          <h3>{formTitle}</h3>
-          <hr />
-        </Col>
-        <Col sm={12}>
-          <Form horizontal>
+      <Grid className="content">
+        <Row>
+          <Col sm={12}>
+            <h3>{formTitle}</h3>
+            <hr />
+          </Col>
+        </Row>
+        <Form horizontal>
+          <Row>
+            <Col sm={12}>
+              <h4>Personal Information</h4>
+              <hr />
+            </Col>
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
-                First name (required)
+                First name
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  placeholder="Aravind"
                   value={this.state.form.first_name}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="middle_name">
+              <Col componentClass={ControlLabel} sm={3}>
+                Middle name
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.middle_name}
                   onChange={this.formValChange}
                 />
               </Col>
@@ -92,13 +122,12 @@ class ClientForm extends Component {
 
             <FormGroup controlId="last_name">
               <Col componentClass={ControlLabel} sm={3}>
-                Last name (required)
+                Last name
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
                   value={this.state.form.last_name}
-                  placeholder="Adiga"
                   onChange={this.formValChange}
                 />
               </Col>
@@ -109,7 +138,10 @@ class ClientForm extends Component {
                 Preferred Name
               </Col>
               <Col sm={9}>
-                <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange} />
+                <FormControl type="text"
+                  value={this.state.form.preferred_name}
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -124,7 +156,6 @@ class ClientForm extends Component {
                   value={this.state.form.gender}
                   onChange={this.formValChange}
                 >
-
                   <option value="select">--- Not Set ---</option>
                   <option value="Other">Other</option>
                   <option value="Male">Male</option>
@@ -154,7 +185,6 @@ class ClientForm extends Component {
                 <FormControl
                   type="text"
                   value={this.state.form.email}
-                  placeholder="aravind.adiga.gmail.com"
                   onChange={this.formValChange}
                 />
               </Col>
@@ -273,6 +303,161 @@ class ClientForm extends Component {
               </Col>
             </FormGroup>
 
+            <Row>
+              <Col componentClass={ControlLabel} sm={3}>
+                Do you have children?
+              </Col>
+              <Col sm={9}>
+                <FormGroup controlId="has_children">
+                  <Radio
+                    name="radioGroup"
+                    value='true'
+                    onChange={ e => this.formValChange(e, 'has_children')}
+                    defaultChecked={this.state.form.has_children === true}
+                    inline
+                  >
+                    Yes
+                  </Radio>{' '}
+                  <Radio
+                    name="radioGroup"
+                    value='false'
+                    onChange={ e => this.formValChange(e, 'has_children')}
+                    defaultChecked={this.state.form.has_children === false}
+                  inline>
+                    No
+                  </Radio>{' '}
+                </FormGroup>
+              </Col>
+            </Row>
+          </Row>
+
+          { JSON.parse(this.state.form.has_children) && (
+            <FormGroup controlId="num_of_children">
+              <Col componentClass={ControlLabel} sm={3}>
+                Number of Children
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.num_of_children}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+          )
+          }
+
+          <br/>
+          <Row>
+            <Col sm={12}>
+              <h4>Country of Origin Information</h4>
+              <hr/>
+            </Col>
+            <FormGroup controlId="country_of_origin">
+              <Col componentClass={ControlLabel} sm={3}>
+                Country of Origin
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.country_of_origin}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="country_of_last_residence">
+              <Col componentClass={ControlLabel} sm={3}>
+                Country of Last Residence
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.country_of_last_residence}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="first_language">
+              <Col componentClass={ControlLabel} sm={3}>
+                First Language
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.first_language}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="other_languages">
+              <Col componentClass={ControlLabel} sm={3}>
+                Other languages
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.other_languages}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="pr_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Permanent Residence Card Number (PR card)
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.pr_number}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="immigration_doc_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Immigration Document Number (if different from PR card):
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.immigration_doc_number}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="landing_date">
+              <Col componentClass={ControlLabel} sm={3}>
+                Landing Date
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="date"
+                  value={this.state.form.landing_date}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="arrival_date">
+              <Col componentClass={ControlLabel} sm={3}>
+                Arrival Date (if different from landing_date):
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="date"
+                  value={this.state.form.arrival_date}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+
             <FormGroup>
               <Col smOffset={3} sm={9}>
                 <Button onClick={this.submit}>
@@ -280,9 +465,9 @@ class ClientForm extends Component {
                 </Button>
               </Col>
             </FormGroup>
-          </Form>
-        </Col>
-      </Row>
+          </Row>
+        </Form>
+      </Grid>
     );
   }
 }
