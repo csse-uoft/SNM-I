@@ -53,7 +53,12 @@ class ProviderProfile extends Component {
               <td>{provider.provider_type}</td>
             </tr>
 
-          {provider.provider_type === "Organization" && 
+            <tr>
+              <td><b>Status</b></td>
+              <td>{provider.status}</td>
+            </tr>
+
+          {provider.provider_type === "Organization" &&
             <tr>
               <td><b>Company Name</b></td>
               <td>{provider.company}</td>

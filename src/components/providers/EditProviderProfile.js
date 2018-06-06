@@ -35,9 +35,10 @@ class EditProvider extends Component {
         phone_extension: provider.phone_extension,
         referrer: provider.referrer,
         location: 'Canada',
-        visibility: 'select'
-        }
-      } 
+        visibility: 'select',
+        status: provider.status
+      }
+    }
   }
 
   componentWillMount() { 
@@ -78,18 +79,36 @@ class EditProvider extends Component {
         { provider && provider.loaded &&
         <div>
           <Form horizontal>
-            
-            {provider.provider_type === "Organization" && 
-            <FormGroup controlId="company">
+            {provider.provider_type === "Organization" &&
+              <FormGroup controlId="company">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Company (required)
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text"
+                    placeholder="Company name" defaultValue={provider.company} onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+            }
+
+            <FormGroup controlId="status">
               <Col componentClass={ControlLabel} sm={3}>
-                Company (required)
+                Status
               </Col>
               <Col sm={9}>
-                <FormControl type="text"
-                  placeholder="Company name" defaultValue={provider.company} onChange={this.formValChange}/>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.status}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">--- Not Set ---</option>
+                  <option value="External">External</option>
+                  <option value="Internal">Internal</option>
+                  <option value="Home Agency">Home Agency</option>
+                </FormControl>
               </Col>
             </FormGroup>
-            }
 
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
