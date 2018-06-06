@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 // redux
 import { connect } from 'react-redux'
 import { fetchService } from '../../store/actions/serviceActions.js'
+
+import { formatLocation } from '../../helpers/location_helpers'
 
 import { Table } from 'react-bootstrap';
 
@@ -17,20 +20,10 @@ class Service extends Component {
           id = p.match.params.id,
           service = p.servicesById[id];
 
-    function getPhoneNumber(phoneNumbers, phoneType) {
-      let matchedNumber = null
-      phoneNumbers.forEach(function(phoneNumber) {
-        if (phoneNumber.phone_type === phoneType) {
-          matchedNumber = phoneNumber.phone_number
-        }
-      });
-      return matchedNumber
-    }
-
     return (
       <div className="content">
         <h3>Service Profile</h3>
-        { service && service.loaded &&
+        { service && service.servicesLoaded &&
           <Table striped bordered condensed hover>
             <tbody>
               <tr>
@@ -54,20 +47,28 @@ class Service extends Component {
                 <td>{service.capacity}</td>
               </tr>
               <tr>
-                <td><b>Email</b></td>
+                <td><b>Contact Person Email</b></td>
                 <td>{service.email}</td>
               </tr>
               <tr>
-                <td><b>Cell Phone</b></td>
-                <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'mobile') : null}</td>
+                <td><b>Contact Person Phone</b></td>
+                <td>{service.primary_phone_number}</td>
               </tr>
               <tr>
-                <td><b>Main Phone</b></td>
-                <td>{(service.phone_numbers.length > 0) ? getPhoneNumber(service.phone_numbers, 'home') : null}</td>
+                <td><b>Secondary Phone</b></td>
+                <td>{service.alt_phone_number}</td>
               </tr>
               <tr>
-                <td><b>Address</b></td>
-                <td>{(service.locations.length > 0) ? service.locations[0].properties.address : null}</td>
+                <td><b>Location</b></td>
+                <td>{formatLocation(service.location)}</td>
+              </tr>
+              <tr>
+                <td><b>Provider</b></td>
+                <td>
+                  <Link to={`/provider/${service.provider.id}`}>
+                    {`${service.provider.first_name} ${service.provider.last_name}`}
+                  </Link>
+                </td>
               </tr>
             </tbody>
           </Table>

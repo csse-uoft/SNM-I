@@ -6,6 +6,8 @@ import ClientNeeds from '../ClientNeeds';
 import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
 
+import { formatLocation } from '../../helpers/location_helpers'
+
 import { Table } from 'react-bootstrap';
 
 class Client extends Component {
@@ -18,16 +20,6 @@ class Client extends Component {
     const p = this.props,
           id = p.match.params.id,
           client = p.clientsById[id];
-
-    function getPhoneNumber(phoneNumbers, phoneType) {
-      let matchedNumber = null
-      phoneNumbers.forEach(function(phoneNumber) {
-        if (phoneNumber.phone_type === phoneType) {
-          matchedNumber = phoneNumber.phone_number
-        }
-      });
-      return matchedNumber
-    }
 
     return (
       <div className="content">
@@ -45,7 +37,7 @@ class Client extends Component {
               </tr>
               <tr>
                 <td><b>Gender</b></td>
-                <td>{client.gender}</td>
+                <td>{client.gender === 0 ? 'Female' : 'Male'}</td>
               </tr>
               <tr>
                 <td><b>Preferred Name</b></td>
@@ -64,67 +56,17 @@ class Client extends Component {
                 <td>{client.email}</td>
               </tr>
               <tr>
-                <td><b>Cell Phone</b></td>
-                <td>{(client.phone_numbers.length > 0) ? getPhoneNumber(client.phone_numbers, 'mobile') : null}</td>
+                <td><b>Phone Number</b></td>
+                <td>{client.primary_phone_number}</td>
               </tr>
               <tr>
-                <td><b>Home Phone</b></td>
-                <td>{(client.phone_numbers.length > 0) ? getPhoneNumber(client.phone_numbers, 'home') : null}</td>
+                <td><b>Alternative Phone Number</b></td>
+                <td>{client.alt_phone_number}</td>
               </tr>
               <tr>
                 <td><b>Address</b></td>
-                <td>{(client.locations.length > 0) ? client.locations[0].properties.address : null}</td>
+                <td>{formatLocation(client.address)}</td>
               </tr>
-              {/*
-              <tr>
-                <td><b>Family Code</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Landing Date</b></td>
-                <td>2018-01-01</td>
-              </tr>
-              <tr>
-                <td><b>Arrival Date</b></td>
-                <td>2018-01-01</td>
-              </tr>
-              <tr>
-                <td><b>Re-entry Date</b></td>
-                <td>2018-01-03</td>
-              </tr>
-              <tr>
-                <td><b>Initial Destination</b></td>
-                <td>Toronto</td>
-              </tr>
-              <tr>
-                <td><b>Country of Origin</b></td>
-                <td>US</td>
-              </tr>
-              <tr>
-                <td><b>Last Residence</b></td>
-                <td>New York</td>
-              </tr>
-              <tr>
-                <td><b>Immi. Class</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Immi. Status</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Immi. Card Type</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Aboriginal Status</b></td>
-                <td />
-              </tr>
-              <tr>
-                <td><b>Preferred Official Language</b></td>
-                <td>English</td>
-              </tr>
-              */}
             </tbody>
           </Table>
         }

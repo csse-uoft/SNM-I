@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import _ from 'lodash';
 
 // redux
 import { connect } from 'react-redux'
 import { createService, updateService } from '../../store/actions/serviceActions.js'
+import { fetchProviders } from '../../store/actions/providerActions.js'
+
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
@@ -26,25 +29,38 @@ class ServiceForm extends Component {
         language: service.language || '',
         capacity: service.capacity || '',
         email: service.email || '',
-        mobile_phone: (service.phone_numbers && service.phone_numbers.length > 0) ?
-          getPhoneNumber(service.phone_numbers, 'mobile') : '',
-        home_phone: (service.phone_numbers && service.phone_numbers.length > 0) ?
-          getPhoneNumber(service.phone_numbers, 'home') : '',
-        address: (service.locations && service.locations.length > 0) ?
-          service.locations[0].properties.address : '',
+        primary_phone_number: service.primary_phone_number || '',
+        alt_phone_number: service.alt_phone_number || '',
+        location: Object.assign({
+          street_address: '',
+          apt_number: '',
+          city: '',
+          province: '',
+          postal_code: ''
+        }, service.location),
+        provider_id: (service.provider && service.provider.id) || ''
       }
     }
 
     this.formValChange = this.formValChange.bind(this);
+    this.locationChange = this.locationChange.bind(this);
     this.submit = this.submit.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('services'));
+    this.props.dispatch(fetchOntologyCategories('languages'));
+    this.props.dispatch(fetchProviders());
   }
 
   formValChange(e) {
     let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+    this.setState({ form: nextForm });
+  }
+
+  locationChange(e) {
+    let nextForm = _.clone(this.state.form);
+    nextForm['location'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
   }
 
@@ -81,12 +97,12 @@ class ServiceForm extends Component {
           <Form horizontal>
             <FormGroup controlId="name">
               <Col componentClass={ControlLabel} sm={3}>
-                Name (required)
+                Name
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  placeholder="Aravind"
+                  placeholder=""
                   value={this.state.form.name}
                   onChange={this.formValChange}
                 />
@@ -98,7 +114,7 @@ class ServiceForm extends Component {
                 Description
               </Col>
               <Col sm={9}>
-                <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange} />
+                <FormControl type="text" value={this.state.form.desc} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -127,11 +143,16 @@ class ServiceForm extends Component {
               </Col>
               <Col sm={9}>
                 <FormControl
-                  type="text"
+                  componentClass="select"
+                  placeholder="select"
                   value={this.state.form.language}
-                  placeholder=""
                   onChange={this.formValChange}
-                />
+                >
+                  <option value="select">-- Not Set --</option>
+                  { p.languagesLoaded &&
+                    categoriesIntoOptions(p.languagesCategories)
+                  }
+                </FormControl>
               </Col>
             </FormGroup>
 
@@ -151,54 +172,127 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
-                Email
+                Contact Person Email
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
                   value={this.state.form.email}
-                  placeholder="aravind.adiga.gmail.com"
+                  placeholder=""
                   onChange={this.formValChange}
                 />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="mobile_phone">
+            <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Cell Phone
+                Telephone
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  value={this.state.form.mobile_phone}
+                  value={this.state.form.primary_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="home_phone">
+            <FormGroup controlId="alt_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Main Phone (required)
+                Alternative Phone Number
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  value={this.state.form.home_phone}
+                  value={this.state.form.alt_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="address">
+            <FormGroup controlId="street_address">
               <Col componentClass={ControlLabel} sm={3}>
-                Address
+                Street Address
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address}
-                  onChange={this.formValChange}
+                  value={this.state.form.location.street_address}
+                  onChange={this.locationChange}
                 />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="apt_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Apt. #
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.apt_number}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="city">
+              <Col componentClass={ControlLabel} sm={3}>
+                City
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.city}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="province">
+              <Col componentClass={ControlLabel} sm={3}>
+                Province
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.province}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="postal_code">
+              <Col componentClass={ControlLabel} sm={3}>
+                Postal Code
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.postal_code}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="provider_id">
+              <Col componentClass={ControlLabel} sm={3}>
+                Provider
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.provider_id}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  {p.providers.map(provider =>
+                    <option key={provider.id} value={provider.id}>
+                      {provider.first_name + " " + provider.last_name}
+                    </option>
+                  )}
+                </FormControl>
               </Col>
             </FormGroup>
 
@@ -218,18 +312,14 @@ class ServiceForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    servicesById: state.services.byId
+    servicesById: state.services.byId,
+    servicesCategories: state.ontology.services.categories,
+    categoriesLoaded: state.ontology.services.loaded,
+    languagesCategories: state.ontology.languages.categories,
+    languagesLoaded: state.ontology.languages.loaded,
+    providers: state.providers.filteredProviders || [],
+    providersLoaded: state.providers.loaded
   }
-}
-
-function getPhoneNumber(phoneNumbers, phoneType) {
-  let matchedNumber = null
-  phoneNumbers.forEach(function(phoneNumber) {
-    if (phoneNumber.phone_type === phoneType) {
-      matchedNumber = phoneNumber.phone_number
-    }
-  });
-  return matchedNumber
 }
 
 export default connect(mapStateToProps)(withRouter(ServiceForm));

@@ -7,6 +7,7 @@ export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
 export const REQUEST_SERVICES = 'REQUEST_SERVICES';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
 export const REMOVE_SERVICE = 'REMOVE_SERVICE';
+export const SEARCH_SERVICES = 'SEARCH_SERVICES';
 
 
 function requestService(id) {
@@ -43,6 +44,14 @@ function removeService(id) {
     type: REMOVE_SERVICE,
     id: id
   }
+}
+
+export function searchServices(searchValue, searchType) {
+  return {
+    type: SEARCH_SERVICES,
+    searchValue: searchValue,
+    searchType: searchType
+  };
 }
 
 

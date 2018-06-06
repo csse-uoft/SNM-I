@@ -7,7 +7,7 @@ import ServiceRow from './services/ServiceRow.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchServices } from '../store/actions/serviceActions.js'
+import { fetchServices, searchServices } from '../store/actions/serviceActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
@@ -45,7 +45,7 @@ class Services extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    services: state.services.byId,
+    services: state.services.filteredServices || [],
     servicesLoaded: state.services.servicesLoaded
   }
 }
