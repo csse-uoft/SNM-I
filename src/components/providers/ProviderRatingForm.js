@@ -33,6 +33,11 @@ class ProviderRatingForm extends Component {
     this.setState({comment: e.target.value});
   }
   handleSubmit(e) {
+    const id = this.props.match.params.id
+    const provider = this.props.providersById[id];
+    
+    const currentRate = provider.rating;
+    const numRates = provider.num_ratings;
   }
 
   render() {

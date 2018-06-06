@@ -36,7 +36,7 @@ class ProviderRow extends Component {
           {p.email}
         </td>
         <td className='centered-text'>
-          {p.phone}
+          {p.primary_phone_number}
         </td>
         <td>
          <Link to={`${url}`}>

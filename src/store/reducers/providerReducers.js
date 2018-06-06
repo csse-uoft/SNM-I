@@ -29,6 +29,7 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
       let provider_rating = provider.provider_rating;
       let rating_count = provider.rating_count;
       let new_rating = ((provider_rating * rating_count) + action.rating)/(rating_count + 1)
+      
 
 
     case SEARCH_PROVIDERS:
