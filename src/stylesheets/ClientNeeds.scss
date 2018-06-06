@@ -65,3 +65,24 @@ div.client-needs {
   }
 
 }
+
+.need-type-buttons {
+  button {
+    display: block;
+    margin: 0 auto;
+    width: 100px;
+    margin-bottom: 30px;
+  }
+}
+
+.outer {
+  display: table;
+  position: absolute;
+  height: 80%;
+  width: 100%;
+}
+
+.middle {
+  display: table-cell;
+  vertical-align: middle;
+}
