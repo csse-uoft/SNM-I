@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { fetchProvider, fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions/providerActions.js'
 import StarRatingComponent from 'react-star-rating-component';
 
-export default class ProviderRatingForm extends Component {
+class ProviderRatingForm extends Component {
   constructor(props) {
 		super(props);
     this.handleStarSelection=this.handleStarSelection.bind(this);
@@ -78,3 +78,13 @@ export default class ProviderRatingForm extends Component {
     )
   }
 }
+const mapStateToProps = (state) => {
+  return { 
+    providersById: state.providers.byId || {},
+    providerLoaded: state.providers.indexLoaded
+  } 
+}
+
+export default connect(
+  mapStateToProps  
+)(ProviderRatingForm);

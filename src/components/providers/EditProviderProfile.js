@@ -18,10 +18,7 @@ class EditProvider extends Component {
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
     const id = this.props.match.params.id;
-    console.log(id);
     const provider = this.props.providersById[id];
-    console.log(provider);
-    console.log(this.props.providersById)
 
     this.state= {
       form : {
