@@ -37,10 +37,14 @@ class Need extends Component {
                 <td><b>Description</b></td>
                 <td>{need.description}</td>
               </tr>
-              <tr>
-                <td><b>Condition</b></td>
-                <td>{need.condition}</td>
-              </tr>
+              {
+                (need.type === 'Good') && (
+                  <tr>
+                    <td><b>Condition</b></td>
+                    <td>{need.condition}</td>
+                  </tr>
+                )
+              }
               <tr>
                 <td><b>Status</b></td>
                 <td>{defaults['needStatus'][need.status]}</td>
