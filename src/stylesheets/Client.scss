@@ -3,3 +3,15 @@
     margin-right: 10px;
   }
 }
+
+.client-profile-table {
+  margin: 20px 0 40px 0;
+
+  tr:first-child {
+    background-color: #ececec;
+  }
+
+  tr td:first-child {
+    width: 40%;
+  }
+}
