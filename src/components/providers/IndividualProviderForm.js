@@ -13,18 +13,20 @@ class IndividualProviderForm extends Component {
     super(props);
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
-    this.state= { form : {
-      provider_type: 'Individual',
-      id: '',
-      first_name: '',
-      last_name: '',
-      gender: '',
-      email: '',
-      phone: '',
-      phone_extension: '',
-      referrer: '',
-      location: '',
-      visibility: 'select'
+    this.state= {
+      form : {
+        provider_type: 'Individual',
+        id: '',
+        first_name: '',
+        last_name: '',
+        gender: '',
+        email: '',
+        phone: '',
+        phone_extension: '',
+        referrer: '',
+        location: '',
+        visibility: 'select',
+        status: ''
       }
     } 
   }
@@ -58,6 +60,25 @@ class IndividualProviderForm extends Component {
 
 	    <Col sm={12}>
 	      <Form horizontal>
+          <FormGroup controlId="status">
+            <Col componentClass={ControlLabel} sm={3}>
+              Status
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                componentClass="select"
+                placeholder="select"
+                value={this.state.form.status}
+                onChange={this.formValChange}
+              >
+                <option value="select">--- Not Set ---</option>
+                <option value="External">External</option>
+                <option value="Internal">Internal</option>
+                <option value="Home Agency">Home Agency</option>
+              </FormControl>
+            </Col>
+          </FormGroup>
+
           <FormGroup controlId="first_name">
             <Col componentClass={ControlLabel} sm={3}>
               First name (required)
