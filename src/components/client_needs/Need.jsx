@@ -22,6 +22,10 @@ class Need extends Component {
           <Table striped bordered condensed hover>
             <tbody>
               <tr>
+                <td><b>Type</b></td>
+                <td>{need.type}</td>
+              </tr>
+              <tr>
                 <td><b>Category</b></td>
                 <td>{need.category}</td>
               </tr>
