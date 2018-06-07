@@ -82,7 +82,7 @@ export function fetchProvider(id) {
         method: 'GET',
         headers: new Headers({
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
+        }),
       }).then(response => response.json())
       .then(json => {
         dispatch(receiveProvider(id, json))
@@ -99,7 +99,7 @@ export function fetchProviders() {
         method: 'get',
         headers: new Headers({
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
+        }),
       }).then(response => response.json())
       .then(json => {
         dispatch(receiveProviders(json))
@@ -125,7 +125,7 @@ export function createProvider(params) {
 export function updateProvider(id, params) {
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
-          
+
     return fetch(url, {
       method: "PUT",
       body: JSON.stringify(params),
@@ -142,10 +142,10 @@ export function deleteProvider(id) {
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
     return fetch(url, {
-      method: "DELETE", 
+      method: "DELETE",
       headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }, 
+        },
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeProvider(id))

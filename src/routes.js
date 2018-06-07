@@ -28,6 +28,9 @@ import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
 import Service from './components/services/Service';
 import ServiceForm from './components/services/ServiceForm'
+import Goods from './components/Goods';
+import Good from './components/goods/Good';
+import GoodForm from './components/goods/GoodForm'
 
 const routes = (
   <Switch>
@@ -64,6 +67,11 @@ const routes = (
     <PrivateRoute path='/service/:id' component={Service} />
     <PrivateRoute path='/services/new' component={ServiceForm} />
     <PrivateRoute path='/services' component={Services} />
+
+    <PrivateRoute path='/goods/:id/edit' component={GoodForm} />
+    <PrivateRoute path='/good/:id' component={Good} />
+    <PrivateRoute path='/goods/new' component={GoodForm} />
+    <PrivateRoute path='/goods' component={Goods} />
   </Switch>
 )
 

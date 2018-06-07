@@ -11,11 +11,6 @@ export const REQUEST_RESOURCES = 'REQUEST_RESOURCES';
 export const RECEIVE_RESOURCES = 'RECEIVE_RESOURCES';
 export const REMOVE_RESOURCE = 'REMOVE_RESOURCE';
 
-export const RECEIVE_NEW_GOOD = 'RECEIVE_NEW_GOOD';
-export const REQUEST_GOODS = 'REQUEST_GOODS';
-export const RECEIVE_GOODS = 'RECEIVE_GOODS';
-export const REMOVE_GOODS = 'REMOVE_GOODS';
-
 
 function resourceSearchRequested(needId) {
   return {
@@ -125,86 +120,5 @@ export function deleteResource(id) {
         dispatch(removeResource(id))
       }
     });
-  }
-}
-
-
-export function fetchGoods() {
-  return dispatch => {
-    dispatch(requestGoods())
-    const url = serverHost + '/goods/';
-    return fetch(url).then(response => response.json())
-      .then(json => {
-        dispatch(receiveGoods(json))
-      })
-  }
-}
-
-function requestGoods() {
-  return {
-    type: REQUEST_GOODS
-  }
-}
-
-function receiveGoods(json) {
-  return {
-    type: RECEIVE_GOODS,
-    goods: json,
-    receivedAt: Date.now()
-  }
-}
-
-export function createGood(params) {
-  return dispatch => {
-    const url = serverHost + '/good/';
-          
-    return fetch(url, {
-      method: "POST",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewGood(json)));
-  }
-}
-
-function receiveNewGood(json) {
-  return {
-    type: RECEIVE_NEW_GOOD,
-    good: json
-  }
-}
-
-export function updateGood(id, params) {
-  return dispatch => {
-    const url = serverHost + '/good/' + id + '/';
-          
-    return fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(params),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewGood(json)));
-  }
-}
-
-export function deleteGood(id) {
-  return dispatch => {
-    const url = serverHost + '/good/' + id + '/';
-    return fetch(url, {method: "DELETE"}).then(response => {
-      if (response.status === 204) {
-        dispatch(removeGood(id))
-      }
-    });
-  }
-}
-
-function removeGood(id) {
-  return {
-    type: REMOVE_GOODS,
-    id: id
   }
 }

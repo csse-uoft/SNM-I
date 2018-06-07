@@ -1,23 +1,29 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
+import GoodSearchBar from './GoodSearchBar.js';
 
 export default class GoodsIndex extends Component {
   render() {
     return(
-      <Table striped condensed hover>
+      <div>
+      <GoodSearchBar> 
+      </GoodSearchBar>
+      <hr />
+      <Table striped bordered condensed hover>
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Condition</th>
-            <th>Contact Info</th>
-            <th>Image Link</th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           { this.props.children }
         </tbody>
       </Table>
+      </div>
     )
   }
 }

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { RECEIVE_PROVIDER, REQUEST_PROVIDER, SEARCH_PROVIDERS, REQUEST_PROVIDERS, RECEIVE_PROVIDERS,
-          RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER, RECEIVE_NEW_PROVIDER_RATING } from '../actions/providerActions.js'
+  RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER, RECEIVE_NEW_PROVIDER_RATING } from '../actions/providerActions.js'
 
 
 export function providers(state = {index: [], byId: {}, loaded: false, value: '', filteredProviders: []}, action) {
@@ -35,8 +35,8 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
           return {index: [...state.index], filteredProviders: [...state.index], loaded: true}
         }
         else if (action.searchType === "name") {
-          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) || 
-            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
+          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) ||
+            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType));
           return {index: [...state.index], filteredProviders: providers, loaded: true}
         }
         else if (action.searchType === "email") {
@@ -50,8 +50,8 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
           return {index: [...state.index], filteredProviders: providers, loaded: true}
         }
         else if (action.searchType === "name") {
-          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) || 
-          (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
+          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) ||
+            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
           return {index: [...state.index], filteredProviders: providers, loaded: true}
         }
         else if (action.searchType === "email") {
