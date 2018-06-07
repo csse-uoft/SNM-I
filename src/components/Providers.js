@@ -40,7 +40,7 @@ class Providers extends Component {
           </div>
 
         { p.providersLoaded &&
-          <ProvidersIndex> {
+          <ProvidersIndex>{
             p.providers.map((provider) => {
               return <ProviderRow key={ provider.id } provider={ provider }
                       delete={this.deleteProvider} />
@@ -63,5 +63,3 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps
 )(Providers);
-
-
