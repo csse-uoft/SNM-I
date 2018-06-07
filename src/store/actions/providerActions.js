@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 import { receiveNeeds } from './needActions.js'
+import { updateAuthOrganization } from './authAction.js'
 
 export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';
 export const REQUEST_PROVIDERS = 'REQUEST_PROVIDERS';
@@ -118,7 +119,12 @@ export function createProvider(params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewProvider(json)));
+      .then(provider => {
+        dispatch(receiveNewProvider(provider))
+        if (provider.status === 'Home Agency') {
+          dispatch(updateAuthOrganization(provider))
+        }
+    });
   }
 }
 
@@ -134,7 +140,12 @@ export function updateProvider(id, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewProvider(json)));
+      .then(provider => {
+        dispatch(receiveNewProvider(provider))
+        if (provider.status === 'Home Agency') {
+          dispatch(updateAuthOrganization(provider))
+        }
+      });
   }
 }
 

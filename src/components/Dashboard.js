@@ -34,6 +34,7 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
   return {
     currentUser: state.auth.currentUser,
+    organization: state.auth.organization,
     isLoggedin: state.auth.isLoggedin
   }
 }
