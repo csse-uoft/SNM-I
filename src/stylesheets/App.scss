@@ -10,26 +10,6 @@
   }
 }
 
-.clients,  .resources, .providers {
-  button {
-    float: right;
-  }
-
-  tr {
-
-    .glyphicon {
-      visibility: hidden;
-    }
-
-    &:hover {
-      .glyphicon {
-        visibility: visible;
-        cursor: pointer;
-      }
-    }
-  }
-}
-
 .content {
   padding: 10px 0px;
   padding-bottom: 80px;
