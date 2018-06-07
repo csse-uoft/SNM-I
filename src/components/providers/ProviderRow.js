@@ -43,7 +43,7 @@ class ProviderRow extends Component {
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger" onClick={this.delete}>
+          <Button bsStyle="danger" onClick={this.delete} disabled={p.status === 'Home Agency'}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>
