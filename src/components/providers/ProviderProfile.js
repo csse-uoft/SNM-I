@@ -4,21 +4,16 @@ import StarRatingComponent from 'react-star-rating-component';
 import _ from 'lodash'
 
 // components
-import ProvidersIndex from './ProvidersIndex.js'
-import ProviderRow from './ProviderRow.js'
+import { formatLocation } from '../../helpers/location_helpers'
 
 // styles
-import { Table, Button, Row, Glyphicon } from 'react-bootstrap'
+import { Table, Button, Row } from 'react-bootstrap'
 import { fetchProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom';
 
 class ProviderProfile extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
     const id = this.props.match.params.id
     this.props.dispatch(fetchProvider(id));
@@ -27,6 +22,8 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
+    console.log(this.props)
+    console.log(provider)
 
     return (
       <div className="content">
@@ -93,20 +90,27 @@ class ProviderProfile extends Component {
           </tr>
           <tr>
             <td><b>Phone</b></td>
-            <td>{provider.phone}</td>
+            <td>{provider.primary_phone_number}</td>
           </tr>
 
-          {provider.phone_extension !== '' &&
+          {provider.primary_phone_extension !== '' &&
           <tr>
             <td><b>Extension</b></td>
-            <td>{provider.phone_extension}</td>
+            <td>{provider.primary_phone_extension}</td>
+          </tr>
+          }
+
+          {provider.alt_phone_number !== '' &&
+          <tr>
+            <td><b>Alternate Phone Number</b></td>
+            <td>{provider.alt_phone_number} </td>
           </tr>
           }
 
           <tr>
             <td><b>Address</b></td>
-            <td>{provider.location}</td>
-          </tr> 
+            <td>{formatLocation(provider.address)}</td>
+          </tr>
 
           {provider.provider_type === "Individual" && provider.referrer.length > 0 &&
           <tr>
