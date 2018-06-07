@@ -61,6 +61,9 @@ class TopNavbar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           {navItems}
+          <div className="home-agency-branding">
+            {this.props.organization && this.props.organization.name}
+          </div>
           <Nav pullRight>
             {(this.props.isLoggedin) ? (
               <NavItem eventKey={4} href="#" onClick={this.signout}>Log Out</NavItem>
@@ -80,6 +83,7 @@ class TopNavbar extends Component {
 const mapStateToProps = (state) => {
   return {
     currentUser: state.auth.currentUser,
+    organization: state.auth.organization,
     isLoggedin: state.auth.isLoggedin
   }
 }
