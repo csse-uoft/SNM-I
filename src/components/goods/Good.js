@@ -48,7 +48,7 @@ class Good extends Component {
               </tr>
               <tr>
                 <td><b>Quantity</b></td>
-                <td>{good.Quantity}</td>
+                <td>{good.quantity}</td>
               </tr>
               <tr>
                 <td><b>Length</b></td>
