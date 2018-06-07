@@ -23,7 +23,7 @@ class EditProvider extends Component {
         company: provider.company,
         first_name: provider.first_name,
         last_name: provider.last_name,
-        gender: provider.gender.toSting(),
+        gender: provider.gender.toString(),
         email: provider.email,
         primary_phone_number: provider.primary_phone_number,
         primary_phone_extension: provider.primary_phone_extension,

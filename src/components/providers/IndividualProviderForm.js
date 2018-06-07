@@ -111,9 +111,9 @@ class IndividualProviderForm extends Component {
             </Col>
             <Col sm={9}>
               <FormControl componentClass="select" placeholder="select" onChange={this.formValChange}>
-                <option value="select">-- Not Set --</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
+                <option value="Other">-- Not Set --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </FormControl>
             </Col>
           </FormGroup>
