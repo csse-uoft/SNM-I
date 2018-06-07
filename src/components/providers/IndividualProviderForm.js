@@ -35,7 +35,8 @@ class IndividualProviderForm extends Component {
         province: '',
         postal_code: ''
         }, provider.address),
-      visibility: 'select'
+      visibility: 'select',
+      status: ''
       }
     } 
   }
@@ -76,6 +77,25 @@ class IndividualProviderForm extends Component {
 
 	    <Col sm={12}>
 	      <Form horizontal>
+          <FormGroup controlId="status">
+            <Col componentClass={ControlLabel} sm={3}>
+              Status
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                componentClass="select"
+                placeholder="select"
+                value={this.state.form.status}
+                onChange={this.formValChange}
+              >
+                <option value="select">--- Not Set ---</option>
+                <option value="External">External</option>
+                <option value="Internal">Internal</option>
+                <option value="Home Agency">Home Agency</option>
+              </FormControl>
+            </Col>
+          </FormGroup>
+
           <FormGroup controlId="first_name">
             <Col componentClass={ControlLabel} sm={3}>
               First name (required)

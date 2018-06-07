@@ -33,7 +33,8 @@ class OrganizationProviderForm extends Component {
         province: '',
         postal_code: ''
       }, provider.address),
-      visibility: 'select'
+      visibility: 'select',
+      status: ''
       }
     }
   }
@@ -82,6 +83,7 @@ class OrganizationProviderForm extends Component {
             </Col>
           </FormGroup>
 
+<<<<<<< HEAD
           <FormGroup controlId="street_address">
             <Col componentClass={ControlLabel} sm={3}>
               Street Address
@@ -122,6 +124,28 @@ class OrganizationProviderForm extends Component {
           </FormGroup>
 
           <FormGroup controlId="postal_code">
+=======
+          <FormGroup controlId="status">
+            <Col componentClass={ControlLabel} sm={3}>
+              Status
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                componentClass="select"
+                placeholder="select"
+                value={this.state.form.status}
+                onChange={this.formValChange}
+              >
+                <option value="select">--- Not Set ---</option>
+                <option value="External">External</option>
+                <option value="Internal">Internal</option>
+                <option value="Home Agency">Home Agency</option>
+              </FormControl>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="address">
+>>>>>>> upstream/master
             <Col componentClass={ControlLabel} sm={3}>
               Postal Code
             </Col>
