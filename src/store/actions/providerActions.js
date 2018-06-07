@@ -9,6 +9,7 @@ export const REMOVE_PROVIDER = 'REMOVE_PROVIDER';
 export const RECEIVE_PROVIDER = 'RECEIVE_PROVIDER';
 export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
 export const SEARCH_PROVIDERS = 'SEARCH_PROVIDERS';
+export const RECEIVE_NEW_PROVIDER_RATING = 'RECEIVE_NEW_PROVIDER_RATING';
 
 
 function requestProviders() {
@@ -54,11 +55,20 @@ function requestProvider(id) {
   }
 }
 
-export function searchProviders(searchValue, searchType) {
+function receiveNewProviderRating(id, json) {
+  return {
+    type: RECEIVE_NEW_PROVIDER_RATING,
+    id: id,
+    provider: json
+  }
+}
+
+export function searchProviders(searchValue, searchType, searchProviderType) {
   return {
     type: SEARCH_PROVIDERS,
     searchValue: searchValue,
-    searchType: searchType
+    searchType: searchType,
+    searchProviderType: searchProviderType
   };
 }
 
@@ -72,7 +82,7 @@ export function fetchProvider(id) {
         method: 'GET',
         headers: new Headers({
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
+        }),
       }).then(response => response.json())
       .then(json => {
         dispatch(receiveProvider(id, json))
@@ -89,7 +99,7 @@ export function fetchProviders() {
         method: 'get',
         headers: new Headers({
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }), 
+        }),
       }).then(response => response.json())
       .then(json => {
         dispatch(receiveProviders(json))
@@ -115,7 +125,7 @@ export function createProvider(params) {
 export function updateProvider(id, params) {
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
-          
+
     return fetch(url, {
       method: "PUT",
       body: JSON.stringify(params),
@@ -132,10 +142,10 @@ export function deleteProvider(id) {
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
     return fetch(url, {
-      method: "DELETE", 
+      method: "DELETE",
       headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-        }, 
+        },
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeProvider(id))
@@ -144,3 +154,17 @@ export function deleteProvider(id) {
   }
 }
 
+export function rateProvider(id, params) {
+  return dispatch => {
+    const url = serverHost + '/provider/' + id + '/rate';
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    }).then(response => response.json())
+      .then(json => dispatch(receiveNewProviderRating(id, json)));
+  }
+}
