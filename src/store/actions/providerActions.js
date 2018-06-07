@@ -55,13 +55,13 @@ function requestProvider(id) {
   }
 }
 
-// function receiveNewProviderRating(id, json) {
-//   return {
-//     type: RECEIVE_NEW_PROVIDER_RATING,
-//     id: id,
-//     provider: json
-//   }
-// }
+function receiveNewProviderRating(id, json) {
+  return {
+    type: RECEIVE_NEW_PROVIDER_RATING,
+    id: id,
+    provider: json
+  }
+}
 
 export function searchProviders(searchValue, searchType, searchProviderType) {
   return {
@@ -154,18 +154,17 @@ export function deleteProvider(id) {
   }
 }
 
-// export function rateProvider(id, params) {
-//   return dispatch => {
-//     const url = serverHost + '/provider/' + id + '/rate';
-//     return fetch(url, {
-//       method: "POST",
-//       body: JSON.stringify(params),
-//       headers: {
-//         "Content-Type": "application/json",
-//         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-//       }
-//     }).then(response => response.json())
-//       .then(json => dispatch(receiveNewProviderRating(id, json)));
-//   }
-// }
-
+export function rateProvider(id, params) {
+  return dispatch => {
+    const url = serverHost + '/provider/' + id + '/rate';
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    }).then(response => response.json())
+      .then(json => dispatch(receiveNewProviderRating(id, json)));
+  }
+}

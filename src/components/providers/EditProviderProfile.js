@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { updateProvider, fetchProvider } from '../../store/actions/providerActions.js'
 import { Link } from 'react-router-dom';
 
+
 class EditProvider extends Component {
   constructor(props) {
     super(props);
@@ -44,9 +45,8 @@ class EditProvider extends Component {
         }
       } 
     }
-  }
 
-  componentWillMount() { 
+  componentWillMount() {
     const id = this.props.match.params.id
     this.props.dispatch(fetchProvider(id));
   }
@@ -61,7 +61,6 @@ class EditProvider extends Component {
     nextForm['address'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
   }
-
 
   submit(e) {
     e.preventDefault();
@@ -101,25 +100,6 @@ class EditProvider extends Component {
                 </Col>
               </FormGroup>
             }
-
-            <FormGroup controlId="status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Status
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.status}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">--- Not Set ---</option>
-                  <option value="External">External</option>
-                  <option value="Internal">Internal</option>
-                  <option value="Home Agency">Home Agency</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
 
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
@@ -283,6 +263,25 @@ class EditProvider extends Component {
               </Col>
             </FormGroup>
             }
+
+            <FormGroup controlId="status">
+              <Col componentClass={ControlLabel} sm={3}>
+                Status
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.status}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">--- Not Set ---</option>
+                  <option value="External">External</option>
+                  <option value="Internal">Internal</option>
+                  <option value="Home Agency">Home Agency</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
 
             <FormGroup controlId="visibility">
               <Col componentClass={ControlLabel} sm={3}>

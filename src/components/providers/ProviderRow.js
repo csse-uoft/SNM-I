@@ -50,7 +50,6 @@ class ProviderRow extends Component {
             <Glyphicon glyph="trash" />
           </Button>
         </td>
-
       </tr>
     )
   }
