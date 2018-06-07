@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import CustomToggle from '../shared/CustomToggle.js';
-import { Glyphicon, Dropdown, MenuItem, Button } from 'react-bootstrap';
+import { Glyphicon, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'; 
 
@@ -20,18 +19,16 @@ class ProviderRow extends Component {
     const p = this.props.provider;
     const url = '/provider/' + p.id + '/edit/' + p.provider_type.toLowerCase();
 
-    return(
+    return (
       <tr>
-      <Link to={`/provider/${p.id}`}>
         <td>
-          {p.first_name} {p.last_name}
+          <Link to={`/provider/${p.id}`}>
+            {p.first_name} {p.last_name}
+          </Link>
         </td>
-      </Link>
-        
         <td>
           {p.provider_type}
         </td>
-
         <td className='centered-text'>
           {p.email}
         </td>
@@ -39,7 +36,7 @@ class ProviderRow extends Component {
           {p.primary_phone_number}
         </td>
         <td>
-         <Link to={`${url}`}>
+          <Link to={`${url}`}>
             <Button bsStyle="primary">
               <Glyphicon glyph="edit" />
             </Button>
