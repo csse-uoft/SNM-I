@@ -67,22 +67,6 @@ class Good extends Component {
                 <td>{good.diameter}</td>
               </tr>
               <tr>
-                <td><b>Contact Person Email</b></td>
-                <td>{good.email}</td>
-              </tr>
-              <tr>
-                <td><b>Contact Person Phone</b></td>
-                <td>{good.primary_phone_number}</td>
-              </tr>
-              <tr>
-                <td><b>Secondary Phone</b></td>
-                <td>{good.alt_phone_number}</td>
-              </tr>
-              <tr>
-                <td><b>Location</b></td>
-                <td>{formatLocation(good.location)}</td>
-              </tr>
-              <tr>
                 <td><b>Provider</b></td>
                 <td>
                   <Link to={`/provider/${good.provider.id}`}>

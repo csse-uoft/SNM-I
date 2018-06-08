@@ -14,7 +14,7 @@ export default class GoodsIndex extends Component {
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Email</th>
+            <th>Provider</th>
             <th></th>
             <th></th>
           </tr>
