@@ -10,7 +10,6 @@ import { formatLocation } from '../../helpers/location_helpers'
 import { Table, Button, Row } from 'react-bootstrap'
 import { fetchProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux'
-
 import { Link } from 'react-router-dom';
 
 class ProviderProfile extends Component {
@@ -71,7 +70,7 @@ class ProviderProfile extends Component {
             <td>{provider.last_name}</td>
           </tr>
 
-          {provider.provider_type === "Individual" && provider.preferred_name.length > 0 && 
+          {provider.provider_type === "Individual" && provider.preferred_name && 
             <tr>
               <td><b>Preferred Name</b></td>
               <td>{provider.preferred_name}</td>
@@ -112,7 +111,7 @@ class ProviderProfile extends Component {
             <td>{formatLocation(provider.address)}</td>
           </tr>
 
-          {provider.provider_type === "Individual" && provider.referrer.length > 0 &&
+          {provider.provider_type === "Individual" && provider.referrer &&
           <tr>
             <td><b>Referrer</b></td>
             <td>{provider.referrer}</td>

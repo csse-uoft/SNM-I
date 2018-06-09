@@ -9,7 +9,8 @@ export const REMOVE_PROVIDER = 'REMOVE_PROVIDER';
 export const RECEIVE_PROVIDER = 'RECEIVE_PROVIDER';
 export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
 export const SEARCH_PROVIDERS = 'SEARCH_PROVIDERS';
-export const RECEIVE_NEW_PROVIDER_RATING = 'RECEIVE_NEW_PROVIDER_RATING';
+export const RECEIVE_NEW_PROVIDER_REVIEW = 'RECEIVE_NEW_PROVIDER_REVIEW';
+export const RECEIVE_NEW_PROVIDERS_CSV = 'RECEIVE_NEW_PROVIDERS_CSV';
 
 
 function requestProviders() {
@@ -30,6 +31,13 @@ function receiveNewProvider(json) {
   return {
     type: RECEIVE_NEW_PROVIDER,
     provider: json
+  }
+}
+
+function receiveNewProvidersCSV(json) {
+  return {
+    type: RECEIVE_NEW_PROVIDERS_CSV,
+    providers: json
   }
 }
 
@@ -55,9 +63,9 @@ function requestProvider(id) {
   }
 }
 
-function receiveNewProviderRating(id, json) {
+function receiveNewProviderReview(id, json) {
   return {
-    type: RECEIVE_NEW_PROVIDER_RATING,
+    type: RECEIVE_NEW_PROVIDER_REVIEW,
     id: id,
     provider: json
   }
@@ -122,6 +130,21 @@ export function createProvider(params) {
   }
 }
 
+export function createProviderWithCSV(params) {
+  return dispatch => {
+    const url = serverHost + '/providers/new/upload';
+    return fetch(url, {
+      method: "POST",
+      body: params,
+      headers: {
+        "Content-Type": "text/csv",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    }).then(response => response.json())
+      .then(json => dispatch(receiveNewProvidersCSV(json)));
+  }
+}
+
 export function updateProvider(id, params) {
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
@@ -165,6 +188,6 @@ export function rateProvider(id, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewProviderRating(id, json)));
+      .then(json => dispatch(receiveNewProviderReview(id, json)));
   }
 }

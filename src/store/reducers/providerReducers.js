@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { RECEIVE_PROVIDER, REQUEST_PROVIDER, SEARCH_PROVIDERS, REQUEST_PROVIDERS, RECEIVE_PROVIDERS,
-          RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER, RECEIVE_NEW_PROVIDER_RATING } from '../actions/providerActions.js'
+          RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER, RECEIVE_NEW_PROVIDER_REVIEW, RECEIVE_NEW_PROVIDERS_CSV } from '../actions/providerActions.js'
 
 
 export function providers(state = {index: [], byId: {}, loaded: false, value: '', filteredProviders: []}, action) {
@@ -13,6 +13,13 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
       return {index: action.providers, filteredProviders: action.providers, loaded: true};
     case RECEIVE_NEW_PROVIDER:
       nextIndex = [action.provider, ...state.index]
+      console.log(nextIndex)
+      return {...state, index: nextIndex}
+    case RECEIVE_NEW_PROVIDERS_CSV:
+      nextIndex = [...state.index]
+      for (var i=0; i < action.providers.providers.length; i++) {
+        nextIndex.push(action.providers.providers[i]);
+      }
       return {...state, index: nextIndex}
     case REMOVE_PROVIDER:
       nextIndex = _.clone(state.index);
@@ -24,7 +31,7 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
     case REQUEST_PROVIDER:
       nextById = { ...state.byId, [action.id]: { loaded: false } }
       return {...state, byId: nextById }
-    case RECEIVE_NEW_PROVIDER_RATING:
+    case RECEIVE_NEW_PROVIDER_REVIEW:
       let provider = state.byId[action.id];
       let provider_rating = provider.provider_rating;
       let rating_count = provider.rating_count;
