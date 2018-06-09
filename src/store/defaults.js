@@ -1,6 +1,4 @@
-//export const serverHost = 'https://snm-impact-server.herokuapp.com';
-export const serverHost = 'http://127.0.0.1:8000';
-
+export const serverHost = 'https://snm-impact-server.herokuapp.com';
 
 const needStatus = {
   0: "Unmatched",
