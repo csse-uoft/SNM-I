@@ -30,6 +30,9 @@ class TopNavbar extends Component {
         <IndexLinkContainer to={`/services`}>
           <NavItem eventKey={2} href="#">Services</NavItem>
         </IndexLinkContainer>
+        <IndexLinkContainer to={`/goods`}>
+          <NavItem eventKey={2} href="#">Goods</NavItem>
+        </IndexLinkContainer>
         <IndexLinkContainer to={`/providers`}>
           <NavItem eventKey={3} href="#">Providers</NavItem>
         </IndexLinkContainer>
@@ -58,6 +61,9 @@ class TopNavbar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           {navItems}
+          <div className="home-agency-branding">
+            {this.props.organization && this.props.organization.name}
+          </div>
           <Nav pullRight>
             {(this.props.isLoggedin) ? (
               <NavItem eventKey={4} href="#" onClick={this.signout}>Log Out</NavItem>
@@ -77,6 +83,7 @@ class TopNavbar extends Component {
 const mapStateToProps = (state) => {
   return {
     currentUser: state.auth.currentUser,
+    organization: state.auth.organization,
     isLoggedin: state.auth.isLoggedin
   }
 }

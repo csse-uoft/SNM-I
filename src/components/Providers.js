@@ -44,7 +44,7 @@ class Providers extends Component {
             </Link>
           </div>
         { p.providersLoaded &&
-          <ProvidersIndex> {
+          <ProvidersIndex>{
             p.providers.map((provider) => {
               return <ProviderRow key={ provider.id } provider={ provider }
                       delete={this.deleteProvider} />

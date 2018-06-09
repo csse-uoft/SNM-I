@@ -15,8 +15,22 @@ class Dashboard extends Component {
       <Row className='content login-pane'>
         <Col md={12}>
           <div className="login-buttons">
+            { p.isLoggedin && p.currentUser.is_admin && !p.organization.id &&
+              <Link to='/providers/new/organization'>
+                <Button bsStyle="default" className="btn-default-login" block>
+                  Create organization profile for home agency
+                </Button>
+              </Link>
+            }
+            { p.isLoggedin && p.currentUser.is_admin && p.organization.id &&
+              <Link to={`/provider/${p.currentUser.provider_id}/edit/organization`}>
+                <Button bsStyle="default" className="btn-default-login" block>
+                  Edit organization profile for home agency
+                </Button>
+              </Link>
+            }
             { p.isLoggedin && p.currentUser.is_admin &&
-              <Link to={`/users`}>
+              <Link to='/users'>
                 <Button bsStyle="default" className="btn-default-login" block>
                   Manage User
                 </Button>
@@ -34,6 +48,7 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
   return {
     currentUser: state.auth.currentUser,
+    organization: state.auth.organization,
     isLoggedin: state.auth.isLoggedin
   }
 }

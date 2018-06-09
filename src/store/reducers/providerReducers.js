@@ -42,8 +42,8 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
           return {index: [...state.index], filteredProviders: [...state.index], loaded: true}
         }
         else if (action.searchType === "name") {
-          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) || 
-            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
+          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) ||
+            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType));
           return {index: [...state.index], filteredProviders: providers, loaded: true}
         }
         else if (action.searchType === "email") {
@@ -57,8 +57,8 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
           return {index: [...state.index], filteredProviders: providers, loaded: true}
         }
         else if (action.searchType === "name") {
-          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) || 
-          (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
+          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) ||
+            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
           return {index: [...state.index], filteredProviders: providers, loaded: true}
         }
         else if (action.searchType === "email") {

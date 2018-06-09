@@ -10,26 +10,6 @@
   }
 }
 
-.clients,  .resources, .providers {
-  button {
-    float: right;
-  }
-
-  tr {
-
-    .glyphicon {
-      visibility: hidden;
-    }
-
-    &:hover {
-      .glyphicon {
-        visibility: visible;
-        cursor: pointer;
-      }
-    }
-  }
-}
-
 .content {
   padding: 10px 0px;
   padding-bottom: 80px;
@@ -61,4 +41,12 @@
 
 .form-control {
     box-shadow: none;
+}
+
+.home-agency-branding {
+  display: inline-block;
+  margin-left: 100px;
+  color: white;
+  padding: 15px;
+  font-weight: 500;
 }
