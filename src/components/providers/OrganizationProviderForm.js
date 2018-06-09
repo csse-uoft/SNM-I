@@ -8,6 +8,8 @@ import { fetchProviders, createProvider, updateProvider, deleteProvider } from '
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
+import { emailValidation } from '../../helpers/validation_helpers.js'
+
 
 class OrganizationProviderForm extends Component {
   constructor(props) {
@@ -22,6 +24,7 @@ class OrganizationProviderForm extends Component {
       company: '',
       first_name: '',
       last_name: '',
+      gender: 'Other',
       email: '',
       primary_phone_number: '',
       primary_phone_extension: '',
@@ -160,13 +163,14 @@ class OrganizationProviderForm extends Component {
             </Col>
           </FormGroup>
 
-          <FormGroup controlId="email">
-            <Col componentClass={ControlLabel} sm={3}>
-              Email (required)
+          <FormGroup controlId="email" validationState={emailValidation(this.state.form.email)}>
+            <Col componentClass={ControlLabel} sm={3}> 
+              Email (required) 
             </Col>
             <Col sm={9}>
               <FormControl type="text" defaultValue=""
                 placeholder="youremail@gmail.com" onChange={this.formValChange}/>
+              <FormControl.Feedback />
             </Col>
           </FormGroup>
 

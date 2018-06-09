@@ -6,7 +6,7 @@ import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
-import { fetchProvider, fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions/providerActions.js'
+import { fetchProvider, fetchProviders, createProvider, updateProvider, deleteProvider, rateProvider } from '../../store/actions/providerActions.js'
 import StarRatingComponent from 'react-star-rating-component';
 
 class ProviderRatingForm extends Component {
@@ -16,10 +16,11 @@ class ProviderRatingForm extends Component {
 		this.handleCommentChange=this.handleCommentChange.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
     this.handleTextRating=this.handleTextRating.bind(this);
+    const id = this.props.match.params.id
     this.state = {
+      id: id,
 			rating: 0,
-      comment: ''
-		}
+      comment: ''		}
   }
 
   handleStarSelection(nextValue, name) {
@@ -35,9 +36,8 @@ class ProviderRatingForm extends Component {
   handleSubmit(e) {
     const id = this.props.match.params.id
     const provider = this.props.providersById[id];
-    
-    const currentRate = provider.rating;
-    const numRates = provider.num_ratings;
+    this.props.dispatch(rateProvider(id, this.state));
+
   }
 
   render() {

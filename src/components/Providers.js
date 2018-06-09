@@ -32,13 +32,17 @@ class Providers extends Component {
       <div className='providers content'>
         <h3 className='title'>Providers</h3>
           <div>
+            <Link to={`/providers/new/upload`}>
+              <Button bsStyle="default" >
+              Upload from CSV
+              </Button>
+            </Link>
             <Link to={`/providers/new`}>
-              <Button bsStyle="default">
+              <Button bsStyle="default" >
               Add new provider
               </Button>
             </Link>
           </div>
-
         { p.providersLoaded &&
           <ProvidersIndex>{
             p.providers.map((provider) => {
