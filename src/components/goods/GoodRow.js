@@ -29,7 +29,9 @@ class GoodRow extends Component {
           </Link>
         </td>
         <td className='centered-text'>
-          {good.email}
+          <Link to={`/provider/${good.provider.id}`}>
+                    {`${good.provider.first_name} ${good.provider.last_name}`}
+          </Link>
         </td>
         <td>
           <Link to={`/goods/${good.id}/edit`}>

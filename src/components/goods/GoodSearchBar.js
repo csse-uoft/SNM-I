@@ -47,7 +47,7 @@ class GoodSearchBar extends Component {
           <ControlLabel> Search by: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.handleTypeChange}>
             <option value="name"> Name </option>
-            <option value="email"> Email </option>
+            <option value="provider"> Provider </option>
           </FormControl>
         </FormGroup>{' '}
       </Form>

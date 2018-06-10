@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 
 export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false, byId: {} }, action) {
-  let nextIndex, nextById, goods;
+  let nextIndex, nextById, goods, provider_name;
   switch (action.type) {
     case REQUEST_GOODS:
       return {...state, goodsLoaded: false }
@@ -29,8 +29,8 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
         goods = [...state.index].filter((good) => ((good.name).includes(action.searchValue) ));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
-      else if (action.searchType === "email") {
-        goods = [...state.index].filter((good) => (good.email).includes(action.searchValue));
+      else if (action.searchType === "provider") {
+        goods = [...state.index].filter((good) => (good.provider.first_name + " " + good.provider_name.last_name).includes(action.searchValue));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
     default:
