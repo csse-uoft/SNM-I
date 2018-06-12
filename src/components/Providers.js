@@ -43,6 +43,7 @@ class Providers extends Component {
               </Button>
             </Link>
           </div>
+          <hr/>
         { p.providersLoaded &&
           <ProvidersIndex>{
             p.providers.map((provider) => {

@@ -26,10 +26,10 @@ class EditProvider extends Component {
         last_name: provider.last_name,
         gender: provider.gender.toString(),
         email: provider.email,
-        primary_phone_number: provider.primary_phone_number,
-        primary_phone_extension: provider.primary_phone_extension,
-        alt_phone_number: provider.alt_phone_number,
-        alt_phone_extension: provider.alt_phone_extension,
+        primary_phone_number: provider.primary_phone_number || '',
+        primary_phone_extension: provider.primary_phone_extension || '',
+        alt_phone_number: provider.alt_phone_number || '',
+        alt_phone_extension: provider.alt_phone_extension || '',
         address: Object.assign({
           street_address: '',
           apt_number: '',
@@ -37,9 +37,8 @@ class EditProvider extends Component {
           province: '',
           postal_code: ''
           }, provider.address),
-        phone_extension: provider.phone_extension,
-        referrer: provider.referrer,
-        location: 'Canada',
+        phone_extension: provider.phone_extension || '',
+        referrer: provider.referrer || '',
         visibility: provider.visibility.toString(),
         status: provider.status
         }
@@ -96,7 +95,7 @@ class EditProvider extends Component {
                 </Col>
                 <Col sm={9}>
                   <FormControl type="text"
-                    placeholder="Company name" defaultValue={provider.company} onChange={this.formValChange}/>
+                    placeholder="Company name" value={this.state.form.company} onChange={this.formValChange}/>
                 </Col>
               </FormGroup>
             }
@@ -107,7 +106,7 @@ class EditProvider extends Component {
               </Col>
               <Col sm={9}>
                 <FormControl type="text"
-                  placeholder="Aravind" defaultValue={provider.first_name} onChange={this.formValChange}/>
+                  placeholder="Aravind" value={this.state.form.first_name} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
 
@@ -116,7 +115,7 @@ class EditProvider extends Component {
                 Last name (required)
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue={provider.last_name}
+                <FormControl type="text" value={this.state.form.last_name}
                   placeholder="Adiga" onChange={this.formValChange}/>
               </Col>
             </FormGroup>
@@ -127,7 +126,7 @@ class EditProvider extends Component {
                 Preferred Name
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue={provider.preferred_name} onChange={this.formValChange}/>
+                <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
             }
@@ -137,8 +136,8 @@ class EditProvider extends Component {
                 Email
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue=""
-                  placeholder="youremail@gmail.com" defaultValue={provider.email} onChange={this.formValChange}/>
+                <FormControl type="text"
+                  placeholder="youremail@gmail.com" value={this.state.form.email} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
 
@@ -149,7 +148,7 @@ class EditProvider extends Component {
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  defaultValue={provider.primary_phone_number}
+                  value={this.state.form.primary_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
@@ -160,7 +159,7 @@ class EditProvider extends Component {
                 Extension
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
+                <FormControl type="text" value={this.state.form.primary_phone_extension} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
 
@@ -171,7 +170,7 @@ class EditProvider extends Component {
               <Col sm={9}>
                 <FormControl
                   type="tel"
-                  defualtValue={provider.alt_phone_number}
+                  value={this.state.form.alt_phone_number}
                   onChange={this.formValChange}
                 />
               </Col>
@@ -182,7 +181,7 @@ class EditProvider extends Component {
                 Extension for Alternative Phone Number
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
+                <FormControl type="text" value={this.state.form.alt_phone_extension} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
 
@@ -193,7 +192,7 @@ class EditProvider extends Component {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  defaultValue={provider.address.street_address}
+                  value={this.state.form.address.street_address}
                   onChange={this.addressChange}
                 />
               </Col>
@@ -207,7 +206,7 @@ class EditProvider extends Component {
                 <Col sm={9}>
                   <FormControl
                     type="text"
-                    defaultValue={provider.address.apt_number}
+                    value={this.state.form.address.apt_number}
                     onChange={this.addressChange}
                   />
                 </Col>
@@ -221,7 +220,7 @@ class EditProvider extends Component {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  defaultValue={provider.address.city}
+                  value={this.state.form.address.city}
                   onChange={this.addressChange}
                 />
               </Col>
@@ -234,7 +233,7 @@ class EditProvider extends Component {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  defaultValue={provider.address.province}
+                  value={this.state.form.address.province}
                   onChange={this.addressChange}
                 />
               </Col>
@@ -247,7 +246,7 @@ class EditProvider extends Component {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  defaultValue={provider.address.postal_code}
+                  value={this.state.form.address.postal_code}
                   onChange={this.addressChange}
                 />
               </Col>
@@ -259,7 +258,7 @@ class EditProvider extends Component {
                 Referrer
               </Col>
               <Col sm={9}>
-                <FormControl type="text" defaultValue={provider.referrer} onChange={this.formValChange}/>
+                <FormControl type="text" value={this.state.form.referrer} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
             }
@@ -288,7 +287,7 @@ class EditProvider extends Component {
                 Allow other agencies to see this provider?
               </Col>
               <Col sm={9}>
-                <FormControl componentClass="select" placeholder="select" onChange={this.formValChange}>
+                <FormControl componentClass="select" placeholder="select" value={this.state.form.visibility} onChange={this.formValChange}>
                   <option value="select">-- Not Set --</option>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
