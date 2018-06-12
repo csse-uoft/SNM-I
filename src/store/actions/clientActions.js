@@ -141,7 +141,6 @@ export function createClients(file) {
       }
     })
     .then(async(response) => {
-      debugger
       if (response.status === 201) {
         return response.json()
       }
@@ -155,7 +154,6 @@ export function createClients(file) {
       return CLIENT_SUCCESS
     })
     .catch(err => {
-      debugger
       // dispatch(createFailure(err))
       return CLIENT_ERROR
     })
