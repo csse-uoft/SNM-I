@@ -3,12 +3,14 @@ import { serverHost } from '../defaults.js';
 
 import {receiveClientNeeds} from './needActions'
 
-export const RECEIVE_NEW_CLIENT = 'RECEIVE_NEW_CLIENT';
 export const REQUEST_CLIENT = 'REQUEST_CLIENT';
 export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
 export const REQUEST_CLIENTS = 'REQUEST_CLIENTS';
-export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
+export const RECEIVE_ALL_CLIENTS = 'RECEIVE_ALL_CLIENTS';
 export const REMOVE_CLIENT = 'REMOVE_CLIENT';
+export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
+export const CLIENT_ERROR = 'CLIENT_ERROR';
+export const CLIENT_SUCCESS = 'CLIENT_SUCCESS';
 
 
 function requestClient(id) {
@@ -29,6 +31,13 @@ function receiveClient(id, json) {
 function requestClients(json) {
   return {
     type: REQUEST_CLIENTS,
+    clients: json
+  }
+}
+
+function receiveAllClients(json) {
+  return {
+    type: RECEIVE_ALL_CLIENTS,
     clients: json
   }
 }
@@ -81,7 +90,7 @@ export function fetchClients() {
         },
       }).then(response => response.json())
       .then(json => {
-        dispatch(receiveClients(json))
+        dispatch(receiveAllClients(json))
       })
   }
 }
@@ -118,12 +127,37 @@ export function createClient(params) {
   }
 }
 
-export function createClients(params) {
+export function createClients(file) {
+  const formData  = new FormData();
+  formData.append('file', file)
+
   return dispatch => {
-    const url = serverHost + '/clients/';
+    const url = serverHost + '/clients.csv';
     return fetch(url, {
       method: 'POST',
-      body: JSON.stringify({csv: params})
+      body: formData,
+      headers: {
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(async(response) => {
+      debugger
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(clients => {
+      dispatch(receiveClients(clients))
+      return CLIENT_SUCCESS
+    })
+    .catch(err => {
+      debugger
+      // dispatch(createFailure(err))
+      return CLIENT_ERROR
     })
   }
 }
