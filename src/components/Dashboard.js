@@ -23,7 +23,7 @@ class Dashboard extends Component {
               </Link>
             }
             { p.isLoggedin && p.currentUser.is_admin && p.organization.id &&
-              <Link to={`/provider/${p.currentUser.provider_id}/edit/organization`}>
+              <Link to={`/provider/${p.organization.id}/edit/organization`}>
                 <Button bsStyle="default" className="btn-default-login" block>
                   Edit organization profile for home agency
                 </Button>
@@ -32,7 +32,7 @@ class Dashboard extends Component {
             { p.isLoggedin && p.currentUser.is_admin &&
               <Link to='/users'>
                 <Button bsStyle="default" className="btn-default-login" block>
-                  Manage User
+                  Manage Users
                 </Button>
               </Link>
             }
