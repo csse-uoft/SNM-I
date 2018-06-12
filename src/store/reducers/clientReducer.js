@@ -1,4 +1,4 @@
-import { REQUEST_CLIENTS, RECEIVE_CLIENTS, REMOVE_CLIENT,
+import { REQUEST_CLIENTS, RECEIVE_CLIENTS, RECEIVE_ALL_CLIENTS, REMOVE_CLIENT,
          REQUEST_CLIENT, RECEIVE_CLIENT } from '../actions/clientActions.js';
 import _ from 'lodash';
 
@@ -9,6 +9,10 @@ export function clients(state = { clientsLoaded: false, byId: {} }, action) {
     case REQUEST_CLIENTS:
       return {...state, clientsLoaded: false }
     case RECEIVE_CLIENTS:
+      const newClientsById = _.keyBy(action.clients, client => client.id);
+      nextById = { ...state.byId, ...newClientsById }
+      return {...state, byId: nextById, clientsLoaded: true }
+    case RECEIVE_ALL_CLIENTS:
       nextById = _.keyBy(action.clients, client => client.id);
       return {...state, byId: nextById, clientsLoaded: true }
     case REMOVE_CLIENT:
