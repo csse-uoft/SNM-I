@@ -52,7 +52,7 @@ function removeProvider(id) {
 function receiveProvider(id, json) {
   return {
     type: RECEIVE_PROVIDER,
-    provider: json,
+    info: json,
     id: id
   }
 }

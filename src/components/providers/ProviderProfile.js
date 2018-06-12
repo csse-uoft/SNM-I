@@ -21,9 +21,6 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-    console.log(this.props)
-    console.log(provider)
-
     return (
       <div className="content">
         <h3>Provider Profile</h3>
@@ -129,41 +126,76 @@ class ProviderProfile extends Component {
             }
             </td>
           </tr>
-
          </tbody>
         </Table>
-      </div>
-    }
-    <hr />
+    <hr/>
      <h3>Services</h3>
       <Link to="/services/new">
         <Button bsStyle="default">
           Add Service
         </Button>
       </Link>
-    <hr />
-    <Table striped bordered condensed hover>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Availability</th>
-          <th />
-          <th />
-        </tr>
-      </thead>
-        <tbody>
-        </tbody>
-    </Table>
+    <hr/>
+    <ProviderServiceTable provider={provider}/>
+    </div>
+  }
   </div>  
   );
+  }
+}
+
+class ProviderServiceTable extends Component {
+  render() {
+    return(
+      <Table striped bordered condensed hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Capacity</th>
+          </tr>
+        </thead>
+          <tbody>
+            {this.props.provider.services.map((service) => {
+              return <ProviderServiceRow key={ service.id } service={service}/>
+              })
+            }
+          </tbody>
+      </Table>
+    )
+  }
+}
+
+class ProviderServiceRow extends Component {
+  render() {
+    return(
+      <tr>
+        <td>{this.props.service.id}</td>
+        <td>
+          <Link to={`/service/${this.props.service.id}`}>
+            {this.props.service.name}
+          </Link>
+        </td>
+        <td className='centered-text'>
+          {this.props.service.category}
+        </td>
+        <td className='centered-text'>
+          {this.props.service.desc}
+        </td>
+        <td className='centered-text'>
+          {this.props.service.capacity}
+        </td>
+      </tr>
+    )
   }
 }
 
 const mapStateToProps = (state) => {
   return { 
     providersById: state.providers.byId || {},
-    providerLoaded: state.providers.indexLoaded
+    providerLoaded: state.providers.loaded
   } 
 }
 
