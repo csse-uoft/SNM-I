@@ -17,6 +17,7 @@ class ProviderRow extends Component {
 
   render() {
     const p = this.props.provider;
+    const currentUser = this.props.currentUser;
     const url = '/provider/' + p.id + '/edit/' + p.provider_type.toLowerCase();
 
     return (
@@ -36,11 +37,7 @@ class ProviderRow extends Component {
           {p.primary_phone_number}
         </td>
         <td>
-          <Link to={`${url}`}>
-            <Button bsStyle="primary">
-              <Glyphicon glyph="edit" />
-            </Button>
-          </Link>
+          <EditButton providerStatus={p.status} currentUser={currentUser}  url={url} />
         </td>
         <td>
           <Button bsStyle="danger" onClick={this.delete} disabled={p.status === 'Home Agency'}>
@@ -60,10 +57,28 @@ class ProviderRow extends Component {
     this.props.history.push(url);
   }
 }
-const mapStateToProps = (state) => {
-  return { 
-    providerLoaded: state.providers.indexLoaded
-  } 
+
+function EditButton({ currentUser, providerStatus, url }) {
+  if (providerStatus === 'Home Agency' && currentUser && !currentUser.is_admin) {
+    return (
+      <Button bsStyle="primary" disabled>
+        <Glyphicon glyph="edit" />
+      </Button>
+    );
+  }
+  return (
+    <Link to={`${url}`}>
+      <Button bsStyle="primary">
+        <Glyphicon glyph="edit" />
+      </Button>
+    </Link>
+  );
 }
 
-export default connect()(ProviderRow);
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.auth.currentUser
+  }
+}
+
+export default connect(mapStateToProps)(ProviderRow);
