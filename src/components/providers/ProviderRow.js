@@ -7,7 +7,6 @@ class ProviderRow extends Component {
   constructor(props) {
     super(props);
     this.delete = this.delete.bind(this);
-    this.update = this.update.bind(this);
   }
 
   delete() {
@@ -37,7 +36,7 @@ class ProviderRow extends Component {
           {p.primary_phone_number}
         </td>
         <td>
-          <EditButton providerStatus={p.status} currentUser={currentUser}  url={url} />
+          <EditButton currentUser={currentUser} providerStatus={p.status} url={url} />
         </td>
         <td>
           <Button
@@ -50,15 +49,6 @@ class ProviderRow extends Component {
         </td>
       </tr>
     )
-  }
-
-  update() {
-    const p = this.props;
-  }
-
-  updateProvider() {
-    const url = '/provider' + this.props.provider.id + '/edit/' + this.props.provider.provider_type.toLowerCase();
-    this.props.history.push(url);
   }
 }
 
