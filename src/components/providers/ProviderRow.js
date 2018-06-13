@@ -24,7 +24,7 @@ class ProviderRow extends Component {
       <tr>
         <td>
           <Link to={`/provider/${p.id}`}>
-            {p.provider_type==="Individual" ? p.first_name + p.last_name : p.company}
+            {p.provider_type === "Individual" ? (p.first_name + p.last_name) : p.company}
           </Link>
         </td>
         <td>
@@ -40,7 +40,11 @@ class ProviderRow extends Component {
           <EditButton providerStatus={p.status} currentUser={currentUser}  url={url} />
         </td>
         <td>
-          <Button bsStyle="danger" onClick={this.delete} disabled={p.status === 'Home Agency'}>
+          <Button
+            bsStyle="danger"
+            onClick={this.delete}
+            disabled={p.status === 'Home Agency'}
+          >
             <Glyphicon glyph="trash" />
           </Button>
         </td>
