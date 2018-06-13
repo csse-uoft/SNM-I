@@ -7,7 +7,7 @@ import ProviderRow from './providers/ProviderRow.js'
 
 // redux
 import { connect } from 'react-redux'
-import { searchProviders, fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions/providerActions.js'
+import { fetchProviders } from '../store/actions/providerActions.js'
 // styles
 import { Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
@@ -15,15 +15,10 @@ import { Link } from 'react-router-dom';
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.deleteProvider=this.deleteProvider.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
-  }
-
-  deleteProvider(id) {
-    this.props.dispatch(deleteProvider(id));
   }
 
   render() {
@@ -47,8 +42,7 @@ class Providers extends Component {
         { p.providersLoaded &&
           <ProvidersIndex>{
             p.providers.map((provider) => {
-              return <ProviderRow key={ provider.id } provider={ provider }
-                      delete={this.deleteProvider} />
+              return <ProviderRow key={ provider.id } provider={ provider } />
             })
           }
           </ProvidersIndex>

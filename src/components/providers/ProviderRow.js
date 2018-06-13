@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Glyphicon, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux'; 
+
+// redux
+import { connect } from 'react-redux';
+import { deleteProvider } from '../../store/actions/providerActions.js'
 
 class ProviderRow extends Component {
   constructor(props) {
@@ -9,9 +12,8 @@ class ProviderRow extends Component {
     this.delete = this.delete.bind(this);
   }
 
-  delete() {
-    const p = this.props;
-    p.delete(p.provider.id);
+  delete(id) {
+    this.props.dispatch(deleteProvider(id));
   }
 
   render() {
@@ -41,7 +43,7 @@ class ProviderRow extends Component {
         <td>
           <Button
             bsStyle="danger"
-            onClick={this.delete}
+            onClick={() => this.delete(p.id)}
             disabled={p.status === 'Home Agency'}
           >
             <Glyphicon glyph="trash" />
