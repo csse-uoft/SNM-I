@@ -16,7 +16,7 @@ class Dashboard extends Component {
         <Col md={12}>
           <div className="login-buttons">
             { p.isLoggedin && p.currentUser.is_admin && !p.organization.id &&
-              <Link to='/providers/new/organization'>
+              <Link to={{ pathname: '/providers/new/organization', state: { status: 'Home Agency'} }}>
                 <Button bsStyle="default" className="btn-default-login" block>
                   Create organization profile for home agency
                 </Button>

@@ -273,11 +273,14 @@ class EditProvider extends Component {
                   placeholder="select"
                   value={this.state.form.status}
                   onChange={this.formValChange}
+                  disabled={this.state.form.status === "Home Agency"}
                 >
                   <option value="select">--- Not Set ---</option>
                   <option value="External">External</option>
                   <option value="Internal">Internal</option>
-                  <option value="Home Agency">Home Agency</option>
+                  { this.state.form.status === "Home Agency" ? (
+                    <option value="Home Agency">Home Agency</option>
+                  ): null }
                 </FormControl>
               </Col>
             </FormGroup>

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
-import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { Link } from 'react-router-dom';
-import { fetchProviders, createProvider, updateProvider, deleteProvider } from '../../store/actions/providerActions.js'
+import { createProvider } from '../../store/actions/providerActions.js'
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
@@ -16,7 +15,7 @@ class OrganizationProviderForm extends Component {
     super(props);
     const provider = {}
     this.formValChange = this.formValChange.bind(this);
-    this.submit=this.submit.bind(this);
+    this.submit = this.submit.bind(this);
     this.addressChange = this.addressChange.bind(this);
     this.state= { form : {
       provider_type: 'Organization',
@@ -38,7 +37,7 @@ class OrganizationProviderForm extends Component {
         postal_code: ''
       }, provider.address),
       visibility: 'select',
-      status: ''
+      status: (props.location.state && props.location.state.status) || ''
       }
     }
   }
@@ -46,7 +45,7 @@ class OrganizationProviderForm extends Component {
   formValChange(e) {
     let next = {...this.state.form, [e.target.id] : e.target.value};
     this.setState({ form : next });
-    }
+  }
 
   submit(e) {
     this.props.dispatch(createProvider(this.state.form));
@@ -228,11 +227,14 @@ class OrganizationProviderForm extends Component {
                 placeholder="select"
                 value={this.state.form.status}
                 onChange={this.formValChange}
+                disabled={this.state.form.status === "Home Agency"}
               >
                 <option value="select">--- Not Set ---</option>
                 <option value="External">External</option>
                 <option value="Internal">Internal</option>
-                <option value="Home Agency">Home Agency</option>
+                { this.state.form.status === "Home Agency" ? (
+                  <option value="Home Agency">Home Agency</option>
+                ): null }
               </FormControl>
             </Col>
           </FormGroup>
