@@ -1,4 +1,4 @@
-import { REQUEST_GOODS, RECEIVE_GOODS, SEARCH_GOODS, REMOVE_GOOD,
+import { REQUEST_GOODS, RECEIVE_GOODS, RECEIVE_ALL_GOODS, SEARCH_GOODS, REMOVE_GOOD,
          REQUEST_GOOD, RECEIVE_GOOD } from '../actions/goodActions.js';
 import _ from 'lodash';
 
@@ -9,6 +9,10 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
     case REQUEST_GOODS:
       return {...state, goodsLoaded: false }
     case RECEIVE_GOODS:
+      const newGoodsById = _.keyBy(action.goods, good => good.id);
+      nextById = { ...state.byId, ...newGoodsById }
+      return {...state, byId: nextById, goodsLoaded: true, index: action.goods, filteredGoods:action.goods }
+    case RECEIVE_ALL_GOODS:
       nextById = _.keyBy(action.goods, good => good.id);
       return {...state, byId: nextById, goodsLoaded: true, index: action.goods, filteredGoods:action.goods }
     case REMOVE_GOOD:
