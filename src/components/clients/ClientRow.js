@@ -4,23 +4,12 @@ import { Glyphicon, Button } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'
-import { deleteClient } from '../../store/actions/clientActions.js'
 
 class ClientRow extends Component {
-  constructor(props) {
-    super(props);
-
-    this.delete = this.delete.bind(this);
-  }
-
-  delete(id) {
-    this.props.dispatch(deleteClient(id));
-  }
-
   render() {
     const client = this.props.client;
 
-    return(
+    return (
       <tr>
         <td>{client.id}</td>
         <td>
@@ -39,7 +28,7 @@ class ClientRow extends Component {
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger" onClick={() => this.delete(client.id)}>
+          <Button bsStyle="danger" onClick={() => this.props.handleShow(client.id)}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>
