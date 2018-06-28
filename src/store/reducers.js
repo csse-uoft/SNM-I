@@ -7,7 +7,7 @@ import { clients } from './reducers/clientReducer.js';
 import { services } from './reducers/serviceReducer.js';
 import { providers } from './reducers/providerReducers.js';
 import { goods } from './reducers/goodReducer.js';
-import _ from 'lodash';
+import { admin_logs } from './reducers/adminLogReducer.js';
 
 export const rootReducer = combineReducers({
   services,
@@ -17,5 +17,6 @@ export const rootReducer = combineReducers({
   providers,
   auth,
   users,
-  ontology
+  ontology,
+  admin_logs
 });
