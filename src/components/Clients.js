@@ -29,7 +29,8 @@ class Clients extends Component {
 
     this.state = {
       CSVModalshow: false,
-      deleteModalshow: false
+      deleteModalshow: false,
+      objectId: null
     };
   }
 
@@ -57,7 +58,6 @@ class Clients extends Component {
   }
 
   handleDeleteModalShow(id) {
-    debugger
     this.setState({
       deleteModalShow: true,
       objectId: id

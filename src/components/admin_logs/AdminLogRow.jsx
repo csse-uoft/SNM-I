@@ -5,6 +5,10 @@ export default class AdminLogRow extends Component {
   render() {
     const log = this.props.log;
 
+    function object_url(contentType, objectId) {
+      return `/${contentType.toLowerCase()}s/${objectId}`
+    }
+
     return(
       <tr>
         <td>{log.action_time}</td>
@@ -15,7 +19,7 @@ export default class AdminLogRow extends Component {
         </td>
         <td>
           {log.action}&nbsp;
-          <Link to={`/client/${log.object_id}`}>
+          <Link to={object_url(log.object_repr, log.object_id)}>
             {log.object_name}
           </Link>
         </td>

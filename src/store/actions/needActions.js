@@ -4,6 +4,8 @@ import { serverHost } from '../defaults.js';
 export const RECEIVE_CLIENT_NEEDS = 'RECEIVE_CLIENT_NEEDS';
 export const RECEIVE_CLIENT_NEED = 'RECEIVE_CLIENT_NEED';
 export const REMOVE_CLIENT_NEED = 'REMOVE_CLIENT_NEED';
+export const REQUEST_NEED = 'REQUEST_NEED'
+export const ERROR = 'ERROR';
 
 export function receiveClientNeeds(clientId, json) {
   return {
@@ -27,6 +29,13 @@ function removeClientNeed(clientId, needId) {
     type: REMOVE_CLIENT_NEED,
     clientId: clientId,
     needId: needId
+  }
+}
+
+function requestNeed(id) {
+  return {
+    type: REQUEST_NEED,
+    needId: id
   }
 }
 
@@ -63,12 +72,14 @@ export function updateClientNeed(clientId, needId, params) {
   }
 }
 
-export function deleteClientNeed(clientId, needId) {
+export function deleteClientNeed(clientId, needId, params) {
   return dispatch => {
     const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
     return fetch(url, {
       method: "DELETE",
+      body: JSON.stringify(params),
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => {
@@ -76,5 +87,22 @@ export function deleteClientNeed(clientId, needId) {
         dispatch(removeClientNeed(clientId, needId))
       }
     });
+  }
+}
+
+export function fetchNeed(needId) {
+  return dispatch => {
+    dispatch(requestNeed(needId))
+    const url = serverHost + '/needs/' + needId;
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
   }
 }

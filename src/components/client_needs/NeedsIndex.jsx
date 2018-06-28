@@ -23,7 +23,14 @@ export default class NeedGroup extends Component {
         <tbody>
           { p.needs &&
             _.map(p.needs, (need) => {
-              return <NeedRow key={ need.id } clientId={ p.clientId } need={ need } />
+              return (
+                <NeedRow
+                  key={need.id}
+                  clientId={p.clientId}
+                  need={need}
+                  handleShow={p.handleShow}
+                />
+              )
             })
           }
         </tbody>
