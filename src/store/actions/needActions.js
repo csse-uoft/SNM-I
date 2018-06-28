@@ -72,12 +72,14 @@ export function updateClientNeed(clientId, needId, params) {
   }
 }
 
-export function deleteClientNeed(clientId, needId) {
+export function deleteClientNeed(clientId, needId, params) {
   return dispatch => {
     const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
     return fetch(url, {
       method: "DELETE",
+      body: JSON.stringify(params),
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => {
