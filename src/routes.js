@@ -43,7 +43,7 @@ const routes = (
 
     <PrivateRoute path='/clients/:id/edit' component={ClientForm} />
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm} />
-    <PrivateRoute path='/client/:id' component={Client} />
+    <PrivateRoute path='/clients/:id' component={Client} />
     <PrivateRoute path='/clients/new' component={ClientForm} />
     <PrivateRoute path='/clients' component={Clients} />
 

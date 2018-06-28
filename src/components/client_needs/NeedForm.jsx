@@ -51,7 +51,7 @@ class NeedForm extends Component {
       delete form['status']
       this.props.dispatch(createClientNeed(this.props.clientId, form));
     }
-    this.props.history.push(`/client/${this.props.clientId}`)
+    this.props.history.push(`/clients/${this.props.clientId}`)
   }
 
   render() {

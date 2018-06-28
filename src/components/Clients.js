@@ -57,7 +57,6 @@ class Clients extends Component {
   }
 
   handleDeleteModalShow(id) {
-    debugger
     this.setState({
       deleteModalShow: true,
       objectId: id

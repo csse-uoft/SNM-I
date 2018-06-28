@@ -13,7 +13,7 @@ class ClientRow extends Component {
       <tr>
         <td>{client.id}</td>
         <td>
-          <Link to={`/client/${client.id}`}>
+          <Link to={`/clients/${client.id}`}>
             {client.first_name} {client.last_name}
           </Link>
         </td>
