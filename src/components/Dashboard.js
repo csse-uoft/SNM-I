@@ -30,11 +30,18 @@ class Dashboard extends Component {
               </Link>
             }
             { p.isLoggedin && p.currentUser.is_admin &&
-              <Link to='/users'>
-                <Button bsStyle="default" className="btn-default-login" block>
-                  Manage Users
-                </Button>
-              </Link>
+              <div>
+                <Link to='/users'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Users
+                  </Button>
+                </Link>
+                <Link to='/admin_logs'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Admin Logs
+                  </Button>
+                </Link>
+              </div>
             }
           </div>
         </Col>
