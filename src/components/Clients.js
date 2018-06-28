@@ -5,10 +5,11 @@ import _ from 'lodash';
 import ClientsIndex from './clients/ClientsIndex'
 import ClientRow from './clients/ClientRow'
 import CSVUploadModal from './shared/CSVUploadModal'
+import DeleteModal from './shared/DeleteModal'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchClients, createClients, CLIENT_ERROR } from '../store/actions/clientActions.js'
+import { fetchClients, createClients, deleteClient, CLIENT_ERROR } from '../store/actions/clientActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
@@ -18,21 +19,26 @@ class Clients extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleHide = this.handleHide.bind(this);
-    this.handleShow = this.handleShow.bind(this);
-    this.handleSubmit = this.handleSubmit .bind(this);
+    this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
+    this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.handleDeleteModalHide = this.handleDeleteModalHide.bind(this);
+    this.handleDeleteModalShow = this.handleDeleteModalShow.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
 
     this.state = {
-      show: false
+      CSVModalshow: false,
+      deleteModalshow: false
     };
   }
 
-  handleHide() {
-    this.setState({ show: false });
+  handleCSVModalHide() {
+    this.setState({ CSVModalshow: false });
   }
 
-  handleShow() {
-    this.setState({ show: true })
+  handleCSVModalShow() {
+    this.setState({ CSVModalshow: true })
   }
 
   handleSubmit(e) {
@@ -41,7 +47,29 @@ class Clients extends Component {
       if (status === CLIENT_ERROR) {
         // this.setState({ displayError: true });
       } else {
-        this.setState({ show: false })
+        this.setState({ CSVModalshow: false })
+      }
+    });
+  }
+
+  handleDeleteModalHide() {
+    this.setState({ deleteModalshow: false });
+  }
+
+  handleDeleteModalShow(id) {
+    debugger
+    this.setState({
+      deleteModalShow: true,
+      objectId: id
+    })
+  }
+
+  handleDelete(id, form) {
+    this.props.dispatch(deleteClient(id, form)).then((status) => {
+      if (status === CLIENT_ERROR) {
+        // this.setState({ displayError: true });
+      } else {
+        this.setState({ deleteModalShow: false })
       }
     });
   }
@@ -61,22 +89,35 @@ class Clients extends Component {
               Add new client profile
             </Button>
           </Link>
-          <Button bsStyle="default"  onClick={this.handleShow}>
+          <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
             Add clients by uploading CSV
           </Button>
           <hr/>
           { p.clientsLoaded &&
             <ClientsIndex>{
               _.map(p.clients, (client) => {
-                return <ClientRow key={ client.id } client={ client } />
+                return (
+                  <ClientRow
+                    key={client.id}
+                    client={client}
+                    handleShow={this.handleDeleteModalShow}
+                  />
+                )
               })
             }</ClientsIndex>
           }
         </div>
         <CSVUploadModal
-          show={this.state.show}
-          onHide={this.handleHide}
+          show={this.state.CSVModalshow}
+          onHide={this.handleCSVModalHide}
           submit={this.handleSubmit}
+        />
+        <DeleteModal
+          contentType='Client'
+          objectId={this.state.objectId}
+          show={this.state.deleteModalShow}
+          onHide={this.handleDeleteModalHide}
+          delete={this.handleDelete}
         />
       </div>
     )

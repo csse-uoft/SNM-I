@@ -95,20 +95,27 @@ export function fetchClients() {
   }
 }
 
-export function deleteClient(id) {
+export function deleteClient(id, params) {
   return dispatch => {
     const url = serverHost + '/client/' + id + '/';
 
     return fetch(url, {
       method: 'DELETE',
+      body: JSON.stringify(params),
       headers: {
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
+        'Content-Type': 'application/json'
       },
-    }).then(response => {
+    })
+    .then(response => {
       if (response.status === 204) {
         dispatch(removeClient(id))
+        return CLIENT_SUCCESS
       }
-    });
+      else {
+        return CLIENT_ERROR
+      }
+    })
   }
 }
 

@@ -32,6 +32,7 @@ import ServiceForm from './components/services/ServiceForm'
 import Goods from './components/Goods';
 import Good from './components/goods/Good';
 import GoodForm from './components/goods/GoodForm'
+import AdminLogs from './components/AdminLogs';
 
 const routes = (
   <Switch>
@@ -50,6 +51,7 @@ const routes = (
     <AdminRoute path='/user/:id' component={User} />
     <AdminRoute path='/users/new' component={UserForm} />
     <AdminRoute path='/users' component={Users} />
+    <AdminRoute path='/admin_logs' component={AdminLogs} />
 
     <PrivateRoute path='/needs/:need_id/edit' component={NeedForm} />
     <PrivateRoute path='/needs/:need_id' component={Need} />
