@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
 
 
-import { Table } from 'react-bootstrap';
+import { Table, Label } from 'react-bootstrap';
 
 class Need extends Component {
   componentWillMount() {
@@ -23,6 +23,11 @@ class Need extends Component {
     return (
       <div className="content">
         <h3>Need</h3>
+        { need.is_deleted &&
+          <h4>
+            <Label bsStyle="danger">deleted</Label>
+          </h4>
+        }
         { need && need.loaded &&
           <Table striped bordered condensed hover>
             <tbody>
