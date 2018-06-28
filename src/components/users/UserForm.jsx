@@ -24,6 +24,8 @@ class UserForm extends Component {
         username: user.username || '',
         email: user.email || '',
         is_superuser: user.is_superuser || false,
+        primary_phone_number: user.primary_phone_number || '',
+        alt_phone_number: user.alt_phone_number || '',
         password: ''
       }
     }
@@ -136,6 +138,31 @@ class UserForm extends Component {
               </Col>
             </Row>
 
+            <FormGroup controlId="primary_phone_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Telephone
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="tel"
+                  value={this.state.form.primary_phone_number}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="alt_phone_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Alternative Phone Number
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="tel"
+                  value={this.state.form.alt_phone_number}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
