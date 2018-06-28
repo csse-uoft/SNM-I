@@ -4,11 +4,16 @@ import { defaults } from '../../store/defaults'
 
 // redux
 import { connect } from 'react-redux'
+import { fetchNeed } from '../../store/actions/needActions.js'
 
 
 import { Table } from 'react-bootstrap';
 
 class Need extends Component {
+  componentWillMount() {
+    const id = this.props.match.params.need_id
+    this.props.dispatch(fetchNeed(id));
+  }
 
   render() {
     const p = this.props,
@@ -18,7 +23,7 @@ class Need extends Component {
     return (
       <div className="content">
         <h3>Need</h3>
-        { p.needsLoaded &&
+        { need && need.loaded &&
           <Table striped bordered condensed hover>
             <tbody>
               <tr>
@@ -61,8 +66,7 @@ class Need extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    needsById: state.needs.byId,
-    needsLoaded: state.needs.loaded
+    needsById: state.needs.byId
   }
 }
 
