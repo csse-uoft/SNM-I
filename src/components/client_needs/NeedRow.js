@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { defaults } from '../../store/defaults'
 import { Link } from 'react-router-dom';
 
 // styles
@@ -20,7 +19,7 @@ class NeedRow extends Component {
         <td>{need.type}</td>
         <td>{need.category}</td>
         <td>{need.description}</td>
-        <td>{defaults['needStatus'][need.status]}</td>
+        <td>{need.status}</td>
         <td>
           <Link to={`/needs/${need.id}/edit`}>
             <Button bsStyle="primary">

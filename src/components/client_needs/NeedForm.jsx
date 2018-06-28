@@ -26,7 +26,7 @@ class NeedForm extends Component {
         description: need.description || '',
         needed_by: need.needed_by || '',
         condition: need.condition || '',
-        status: (need.status !== undefined) ? need.status.toString() : '' || ''
+        status: need.status || ''
       }
     }
 
@@ -166,11 +166,11 @@ class NeedForm extends Component {
                       onChange={this.formValChange}
                     >
                       <option value="select">-- Not Set --</option>
-                      <option value="0">Unmatched</option>
-                      <option value="1">Pending</option>
-                      <option value="2">In progress</option>
-                      <option value="3">Matched</option>
-                      <option value="4">Fulfilled</option>
+                      <option value="Unmatched">Unmatched</option>
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In progress</option>
+                      <option value="Matched">Matched</option>
+                      <option value="Fulfilled">Fulfilled</option>
                     </FormControl>
                   </Col>
                 </FormGroup>

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { defaults } from '../../store/defaults'
-
 
 // redux
 import { connect } from 'react-redux'
@@ -23,7 +21,7 @@ class Need extends Component {
     return (
       <div className="content">
         <h3>Need</h3>
-        { need.is_deleted &&
+        { need && need.is_deleted &&
           <h4>
             <Label bsStyle="danger">deleted</Label>
           </h4>
@@ -57,7 +55,7 @@ class Need extends Component {
               }
               <tr>
                 <td><b>Status</b></td>
-                <td>{defaults['needStatus'][need.status]}</td>
+                <td>{need.status}</td>
               </tr>
             </tbody>
           </Table>
