@@ -8,7 +8,8 @@ export const REQUEST_SERVICES = 'REQUEST_SERVICES';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
 export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const SEARCH_SERVICES = 'SEARCH_SERVICES';
-
+export const SERVICE_ERROR = 'SERVICE_ERROR';
+export const SERVICE_SUCCESS = 'SERVICE_SUCCESS';
 
 function requestService(id) {
   return {
@@ -90,18 +91,24 @@ export function fetchServices() {
   }
 }
 
-export function deleteService(id) {
+export function deleteService(id, params) {
   return dispatch => {
     const url = serverHost + '/service/' + id + '/';
 
     return fetch(url, {
       method: 'DELETE',
+      body: JSON.stringify(params),
       headers: {
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
+        'Content-Type': 'application/json'
       },
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeService(id))
+        return SERVICE_SUCCESS
+      }
+      else {
+        return SERVICE_ERROR
       }
     });
   }

@@ -34,7 +34,7 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "provider") {
-        goods = [...state.index].filter((good) => (good.provider.first_name + " " + good.provider_name.last_name).includes(action.searchValue));
+        goods = [...state.index].filter((good) => (good.provider.first_name + " " + good.provider.last_name).includes(action.searchValue));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
     default:
