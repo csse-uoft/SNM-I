@@ -4,19 +4,8 @@ import { Glyphicon, Button } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'
-import { deleteGood } from '../../store/actions/goodActions.js'
 
 class GoodRow extends Component {
-  constructor(props) {
-    super(props);
-
-    this.delete = this.delete.bind(this);
-  }
-
-  delete(id) {
-    this.props.dispatch(deleteGood(id));
-  }
-
   render() {
     const good = this.props.good;
 
@@ -41,7 +30,7 @@ class GoodRow extends Component {
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger" onClick={() => this.delete(good.id)}>
+          <Button bsStyle="danger" onClick={() => this.props.handleShow(good.id)}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>
