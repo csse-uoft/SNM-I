@@ -99,18 +99,25 @@ export function fetchGoods() {
   }
 }
 
-export function deleteGood(id) {
+export function deleteGood(id, params) {
   return dispatch => {
     const url = serverHost + '/good/' + id + '/';
 
     return fetch(url, {
       method: 'DELETE',
+      body: JSON.stringify(params),
       headers: {
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
+        'Content-Type': 'application/json'
       },
-    }).then(response => {
+    })
+    .then(response => {
       if (response.status === 204) {
         dispatch(removeGood(id))
+        return GOOD_SUCCESS
+      }
+      else {
+        return GOOD_ERROR
       }
     });
   }

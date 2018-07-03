@@ -16,7 +16,7 @@ class ServiceForm extends Component {
     super(props);
     let service = {};
     if (this.props.match.params.id) {
-      service = this.props.servicesById[this.props.match.params.id]
+      service = this.props.servicesById[this.props.match.params.id];
     }
 
     this.state = {
@@ -26,6 +26,7 @@ class ServiceForm extends Component {
         name: service.name || '',
         desc: service.desc || '',
         category: service.category || '',
+        availability: service.availability || '',
         language: service.language || '',
         capacity: service.capacity || '',
         email: service.email || '',
@@ -130,9 +131,31 @@ class ServiceForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
+                  <option key="Shelter" value="Shelter"> Shelter </option>
                   { p.categoriesLoaded &&
                     categoriesIntoOptions(p.servicesCategories)
                   }
+
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="availability">
+              <Col componentClass={ControlLabel} sm={3}>
+                Availability
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.availability}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="food">1 week</option>
+                  <option value="clothing">1 month</option>
+                  <option value="utensils">6 months</option>
+                  <option value="utensils">1 year</option>
                 </FormControl>
               </Col>
             </FormGroup>
@@ -149,6 +172,7 @@ class ServiceForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
+                  <option key = "English" value="English"> English </option>
                   { p.languagesLoaded &&
                     categoriesIntoOptions(p.languagesCategories)
                   }

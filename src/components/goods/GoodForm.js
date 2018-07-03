@@ -27,6 +27,7 @@ class GoodForm extends Component {
         name: good.name || '',
         desc: good.desc || '',
         category: good.category || '',
+        availability: good.availability || '',
         condition: good.condition || '',
         material: good.material || '',
         quantity: good.quantity || '',
@@ -153,6 +154,26 @@ class GoodForm extends Component {
                   <option value="clothing">Clothing</option>
                   <option value="utensils">Utensils</option>
                   <option value="utensils">Books</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="availability">
+              <Col componentClass={ControlLabel} sm={3}>
+                Availability
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.availability}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="food">1 week</option>
+                  <option value="clothing">1 month</option>
+                  <option value="utensils">6 months</option>
+                  <option value="utensils">1 year</option>
                 </FormControl>
               </Col>
             </FormGroup>
