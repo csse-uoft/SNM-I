@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+
+import RecommendedService from './RecommendedService'
 
 // redux
 import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
 
 
-import { Table, Label } from 'react-bootstrap';
+import { Table, Label, ListGroup } from 'react-bootstrap';
 
 class Need extends Component {
   componentWillMount() {
@@ -27,41 +30,55 @@ class Need extends Component {
           </h4>
         }
         { need && need.loaded &&
-          <Table striped bordered condensed hover>
-            <tbody>
-              <tr>
-                <td><b>Type</b></td>
-                <td>{need.type}</td>
-              </tr>
-              <tr>
-                <td><b>Category</b></td>
-                <td>{need.category}</td>
-              </tr>
-              <tr>
-                <td><b>Needed by</b></td>
-                <td>{need.needed_by}</td>
-              </tr>
-              <tr>
-                <td><b>Description</b></td>
-                <td>{need.description}</td>
-              </tr>
+          <div>
+            <Table striped bordered condensed hover>
+              <tbody>
+                <tr>
+                  <td><b>Type</b></td>
+                  <td>{need.type}</td>
+                </tr>
+                <tr>
+                  <td><b>Category</b></td>
+                  <td>{need.category}</td>
+                </tr>
+                <tr>
+                  <td><b>Needed by</b></td>
+                  <td>{need.needed_by}</td>
+                </tr>
+                <tr>
+                  <td><b>Description</b></td>
+                  <td>{need.description}</td>
+                </tr>
+                {
+                  (need.type === 'Good') && (
+                    <tr>
+                      <td><b>Condition</b></td>
+                      <td>{need.condition}</td>
+                    </tr>
+                  )
+                }
+                <tr>
+                  <td><b>Status</b></td>
+                  <td>{need.status}</td>
+                </tr>
+              </tbody>
+            </Table>
+            <hr />
+            <h3>Recommended Services</h3>
+            <div>
               {
-                (need.type === 'Good') && (
-                  <tr>
-                    <td><b>Condition</b></td>
-                    <td>{need.condition}</td>
-                  </tr>
-                )
+                _.map(need.recommended_services, (service) => {
+                  return (
+                    <RecommendedService
+                      key={service.id}
+                      service={service}
+                    />
+                  )
+                })
               }
-              <tr>
-                <td><b>Status</b></td>
-                <td>{need.status}</td>
-              </tr>
-            </tbody>
-          </Table>
+            </div>
+          </div>
         }
-        <hr />
-        <h3>Recommended Services</h3>
       </div>
     );
   }
