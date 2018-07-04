@@ -89,8 +89,8 @@ class Services extends Component {
               Add new service
             </Button>
           </Link>
-          <Button bsStyle="default"  onClick={this.handleShow}>
-            Add goods by uploading CSV
+          <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
+            Add services by uploading CSV
           </Button>
           <hr/>
           { p.servicesLoaded &&

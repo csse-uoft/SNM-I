@@ -1,5 +1,5 @@
 import { REQUEST_SERVICES, RECEIVE_SERVICES, SEARCH_SERVICES, REMOVE_SERVICE,
-         REQUEST_SERVICE, RECEIVE_SERVICE } from '../actions/serviceActions.js';
+         REQUEST_SERVICE, RECEIVE_SERVICE, RECEIVE_ALL_SERVICES } from '../actions/serviceActions.js';
 import _ from 'lodash';
 
 
@@ -9,6 +9,10 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
     case REQUEST_SERVICES:
       return {...state, servicesLoaded: false }
     case RECEIVE_SERVICES:
+      const newServicesById = _.keyBy(action.services, service => service.id);
+      nextById = { ...state.byId, ...newServicesById }
+      return {...state, byId: nextById, servicesLoaded: true, index: action.services, filteredServices:action.services }
+    case RECEIVE_ALL_SERVICES:
       nextById = _.keyBy(action.services, service => service.id);
       return {...state, byId: nextById, servicesLoaded: true, index: action.services, filteredServices:action.services }
     case REMOVE_SERVICE:
