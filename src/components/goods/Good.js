@@ -39,6 +39,14 @@ class Good extends Component {
                 <td>{good.category}</td>
               </tr>
               <tr>
+                <td><b>Available from</b></td>
+                <td>{good.available_from}</td>
+              </tr>
+              <tr>
+                <td><b>Available until</b></td>
+                <td>{good.available_to}</td>
+              </tr>
+              <tr>
                 <td><b>Condition</b></td>
                 <td>{good.condition}</td>
               </tr>
@@ -65,6 +73,10 @@ class Good extends Component {
               <tr>
                 <td><b>Diameter</b></td>
                 <td>{good.diameter}</td>
+              </tr>
+              <tr>
+                <td><b>Share with</b></td>
+                <td>{good.share_with}</td>
               </tr>
               <tr>
                 <td><b>Provider</b></td>

@@ -26,7 +26,8 @@ class ServiceForm extends Component {
         name: service.name || '',
         desc: service.desc || '',
         category: service.category || '',
-        availability: service.availability || '',
+        available_from: service.available_from || '',
+        available_to: service.available_to || '',
         language: service.language || '',
         capacity: service.capacity || '',
         email: service.email || '',
@@ -39,6 +40,7 @@ class ServiceForm extends Component {
           province: '',
           postal_code: ''
         }, service.location),
+        share_with: service.share_with || '',
         provider_id: (service.provider && service.provider.id) || ''
       }
     }
@@ -140,23 +142,29 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="availability">
+            <FormGroup controlId="available_from">
               <Col componentClass={ControlLabel} sm={3}>
-                Availability
+                Available from
               </Col>
               <Col sm={9}>
                 <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.availability}
+                  type="date"
+                  value={this.state.form.available_from}
                   onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="food">1 week</option>
-                  <option value="clothing">1 month</option>
-                  <option value="utensils">6 months</option>
-                  <option value="utensils">1 year</option>
-                </FormControl>
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="available_to">
+              <Col componentClass={ControlLabel} sm={3}>
+                Available until
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="date"
+                  value={this.state.form.available_to}
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -316,6 +324,25 @@ class ServiceForm extends Component {
                       {provider.first_name + " " + provider.last_name}
                     </option>
                   )}
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="share_with">
+              <Col componentClass={ControlLabel} sm={3}>
+                Share with
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.share_with}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Private">Private</option>
+                  <option value="Public">Public</option>
+                  <option value="NGO">NGO</option>
                 </FormControl>
               </Col>
             </FormGroup>
