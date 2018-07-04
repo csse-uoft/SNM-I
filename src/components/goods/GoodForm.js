@@ -27,7 +27,8 @@ class GoodForm extends Component {
         name: good.name || '',
         desc: good.desc || '',
         category: good.category || '',
-        availability: good.availability || '',
+        available_from: good.available_from || '',
+        available_to: good.available_to || '',
         condition: good.condition || '',
         material: good.material || '',
         quantity: good.quantity || '',
@@ -35,6 +36,7 @@ class GoodForm extends Component {
         width: good.width || '',
         height: good.height || '',
         diameter: good.diameter || '',
+        share_with: good.share_with || '',
         provider_id: (good.provider && good.provider.id) || ''
       }
     }
@@ -150,6 +152,7 @@ class GoodForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
+                  <option value="food">Furniture</option>
                   <option value="food">Food</option>
                   <option value="clothing">Clothing</option>
                   <option value="utensils">Utensils</option>
@@ -158,23 +161,29 @@ class GoodForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="availability">
+            <FormGroup controlId="available_from">
               <Col componentClass={ControlLabel} sm={3}>
-                Availability
+                Available from
               </Col>
               <Col sm={9}>
                 <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.availability}
+                  type="date"
+                  value={this.state.form.available_from}
                   onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="food">1 week</option>
-                  <option value="clothing">1 month</option>
-                  <option value="utensils">6 months</option>
-                  <option value="utensils">1 year</option>
-                </FormControl>
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="available_to">
+              <Col componentClass={ControlLabel} sm={3}>
+                Available until
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="date"
+                  value={this.state.form.available_to}
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -263,6 +272,25 @@ class GoodForm extends Component {
                   placeholder=""
                   onChange={this.formValChange}
                 />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="share_with">
+              <Col componentClass={ControlLabel} sm={3}>
+                Share with
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.share_with}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Private">Private</option>
+                  <option value="Food">Public</option>
+                  <option value="NGO">NGO</option>
+                </FormControl>
               </Col>
             </FormGroup>
 
