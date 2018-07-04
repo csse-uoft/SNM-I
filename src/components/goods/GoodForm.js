@@ -152,11 +152,11 @@ class GoodForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
-                  <option value="food">Furniture</option>
-                  <option value="food">Food</option>
-                  <option value="clothing">Clothing</option>
-                  <option value="utensils">Utensils</option>
-                  <option value="utensils">Books</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Food">Food</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Utensils">Utensils</option>
+                  <option value="Books">Books</option>
                 </FormControl>
               </Col>
             </FormGroup>
