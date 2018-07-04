@@ -16,7 +16,7 @@ class ServiceForm extends Component {
     super(props);
     let service = {};
     if (this.props.match.params.id) {
-      service = this.props.servicesById[this.props.match.params.id]
+      service = this.props.servicesById[this.props.match.params.id];
     }
 
     this.state = {
@@ -26,6 +26,8 @@ class ServiceForm extends Component {
         name: service.name || '',
         desc: service.desc || '',
         category: service.category || '',
+        available_from: service.available_from || '',
+        available_to: service.available_to || '',
         language: service.language || '',
         capacity: service.capacity || '',
         email: service.email || '',
@@ -38,6 +40,7 @@ class ServiceForm extends Component {
           province: '',
           postal_code: ''
         }, service.location),
+        share_with: service.share_with || '',
         provider_id: (service.provider && service.provider.id) || ''
       }
     }
@@ -130,10 +133,38 @@ class ServiceForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
+                  <option key="Shelter" value="Shelter"> Shelter </option>
                   { p.categoriesLoaded &&
                     categoriesIntoOptions(p.servicesCategories)
                   }
+
                 </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="available_from">
+              <Col componentClass={ControlLabel} sm={3}>
+                Available from
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="date"
+                  value={this.state.form.available_from}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="available_to">
+              <Col componentClass={ControlLabel} sm={3}>
+                Available until
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="date"
+                  value={this.state.form.available_to}
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -149,6 +180,7 @@ class ServiceForm extends Component {
                   onChange={this.formValChange}
                 >
                   <option value="select">-- Not Set --</option>
+                  <option key = "English" value="English"> English </option>
                   { p.languagesLoaded &&
                     categoriesIntoOptions(p.languagesCategories)
                   }
@@ -292,6 +324,49 @@ class ServiceForm extends Component {
                       {provider.first_name + " " + provider.last_name}
                     </option>
                   )}
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="share_with">
+              <Col componentClass={ControlLabel} sm={3}>
+                Share with
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.share_with}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Private">Private</option>
+                  <option value="Public">Public</option>
+                  <option value="Boost Child & Youth Advocacy Centre">Boost Child & Youth Advocacy Centre</option>
+                  <option value="Children's Aid Society of Toronto">Children's Aid Society of Toronto</option>
+                  <option value="Abrigo Centre">Abrigo Centre</option>
+                  <option value="Barbra Schlifer Commemorative Clinic">Barbra Schlifer Commemorative Clinic</option>
+                  <option value="Durham Rape Crisis Centre">Durham Rape Crisis Centre</option>
+                  <option value="Durham Children's Aid Society">Durham Children's Aid Society</option>
+                  <option value="Alexandra Park Community Centre">Alexandra Park Community Centre</option>
+                  <option value="Applegrove Community Complex">Applegrove Community Complex</option>
+                  <option value="Albion Neighbourhood Services">Albion Neighbourhood Services</option>
+                  <option value="Applegrove Community Complex">Applegrove Community Complex</option>
+                  <option value="Kababayan Multicultural Centre">Kababayan Multicultural Centre</option>
+                  <option value="Central Toronto Youth Services">Central Toronto Youth Services</option>
+                  <option value="Covenant House Toronto">Covenant House Toronto</option>
+                  <option value="Durham Youth Housing and Support Services">Durham Youth Housing and Support Services</option>
+                  <option value="Eva's Initiatives">Eva's Initiatives</option>
+                  <option value="Horizons for Youth">Horizons for Youth</option>
+                  <option value="AIDS Committee of Durham Region">AIDS Committee of Durham Region</option>
+                  <option value="Arab Community Centre of Toronto">Arab Community Centre of Toronto</option>
+                  <option value="Pediatric Oncology Group of Ontario">Pediatric Oncology Group of Ontario</option>
+                  <option value="Adventist community services">Adventist community services</option>
+                  <option value="Aurora Food Pantry">Aurora Food Pantry</option>
+                  <option value="Bluffs Food Bank">Bluffs Food Bank</option>
+                  <option value="Brock Community Food Bank">Brock Community Food Bank</option>
+                  <option value="Markham Food Bank">Markham Food Bank</option>
+                  <option value="Parkdale Community Food Bank">Parkdale Community Food Bank</option>
                 </FormControl>
               </Col>
             </FormGroup>

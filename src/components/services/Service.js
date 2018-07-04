@@ -39,6 +39,14 @@ class Service extends Component {
                 <td>{service.category}</td>
               </tr>
               <tr>
+                <td><b>Available from</b></td>
+                <td>{service.available_from}</td>
+              </tr>
+              <tr>
+                <td><b>Available until</b></td>
+                <td>{service.available_to}</td>
+              </tr>
+              <tr>
                 <td><b>Language</b></td>
                 <td>{service.language}</td>
               </tr>
@@ -61,6 +69,10 @@ class Service extends Component {
               <tr>
                 <td><b>Location</b></td>
                 <td>{formatLocation(service.location)}</td>
+              </tr>
+              <tr>
+                <td><b>Share with</b></td>
+                <td>{service.share_with}</td>
               </tr>
               <tr>
                 <td><b>Provider</b></td>

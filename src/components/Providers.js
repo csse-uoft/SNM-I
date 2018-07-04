@@ -7,12 +7,13 @@ import ProviderRow from './providers/ProviderRow.js'
 
 // redux
 import { connect } from 'react-redux'
-import { searchProviders, fetchProviders, createProvider, updateProvider, deleteProvider } from '../store/actions/providerActions.js'
+import { fetchProviders } from '../store/actions/providerActions.js'
 // styles
 import { Button, Col} from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import { deleteProvider } from '../store/actions/providerActions.js'
 
 
 class Providers extends Component {
@@ -70,8 +71,7 @@ class Providers extends Component {
         { p.providersLoaded &&
           <ProvidersIndex>{
             p.providers.map((provider) => {
-              return <ProviderRow key={ provider.id } provider={ provider }
-                      delete={this.deleteProvider} />
+              return <ProviderRow key={ provider.id } provider={ provider } />
             })
           }
           </ProvidersIndex>

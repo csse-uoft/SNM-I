@@ -1,12 +1,14 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 
-export const RECEIVE_NEW_GOOD = 'RECEIVE_NEW_GOOD';
 export const REQUEST_GOOD = 'REQUEST_GOOD';
 export const RECEIVE_GOOD = 'RECEIVE_GOOD';
 export const REQUEST_GOODS = 'REQUEST_GOODS';
-export const RECEIVE_GOODS = 'RECEIVE_GOODS';
+export const RECEIVE_ALL_GOODS = 'RECEIVE_ALL_GOODS';
 export const REMOVE_GOOD = 'REMOVE_GOOD';
+export const RECEIVE_GOODS = 'RECEIVE_GOODS';
+export const GOOD_ERROR = 'GOOD_ERROR';
+export const GOOD_SUCCESS = 'GOOD_SUCCESS';
 export const SEARCH_GOODS = 'SEARCH_GOODS';
 
 
@@ -29,6 +31,13 @@ function requestGoods(json) {
   return {
     type: REQUEST_GOODS,
     goods: json
+  }
+}
+
+function receiveAllGoods(json) {
+  return {
+    type: RECEIVE_ALL_GOODS,
+    clients: json
   }
 }
 
@@ -90,18 +99,25 @@ export function fetchGoods() {
   }
 }
 
-export function deleteGood(id) {
+export function deleteGood(id, params) {
   return dispatch => {
     const url = serverHost + '/good/' + id + '/';
 
     return fetch(url, {
       method: 'DELETE',
+      body: JSON.stringify(params),
       headers: {
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
+        'Content-Type': 'application/json'
       },
-    }).then(response => {
+    })
+    .then(response => {
       if (response.status === 204) {
         dispatch(removeGood(id))
+        return GOOD_SUCCESS
+      }
+      else {
+        return GOOD_ERROR
       }
     });
   }
@@ -122,12 +138,34 @@ export function createGood(params) {
   }
 }
 
-export function createGoods(params) {
+export function createGoods(file) {
+  const formData  = new FormData();
+  formData.append('file', file)
+
   return dispatch => {
-    const url = serverHost + '/goods/';
+    const url = serverHost + '/goods.csv';
     return fetch(url, {
       method: 'POST',
-      body: JSON.stringify({csv: params})
+      body: formData,
+      headers: {
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(goods => {
+      dispatch(receiveGoods(goods))
+      return GOOD_SUCCESS
+    })
+    .catch(err => {
+      return GOOD_ERROR
     })
   }
 }

@@ -24,8 +24,8 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
     case REMOVE_PROVIDER:
       nextIndex = _.clone(state.index);
       _.remove(nextIndex, (n) => { return n.id === action.id });
-      return {...state, index: nextIndex}
-    case RECEIVE_PROVIDER: 
+      return {...state, index: nextIndex, filteredProviders: nextIndex}
+    case RECEIVE_PROVIDER:
       nextById = {...state.byId, [action.id]: { ...action.info.provider, loaded: true, services: action.info.services }}
       return {...state, byId: nextById }
     case REQUEST_PROVIDER:

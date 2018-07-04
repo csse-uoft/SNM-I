@@ -15,7 +15,7 @@ class EditProvider extends Component {
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
     const id = this.props.match.params.id;
-    const provider = this.props.providersById[id];
+    const provider = this.props.providersById[id] || {};
 
     this.state= {
       form : {
@@ -24,7 +24,7 @@ class EditProvider extends Component {
         company: provider.company,
         first_name: provider.first_name,
         last_name: provider.last_name,
-        gender: provider.gender.toString(),
+        gender: provider.gender,
         email: provider.email,
         primary_phone_number: provider.primary_phone_number || '',
         primary_phone_extension: provider.primary_phone_extension || '',
@@ -46,7 +46,7 @@ class EditProvider extends Component {
           }, provider.address),
         phone_extension: provider.phone_extension || '',
         referrer: provider.referrer || '',
-        visibility: provider.visibility.toString(),
+        visibility: provider.visibility,
         status: provider.status
         }
       } 
@@ -358,11 +358,14 @@ class EditProvider extends Component {
                   placeholder="select"
                   value={this.state.form.status}
                   onChange={this.formValChange}
+                  disabled={this.state.form.status === "Home Agency"}
                 >
                   <option value="select">--- Not Set ---</option>
                   <option value="External">External</option>
                   <option value="Internal">Internal</option>
-                  <option value="Home Agency">Home Agency</option>
+                  { this.state.form.status === "Home Agency" ? (
+                    <option value="Home Agency">Home Agency</option>
+                  ): null }
                 </FormControl>
               </Col>
             </FormGroup>

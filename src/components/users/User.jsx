@@ -43,6 +43,14 @@ class User extends Component {
                 <td><b>Role</b></td>
                 <td>{user.is_superuser ? 'Admin' : 'User'}</td>
               </tr>
+              <tr>
+                <td><b>Phone Number</b></td>
+                <td>{user.primary_phone_number}</td>
+              </tr>
+              <tr>
+                <td><b>Alternative Phone Number</b></td>
+                <td>{user.alt_phone_number}</td>
+              </tr>
             </tbody>
           </Table>
         }

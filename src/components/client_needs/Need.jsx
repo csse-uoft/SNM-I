@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
-import { defaults } from '../../store/defaults'
+import _ from 'lodash';
 
+import RecommendedService from './RecommendedService'
 
 // redux
 import { connect } from 'react-redux'
+import { fetchNeed } from '../../store/actions/needActions.js'
 
 
-import { Table } from 'react-bootstrap';
+import { Table, Label, ListGroup } from 'react-bootstrap';
 
 class Need extends Component {
+  componentWillMount() {
+    const id = this.props.match.params.need_id
+    this.props.dispatch(fetchNeed(id));
+  }
 
   render() {
     const p = this.props,
@@ -18,42 +24,61 @@ class Need extends Component {
     return (
       <div className="content">
         <h3>Need</h3>
-        { p.needsLoaded &&
-          <Table striped bordered condensed hover>
-            <tbody>
-              <tr>
-                <td><b>Type</b></td>
-                <td>{need.type}</td>
-              </tr>
-              <tr>
-                <td><b>Category</b></td>
-                <td>{need.category}</td>
-              </tr>
-              <tr>
-                <td><b>Needed by</b></td>
-                <td>{need.needed_by}</td>
-              </tr>
-              <tr>
-                <td><b>Description</b></td>
-                <td>{need.description}</td>
-              </tr>
-              {
-                (need.type === 'Good') && (
-                  <tr>
-                    <td><b>Condition</b></td>
-                    <td>{need.condition}</td>
-                  </tr>
-                )
-              }
-              <tr>
-                <td><b>Status</b></td>
-                <td>{defaults['needStatus'][need.status]}</td>
-              </tr>
-            </tbody>
-          </Table>
+        { need && need.is_deleted &&
+          <h4>
+            <Label bsStyle="danger">deleted</Label>
+          </h4>
         }
-        <hr />
-        <h3>Recommended Services</h3>
+        { need && need.loaded &&
+          <div>
+            <Table striped bordered condensed hover>
+              <tbody>
+                <tr>
+                  <td><b>Type</b></td>
+                  <td>{need.type}</td>
+                </tr>
+                <tr>
+                  <td><b>Category</b></td>
+                  <td>{need.category}</td>
+                </tr>
+                <tr>
+                  <td><b>Needed by</b></td>
+                  <td>{need.needed_by}</td>
+                </tr>
+                <tr>
+                  <td><b>Description</b></td>
+                  <td>{need.description}</td>
+                </tr>
+                {
+                  (need.type === 'Good') && (
+                    <tr>
+                      <td><b>Condition</b></td>
+                      <td>{need.condition}</td>
+                    </tr>
+                  )
+                }
+                <tr>
+                  <td><b>Status</b></td>
+                  <td>{need.status}</td>
+                </tr>
+              </tbody>
+            </Table>
+            <hr />
+            <h3>Recommended Services</h3>
+            <div>
+              {
+                _.map(need.recommended_services, (service) => {
+                  return (
+                    <RecommendedService
+                      key={service.id}
+                      service={service}
+                    />
+                  )
+                })
+              }
+            </div>
+          </div>
+        }
       </div>
     );
   }
@@ -61,8 +86,7 @@ class Need extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    needsById: state.needs.byId,
-    needsLoaded: state.needs.loaded
+    needsById: state.needs.byId
   }
 }
 

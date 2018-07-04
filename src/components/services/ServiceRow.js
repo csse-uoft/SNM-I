@@ -4,18 +4,8 @@ import { Glyphicon, Button } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'
-import { deleteService } from '../../store/actions/serviceActions.js'
 
 class ServiceRow extends Component {
-  constructor(props) {
-    super(props);
-
-    this.delete = this.delete.bind(this);
-  }
-
-  delete(id) {
-    this.props.dispatch(deleteService(id));
-  }
 
   render() {
     const service = this.props.service;
@@ -39,7 +29,7 @@ class ServiceRow extends Component {
           </Link>
         </td>
         <td>
-          <Button bsStyle="danger" onClick={() => this.delete(service.id)}>
+          <Button bsStyle="danger" onClick={() => this.props.handleShow(service.id)}>
             <Glyphicon glyph="trash" />
           </Button>
         </td>

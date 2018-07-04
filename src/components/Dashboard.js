@@ -16,25 +16,32 @@ class Dashboard extends Component {
         <Col md={12}>
           <div className="login-buttons">
             { p.isLoggedin && p.currentUser.is_admin && !p.organization.id &&
-              <Link to='/providers/new/organization'>
+              <Link to={{ pathname: '/providers/new/organization', state: { status: 'Home Agency'} }}>
                 <Button bsStyle="default" className="btn-default-login" block>
                   Create organization profile for home agency
                 </Button>
               </Link>
             }
             { p.isLoggedin && p.currentUser.is_admin && p.organization.id &&
-              <Link to={`/provider/${p.currentUser.provider_id}/edit/organization`}>
+              <Link to={`/provider/${p.organization.id}/edit/organization`}>
                 <Button bsStyle="default" className="btn-default-login" block>
                   Edit organization profile for home agency
                 </Button>
               </Link>
             }
             { p.isLoggedin && p.currentUser.is_admin &&
-              <Link to='/users'>
-                <Button bsStyle="default" className="btn-default-login" block>
-                  Manage User
-                </Button>
-              </Link>
+              <div>
+                <Link to='/users'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Users
+                  </Button>
+                </Link>
+                <Link to='/admin_logs'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Admin Logs
+                  </Button>
+                </Link>
+              </div>
             }
           </div>
         </Col>

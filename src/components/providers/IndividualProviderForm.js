@@ -265,7 +265,6 @@ class IndividualProviderForm extends Component {
                 <option value="select">--- Not Set ---</option>
                 <option value="External">External</option>
                 <option value="Internal">Internal</option>
-                <option value="Home Agency">Home Agency</option>
               </FormControl>
             </Col>
           </FormGroup>

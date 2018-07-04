@@ -8,7 +8,7 @@ import { fetchClient } from '../../store/actions/clientActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 
-import { Table } from 'react-bootstrap';
+import { Table, Label } from 'react-bootstrap';
 
 class Client extends Component {
   componentWillMount() {
@@ -26,6 +26,11 @@ class Client extends Component {
         <h3>Client Profile</h3>
         { client && client.loaded &&
           <div>
+            { client.is_deleted &&
+              <h4>
+                <Label bsStyle="danger">deleted</Label>
+              </h4>
+            }
             <Table bordered condensed className="client-profile-table">
               <tbody>
                 <tr>
@@ -129,7 +134,7 @@ class Client extends Component {
           </div>
         }
         <hr />
-        { p.needsLoaded &&
+        { client && client.loaded && p.needsLoaded &&
           <ClientNeeds clientId={client.id} needs={p.needsById} />
         }
       </div>
