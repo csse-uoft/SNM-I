@@ -21,6 +21,7 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
+    console.log(provider)
     return (
       <div className="content">
         <h3>Provider Profile</h3>
@@ -103,10 +104,61 @@ class ProviderProfile extends Component {
           </tr>
           }
 
+          {provider.provider_type === "Organization" && provider.sec_contact_first_name &&
+            <tr>
+              <td><b>Secondary Contact First Name</b></td>
+              <td>{provider.sec_contact_first_name} </td>
+            </tr>
+          }
+          {provider.provider_type === "Organization" && provider.sec_contact_last_name &&
+            <tr>
+              <td><b>Secondary Contact Last Name</b></td>
+              <td>{provider.sec_contact_last_name} </td>
+            </tr>
+          }
+          {provider.provider_type === "Organization" && provider.sec_contact_email &&   
+            <tr>
+              <td><b>Secondary Contact Email</b></td>
+              <td>{provider.sec_contact_email} </td>
+            </tr>
+          }
+
+          {provider.provider_type === "Organization" && provider.sec_contact_primary_phone_number &&
+            <tr>
+              <td><b>Secondary Contact Phone Number</b></td>
+              <td>{provider.sec_contact_primary_phone_number} </td>
+            </tr>
+          }
+          {provider.provider_type === "Organization" && provider.primary_phone_extension &&
+            <tr>
+              <td><b>Secondary Contact Extension</b></td>
+              <td>{provider.sec_contact_primary_phone_extension} </td>
+             </tr>
+          }
+          {provider.provider_type === "Organization" && provider.sec_contact_alt_phone_number &&
+            <tr>
+              <td><b>Secondary Contact Alternate Phone Number</b></td>
+              <td>{provider.sec_contact_alt_phone_number} </td>
+            </tr>
+          }
+          {provider.provider_type === "Organization" && provider.sec_contact_alt_phone_extension &&
+            <tr>
+              <td><b>Secondary Contact Alternate Extension</b></td>
+              <td>{provider.sec_contact_alt_phone_extension} </td>
+            </tr>
+          }
+
           <tr>
             <td><b>Address</b></td>
             <td>{formatLocation(provider.address)}</td>
           </tr>
+
+          {provider.provider_type === "Organization" &&
+            <tr>
+              <td><b>Operation Hours</b></td>
+              <td>{provider.generic_operation_hours} </td>
+            </tr>
+          }
 
           {provider.provider_type === "Individual" && provider.referrer &&
           <tr>
