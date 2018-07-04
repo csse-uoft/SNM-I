@@ -8,7 +8,7 @@ import { fetchClient } from '../../store/actions/clientActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 
-import { Table, Label } from 'react-bootstrap';
+import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
 class Client extends Component {
   componentWillMount() {
@@ -22,8 +22,11 @@ class Client extends Component {
           client = p.clientsById[id];
 
     return (
-      <div className="content">
+      <div className="content client">
         <h3>Client Profile</h3>
+        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+          <Glyphicon glyph="print" />
+        </Button>
         { client && client.loaded &&
           <div>
             { client.is_deleted &&
@@ -143,12 +146,12 @@ class Client extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     needsById: state.needs.byId,
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
-    clientLoaded: state.clients.indexLoaded 
-  }  
+    clientLoaded: state.clients.indexLoaded
+  }
 }
 
 export default connect(

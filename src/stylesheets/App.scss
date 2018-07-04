@@ -28,6 +28,10 @@
   color: #aaa;
   text-align: center;
   border-radius: 2px 2px 0 0;
+
+  @media print {
+    display: none;
+  }
 }
 
 .landing {
@@ -49,4 +53,11 @@
   color: white;
   padding: 15px;
   font-weight: 500;
+}
+
+@media print {
+  @page {
+      size: auto;   /* auto is the initial value */
+      margin: 0;  /* this affects the margin in the printer settings */
+  }
 }

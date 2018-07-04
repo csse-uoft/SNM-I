@@ -52,7 +52,7 @@ class ClientNeeds extends Component {
     const p = this.props,
           clientId = p.clientId;
     return (
-      <div>
+      <div className="client-needs">
         <h3>Needs</h3>
         <Link to={`/clients/${clientId}/needs/new`}>
           <Button bsStyle="default">
