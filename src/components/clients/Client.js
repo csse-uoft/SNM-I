@@ -8,7 +8,7 @@ import { fetchClient } from '../../store/actions/clientActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 
-import { Table, Label } from 'react-bootstrap';
+import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
 class Client extends Component {
   componentWillMount() {
@@ -24,6 +24,9 @@ class Client extends Component {
     return (
       <div className="content client">
         <h3>Client Profile</h3>
+        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+          <Glyphicon glyph="print" />
+        </Button>
         { client && client.loaded &&
           <div>
             { client.is_deleted &&

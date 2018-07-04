@@ -18,6 +18,7 @@
 
 .client {
   @media print {
+    font-size: 12px;
     .print-button {
       display: none;
     }
