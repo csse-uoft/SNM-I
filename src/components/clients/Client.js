@@ -22,7 +22,7 @@ class Client extends Component {
           client = p.clientsById[id];
 
     return (
-      <div className="content">
+      <div className="content client">
         <h3>Client Profile</h3>
         { client && client.loaded &&
           <div>
@@ -143,12 +143,12 @@ class Client extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     needsById: state.needs.byId,
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
-    clientLoaded: state.clients.indexLoaded 
-  }  
+    clientLoaded: state.clients.indexLoaded
+  }
 }
 
 export default connect(
