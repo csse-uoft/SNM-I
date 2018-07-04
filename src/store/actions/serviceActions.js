@@ -5,6 +5,7 @@ export const RECEIVE_NEW_SERVICE = 'RECEIVE_NEW_SERVICE';
 export const REQUEST_SERVICE = 'REQUEST_SERVICE';
 export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
 export const REQUEST_SERVICES = 'REQUEST_SERVICES';
+export const RECEIVE_ALL_SERVICES = 'RECEIVE_ALL_SERVICES';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
 export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const SEARCH_SERVICES = 'SEARCH_SERVICES';
@@ -30,6 +31,13 @@ function requestServices(json) {
   return {
     type: REQUEST_SERVICES,
     services: json
+  }
+}
+
+function receiveAllServices(json) {
+  return {
+    type: RECEIVE_ALL_SERVICES,
+    clients: json
   }
 }
 
@@ -129,12 +137,34 @@ export function createService(params) {
   }
 }
 
-export function createServices(params) {
+export function createServices(file) {
+  const formData  = new FormData();
+  formData.append('file', file)
+
   return dispatch => {
-    const url = serverHost + '/services/';
+    const url = serverHost + '/services.csv';
     return fetch(url, {
       method: 'POST',
-      body: JSON.stringify({csv: params})
+      body: formData,
+      headers: {
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(services => {
+      dispatch(receiveServices(services))
+      return SERVICE_SUCCESS
+    })
+    .catch(err => {
+      return SERVICE_ERROR
     })
   }
 }
