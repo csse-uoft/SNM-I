@@ -17,6 +17,10 @@ class OrganizationProviderForm extends Component {
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
     this.addressChange = this.addressChange.bind(this);
+    this.operationHourChange = this.operationHourChange.bind(this);
+
+    //this.addressValChange = this.addressValChange.bind(this);
+    //this.addressSelected = this.addressSelected.bind(this);
     this.state= { form : {
       provider_type: 'Organization',
       id: '',
@@ -29,6 +33,13 @@ class OrganizationProviderForm extends Component {
       primary_phone_extension: '',
       alt_phone_number: '',
       alt_phone_extension: '',
+      sec_contact_first_name: '',
+      sec_contact_last_name:'',
+      sec_contact_email: '',
+      sec_contact_primary_phone_number: '',
+      sec_contact_primary_phone_extension: '',
+      sec_contact_alt_phone_number: '',
+      sec_contact_alt_phone_extension: '',
       address: Object.assign({
         street_address: '',
         apt_number: '',
@@ -36,6 +47,15 @@ class OrganizationProviderForm extends Component {
         province: '',
         postal_code: ''
       }, provider.address),
+      lng_lat: "",
+      operation_hours: [{week_day: 'Mon', start_time: '', end_time: ''},
+                        {week_day: 'Tues', start_time: '', end_time: ''},
+                        {week_day: 'Weds', start_time: '', end_time: ''},
+                        {week_day: 'Thurs', start_time: '', end_time: ''},
+                        {week_day: 'Fri', start_time: '', end_time: ''},
+                        {week_day: 'Sat', start_time: '', end_time: ''},
+                        {week_day: 'Sun', start_time: '', end_time: ''}
+                        ],
       visibility: 'select',
       status: (props.location.state && props.location.state.status) || ''
       }
@@ -56,6 +76,24 @@ class OrganizationProviderForm extends Component {
     let nextForm = _.clone(this.state.form);
     nextForm['address'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
+  }
+
+  operationHourChange(e) {
+    let dayIndex = {
+      mon_operation_hours: 0,
+      tues_operation_hours: 1,
+      wed_operation_hours: 2,
+      thurs_operation_hours: 3,
+      fri_operation_hours: 4,
+      sat_operation_hours: 5,
+      sun_operation_hours: 6
+    }
+    let nextForm = _.clone(this.state.form);
+    let dayTime = e.target.id.split('-');
+    let day = dayIndex[dayTime[0]];
+    nextForm['operation_hours'][day][dayTime[1]] = e.target.value;
+    this.setState({ form: nextForm });
+    console.log(nextForm);
   }
 
   render() {
@@ -137,6 +175,225 @@ class OrganizationProviderForm extends Component {
               />
             </Col>
           </FormGroup>
+          <hr/>
+          <h4> Company Operation Hours </h4>
+          <hr/>
+          <Form inline>
+            <h4> Monday </h4>
+            <FormGroup controlId="mon_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[0].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="mon_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[0].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+
+          <Form inline>
+            <h4> Tuesday </h4>
+            <FormGroup controlId="tues_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[1].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="tues_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[1].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+
+          <Form inline>
+            <h4> Wednesday </h4>
+            <FormGroup controlId="weds_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[2].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="weds_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[2].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+
+          <Form inline>
+            <h4> Thursday </h4>
+            <FormGroup controlId="thurs_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[3].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="thurs_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[3].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+
+          <Form inline>
+            <h4> Friday </h4>
+            <FormGroup controlId="fri_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[4].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="fri_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[4].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+
+          <Form inline>
+            <h4> Saturday </h4>
+            <FormGroup controlId="sat_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[5].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="sat_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[5].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
+
+          <Form inline>
+            <h4> Sunday </h4>
+            <FormGroup controlId="sun_operation_hours-start_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                Start Time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.operation_hours[6].start_time}
+                  placeholder=""
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="sun_operation_hours-end_time">
+              <Col componentClass={ControlLabel} sm={3}>
+                End time
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.operation_hours[6].end_time}
+                  onChange={this.operationHourChange}
+                />
+              </Col>
+            </FormGroup>
+          </Form>
 
           <hr/>
           <h4> Contact Information </h4>
@@ -216,6 +473,87 @@ class OrganizationProviderForm extends Component {
               <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
             </Col>
           </FormGroup>
+
+          <hr/>
+          <h4> Secondary Contact Information </h4>
+          <hr/>
+
+          <FormGroup controlId="sec_contact_first_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Secondary Contact Person First Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="First name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_last_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Secondary Contact Person Last Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="Last name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_email" validationState={emailValidation(this.state.form.email)}>
+            <Col componentClass={ControlLabel} sm={3}>
+              Email
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue=""
+                placeholder="youremail@gmail.com" onChange={this.formValChange}/>
+              <FormControl.Feedback />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_primary_phone_number">
+            <Col componentClass={ControlLabel} sm={3}>
+              Telephone
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="tel"
+                value={this.state.form.sec_contact_primary_phone_number}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_primary_phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_alt_phone_number">
+            <Col componentClass={ControlLabel} sm={3}>
+              Alternative Phone Number
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="tel"
+                value={this.state.form.sec_contact_alt_phone_number}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_alt_phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension for Alternative Phone Number
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <hr/>
 
           <FormGroup controlId="status">
             <Col componentClass={ControlLabel} sm={3}>

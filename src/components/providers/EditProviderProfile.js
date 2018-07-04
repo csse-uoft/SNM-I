@@ -30,6 +30,13 @@ class EditProvider extends Component {
         primary_phone_extension: provider.primary_phone_extension || '',
         alt_phone_number: provider.alt_phone_number || '',
         alt_phone_extension: provider.alt_phone_extension || '',
+        sec_contact_first_name: provider.sec_contact_first_name,
+        sec_contact_last_name:provider.sec_contact_last_name,
+        sec_contact_email: provider.sec_contact_email,
+        sec_contact_primary_phone_number: provider.sec_contact_primary_phone_number,
+        sec_contact_primary_phone_extension: provider.sec_contact_primary_phone_extension,
+        sec_contact_alt_phone_number: provider.sec_contact_alt_phone_number,
+        sec_contact_alt_phone_extension: provider.sec_contact_primary_phone_extension,
         address: Object.assign({
           street_address: '',
           apt_number: '',
@@ -102,7 +109,7 @@ class EditProvider extends Component {
 
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
-                First name (required)
+                Primary Contact First name (required)
               </Col>
               <Col sm={9}>
                 <FormControl type="text"
@@ -112,7 +119,7 @@ class EditProvider extends Component {
 
             <FormGroup controlId="last_name">
               <Col componentClass={ControlLabel} sm={3}>
-                Last name (required)
+                Primary Contact Last name (required)
               </Col>
               <Col sm={9}>
                 <FormControl type="text" value={this.state.form.last_name}
@@ -123,7 +130,7 @@ class EditProvider extends Component {
             {provider.provider_type === "Individual" &&
             <FormGroup controlId="preferred_name">
               <Col componentClass={ControlLabel} sm={3}>
-                Preferred Name
+                Primary Contact Preferred Name
               </Col>
               <Col sm={9}>
                 <FormControl type="text" value={this.state.form.preferred_name} onChange={this.formValChange}/>
@@ -133,7 +140,7 @@ class EditProvider extends Component {
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
-                Email
+                Primary Contact Email
               </Col>
               <Col sm={9}>
                 <FormControl type="text"
@@ -184,6 +191,84 @@ class EditProvider extends Component {
                 <FormControl type="text" value={this.state.form.alt_phone_extension} onChange={this.formValChange}/>
               </Col>
             </FormGroup>
+
+            {provider.provider_type === "Organization" &&
+              <div>
+                <FormGroup controlId="sec_contact_first_name">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Secondary Contact First name
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl type="text"
+                      placeholder="Aravind" value={this.state.form.sec_contact_first_name} onChange={this.formValChange}/>
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="sec_contact_last_name">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Secondary Contact Last name
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl type="text" value={this.state.form.sec_contact_last_name}
+                      placeholder="Adiga" onChange={this.formValChange}/>
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="sec_contact_email">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Secondary Contact Email
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl type="text"
+                      placeholder="youremail@gmail.com" value={this.state.form.sec_contact_email} onChange={this.formValChange}/>
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="sec_contact_primary_phone_number">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Secondary Contact Telephone
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="tel"
+                      value={this.state.form.sec_contact_primary_phone_number}
+                      onChange={this.formValChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="sec_contact primary_phone_extension">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Extension
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl type="text" value={this.state.form.sec_contact_primary_phone_extension} onChange={this.formValChange}/>
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="sec_contact_alt_phone_number">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Alternative Phone Number
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="tel"
+                      value={this.state.form.sec_contact_alt_phone_number}
+                      onChange={this.formValChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="sec_contact_alt_phone_extension">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Extension for Alternative Phone Number
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl type="text" value={this.state.form.sec_contact_alt_phone_extension} onChange={this.formValChange}/>
+                  </Col>
+                </FormGroup>
+              </div>
+            }
 
             <FormGroup controlId="street_address">
               <Col componentClass={ControlLabel} sm={3}>

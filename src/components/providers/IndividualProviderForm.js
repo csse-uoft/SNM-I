@@ -28,6 +28,10 @@ class IndividualProviderForm extends Component {
       primary_phone_extension: '',
       alt_phone_number: '',
       alt_phone_extension: '',
+      sec_contact_primary_phone_number: '',
+      sec_contact_primary_phone_extension: '',
+      sec_contact_alt_phone_number: '',
+      sec_contact_alt_phone_extension: '',
       referrer: '',
       address: Object.assign({
         street_address: '',
