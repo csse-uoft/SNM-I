@@ -59,7 +59,7 @@ class ClientNeeds extends Component {
             Add need
           </Button>
         </Link>
-        <hr />
+        <hr/>
         <NeedsIndex
           needs={p.needs}
           clientId={p.clientId}
