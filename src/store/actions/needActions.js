@@ -72,6 +72,22 @@ export function updateClientNeed(clientId, needId, params) {
   }
 }
 
+export function matchClientNeed(clientId, needId, params) {
+  return dispatch => {
+    const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
+
+    return fetch(url, {
+      method: "PATCH",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    }).then(response => response.json())
+      .then(json => dispatch(receiveClientNeed(clientId, needId, json)));
+  }
+}
+
 export function deleteClientNeed(clientId, needId, params) {
   return dispatch => {
     const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
