@@ -5,9 +5,10 @@ import _ from 'lodash'
 
 // components
 import { formatLocation } from '../../helpers/location_helpers'
+import { formatOperationHours } from '../../helpers/operation_hour_helpers'
 
 // styles
-import { Table, Button, Row } from 'react-bootstrap'
+import { Table, Button, ListGroup, Well, Badge, Col, Row } from 'react-bootstrap'
 import { fetchProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
@@ -21,7 +22,9 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-    console.log(provider)
+    if (provider && provider.loaded){
+      console.log(provider.reviews)
+    }
     return (
       <div className="content">
         <h3>Provider Profile</h3>
@@ -156,7 +159,8 @@ class ProviderProfile extends Component {
           {provider.provider_type === "Organization" &&
             <tr>
               <td><b>Operation Hours</b></td>
-              <td>{provider.generic_operation_hours} </td>
+              <td>{
+                provider.operation_hours ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
             </tr>
           }
 
@@ -166,21 +170,39 @@ class ProviderProfile extends Component {
             <td>{provider.referrer}</td>
           </tr>
           }
-          <tr>
-            <td><b>Provider Reviews</b></td>
-            <td>{
-              <StarRatingComponent
-              name="provider-rating"
-              editing={false}
-              starCount={5}
-              value={4}
-              />
-            }
-            </td>
-          </tr>
          </tbody>
         </Table>
     <hr/>
+
+    <h3> Reviews </h3>
+    <p/>
+    <Well bsSize="small">
+      <Row>
+        <Col sm={3}>
+          Overall Rating:
+        </Col>
+        <Col>
+          <StarRatingComponent
+            name="rating"
+            editing={false}
+            starCount={5}
+            value={((provider.reviews.map(review => review.rating))
+                      .reduce((first, second) => first + second, 0)) / provider.reviews.length}
+          />
+        </Col>
+      </Row>
+    </Well>
+    <hr/>
+    <ListGroup componentClass="ul">
+      {provider.reviews.map(review =>
+        <StarCommentRating
+          key={review.created_at}
+          rating={review.rating}
+          comment={review.comment}
+          createdAt={review.created_at}/>)
+      }
+    </ListGroup>
+
      <h3>Services</h3>
       <Link to="/services/new">
         <Button bsStyle="default">
@@ -193,6 +215,32 @@ class ProviderProfile extends Component {
   }
   </div>  
   );
+  }
+}
+
+class StarCommentRating extends Component {
+  render() {
+    return(
+      <li className="list-group-item">
+        <Row>
+          <Col sm={10}>
+            <StarRatingComponent
+              name="rating"
+              editing={false}
+              starCount={5}
+              value={this.props.rating}
+            />
+            <p/>
+            {this.props.comment}
+          </Col>
+          <Col>
+            <p>
+              <Badge>{"Date: " + this.props.createdAt.split("T")[0]}</Badge>
+            </p>
+          </Col>
+        </Row>
+      </li>
+    )
   }
 }
 

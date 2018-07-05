@@ -20,7 +20,8 @@ class ProviderRatingForm extends Component {
     this.state = {
       id: id,
 			rating: 0,
-      comment: ''		}
+      comment: ''
+    }
   }
 
   handleStarSelection(nextValue, name) {
@@ -37,7 +38,7 @@ class ProviderRatingForm extends Component {
     const id = this.props.match.params.id
     const provider = this.props.providersById[id];
     this.props.dispatch(rateProvider(id, this.state));
-
+    this.props.history.push('/provider/' + id);
   }
 
   render() {
@@ -73,7 +74,11 @@ class ProviderRatingForm extends Component {
           <hr/>
           <FormGroup controlId="comments">
             <ControlLabel>Comments</ControlLabel>
-            <FormControl componentClass="textarea" placeholder="Comments about this provider..." />
+            <FormControl
+              componentClass="textarea"
+              placeholder="Comments about this provider..."
+              onChange={this.handleCommentChange}
+            />
           </FormGroup>
         </Col>
         <Col sm={9}>

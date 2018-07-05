@@ -13,22 +13,16 @@ import { Button, Col} from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { deleteProvider } from '../store/actions/providerActions.js'
 
 
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.deleteProvider=this.deleteProvider.bind(this);
     this.getCoordinates = this.getCoordinates.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
-  }
-
-  deleteProvider(id) {
-    this.props.dispatch(deleteProvider(id));
   }
 
   getCoordinates(address) {
