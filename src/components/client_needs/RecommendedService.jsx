@@ -1,15 +1,28 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { formatLocation } from '../../helpers/location_helpers'
 import _ from 'lodash';
 
-import { ListGroupItem, Label, Row, Col } from 'react-bootstrap';
+import { connect } from 'react-redux'
+import { ListGroupItem, Label, Row, Col, Button, Form, FormGroup } from 'react-bootstrap';
+import { matchClientNeed } from '../../store/actions/needActions.js'
 
-export default class RecommendedService extends Component {
+class RecommendedService extends Component {
+  constructor(props) {
+    super(props);
+    this.submit = this.submit.bind(this);
+  }
+
+  submit() {
+    this.props.dispatch(matchClientNeed(this.props.need.client_id, this.props.need.id, this.props.service.id));
+  }
+
   render() {
 
     const service = this.props.service;
-    debugger
+    const need = this.props.need;
+
     return (
       <ListGroupItem className="recommended-service">
         <Row>
@@ -32,9 +45,20 @@ export default class RecommendedService extends Component {
                 )
               }
             </Link>
+            <Form horizontal>
+            <FormGroup>
+                <Col smOffset={3} sm={9}>
+                  <Button onClick={this.submit}>
+                    Match
+                  </Button>
+                </Col>
+              </FormGroup>
+            </Form>
           </Col>
         </Row>
       </ListGroupItem>
     )
   }
 }
+
+export default connect()(withRouter(RecommendedService));

@@ -6,7 +6,7 @@ import RecommendedService from './RecommendedService'
 // redux
 import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
-
+import { Link } from 'react-router-dom';
 
 import { Table, Label, ListGroup } from 'react-bootstrap';
 
@@ -59,7 +59,12 @@ class Need extends Component {
                 }
                 <tr>
                   <td><b>Status</b></td>
-                  <td>{need.status}</td>
+                  <td>
+                    {need.status}
+                    <Link to={`/service/${need.service_id}/edit`}>
+                      {` ${need.service_id}`}
+                    </Link>
+                  </td>
                 </tr>
               </tbody>
             </Table>
@@ -72,6 +77,7 @@ class Need extends Component {
                     <RecommendedService
                       key={service.id}
                       service={service}
+                      need={need}
                     />
                   )
                 })
