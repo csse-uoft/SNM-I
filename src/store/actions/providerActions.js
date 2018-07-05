@@ -10,7 +10,6 @@ export const REMOVE_PROVIDER = 'REMOVE_PROVIDER';
 export const RECEIVE_PROVIDER = 'RECEIVE_PROVIDER';
 export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
 export const SEARCH_PROVIDERS = 'SEARCH_PROVIDERS';
-export const RECEIVE_NEW_PROVIDER_REVIEW = 'RECEIVE_NEW_PROVIDER_REVIEW';
 export const RECEIVE_NEW_PROVIDERS_CSV = 'RECEIVE_NEW_PROVIDERS_CSV';
 
 
@@ -61,14 +60,6 @@ function requestProvider(id) {
   return {
     type: REQUEST_PROVIDER,
     id: id
-  }
-}
-
-function receiveNewProviderReview(id, json) {
-  return {
-    type: RECEIVE_NEW_PROVIDER_REVIEW,
-    id: id,
-    provider: json
   }
 }
 
@@ -199,6 +190,5 @@ export function rateProvider(id, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveNewProviderReview(id, json)));
   }
 }
