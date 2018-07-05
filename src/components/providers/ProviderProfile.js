@@ -22,9 +22,6 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-    if (provider && provider.loaded){
-      console.log(provider.reviews)
-    }
     return (
       <div className="content">
         <h3>Provider Profile</h3>
