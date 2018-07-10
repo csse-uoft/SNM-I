@@ -29,6 +29,11 @@ class Need extends Component {
             <Label bsStyle="danger">deleted</Label>
           </h4>
         }
+        { need && need.is_urgent &&
+          <h4>
+            <Label bsStyle="danger">Urgent</Label>
+          </h4>
+        }
         { need && need.loaded &&
           <div>
             <Table striped bordered condensed hover>

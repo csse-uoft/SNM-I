@@ -12,6 +12,12 @@ class NeedRow extends Component {
     return(
       <tr>
         <td>
+          {need.is_urgent && (
+            <span className='need-urgent'>
+              <Glyphicon glyph="exclamation-sign" />
+              {' '}
+            </span>)
+          }
           <Link to={`/needs/${need.id}`}>
             {need.id}
           </Link>
