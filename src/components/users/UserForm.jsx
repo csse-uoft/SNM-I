@@ -60,12 +60,42 @@ class UserForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
+            <FormGroup controlId="is_superuser">
+              <Col componentClass={ControlLabel} sm={3}>
+                Admin?
+              </Col>
+              <Col sm={9}>
+                <Radio
+                  name="radioGroup"
+                  value='1'
+                  onChange={e => this.formValChange(e, 'is_superuser')}
+                  defaultChecked={this.state.form.is_superuser === true}
+                  inline
+                >
+                  Yes
+                </Radio>{' '}
+                <Radio
+                  name="radioGroup"
+                  value='0'
+                  onChange={e => this.formValChange(e, 'is_superuser')}
+                  defaultChecked={this.state.form.is_superuser === false}
+                  inline
+                >
+                  No
+                </Radio>{' '}
+              </Col>
+            </FormGroup>
+            
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
                 First name
               </Col>
               <Col sm={9}>
-                <FormControl type="text" value={this.state.form.first_name} onChange={ e => this.formValChange(e)} />
+                <FormControl
+                  type="text"
+                  value={this.state.form.first_name}
+                  onChange={e => this.formValChange(e)}
+                />
               </Col>
             </FormGroup>
 
@@ -87,7 +117,11 @@ class UserForm extends Component {
                 Username
               </Col>
               <Col sm={9}>
-                <FormControl type="text" value={this.state.form.username} onChange={ e => this.formValChange(e)} />
+                <FormControl
+                  type="text"
+                  value={this.state.form.username}
+                  onChange={e => this.formValChange(e)}
+                />
               </Col>
             </FormGroup>
 
@@ -96,7 +130,11 @@ class UserForm extends Component {
                 Email
               </Col>
               <Col sm={9}>
-                <FormControl type="email" value={this.state.form.email} onChange={ e => this.formValChange(e)} />
+                <FormControl
+                  type="email"
+                  value={this.state.form.email}
+                  onChange={e => this.formValChange(e)}
+                />
               </Col>
             </FormGroup>
 
@@ -106,37 +144,14 @@ class UserForm extends Component {
                   Password
                 </Col>
                 <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.password} onChange={ e => this.formValChange(e)} />
+                  <FormControl
+                    type="text"
+                    value={this.state.form.password}
+                    onChange={e => this.formValChange(e)}
+                  />
                 </Col>
               </FormGroup>
             ) : null }
-
-            <Row>
-              <Col componentClass={ControlLabel} sm={3}>
-                Admin?
-              </Col>
-              <Col sm={9}>
-                <FormGroup controlId="is_superuser">
-                  <Radio
-                    name="radioGroup"
-                    value='1'
-                    onChange={ e => this.formValChange(e, 'is_superuser')}
-                    defaultChecked={this.state.form.is_superuser === true}
-                    inline
-                  >
-                    Yes
-                  </Radio>{' '}
-                  <Radio
-                    name="radioGroup"
-                    value='0'
-                    onChange={ e => this.formValChange(e, 'is_superuser')}
-                    defaultChecked={this.state.form.is_superuser === false}
-                  inline>
-                    No
-                  </Radio>{' '}
-                </FormGroup>
-              </Col>
-            </Row>
 
             <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>

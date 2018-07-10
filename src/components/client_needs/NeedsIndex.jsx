@@ -22,7 +22,8 @@ export default class NeedGroup extends Component {
         </thead>
         <tbody>
           { p.needs &&
-            _.map(p.needs, (need) => {
+            _.map(p.needsOrder, (needId) => {
+              const need = p.needs[needId]
               return (
                 <NeedRow
                   key={need.id}

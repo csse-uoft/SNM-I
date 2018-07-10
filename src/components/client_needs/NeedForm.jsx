@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClientNeed, updateClientNeed } from '../../store/actions/needActions.js'
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
 
 class NeedForm extends Component {
   constructor(props) {
@@ -26,7 +26,8 @@ class NeedForm extends Component {
         description: need.description || '',
         needed_by: need.needed_by || '',
         condition: need.condition || '',
-        status: need.status || ''
+        status: need.status || '',
+        is_urgent: need.is_urgent || false
       }
     }
 
@@ -60,7 +61,7 @@ class NeedForm extends Component {
 
     function cateogiresIntoOptions(categories) {
       return categories.map((category) => {
-        return <option key={category} value={ category }>{category}</option>
+        return <option key={category} value={category}>{category}</option>
       })
     }
 
@@ -69,10 +70,10 @@ class NeedForm extends Component {
         <div className="outer">
           <div className="middle">
             <div className="need-type-buttons">
-              <Button onClick={ (e) => this.formValChange(e, 'type', 'Good')}>
+              <Button onClick={e => this.formValChange(e, 'type', 'Good')}>
                 Goods
               </Button>
-              <Button onClick={ (e) => this.formValChange(e, 'type', 'Service')}>
+              <Button onClick={e => this.formValChange(e, 'type', 'Service')}>
                 Service
               </Button>
             </div>
@@ -88,12 +89,40 @@ class NeedForm extends Component {
           </Col>
           <Col sm={12}>
             <Form horizontal>
-              <FormGroup controlId="category">
+              <FormGroup controlId="type">
                 <Col componentClass={ControlLabel} sm={3}>
                   Type
                 </Col>
                 <Col sm={9}>
-                  {this.state.form.type}
+                  <div className="need-type">
+                    {this.state.form.type}
+                  </div>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="is_urgent">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Urgent?
+                </Col>
+                <Col sm={9}>
+                  <Radio
+                    name="radioGroup"
+                    value="1"
+                    onChange={e => this.formValChange(e, 'is_urgent')}
+                    defaultChecked={this.state.form.is_urgent === true}
+                    inline
+                  >
+                    Yes
+                  </Radio>{' '}
+                  <Radio
+                    name="radioGroup"
+                    value="0"
+                    onChange={e => this.formValChange(e, 'is_urgent')}
+                    defaultChecked={this.state.form.is_urgent === false}
+                    inline
+                  >
+                    No{this.state.form.is_urgent === false}
+                  </Radio>{' '}
                 </Col>
               </FormGroup>
 
@@ -121,7 +150,11 @@ class NeedForm extends Component {
                   Needed by
                 </Col>
                 <Col sm={9}>
-                  <FormControl type="date" value={this.state.form.needed_by} onChange={this.formValChange} />
+                  <FormControl
+                    type="date"
+                    value={this.state.form.needed_by}
+                    onChange={this.formValChange}
+                  />
                 </Col>
               </FormGroup>
 
