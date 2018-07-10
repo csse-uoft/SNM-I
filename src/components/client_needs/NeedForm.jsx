@@ -89,12 +89,17 @@ class NeedForm extends Component {
           </Col>
           <Col sm={12}>
             <Form horizontal>
-              <FormGroup controlId="category">
+              <FormGroup controlId="type">
                 <Col componentClass={ControlLabel} sm={3}>
                   Type
                 </Col>
                 <Col sm={9}>
-                  {this.state.form.type}
+                  <div className="need-type">
+                    {this.state.form.type}
+                  </div>
+                </Col>
+              </FormGroup>
+
               <FormGroup controlId="is_urgent">
                 <Col componentClass={ControlLabel} sm={3}>
                   Urgent?
