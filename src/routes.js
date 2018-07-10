@@ -62,8 +62,8 @@ const routes = (
     <PrivateRoute path='/providers/new/organization' component={OrganizationProviderForm} />
     <PrivateRoute path='/providers/new/upload' component={ProviderCSVUpload} />
     <PrivateRoute path='/providers/new' component={ProviderTypePrompt} />
-    <PrivateRoute path='/provider/:id/edit/individual' component={EditProvider} />
-    <PrivateRoute path='/provider/:id/edit/organization' component={EditProvider} />
+    <PrivateRoute path='/provider/:id/edit/individual' component={IndividualProviderForm} />
+    <PrivateRoute path='/provider/:id/edit/organization' component={OrganizationProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
 

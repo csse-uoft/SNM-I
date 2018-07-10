@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Grid } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { createProvider } from '../../store/actions/providerActions.js'
+import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
@@ -13,51 +13,69 @@ import { emailValidation } from '../../helpers/validation_helpers.js'
 class OrganizationProviderForm extends Component {
   constructor(props) {
     super(props);
-    const provider = {}
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
     this.addressChange = this.addressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
 
+    const id = this.props.match.params.id;
+    let provider = {};
+    let operation_hours = [
+      {week_day: 'Mon', start_time: "", end_time: ""},
+      {week_day: 'Tues', start_time: "", end_time: ""},
+      {week_day: 'Weds', start_time: "", end_time: ""},
+      {week_day: 'Thurs', start_time: "", end_time: ""},
+      {week_day: 'Fri', start_time: "", end_time: ""},
+      {week_day: 'Sat', start_time: "", end_time: ""},
+      {week_day: 'Sun', start_time: "", end_time: ""}
+    ]
+    if (id) {
+      provider = this.props.providersById[id];
+      const days_index = {'Mon': 0, 'Tues': 1, 'Weds': 2, 'Thurs': 3, 'Fri': 4, 'Sat': 5, 'Sun': 6};
+      const operation_hour_list = provider.operation_hours;
+      operation_hour_list.forEach(op_hour => {
+        const index = days_index[op_hour.week_day];
+        operation_hours[index].start_time = op_hour.start_time;
+        operation_hours[index].end_time = op_hour.end_time;
+      });
+    }
+
     //this.addressValChange = this.addressValChange.bind(this);
     //this.addressSelected = this.addressSelected.bind(this);
-    this.state= { form : {
-      provider_type: 'Organization',
-      id: '',
-      company: '',
-      first_name: '',
-      last_name: '',
-      gender: 'Other',
-      email: '',
-      primary_phone_number: '',
-      primary_phone_extension: '',
-      alt_phone_number: '',
-      alt_phone_extension: '',
-      sec_contact_first_name: '',
-      sec_contact_last_name:'',
-      sec_contact_email: '',
-      sec_contact_primary_phone_number: '',
-      sec_contact_primary_phone_extension: '',
-      sec_contact_alt_phone_number: '',
-      sec_contact_alt_phone_extension: '',
-      address: Object.assign({
-        street_address: '',
-        apt_number: '',
-        city: '',
-        province: '',
-        postal_code: ''
-      }, provider.address),
+    this.state= {
+      providerId: provider.id,
+      mode: (provider.id) ? 'edit' : 'new',
+      form : {
+        provider_type: 'Organization',
+        id: id,
+        company: provider.company,
+        first_name: provider.first_name,
+        last_name: provider.last_name,
+        email: provider.email,
+        primary_phone_number: provider.primary_phone_number || '',
+        primary_phone_extension: provider.primary_phone_extension || '',
+        alt_phone_number: provider.alt_phone_number || '',
+        alt_phone_extension: provider.alt_phone_extension || '',
+        sec_contact_first_name: provider.sec_contact_first_name || '',
+        sec_contact_last_name:provider.sec_contact_last_name || '',
+        sec_contact_email: provider.sec_contact_email || '',
+        sec_contact_primary_phone_number: provider.sec_contact_primary_phone_number || '',
+        sec_contact_primary_phone_extension: provider.sec_contact_primary_phone_extension || '',
+        sec_contact_alt_phone_number: provider.sec_contact_alt_phone_number || '',
+        sec_contact_alt_phone_extension: provider.sec_contact_primary_phone_extension || '',
+        address: Object.assign({
+          street_address: '',
+          apt_number: '',
+          city: '',
+          province: '',
+          postal_code: ''
+        }, provider.address),
       lng_lat: "",
-      operation_hours: [{week_day: 'Mon', start_time: '', end_time: ''},
-                        {week_day: 'Tues', start_time: '', end_time: ''},
-                        {week_day: 'Weds', start_time: '', end_time: ''},
-                        {week_day: 'Thurs', start_time: '', end_time: ''},
-                        {week_day: 'Fri', start_time: '', end_time: ''},
-                        {week_day: 'Sat', start_time: '', end_time: ''},
-                        {week_day: 'Sun', start_time: '', end_time: ''}
-                        ],
-      visibility: 'select',
-      status: (props.location.state && props.location.state.status) || ''
+      operation_hours: operation_hours,
+      referrer: provider.referrer || '',
+      visibility: provider.visibility || 'select',
+      status: provider.status,
+      notes: provider.notes || ""
       }
     }
   }
@@ -68,8 +86,15 @@ class OrganizationProviderForm extends Component {
   }
 
   submit(e) {
-    this.props.dispatch(createProvider(this.state.form));
-    this.props.history.push('/providers/new/add-service');
+    e.preventDefault();
+    if (this.state.mode === 'edit') {
+      const id = this.props.match.params.id
+      this.props.dispatch(updateProvider(this.state.form.id, this.state.form));
+      this.props.history.push('/provider/' + id);
+    } else {
+      this.props.dispatch(createProvider(this.state.form));
+      this.props.history.push('/providers/new/add-service');
+    }
   }
 
   addressChange(e) {
@@ -93,7 +118,6 @@ class OrganizationProviderForm extends Component {
     let day = dayIndex[dayTime[0]];
     nextForm['operation_hours'][day][dayTime[1]] = e.target.value;
     this.setState({ form: nextForm });
-    console.log(nextForm);
   }
 
   render() {
@@ -106,7 +130,8 @@ class OrganizationProviderForm extends Component {
       this.state.form.visibility !== 'select';
 
   return (
-    <Row className="content">
+    <Grid className="content">
+      <Row>
       <Col sm={12}>
         <h3>New Provider Profile</h3>
         <hr/>
@@ -119,8 +144,11 @@ class OrganizationProviderForm extends Component {
               Company/Organization Name
             </Col>
             <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="Company Name" onChange={this.formValChange}/>
+              <FormControl
+                type="text"
+                value={this.state.form.company}
+                placeholder="Company Name"
+                onChange={this.formValChange}/>
             </Col>
           </FormGroup>
 
@@ -176,6 +204,175 @@ class OrganizationProviderForm extends Component {
             </Col>
           </FormGroup>
           <hr/>
+          <h4> Contact Information </h4>
+          <hr/>
+
+          <FormGroup controlId="first_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Contact Person First Name
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="text"
+                value={this.state.form.first_name}
+                placeholder="First name"
+                onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="last_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Contact Person Last Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" value={this.state.form.last_name}
+                placeholder="Last name" onChange={this.formValChange}/>
+              }
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="email">
+            <Col componentClass={ControlLabel} sm={3}>
+              Email (required)
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" value={this.state.form.email}
+                placeholder="youremail@gmail.com" onChange={this.formValChange}/>
+              }
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="primary_phone_number">
+            <Col componentClass={ControlLabel} sm={3}>
+              Telephone
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="tel"
+                value={this.state.form.primary_phone_number}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="primary_phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="text"
+                value={this.state.form.primary_phone_extension}
+                onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="alt_phone_number">
+            <Col componentClass={ControlLabel} sm={3}>
+              Alternative Phone Number
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="tel"
+                value={this.state.form.alt_phone_number}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="alt_phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension for Alternative Phone Number
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" value={this.state.form.alt_phone_extension} onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <hr/>
+          <h4> Secondary Contact Information </h4>
+          <hr/>
+
+          <FormGroup controlId="sec_contact_first_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Secondary Contact Person First Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" value={this.state.form.sec_contact_first_name}
+                placeholder="First name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_last_name">
+            <Col componentClass={ControlLabel} sm={3}>
+              Secondary Contact Person Last Name
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" value={this.state.form.sec_contact_last_name}
+                placeholder="Last name" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_email">
+            <Col componentClass={ControlLabel} sm={3}>
+              Email
+            </Col>
+            <Col sm={9}>
+              <FormControl type="text" value={this.state.form.sec_contact_email}
+                placeholder="youremail@gmail.com" onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_primary_phone_number">
+            <Col componentClass={ControlLabel} sm={3}>
+              Telephone
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="tel"
+                value={this.state.form.sec_contact_primary_phone_number}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_primary_phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="text"
+                value={this.state.form.sec_contact_primary_phone_extension}
+                onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_alt_phone_number">
+            <Col componentClass={ControlLabel} sm={3}>
+              Alternative Phone Number
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="tel"
+                value={this.state.form.sec_contact_alt_phone_number}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="sec_contact_alt_phone_extension">
+            <Col componentClass={ControlLabel} sm={3}>
+              Extension for Alternative Phone Number
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="text"
+                value={this.state.form.sec_contact_alt_phone_extension}
+                onChange={this.formValChange}/>
+            </Col>
+          </FormGroup>
+          <hr/> 
           <h4> Company Operation Hours </h4>
           <hr/>
           <Form inline>
@@ -394,165 +591,6 @@ class OrganizationProviderForm extends Component {
               </Col>
             </FormGroup>
           </Form>
-
-          <hr/>
-          <h4> Contact Information </h4>
-          <hr/>
-
-          <FormGroup controlId="first_name">
-            <Col componentClass={ControlLabel} sm={3}>
-              Contact Person First Name
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="First name" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="last_name">
-            <Col componentClass={ControlLabel} sm={3}>
-              Contact Person Last Name
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="Last name" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="email" validationState={emailValidation(this.state.form.email)}>
-            <Col componentClass={ControlLabel} sm={3}> 
-              Email (required) 
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="youremail@gmail.com" onChange={this.formValChange}/>
-              <FormControl.Feedback />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="primary_phone_number">
-            <Col componentClass={ControlLabel} sm={3}>
-              Telephone
-            </Col>
-            <Col sm={9}>
-              <FormControl
-                type="tel"
-                value={this.state.form.primary_phone_number}
-                onChange={this.formValChange}
-              />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="primary_phone_extension">
-            <Col componentClass={ControlLabel} sm={3}>
-              Extension
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="alt_phone_number">
-            <Col componentClass={ControlLabel} sm={3}>
-              Alternative Phone Number
-            </Col>
-            <Col sm={9}>
-              <FormControl
-                type="tel"
-                value={this.state.form.alt_phone_number}
-                onChange={this.formValChange}
-              />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="alt_phone_extension">
-            <Col componentClass={ControlLabel} sm={3}>
-              Extension for Alternative Phone Number
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <hr/>
-          <h4> Secondary Contact Information </h4>
-          <hr/>
-
-          <FormGroup controlId="sec_contact_first_name">
-            <Col componentClass={ControlLabel} sm={3}>
-              Secondary Contact Person First Name
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="First name" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="sec_contact_last_name">
-            <Col componentClass={ControlLabel} sm={3}>
-              Secondary Contact Person Last Name
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="Last name" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="sec_contact_email" validationState={emailValidation(this.state.form.email)}>
-            <Col componentClass={ControlLabel} sm={3}>
-              Email
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue=""
-                placeholder="youremail@gmail.com" onChange={this.formValChange}/>
-              <FormControl.Feedback />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="sec_contact_primary_phone_number">
-            <Col componentClass={ControlLabel} sm={3}>
-              Telephone
-            </Col>
-            <Col sm={9}>
-              <FormControl
-                type="tel"
-                value={this.state.form.sec_contact_primary_phone_number}
-                onChange={this.formValChange}
-              />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="sec_contact_primary_phone_extension">
-            <Col componentClass={ControlLabel} sm={3}>
-              Extension
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="sec_contact_alt_phone_number">
-            <Col componentClass={ControlLabel} sm={3}>
-              Alternative Phone Number
-            </Col>
-            <Col sm={9}>
-              <FormControl
-                type="tel"
-                value={this.state.form.sec_contact_alt_phone_number}
-                onChange={this.formValChange}
-              />
-            </Col>
-          </FormGroup>
-
-          <FormGroup controlId="sec_contact_alt_phone_extension">
-            <Col componentClass={ControlLabel} sm={3}>
-              Extension for Alternative Phone Number
-            </Col>
-            <Col sm={9}>
-              <FormControl type="text" defaultValue="" onChange={this.formValChange}/>
-            </Col>
-          </FormGroup>
-
           <hr/>
 
           <FormGroup controlId="status">
@@ -590,6 +628,19 @@ class OrganizationProviderForm extends Component {
             </Col>
           </FormGroup>
 
+          <FormGroup controlId="notes">
+            <Col componentClass={ControlLabel} sm={3}>
+              Additional notes
+            </Col>
+            <Col sm={9}>
+              <FormControl
+                type="textarea"
+                value={this.state.form.notes}
+                onChange={this.formValChange}
+              />
+            </Col>
+          </FormGroup>
+
           <FormGroup>
             <Col smOffset={3} sm={9}>
               <Button disabled = {!isEnabled} type="submit" onClick={this.submit}>
@@ -600,8 +651,15 @@ class OrganizationProviderForm extends Component {
         </Form>
       </Col>
     </Row>
+    </Grid>
     );
   }
 }
 
-export default connect()(withRouter(OrganizationProviderForm));
+const mapStateToProps = (state) => {
+  return {
+    providersById: state.providers.byId || {},
+    providerLoaded: state.providers.indexLoaded
+  }
+}
+export default connect(mapStateToProps)(withRouter(OrganizationProviderForm));

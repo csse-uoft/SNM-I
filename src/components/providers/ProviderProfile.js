@@ -153,19 +153,22 @@ class ProviderProfile extends Component {
             <td>{formatLocation(provider.address)}</td>
           </tr>
 
-          {provider.provider_type === "Organization" &&
+          <tr>
+            <td><b>Operation Hours</b></td>
+            <td>{
+              provider.operation_hours ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
+          </tr>
+          {provider.provider_type === "Individual" && provider.referrer &&
             <tr>
-              <td><b>Operation Hours</b></td>
-              <td>{
-                provider.operation_hours ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
+              <td><b>Referrer</b></td>
+              <td>{provider.referrer}</td>
             </tr>
           }
-
-          {provider.provider_type === "Individual" && provider.referrer &&
-          <tr>
-            <td><b>Referrer</b></td>
-            <td>{provider.referrer}</td>
-          </tr>
+          {provider.notes &&
+            <tr>
+              <td><b>Additional notes</b></td>
+              <td>{provider.notes}</td>
+            </tr>
           }
          </tbody>
         </Table>
