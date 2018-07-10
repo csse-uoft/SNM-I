@@ -62,6 +62,7 @@ class ClientNeeds extends Component {
         <hr/>
         <NeedsIndex
           needs={p.needs}
+          needsOrder={p.needsOrder}
           clientId={p.clientId}
           handleShow={this.handleShow}
         />

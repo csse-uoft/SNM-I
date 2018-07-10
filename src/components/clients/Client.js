@@ -138,7 +138,7 @@ class Client extends Component {
         }
         <hr />
         { client && client.loaded && p.needsLoaded &&
-          <ClientNeeds clientId={client.id} needs={p.needsById} />
+          <ClientNeeds clientId={client.id} needs={p.needsById} needsOrder={p.needsOrder} />
         }
       </div>
     );
@@ -148,6 +148,7 @@ class Client extends Component {
 const mapStateToProps = (state) => {
   return {
     needsById: state.needs.byId,
+    needsOrder: state.needs.order,
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
     clientLoaded: state.clients.indexLoaded
