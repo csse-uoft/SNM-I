@@ -60,6 +60,32 @@ class UserForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
+            <FormGroup controlId="is_superuser">
+              <Col componentClass={ControlLabel} sm={3}>
+                Admin?
+              </Col>
+              <Col sm={9}>
+                <Radio
+                  name="radioGroup"
+                  value='1'
+                  onChange={e => this.formValChange(e, 'is_superuser')}
+                  defaultChecked={this.state.form.is_superuser === true}
+                  inline
+                >
+                  Yes
+                </Radio>{' '}
+                <Radio
+                  name="radioGroup"
+                  value='0'
+                  onChange={e => this.formValChange(e, 'is_superuser')}
+                  defaultChecked={this.state.form.is_superuser === false}
+                  inline
+                >
+                  No
+                </Radio>{' '}
+              </Col>
+            </FormGroup>
+            
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
                 First name
@@ -126,31 +152,6 @@ class UserForm extends Component {
                 </Col>
               </FormGroup>
             ) : null }
-
-            <FormGroup controlId="is_superuser">
-              <Col componentClass={ControlLabel} sm={3}>
-                Admin?
-              </Col>
-              <Col sm={9}>
-                <Radio
-                  name="radioGroup"
-                  value='1'
-                  onChange={ e => this.formValChange(e, 'is_superuser')}
-                  defaultChecked={this.state.form.is_superuser === true}
-                  inline
-                >
-                  Yes
-                </Radio>{' '}
-                <Radio
-                  name="radioGroup"
-                  value='0'
-                  onChange={e => this.formValChange(e, 'is_superuser')}
-                  defaultChecked={this.state.form.is_superuser === false}
-                inline>
-                  No
-                </Radio>{' '}
-              </Col>
-            </FormGroup>
 
             <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
