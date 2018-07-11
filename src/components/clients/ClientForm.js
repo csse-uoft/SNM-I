@@ -3,8 +3,9 @@ import { withRouter } from 'react-router';
 import _ from 'lodash';
 
 // redux
-import { connect } from 'react-redux'
-import { createClient, updateClient } from '../../store/actions/clientActions.js'
+import { connect } from 'react-redux';
+import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import { createClient, updateClient } from '../../store/actions/clientActions.js';
 
 import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
   Radio } from 'react-bootstrap';
@@ -61,6 +62,10 @@ class ClientForm extends Component {
     this.spouseChange = this.spouseChange.bind(this);
     this.childChange = this.childChange.bind(this);
     this.submit = this.submit.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchOntologyCategories('languages'));
   }
 
   formValChange(e, id=e.target.id) {
@@ -144,6 +149,13 @@ class ClientForm extends Component {
   render() {
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Client Profile' : 'New Client Profile'
+
+    function cateogiresIntoOptions(categories) {
+      return categories.map((category) => {
+        return <option key={category} value={category}>{category}</option>
+      })
+    }
+
     return (
       <Grid className="content">
         <Row>
@@ -570,10 +582,16 @@ class ClientForm extends Component {
               </Col>
               <Col sm={9}>
                 <FormControl
-                  type="text"
+                  componentClass="select"
+                  placeholder="select"
                   value={this.state.form.first_language}
                   onChange={this.formValChange}
-                />
+                >
+                  <option value="select">-- Not Set --</option>
+                  { p.categoriesLoaded &&
+                    cateogiresIntoOptions(p.languagesCategories)
+                  }
+                </FormControl>
               </Col>
             </FormGroup>
 
@@ -659,7 +677,9 @@ class ClientForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    clientsById: state.clients.byId
+    clientsById: state.clients.byId,
+    languagesCategories: state.ontology.languages.categories,
+    categoriesLoaded: state.ontology.languages.loaded
   }
 }
 
