@@ -103,7 +103,7 @@ class Client extends Component {
                 </tr>
               </tbody>
             </Table>
-            {client.family && (client.spouse || client.children) &&
+            {(client.spouse || client.children) &&
               <Table bordered condensed className="client-profile-table">
                 <tbody>
                   <tr>
