@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import ClientNeeds from '../ClientNeeds';
 
@@ -79,6 +80,19 @@ class Client extends Component {
                   <td><b>Address</b></td>
                   <td>{formatLocation(client.address)}</td>
                 </tr>
+              </tbody>
+            </Table>
+            <Table bordered condensed className="client-profile-table">
+              <tbody>
+                <tr>
+                  <td colSpan="2"><b>Family: </b></td>
+                </tr>
+                {client.family && client.family.file_id &&
+                  (<tr>
+                    <td><b>File ID</b></td>
+                    <td>{client.family.file_id}</td>
+                  </tr>)
+                }
                 <tr>
                   <td><b>Marital Status</b></td>
                   <td>{client.marital_status}</td>
@@ -87,14 +101,41 @@ class Client extends Component {
                   <td><b>Has children?</b></td>
                   <td>{client.has_children ? 'Yes' : 'No'}</td>
                 </tr>
-                {client.has_children &&
-                  (<tr>
-                    <td><b>Number of children</b></td>
-                    <td>{client.num_of_children}</td>
-                  </tr>)
-                }
               </tbody>
             </Table>
+            {client.family && (client.spouse || client.children) &&
+              <Table bordered condensed className="client-profile-table">
+                <tbody>
+                  <tr>
+                    <td colSpan="4"><b>Family Members: </b></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Full name</td>
+                    <td>Date of birth</td>
+                    <td>Gender</td>
+                  </tr>
+                  {client.spouse &&
+                    (<tr>
+                      <td><b>Spouse</b></td>
+                      <td>{client.spouse.full_name}</td>
+                      <td>{client.spouse.birth_date}</td>
+                      <td>{client.spouse.gender}</td>
+                    </tr>)
+                  }
+                  {_.map(client.children, (child, index) => {
+                    return (
+                      <tr key={child.id}>
+                        <td><b>Children #{index+1}</b></td>
+                        <td>{child.full_name}</td>
+                        <td>{child.birth_date}</td>
+                        <td>{child.gender}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </Table>
+            }
             <Table bordered condensed className="client-profile-table">
               <tbody>
                 <tr>
