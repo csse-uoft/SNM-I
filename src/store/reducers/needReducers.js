@@ -11,7 +11,7 @@ export function needs(state = { byId: {}, order: [], clientId: null, loaded: fal
       return {...state, byId: nextById, loaded: true, clientId: action.clientId, order: nextOrder}
     case RECEIVE_CLIENT_NEED:
       nextById = {...state.byId, [action.needId]: { ...action.need, loaded: true }}
-      if (!_.find(state.order, action.needId)) {
+      if (!_.includes(state.order, action.needId)) {
         nextOrder = [action.needId, ...state.order]
         return {...state, byId: nextById, order: nextOrder }
       }
