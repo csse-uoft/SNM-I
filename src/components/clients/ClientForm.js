@@ -8,7 +8,7 @@ import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js'
 import { createClient, updateClient } from '../../store/actions/clientActions.js';
 
 import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
-  Radio } from 'react-bootstrap';
+  Radio, Checkbox } from 'react-bootstrap';
 
 class ClientForm extends Component {
   constructor(props) {
@@ -44,7 +44,7 @@ class ClientForm extends Component {
         country_of_origin: client.country_of_origin || '',
         country_of_last_residence: client.country_of_last_residence || '',
         first_language: client.first_language || '',
-        other_languages: client.other_languages || '',
+        other_languages: client.other_languages || [],
         pr_number: client.pr_number || '',
         immigration_doc_number: client.immigration_doc_number || '',
         landing_date: client.landing_date || '',
@@ -94,6 +94,15 @@ class ClientForm extends Component {
     }
     else if (id === 'file_id') {
       nextForm['family']['file_id'] = e.target.value
+    }
+    else if (id === 'other_languages') {
+      if (e.target.checked) {
+        nextForm['other_languages'].push(e.target.value)
+      } else {
+        _.remove(nextForm['other_languages'], (language) => {
+          return language === e.target.value
+        });
+      }
     }
     else {
       nextForm[id] = e.target.value
@@ -147,12 +156,31 @@ class ClientForm extends Component {
   }
 
   render() {
+    const p = this.props;
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Client Profile' : 'New Client Profile'
 
     function cateogiresIntoOptions(categories) {
       return categories.map((category) => {
         return <option key={category} value={category}>{category}</option>
+      })
+    }
+
+    function cateogiresIntoCheckboxes(categories, categoryToRemove, checkedCategories, formValChange) {
+      let updatedCategories = _.clone(categories)
+      _.remove(updatedCategories, (category) => { return category === categoryToRemove });
+      return updatedCategories.map((category) => {
+        return (
+          <Checkbox
+            key={category}
+            value={category}
+            checked={_.includes(checkedCategories, category)}
+            onChange={e => formValChange(e, 'other_languages')}
+            inline
+          >
+            {category}
+          </Checkbox>
+        )
       })
     }
 
@@ -600,11 +628,14 @@ class ClientForm extends Component {
                 Other languages
               </Col>
               <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.other_languages}
-                  onChange={this.formValChange}
-                />
+                {p.categoriesLoaded &&
+                  cateogiresIntoCheckboxes(
+                    p.languagesCategories,
+                    this.state.form.first_language,
+                    this.state.form.other_languages,
+                    this.formValChange
+                  )
+                }
               </Col>
             </FormGroup>
 
