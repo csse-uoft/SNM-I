@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import _ from 'lodash';
 
@@ -24,8 +25,10 @@ class ServiceForm extends Component {
       mode: (service.id) ? 'edit' : 'new',
       form: {
         name: service.name || '',
+        type_of_service: service.type_of_service || '',
         desc: service.desc || '',
         category: service.category || '',
+        eligibility: service.eligibility || '',
         available_from: service.available_from || '',
         available_to: service.available_to || '',
         language: service.language || '',
@@ -41,6 +44,7 @@ class ServiceForm extends Component {
           postal_code: ''
         }, service.location),
         share_with: service.share_with || '',
+        notes: service.notes || '',
         provider_id: (service.provider && service.provider.id) || ''
       }
     }
@@ -98,9 +102,60 @@ class ServiceForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
+            <FormGroup controlId="provider_id">
+              <Col componentClass={ControlLabel} sm={3}>
+                Provider *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.provider_id}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  {p.providers.map(provider =>
+                    <option key={provider.id} value={provider.id}>
+                      {provider.first_name + " " + provider.last_name}
+                    </option>
+                  )}
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup>
+              <Col smOffset={3} sm={9}>
+                <Link to={`/providers/new`}>
+                  <Button>
+                    Add new provider
+                  </Button>
+                </Link>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="type_of_service">
+              <Col componentClass={ControlLabel} sm={3}>
+                Type *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.type_of_service}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Internal">Internal</option>
+                  <option value="External">External</option>
+                  <option value="Volunteer based">Volunteer based</option>
+                  <option value="Professional/Community">Professional/Community</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
             <FormGroup controlId="name">
               <Col componentClass={ControlLabel} sm={3}>
-                Name
+                Name *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -123,7 +178,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="category">
               <Col componentClass={ControlLabel} sm={3}>
-                Category
+                Category *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -139,6 +194,20 @@ class ServiceForm extends Component {
                   }
 
                 </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="eligibility">
+              <Col componentClass={ControlLabel} sm={3}>
+                Eligibility
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.eligibility}
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
@@ -204,7 +273,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
-                Contact Person Email
+                Contact Person Email *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -218,7 +287,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Telephone
+                Telephone *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -231,7 +300,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="alt_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Alternative Phone Number
+                Alternative Phone Number *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -244,7 +313,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="street_address">
               <Col componentClass={ControlLabel} sm={3}>
-                Street Address
+                Street Address *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -270,7 +339,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="city">
               <Col componentClass={ControlLabel} sm={3}>
-                City
+                City *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -283,7 +352,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="province">
               <Col componentClass={ControlLabel} sm={3}>
-                Province
+                Province *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -296,7 +365,7 @@ class ServiceForm extends Component {
 
             <FormGroup controlId="postal_code">
               <Col componentClass={ControlLabel} sm={3}>
-                Postal Code
+                Postal Code *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -304,27 +373,6 @@ class ServiceForm extends Component {
                   value={this.state.form.location.postal_code}
                   onChange={this.locationChange}
                 />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="provider_id">
-              <Col componentClass={ControlLabel} sm={3}>
-                Provider
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.provider_id}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  {p.providers.map(provider =>
-                    <option key={provider.id} value={provider.id}>
-                      {provider.first_name + " " + provider.last_name}
-                    </option>
-                  )}
-                </FormControl>
               </Col>
             </FormGroup>
 
@@ -368,6 +416,20 @@ class ServiceForm extends Component {
                   <option value="Markham Food Bank">Markham Food Bank</option>
                   <option value="Parkdale Community Food Bank">Parkdale Community Food Bank</option>
                 </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="notes">
+              <Col componentClass={ControlLabel} sm={3}>
+                Notes
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  placeholder=""
+                  value={this.state.form.notes}
+                  onChange={this.formValChange}
+                />
               </Col>
             </FormGroup>
 
