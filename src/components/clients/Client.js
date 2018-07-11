@@ -155,7 +155,7 @@ class Client extends Component {
                 </tr>
                 <tr>
                   <td><b>Other Language(s) spoken</b></td>
-                  <td>{client.other_languages}</td>
+                  <td>{client.other_languages.join(', ')}</td>
                 </tr>
                 <tr>
                   <td><b>Permanent Residence Card Number (PR card)</b></td>
