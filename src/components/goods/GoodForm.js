@@ -29,6 +29,7 @@ class GoodForm extends Component {
         category: good.category || '',
         available_from: good.available_from || '',
         available_to: good.available_to || '',
+        transportation: good.transportation || '',
         condition: good.condition || '',
         material: good.material || '',
         quantity: good.quantity || '',
@@ -36,12 +37,24 @@ class GoodForm extends Component {
         width: good.width || '',
         height: good.height || '',
         diameter: good.diameter || '',
+        email: good.email || '',
+        primary_phone_number: good.primary_phone_number || '',
+        alt_phone_number: good.alt_phone_number || '',
+        location: Object.assign({
+          street_address: '',
+          apt_number: '',
+          city: '',
+          province: '',
+          postal_code: ''
+        }, good.location),
         share_with: good.share_with || '',
+        notes: good.notes || '',
         provider_id: (good.provider && good.provider.id) || ''
       }
     }
 
     this.formValChange = this.formValChange.bind(this);
+    this.locationChange = this.locationChange.bind(this);
     this.submit = this.submit.bind(this);
   }
 
@@ -52,6 +65,12 @@ class GoodForm extends Component {
 
   formValChange(e) {
     let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+    this.setState({ form: nextForm });
+  }
+
+  locationChange(e) {
+    let nextForm = _.clone(this.state.form);
+    nextForm['location'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
   }
 
@@ -88,7 +107,7 @@ class GoodForm extends Component {
           <Form horizontal>
             <FormGroup controlId="provider_id">
               <Col componentClass={ControlLabel} sm={3}>
-                Provider
+                Provider *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -119,7 +138,7 @@ class GoodForm extends Component {
 
             <FormGroup controlId="name">
               <Col componentClass={ControlLabel} sm={3}>
-                Name
+                Name *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -142,7 +161,7 @@ class GoodForm extends Component {
 
             <FormGroup controlId="category">
               <Col componentClass={ControlLabel} sm={3}>
-                Category
+                Category *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -158,6 +177,15 @@ class GoodForm extends Component {
                   <option value="Utensils">Utensils</option>
                   <option value="Books">Books</option>
                 </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="transportation">
+              <Col componentClass={ControlLabel} sm={3}>
+                Transportation
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" value={this.state.form.transportation} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -275,6 +303,111 @@ class GoodForm extends Component {
               </Col>
             </FormGroup>
 
+            <FormGroup controlId="email">
+              <Col componentClass={ControlLabel} sm={3}>
+                Contact Person Email *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.email}
+                  placeholder=""
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="primary_phone_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Telephone *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="tel"
+                  value={this.state.form.primary_phone_number}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="alt_phone_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Alternative Phone Number *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="tel"
+                  value={this.state.form.alt_phone_number}
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="street_address">
+              <Col componentClass={ControlLabel} sm={3}>
+                Street Address *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.street_address}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="apt_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Apt. #
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.apt_number}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="city">
+              <Col componentClass={ControlLabel} sm={3}>
+                City *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.city}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="province">
+              <Col componentClass={ControlLabel} sm={3}>
+                Province *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.province}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="postal_code">
+              <Col componentClass={ControlLabel} sm={3}>
+                Postal Code *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.location.postal_code}
+                  onChange={this.locationChange}
+                />
+              </Col>
+            </FormGroup>
+
             <FormGroup controlId="share_with">
               <Col componentClass={ControlLabel} sm={3}>
                 Share with
@@ -297,24 +430,33 @@ class GoodForm extends Component {
                   <option value="Durham Children's Aid Society">Durham Children's Aid Society</option>
                   <option value="Alexandra Park Community Centre">Alexandra Park Community Centre</option>
                   <option value="Applegrove Community Complex">Applegrove Community Complex</option>
-                  <option value="Albion Neighbourhood Services">Albion Neighbourhood Services</option>
+                  <option value="Albion Neighbourhood Goods">Albion Neighbourhood Goods</option>
                   <option value="Applegrove Community Complex">Applegrove Community Complex</option>
                   <option value="Kababayan Multicultural Centre">Kababayan Multicultural Centre</option>
-                  <option value="Central Toronto Youth Services">Central Toronto Youth Services</option>
+                  <option value="Central Toronto Youth Goods">Central Toronto Youth Goods</option>
                   <option value="Covenant House Toronto">Covenant House Toronto</option>
-                  <option value="Durham Youth Housing and Support Services">Durham Youth Housing and Support Services</option>
+                  <option value="Durham Youth Housing and Support Goods">Durham Youth Housing and Support Goods</option>
                   <option value="Eva's Initiatives">Eva's Initiatives</option>
                   <option value="Horizons for Youth">Horizons for Youth</option>
                   <option value="AIDS Committee of Durham Region">AIDS Committee of Durham Region</option>
                   <option value="Arab Community Centre of Toronto">Arab Community Centre of Toronto</option>
                   <option value="Pediatric Oncology Group of Ontario">Pediatric Oncology Group of Ontario</option>
-                  <option value="Adventist community services">Adventist community services</option>
+                  <option value="Adventist community goods">Adventist community goods</option>
                   <option value="Aurora Food Pantry">Aurora Food Pantry</option>
                   <option value="Bluffs Food Bank">Bluffs Food Bank</option>
                   <option value="Brock Community Food Bank">Brock Community Food Bank</option>
                   <option value="Markham Food Bank">Markham Food Bank</option>
                   <option value="Parkdale Community Food Bank">Parkdale Community Food Bank</option>
                 </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="notes">
+              <Col componentClass={ControlLabel} sm={3}>
+                Notes
+              </Col>
+              <Col sm={9}>
+                <FormControl type="text" value={this.state.form.notes} onChange={this.formValChange} />
               </Col>
             </FormGroup>
 
@@ -335,7 +477,7 @@ class GoodForm extends Component {
 const mapStateToProps = (state) => {
   return {
     goodsById: state.goods.byId,
-    goodsCategories: state.ontology.services.categories,
+    servicesCategories: state.ontology.services.categories,
     categoriesLoaded: state.ontology.services.loaded,
     providers: state.providers.filteredProviders || [],
     providersLoaded: state.providers.loaded

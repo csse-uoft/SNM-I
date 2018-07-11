@@ -7,7 +7,7 @@ import { fetchGood } from '../../store/actions/goodActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 
-import { Table } from 'react-bootstrap';
+import { Table, Glyphicon, Button } from 'react-bootstrap';
 
 class Good extends Component {
   componentWillMount() {
@@ -21,8 +21,12 @@ class Good extends Component {
           good = p.goodsById[id];
 
     return (
-      <div className="content">
+      <div className="content client">
         <h3>Good Profile</h3>
+        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+          <Glyphicon glyph="print" />
+        </Button>
+
         { good && good.goodsLoaded &&
           <Table striped bordered condensed hover>
             <tbody>
@@ -45,6 +49,10 @@ class Good extends Component {
               <tr>
                 <td><b>Available until</b></td>
                 <td>{good.available_to}</td>
+              </tr>
+              <tr>
+                <td><b>Transportation</b></td>
+                <td>{good.transportation}</td>
               </tr>
               <tr>
                 <td><b>Condition</b></td>
@@ -75,8 +83,28 @@ class Good extends Component {
                 <td>{good.diameter}</td>
               </tr>
               <tr>
+                <td><b>Contact Person Email</b></td>
+                <td>{good.email}</td>
+              </tr>
+              <tr>
+                <td><b>Contact Person Phone</b></td>
+                <td>{good.primary_phone_number}</td>
+              </tr>
+              <tr>
+                <td><b>Secondary Phone</b></td>
+                <td>{good.alt_phone_number}</td>
+              </tr>
+              <tr>
+                <td><b>Location</b></td>
+                <td>{formatLocation(good.location)}</td>
+              </tr>
+              <tr>
                 <td><b>Share with</b></td>
                 <td>{good.share_with}</td>
+              </tr>
+              <tr>
+                <td><b>Notes</b></td>
+                <td>{good.notes}</td>
               </tr>
               <tr>
                 <td><b>Provider</b></td>

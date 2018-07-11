@@ -7,7 +7,7 @@ import { fetchService } from '../../store/actions/serviceActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 
-import { Table } from 'react-bootstrap';
+import { Table, Glyphicon, Button } from 'react-bootstrap';
 
 class Service extends Component {
   componentWillMount() {
@@ -21,8 +21,12 @@ class Service extends Component {
           service = p.servicesById[id];
 
     return (
-      <div className="content">
+      <div className="content client">
         <h3>Service Profile</h3>
+        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+          <Glyphicon glyph="print" />
+        </Button>
+
         { service && service.servicesLoaded &&
           <Table striped bordered condensed hover>
             <tbody>
@@ -31,12 +35,20 @@ class Service extends Component {
                 <td>{service.name}</td>
               </tr>
               <tr>
+                <td><b>Type</b></td>
+                <td>{service.type_of_service}</td>
+              </tr>
+              <tr>
                 <td><b>Description</b></td>
                 <td>{service.desc}</td>
               </tr>
               <tr>
                 <td><b>Category</b></td>
                 <td>{service.category}</td>
+              </tr>
+              <tr>
+                <td><b>Eligibility</b></td>
+                <td>{service.eligibility}</td>
               </tr>
               <tr>
                 <td><b>Available from</b></td>
@@ -73,6 +85,10 @@ class Service extends Component {
               <tr>
                 <td><b>Share with</b></td>
                 <td>{service.share_with}</td>
+              </tr>
+              <tr>
+                <td><b>Notes</b></td>
+                <td>{service.notes}</td>
               </tr>
               <tr>
                 <td><b>Provider</b></td>
