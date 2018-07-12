@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Checkbox } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
+
 import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
+import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 
 
 class IndividualProviderForm extends Component {
@@ -12,8 +14,11 @@ class IndividualProviderForm extends Component {
     super(props);
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
-    this.addressChange = this.addressChange.bind(this);
+    this.mainAddressChange = this.mainAddressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
+    this.languagesChange = this.languagesChange.bind(this);
+    this.cateogiresIntoCheckboxes = this.cateogiresIntoCheckboxes.bind(this);
+    this.otherAddressChange = this.otherAddressChange.bind(this);
     const id = this.props.match.params.id;
     let provider = {};
     let availability = [
@@ -41,7 +46,9 @@ class IndividualProviderForm extends Component {
       mode: (provider.id) ? 'edit' : 'new',
       form : {
         provider_type: 'Individual',
+        provider_category: provider.provider_category || '',
         id: id,
+        languages: provider.languages || [],
         first_name: provider.first_name,
         last_name: provider.last_name,
         gender: provider.gender,
@@ -57,20 +64,32 @@ class IndividualProviderForm extends Component {
         sec_contact_primary_phone_extension: provider.sec_contact_primary_phone_extension || '',
         sec_contact_alt_phone_number: provider.sec_contact_alt_phone_number || '',
         sec_contact_alt_phone_extension: provider.sec_contact_primary_phone_extension || '',
-        address: Object.assign({
+        main_address: Object.assign({
           street_address: '',
           apt_number: '',
           city: '',
           province: '',
           postal_code: ''
-        }, provider.address),
+        }, provider.main_address),
+        other_addresses: [{
+          street_address: '',
+          apt_number: '',
+          city: '',
+          province: '',
+          postal_code: ''
+        }],
         operation_hours: availability,
         referrer: provider.referrer || '',
+        own_car: provider.own_car || '',
         visibility: provider.visibility,
         status: provider.status,
         notes: provider.notes || ''
       }
     } 
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchOntologyCategories('languages'));
   }
 
   formValChange(e) {
@@ -107,10 +126,48 @@ class IndividualProviderForm extends Component {
     }
   }
 
-  addressChange(e) {
+  mainAddressChange(e) {
     let nextForm = _.clone(this.state.form);
-    nextForm['address'][e.target.id] = e.target.value
+    nextForm['main_address'][e.target.id] = e.target.value;
     this.setState({ form: nextForm });
+  }
+
+  otherAddressChange(e) {
+    let nextForm = _.clone(this.state.form);
+    const address_index = e.target.id.split('-')[0];
+    const address_field = e.target.id.split('-')[1];
+    nextForm['other_addresses'][address_index][address_field] = e.target.value;
+    this.setState({ form: nextForm });
+  }
+
+  languagesChange(e) {
+    let nextForm = _.clone(this.state.form);
+    if (e.target.checked) {
+      nextForm['languages'].push(e.target.value)
+    } else {
+      _.remove(nextForm['languages'], (language) => {
+        return language === e.target.value
+      });
+    }
+    console.log(nextForm.languages)
+    this.setState({form: nextForm});
+  }
+
+  cateogiresIntoCheckboxes(categories, checkedCategories) {
+    let updatedCategories = _.clone(categories)
+    return updatedCategories.map((category) => {
+      return (
+        <Checkbox
+          key={category}
+          value={category}
+          checked={_.includes(checkedCategories, category)}
+          onChange={this.languagesChange}
+          inline
+        >
+        {category}
+        </Checkbox>
+      )
+    })
   }
 
   render() {
@@ -119,7 +176,7 @@ class IndividualProviderForm extends Component {
       this.state.form.email.length > 0 &&
       this.state.form.first_name.length > 0 &&
       this.state.form.last_name.length > 0 &&
-      this.state.form.address.postal_code.length === 6 &&
+      this.state.form.main_address.postal_code.length === 6 &&
       this.state.form.visibility !== 'select';
 
     return (
@@ -130,9 +187,27 @@ class IndividualProviderForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
+            <FormGroup controlId="provider_category">
+              <Col componentClass={ControlLabel} sm={3}>
+                Provider category *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.provider_category}
+                  onChange={this.formValChange}
+                >
+                  <option value="">--- Not Set ---</option>
+                  <option value="Volunteer/Goods Donor">Volunteer/Goods Donor</option>
+                  <option value="Professional Service Provider">Professional Service Provider</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
             <FormGroup controlId="first_name">
               <Col componentClass={ControlLabel} sm={3}>
-                First name (required)
+                First name *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -146,7 +221,7 @@ class IndividualProviderForm extends Component {
 
             <FormGroup controlId="last_name">
               <Col componentClass={ControlLabel} sm={3}>
-                Last name (required)
+                Last name *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -173,7 +248,7 @@ class IndividualProviderForm extends Component {
 
             <FormGroup controlId="gender">
               <Col componentClass={ControlLabel} sm={3}>
-                Gender
+                Gender *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -192,7 +267,7 @@ class IndividualProviderForm extends Component {
 
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
-                Email
+                Email *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -206,7 +281,7 @@ class IndividualProviderForm extends Component {
 
             <FormGroup controlId="primary_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Telephone
+                Telephone *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -257,13 +332,13 @@ class IndividualProviderForm extends Component {
 
             <FormGroup controlId="street_address">
               <Col componentClass={ControlLabel} sm={3}>
-                Street Address
+                Street Address *
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address.street_address}
-                  onChange={this.addressChange}
+                  value={this.state.form.main_address.street_address}
+                  onChange={this.mainAddressChange}
                 />
               </Col>
             </FormGroup>
@@ -275,48 +350,129 @@ class IndividualProviderForm extends Component {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address.apt_number}
-                  onChange={this.addressChange}
+                  value={this.state.form.main_address.apt_number}
+                  onChange={this.mainAddressChange}
                 />
               </Col>
             </FormGroup>
 
             <FormGroup controlId="city">
               <Col componentClass={ControlLabel} sm={3}>
-                City
+                City *
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address.city}
-                  onChange={this.addressChange}
+                  value={this.state.form.main_address.city}
+                  onChange={this.mainAddressChange}
                 />
               </Col>
             </FormGroup>
 
             <FormGroup controlId="province">
               <Col componentClass={ControlLabel} sm={3}>
-                Province
+                Province *
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address.province}
-                  onChange={this.addressChange}
+                  value={this.state.form.main_address.province}
+                  onChange={this.mainAddressChange}
                 />
               </Col>
             </FormGroup>
 
             <FormGroup controlId="postal_code">
               <Col componentClass={ControlLabel} sm={3}>
+                Postal Code *
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.main_address.postal_code}
+                  onChange={this.mainAddressChange}
+                />
+              </Col>
+            </FormGroup>
+            <hr/>
+            <h3> Alternate Address </h3>
+            <FormGroup controlId="0-street_address">
+              <Col componentClass={ControlLabel} sm={3}>
+                Street Address
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.other_addresses[0].street_address}
+                  onChange={this.otherAddressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="0-apt_number">
+              <Col componentClass={ControlLabel} sm={3}>
+                Apt. #
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.other_addresses[0].apt_number}
+                  onChange={this.otherAddressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="0-city">
+              <Col componentClass={ControlLabel} sm={3}>
+                City
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.other_addresses[0].city}
+                  onChange={this.otherAddressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="0-province">
+              <Col componentClass={ControlLabel} sm={3}>
+                Province
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.other_addresses[0].province}
+                  onChange={this.otherAddressChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="0-postal_code">
+              <Col componentClass={ControlLabel} sm={3}>
                 Postal Code
               </Col>
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={this.state.form.address.postal_code}
-                  onChange={this.addressChange}
+                  value={this.state.form.other_addresses[0].postal_code}
+                  onChange={this.otherAddressChange}
                 />
+              </Col>
+            </FormGroup>
+            <hr/>
+
+            <FormGroup controlId="languages">
+              <Col componentClass={ControlLabel} sm={3}>
+                Languages
+              </Col>
+              <Col sm={9}>
+                {this.props.categoriesLoaded &&
+                  this.cateogiresIntoCheckboxes(
+                    this.props.languagesCategories,
+                    this.state.form.languages
+                  )
+                }
               </Col>
             </FormGroup>
 
@@ -551,9 +707,29 @@ class IndividualProviderForm extends Component {
               </FormGroup>
             </Form>
             <hr/>
+            {this.state.form.provider_category === "Volunteer/Goods Donor" &&
+              <FormGroup controlId="own_car">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Own a car
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    placeholder="select"
+                    value={this.state.form.own_car}
+                    onChange={this.formValChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
+            }
+
             <FormGroup controlId="status">
               <Col componentClass={ControlLabel} sm={3}>
-                Status
+                Status *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -575,7 +751,7 @@ class IndividualProviderForm extends Component {
 
             <FormGroup controlId="visibility">
               <Col componentClass={ControlLabel} sm={3}>
-                Allow other agencies to see this provider?
+                Allow other agencies to see this provider? *
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -624,7 +800,9 @@ class IndividualProviderForm extends Component {
 const mapStateToProps = (state) => {
   return {
     providersById: state.providers.byId || {},
-    providerLoaded: state.providers.indexLoaded
+    providerLoaded: state.providers.indexLoaded,
+    languagesCategories: state.ontology.languages.categories,
+    categoriesLoaded: state.ontology.languages.loaded
   }
 }
 export default connect(mapStateToProps)(withRouter(IndividualProviderForm));
