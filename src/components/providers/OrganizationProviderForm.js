@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Grid } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Grid, Checkbox } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
 import { emailValidation } from '../../helpers/validation_helpers.js'
+import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
+
 
 
 class OrganizationProviderForm extends Component {
@@ -17,6 +19,8 @@ class OrganizationProviderForm extends Component {
     this.submit = this.submit.bind(this);
     this.addressChange = this.addressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
+    this.languagesChange = this.languagesChange.bind(this);
+    this.cateogiresIntoCheckboxes = this.cateogiresIntoCheckboxes.bind(this);
 
     const id = this.props.match.params.id;
     let provider = {};
@@ -48,7 +52,8 @@ class OrganizationProviderForm extends Component {
       form : {
         provider_type: 'Organization',
         id: id,
-        company: provider.company,
+        languages: provider.languages || [],
+        company: provider.company || '',
         first_name: provider.first_name,
         last_name: provider.last_name,
         email: provider.email,
@@ -78,6 +83,10 @@ class OrganizationProviderForm extends Component {
       notes: provider.notes || ""
       }
     }
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchOntologyCategories('languages'));
   }
 
   formValChange(e) {
@@ -118,6 +127,35 @@ class OrganizationProviderForm extends Component {
     let day = dayIndex[dayTime[0]];
     nextForm['operation_hours'][day][dayTime[1]] = e.target.value;
     this.setState({ form: nextForm });
+  }
+
+  languagesChange(e) {
+    let nextForm = _.clone(this.state.form);
+    if (e.target.checked) {
+      nextForm['languages'].push(e.target.value)
+    } else {
+      _.remove(nextForm['languages'], (language) => {
+        return language === e.target.value
+      });
+    }
+    this.setState({form: nextForm});
+  }
+
+  cateogiresIntoCheckboxes(categories, checkedCategories) {
+    let updatedCategories = _.clone(categories)
+    return updatedCategories.map((category) => {
+      return (
+        <Checkbox
+          key={category}
+          value={category}
+          checked={_.includes(checkedCategories, category)}
+          onChange={this.languagesChange}
+          inline
+        >
+        {category}
+        </Checkbox>
+      )
+    })
   }
 
   render() {
@@ -372,6 +410,21 @@ class OrganizationProviderForm extends Component {
                 onChange={this.formValChange}/>
             </Col>
           </FormGroup>
+
+          <FormGroup controlId="languages">
+            <Col componentClass={ControlLabel} sm={3}>
+              Languages
+            </Col>
+            <Col sm={9}>
+              {this.props.categoriesLoaded &&
+                this.cateogiresIntoCheckboxes(
+                  this.props.languagesCategories,
+                  this.state.form.languages
+                )
+              }
+            </Col>
+          </FormGroup>
+
           <hr/> 
           <h4> Company Operation Hours </h4>
           <hr/>

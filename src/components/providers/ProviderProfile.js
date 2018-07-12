@@ -8,7 +8,7 @@ import { formatLocation } from '../../helpers/location_helpers'
 import { formatOperationHours } from '../../helpers/operation_hour_helpers'
 
 // styles
-import { Table, Button, ListGroup, Well, Badge, Col, Row } from 'react-bootstrap'
+import { Table, Button, ListGroup, Well, Badge, Col, Row, Glyphicon } from 'react-bootstrap'
 import { fetchProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
@@ -22,6 +22,7 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
+    console.log(provider.other_addresses)
     return (
       <div className="content">
         <h3>Provider Profile</h3>
@@ -33,12 +34,16 @@ class ProviderProfile extends Component {
             Edit
           </Button>
         </Link>
-        &nbsp; 
+        &nbsp;
         <Link to={`/provider/${id}/rate`}>
           <Button bsStyle="default">
             Rate Provider
           </Button>
         </Link>
+        &nbsp;
+        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+          <Glyphicon glyph="print" />
+        </Button>
 
         <Table striped bordered condensed hover>
           <tbody>
@@ -46,6 +51,13 @@ class ProviderProfile extends Component {
               <td><b>Type</b></td>
               <td>{provider.provider_type}</td>
             </tr>
+
+            {provider.provider_category &&
+              <tr>
+                <td><b>Category</b></td>
+                <td>{provider.provider_category}</td>
+              </tr>
+            }
 
             <tr>
               <td><b>Status</b></td>
@@ -150,14 +162,28 @@ class ProviderProfile extends Component {
 
           <tr>
             <td><b>Address</b></td>
-            <td>{formatLocation(provider.address)}</td>
+            <td>{formatLocation(provider.main_address)}</td>
           </tr>
 
+          {provider.other_addresses.length !== 0 &&
           <tr>
-            <td><b>Operation Hours</b></td>
-            <td>{
-              provider.operation_hours ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
+            <td><b>Alternate Address</b></td>
+            <td>{formatLocation(provider.other_addresses[0])}</td>
           </tr>
+          }
+
+          <tr>
+            <td><b>{provider.provider_type === "Organization" ? "Operation Hours" : "Availability"}</b></td>
+            <td>{
+              provider.operation_hours.length !== 0 ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
+          </tr>
+
+          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
+            <tr>
+              <td><b>Own Car</b></td>
+              <td>{provider.own_car}</td>
+            </tr>
+          }
           {provider.provider_type === "Individual" && provider.referrer &&
             <tr>
               <td><b>Referrer</b></td>

@@ -9,7 +9,7 @@ import ProviderRow from './providers/ProviderRow.js'
 import { connect } from 'react-redux'
 import { fetchProviders } from '../store/actions/providerActions.js'
 // styles
-import { Button, Col} from 'react-bootstrap'
+import { Button, Col, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
@@ -55,11 +55,16 @@ class Providers extends Component {
               Upload from CSV
               </Button>
             </Link>
+            &nbsp;
             <Link to={`/providers/new`}>
               <Button bsStyle="default" >
               Add new provider
               </Button>
             </Link>
+            &nbsp;
+            <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+              <Glyphicon glyph="print" />
+            </Button>
           </div>
           <hr/>
         { p.providersLoaded &&
