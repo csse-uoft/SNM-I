@@ -22,14 +22,13 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-    console.log(provider.other_addresses)
     return (
       <div className="content">
         <h3>Provider Profile</h3>
 
       { provider && provider.loaded &&
         <div>
-         <Link to={`/provider/${id}/edit/${provider.provider_type.toLowerCase()}`}>
+         <Link to={`/provider/${id}/edit/`}>
           <Button bsStyle="default">
             Edit
           </Button>
@@ -72,20 +71,14 @@ class ProviderProfile extends Component {
           }
 
           <tr>
-            <td><b>First Name</b></td>
+            <td><b>{provider.provider_type === "Individual" ? "First Name" : "Contact Person First Name"}</b></td>
             <td>{provider.first_name}</td>
           </tr>
           <tr>
-            <td><b>Last Name</b></td>
+            <td><b>{provider.provider_type === "Individual" ? "Last Name" : "Contact Person Last Name"}</b></td>
             <td>{provider.last_name}</td>
           </tr>
 
-          {provider.provider_type === "Individual" && provider.preferred_name && 
-            <tr>
-              <td><b>Preferred Name</b></td>
-              <td>{provider.preferred_name}</td>
-            </tr>
-          }
           {provider.provider_type === "Individual" &&
             <tr> 
               <td><b>Gender</b></td>
@@ -97,22 +90,30 @@ class ProviderProfile extends Component {
             <td><b>Email</b></td>
             <td>{provider.email}</td>
           </tr>
+
           <tr>
             <td><b>Phone</b></td>
             <td>{provider.primary_phone_number}</td>
           </tr>
 
-          {provider.primary_phone_extension !== '' &&
+          {provider.primary_phone_extension &&
           <tr>
             <td><b>Extension</b></td>
             <td>{provider.primary_phone_extension}</td>
           </tr>
           }
 
-          {provider.alt_phone_number !== '' &&
+          {provider.alt_phone_number &&
           <tr>
             <td><b>Alternate Phone Number</b></td>
             <td>{provider.alt_phone_number} </td>
+          </tr>
+          }
+
+          {provider.alt_phone_extension &&
+          <tr>
+            <td><b>Alternate Phone Extension</b></td>
+            <td>{provider.alt_phone_extension} </td>
           </tr>
           }
 
@@ -167,8 +168,11 @@ class ProviderProfile extends Component {
 
           {provider.other_addresses.length !== 0 &&
           <tr>
-            <td><b>Alternate Address</b></td>
-            <td>{formatLocation(provider.other_addresses[0])}</td>
+            <td><b>Alternate Address(es)</b></td>
+            <td>
+              {provider.other_addresses.map( address =>
+                <li key={address.id}>{formatLocation(address)}</li>)}
+            </td>
           </tr>
           }
 
@@ -177,6 +181,15 @@ class ProviderProfile extends Component {
             <td>{
               provider.operation_hours.length !== 0 ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
           </tr>
+
+          <tr>
+            <td><b>Languages</b></td>
+            <td>{provider.languages.map(language =>
+              <li key={language}>{language}</li>
+              )}
+            </td>
+          </tr>
+
 
           {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
             <tr>
