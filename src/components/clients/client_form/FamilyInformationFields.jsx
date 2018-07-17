@@ -9,10 +9,6 @@ export default class FamilyInformationFields extends Component {
   render() {
     return (
       <Row>
-        <Col sm={12}>
-          <h4>Family</h4>
-          <hr/>
-        </Col>
         {(JSON.parse(this.props.hasChildren) ||
           this.props.maritalStatus === 'Married' ||
           this.props.maritalStatus === 'Common Law') && (

@@ -9,6 +9,7 @@ import { createClient, updateClient } from '../../store/actions/clientActions.js
 
 import PersonalInformationFields from './client_form/PersonalInformationFields';
 import FamilyInformationFields from './client_form/FamilyInformationFields';
+import CountryOfOriginFields from './client_form/CountryOfOriginFields';
 
 import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
   Radio, Checkbox } from 'react-bootstrap';
@@ -22,6 +23,7 @@ class ClientForm extends Component {
     }
 
     this.state = {
+      currentStep: 1,
       clientId: client.id,
       mode: (client.id) ? 'edit' : 'new',
       form: {
@@ -68,10 +70,31 @@ class ClientForm extends Component {
     this.childChange = this.childChange.bind(this);
     this.personalInfoChange = this.personalInfoChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.next = this.next.bind(this);
+    this.prev = this.prev.bind(this);
+    this.jumpToStep = this.jumpToStep.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('languages'));
+  }
+
+  next() {
+   this.setState({
+     currentStep: this.state.currentStep + 1
+   });
+  }
+
+  prev() {
+    this.setState({
+      currentStep: this.state.currentStep - 1
+    });
+  }
+
+  jumpToStep(step) {
+    this.setState({
+      currentStep: step
+    });
   }
 
   formValChange(e, id=e.target.id) {
@@ -196,260 +219,209 @@ class ClientForm extends Component {
       })
     }
 
+    function wizardStepStyle(currentStep, wizardStep) {
+      if (currentStep === wizardStep) {
+        return 'col-xs-4 bs-wizard-step active'
+      }
+      else if (currentStep > wizardStep) {
+        return 'col-xs-4 bs-wizard-step complete'
+      }
+      else {
+        return 'col-xs-4 bs-wizard-step disabled'
+      }
+    }
+
     return (
       <Grid className="content">
         <Row>
           <Col sm={12}>
             <h3>{formTitle}</h3>
-            <hr />
           </Col>
+          <div className="row bs-wizard">
+            <div className={wizardStepStyle(this.state.currentStep, 1)}>
+              <div className="text-center bs-wizard-stepnum">Step 1</div>
+              <div className="progress"><div className="progress-bar"></div></div>
+              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(1)}></div>
+              <div className="bs-wizard-info text-center">
+                Personal Information
+              </div>
+            </div>
+
+            <div className={wizardStepStyle(this.state.currentStep, 2)}>
+              <div className="text-center bs-wizard-stepnum">Step 2</div>
+              <div className="progress"><div className="progress-bar"></div></div>
+              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(2)}></div>
+              <div className="bs-wizard-info text-center">
+                Family Members (Optional)
+              </div>
+            </div>
+
+            <div className={wizardStepStyle(this.state.currentStep, 3)}>
+              <div className="text-center bs-wizard-stepnum">Step 3</div>
+              <div className="progress"><div className="progress-bar"></div></div>
+              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(3)}></div>
+              <div className="bs-wizard-info text-center">
+                Country of Origin Information (Optional)
+              </div>
+            </div>
+          </div>
         </Row>
         <Form horizontal>
-          <PersonalInformationFields
-            personalInformation={this.state.form.personal_information}
-            formValChangeHandler={this.personalInfoChange}
-          />
+          {this.state.currentStep === 1 && (
+            <div>
+              <PersonalInformationFields
+                personalInformation={this.state.form.personal_information}
+                formValChangeHandler={this.personalInfoChange}
+              />
+              <Row>
+                <FormGroup controlId="email">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Email
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="text"
+                      value={this.state.form.email}
+                      onChange={this.formValChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="primary_phone_number">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Telephone
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="tel"
+                      value={this.state.form.primary_phone_number}
+                      onChange={this.formValChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="alt_phone_number">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Alternative Phone Number
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="tel"
+                      value={this.state.form.alt_phone_number}
+                      onChange={this.formValChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="street_address">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Street Address
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="text"
+                      value={this.state.form.address.street_address}
+                      onChange={this.addressChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="apt_number">
+                  <Col componentClass={ControlLabel} sm={3}>
+                    Apt. #
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="text"
+                      value={this.state.form.address.apt_number}
+                      onChange={this.addressChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="city">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    City
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="text"
+                      value={this.state.form.address.city}
+                      onChange={this.addressChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="province">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Province
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="text"
+                      value={this.state.form.address.province}
+                      onChange={this.addressChange}
+                    />
+                  </Col>
+                </FormGroup>
+
+                <FormGroup controlId="postal_code">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Postal Code
+                  </Col>
+                  <Col sm={9}>
+                    <FormControl
+                      type="text"
+                      value={this.state.form.address.postal_code}
+                      onChange={this.addressChange}
+                    />
+                  </Col>
+                </FormGroup>
+              </Row>
+            </div>
+          )}
+          {this.state.currentStep === 2 &&
+            <FamilyInformationFields
+              family={this.state.form.family}
+              hasChildren={this.state.form.personal_information.has_children}
+              maritalStatus={this.state.form.personal_information.marital_status}
+              numOfChildren={this.state.form.personal_information.num_of_children}
+              formValChange={this.formValChange}
+              spouseChange={this.spouseChange}
+              childChange={this.childChange}
+            />
+          }
+          {this.state.currentStep === 3 &&
+            <CountryOfOriginFields
+              country_of_origin={this.state.form.country_of_origin}
+              country_of_last_residence={this.state.form.country_of_last_residence}
+              first_language={this.state.form.first_language}
+              other_languages={this.state.form.other_languages}
+              pr_number={this.state.form.pr_number}
+              immigration_doc_number={this.state.form.immigration_doc_number}
+              landing_date={this.state.form.landing_date}
+              arrival_date={this.state.form.arrival_date}
+              formValChange={this.formValChange}
+              categoriesLoaded={p.categoriesLoaded}
+              languagesCategories={p.languagesCategories}
+              cateogiresIntoCheckboxes={cateogiresIntoCheckboxes}
+              cateogiresIntoOptions={cateogiresIntoOptions}
+            />
+          }
           <Row>
-            <FormGroup controlId="email">
-              <Col componentClass={ControlLabel} sm={3}>
-                Email
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.email}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="primary_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Telephone
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.primary_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="alt_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Alternative Phone Number
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.alt_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="street_address">
-              <Col componentClass={ControlLabel} sm={3}>
-                Street Address
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.address.street_address}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="apt_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Apt. #
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.address.apt_number}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="city">
-              <Col componentClass={ControlLabel} sm={3}>
-                City
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.address.city}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="province">
-              <Col componentClass={ControlLabel} sm={3}>
-                Province
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.address.province}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="postal_code">
-              <Col componentClass={ControlLabel} sm={3}>
-                Postal Code
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.address.postal_code}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-          </Row>
-          <br/>
-          <FamilyInformationFields
-            family={this.state.form.family}
-            hasChildren={this.state.form.personal_information.has_children}
-            maritalStatus={this.state.form.personal_information.marital_status}
-            numOfChildren={this.state.form.personal_information.num_of_children}
-            formValChange={this.formValChange}
-            spouseChange={this.spouseChange}
-            childChange={this.childChange}
-          />
-          <Row>
-            <Col sm={12}>
-              <h4>Country of Origin Information</h4>
-              <hr/>
-            </Col>
-            <FormGroup controlId="country_of_origin">
-              <Col componentClass={ControlLabel} sm={3}>
-                Country of Origin
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.country_of_origin}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="country_of_last_residence">
-              <Col componentClass={ControlLabel} sm={3}>
-                Country of Last Residence
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.country_of_last_residence}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="first_language">
-              <Col componentClass={ControlLabel} sm={3}>
-                First Language
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.first_language}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  { p.categoriesLoaded &&
-                    cateogiresIntoOptions(p.languagesCategories)
-                  }
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="other_languages">
-              <Col componentClass={ControlLabel} sm={3}>
-                Other languages
-              </Col>
-              <Col sm={9}>
-                {p.categoriesLoaded &&
-                  cateogiresIntoCheckboxes(
-                    p.languagesCategories,
-                    this.state.form.first_language,
-                    this.state.form.other_languages,
-                    this.formValChange
-                  )
-                }
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="pr_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Permanent Residence Card Number (PR card)
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.pr_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="immigration_doc_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Immigration Document Number (if different from PR card):
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.immigration_doc_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="landing_date">
-              <Col componentClass={ControlLabel} sm={3}>
-                Landing Date
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="date"
-                  value={this.state.form.landing_date}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="arrival_date">
-              <Col componentClass={ControlLabel} sm={3}>
-                Arrival Date (if different from landing_date):
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="date"
-                  value={this.state.form.arrival_date}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
-                <Button onClick={this.submit}>
-                  Submit
-                </Button>
-              </Col>
-            </FormGroup>
+            {this.state.currentStep > 1 &&
+              <Button className="previous-button" onClick={this.prev}>
+                Previous
+              </Button>
+            }
+            {(this.state.currentStep < 3) ? (
+              <Button className="next-button" onClick={this.next}>
+                Next
+              </Button>) : (
+              <Button className="submit-button" onClick={this.submit}>
+                Submit
+              </Button>)
+            }
           </Row>
         </Form>
       </Grid>

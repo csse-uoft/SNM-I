@@ -10,12 +10,8 @@ export default class PersonalInformationFields extends Component {
   render() {
     return (
       <Row>
-        <Col sm={12}>
-          <h4>Personal Information</h4>
-          <hr />
-        </Col>
         <FormGroup controlId="first_name">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             First name
           </Col>
           <Col sm={9}>
@@ -41,7 +37,7 @@ export default class PersonalInformationFields extends Component {
         </FormGroup>
 
         <FormGroup controlId="last_name">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             Last name
           </Col>
           <Col sm={9}>
@@ -66,7 +62,7 @@ export default class PersonalInformationFields extends Component {
         </FormGroup>
 
         <FormGroup controlId="gender">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             Gender
           </Col>
           <Col sm={9}>
@@ -85,7 +81,7 @@ export default class PersonalInformationFields extends Component {
         </FormGroup>
 
         <FormGroup controlId="birth_date">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             Date of Birth
           </Col>
           <Col sm={9}>
@@ -98,7 +94,7 @@ export default class PersonalInformationFields extends Component {
         </FormGroup>
 
         <FormGroup controlId="marital_status">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             Marital Status
           </Col>
           <Col sm={9}>
@@ -120,7 +116,7 @@ export default class PersonalInformationFields extends Component {
         </FormGroup>
 
         <FormGroup controlId="has_children">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             Do you have children?
           </Col>
           <Col sm={9}>
