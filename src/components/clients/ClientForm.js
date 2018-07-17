@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClient, updateClient } from '../../store/actions/clientActions.js';
 
+import PersonalInformationFields from './client_form/PersonalInformationFields';
 import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
   Radio, Checkbox } from 'react-bootstrap';
 
@@ -22,16 +23,20 @@ class ClientForm extends Component {
       clientId: client.id,
       mode: (client.id) ? 'edit' : 'new',
       form: {
-        first_name: client.first_name || '',
-        middle_name: client.middle_name || '',
-        last_name: client.last_name || '',
-        preferred_name: client.preferred_name || '',
-        gender: client.gender,
-        birth_date: client.birth_date || '',
+        personal_information: Object.assign({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+          preferred_name: '',
+          gender: '',
+          birth_date: '',
+          marital_status: '',
+          has_children: false,
+          num_of_children: '',
+        }, client.personal_information),
         email: client.email || '',
         primary_phone_number: client.primary_phone_number || '',
         alt_phone_number: client.alt_phone_number || '',
-        marital_status: client.marital_status || '',
         address: Object.assign({
           street_address: '',
           apt_number: '',
@@ -39,8 +44,6 @@ class ClientForm extends Component {
           province: '',
           postal_code: ''
         }, client.address),
-        has_children: client.has_children || false,
-        num_of_children: client.num_of_children || '',
         country_of_origin: client.country_of_origin || '',
         country_of_last_residence: client.country_of_last_residence || '',
         first_language: client.first_language || '',
@@ -61,6 +64,7 @@ class ClientForm extends Component {
     this.addressChange = this.addressChange.bind(this);
     this.spouseChange = this.spouseChange.bind(this);
     this.childChange = this.childChange.bind(this);
+    this.personalInfoChange = this.personalInfoChange.bind(this);
     this.submit = this.submit.bind(this);
   }
 
@@ -70,29 +74,7 @@ class ClientForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    if (id === 'marital_status' && (e.target.value === 'Married' || e.target.value === 'Common Law')) {
-      nextForm[id] = e.target.value
-      nextForm['family']['spouse'] = {
-        'full_name': '',
-        'birth_date': '',
-        'gender': ''
-      }
-    }
-    else if (id === 'num_of_children') {
-      nextForm[id] = e.target.value
-      let children = []
-      for (var i = 0; i < parseInt(e.target.value); i++) {
-        children.push(
-          {
-            'full_name': '',
-            'birth_date': '',
-            'gender': ''
-          }
-        )
-      }
-      nextForm['family']['children'] = children
-    }
-    else if (id === 'file_id') {
+    if (id === 'file_id') {
       nextForm['family']['file_id'] = e.target.value
     }
     else if (id === 'other_languages') {
@@ -106,6 +88,34 @@ class ClientForm extends Component {
     }
     else {
       nextForm[id] = e.target.value
+    }
+    this.setState({ form: nextForm });
+  }
+
+  personalInfoChange(e, id=e.target.id) {
+    let nextForm = _.clone(this.state.form);
+    nextForm['personal_information'][id] = e.target.value
+    if (id === 'marital_status' && (e.target.value === 'Married' || e.target.value === 'Common Law')) {
+      nextForm['personal_information'][id] = e.target.value
+      nextForm['family']['spouse'] = {
+        'full_name': '',
+        'birth_date': '',
+        'gender': ''
+      }
+    }
+    else if (id === 'num_of_children') {
+      nextForm['personal_information'][id] = e.target.value
+      let children = []
+      for (var i = 0; i < parseInt(e.target.value); i++) {
+        children.push(
+          {
+            'full_name': '',
+            'birth_date': '',
+            'gender': ''
+          }
+        )
+      }
+      nextForm['family']['children'] = children
     }
     this.setState({ form: nextForm });
   }
@@ -193,94 +203,11 @@ class ClientForm extends Component {
           </Col>
         </Row>
         <Form horizontal>
+          <PersonalInformationFields
+            personalInformation={this.state.form.personal_information}
+            formValChangeHandler={this.personalInfoChange}
+          />
           <Row>
-            <Col sm={12}>
-              <h4>Personal Information</h4>
-              <hr />
-            </Col>
-            <FormGroup controlId="first_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                First name
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.first_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="middle_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Middle name
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.middle_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="last_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Last name
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.last_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="preferred_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Preferred Name
-              </Col>
-              <Col sm={9}>
-                <FormControl type="text"
-                  value={this.state.form.preferred_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="gender">
-              <Col componentClass={ControlLabel} sm={3}>
-                Gender
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.gender}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">--- Not Set ---</option>
-                  <option value="Other">Other</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="birth_date">
-              <Col componentClass={ControlLabel} sm={3}>
-                Date of Birth
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="date"
-                  value={this.state.form.birth_date}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
                 Email
@@ -385,16 +312,15 @@ class ClientForm extends Component {
               </Col>
             </FormGroup>
           </Row>
-
           <br/>
           <Row>
             <Col sm={12}>
               <h4>Family</h4>
               <hr/>
             </Col>
-            {(JSON.parse(this.state.form.has_children) ||
-              this.state.form.marital_status === 'Married' ||
-              this.state.form.marital_status === 'Common Law') && (
+            {(JSON.parse(this.state.form.personal_information.has_children) ||
+              this.state.form.personal_information.marital_status === 'Married' ||
+              this.state.form.personal_information.marital_status === 'Common Law') && (
               <FormGroup controlId="file_id">
                 <Col componentClass={ControlLabel} sm={3}>
                   File ID
@@ -408,30 +334,9 @@ class ClientForm extends Component {
                 </Col>
               </FormGroup>
             )}
-            <FormGroup controlId="marital_status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Marital Status
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.marital_status}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">--- Not Set ---</option>
-                  <option value="Single">Single</option>
-                  <option value="Married">Married</option>
-                  <option value="Common Law">Common Law</option>
-                  <option value="Separated">Separated</option>
-                  <option value="Divorced">Divorced</option>
-                  <option value="Widowed">Widowed</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
 
-            {(this.state.form.marital_status === 'Married' ||
-              this.state.form.marital_status === 'Common Law') && (
+            {(this.state.form.personal_information.marital_status === 'Married' ||
+              this.state.form.personal_information.marital_status === 'Common Law') && (
               <div>
                 <FormGroup controlId="full_name">
                   <Col componentClass={ControlLabel} sm={3}>
@@ -478,49 +383,9 @@ class ClientForm extends Component {
               </div>
             )}
 
-            <FormGroup controlId="has_children">
-              <Col componentClass={ControlLabel} sm={3}>
-                Do you have children?
-              </Col>
-              <Col sm={9}>
-                <Radio
-                  name="radioGroup"
-                  value='true'
-                  onChange={e => this.formValChange(e, 'has_children')}
-                  defaultChecked={this.state.form.has_children === true}
-                  inline
-                >
-                  Yes
-                </Radio>{' '}
-                <Radio
-                  name="radioGroup"
-                  value='false'
-                  onChange={e => this.formValChange(e, 'has_children')}
-                  defaultChecked={this.state.form.has_children === false}
-                  inline
-                >
-                  No
-                </Radio>{' '}
-              </Col>
-            </FormGroup>
-
-            {JSON.parse(this.state.form.has_children) && (
-              <FormGroup controlId="num_of_children">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Number of Children
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="number"
-                    value={this.state.form.num_of_children}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-            )}
-            {(this.state.form.num_of_children > 0) && (
+            {(this.state.form.personal_information.num_of_children > 0) && (
               <div>
-                {[...Array(parseInt(this.state.form.num_of_children))].map((object, i) => {
+                {[...Array(parseInt(this.state.form.personal_information.num_of_children))].map((object, i) => {
                   return (
                     <div key={i}>
                       <FormGroup controlId="full_name">
