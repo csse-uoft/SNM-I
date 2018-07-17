@@ -18,13 +18,10 @@ import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
 import AdminRoute from './components/routes/AdminRoute'
 import Providers from './components/Providers';
-import ProviderTypePrompt from './components/providers/ProviderTypePrompt'
 import AddServicePrompt from './components/providers/AddServicePrompt'
-import IndividualProviderForm from './components/providers/IndividualProviderForm'
-import OrganizationProviderForm from './components/providers/OrganizationProviderForm'
+import ProviderForm from './components/providers/ProviderForm'
 import ProviderCSVUpload from './components/providers/UploadProviderCSV.js';
 import ProviderProfile from './components/providers/ProviderProfile'
-import EditProvider from './components/providers/EditProviderProfile'
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
 import Service from './components/services/Service';
@@ -59,12 +56,9 @@ const routes = (
 
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/new/individual' component={IndividualProviderForm} />
-    <PrivateRoute path='/providers/new/organization' component={OrganizationProviderForm} />
+    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/providers/new/upload' component={ProviderCSVUpload} />
-    <PrivateRoute path='/providers/new' component={ProviderTypePrompt} />
-    <PrivateRoute path='/provider/:id/edit/individual' component={IndividualProviderForm} />
-    <PrivateRoute path='/provider/:id/edit/organization' component={OrganizationProviderForm} />
+    <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
 

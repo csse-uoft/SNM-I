@@ -8,7 +8,7 @@ import { formatLocation } from '../../helpers/location_helpers'
 import { formatOperationHours } from '../../helpers/operation_hour_helpers'
 
 // styles
-import { Table, Button, ListGroup, Well, Badge, Col, Row } from 'react-bootstrap'
+import { Table, Button, ListGroup, Well, Badge, Col, Row, Glyphicon } from 'react-bootstrap'
 import { fetchProvider } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
@@ -28,17 +28,21 @@ class ProviderProfile extends Component {
 
       { provider && provider.loaded &&
         <div>
-         <Link to={`/provider/${id}/edit/${provider.provider_type.toLowerCase()}`}>
+         <Link to={`/provider/${id}/edit/`}>
           <Button bsStyle="default">
             Edit
           </Button>
         </Link>
-        &nbsp; 
+        &nbsp;
         <Link to={`/provider/${id}/rate`}>
           <Button bsStyle="default">
             Rate Provider
           </Button>
         </Link>
+        &nbsp;
+        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+          <Glyphicon glyph="print" />
+        </Button>
 
         <Table striped bordered condensed hover>
           <tbody>
@@ -46,6 +50,13 @@ class ProviderProfile extends Component {
               <td><b>Type</b></td>
               <td>{provider.provider_type}</td>
             </tr>
+
+            {provider.provider_category &&
+              <tr>
+                <td><b>Category</b></td>
+                <td>{provider.provider_category}</td>
+              </tr>
+            }
 
             <tr>
               <td><b>Status</b></td>
@@ -60,20 +71,14 @@ class ProviderProfile extends Component {
           }
 
           <tr>
-            <td><b>First Name</b></td>
+            <td><b>{provider.provider_type === "Individual" ? "First Name" : "Contact Person First Name"}</b></td>
             <td>{provider.first_name}</td>
           </tr>
           <tr>
-            <td><b>Last Name</b></td>
+            <td><b>{provider.provider_type === "Individual" ? "Last Name" : "Contact Person Last Name"}</b></td>
             <td>{provider.last_name}</td>
           </tr>
 
-          {provider.provider_type === "Individual" && provider.preferred_name && 
-            <tr>
-              <td><b>Preferred Name</b></td>
-              <td>{provider.preferred_name}</td>
-            </tr>
-          }
           {provider.provider_type === "Individual" &&
             <tr> 
               <td><b>Gender</b></td>
@@ -85,22 +90,30 @@ class ProviderProfile extends Component {
             <td><b>Email</b></td>
             <td>{provider.email}</td>
           </tr>
+
           <tr>
             <td><b>Phone</b></td>
             <td>{provider.primary_phone_number}</td>
           </tr>
 
-          {provider.primary_phone_extension !== '' &&
+          {provider.primary_phone_extension &&
           <tr>
             <td><b>Extension</b></td>
             <td>{provider.primary_phone_extension}</td>
           </tr>
           }
 
-          {provider.alt_phone_number !== '' &&
+          {provider.alt_phone_number &&
           <tr>
             <td><b>Alternate Phone Number</b></td>
             <td>{provider.alt_phone_number} </td>
+          </tr>
+          }
+
+          {provider.alt_phone_extension &&
+          <tr>
+            <td><b>Alternate Phone Extension</b></td>
+            <td>{provider.alt_phone_extension} </td>
           </tr>
           }
 
@@ -150,14 +163,40 @@ class ProviderProfile extends Component {
 
           <tr>
             <td><b>Address</b></td>
-            <td>{formatLocation(provider.address)}</td>
+            <td>{formatLocation(provider.main_address)}</td>
+          </tr>
+
+          {provider.other_addresses.length !== 0 &&
+          <tr>
+            <td><b>Alternate Address(es)</b></td>
+            <td>
+              {provider.other_addresses.map( address =>
+                <li key={address.id}>{formatLocation(address)}</li>)}
+            </td>
+          </tr>
+          }
+
+          <tr>
+            <td><b>{provider.provider_type === "Organization" ? "Operation Hours" : "Availability"}</b></td>
+            <td>{
+              provider.operation_hours.length !== 0 ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
           </tr>
 
           <tr>
-            <td><b>Operation Hours</b></td>
-            <td>{
-              provider.operation_hours ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
+            <td><b>Languages</b></td>
+            <td>{provider.languages.map(language =>
+              <li key={language}>{language}</li>
+              )}
+            </td>
           </tr>
+
+
+          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
+            <tr>
+              <td><b>Own Car</b></td>
+              <td>{provider.own_car}</td>
+            </tr>
+          }
           {provider.provider_type === "Individual" && provider.referrer &&
             <tr>
               <td><b>Referrer</b></td>
