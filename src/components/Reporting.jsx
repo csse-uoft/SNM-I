@@ -3,7 +3,6 @@ import { Bar as BarChart } from 'react-chartjs';
 import {chart} from 'chart.js';
 import { Pie as PieChart } from 'react-chartjs';
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
-import {fetchReports} from '../store/actions/reportingaction';
 import { connect } from 'react-redux';
 import { serverHost } from '../store/defaults.js';
 
