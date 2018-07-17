@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { genderOptions, maritalStatusOptions } from '../../../store/defaults.js';
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
   Radio, Checkbox } from 'react-bootstrap';
 
@@ -73,9 +74,9 @@ export default class PersonalInformationFields extends Component {
               onChange={this.props.handleFormValChange}
             >
               <option value="select">--- Not Set ---</option>
-              <option value="Other">Other</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
+              {genderOptions.map(gender =>
+                <option key={gender} value={gender}>{gender}</option>
+              )}
             </FormControl>
           </Col>
         </FormGroup>
@@ -105,12 +106,11 @@ export default class PersonalInformationFields extends Component {
               onChange={this.props.handleFormValChange}
             >
               <option value="select">--- Not Set ---</option>
-              <option value="Single">Single</option>
-              <option value="Married">Married</option>
-              <option value="Common Law">Common Law</option>
-              <option value="Separated">Separated</option>
-              <option value="Divorced">Divorced</option>
-              <option value="Widowed">Widowed</option>
+              {maritalStatusOptions.map(maritalStatus =>
+                <option key={maritalStatus} value={maritalStatus}>
+                  {maritalStatus}
+                </option>
+              )}
             </FormControl>
           </Col>
         </FormGroup>

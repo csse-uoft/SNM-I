@@ -46,7 +46,7 @@ class ClientForm extends Component {
             city: '',
             province: '',
             postal_code: ''
-          }, client.personal_information.address),
+          }, client.personal_information && client.personal_information.address),
         }, _.omit(client.personal_information, 'address')),
         country_of_origin: client.country_of_origin || '',
         country_of_last_residence: client.country_of_last_residence || '',

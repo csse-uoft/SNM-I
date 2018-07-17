@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { genderOptions } from '../../../store/defaults.js';
 import { FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
 export default class FamilyInformationFields extends Component {
@@ -115,9 +116,9 @@ export default class FamilyInformationFields extends Component {
                         onChange={e => this.props.childChange(e, i)}
                       >
                         <option value="select">--- Gender ---</option>
-                        <option value="Other">Other</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
+                        {genderOptions.map(gender =>
+                          <option value={gender}>{gender}</option>
+                        )}
                       </FormControl>
                     </Col>
                   </FormGroup>
