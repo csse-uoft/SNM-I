@@ -1,11 +1,30 @@
 const hostname = window && window.location && window.location.hostname;
-let backendHost;
 
+let serverHost;
 if (hostname === 'social-needs-marketplace.herokuapp.com') {
-  backendHost = 'https://snm-impact-server.herokuapp.com';
+  serverHost = 'https://snm-impact-server.herokuapp.com';
 }
 else {
-  backendHost = 'http://127.0.0.1:8000';
+  serverHost = 'http://127.0.0.1:8000';
 }
 
-export const serverHost = backendHost;
+const genderOptions = [
+  'Male',
+  'Female',
+  'Other'
+]
+
+const maritalStatusOptions = [
+  'Single',
+  'Married',
+  'Common Law',
+  'Separated',
+  'Divorced',
+  'Widowed'
+]
+
+module.exports = Object.freeze({
+  serverHost: serverHost,
+  genderOptions: genderOptions,
+  maritalStatusOptions: maritalStatusOptions
+});
