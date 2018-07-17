@@ -23,8 +23,44 @@ const maritalStatusOptions = [
   'Widowed'
 ]
 
+const statusInCanadaOptions = [
+  'Citizen',
+  'Immigrant',
+  'Refugee',
+  'Work Permit',
+  'Refugee Claimant',
+  'Visitors Visa',
+  'Other'
+]
+
+const educationLevelOptions = [
+  'Elementary',
+  'Secondary',
+  'College',
+  'University',
+  'Post Graduate'
+]
+
+const incomeSourceOptions = [
+ 'Employment',
+ 'Employment Insurance',
+ 'Ontario Disability Support Program',
+ 'Ontario Works',
+ 'Dependent of OW/ODSP',
+ 'Family Members Income',
+ 'Workers Safety and Insurance',
+ 'Pension',
+ 'Crowd Ward',
+ 'Unknown',
+ 'None',
+ 'Other'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   genderOptions: genderOptions,
-  maritalStatusOptions: maritalStatusOptions
+  maritalStatusOptions: maritalStatusOptions,
+  statusInCanadaOptions: statusInCanadaOptions,
+  educationLevelOptions: educationLevelOptions,
+  incomeSourceOptions: incomeSourceOptions
 });

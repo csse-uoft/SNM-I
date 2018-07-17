@@ -9,10 +9,9 @@ import { createClient, updateClient } from '../../store/actions/clientActions.js
 
 import PersonalInformationFields from './client_form/PersonalInformationFields';
 import FamilyInformationFields from './client_form/FamilyInformationFields';
-import CountryOfOriginFields from './client_form/CountryOfOriginFields';
+import BackgroundInformationFields from './client_form/BackgroundInformationFields';
 
-import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
-  Radio, Checkbox } from 'react-bootstrap';
+import { Grid, Button, Form, Col, Row, Checkbox } from 'react-bootstrap';
 
 class ClientForm extends Component {
   constructor(props) {
@@ -56,6 +55,10 @@ class ClientForm extends Component {
         immigration_doc_number: client.immigration_doc_number || '',
         landing_date: client.landing_date || '',
         arrival_date: client.arrival_date || '',
+        status_in_canada: client.status_in_canada || '',
+        income_source: client.income_source || '',
+        level_of_education: client.level_of_education || '',
+        num_of_dependants: client.num_of_dependants || '',
         family: {
           file_id: (client.family && client.family.file_id) || '',
           spouse: client.spouse || undefined,
@@ -260,7 +263,7 @@ class ClientForm extends Component {
               <div className="progress"><div className="progress-bar"></div></div>
               <div className="bs-wizard-dot" onClick={e => this.jumpToStep(3)}></div>
               <div className="bs-wizard-info text-center">
-                Country of Origin Information (Optional)
+                Background Information (Optional)
               </div>
             </div>
           </div>
@@ -285,7 +288,7 @@ class ClientForm extends Component {
             />
           }
           {this.state.currentStep === 3 &&
-            <CountryOfOriginFields
+            <BackgroundInformationFields
               country_of_origin={this.state.form.country_of_origin}
               country_of_last_residence={this.state.form.country_of_last_residence}
               first_language={this.state.form.first_language}
@@ -299,6 +302,10 @@ class ClientForm extends Component {
               languagesCategories={p.languagesCategories}
               cateogiresIntoCheckboxes={cateogiresIntoCheckboxes}
               cateogiresIntoOptions={cateogiresIntoOptions}
+              num_of_denpendants={this.state.form.num_of_denpendants}
+              income_source={this.state.form.income_source}
+              level_of_education={this.state.form.level_of_education}
+              status_in_canada={this.state.form.status_in_canada}
             />
           }
           <Row>

@@ -1,14 +1,31 @@
 import React, { Component } from 'react';
+import { statusInCanadaOptions, educationLevelOptions,
+         incomeSourceOptions } from '../../../store/defaults.js';
 import { FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
-export default class CountryOfOriginFields extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+export default class BackgroundInformationFields extends Component {
   render() {
     return (
       <Row>
+        <FormGroup controlId="status_in_canada">
+          <Col componentClass={ControlLabel} sm={3}>
+            Status In Canada
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              componentClass="select"
+              placeholder="select"
+              value={this.props.status_in_canada}
+              onChange={this.props.formValChange}
+            >
+              <option value="select">-- Not Set --</option>
+              {statusInCanadaOptions.map(status =>
+                <option key={status} value={status}>{status}</option>
+              )}
+            </FormControl>
+          </Col>
+        </FormGroup>
+
         <FormGroup controlId="country_of_origin">
           <Col componentClass={ControlLabel} sm={3}>
             Country of Origin
@@ -118,6 +135,57 @@ export default class CountryOfOriginFields extends Component {
               type="date"
               value={this.props.arrival_date}
               onChange={this.props.formValChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="level_of_education">
+          <Col componentClass={ControlLabel} sm={3}>
+            Level of education
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              componentClass="select"
+              placeholder="select"
+              value={this.props.level_of_education}
+              onChange={this.props.formValChange}
+            >
+              <option value="select">-- Not Set --</option>
+              {educationLevelOptions.map(level =>
+                <option key={level} value={level}>{level}</option>
+              )}
+            </FormControl>
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="income_source">
+          <Col componentClass={ControlLabel} sm={3}>
+            Income Source
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              componentClass="select"
+              placeholder="select"
+              value={this.props.income_source}
+              onChange={this.props.formValChange}
+            >
+              <option value="select">-- Not Set --</option>
+              {incomeSourceOptions.map(source =>
+                <option key={source} value={source}>{source}</option>
+              )}
+            </FormControl>
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="num_of_denpendants">
+          <Col componentClass={ControlLabel} sm={3}>
+            Number of Dependants
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="number"
+              value={this.props.num_of_denpendants}
+              onChange={this.props.handleFormValChange}
             />
           </Col>
         </FormGroup>
