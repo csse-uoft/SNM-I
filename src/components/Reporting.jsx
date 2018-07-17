@@ -3,7 +3,6 @@ import { Bar as BarChart } from 'react-chartjs';
 import {chart} from 'chart.js';
 import { Pie as PieChart } from 'react-chartjs';
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
-import {fetchReports} from '../store/actions/reportingaction';
 import { connect } from 'react-redux';
 import { serverHost } from '../store/defaults.js';
 
@@ -27,10 +26,14 @@ export default class Report extends Component {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
         }),
       }).then(response => response.json())
-      .then(data => this.setState({total_clients: data.total_clients, no_of_females: data.total_females,
-       no_of_males: data.total_males, no_of_others: data.total_others}));
+      .then(data => this.setState({
+        total_clients: data.total_clients,
+        no_of_females: data.total_females,
+        no_of_males: data.total_males,
+        no_of_others: data.total_others
+      }));
   }
-  
+
   render() {
     const chartData = {
       labels: ["Blue", "Green", "Yellow", "Green", "Purple", "Orange"],
@@ -69,8 +72,8 @@ export default class Report extends Component {
         highlight: "#FFC870",
         label: "Others"
       }
-    ] 
-    
+    ]
+
     const options = {
       maintainAspectRatio: false,
       responsive: false,
@@ -82,35 +85,34 @@ export default class Report extends Component {
       }
     }
 
-    return(
+    return (
       <div className="content client">
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-            <Glyphicon glyph="print" />
-          </Button>
-          <Table bordered condensed className="client-profile-table">
-              <tbody>
-                <tr>
-                  <td colSpan="2"><b>Statistics:</b></td>
-                </tr>
-                <tr>
-                  <td ><b>Number of clients</b></td>
-                  <td><PieChart data={pieData} options={options} />
-                  <br></br>
-                  Total = {this.state.total_clients}
-                  <br></br>
-                  Female = {this.state.no_of_females}
-                  <br></br>
-                  Male = {this.state.no_of_males}
-                  <br></br>
-                  Other = {this.state.no_of_others}</td>
-                </tr>
-                <tr>
-                  <td><b>Number of newcomer youth</b></td>
-                  <td></td>
-                </tr>
-                </tbody>
-                </Table>
-              
+          <Glyphicon glyph="print" />
+        </Button>
+        <Table bordered condensed className="client-profile-table">
+          <tbody>
+            <tr>
+              <td colSpan="2"><b>Statistics:</b></td>
+            </tr>
+            <tr>
+              <td ><b>Number of clients</b></td>
+              <td><PieChart data={pieData} options={options} />
+              <br></br>
+              Total = {this.state.total_clients}
+              <br></br>
+              Female = {this.state.no_of_females}
+              <br></br>
+              Male = {this.state.no_of_males}
+              <br></br>
+              Other = {this.state.no_of_others}</td>
+            </tr>
+            <tr>
+              <td><b>Number of newcomer youth</b></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </Table>
         <BarChart data={chartData} options={chartOptions} />
       </div>
     )
