@@ -36,6 +36,10 @@ class TopNavbar extends Component {
         <IndexLinkContainer to={`/providers`}>
           <NavItem eventKey={3} href="#">Providers</NavItem>
         </IndexLinkContainer>
+        <IndexLinkContainer to={`/reporting`}>
+          <NavItem eventKey={4} href="#">Reporting</NavItem>
+        </IndexLinkContainer>
+
       </Nav>
       )
       : (null);
