@@ -66,21 +66,21 @@ class Client extends Component {
                 </tr>
                 <tr>
                   <td><b>Email</b></td>
-                  <td>{client.email}</td>
+                  <td>{client.personal_information.email}</td>
                 </tr>
                 <tr>
                   <td><b>Phone Number</b></td>
-                  <td>{client.primary_phone_number}</td>
+                  <td>{client.personal_information.primary_phone_number}</td>
                 </tr>
-                {client.alt_phone_number && (
+                {client.personal_information.alt_phone_number && (
                   <tr>
                     <td><b>Alternative Phone Number</b></td>
-                    <td>{client.alt_phone_number}</td>
+                    <td>{client.personal_information.alt_phone_number}</td>
                   </tr>)
                 }
                 <tr>
                   <td><b>Address</b></td>
-                  <td>{formatLocation(client.address)}</td>
+                  <td>{formatLocation(client.personal_information.address)}</td>
                 </tr>
               </tbody>
             </Table>

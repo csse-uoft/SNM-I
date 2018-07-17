@@ -37,17 +37,17 @@ class ClientForm extends Component {
           marital_status: '',
           has_children: false,
           num_of_children: '',
-        }, client.personal_information),
-        email: client.email || '',
-        primary_phone_number: client.primary_phone_number || '',
-        alt_phone_number: client.alt_phone_number || '',
-        address: Object.assign({
-          street_address: '',
-          apt_number: '',
-          city: '',
-          province: '',
-          postal_code: ''
-        }, client.address),
+          email: '',
+          primary_phone_number: '',
+          alt_phone_number: '',
+          address: Object.assign({
+            street_address: '',
+            apt_number: '',
+            city: '',
+            province: '',
+            postal_code: ''
+          }, client.personal_information.address),
+        }, _.omit(client.personal_information, 'address')),
         country_of_origin: client.country_of_origin || '',
         country_of_last_residence: client.country_of_last_residence || '',
         first_language: client.first_language || '',
@@ -147,7 +147,7 @@ class ClientForm extends Component {
 
   addressChange(e) {
     let nextForm = _.clone(this.state.form);
-    nextForm['address'][e.target.id] = e.target.value
+    nextForm['personal_information']['address'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
   }
 
@@ -182,8 +182,7 @@ class ClientForm extends Component {
     delete submitForm['family']['children']
 
     if (this.state.mode === 'edit') {
-      let form = Object.assign({}, submitForm);
-      this.props.dispatch(updateClient(this.state.clientId, form));
+      this.props.dispatch(updateClient(this.state.clientId, submitForm));
     } else {
       this.props.dispatch(createClient(submitForm));
     }
@@ -267,119 +266,13 @@ class ClientForm extends Component {
           </div>
         </Row>
         <Form horizontal>
-          {this.state.currentStep === 1 && (
-            <div>
-              <PersonalInformationFields
-                personalInformation={this.state.form.personal_information}
-                formValChangeHandler={this.personalInfoChange}
-              />
-              <Row>
-                <FormGroup controlId="email">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    Email
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.email}
-                      onChange={this.formValChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="primary_phone_number">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    Telephone
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="tel"
-                      value={this.state.form.primary_phone_number}
-                      onChange={this.formValChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="alt_phone_number">
-                  <Col componentClass={ControlLabel} sm={3}>
-                    Alternative Phone Number
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="tel"
-                      value={this.state.form.alt_phone_number}
-                      onChange={this.formValChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="street_address">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    Street Address
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.address.street_address}
-                      onChange={this.addressChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="apt_number">
-                  <Col componentClass={ControlLabel} sm={3}>
-                    Apt. #
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.address.apt_number}
-                      onChange={this.addressChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="city">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    City
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.address.city}
-                      onChange={this.addressChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="province">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    Province
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.address.province}
-                      onChange={this.addressChange}
-                    />
-                  </Col>
-                </FormGroup>
-
-                <FormGroup controlId="postal_code">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    Postal Code
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.address.postal_code}
-                      onChange={this.addressChange}
-                    />
-                  </Col>
-                </FormGroup>
-              </Row>
-            </div>
-          )}
+          {this.state.currentStep === 1 &&
+            <PersonalInformationFields
+              personalInformation={this.state.form.personal_information}
+              handleFormValChange={this.personalInfoChange}
+              addressChange={this.addressChange}
+            />
+          }
           {this.state.currentStep === 2 &&
             <FamilyInformationFields
               family={this.state.form.family}

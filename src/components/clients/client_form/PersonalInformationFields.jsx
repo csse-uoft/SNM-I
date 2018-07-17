@@ -18,7 +18,7 @@ export default class PersonalInformationFields extends Component {
             <FormControl
               type="text"
               value={this.props.personalInformation.first_name}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             />
           </Col>
         </FormGroup>
@@ -31,7 +31,7 @@ export default class PersonalInformationFields extends Component {
             <FormControl
               type="text"
               value={this.props.personalInformation.middle_name}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             />
           </Col>
         </FormGroup>
@@ -44,7 +44,7 @@ export default class PersonalInformationFields extends Component {
             <FormControl
               type="text"
               value={this.props.personalInformation.last_name}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             />
           </Col>
         </FormGroup>
@@ -56,7 +56,7 @@ export default class PersonalInformationFields extends Component {
           <Col sm={9}>
             <FormControl type="text"
               value={this.props.personalInformation.preferred_name}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             />
           </Col>
         </FormGroup>
@@ -70,7 +70,7 @@ export default class PersonalInformationFields extends Component {
               componentClass="select"
               placeholder="select"
               value={this.props.personalInformation.gender}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             >
               <option value="select">--- Not Set ---</option>
               <option value="Other">Other</option>
@@ -88,7 +88,7 @@ export default class PersonalInformationFields extends Component {
             <FormControl
               type="date"
               value={this.props.personalInformation.birth_date}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             />
           </Col>
         </FormGroup>
@@ -102,7 +102,7 @@ export default class PersonalInformationFields extends Component {
               componentClass="select"
               placeholder="select"
               value={this.props.personalInformation.marital_status}
-              onChange={this.props.formValChangeHandler}
+              onChange={this.props.handleFormValChange}
             >
               <option value="select">--- Not Set ---</option>
               <option value="Single">Single</option>
@@ -115,6 +115,110 @@ export default class PersonalInformationFields extends Component {
           </Col>
         </FormGroup>
 
+        <FormGroup controlId="email">
+          <Col className="required" componentClass={ControlLabel} sm={3}>
+            Email
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="text"
+              value={this.props.personalInformation.email}
+              onChange={this.props.handleFormValChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="primary_phone_number">
+          <Col className="required" componentClass={ControlLabel} sm={3}>
+            Telephone
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="tel"
+              value={this.props.personalInformation.primary_phone_number}
+              onChange={this.props.handleFormValChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="alt_phone_number">
+          <Col componentClass={ControlLabel} sm={3}>
+            Alternative Phone Number
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="tel"
+              value={this.props.personalInformation.alt_phone_number}
+              onChange={this.props.handleFormValChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="apt_number">
+          <Col componentClass={ControlLabel} sm={3}>
+            Apt. #
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="text"
+              value={this.props.personalInformation.address.apt_number}
+              onChange={this.props.addressChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="street_address">
+          <Col className="required" componentClass={ControlLabel} sm={3}>
+            Street Address
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="text"
+              value={this.props.personalInformation.address.street_address}
+              onChange={this.props.addressChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="city">
+          <Col className="required" componentClass={ControlLabel} sm={3}>
+            City
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="text"
+              value={this.props.personalInformation.address.city}
+              onChange={this.props.addressChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="province">
+          <Col className="required" componentClass={ControlLabel} sm={3}>
+            Province
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="text"
+              value={this.props.personalInformation.address.province}
+              onChange={this.props.addressChange}
+            />
+          </Col>
+        </FormGroup>
+
+        <FormGroup controlId="postal_code">
+          <Col className="required" componentClass={ControlLabel} sm={3}>
+            Postal Code
+          </Col>
+          <Col sm={9}>
+            <FormControl
+              type="text"
+              value={this.props.personalInformation.address.postal_code}
+              onChange={this.props.addressChange}
+            />
+          </Col>
+        </FormGroup>
+
         <FormGroup controlId="has_children">
           <Col className="required" componentClass={ControlLabel} sm={3}>
             Do you have children?
@@ -123,7 +227,7 @@ export default class PersonalInformationFields extends Component {
             <Radio
               name="radioGroup"
               value='true'
-              onChange={e => this.props.formValChangeHandler(e, 'has_children')}
+              onChange={e => this.props.handleFormValChange(e, 'has_children')}
               defaultChecked={this.props.personalInformation.has_children === true}
               inline
             >
@@ -132,7 +236,7 @@ export default class PersonalInformationFields extends Component {
             <Radio
               name="radioGroup"
               value='false'
-              onChange={e => this.props.formValChangeHandler(e, 'has_children')}
+              onChange={e => this.props.handleFormValChange(e, 'has_children')}
               defaultChecked={this.props.personalInformation.has_children === false}
               inline
             >
@@ -150,7 +254,7 @@ export default class PersonalInformationFields extends Component {
               <FormControl
                 type="number"
                 value={this.props.personalInformation.num_of_children}
-                onChange={this.props.formValChangeHandler}
+                onChange={this.props.handleFormValChange}
               />
             </Col>
           </FormGroup>

@@ -18,7 +18,7 @@ class ClientRow extends Component {
           </Link>
         </td>
         <td className='centered-text'>
-          {client.email}
+          {client.personal_information.email}
         </td>
         <td>
           <Link to={`/clients/${client.id}/edit`}>
