@@ -134,7 +134,7 @@ class ClientForm extends Component {
     else if (id === 'num_of_children') {
       nextForm['personal_information'][id] = e.target.value
       let children = []
-      for (var i = 0; i < parseInt(e.target.value); i++) {
+      for (var i = 0; i < parseInt(e.target.value, 10); i++) {
         children.push(
           {
             'full_name': '',
