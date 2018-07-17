@@ -30,6 +30,7 @@ import Goods from './components/Goods';
 import Good from './components/goods/Good';
 import GoodForm from './components/goods/GoodForm'
 import AdminLogs from './components/AdminLogs';
+import Reporting from './components/Reporting';
 
 const routes = (
   <Switch>
@@ -70,6 +71,8 @@ const routes = (
     <PrivateRoute path='/good/:id' component={Good} />
     <PrivateRoute path='/goods/new' component={GoodForm} />
     <PrivateRoute path='/goods' component={Goods} />
+
+    <PrivateRoute path='/reporting' component={Reporting} />
   </Switch>
 )
 
