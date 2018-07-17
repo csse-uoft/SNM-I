@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { genderOptions, maritalStatusOptions } from '../../../store/defaults.js';
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
-  Radio, Checkbox } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, Col, Row, Radio} from 'react-bootstrap';
 
 export default class PersonalInformationFields extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Row>

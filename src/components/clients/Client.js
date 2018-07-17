@@ -147,7 +147,11 @@ class Client extends Component {
             <Table bordered condensed className="client-profile-table">
               <tbody>
                 <tr>
-                  <td colSpan="2"><b>Country of Origin Information: </b></td>
+                  <td colSpan="2"><b>Background Information: </b></td>
+                </tr>
+                <tr>
+                  <td><b>Status in Canada</b></td>
+                  <td>{client.status_in_canada}</td>
                 </tr>
                 <tr>
                   <td><b>Country of Origin</b></td>
@@ -180,6 +184,18 @@ class Client extends Component {
                 <tr>
                   <td><b>Arrival Date</b></td>
                   <td>{client.arrival_date}</td>
+                </tr>
+                <tr>
+                  <td><b>Level of Education</b></td>
+                  <td>{client.level_of_education}</td>
+                </tr>
+                <tr>
+                  <td><b>Income Source</b></td>
+                  <td>{client.income_source}</td>
+                </tr>
+                <tr>
+                  <td><b>Number of Dependants</b></td>
+                  <td>{client.num_of_denpendants}</td>
                 </tr>
               </tbody>
             </Table>

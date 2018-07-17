@@ -3,10 +3,6 @@ import { genderOptions } from '../../../store/defaults.js';
 import { FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
 export default class FamilyInformationFields extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Row>
@@ -77,7 +73,7 @@ export default class FamilyInformationFields extends Component {
 
         {(this.props.numOfChildren > 0) && (
           <div>
-            {[...Array(parseInt(this.props.numOfChildren))].map((object, i) => {
+            {[...Array(parseInt(this.props.numOfChildren, 10))].map((object, i) => {
               return (
                 <div key={i}>
                   <FormGroup controlId="full_name">
