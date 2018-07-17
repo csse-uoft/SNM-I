@@ -103,6 +103,12 @@ class Client extends Component {
                   <td><b>Has children?</b></td>
                   <td>{client.personal_information.has_children ? 'Yes' : 'No'}</td>
                 </tr>
+                {client.personal_information.has_children &&
+                  <tr>
+                    <td><b>Number of children</b></td>
+                    <td>{client.personal_information.num_of_children}</td>
+                  </tr>
+                }
               </tbody>
             </Table>
             {(client.spouse || client.children) &&

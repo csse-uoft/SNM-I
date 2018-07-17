@@ -8,6 +8,8 @@ import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js'
 import { createClient, updateClient } from '../../store/actions/clientActions.js';
 
 import PersonalInformationFields from './client_form/PersonalInformationFields';
+import FamilyInformationFields from './client_form/FamilyInformationFields';
+
 import { Grid, Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
   Radio, Checkbox } from 'react-bootstrap';
 
@@ -313,131 +315,15 @@ class ClientForm extends Component {
             </FormGroup>
           </Row>
           <br/>
-          <Row>
-            <Col sm={12}>
-              <h4>Family</h4>
-              <hr/>
-            </Col>
-            {(JSON.parse(this.state.form.personal_information.has_children) ||
-              this.state.form.personal_information.marital_status === 'Married' ||
-              this.state.form.personal_information.marital_status === 'Common Law') && (
-              <FormGroup controlId="file_id">
-                <Col componentClass={ControlLabel} sm={3}>
-                  File ID
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.family.file_id}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-            )}
-
-            {(this.state.form.personal_information.marital_status === 'Married' ||
-              this.state.form.personal_information.marital_status === 'Common Law') && (
-              <div>
-                <FormGroup controlId="full_name">
-                  <Col componentClass={ControlLabel} sm={3}>
-                    Spouse
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="text"
-                      value={this.state.form.family.spouse.full_name}
-                      onChange={this.spouseChange}
-                      placeholder="Full name"
-                    />
-                  </Col>
-                </FormGroup>
-                <FormGroup controlId="birth_date">
-                  <Col componentClass={ControlLabel} sm={3}>
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      type="date"
-                      value={this.state.form.family.spouse.birth_date}
-                      onChange={this.spouseChange}
-                      placeholder="Birth date"
-                    />
-                  </Col>
-                </FormGroup>
-                <FormGroup controlId="gender">
-                  <Col componentClass={ControlLabel} sm={3}>
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      componentClass="select"
-                      placeholder="select"
-                      value={this.state.form.family.spouse.gender}
-                      onChange={this.spouseChange}
-                    >
-                      <option value="select">--- Gender ---</option>
-                      <option value="Other">Other</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </FormControl>
-                  </Col>
-                </FormGroup>
-              </div>
-            )}
-
-            {(this.state.form.personal_information.num_of_children > 0) && (
-              <div>
-                {[...Array(parseInt(this.state.form.personal_information.num_of_children))].map((object, i) => {
-                  return (
-                    <div key={i}>
-                      <FormGroup controlId="full_name">
-                        <Col componentClass={ControlLabel} sm={3}>
-                          Children #{i+1}
-                        </Col>
-                        <Col sm={9}>
-                          <FormControl
-                            type="text"
-                            value={this.state.form.family.children[i].full_name}
-                            onChange={e => this.childChange(e, i)}
-                            placeholder="Full name"
-                          />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup controlId="birth_date">
-                        <Col componentClass={ControlLabel} sm={3}>
-                        </Col>
-                        <Col sm={9}>
-                          <FormControl
-                            type="date"
-                            value={this.state.form.family.children[i].birth_date}
-                            onChange={e => this.childChange(e, i)}
-                            placeholder="Birth date"
-                          />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup controlId="gender">
-                        <Col componentClass={ControlLabel} sm={3}>
-                        </Col>
-                        <Col sm={9}>
-                          <FormControl
-                            componentClass="select"
-                            placeholder="select"
-                            value={this.state.form.family.children[i].gender}
-                            onChange={e => this.childChange(e, i)}
-                          >
-                            <option value="select">--- Gender ---</option>
-                            <option value="Other">Other</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                          </FormControl>
-                        </Col>
-                      </FormGroup>
-                    </div>
-                  )})
-                }
-              </div>
-            )}
-          </Row>
-
-          <br/>
+          <FamilyInformationFields
+            family={this.state.form.family}
+            hasChildren={this.state.form.personal_information.has_children}
+            maritalStatus={this.state.form.personal_information.marital_status}
+            numOfChildren={this.state.form.personal_information.num_of_children}
+            formValChange={this.formValChange}
+            spouseChange={this.spouseChange}
+            childChange={this.childChange}
+          />
           <Row>
             <Col sm={12}>
               <h4>Country of Origin Information</h4>

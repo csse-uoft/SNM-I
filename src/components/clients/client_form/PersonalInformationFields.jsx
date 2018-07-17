@@ -3,6 +3,10 @@ import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row,
   Radio, Checkbox } from 'react-bootstrap';
 
 export default class PersonalInformationFields extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <Row>
