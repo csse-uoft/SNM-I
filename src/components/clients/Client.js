@@ -42,43 +42,45 @@ class Client extends Component {
                 </tr>
                 <tr>
                   <td ><b>First Name</b></td>
-                  <td>{client.first_name}</td>
+                  <td>{client.personal_information.first_name}</td>
                 </tr>
                 <tr>
                   <td><b>Middle Name</b></td>
-                  <td>{client.middle_name}</td>
+                  <td>{client.personal_information.middle_name}</td>
                 </tr>
                 <tr>
                   <td><b>Last Name</b></td>
-                  <td>{client.last_name}</td>
+                  <td>{client.personal_information.last_name}</td>
                 </tr>
                 <tr>
                   <td><b>Preferred Name</b></td>
-                  <td>{client.preferred_name}</td>
+                  <td>{client.personal_information.preferred_name}</td>
                 </tr>
                 <tr>
                   <td><b>Gender</b></td>
-                  <td>{client.gender}</td>
+                  <td>{client.personal_information.gender}</td>
                 </tr>
                 <tr>
                   <td><b>Date of Birth</b></td>
-                  <td>{client.birth_date}</td>
+                  <td>{client.personal_information.birth_date}</td>
                 </tr>
                 <tr>
                   <td><b>Email</b></td>
-                  <td>{client.email}</td>
+                  <td>{client.personal_information.email}</td>
                 </tr>
                 <tr>
                   <td><b>Phone Number</b></td>
-                  <td>{client.primary_phone_number}</td>
+                  <td>{client.personal_information.primary_phone_number}</td>
                 </tr>
-                <tr>
-                  <td><b>Alternative Phone Number</b></td>
-                  <td>{client.alt_phone_number}</td>
-                </tr>
+                {client.personal_information.alt_phone_number && (
+                  <tr>
+                    <td><b>Alternative Phone Number</b></td>
+                    <td>{client.personal_information.alt_phone_number}</td>
+                  </tr>)
+                }
                 <tr>
                   <td><b>Address</b></td>
-                  <td>{formatLocation(client.address)}</td>
+                  <td>{formatLocation(client.personal_information.address)}</td>
                 </tr>
               </tbody>
             </Table>
@@ -95,12 +97,18 @@ class Client extends Component {
                 }
                 <tr>
                   <td><b>Marital Status</b></td>
-                  <td>{client.marital_status}</td>
+                  <td>{client.personal_information.marital_status}</td>
                 </tr>
                 <tr>
                   <td><b>Has children?</b></td>
-                  <td>{client.has_children ? 'Yes' : 'No'}</td>
+                  <td>{client.personal_information.has_children ? 'Yes' : 'No'}</td>
                 </tr>
+                {client.personal_information.has_children &&
+                  <tr>
+                    <td><b>Number of children</b></td>
+                    <td>{client.personal_information.num_of_children}</td>
+                  </tr>
+                }
               </tbody>
             </Table>
             {(client.spouse || client.children) &&
@@ -139,7 +147,11 @@ class Client extends Component {
             <Table bordered condensed className="client-profile-table">
               <tbody>
                 <tr>
-                  <td colSpan="2"><b>Country of Origin Information: </b></td>
+                  <td colSpan="2"><b>Background Information: </b></td>
+                </tr>
+                <tr>
+                  <td><b>Status in Canada</b></td>
+                  <td>{client.status_in_canada}</td>
                 </tr>
                 <tr>
                   <td><b>Country of Origin</b></td>
@@ -172,6 +184,18 @@ class Client extends Component {
                 <tr>
                   <td><b>Arrival Date</b></td>
                   <td>{client.arrival_date}</td>
+                </tr>
+                <tr>
+                  <td><b>Level of Education</b></td>
+                  <td>{client.level_of_education}</td>
+                </tr>
+                <tr>
+                  <td><b>Income Source</b></td>
+                  <td>{client.income_source}</td>
+                </tr>
+                <tr>
+                  <td><b>Number of Dependants</b></td>
+                  <td>{client.num_of_denpendants}</td>
                 </tr>
               </tbody>
             </Table>
