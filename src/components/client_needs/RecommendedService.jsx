@@ -19,22 +19,26 @@ class RecommendedService extends Component {
   }
 
   render() {
-
-    const service = this.props.service;
-    const need = this.props.need;
+    const service = this.props.service,
+          need = this.props.need,
+          distance = this.props.distance,
+          label = this.props.label;
 
     return (
       <ListGroupItem className="recommended-service">
         <Row>
           <Col sm={8}>
+            <h5>{label}.</h5>
             <Link to={`/service/${service.id}`}>
               <h5>{service.name}</h5>
-            </Link>  
+            </Link>
             <Label>{service.category}</Label>
+            {' '}
+            <Label>{Math.round(distance * 100) / 100} km</Label>
             <p>{service.desc}</p>
             <p>{formatLocation(service.location)}</p>
           </Col>
-          <Col>
+          <Col sm={4}>
             <h5>Provider</h5>
             <Label bsStyle="primary">{service.provider.provider_type}</Label>
             <Link to={`/provider/${service.provider.id}`}>
@@ -45,15 +49,11 @@ class RecommendedService extends Component {
                 )
               }
             </Link>
-            <Form horizontal>
-            <FormGroup>
-                <Col smOffset={3} sm={9}>
-                  <Button onClick={this.submit}>
-                    Match
-                  </Button>
-                </Col>
-              </FormGroup>
-            </Form>
+          </Col>
+          <Col sm={12}>
+            <Button bsStyle="default" onClick={this.submit}>
+              Match
+            </Button>
           </Col>
         </Row>
       </ListGroupItem>

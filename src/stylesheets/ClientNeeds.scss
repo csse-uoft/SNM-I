@@ -20,9 +20,16 @@
 }
 
 .recommended-service {
+  padding: 10px 20px 15px 20px;
   h5 {
     display: inline-block;
     margin-right: 10px;
+  }
+  button {
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
   }
 }
 
