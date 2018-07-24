@@ -14,8 +14,13 @@ class RecommendedService extends Component {
     this.submit = this.submit.bind(this);
   }
 
-  submit() {
-    this.props.dispatch(matchClientNeed(this.props.need.client_id, this.props.need.id, this.props.service.id));
+  submit(needId, serviceId) {
+    const form = {
+      service_id: serviceId
+    }
+    this.props.dispatch(
+      matchClientNeed(needId, form)
+    );
   }
 
   render() {
@@ -51,7 +56,7 @@ class RecommendedService extends Component {
             </Link>
           </Col>
           <Col sm={12}>
-            <Button bsStyle="default" onClick={this.submit}>
+            <Button bsStyle="default" onClick={e => this.submit(need.id, service.id)}>
               Match
             </Button>
           </Col>

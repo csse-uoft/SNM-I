@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import RecommendedService from './RecommendedService'
+import MatchedServices from './MatchedServices'
 import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 
 // redux
 import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
-import { Link } from 'react-router-dom';
 
-import { Grid, Row, Col, Table, Label, ListGroup } from 'react-bootstrap';
+import { Grid, Row, Col, Table, Label } from 'react-bootstrap';
 
 class Need extends Component {
   componentWillMount() {
@@ -109,15 +109,12 @@ class Need extends Component {
                     <td><b>Status</b></td>
                     <td>
                       {need.status}
-                      <Link to={`/service/${need.service_id}/edit`}>
-                        {` ${need.service_id}`}
-                      </Link>
                     </td>
                   </tr>
                 </tbody>
               </Table>
             </Col>
-            <hr />
+            <MatchedServices matches={need.matches} />
             <Col sm={12}>
               <h3>Recommended Services</h3>
             </Col>

@@ -72,19 +72,21 @@ export function updateClientNeed(clientId, needId, params) {
   }
 }
 
-export function matchClientNeed(clientId, needId, params) {
+export function matchClientNeed(needId, params) {
   return dispatch => {
-    const url = serverHost + '/clients/' + clientId + '/needs/' + needId + '/';
+    const url = serverHost + '/needs/' + needId + '/matches/';
 
     return fetch(url, {
-      method: "PATCH",
+      method: "POST",
       body: JSON.stringify(params),
       headers: {
         "Content-Type": "application/json",
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveClientNeed(clientId, needId, json)));
+      .then(need => {
+        dispatch(receiveClientNeed(need.client_id, needId, need))
+      });
   }
 }
 
@@ -113,6 +115,40 @@ export function fetchNeed(needId) {
 
     return fetch(url, {
       method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+  }
+}
+
+export function updateMatchStatus(matchId, params) {
+  return dispatch => {
+    const url = serverHost + '/matches/' + matchId + '/';
+
+    return fetch(url, {
+      method: 'PATCH',
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+  }
+}
+
+export function createMatchNote(params) {
+  return dispatch => {
+    const url = serverHost + '/notes/';
+
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(params),
       headers: {
         "Content-Type": "application/json",
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
