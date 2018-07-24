@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import RecommendedService from './RecommendedService'
+import MatchedServices from './MatchedServices'
 import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 
 // redux
@@ -113,7 +114,7 @@ class Need extends Component {
                 </tbody>
               </Table>
             </Col>
-            <hr />
+            <MatchedServices matches={need.matches} />
             <Col sm={12}>
               <h3>Recommended Services</h3>
             </Col>

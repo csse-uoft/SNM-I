@@ -124,3 +124,37 @@ export function fetchNeed(needId) {
     .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
   }
 }
+
+export function updateMatchStatus(matchId, params) {
+  return dispatch => {
+    const url = serverHost + '/matches/' + matchId + '/';
+
+    return fetch(url, {
+      method: 'PATCH',
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+  }
+}
+
+export function createMatchNote(params) {
+  return dispatch => {
+    const url = serverHost + '/notes/';
+
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    })
+    .then(response => response.json())
+    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+  }
+}
