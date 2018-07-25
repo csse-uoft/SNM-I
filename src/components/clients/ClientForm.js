@@ -10,6 +10,7 @@ import { createClient, updateClient } from '../../store/actions/clientActions.js
 import PersonalInformationFields from './client_form/PersonalInformationFields';
 import FamilyInformationFields from './client_form/FamilyInformationFields';
 import BackgroundInformationFields from './client_form/BackgroundInformationFields';
+import FormWizard from './client_form/FormWizard';
 
 import { Grid, Button, Form, Col, Row, Checkbox } from 'react-bootstrap';
 
@@ -75,7 +76,7 @@ class ClientForm extends Component {
     this.submit = this.submit.bind(this);
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
-    this.jumpToStep = this.jumpToStep.bind(this);
+    this.handleStepClick = this.handleStepClick.bind(this);
   }
 
   componentWillMount() {
@@ -94,7 +95,7 @@ class ClientForm extends Component {
     });
   }
 
-  jumpToStep(step) {
+  handleStepClick(step) {
     this.setState({
       currentStep: step
     });
@@ -221,17 +222,11 @@ class ClientForm extends Component {
       })
     }
 
-    function wizardStepStyle(currentStep, wizardStep) {
-      if (currentStep === wizardStep) {
-        return 'col-xs-4 bs-wizard-step active'
-      }
-      else if (currentStep > wizardStep) {
-        return 'col-xs-4 bs-wizard-step complete'
-      }
-      else {
-        return 'col-xs-4 bs-wizard-step disabled'
-      }
-    }
+    const stepTitles = [
+      "Personal Information",
+      "Family Members (Optional)",
+      "Background Information (Optional)"
+    ];
 
     return (
       <Grid className="content">
@@ -239,34 +234,11 @@ class ClientForm extends Component {
           <Col sm={12}>
             <h3>{formTitle}</h3>
           </Col>
-          <div className="row bs-wizard">
-            <div className={wizardStepStyle(this.state.currentStep, 1)}>
-              <div className="text-center bs-wizard-stepnum">Step 1</div>
-              <div className="progress"><div className="progress-bar"></div></div>
-              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(1)}></div>
-              <div className="bs-wizard-info text-center">
-                Personal Information
-              </div>
-            </div>
-
-            <div className={wizardStepStyle(this.state.currentStep, 2)}>
-              <div className="text-center bs-wizard-stepnum">Step 2</div>
-              <div className="progress"><div className="progress-bar"></div></div>
-              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(2)}></div>
-              <div className="bs-wizard-info text-center">
-                Family Members (Optional)
-              </div>
-            </div>
-
-            <div className={wizardStepStyle(this.state.currentStep, 3)}>
-              <div className="text-center bs-wizard-stepnum">Step 3</div>
-              <div className="progress"><div className="progress-bar"></div></div>
-              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(3)}></div>
-              <div className="bs-wizard-info text-center">
-                Background Information (Optional)
-              </div>
-            </div>
-          </div>
+          <FormWizard
+            stepTitles={stepTitles}
+            currentStep={this.state.currentStep}
+            handleStepClick={this.handleStepClick}
+          />
         </Row>
         <Form horizontal>
           {this.state.currentStep === 1 &&
