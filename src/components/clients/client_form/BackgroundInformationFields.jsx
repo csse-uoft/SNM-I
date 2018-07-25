@@ -177,15 +177,15 @@ export default class BackgroundInformationFields extends Component {
           </Col>
         </FormGroup>
 
-        <FormGroup controlId="num_of_denpendants">
+        <FormGroup controlId="num_of_dependants">
           <Col componentClass={ControlLabel} sm={3}>
             Number of Dependants
           </Col>
           <Col sm={9}>
             <FormControl
               type="number"
-              value={this.props.num_of_denpendants}
-              onChange={this.props.handleFormValChange}
+              value={this.props.num_of_dependants}
+              onChange={this.props.formValChange}
             />
           </Col>
         </FormGroup>

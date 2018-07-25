@@ -302,7 +302,7 @@ class ClientForm extends Component {
               languagesCategories={p.languagesCategories}
               cateogiresIntoCheckboxes={cateogiresIntoCheckboxes}
               cateogiresIntoOptions={cateogiresIntoOptions}
-              num_of_denpendants={this.state.form.num_of_denpendants}
+              num_of_dependants={this.state.form.num_of_dependants}
               income_source={this.state.form.income_source}
               level_of_education={this.state.form.level_of_education}
               status_in_canada={this.state.form.status_in_canada}
