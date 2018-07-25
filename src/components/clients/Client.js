@@ -22,6 +22,19 @@ class Client extends Component {
           id = p.match.params.id,
           client = p.clientsById[id];
 
+    function TableRow({ title, value }) {
+      if (value) {
+        return (
+          <tr>
+            <td><b>{title}</b></td>
+            <td>{value}</td>
+          </tr>
+        );
+      } else {
+        return null;
+      }
+    }
+
     return (
       <div className="content client">
         <h3>Client Profile</h3>
@@ -40,48 +53,46 @@ class Client extends Component {
                 <tr>
                   <td colSpan="2"><b>Personal Information: </b></td>
                 </tr>
-                <tr>
-                  <td ><b>First Name</b></td>
-                  <td>{client.personal_information.first_name}</td>
-                </tr>
-                <tr>
-                  <td><b>Middle Name</b></td>
-                  <td>{client.personal_information.middle_name}</td>
-                </tr>
-                <tr>
-                  <td><b>Last Name</b></td>
-                  <td>{client.personal_information.last_name}</td>
-                </tr>
-                <tr>
-                  <td><b>Preferred Name</b></td>
-                  <td>{client.personal_information.preferred_name}</td>
-                </tr>
-                <tr>
-                  <td><b>Gender</b></td>
-                  <td>{client.personal_information.gender}</td>
-                </tr>
-                <tr>
-                  <td><b>Date of Birth</b></td>
-                  <td>{client.personal_information.birth_date}</td>
-                </tr>
-                <tr>
-                  <td><b>Email</b></td>
-                  <td>{client.personal_information.email}</td>
-                </tr>
-                <tr>
-                  <td><b>Phone Number</b></td>
-                  <td>{client.personal_information.primary_phone_number}</td>
-                </tr>
-                {client.personal_information.alt_phone_number && (
-                  <tr>
-                    <td><b>Alternative Phone Number</b></td>
-                    <td>{client.personal_information.alt_phone_number}</td>
-                  </tr>)
-                }
-                <tr>
-                  <td><b>Address</b></td>
-                  <td>{formatLocation(client.personal_information.address)}</td>
-                </tr>
+                <TableRow
+                  title="First Name"
+                  value={client.personal_information.first_name}
+                />
+                <TableRow
+                  title="Middle Name"
+                  value={client.personal_information.middle_name}
+                />
+                <TableRow
+                  title="Last Name"
+                  value={client.personal_information.last_name}
+                />
+                <TableRow
+                  title="Preferred Name"
+                  value={client.personal_information.preferred_name}
+                />
+                <TableRow
+                  title="Gender"
+                  value={client.personal_information.gender}
+                />
+                <TableRow
+                  title="Date of Birth"
+                  value={client.personal_information.birth_date}
+                />
+                <TableRow
+                  title="Email"
+                  value={client.personal_information.email}
+                />
+                <TableRow
+                  title="Phone Number"
+                  value={client.personal_information.primary_phone_number}
+                />
+                <TableRow
+                  title="Alternative Phone Number"
+                  value={client.personal_information.alt_phone_number}
+                />
+                <TableRow
+                  title="Address"
+                  value={formatLocation(client.personal_information.address)}
+                />
               </tbody>
             </Table>
             <Table bordered condensed className="client-profile-table">
@@ -89,25 +100,25 @@ class Client extends Component {
                 <tr>
                   <td colSpan="2"><b>Family: </b></td>
                 </tr>
-                {client.family && client.family.file_id &&
-                  (<tr>
-                    <td><b>File ID</b></td>
-                    <td>{client.family.file_id}</td>
-                  </tr>)
+                {client.family &&
+                  <TableRow
+                    title="File ID"
+                    value={client.family.file_id}
+                  />
                 }
-                <tr>
-                  <td><b>Marital Status</b></td>
-                  <td>{client.personal_information.marital_status}</td>
-                </tr>
-                <tr>
-                  <td><b>Has children?</b></td>
-                  <td>{client.personal_information.has_children ? 'Yes' : 'No'}</td>
-                </tr>
+                <TableRow
+                  title="Marital Status"
+                  value={client.personal_information.marital_status}
+                />
+                <TableRow
+                  title="Has children?"
+                  value={client.personal_information.has_children ? 'Yes' : 'No'}
+                />
                 {client.personal_information.has_children &&
-                  <tr>
-                    <td><b>Number of children</b></td>
-                    <td>{client.personal_information.num_of_children}</td>
-                  </tr>
+                  <TableRow
+                    title="Number of children"
+                    value={client.personal_information.num_of_children}
+                  />
                 }
               </tbody>
             </Table>
@@ -149,54 +160,54 @@ class Client extends Component {
                 <tr>
                   <td colSpan="2"><b>Background Information: </b></td>
                 </tr>
-                <tr>
-                  <td><b>Status in Canada</b></td>
-                  <td>{client.status_in_canada}</td>
-                </tr>
-                <tr>
-                  <td><b>Country of Origin</b></td>
-                  <td>{client.country_of_origin}</td>
-                </tr>
-                <tr>
-                  <td><b>Country of Last Residence</b></td>
-                  <td>{client.country_of_last_residence}</td>
-                </tr>
-                <tr>
-                  <td><b>First Language</b></td>
-                  <td>{client.first_language}</td>
-                </tr>
-                <tr>
-                  <td><b>Other Language(s) spoken</b></td>
-                  <td>{(client.other_languages || []).join(', ')}</td>
-                </tr>
-                <tr>
-                  <td><b>Permanent Residence Card Number (PR card)</b></td>
-                  <td>{client.pr_number}</td>
-                </tr>
-                <tr>
-                  <td><b>Immigration Document Number</b></td>
-                  <td>{client.immigration_doc_number}</td>
-                </tr>
-                <tr>
-                  <td><b>Landing Date</b></td>
-                  <td>{client.landing_date}</td>
-                </tr>
-                <tr>
-                  <td><b>Arrival Date</b></td>
-                  <td>{client.arrival_date}</td>
-                </tr>
-                <tr>
-                  <td><b>Level of Education</b></td>
-                  <td>{client.level_of_education}</td>
-                </tr>
-                <tr>
-                  <td><b>Income Source</b></td>
-                  <td>{client.income_source}</td>
-                </tr>
-                <tr>
-                  <td><b>Number of Dependants</b></td>
-                  <td>{client.num_of_denpendants}</td>
-                </tr>
+                <TableRow
+                  title="Status in Canada"
+                  value={client.status_in_canada}
+                />
+                <TableRow
+                  title="Country of Origin"
+                  value={client.country_of_origin}
+                />
+                <TableRow
+                  title="Country of Last Residence"
+                  value={client.country_of_last_residence}
+                />
+                <TableRow
+                  title="First Language"
+                  value={client.first_language}
+                />
+                <TableRow
+                  title="Other Language(s) spoken"
+                  value={(client.other_languages || []).join(', ')}
+                />
+                <TableRow
+                  title="Permanent Residence Card Number (PR card)"
+                  value={client.pr_number}
+                />
+                <TableRow
+                  title="Immigration Document Number"
+                  value={client.immigration_doc_number}
+                />
+                <TableRow
+                  title="Landing Date"
+                  value={client.landing_date}
+                />
+                <TableRow
+                  title="Arrival Date"
+                  value={client.arrival_date}
+                />
+                <TableRow
+                  title="Level of Education"
+                  value={client.level_of_education}
+                />
+                <TableRow
+                  title="Income Source"
+                  value={client.immigration_doc_number}
+                />
+                <TableRow
+                  title="Number of Dependants"
+                  value={client.num_of_dependants}
+                />
               </tbody>
             </Table>
           </div>
