@@ -56,11 +56,17 @@ const incomeSourceOptions = [
  'Other'
 ]
 
+const matchStatusOptions = [
+  'Fulfilled',
+  'Referred'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   genderOptions: genderOptions,
   maritalStatusOptions: maritalStatusOptions,
   statusInCanadaOptions: statusInCanadaOptions,
   educationLevelOptions: educationLevelOptions,
-  incomeSourceOptions: incomeSourceOptions
+  incomeSourceOptions: incomeSourceOptions,
+  matchStatusOptions: matchStatusOptions
 });
