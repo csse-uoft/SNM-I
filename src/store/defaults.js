@@ -68,6 +68,14 @@ const familyRelationshipOptions = [
   'Sibling'
 ]
 
+const needStatusOptions = [
+  'Unmatched',
+  'Pending',
+  'In Progress',
+  'Matched',
+  'Fulfilled'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   genderOptions: genderOptions,
@@ -77,4 +85,5 @@ module.exports = Object.freeze({
   incomeSourceOptions: incomeSourceOptions,
   matchStatusOptions: matchStatusOptions,
   familyRelationshipOptions: familyRelationshipOptions,
+  needStatusOptions: needStatusOptions,
 });
