@@ -2,7 +2,7 @@ import React from 'react';
 import FormField from '../../shared/FormField'
 import SelectField from '../../shared/SelectField'
 import { genderOptions, maritalStatusOptions } from '../../../store/defaults.js';
-import { FormGroup, FormControl, ControlLabel, Col, Row, Radio} from 'react-bootstrap';
+import { FormGroup, ControlLabel, Col, Row, Radio} from 'react-bootstrap';
 
 export default function PersonalInformationFields({ person, handleFormValChange }) {
   return (
