@@ -11,6 +11,19 @@ import { formatLocation } from '../../helpers/location_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
+function TableRow({ title, value }) {
+  if (value) {
+    return (
+      <tr>
+        <td><b>{title}</b></td>
+        <td>{value}</td>
+      </tr>
+    );
+  } else {
+    return null;
+  }
+}
+
 class Client extends Component {
   componentWillMount() {
     const id = this.props.match.params.id
@@ -21,20 +34,6 @@ class Client extends Component {
     const p = this.props,
           id = p.match.params.id,
           client = p.clientsById[id];
-
-    function TableRow({ title, value }) {
-      if (value) {
-        return (
-          <tr>
-            <td><b>{title}</b></td>
-            <td>{value}</td>
-          </tr>
-        );
-      } else {
-        return null;
-      }
-    }
-
     return (
       <div className="content client">
         <h3>Client Profile</h3>
@@ -122,7 +121,7 @@ class Client extends Component {
                 }
               </tbody>
             </Table>
-            {(client.spouse || client.children) &&
+            {(client.family && client.family.members.length > 0) &&
               <Table bordered condensed className="client-profile-table">
                 <tbody>
                   <tr>
@@ -134,21 +133,13 @@ class Client extends Component {
                     <td>Date of birth</td>
                     <td>Gender</td>
                   </tr>
-                  {client.spouse &&
-                    (<tr>
-                      <td><b>Spouse</b></td>
-                      <td>{client.spouse.full_name}</td>
-                      <td>{client.spouse.birth_date}</td>
-                      <td>{client.spouse.gender}</td>
-                    </tr>)
-                  }
-                  {_.map(client.children, (child, index) => {
+                  {_.map(client.family.members, (member, index) => {
                     return (
-                      <tr key={child.id}>
-                        <td><b>Children #{index+1}</b></td>
-                        <td>{child.full_name}</td>
-                        <td>{child.birth_date}</td>
-                        <td>{child.gender}</td>
+                      <tr key={member.id}>
+                        <td><b>Family member #{index+1}</b></td>
+                        <td>{member.full_name}</td>
+                        <td>{member.birth_date}</td>
+                        <td>{member.gender}</td>
                       </tr>
                     )
                   })}
@@ -202,7 +193,7 @@ class Client extends Component {
                 />
                 <TableRow
                   title="Income Source"
-                  value={client.immigration_doc_number}
+                  value={client.income_source}
                 />
                 <TableRow
                   title="Number of Dependants"
