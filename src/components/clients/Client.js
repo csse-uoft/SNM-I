@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
+import TableRow from '../shared/TableRow'
 import ClientNeeds from '../ClientNeeds';
 
 // redux
@@ -11,18 +12,6 @@ import { formatLocation } from '../../helpers/location_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
-function TableRow({ title, value }) {
-  if (value) {
-    return (
-      <tr>
-        <td><b>{title}</b></td>
-        <td>{value}</td>
-      </tr>
-    );
-  } else {
-    return null;
-  }
-}
 
 class Client extends Component {
   componentWillMount() {
