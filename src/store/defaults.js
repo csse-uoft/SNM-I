@@ -61,6 +61,13 @@ const matchStatusOptions = [
   'Referred'
 ]
 
+const familyRelationshipOptions = [
+  'Parent',
+  'Spouse',
+  'Child',
+  'Sibling'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   genderOptions: genderOptions,
@@ -68,5 +75,6 @@ module.exports = Object.freeze({
   statusInCanadaOptions: statusInCanadaOptions,
   educationLevelOptions: educationLevelOptions,
   incomeSourceOptions: incomeSourceOptions,
-  matchStatusOptions: matchStatusOptions
+  matchStatusOptions: matchStatusOptions,
+  familyRelationshipOptions: familyRelationshipOptions,
 });
