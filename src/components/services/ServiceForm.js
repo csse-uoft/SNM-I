@@ -33,6 +33,12 @@ class ServiceForm extends Component {
         available_to: service.available_to || '',
         language: service.language || '',
         capacity: service.capacity || '',
+        frequency: service.frequency || '',
+        billable: service.billable || '',
+        price: service.price || '',
+        method_of_delivery: service.method_of_delivery || '',
+        method_of_registration: service.method_of_registration || '',
+        registration: service.registration || '',
         email: service.email || '',
         primary_phone_number: service.primary_phone_number || '',
         alt_phone_number: service.alt_phone_number || '',
@@ -268,6 +274,110 @@ class ServiceForm extends Component {
                   placeholder=""
                   onChange={this.formValChange}
                 />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="frequency">
+              <Col componentClass={ControlLabel} sm={3}>
+                Frequency
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.frequency}
+                  placeholder=""
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="billable">
+              <Col componentClass={ControlLabel} sm={3}>
+                Billable
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.billable}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="price">
+              <Col componentClass={ControlLabel} sm={3}>
+                Price
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.form.price}
+                  placeholder=""
+                  onChange={this.formValChange}
+                />
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="method_of_delivery">
+              <Col componentClass={ControlLabel} sm={3}>
+                Method of delivery
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.method_of_delivery}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Online">Online</option>
+                  <optgroup label="In person">
+                  <option value="One on one">One on one</option>
+                  <option value="Group">Group</option>
+                  </optgroup>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="method_of_registration">
+              <Col componentClass={ControlLabel} sm={3}>
+                Method of registration
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.method_of_registration}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Self registration">Self registration</option>
+                  <option value="No registration">No registration</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
+            <FormGroup controlId="registration">
+              <Col componentClass={ControlLabel} sm={3}>
+                Registration
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.registration}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Online">Online</option>
+                  <option value="In person">In person</option>
+                  <option value="By phone">By phone</option>
+                </FormControl>
               </Col>
             </FormGroup>
 

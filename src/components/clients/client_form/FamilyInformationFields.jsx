@@ -1,129 +1,93 @@
-import React, { Component } from 'react';
-import { genderOptions } from '../../../store/defaults.js';
-import { FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import _ from 'lodash';
+import React from 'react';
+import FormField from '../../shared/FormField'
+import SelectField from '../../shared/SelectField'
+import { genderOptions, familyRelationshipOptions } from '../../../store/defaults.js';
+import { FormGroup, FormControl, ControlLabel, Col, Row, Button } from 'react-bootstrap';
 
-export default class FamilyInformationFields extends Component {
-  render() {
-    return (
-      <Row>
-        {(JSON.parse(this.props.hasChildren) ||
-          this.props.maritalStatus === 'Married' ||
-          this.props.maritalStatus === 'Common Law') && (
-          <FormGroup controlId="file_id">
-            <Col componentClass={ControlLabel} sm={3}>
-              File ID
-            </Col>
-            <Col sm={9}>
-              <FormControl
-                type="text"
-                value={this.props.family.file_id}
-                onChange={this.props.formValChange}
-              />
-            </Col>
-          </FormGroup>
-        )}
+function FamilyMemberFields({ index, member, handleFormValChange, handleRemoveFamilyButtonClick }) {
+  const count = index + 1;
+  return (
+    <div>
+      <FormGroup controlId="full_name">
+        <Col componentClass={ControlLabel} sm={3}>
+          Family Member #{count}
+        </Col>
+        <Col sm={8}>
+          <FormControl
+            type="text"
+            onChange={e => handleFormValChange(e, index)}
+            value={member.full_name}
+            placeholder="Full name"
+          />
+        </Col>
+        <Col sm={1}>
+          <Button
+            bsStyle="danger"
+            bsSize="small"
+            onClick={e => handleRemoveFamilyButtonClick(index)}
+          >
+            Remove
+          </Button>
+        </Col>
+      </FormGroup>
+      <FormField
+        id="birth_date"
+        type="date"
+        value={member.birth_date}
+        onChange={e => handleFormValChange(e, index)}
+      />
+      <SelectField
+        id="gender"
+        options={genderOptions}
+        componentClass="select"
+        value={member.gender}
+        onChange={e => handleFormValChange(e, index)}
+        defaultOptionTitle="Gender"
+      />
+      <SelectField
+        id="relationship"
+        options={familyRelationshipOptions}
+        componentClass="select"
+        value={member.relationship}
+        onChange={e => handleFormValChange(e, index)}
+        defaultOptionTitle="Relationship"
+      />
+    </div>
+  )
+}
 
-        {(this.props.maritalStatus === 'Married' ||
-          this.props.maritalStatus === 'Common Law') && (
-          <div>
-            <FormGroup controlId="full_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Spouse
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.props.family.spouse.full_name}
-                  onChange={this.props.spouseChange}
-                  placeholder="Full name"
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="birth_date">
-              <Col componentClass={ControlLabel} sm={3}>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="date"
-                  value={this.props.family.spouse.birth_date}
-                  onChange={this.props.spouseChange}
-                  placeholder="Birth date"
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="gender">
-              <Col componentClass={ControlLabel} sm={3}>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.props.family.spouse.gender}
-                  onChange={this.props.spouseChange}
-                >
-                  <option value="select">--- Gender ---</option>
-                  <option value="Other">Other</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-          </div>
-        )}
-
-        {(this.props.numOfChildren > 0) && (
-          <div>
-            {[...Array(parseInt(this.props.numOfChildren, 10))].map((object, i) => {
-              return (
-                <div key={i}>
-                  <FormGroup controlId="full_name">
-                    <Col componentClass={ControlLabel} sm={3}>
-                      Children #{i+1}
-                    </Col>
-                    <Col sm={9}>
-                      <FormControl
-                        type="text"
-                        value={this.props.family.children[i].full_name}
-                        onChange={e => this.props.childChange(e, i)}
-                        placeholder="Full name"
-                      />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup controlId="birth_date">
-                    <Col componentClass={ControlLabel} sm={3}>
-                    </Col>
-                    <Col sm={9}>
-                      <FormControl
-                        type="date"
-                        value={this.props.family.children[i].birth_date}
-                        onChange={e => this.props.childChange(e, i)}
-                        placeholder="Birth date"
-                      />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup controlId="gender">
-                    <Col componentClass={ControlLabel} sm={3}>
-                    </Col>
-                    <Col sm={9}>
-                      <FormControl
-                        componentClass="select"
-                        placeholder="select"
-                        value={this.props.family.children[i].gender}
-                        onChange={e => this.props.childChange(e, i)}
-                      >
-                        <option value="select">--- Gender ---</option>
-                        {genderOptions.map(gender =>
-                          <option value={gender}>{gender}</option>
-                        )}
-                      </FormControl>
-                    </Col>
-                  </FormGroup>
-                </div>
-              )})
-            }
-          </div>
-        )}
-      </Row>
-    );
-  }
+export default function FamilyInformationFields({ family,
+                                                  handleFormValChange,
+                                                  handleAddFamilyButtonClick,
+                                                  handleRemoveFamilyButtonClick }) {
+  return (
+    <Row>
+      <FormField
+        id="file_id"
+        label="File ID"
+        type="text"
+        value={family.file_id}
+        onChange={handleFormValChange}
+      />
+      {_.map(family.members, (member, index) => {
+        return (
+          <FamilyMemberFields
+            key={index}
+            index={index}
+            member={member}
+            handleFormValChange={handleFormValChange}
+            handleRemoveFamilyButtonClick={handleRemoveFamilyButtonClick}
+          />
+        )
+      })}
+      <FormGroup>
+        <Col smOffset={3} sm={9}>
+          <Button onClick={e => handleAddFamilyButtonClick()}>
+            Add Family Member
+          </Button>
+        </Col>
+      </FormGroup>
+    </Row>
+  );
 }

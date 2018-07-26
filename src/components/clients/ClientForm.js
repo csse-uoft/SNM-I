@@ -10,6 +10,7 @@ import { createClient, updateClient } from '../../store/actions/clientActions.js
 import PersonalInformationFields from './client_form/PersonalInformationFields';
 import FamilyInformationFields from './client_form/FamilyInformationFields';
 import BackgroundInformationFields from './client_form/BackgroundInformationFields';
+import FormWizard from './client_form/FormWizard';
 
 import { Grid, Button, Form, Col, Row, Checkbox } from 'react-bootstrap';
 
@@ -61,21 +62,20 @@ class ClientForm extends Component {
         num_of_dependants: client.num_of_dependants || '',
         family: {
           file_id: (client.family && client.family.file_id) || '',
-          spouse: client.spouse || undefined,
-          children: client.children || []
+          members: (client.family && client.family.members) || []
         }
       }
     }
 
     this.formValChange = this.formValChange.bind(this);
-    this.addressChange = this.addressChange.bind(this);
-    this.spouseChange = this.spouseChange.bind(this);
-    this.childChange = this.childChange.bind(this);
-    this.personalInfoChange = this.personalInfoChange.bind(this);
+    this.handleFamilyChange = this.handleFamilyChange.bind(this);
+    this.handlePersonalInfoChange = this.handlePersonalInfoChange.bind(this);
     this.submit = this.submit.bind(this);
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
-    this.jumpToStep = this.jumpToStep.bind(this);
+    this.handleStepClick = this.handleStepClick.bind(this);
+    this.handleAddFamilyButtonClick = this.handleAddFamilyButtonClick.bind(this);
+    this.handleRemoveFamilyButtonClick = this.handleRemoveFamilyButtonClick.bind(this);
   }
 
   componentWillMount() {
@@ -94,7 +94,7 @@ class ClientForm extends Component {
     });
   }
 
-  jumpToStep(step) {
+  handleStepClick(step) {
     this.setState({
       currentStep: step
     });
@@ -102,10 +102,7 @@ class ClientForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    if (id === 'file_id') {
-      nextForm['family']['file_id'] = e.target.value
-    }
-    else if (id === 'other_languages') {
+    if (id === 'other_languages') {
       if (e.target.checked) {
         nextForm['other_languages'].push(e.target.value)
       } else {
@@ -120,88 +117,67 @@ class ClientForm extends Component {
     this.setState({ form: nextForm });
   }
 
-  personalInfoChange(e, id=e.target.id) {
+  handlePersonalInfoChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    nextForm['personal_information'][id] = e.target.value
-    if (id === 'marital_status' && (e.target.value === 'Married' || e.target.value === 'Common Law')) {
-      nextForm['personal_information'][id] = e.target.value
-      nextForm['family']['spouse'] = {
-        'full_name': '',
-        'birth_date': '',
-        'gender': ''
-      }
+    const addressFields = [
+      'street_address',
+      'apt_number',
+      'city',
+      'province',
+      'postal_code'
+    ]
+
+    if (_.includes(addressFields, id)) {
+      nextForm['personal_information']['address'][e.target.id] = e.target.value;
     }
-    else if (id === 'num_of_children') {
-      nextForm['personal_information'][id] = e.target.value
-      let children = []
-      for (var i = 0; i < parseInt(e.target.value, 10); i++) {
-        children.push(
-          {
-            'full_name': '',
-            'birth_date': '',
-            'gender': ''
-          }
-        )
-      }
-      nextForm['family']['children'] = children
+    else {
+      nextForm['personal_information'][id] = e.target.value;
     }
-    this.setState({ form: nextForm });
-  }
-
-  addressChange(e) {
-    let nextForm = _.clone(this.state.form);
-    nextForm['personal_information']['address'][e.target.id] = e.target.value
-    this.setState({ form: nextForm });
-  }
-
-  spouseChange(e) {
-    let nextForm = _.clone(this.state.form);
-    nextForm['family']['spouse'][e.target.id] = e.target.value
-    this.setState({ form: nextForm });
-  }
-
-  childChange(e, index) {
-    let nextForm = _.clone(this.state.form);
-    nextForm['family']['children'][index][e.target.id] = e.target.value
     this.setState({ form: nextForm });
   }
 
   submit() {
-    let submitForm = _.clone(this.state.form);
-    if (submitForm['family']['children'].length > 0) {
-      const children = _.map(submitForm['family']['children'], (child) => {
-        return {...child, relationship: 'children'}
-      })
-      submitForm['family']['members'] = children
-    }
-    if (submitForm['family']['spouse']) {
-      const spouse = {...submitForm['family']['spouse'], relationship: 'spouse'}
-      if (!submitForm['family']['members']) {
-        submitForm['family']['members'] = []
-      }
-      submitForm['family']['members'].push(spouse)
-    }
-    delete submitForm['family']['spouse']
-    delete submitForm['family']['children']
-
     if (this.state.mode === 'edit') {
-      this.props.dispatch(updateClient(this.state.clientId, submitForm));
+      this.props.dispatch(updateClient(this.state.clientId, this.state.form));
     } else {
-      this.props.dispatch(createClient(submitForm));
+      this.props.dispatch(createClient(this.state.form));
     }
     this.props.history.push('/clients')
+  }
+
+  handleAddFamilyButtonClick() {
+    let nextForm = _.clone(this.state.form);
+    nextForm['family']['members'].push({
+      'full_name': '',
+      'birth_date': '',
+      'gender': '',
+      'relationship': ''
+    })
+    this.setState({ form: nextForm });
+  }
+
+  handleRemoveFamilyButtonClick(index) {
+    let nextForm = _.clone(this.state.form);
+    nextForm['family']['members'].splice(index, 1);
+    this.setState({ form: nextForm });
+  }
+
+  handleFamilyChange(e, index) {
+    const id = e.target.id;
+    let nextForm = _.clone(this.state.form);
+    if (id === 'file_id') {
+      nextForm['family']['file_id'] = e.target.value;
+    }
+    else {
+      nextForm['family']['members'][index][id] = e.target.value;
+    }
+    this.setState({ form: nextForm });
   }
 
   render() {
     const p = this.props;
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Client Profile' : 'New Client Profile'
-
-    function cateogiresIntoOptions(categories) {
-      return categories.map((category) => {
-        return <option key={category} value={category}>{category}</option>
-      })
-    }
 
     function cateogiresIntoCheckboxes(categories, categoryToRemove, checkedCategories, formValChange) {
       let updatedCategories = _.clone(categories)
@@ -221,17 +197,11 @@ class ClientForm extends Component {
       })
     }
 
-    function wizardStepStyle(currentStep, wizardStep) {
-      if (currentStep === wizardStep) {
-        return 'col-xs-4 bs-wizard-step active'
-      }
-      else if (currentStep > wizardStep) {
-        return 'col-xs-4 bs-wizard-step complete'
-      }
-      else {
-        return 'col-xs-4 bs-wizard-step disabled'
-      }
-    }
+    const stepTitles = [
+      "Personal Information",
+      "Family Members (Optional)",
+      "Background Information (Optional)"
+    ];
 
     return (
       <Grid className="content">
@@ -239,52 +209,25 @@ class ClientForm extends Component {
           <Col sm={12}>
             <h3>{formTitle}</h3>
           </Col>
-          <div className="row bs-wizard">
-            <div className={wizardStepStyle(this.state.currentStep, 1)}>
-              <div className="text-center bs-wizard-stepnum">Step 1</div>
-              <div className="progress"><div className="progress-bar"></div></div>
-              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(1)}></div>
-              <div className="bs-wizard-info text-center">
-                Personal Information
-              </div>
-            </div>
-
-            <div className={wizardStepStyle(this.state.currentStep, 2)}>
-              <div className="text-center bs-wizard-stepnum">Step 2</div>
-              <div className="progress"><div className="progress-bar"></div></div>
-              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(2)}></div>
-              <div className="bs-wizard-info text-center">
-                Family Members (Optional)
-              </div>
-            </div>
-
-            <div className={wizardStepStyle(this.state.currentStep, 3)}>
-              <div className="text-center bs-wizard-stepnum">Step 3</div>
-              <div className="progress"><div className="progress-bar"></div></div>
-              <div className="bs-wizard-dot" onClick={e => this.jumpToStep(3)}></div>
-              <div className="bs-wizard-info text-center">
-                Background Information (Optional)
-              </div>
-            </div>
-          </div>
+          <FormWizard
+            stepTitles={stepTitles}
+            currentStep={this.state.currentStep}
+            handleStepClick={this.handleStepClick}
+          />
         </Row>
         <Form horizontal>
           {this.state.currentStep === 1 &&
             <PersonalInformationFields
-              personalInformation={this.state.form.personal_information}
-              handleFormValChange={this.personalInfoChange}
-              addressChange={this.addressChange}
+              person={this.state.form.personal_information}
+              handleFormValChange={this.handlePersonalInfoChange}
             />
           }
           {this.state.currentStep === 2 &&
             <FamilyInformationFields
               family={this.state.form.family}
-              hasChildren={this.state.form.personal_information.has_children}
-              maritalStatus={this.state.form.personal_information.marital_status}
-              numOfChildren={this.state.form.personal_information.num_of_children}
-              formValChange={this.formValChange}
-              spouseChange={this.spouseChange}
-              childChange={this.childChange}
+              handleFormValChange={this.handleFamilyChange}
+              handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
+              handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
             />
           }
           {this.state.currentStep === 3 &&
@@ -301,8 +244,7 @@ class ClientForm extends Component {
               categoriesLoaded={p.categoriesLoaded}
               languagesCategories={p.languagesCategories}
               cateogiresIntoCheckboxes={cateogiresIntoCheckboxes}
-              cateogiresIntoOptions={cateogiresIntoOptions}
-              num_of_denpendants={this.state.form.num_of_denpendants}
+              num_of_dependants={this.state.form.num_of_dependants}
               income_source={this.state.form.income_source}
               level_of_education={this.state.form.level_of_education}
               status_in_canada={this.state.form.status_in_canada}
