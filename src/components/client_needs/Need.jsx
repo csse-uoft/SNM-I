@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import TableRow from '../shared/TableRow'
 
 import RecommendedService from './RecommendedService'
 import MatchedServices from './MatchedServices'
@@ -81,36 +82,30 @@ class Need extends Component {
               <UrgentLabel is_urgent={need.is_urgent} />
               <Table striped bordered condensed hover>
                 <tbody>
-                  <tr>
-                    <td><b>Type</b></td>
-                    <td>{need.type}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Category</b></td>
-                    <td>{need.category}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Needed by</b></td>
-                    <td>{need.needed_by}</td>
-                  </tr>
-                  <tr>
-                    <td><b>Description</b></td>
-                    <td>{need.description}</td>
-                  </tr>
-                  {
-                    (need.type === 'Good') && (
-                      <tr>
-                        <td><b>Condition</b></td>
-                        <td>{need.condition}</td>
-                      </tr>
-                    )
-                  }
-                  <tr>
-                    <td><b>Status</b></td>
-                    <td>
-                      {need.status}
-                    </td>
-                  </tr>
+                  <TableRow
+                    title="Type"
+                    value={need.type}
+                  />
+                  <TableRow
+                    title="Category"
+                    value={need.category}
+                  />
+                  <TableRow
+                    title="Needed By"
+                    value={need.needed_by}
+                  />
+                  <TableRow
+                    title="Description"
+                    value={need.description}
+                  />
+                  <TableRow
+                    title="Condition"
+                    value={need.condition}
+                  />
+                  <TableRow
+                    title="Status"
+                    value={need.status}
+                  />
                 </tbody>
               </Table>
             </Col>
