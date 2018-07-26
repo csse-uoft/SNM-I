@@ -67,6 +67,34 @@ class Service extends Component {
                 <td>{service.capacity}</td>
               </tr>
               <tr>
+                <td><b>Available capacity</b></td>
+                <td>{service.available_capacity}</td>
+              </tr>
+              <tr>
+                <td><b>Frequency</b></td>
+                <td>{service.frequency}</td>
+              </tr>
+              <tr>
+                <td><b>Billable</b></td>
+                <td>{service.billable}</td>
+              </tr>
+              <tr>
+                <td><b>Price</b></td>
+                <td>{service.price}</td>
+              </tr>
+              <tr>
+                <td><b>Method of delivery</b></td>
+                <td>{service.method_of_delivery}</td>
+              </tr>
+              <tr>
+                <td><b>Method of registration</b></td>
+                <td>{service.method_of_registration}</td>
+              </tr>
+              <tr>
+                <td><b>Registration</b></td>
+                <td>{service.registration}</td>
+              </tr>
+              <tr>
                 <td><b>Contact Person Email</b></td>
                 <td>{service.email}</td>
               </tr>

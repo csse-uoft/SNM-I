@@ -20,12 +20,31 @@
 }
 
 .recommended-service {
+  padding: 10px 20px 15px 20px;
   h5 {
     display: inline-block;
     margin-right: 10px;
+  }
+  button {
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
   }
 }
 
 .need-type {
   padding: 6px 0;
+}
+
+form.note-form {
+  margin-top: 60px;
+  button {
+    margin-top: 5px;
+    float: right;
+  }
+}
+
+.well-sm {
+  margin-bottom: 5px;
 }

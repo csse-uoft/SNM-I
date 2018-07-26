@@ -5,7 +5,6 @@ import { Pie as PieChart } from 'react-chartjs';
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { serverHost } from '../store/defaults.js';
-
 // styles
 import '../stylesheets/Reporting.css';
 
@@ -30,7 +29,6 @@ export default class Report extends Component {
       year223: 0,
       type: 'gender'
     }
-
     this.updateType = this.updateType.bind(this);
   }
 
@@ -123,6 +121,7 @@ export default class Report extends Component {
           )
         }
       }
+
     const chartData = {
       labels: [
         "1931-1940",
@@ -185,8 +184,8 @@ export default class Report extends Component {
         highlight: "#FFC870",
         label: "Others"
       }
-    ] 
-    
+    ]
+
     const options = {
       maintainAspectRatio: false,
       responsive: false,
@@ -198,12 +197,11 @@ export default class Report extends Component {
       }
     }
 
-    return(
+    return (
       <div className="content client">
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
             <Glyphicon glyph="print" />
         </Button>
-
           <Table bordered condensed className="client-profile-table">
               <tbody>
                 <tr>
@@ -230,8 +228,8 @@ export default class Report extends Component {
                   </td>
                 </tr>
               </tbody>
-             </Table>
-             <Stats
+            </Table>
+            <Stats
                type={this.state.type}
                total_clients={this.state.total_clients}
                no_of_females={this.state.no_of_females}
@@ -247,7 +245,7 @@ export default class Report extends Component {
                year156={this.state.year156}
                year145={this.state.year145}
                year134={this.state.year134}
-             />
+            />
       </div>
     )
   }
