@@ -206,6 +206,7 @@ class ProviderForm extends Component {
         operation_hours: availability,
         referrer: provider.referrer || '',
         own_car: provider.own_car || '',
+        skills: provider.skills || '',
         visibility: provider.visibility,
         status: provider.status,
         notes: provider.notes || ''
@@ -931,6 +932,7 @@ class ProviderForm extends Component {
             </Form>
             <hr/>
             {this.state.form.provider_category === "Volunteer/Goods Donor" &&
+              <div>
               <FormGroup controlId="own_car">
                 <Col componentClass={ControlLabel} sm={3}>
                   Own a car
@@ -948,6 +950,22 @@ class ProviderForm extends Component {
                   </FormControl>
                 </Col>
               </FormGroup>
+
+              <FormGroup controlId="skills">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Skills
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder=""
+                    value={this.state.form.skills}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+              </FormGroup>
+
+              </div>
             }
 
             <FormGroup controlId="status">
@@ -995,7 +1013,7 @@ class ProviderForm extends Component {
               </Col>
               <Col sm={9}>
                 <FormControl
-                  type="textarea"
+                  componentClass="textarea"
                   value={this.state.form.notes}
                   onChange={this.formValChange}
                 />

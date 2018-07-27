@@ -197,6 +197,12 @@ class ProviderProfile extends Component {
               <td>{provider.own_car}</td>
             </tr>
           }
+          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
+            <tr>
+              <td><b>Skills</b></td>
+              <td>{provider.skills ? provider.skills : "None specified"}</td>
+            </tr>
+          }
           {provider.provider_type === "Individual" && provider.referrer &&
             <tr>
               <td><b>Referrer</b></td>
