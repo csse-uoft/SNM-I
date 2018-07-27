@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FormField from '../../shared/FormField'
 import SelectField from '../../shared/SelectField'
+import CheckboxField from '../../shared/CheckboxField'
 import { statusInCanadaOptions, educationLevelOptions,
          incomeSourceOptions } from '../../../store/defaults.js';
 import { FormGroup, ControlLabel, Col, Row } from 'react-bootstrap';
@@ -39,21 +40,13 @@ export default class BackgroundInformationFields extends Component {
           value={this.props.first_language}
           onChange={this.props.formValChange}
         />
-        <FormGroup controlId="other_languages">
-          <Col componentClass={ControlLabel} sm={3}>
-            Other languages
-          </Col>
-          <Col sm={9}>
-            {this.props.categoriesLoaded &&
-              this.props.cateogiresIntoCheckboxes(
-                this.props.languagesCategories,
-                this.props.first_language,
-                this.props.other_languages,
-                this.props.formValChange
-              )
-            }
-          </Col>
-        </FormGroup>
+        <CheckboxField
+          id="other_languages"
+          label="Other languages"
+          options={this.props.languagesCategories.filter(category => category !== this.props.first_language)}
+          checkedOptions={this.props.other_languages}
+          handleFormValChange={this.props.formValChange}
+        />
         <FormField
           id="pr_number"
           label="Permanent Residence Card Number (PR card)"
