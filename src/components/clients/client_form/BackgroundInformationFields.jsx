@@ -4,7 +4,7 @@ import SelectField from '../../shared/SelectField'
 import CheckboxField from '../../shared/CheckboxField'
 import { statusInCanadaOptions, educationLevelOptions,
          incomeSourceOptions } from '../../../store/defaults.js';
-import { FormGroup, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 
 export default class BackgroundInformationFields extends Component {
   render() {

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import FormField from '../shared/FormField'
-import SelectField from '../shared/SelectField'
 
 // redux
 import { connect } from 'react-redux'
 import { createEligibility, updateEligibility } from '../../store/actions/eligibilityActions.js'
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Button, Form, FormGroup, Col, Row } from 'react-bootstrap';
 
 class EligibilityForm extends Component {
   constructor(props) {
