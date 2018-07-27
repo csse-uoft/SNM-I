@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { fetchService } from '../../store/actions/serviceActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
+import { formatEligibilityConditions } from '../../helpers/eligibility_condition_helpers'
 
 import { Table, Glyphicon, Button } from 'react-bootstrap';
 
@@ -110,6 +111,17 @@ class Service extends Component {
                 <td><b>Location</b></td>
                 <td>{formatLocation(service.location)}</td>
               </tr>
+
+              {service.eligibility_conditions &&
+              <tr>
+                <td><b>Eligibility Conditions</b></td>
+                <td>
+                  {Object.keys(service.eligibility_conditions).map( condType =>
+                    <li key={condType}>{formatEligibilityConditions(condType, service.eligibility_conditions[condType])}</li>)}
+                </td>
+              </tr>
+              }
+
               <tr>
                 <td><b>Share with</b></td>
                 <td>{service.share_with}</td>

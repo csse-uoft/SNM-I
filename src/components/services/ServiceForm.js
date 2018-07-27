@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import { statusInCanadaOptions, educationLevelOptions } from '../../store/defaults'
 import _ from 'lodash';
 
 // redux
 import { connect } from 'react-redux'
 import { createService, updateService } from '../../store/actions/serviceActions.js'
-import { fetchProviders } from '../../store/actions/providerActions.js'
+import { fetchProviders } from '../../store/actions/providerActions.js';
+import { formatLocation } from '../../helpers/location_helpers.js';
 
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio, Panel, PanelGroup, Checkbox} from 'react-bootstrap';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
 
 class ServiceForm extends Component {
   constructor(props) {
@@ -23,12 +25,13 @@ class ServiceForm extends Component {
     this.state = {
       serviceId: service.id,
       mode: (service.id) ? 'edit' : 'new',
+      is_provider_location: '',
+      age_restriction: '',
       form: {
         name: service.name || '',
         type_of_service: service.type_of_service || '',
         desc: service.desc || '',
         category: service.category || '',
-        eligibility: service.eligibility || '',
         available_from: service.available_from || '',
         available_to: service.available_to || '',
         language: service.language || '',
@@ -51,6 +54,7 @@ class ServiceForm extends Component {
         }, service.location),
         share_with: service.share_with || '',
         notes: service.notes || '',
+        eligibility_conditions: service.eligibility_conditions || {},
         provider_id: (service.provider && service.provider.id) || ''
       }
     }
@@ -58,6 +62,8 @@ class ServiceForm extends Component {
     this.formValChange = this.formValChange.bind(this);
     this.locationChange = this.locationChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.indicatorChange = this.indicatorChange.bind(this);
+    this.conditionsChange = this.conditionsChange.bind(this);
   }
 
   componentWillMount() {
@@ -66,8 +72,53 @@ class ServiceForm extends Component {
     this.props.dispatch(fetchProviders());
   }
 
-  formValChange(e) {
-    let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+  conditionsChange(e, id=e.target.id) {
+    let nextForm = _.clone(this.state.form);
+    // const index = nextForm.eligibility_conditions
+    //                 .map(condition => condition.type)
+    //                 .indexOf(id);
+    // if (e.target.checked) {
+    //   if (index === -1) {
+    //     let newCondition = { cond_type: id, value: [e.target.value]};
+    //     nextForm.eligibility_conditions.push(newCondition);
+    //   } else {
+    //     if (id === "age_greater" || id === "age_less") {
+    //       nextForm['eligibility_conditions'][index][id] = e.target.value;
+    //     } else {
+    //       nextForm.eligibility_conditions[index][id].push(e.target.value);
+    //     }
+    //   }
+    // } else {
+    //   _.remove(nextForm['eligibility_conditions'][index][id], (condition) => {
+    //   return condition === e.target.value
+    //   });
+    // }
+    if (id === "Age greater" || id === "Age less") {
+      nextForm['eligibility_conditions'][id] = [e.target.value];
+    }
+    else {
+      if (e.target.checked) {
+        if (!nextForm['eligibility_conditions'][id]) {
+          nextForm['eligibility_conditions'][id] = [];
+        }
+        nextForm['eligibility_conditions'][id].push(e.target.value)
+      } else {
+        _.remove(nextForm['eligibility_conditions'][id], (condition) => {
+          return condition === e.target.value
+        });
+      }
+    }
+    this.setState({form: nextForm});
+  }
+
+  formValChange(e, id=e.target.id) {
+    let nextForm;
+    if (id === 'location') {
+      nextForm = {...this.state.form, [id]: JSON.parse(e.target.value)};
+    }
+    else {
+      nextForm = {...this.state.form, [id]: e.target.value};
+    }
     this.setState({ form: nextForm });
   }
 
@@ -77,11 +128,16 @@ class ServiceForm extends Component {
     this.setState({ form: nextForm });
   }
 
+  indicatorChange(e, id) {
+    this.setState({ [id] : e.target.value });
+  }
+
   submit() {
     if (this.state.mode === 'edit') {
       let form = Object.assign({}, this.state.form);
       this.props.dispatch(updateService(this.state.serviceId, form));
     } else {
+      console.log(this.state.form);
       this.props.dispatch(createService(this.state.form));
     }
     this.props.history.push('/services')
@@ -99,6 +155,10 @@ class ServiceForm extends Component {
       })
     }
 
+    let provider;
+    if (this.state.form.provider_id) {
+      provider = this.props.providersById[this.state.form.provider_id];
+    }
 
     return (
       <Row className="content">
@@ -203,20 +263,6 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="eligibility">
-              <Col componentClass={ControlLabel} sm={3}>
-                Eligibility
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  placeholder=""
-                  value={this.state.form.eligibility}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
             <FormGroup controlId="available_from">
               <Col componentClass={ControlLabel} sm={3}>
                 Available from
@@ -308,7 +354,7 @@ class ServiceForm extends Component {
                 </FormControl>
               </Col>
             </FormGroup>
-
+            {this.state.form.billable === "Yes" &&
             <FormGroup controlId="price">
               <Col componentClass={ControlLabel} sm={3}>
                 Price
@@ -322,7 +368,7 @@ class ServiceForm extends Component {
                 />
               </Col>
             </FormGroup>
-
+            }
             <FormGroup controlId="method_of_delivery">
               <Col componentClass={ControlLabel} sm={3}>
                 Method of delivery
@@ -381,6 +427,97 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
+            <hr/>
+              <h3>Eligibility</h3>
+
+              <FormGroup controlId="Immigration status">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Immigration Status
+                </Col>
+                <Col sm={9}>
+                  {statusInCanadaOptions.map(status =>
+                    <Checkbox
+                      name="Immigration status"
+                      value={status}
+                      key={status}
+                      onChange={e => this.conditionsChange(e, 'Immigration status')}
+                      inline
+                      >
+                      {status}
+                    </Checkbox>
+                    )
+                  }
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="Age greater">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Age greater than
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.eligibility_conditions['Age greater'] || ''}
+                    onChange={e => this.conditionsChange(e, 'Age greater')}
+                  />
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="Age less">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Age less than
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.eligibility_conditions['Age less'] || ''}
+                    onChange={e => this.conditionsChange(e, 'Age less')}
+                  />
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="Current education level">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Current Education
+                </Col>
+                <Col sm={9}>
+                  {educationLevelOptions.map(level =>
+                    <Checkbox
+                      name="Current education level"
+                      value={level}
+                      onChange={e => this.conditionsChange(e, 'Current education level')}
+                      key={level}
+                      inline
+                      >
+                      {level}
+                    </Checkbox>
+                    )
+                  }
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="Completed education level">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Completed Education Level
+                </Col>
+                <Col sm={9}>
+                  {educationLevelOptions.map(level =>
+                    <Checkbox
+                      key={level}
+                      name="Completed education level"
+                      value={level}
+                      onChange={e => this.conditionsChange(e, 'Completed education level')}
+                      inline
+                      >
+                      {level}
+                    </Checkbox>
+                    )
+                  }
+                </Col>
+              </FormGroup>
+            <hr/>
+
+
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={3}>
                 Contact Person Email *
@@ -421,70 +558,126 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="street_address">
-              <Col componentClass={ControlLabel} sm={3}>
-                Street Address *
+            <FormGroup controlId="is_provider_location">
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Location
               </Col>
               <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.street_address}
-                  onChange={this.locationChange}
-                />
+                <Radio
+                  name="is_provider_location"
+                  value='true'
+                  onChange={e => this.indicatorChange(e, 'is_provider_location')}
+                  inline
+                >
+                  Same as provider
+                </Radio>{' '}
+                <Radio
+                  name="is_provider_location"
+                  value='false'
+                  onChange={e => this.indicatorChange(e, 'is_provider_location')}
+                  inline
+                >
+                  Other
+                </Radio>{' '}
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="apt_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Apt. #
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.apt_number}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
+            {this.state.is_provider_location === 'true' && this.state.form.provider_id &&
+              <div>
+                <FormGroup controlId="location">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Select the location this service is provided at
+                  </Col>
+                  <Col sm={9}>
+                    <Radio
+                      name="provider_address"
+                      value={JSON.stringify(provider.main_address)}
+                      onChange={(e) => this.formValChange(e, 'location')}
+                    >
+                      {formatLocation(provider.main_address)}
+                    </Radio>{' '}
+                    { provider.other_addresses.map((address, index) =>
+                    <Radio
+                      name="provider_address"
+                      value={JSON.stringify(address)}
+                      onChange={(e) => this.formValChange(e, 'location')}
+                      key={index}
+                      >
+                      {formatLocation(address)}
+                    </Radio>
+                    )}
+                  </Col>
+                </FormGroup>
+              </div>
+            }
+            {this.state.is_provider_location === 'false' &&
+            <div>
+              <FormGroup controlId="street_address">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Street Address
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.location.street_address}
+                    onChange={this.locationChange}
+                  />
+                </Col>
+              </FormGroup>
 
-            <FormGroup controlId="city">
-              <Col componentClass={ControlLabel} sm={3}>
-                City *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.city}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
+              <FormGroup controlId="apt_number">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Apt. #
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.location.apt_number}
+                    onChange={this.locationChange}
+                  />
+                </Col>
+              </FormGroup>
 
-            <FormGroup controlId="province">
-              <Col componentClass={ControlLabel} sm={3}>
-                Province *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.province}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
+              <FormGroup controlId="city">
+                <Col componentClass={ControlLabel} sm={3}>
+                  City
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.location.city}
+                    onChange={this.locationChange}
+                  />
+                </Col>
+              </FormGroup>
 
-            <FormGroup controlId="postal_code">
-              <Col componentClass={ControlLabel} sm={3}>
-                Postal Code *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.postal_code}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
+              <FormGroup controlId="province">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Province
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.location.province}
+                    onChange={this.locationChange}
+                  />
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="postal_code">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Postal Code
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="text"
+                    value={this.state.form.location.postal_code}
+                    onChange={this.locationChange}
+                  />
+                </Col>
+              </FormGroup>
+            </div>
+            }
 
             <FormGroup controlId="share_with">
               <Col componentClass={ControlLabel} sm={3}>
@@ -565,7 +758,9 @@ const mapStateToProps = (state) => {
     languagesCategories: state.ontology.languages.categories,
     languagesLoaded: state.ontology.languages.loaded,
     providers: state.providers.filteredProviders || [],
-    providersLoaded: state.providers.loaded
+    providersById: state.providers.byId,
+    providersLoaded: state.providers.loaded,
+    providerIndex: state.providers.index
   }
 }
 
