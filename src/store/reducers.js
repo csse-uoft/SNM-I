@@ -8,6 +8,7 @@ import { services } from './reducers/serviceReducer.js';
 import { providers } from './reducers/providerReducers.js';
 import { goods } from './reducers/goodReducer.js';
 import { admin_logs } from './reducers/adminLogReducer.js';
+import { eligibilities } from './reducers/eligibilityReducer.js';
 
 export const rootReducer = combineReducers({
   services,
@@ -18,5 +19,6 @@ export const rootReducer = combineReducers({
   auth,
   users,
   ontology,
-  admin_logs
+  admin_logs,
+  eligibilities
 });

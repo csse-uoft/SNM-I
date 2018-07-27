@@ -31,6 +31,8 @@ import Good from './components/goods/Good';
 import GoodForm from './components/goods/GoodForm'
 import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
+import Eligibilities from './components/Eligibilities';
+import EligibilityForm from './components/eligibilities/EligibilityForm'
 
 const routes = (
   <Switch>
@@ -73,6 +75,10 @@ const routes = (
     <PrivateRoute path='/goods' component={Goods} />
 
     <PrivateRoute path='/reporting' component={Reporting} />
+
+    <PrivateRoute path='/eligibility_criteria/:id/edit' component={EligibilityForm} />
+    <PrivateRoute path='/eligibility_criteria/new' component={EligibilityForm} />
+    <PrivateRoute path='/eligibility_criteria' component={Eligibilities} />
   </Switch>
 )
 

@@ -188,6 +188,10 @@ class Client extends Component {
                   title="Number of Dependants"
                   value={client.num_of_dependants}
                 />
+                <TableRow
+                  title="Eligibilities"
+                  value={(client.eligibilities || []).join(', ')}
+                />
               </tbody>
             </Table>
           </div>
