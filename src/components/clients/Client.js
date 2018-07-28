@@ -177,8 +177,12 @@ class Client extends Component {
                   value={client.arrival_date}
                 />
                 <TableRow
-                  title="Level of Education"
-                  value={client.level_of_education}
+                  title="Current Education Level"
+                  value={client.current_education_level}
+                />
+                <TableRow
+                  title="Completed Education Level"
+                  value={client.completed_education_level}
                 />
                 <TableRow
                   title="Income Source"
