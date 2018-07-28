@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -116,8 +117,25 @@ class Service extends Component {
               <tr>
                 <td><b>Eligibility Conditions</b></td>
                 <td>
-                  {Object.keys(service.eligibility_conditions).map( condType =>
-                    <li key={condType}>{formatEligibilityConditions(condType, service.eligibility_conditions[condType])}</li>)}
+                  {_.map(
+                      _.omit(service.eligibility_conditions, ['lower_age_limit', 'upper_age_limit']
+                    ), (value, type) => {
+                    return (
+                      <li key={type}>
+                        {formatEligibilityConditions(type, value)}
+                      </li>
+                    );
+                  })}
+                  {service.eligibility_conditions.lower_age_limit &&
+                    <li>
+                      {formatEligibilityConditions('Age greater than' , service.eligibility_conditions.lower_age_limit)}
+                    </li>
+                  }
+                  {service.eligibility_conditions.upper_age_limit &&
+                    <li>
+                      {formatEligibilityConditions('Age less than' , service.eligibility_conditions.upper_age_limit)}
+                    </li>
+                  }
                 </td>
               </tr>
               }

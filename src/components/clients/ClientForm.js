@@ -59,7 +59,8 @@ class ClientForm extends Component {
         arrival_date: client.arrival_date || '',
         status_in_canada: client.status_in_canada || '',
         income_source: client.income_source || '',
-        level_of_education: client.level_of_education || '',
+        current_education_level: client.current_education_level || '',
+        completed_education_level: client.completed_education_level || '',
         num_of_dependants: client.num_of_dependants || '',
         family: {
           file_id: (client.family && client.family.file_id) || '',
@@ -230,7 +231,8 @@ class ClientForm extends Component {
               languagesCategories={p.languagesCategories}
               num_of_dependants={this.state.form.num_of_dependants}
               income_source={this.state.form.income_source}
-              level_of_education={this.state.form.level_of_education}
+              current_education_level={this.state.form.current_education_level}
+              completed_education_level={this.state.form.completed_education_level}
               status_in_canada={this.state.form.status_in_canada}
               eligibility_criteria={this.props.eligibilitiesLoaded && this.props.eligibilities}
               eligibilities={this.state.form.eligibilities}

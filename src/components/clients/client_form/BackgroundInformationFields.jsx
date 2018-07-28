@@ -76,11 +76,19 @@ export default class BackgroundInformationFields extends Component {
           onChange={this.props.formValChange}
         />
         <SelectField
-          id="level_of_education"
-          label="Level of education"
+          id="current_education_level"
+          label="Current Education Level"
           options={educationLevelOptions}
           componentClass="select"
-          value={this.props.level_of_education}
+          value={this.props.current_education_level}
+          onChange={this.props.formValChange}
+        />
+        <SelectField
+          id="completed_education_level"
+          label="Completed Education Level"
+          options={educationLevelOptions}
+          componentClass="select"
+          value={this.props.completed_education_level}
           onChange={this.props.formValChange}
         />
         <SelectField
