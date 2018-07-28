@@ -3,6 +3,8 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { statusInCanadaOptions, educationLevelOptions } from '../../store/defaults'
+import FormField from '../shared/FormField'
+import CheckboxField from '../shared/CheckboxField'
 import _ from 'lodash';
 
 // redux
@@ -54,7 +56,13 @@ class ServiceForm extends Component {
         }, service.location),
         share_with: service.share_with || '',
         notes: service.notes || '',
-        eligibility_conditions: service.eligibility_conditions || {},
+        eligibility_conditions: Object.assign({
+          'upper_age_limit': '',
+          'lower_age_limit': '',
+          'immigration_status': [],
+          'current_education_level': [],
+          'completed_education_level': []
+        }, service.eligibility_conditions),
         provider_id: (service.provider && service.provider.id) || ''
       }
     }
@@ -74,27 +82,9 @@ class ServiceForm extends Component {
 
   conditionsChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    // const index = nextForm.eligibility_conditions
-    //                 .map(condition => condition.type)
-    //                 .indexOf(id);
-    // if (e.target.checked) {
-    //   if (index === -1) {
-    //     let newCondition = { cond_type: id, value: [e.target.value]};
-    //     nextForm.eligibility_conditions.push(newCondition);
-    //   } else {
-    //     if (id === "age_greater" || id === "age_less") {
-    //       nextForm['eligibility_conditions'][index][id] = e.target.value;
-    //     } else {
-    //       nextForm.eligibility_conditions[index][id].push(e.target.value);
-    //     }
-    //   }
-    // } else {
-    //   _.remove(nextForm['eligibility_conditions'][index][id], (condition) => {
-    //   return condition === e.target.value
-    //   });
-    // }
-    if (id === "Age greater" || id === "Age less") {
-      nextForm['eligibility_conditions'][id] = [e.target.value];
+
+    if (id === "upper_age_limit" || id === "lower_age_limit") {
+      nextForm['eligibility_conditions'][id] = e.target.value;
     }
     else {
       if (e.target.checked) {
@@ -133,8 +123,14 @@ class ServiceForm extends Component {
   }
 
   submit() {
+    let form = Object.assign({}, this.state.form);
+    form['eligibility_conditions']['age'] = [
+      form['eligibility_conditions']['lower_age_limit'] || null,
+      form['eligibility_conditions']['upper_age_limit'] || null
+    ]
+    delete form['eligibility_conditions']['lower_age_limit']
+    delete form['eligibility_conditions']['upper_age_limit']
     if (this.state.mode === 'edit') {
-      let form = Object.assign({}, this.state.form);
       this.props.dispatch(updateService(this.state.serviceId, form));
     } else {
       console.log(this.state.form);
@@ -157,7 +153,7 @@ class ServiceForm extends Component {
 
     let provider;
     if (this.state.form.provider_id) {
-      provider = this.props.providersById[this.state.form.provider_id];
+      provider = this.props.providersById && this.props.providersById[this.state.form.provider_id];
     }
 
     return (
@@ -429,92 +425,41 @@ class ServiceForm extends Component {
 
             <hr/>
               <h3>Eligibility</h3>
-
-              <FormGroup controlId="Immigration status">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Immigration Status
-                </Col>
-                <Col sm={9}>
-                  {statusInCanadaOptions.map(status =>
-                    <Checkbox
-                      name="Immigration status"
-                      value={status}
-                      key={status}
-                      onChange={e => this.conditionsChange(e, 'Immigration status')}
-                      inline
-                      >
-                      {status}
-                    </Checkbox>
-                    )
-                  }
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="Age greater">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Age greater than
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.eligibility_conditions['Age greater'] || ''}
-                    onChange={e => this.conditionsChange(e, 'Age greater')}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="Age less">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Age less than
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.eligibility_conditions['Age less'] || ''}
-                    onChange={e => this.conditionsChange(e, 'Age less')}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="Current education level">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Current Education
-                </Col>
-                <Col sm={9}>
-                  {educationLevelOptions.map(level =>
-                    <Checkbox
-                      name="Current education level"
-                      value={level}
-                      onChange={e => this.conditionsChange(e, 'Current education level')}
-                      key={level}
-                      inline
-                      >
-                      {level}
-                    </Checkbox>
-                    )
-                  }
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="Completed education level">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Completed Education Level
-                </Col>
-                <Col sm={9}>
-                  {educationLevelOptions.map(level =>
-                    <Checkbox
-                      key={level}
-                      name="Completed education level"
-                      value={level}
-                      onChange={e => this.conditionsChange(e, 'Completed education level')}
-                      inline
-                      >
-                      {level}
-                    </Checkbox>
-                    )
-                  }
-                </Col>
-              </FormGroup>
+              <CheckboxField
+                id="immigration_status"
+                label="Immigration Status"
+                options={statusInCanadaOptions}
+                checkedOptions={this.state.form.eligibility_conditions.immigration_status}
+                handleFormValChange={this.conditionsChange}
+              />
+              <FormField
+                id="lower_age_limit"
+                label="Age greater than"
+                type="text"
+                value={this.state.form.eligibility_conditions.lower_age_limit}
+                onChange={this.conditionsChange}
+              />
+              <FormField
+                id="upper_age_limit"
+                label="Age less than"
+                type="text"
+                value={this.state.form.eligibility_conditions.upper_age_limit}
+                onChange={this.conditionsChange}
+              />
+              <CheckboxField
+                id="current_education_level"
+                label="Current Education"
+                options={educationLevelOptions}
+                checkedOptions={this.state.form.eligibility_conditions.current_education_level}
+                handleFormValChange={this.conditionsChange}
+              />
+              <CheckboxField
+                id="completed_education_level"
+                label="Completed Education Level"
+                options={educationLevelOptions}
+                checkedOptions={this.state.form.eligibility_conditions.completed_education_level}
+                handleFormValChange={this.conditionsChange}
+              />
             <hr/>
 
 

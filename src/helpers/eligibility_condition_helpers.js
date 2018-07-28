@@ -1,9 +1,8 @@
 export function formatEligibilityConditions(condType, condValue) {
-  let eligibilityConditions = "";
-  eligibilityConditions = eligibilityConditions + condType + ": ";
-  for (let i = 0; i < condValue.length; i++) {
-    eligibilityConditions = eligibilityConditions + condValue[i] + ", "      
+  if (condValue instanceof Array) {
+    return `${condType}: ${condValue.join(', ')}`
   }
-  eligibilityConditions += "\n";
-  return eligibilityConditions;
+  else {
+    return `${condType}: ${condValue}`
+  }
 }
