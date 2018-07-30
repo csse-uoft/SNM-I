@@ -83,6 +83,35 @@ const serviceTypeOptions = [
   'Professional/Community'
 ]
 
+const serviceSharedWithOptions = [
+  'Private',
+  'Public',
+  'Boost Child & Youth Advocacy Centre',
+  "Children's Aid Society of Toronto",
+  'Abrigo Centre',
+  'Barbra Schlifer Commemorative Clinic',
+  'Durham Rape Crisis Centre',
+  "Durham Children's Aid Society",
+  'Alexandra Park Community Centre',
+  'Applegrove Community Complex',
+  'Albion Neighbourhood Services',
+  'Kababayan Multicultural Centre',
+  'Central Toronto Youth Services',
+  'Covenant House Toronto',
+  'Durham Youth Housing and Support Services',
+  "Eva's Initiatives",
+  'Horizons for Youth',
+  'AIDS Committee of Durham Region',
+  'Arab Community Centre of Toronto',
+  'Pediatric Oncology Group of Ontario',
+  'Adventist community services',
+  'Aurora Food Pantry',
+  'Bluffs Food Bank',
+  'Brock Community Food Bank',
+  'Markham Food Bank',
+  'Parkdale Community Food Bank'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   genderOptions: genderOptions,
@@ -94,4 +123,5 @@ module.exports = Object.freeze({
   familyRelationshipOptions: familyRelationshipOptions,
   needStatusOptions: needStatusOptions,
   serviceTypeOptions: serviceTypeOptions,
+  serviceSharedWithOptions: serviceSharedWithOptions
 });
