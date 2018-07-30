@@ -38,7 +38,7 @@ class Service extends Component {
               </tr>
               <tr>
                 <td><b>Type</b></td>
-                <td>{service.type_of_service}</td>
+                <td>{service.type}</td>
               </tr>
               <tr>
                 <td><b>Description</b></td>
