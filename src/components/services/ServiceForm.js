@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -5,13 +6,12 @@ import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js'
 import { statusInCanadaOptions, educationLevelOptions } from '../../store/defaults'
 import FormField from '../shared/FormField'
 import CheckboxField from '../shared/CheckboxField'
-import _ from 'lodash';
+import { formatLocation } from '../../helpers/location_helpers.js';
 
 // redux
 import { connect } from 'react-redux'
 import { createService, updateService } from '../../store/actions/serviceActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js';
-import { formatLocation } from '../../helpers/location_helpers.js';
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio, Panel, PanelGroup, Checkbox} from 'react-bootstrap';
 
@@ -27,11 +27,10 @@ class ServiceForm extends Component {
     this.state = {
       serviceId: service.id,
       mode: (service.id) ? 'edit' : 'new',
-      is_provider_location: '',
-      age_restriction: '',
+      is_provider_location: false,
       form: {
         name: service.name || '',
-        type_of_service: service.type_of_service || '',
+        type: service.type || '',
         desc: service.desc || '',
         category: service.category || '',
         available_from: service.available_from || '',
@@ -195,26 +194,6 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="type_of_service">
-              <Col componentClass={ControlLabel} sm={3}>
-                Type *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.type_of_service}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="Internal">Internal</option>
-                  <option value="External">External</option>
-                  <option value="Volunteer based">Volunteer based</option>
-                  <option value="Professional/Community">Professional/Community</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
             <FormGroup controlId="name">
               <Col componentClass={ControlLabel} sm={3}>
                 Name *
@@ -333,6 +312,15 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
 
+            <SelectField
+              id="type"
+              label="Type"
+              options={serviceTypeOptions}
+              componentClass="select"
+              value={this.state.form.type}
+              onChange={this.formValChange}
+              required
+            />
             <FormGroup controlId="billable">
               <Col componentClass={ControlLabel} sm={3}>
                 Billable

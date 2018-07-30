@@ -76,6 +76,13 @@ const needStatusOptions = [
   'Fulfilled'
 ]
 
+const serviceTypeOptions = [
+  'Internal',
+  'External',
+  'Volunteer based',
+  'Professional/Community'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   genderOptions: genderOptions,
@@ -86,4 +93,5 @@ module.exports = Object.freeze({
   matchStatusOptions: matchStatusOptions,
   familyRelationshipOptions: familyRelationshipOptions,
   needStatusOptions: needStatusOptions,
+  serviceTypeOptions: serviceTypeOptions,
 });
