@@ -33,6 +33,7 @@ import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
 import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
+import HousingAssessment from './components/surveys/HousingAssessment';
 
 const routes = (
   <Switch>
@@ -40,6 +41,8 @@ const routes = (
     <Route path='/login' component={Login} />
     <Route path='/login-pane' component={LoginPane} />
     <PrivateRoute path='/dashboard' component={Dashboard} />
+
+    <PrivateRoute path='/clients/:id/assessment' component={HousingAssessment} />
 
     <PrivateRoute path='/clients/:id/edit' component={ClientForm} />
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm} />
@@ -58,8 +61,8 @@ const routes = (
 
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/providers/new/upload' component={ProviderCSVUpload} />
+    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
