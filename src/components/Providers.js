@@ -11,41 +11,86 @@ import { fetchProviders } from '../store/actions/providerActions.js'
 // styles
 import { Button, Col, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+
+
+class ProviderInfoBox extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const provider = this.props.provider;
+    return(
+      <div>
+        <div> <b>Provider id: </b>
+          {<Link to={`/provider/${provider.id}`}>
+            {provider.id}
+          </Link>}
+        </div>
+        <div> {this.props.provider.provider_type === "Individual" ?
+          <text>
+            <b>Provider name: </b>
+            {this.props.provider.first_name + " " + this.props.provider.last_name}
+          </text> :
+          <text>
+            <b>Company: </b>
+              {this.props.provider.company}
+          </text>}
+        </div>
+      </div>
+    )
+  }
+}
 
 
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.getCoordinates = this.getCoordinates.bind(this);
+    this.toggleProviderInfoBox = this.toggleProviderInfoBox.bind(this);
+    this.state = {
+      infoBoxOpen: false,
+      infoBoxProvider: ''
+    }
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
   }
 
-  getCoordinates(address) {
-    //let parsedAddress = address.street_address + "," + address.city + "," + address.province;
-    geocodeByAddress(address)
-      .then((result) => getLatLng(result[0]))
-      .then(({ lat, lng }) => (lat, lng))
-      .then((latlng) => latlng);
+  toggleProviderInfoBox(provider) {
+    this.setState({
+      infoBoxOpen : !this.state.infoBoxOpen,
+      infoBoxProvider: provider.id
+    });
   }
 
   render() {
     const p = this.props;
-    console.log(this.getCoordinates("3362 Cobblestone Ave, Vancouver"));
     const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
+
     const GMap = withGoogleMap(props => (
       <GoogleMap
         defaultZoom={10}
         defaultCenter={torontoCentroid} >
         {
-          <Marker position={torontoCentroid} />
+          _.map(this.props.providers, (provider) => {
+            return <Marker key={provider.id}
+                            position={provider.main_address.lat_lng}
+                            onClick={() => this.toggleProviderInfoBox(provider)}
+            >
+              {this.state.infoBoxOpen && this.state.infoBoxProvider === provider.id &&
+                <InfoWindow onCloseClick={() => this.toggleProviderInfoBox(provider)}>
+                  <ProviderInfoBox provider={provider}/>
+                </InfoWindow>
+              }
+            </Marker>
+          })
         }
       </GoogleMap>
     ));
+
     return(
       <div className='providers content'>
         <h3 className='title'>Providers</h3>

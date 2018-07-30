@@ -58,8 +58,8 @@ const routes = (
 
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/providers/new/upload' component={ProviderCSVUpload} />
+    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
