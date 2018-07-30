@@ -33,7 +33,6 @@ import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
 import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
-import HousingAssessment from './components/surveys/HousingAssessment';
 
 const routes = (
   <Switch>
@@ -41,8 +40,6 @@ const routes = (
     <Route path='/login' component={Login} />
     <Route path='/login-pane' component={LoginPane} />
     <PrivateRoute path='/dashboard' component={Dashboard} />
-
-    <PrivateRoute path='/clients/:id/assessment' component={HousingAssessment} />
 
     <PrivateRoute path='/clients/:id/edit' component={ClientForm} />
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm} />
