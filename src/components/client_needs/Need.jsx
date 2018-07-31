@@ -23,7 +23,7 @@ class Need extends Component {
           id = p.match.params.need_id,
           need = p.needsById[id],
           client = p.client,
-          latlng = client.personal_information.address.lat_lng,
+          latlng = client.address.lat_lng,
           recommended_services = _.keyBy(need.recommended_services, service => service.id);
     let distances = []
     _.each(need.recommended_service_distances, (distance, serviceId) => {
