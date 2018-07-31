@@ -27,52 +27,49 @@ class ClientForm extends Component {
       currentStep: 1,
       clientId: client.id,
       mode: (client.id) ? 'edit' : 'new',
-      form: {
-        personal_information: Object.assign({
-          first_name: '',
-          middle_name: '',
-          last_name: '',
-          preferred_name: '',
-          gender: '',
-          birth_date: '',
-          marital_status: '',
-          has_children: false,
-          num_of_children: '',
-          email: '',
-          primary_phone_number: '',
-          alt_phone_number: '',
-          address: Object.assign({
-            street_address: '',
-            apt_number: '',
-            city: '',
-            province: '',
-            postal_code: ''
-          }, client.personal_information && client.personal_information.address),
-        }, _.omit(client.personal_information, 'address')),
-        country_of_origin: client.country_of_origin || '',
-        country_of_last_residence: client.country_of_last_residence || '',
-        first_language: client.first_language || '',
-        other_languages: client.other_languages || [],
-        pr_number: client.pr_number || '',
-        immigration_doc_number: client.immigration_doc_number || '',
-        landing_date: client.landing_date || '',
-        arrival_date: client.arrival_date || '',
-        status_in_canada: client.status_in_canada || '',
-        income_source: client.income_source || '',
-        current_education_level: client.current_education_level || '',
-        completed_education_level: client.completed_education_level || '',
-        num_of_dependants: client.num_of_dependants || '',
-        family: {
-          file_id: (client.family && client.family.file_id) || '',
-          members: (client.family && client.family.members) || []
-        },
-        eligibilities: client.eligibilities || []
-      }
+      form: Object.assign({
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        preferred_name: '',
+        gender: '',
+        birth_date: '',
+        marital_status: '',
+        has_children: false,
+        num_of_children: '',
+        email: '',
+        primary_phone_number: '',
+        alt_phone_number: '',
+        address: Object.assign({
+          street_address: '',
+          apt_number: '',
+          city: '',
+          province: '',
+          postal_code: ''
+        }, client.address),
+        country_of_origin: '',
+        country_of_last_residence: '',
+        first_language: '',
+        other_languages: [],
+        pr_number: '',
+        immigration_doc_number: '',
+        landing_date: '',
+        arrival_date: '',
+        status_in_canada: '',
+        income_source: '',
+        current_education_level: '',
+        completed_education_level: '',
+        num_of_dependants: '',
+        family: Object.assign({
+          file_id: '',
+          members: []
+        }, client.family),
+        eligibilities: []
+      }, _.omit(client, ['address', 'family']))
     }
 
     this.formValChange = this.formValChange.bind(this);
     this.handleFamilyChange = this.handleFamilyChange.bind(this);
-    this.handlePersonalInfoChange = this.handlePersonalInfoChange.bind(this);
     this.submit = this.submit.bind(this);
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
@@ -115,27 +112,11 @@ class ClientForm extends Component {
         });
       }
     }
+    else if (_.includes(addressFields, id)) {
+      nextForm['address'][e.target.id] = e.target.value;
+    }
     else {
       nextForm[id] = e.target.value
-    }
-    this.setState({ form: nextForm });
-  }
-
-  handlePersonalInfoChange(e, id=e.target.id) {
-    let nextForm = _.clone(this.state.form);
-    const addressFields = [
-      'street_address',
-      'apt_number',
-      'city',
-      'province',
-      'postal_code'
-    ]
-
-    if (_.includes(addressFields, id)) {
-      nextForm['personal_information']['address'][e.target.id] = e.target.value;
-    }
-    else {
-      nextForm['personal_information'][id] = e.target.value;
     }
     this.setState({ form: nextForm });
   }
@@ -204,8 +185,20 @@ class ClientForm extends Component {
         <Form horizontal>
           {this.state.currentStep === 1 &&
             <PersonalInformationFields
-              person={this.state.form.personal_information}
-              handleFormValChange={this.handlePersonalInfoChange}
+              first_name={this.state.form.first_name}
+              middle_name={this.state.form.middle_name}
+              last_name={this.state.form.last_name}
+              preferred_name={this.state.form.preferred_name}
+              gender={this.state.form.gender}
+              birth_date={this.state.form.birth_date}
+              marital_status={this.state.form.marital_status}
+              has_children={this.state.form.has_children}
+              num_of_children={this.state.form.num_of_children}
+              email={this.state.form.email}
+              primary_phone_number={this.state.form.primary_phone_number}
+              alt_phone_number={this.state.form.alt_phone_number}
+              handleFormValChange={this.formValChange}
+              address={this.state.form.address}
             />
           }
           {this.state.currentStep === 2 &&

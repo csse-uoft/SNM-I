@@ -4,14 +4,14 @@ import SelectField from '../../shared/SelectField'
 import { genderOptions, maritalStatusOptions } from '../../../store/defaults.js';
 import { FormGroup, ControlLabel, Col, Row, Radio} from 'react-bootstrap';
 
-export default function PersonalInformationFields({ person, handleFormValChange }) {
+export default function PersonalInformationFields({ handleFormValChange, ...props }) {
   return (
     <Row>
       <FormField
         id="first_name"
         label="First name"
         type="text"
-        value={person.first_name}
+        value={props.first_name}
         onChange={handleFormValChange}
         required
       />
@@ -19,14 +19,14 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="middle_name"
         label="Middle name"
         type="text"
-        value={person.middle_name}
+        value={props.middle_name}
         onChange={handleFormValChange}
       />
       <FormField
         id="last_name"
         label="Last name"
         type="text"
-        value={person.last_name}
+        value={props.last_name}
         onChange={handleFormValChange}
         required
       />
@@ -34,7 +34,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="preferred_name"
         label="Preferred Name"
         type="text"
-        value={person.preferred_name}
+        value={props.preferred_name}
         onChange={handleFormValChange}
       />
       <SelectField
@@ -42,7 +42,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         label="Gender"
         options={genderOptions}
         componentClass="select"
-        value={person.gender}
+        value={props.gender}
         onChange={handleFormValChange}
         required
       />
@@ -50,7 +50,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="birth_date"
         label="Date of Birth"
         type="date"
-        value={person.birth_date}
+        value={props.birth_date}
         onChange={handleFormValChange}
         required
       />
@@ -59,7 +59,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         label="Marital Status"
         options={maritalStatusOptions}
         componentClass="select"
-        value={person.marital_status}
+        value={props.marital_status}
         onChange={handleFormValChange}
         required
       />
@@ -67,7 +67,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="email"
         label="Email"
         type="email"
-        value={person.email}
+        value={props.email}
         onChange={handleFormValChange}
         required
       />
@@ -75,7 +75,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="primary_phone_number"
         label="Telephone"
         type="tel"
-        value={person.primary_phone_number}
+        value={props.primary_phone_number}
         onChange={handleFormValChange}
         required
       />
@@ -83,21 +83,21 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="alt_phone_number"
         label="Alternative Phone Number"
         type="tel"
-        value={person.alt_phone_number}
+        value={props.alt_phone_number}
         onChange={handleFormValChange}
       />
       <FormField
         id="apt_number"
         label="Apt. #"
         type="text"
-        value={person.address.apt_number}
+        value={props.address.apt_number}
         onChange={handleFormValChange}
       />
       <FormField
         id="street_address"
         label="Street Address"
         type="text"
-        value={person.address.street_address}
+        value={props.address.street_address}
         onChange={handleFormValChange}
         required
       />
@@ -105,7 +105,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="city"
         label="City"
         type="text"
-        value={person.address.city}
+        value={props.address.city}
         onChange={handleFormValChange}
         required
       />
@@ -113,7 +113,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="province"
         label="Province"
         type="text"
-        value={person.address.province}
+        value={props.address.province}
         onChange={handleFormValChange}
         required
       />
@@ -121,7 +121,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
         id="postal_code"
         label="Postal Code"
         type="text"
-        value={person.address.postal_code}
+        value={props.address.postal_code}
         onChange={handleFormValChange}
         required
       />
@@ -134,7 +134,7 @@ export default function PersonalInformationFields({ person, handleFormValChange 
             name="radioGroup"
             value='true'
             onChange={e => handleFormValChange(e, 'has_children')}
-            defaultChecked={person.has_children === true}
+            defaultChecked={props.has_children === true}
             inline
           >
             Yes
@@ -143,19 +143,19 @@ export default function PersonalInformationFields({ person, handleFormValChange 
             name="radioGroup"
             value='false'
             onChange={e => handleFormValChange(e, 'has_children')}
-            defaultChecked={person.has_children === false}
+            defaultChecked={props.has_children === false}
             inline
           >
             No
           </Radio>{' '}
         </Col>
       </FormGroup>
-      {JSON.parse(person.has_children) && (
+      {JSON.parse(props.has_children) && (
         <FormField
           id="num_of_children"
           label="Number of Children"
           type="number"
-          value={person.num_of_children}
+          value={props.num_of_children}
           onChange={handleFormValChange}
           required
         />

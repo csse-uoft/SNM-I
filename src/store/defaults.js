@@ -20,7 +20,8 @@ const maritalStatusOptions = [
   'Common Law',
   'Separated',
   'Divorced',
-  'Widowed'
+  'Widowed',
+  'Other'
 ]
 
 const statusInCanadaOptions = [

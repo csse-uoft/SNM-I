@@ -43,43 +43,43 @@ class Client extends Component {
                 </tr>
                 <TableRow
                   title="First Name"
-                  value={client.personal_information.first_name}
+                  value={client.first_name}
                 />
                 <TableRow
                   title="Middle Name"
-                  value={client.personal_information.middle_name}
+                  value={client.middle_name}
                 />
                 <TableRow
                   title="Last Name"
-                  value={client.personal_information.last_name}
+                  value={client.last_name}
                 />
                 <TableRow
                   title="Preferred Name"
-                  value={client.personal_information.preferred_name}
+                  value={client.preferred_name}
                 />
                 <TableRow
                   title="Gender"
-                  value={client.personal_information.gender}
+                  value={client.gender}
                 />
                 <TableRow
                   title="Date of Birth"
-                  value={client.personal_information.birth_date}
+                  value={client.birth_date}
                 />
                 <TableRow
                   title="Email"
-                  value={client.personal_information.email}
+                  value={client.email}
                 />
                 <TableRow
                   title="Phone Number"
-                  value={client.personal_information.primary_phone_number}
+                  value={client.primary_phone_number}
                 />
                 <TableRow
                   title="Alternative Phone Number"
-                  value={client.personal_information.alt_phone_number}
+                  value={client.alt_phone_number}
                 />
                 <TableRow
                   title="Address"
-                  value={formatLocation(client.personal_information.address)}
+                  value={formatLocation(client.address)}
                 />
               </tbody>
             </Table>
@@ -96,16 +96,16 @@ class Client extends Component {
                 }
                 <TableRow
                   title="Marital Status"
-                  value={client.personal_information.marital_status}
+                  value={client.marital_status}
                 />
                 <TableRow
                   title="Has children?"
-                  value={client.personal_information.has_children ? 'Yes' : 'No'}
+                  value={client.has_children ? 'Yes' : 'No'}
                 />
-                {client.personal_information.has_children &&
+                {client.has_children &&
                   <TableRow
                     title="Number of children"
-                    value={client.personal_information.num_of_children}
+                    value={client.num_of_children}
                   />
                 }
               </tbody>
