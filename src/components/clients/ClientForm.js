@@ -103,6 +103,13 @@ class ClientForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
+    const addressFields = [
+      'street_address',
+      'apt_number',
+      'city',
+      'province',
+      'postal_code'
+    ]
     if (id === 'other_languages' || id === 'eligibilities') {
       if (e.target.checked) {
         nextForm[id].push(e.target.value)

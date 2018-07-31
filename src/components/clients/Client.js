@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import TableRow from '../shared/TableRow'
@@ -26,6 +27,11 @@ class Client extends Component {
     return (
       <div className="content client">
         <h3>Client Profile</h3>
+        <Link to={`/clients/${client.id}/edit`}>
+          <Button bsStyle="primary">
+            Edit
+          </Button>
+        </Link>{' '}
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>
