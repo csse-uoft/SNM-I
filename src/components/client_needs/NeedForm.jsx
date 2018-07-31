@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import FormField from '../shared/FormField'
+import SelectField from '../shared/SelectField'
+
+import { needStatusOptions } from '../../store/defaults.js'
 
 // redux
 import { connect } from 'react-redux'
@@ -48,9 +52,7 @@ class NeedForm extends Component {
     if (this.state.mode === 'edit') {
       this.props.dispatch(updateClientNeed(this.props.clientId, this.state.needId, this.state.form));
     } else {
-      let form = Object.assign({}, this.state.form);
-      delete form['status']
-      this.props.dispatch(createClientNeed(this.props.clientId, form));
+      this.props.dispatch(createClientNeed(this.props.clientId, this.state.form));
     }
     this.props.history.push(`/clients/${this.props.clientId}`)
   }
@@ -58,12 +60,6 @@ class NeedForm extends Component {
   render() {
     const p = this.props, s = this.state;
     const formTitle = (this.state.mode === 'edit') ? 'Edit Need' : 'Create Need'
-
-    function cateogiresIntoOptions(categories) {
-      return categories.map((category) => {
-        return <option key={category} value={category}>{category}</option>
-      })
-    }
 
     if (this.state.form.type === undefined) {
       return (
@@ -99,7 +95,6 @@ class NeedForm extends Component {
                   </div>
                 </Col>
               </FormGroup>
-
               <FormGroup controlId="is_urgent">
                 <Col componentClass={ControlLabel} sm={3}>
                   Urgent?
@@ -125,90 +120,52 @@ class NeedForm extends Component {
                   </Radio>{' '}
                 </Col>
               </FormGroup>
-
-              <FormGroup controlId="category">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Category
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    placeholder="select"
-                    value={this.state.form.category}
-                    onChange={this.formValChange}
-                  >
-                    <option value="select">-- Not Set --</option>
-                    { p.categoriesLoaded &&
-                      cateogiresIntoOptions(p.needsCategories)
-                    }
-                  </FormControl>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="needed_by">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Needed by
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="date"
-                    value={this.state.form.needed_by}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="description">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Description
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    value={this.state.form.description}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-
+              <SelectField
+                id="category"
+                label="Category"
+                options={p.needsCategories}
+                componentClass="select"
+                value={this.state.form.category}
+                onChange={this.formValChange}
+                required
+              />
+              <FormField
+                id="needed_by"
+                label="Needed By"
+                type="date"
+                value={this.state.form.needed_by}
+                onChange={this.formValChange}
+              />
+              <FormField
+                id="description"
+                label="Description"
+                type="textarea"
+                value={this.state.form.description}
+                onChange={this.formValChange}
+                componentClass="textarea"
+                required
+              />
               {this.state.form.type === 'Good' &&
-                <FormGroup controlId="condition">
-                  <Col componentClass={ControlLabel} sm={3}>
-                    Condition
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      componentClass="textarea"
-                      value={this.state.form.condition}
-                      onChange={this.formValChange}
-                    />
-                  </Col>
-                </FormGroup>
+                <FormField
+                  id="condition"
+                  label="Condition"
+                  type="textarea"
+                  value={this.state.form.condition}
+                  onChange={this.formValChange}
+                  componentClass="textarea"
+                />
               }
-
-              { s.mode === 'edit' &&
-                <FormGroup controlId="status">
-                  <Col componentClass={ControlLabel} sm={3}>
-                    Status
-                  </Col>
-                  <Col sm={9}>
-                    <FormControl
-                      componentClass="select"
-                      placeholder="select"
-                      value={this.state.form.status}
-                      onChange={this.formValChange}
-                    >
-                      <option value="select">-- Not Set --</option>
-                      <option value="Unmatched">Unmatched</option>
-                      <option value="Pending">Pending</option>
-                      <option value="In Progress">In progress</option>
-                      <option value="Matched">Matched</option>
-                      <option value="Fulfilled">Fulfilled</option>
-                    </FormControl>
-                  </Col>
-                </FormGroup>
+              {s.mode === 'edit' &&
+                <SelectField
+                  id="status"
+                  label="Status"
+                  options={needStatusOptions}
+                  componentClass="select"
+                  value={this.state.form.status}
+                  onChange={this.formValChange}
+                  required
+                />
               }
-
               <FormGroup>
                 <Col smOffset={3} sm={9}>
                   <Button onClick={this.submit}>

@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClient, updateClient } from '../../store/actions/clientActions.js';
+import { fetchEligibilities } from '../../store/actions/eligibilityActions.js'
 
 import PersonalInformationFields from './client_form/PersonalInformationFields';
 import FamilyInformationFields from './client_form/FamilyInformationFields';
@@ -58,12 +59,14 @@ class ClientForm extends Component {
         arrival_date: client.arrival_date || '',
         status_in_canada: client.status_in_canada || '',
         income_source: client.income_source || '',
-        level_of_education: client.level_of_education || '',
+        current_education_level: client.current_education_level || '',
+        completed_education_level: client.completed_education_level || '',
         num_of_dependants: client.num_of_dependants || '',
         family: {
           file_id: (client.family && client.family.file_id) || '',
           members: (client.family && client.family.members) || []
-        }
+        },
+        eligibilities: client.eligibilities || []
       }
     }
 
@@ -80,6 +83,7 @@ class ClientForm extends Component {
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('languages'));
+    this.props.dispatch(fetchEligibilities());
   }
 
   next() {
@@ -102,12 +106,12 @@ class ClientForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    if (id === 'other_languages') {
+    if (id === 'other_languages' || id === 'eligibilities') {
       if (e.target.checked) {
-        nextForm['other_languages'].push(e.target.value)
+        nextForm[id].push(e.target.value)
       } else {
-        _.remove(nextForm['other_languages'], (language) => {
-          return language === e.target.value
+        _.remove(nextForm[id], (value) => {
+          return value === e.target.value
         });
       }
     }
@@ -179,24 +183,6 @@ class ClientForm extends Component {
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Client Profile' : 'New Client Profile'
 
-    function cateogiresIntoCheckboxes(categories, categoryToRemove, checkedCategories, formValChange) {
-      let updatedCategories = _.clone(categories)
-      _.remove(updatedCategories, (category) => { return category === categoryToRemove });
-      return updatedCategories.map((category) => {
-        return (
-          <Checkbox
-            key={category}
-            value={category}
-            checked={_.includes(checkedCategories, category)}
-            onChange={e => formValChange(e, 'other_languages')}
-            inline
-          >
-            {category}
-          </Checkbox>
-        )
-      })
-    }
-
     const stepTitles = [
       "Personal Information",
       "Family Members (Optional)",
@@ -243,11 +229,13 @@ class ClientForm extends Component {
               formValChange={this.formValChange}
               categoriesLoaded={p.categoriesLoaded}
               languagesCategories={p.languagesCategories}
-              cateogiresIntoCheckboxes={cateogiresIntoCheckboxes}
               num_of_dependants={this.state.form.num_of_dependants}
               income_source={this.state.form.income_source}
-              level_of_education={this.state.form.level_of_education}
+              current_education_level={this.state.form.current_education_level}
+              completed_education_level={this.state.form.completed_education_level}
               status_in_canada={this.state.form.status_in_canada}
+              eligibility_criteria={this.props.eligibilitiesLoaded && this.props.eligibilities}
+              eligibilities={this.state.form.eligibilities}
             />
           }
           <Row>
@@ -275,7 +263,9 @@ const mapStateToProps = (state) => {
   return {
     clientsById: state.clients.byId,
     languagesCategories: state.ontology.languages.categories,
-    categoriesLoaded: state.ontology.languages.loaded
+    categoriesLoaded: state.ontology.languages.loaded,
+    eligibilities: _.map(state.eligibilities.byId, eligibility => eligibility['title']),
+    eligibilitiesLoaded: state.eligibilities.eligibilitiesLoaded
   }
 }
 

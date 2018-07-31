@@ -12,6 +12,7 @@ export default class ProvidersIndex extends Component {
         <Table striped bordered condensed hover>
           <thead>
             <tr>
+              <th>Id</th>
               <th>Name</th>
               <th>Type</th>
               <th>Email</th>

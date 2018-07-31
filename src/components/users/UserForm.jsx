@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import FormField from '../shared/FormField'
+import SelectField from '../shared/SelectField'
 
 // redux
 import { connect } from 'react-redux'
@@ -85,100 +87,63 @@ class UserForm extends Component {
                 </Radio>{' '}
               </Col>
             </FormGroup>
-            
-            <FormGroup controlId="first_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                First name
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.first_name}
-                  onChange={e => this.formValChange(e)}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="last_name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Last name
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.last_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="username">
-              <Col componentClass={ControlLabel} sm={3}>
-                Username
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.username}
-                  onChange={e => this.formValChange(e)}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="email">
-              <Col componentClass={ControlLabel} sm={3}>
-                Email
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="email"
-                  value={this.state.form.email}
-                  onChange={e => this.formValChange(e)}
-                />
-              </Col>
-            </FormGroup>
-
-            { (this.state.mode === 'new') ? (
-              <FormGroup controlId="password">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Password
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.password}
-                    onChange={e => this.formValChange(e)}
-                  />
-                </Col>
-              </FormGroup>
-            ) : null }
-
-            <FormGroup controlId="primary_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Telephone
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.primary_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="alt_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Alternative Phone Number
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.alt_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
+            <FormField
+              id="first_name"
+              label="First name"
+              type="text"
+              value={this.state.form.first_name}
+              onChange={this.formValChange}
+              required
+            />
+            <FormField
+              id="last_name"
+              label="Last name"
+              type="text"
+              value={this.state.form.last_name}
+              onChange={this.formValChange}
+              required
+            />
+            <FormField
+              id="username"
+              label="Username"
+              type="text"
+              value={this.state.form.username}
+              onChange={this.formValChange}
+              required
+            />
+            <FormField
+              id="email"
+              label="Email"
+              type="email"
+              value={this.state.form.email}
+              onChange={this.formValChange}
+              required
+            />
+            {(this.state.mode === 'new') &&
+              <FormField
+                id="password"
+                label="Password"
+                type="password"
+                value={this.state.form.password}
+                onChange={this.formValChange}
+                required
+              />
+            }
+            <FormField
+              id="primary_phone_number"
+              label="Telephone"
+              type="tel"
+              value={this.state.form.primary_phone_number}
+              onChange={this.formValChange}
+              required
+            />
+            <FormField
+              id="alt_phone_number"
+              label="Alternative Phone Number"
+              type="tel"
+              value={this.state.form.alt_phone_number}
+              onChange={this.formValChange}
+            />
             <FormGroup>
               <Col smOffset={3} sm={9}>
                 <Button onClick={this.submit}>

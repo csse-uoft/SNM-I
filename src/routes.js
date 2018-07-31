@@ -31,6 +31,8 @@ import Good from './components/goods/Good';
 import GoodForm from './components/goods/GoodForm'
 import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
+import Eligibilities from './components/Eligibilities';
+import EligibilityForm from './components/eligibilities/EligibilityForm'
 
 const routes = (
   <Switch>
@@ -56,8 +58,8 @@ const routes = (
 
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/providers/new/upload' component={ProviderCSVUpload} />
+    <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
@@ -73,6 +75,10 @@ const routes = (
     <PrivateRoute path='/goods' component={Goods} />
 
     <PrivateRoute path='/reporting' component={Reporting} />
+
+    <PrivateRoute path='/eligibility_criteria/:id/edit' component={EligibilityForm} />
+    <PrivateRoute path='/eligibility_criteria/new' component={EligibilityForm} />
+    <PrivateRoute path='/eligibility_criteria' component={Eligibilities} />
   </Switch>
 )
 

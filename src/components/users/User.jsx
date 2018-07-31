@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TableRow from '../shared/TableRow'
 
 // redux
 import { connect } from 'react-redux'
@@ -23,34 +24,34 @@ class User extends Component {
         { user && user.loaded &&
           <Table striped bordered condensed hover>
             <tbody>
-              <tr>
-                <td><b>First Name</b></td>
-                <td>{user.first_name}</td>
-              </tr>
-              <tr>
-                <td><b>Last Name</b></td>
-                <td>{user.last_name}</td>
-              </tr>
-              <tr>
-                <td><b>Username</b></td>
-                <td>{user.username}</td>
-              </tr>
-              <tr>
-                <td><b>Email</b></td>
-                <td>{user.email}</td>
-              </tr>
-              <tr>
-                <td><b>Role</b></td>
-                <td>{user.is_superuser ? 'Admin' : 'User'}</td>
-              </tr>
-              <tr>
-                <td><b>Phone Number</b></td>
-                <td>{user.primary_phone_number}</td>
-              </tr>
-              <tr>
-                <td><b>Alternative Phone Number</b></td>
-                <td>{user.alt_phone_number}</td>
-              </tr>
+              <TableRow
+                title="First Name"
+                value={user.first_name}
+              />
+              <TableRow
+                title="Last Name"
+                value={user.last_name}
+              />
+              <TableRow
+                title="Username"
+                value={user.username}
+              />
+              <TableRow
+                title="Email"
+                value={user.email}
+              />
+              <TableRow
+                title="Role"
+                value={user.is_superuser ? 'Admin' : 'User'}
+              />
+              <TableRow
+                title="Phone Number"
+                value={user.primary_phone_number}
+              />
+              <TableRow
+                title="Alternative Phone Number"
+                value={user.alt_phone_number}
+              />
             </tbody>
           </Table>
         }

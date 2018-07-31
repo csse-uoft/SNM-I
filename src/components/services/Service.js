@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ import { connect } from 'react-redux'
 import { fetchService } from '../../store/actions/serviceActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
+import { formatEligibilityConditions } from '../../helpers/eligibility_condition_helpers'
 
 import { Table, Glyphicon, Button } from 'react-bootstrap';
 
@@ -36,7 +38,7 @@ class Service extends Component {
               </tr>
               <tr>
                 <td><b>Type</b></td>
-                <td>{service.type_of_service}</td>
+                <td>{service.type}</td>
               </tr>
               <tr>
                 <td><b>Description</b></td>
@@ -110,6 +112,34 @@ class Service extends Component {
                 <td><b>Location</b></td>
                 <td>{formatLocation(service.location)}</td>
               </tr>
+
+              {service.eligibility_conditions &&
+              <tr>
+                <td><b>Eligibility Conditions</b></td>
+                <td>
+                  {_.map(
+                      _.omit(service.eligibility_conditions, ['lower_age_limit', 'upper_age_limit']
+                    ), (value, type) => {
+                    return (
+                      <li key={type}>
+                        {formatEligibilityConditions(type, value)}
+                      </li>
+                    );
+                  })}
+                  {service.eligibility_conditions.lower_age_limit &&
+                    <li>
+                      {formatEligibilityConditions('Age greater than' , service.eligibility_conditions.lower_age_limit)}
+                    </li>
+                  }
+                  {service.eligibility_conditions.upper_age_limit &&
+                    <li>
+                      {formatEligibilityConditions('Age less than' , service.eligibility_conditions.upper_age_limit)}
+                    </li>
+                  }
+                </td>
+              </tr>
+              }
+
               <tr>
                 <td><b>Share with</b></td>
                 <td>{service.share_with}</td>

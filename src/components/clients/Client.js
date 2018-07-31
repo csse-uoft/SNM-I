@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
+import TableRow from '../shared/TableRow'
 import ClientNeeds from '../ClientNeeds';
 
 // redux
@@ -11,18 +12,6 @@ import { formatLocation } from '../../helpers/location_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
-function TableRow({ title, value }) {
-  if (value) {
-    return (
-      <tr>
-        <td><b>{title}</b></td>
-        <td>{value}</td>
-      </tr>
-    );
-  } else {
-    return null;
-  }
-}
 
 class Client extends Component {
   componentWillMount() {
@@ -188,8 +177,12 @@ class Client extends Component {
                   value={client.arrival_date}
                 />
                 <TableRow
-                  title="Level of Education"
-                  value={client.level_of_education}
+                  title="Current Education Level"
+                  value={client.current_education_level}
+                />
+                <TableRow
+                  title="Completed Education Level"
+                  value={client.completed_education_level}
                 />
                 <TableRow
                   title="Income Source"
@@ -198,6 +191,10 @@ class Client extends Component {
                 <TableRow
                   title="Number of Dependants"
                   value={client.num_of_dependants}
+                />
+                <TableRow
+                  title="Eligibilities"
+                  value={(client.eligibilities || []).join(', ')}
                 />
               </tbody>
             </Table>

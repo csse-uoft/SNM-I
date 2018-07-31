@@ -5,8 +5,8 @@ class Landing extends Component {
     return(
       <div className='landing'>
         <div className='container'>
-            <div className='intro-placeholder'>
-            </div>
+          <div className='intro-placeholder'>
+          </div>
         </div>
       </div>
     )

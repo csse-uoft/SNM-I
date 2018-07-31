@@ -41,6 +41,11 @@ class Dashboard extends Component {
                     Admin Logs
                   </Button>
                 </Link>
+                <Link to='/eligibility_criteria'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Eligibility criteria
+                  </Button>
+                </Link>
               </div>
             }
           </div>
