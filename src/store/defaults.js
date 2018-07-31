@@ -25,11 +25,22 @@ const maritalStatusOptions = [
 ]
 
 const statusInCanadaOptions = [
-  'Citizen',
+  'Permanent Resident - Skilled Worker and Skilled Trades',
+  'Permanent Resident - Provincial Nominee',
+  'Permanent Resident - Business Class',
+  'Permanent Resident - Canadian Experience Class',
+  'Permanent Resident - Live-in Caregiver',
+  'Permanent Resident - Family Class',
+  'Permanent Resident - Refugees',
+  'Permanent Resident -  Humanitarian and Compassionate',
+  'Application in Process - Independent',
+  'Application in Process - Family',
+  'Application in Process - Humanitarian and Compassionate',
+  'Application in Process - Refugee',
+  'Temporary Resident',
+  'Canadian Citizen',
   'Immigrant',
-  'Refugee',
   'Work Permit',
-  'Refugee Claimant',
   'Visitors Visa',
   'Other'
 ]
