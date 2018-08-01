@@ -9,10 +9,8 @@ class ClientRow extends Component {
 
     return (
       <tr>
+        <td>{client.first_name}</td>
         <td>{client.last_name}</td>
-        <td>
-          {client.first_name}
-        </td>
         <td>
           {formatPhoneNumber(client.primary_phone_number)}
         </td>
