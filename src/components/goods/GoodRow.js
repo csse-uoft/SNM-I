@@ -54,7 +54,7 @@ class GoodRow extends Component {
               View
               <Glyphicon glyph="file" />
             </MenuItem>
-            <MenuItem eventKey="2" href={`/good/${good.id}/edit`}>
+            <MenuItem eventKey="2" href={`/goods/${good.id}/edit`}>
               Edit
               <Glyphicon glyph="pencil" />
             </MenuItem>
