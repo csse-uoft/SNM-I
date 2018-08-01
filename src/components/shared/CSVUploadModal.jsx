@@ -20,6 +20,7 @@ export default class CSVUploadModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.submit}>Submit</Button>
+          <Button onClick={this.props.onHide}>Close</Button>
         </Modal.Footer>
       </Modal>
     );
