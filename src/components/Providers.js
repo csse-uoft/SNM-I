@@ -8,6 +8,7 @@ import CSVUploadModal from './shared/CSVUploadModal'
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
+import { formatLocation } from '../helpers/location_helpers.js'
 // styles
 import { Button, Col, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
@@ -19,10 +20,12 @@ class MapMarker extends Component {
     super(props);
     this.state = {
       isOpen: false,
+      isClicked: false
     }
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.closeInfoBox = this.closeInfoBox.bind(this);
+    this.openInfoBox = this.openInfoBox.bind(this);
   }
 
   onMouseEnter() {
@@ -39,7 +42,13 @@ class MapMarker extends Component {
 
   closeInfoBox() {
     this.setState({
-      isOpen: false
+      isClicked: false
+    })
+  }
+
+  openInfoBox() {
+    this.setState({
+      isClicked: true
     })
   }
 
@@ -50,8 +59,9 @@ class MapMarker extends Component {
         position={this.props.provider.main_address.lat_lng}
         onMouseOver={() => this.onMouseEnter()}
         onMouseOut={() => this.onMouseLeave()}
+        onClick={this.openInfoBox}
       >
-      {this.state.isOpen &&
+      {(this.state.isOpen || this.state.isClicked) &&
         <InfoWindow onCloseClick={() => this.closeInfoBox()}>
           <ProviderInfoBox provider={this.props.provider}/>
         </InfoWindow>
@@ -71,20 +81,23 @@ class ProviderInfoBox extends Component {
     const provider = this.props.provider;
     return(
       <div>
-        <div> <b>Provider id: </b>
-          {<Link to={`/provider/${provider.id}`}>
-            {provider.id}
-          </Link>}
-        </div>
         <div> {this.props.provider.provider_type === "Individual" ?
           <text>
             <b>Provider name: </b>
-            {this.props.provider.first_name + " " + this.props.provider.last_name}
+            {<Link to={`/provider/${provider.id}`}>
+              {this.props.provider.first_name + " " + this.props.provider.last_name}
+            </Link>}
           </text> :
           <text>
             <b>Company: </b>
               {this.props.provider.company}
           </text>}
+        </div>
+        <div>
+          <text>
+            <b>Provider address: </b>
+            {formatLocation(provider.main_address).split(",").map(line => <div key={line}> {line} </div>)}
+          </text>
         </div>
       </div>
     )
