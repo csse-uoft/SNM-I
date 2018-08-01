@@ -54,7 +54,7 @@ class Clients extends Component {
   }
 
   handleDeleteModalHide() {
-    this.setState({ deleteModalshow: false });
+    this.setState({ deleteModalShow: false });
   }
 
   handleDeleteModalShow(id) {
