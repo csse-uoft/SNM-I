@@ -1,3 +1,15 @@
-.form-control {
-  width: 20% !important;
-}
+@media print {
+  .provider {
+    font-size: 12px; }
+    .provider .print-button {
+      display: none; }
+    .provider .provider-needs {
+      display: none; }
+    .provider hr {
+      display: none; } }
+
+.previous-button {
+  float: left; }
+
+.next-button, .submit-button {
+  float: right; }

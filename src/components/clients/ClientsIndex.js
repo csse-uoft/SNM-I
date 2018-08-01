@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
+import './../../stylesheets/Common.css'
 
 export default class ClientsIndex extends Component {
   render() {
     return(
       <Table
-        className="clients-table"
+        className="dashboard-table"
         striped
         bordered
         condensed

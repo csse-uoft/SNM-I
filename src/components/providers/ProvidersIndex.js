@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
 import ProviderSearchBar from './ProviderSearchBar.js';
+import './../../stylesheets/Common.css'
 
 export default class ProvidersIndex extends Component {
   render() {
@@ -9,15 +10,20 @@ export default class ProvidersIndex extends Component {
         <ProviderSearchBar> 
         </ProviderSearchBar>
         <hr/>
-        <Table striped bordered condensed hover>
+        <Table
+          className="dashboard-table"
+          striped
+          bordered
+          condensed
+          hover
+        >
           <thead>
             <tr>
-              <th>Id</th>
               <th>Name</th>
               <th>Type</th>
               <th>Email</th>
               <th>Phone</th>
-              <th></th>
+              <th>Address</th>
               <th></th>
             </tr>
           </thead>

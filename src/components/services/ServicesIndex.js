@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
 import ServiceSearchBar from './ServiceSearchBar.js';
+import './../../stylesheets/Common.css'
 
 export default class ServicesIndex extends Component {
   render() {
@@ -9,7 +10,7 @@ export default class ServicesIndex extends Component {
       <ServiceSearchBar> 
       </ServiceSearchBar>
       <hr />
-      <Table className="clients-table" striped bordered condensed hover>
+      <Table className="dashboard-table" striped bordered condensed hover>
         <thead>
           <tr>
             <th>Name</th>

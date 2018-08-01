@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Glyphicon, Button } from 'react-bootstrap';
+import { Glyphicon, Button, Dropdown, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 // redux
 import { connect } from 'react-redux';
 import { deleteProvider } from '../../store/actions/providerActions.js'
+import { formatLocation } from '../../helpers/location_helpers.js'
 
 class ProviderRow extends Component {
   constructor(props) {
@@ -24,9 +25,6 @@ class ProviderRow extends Component {
     return (
       <tr>
         <td>
-          {p.id}
-        </td>
-        <td>
           <Link to={`/provider/${p.id}`}>
             {p.provider_type==="Individual" ? p.first_name + " " + p.last_name : p.company}
           </Link>
@@ -40,17 +38,34 @@ class ProviderRow extends Component {
         <td className='centered-text'>
           {p.primary_phone_number}
         </td>
-        <td>
-          <EditButton currentUser={currentUser} providerStatus={p.status} url={url} />
+        <td className='centered-text'>
+          {formatLocation(p.main_address)}
         </td>
         <td>
-          <Button
-            bsStyle="danger"
-            onClick={() => this.delete(p.id)}
-            disabled={p.status === 'Home Agency'}
+          <Dropdown
+            id="dropdown-menu"
+            className="vertical-options"
+            pullRight
           >
-            <Glyphicon glyph="trash" />
-          </Button>
+          <Dropdown.Toggle noCaret>
+            <Glyphicon glyph="option-vertical" />
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <MenuItem eventKey="1" href={`/provider/${p.id}`}>
+              View
+              <Glyphicon glyph="file" />
+            </MenuItem>
+            <EditButton currentUser={currentUser} providerStatus={p.status} url={url}/>
+            <MenuItem divider />
+            <MenuItem
+              eventKey="3"
+              onClick={() => this.delete(p.id)}
+              disabled={p.status === 'Home Agency'}>
+              Delete
+              <Glyphicon glyph="trash" />
+            </MenuItem>
+          </Dropdown.Menu>
+        </Dropdown>
         </td>
       </tr>
     )
@@ -60,17 +75,17 @@ class ProviderRow extends Component {
 function EditButton({ currentUser, providerStatus, url }) {
   if (providerStatus === 'Home Agency' && currentUser && !currentUser.is_admin) {
     return (
-      <Button bsStyle="primary" disabled>
-        <Glyphicon glyph="edit" />
-      </Button>
-    );
+      <MenuItem eventKey="2" disabled>
+        Edit
+        <Glyphicon glyph="pencil" />
+      </MenuItem>
+    )
   }
   return (
-    <Link to={`${url}`}>
-      <Button bsStyle="primary">
-        <Glyphicon glyph="edit" />
-      </Button>
-    </Link>
+    <MenuItem eventKey="2" href={url}>
+      Edit
+      <Glyphicon glyph="pencil" />
+    </MenuItem>
   );
 }
 
