@@ -4,16 +4,63 @@ import _ from 'lodash'
 // components
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
-
+import CSVUploadModal from './shared/CSVUploadModal'
 // redux
 import { connect } from 'react-redux'
-import { fetchProviders } from '../store/actions/providerActions.js'
+import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
 // styles
 import { Button, Col, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
+class MapMarker extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isOpen: false,
+    }
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.closeInfoBox = this.closeInfoBox.bind(this);
+  }
+
+  onMouseEnter() {
+    this.setState({
+      isOpen: true
+    })
+  }
+
+  onMouseLeave() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  closeInfoBox() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  render() {
+    return (
+      <Marker
+        key={this.props.provider.id}
+        position={this.props.provider.main_address.lat_lng}
+        onMouseOver={() => this.onMouseEnter()}
+        onMouseOut={() => this.onMouseLeave()}
+      >
+      {this.state.isOpen &&
+        <InfoWindow onCloseClick={() => this.closeInfoBox()}>
+          <ProviderInfoBox provider={this.props.provider}/>
+        </InfoWindow>
+      }
+      </Marker>
+    )
+  }
+
+}
 
 class ProviderInfoBox extends Component {
   constructor(props) {
@@ -48,22 +95,31 @@ class ProviderInfoBox extends Component {
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.toggleProviderInfoBox = this.toggleProviderInfoBox.bind(this);
     this.state = {
-      infoBoxOpen: false,
-      infoBoxProvider: ''
+      CSVModalshow: false
     }
+    this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
+    this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
   }
 
-  toggleProviderInfoBox(provider) {
-    this.setState({
-      infoBoxOpen : !this.state.infoBoxOpen,
-      infoBoxProvider: provider.id
-    });
+  handleCSVModalHide() {
+    this.setState({ CSVModalshow: false });
+  }
+
+  handleCSVModalShow() {
+    this.setState({ CSVModalshow: true })
+  }
+
+  handleSubmit(e) {
+    const file = document.querySelector('input[type="file"]').files[0];
+    this.props.dispatch(createProviderWithCSV(file)).then(() =>
+        this.setState({ CSVModalshow: false })
+    );
   }
 
   render() {
@@ -76,16 +132,7 @@ class Providers extends Component {
         defaultCenter={torontoCentroid} >
         {
           _.map(this.props.providers, (provider) => {
-            return <Marker key={provider.id}
-                            position={provider.main_address.lat_lng}
-                            onClick={() => this.toggleProviderInfoBox(provider)}
-            >
-              {this.state.infoBoxOpen && this.state.infoBoxProvider === provider.id &&
-                <InfoWindow onCloseClick={() => this.toggleProviderInfoBox(provider)}>
-                  <ProviderInfoBox provider={provider}/>
-                </InfoWindow>
-              }
-            </Marker>
+            return <MapMarker provider={provider}/>
           })
         }
       </GoogleMap>
@@ -95,17 +142,15 @@ class Providers extends Component {
       <div className='providers content'>
         <h3 className='title'>Providers</h3>
           <div>
-            <Link to={`/providers/new/upload`}>
-              <Button bsStyle="default" >
-              Upload from CSV
-              </Button>
-            </Link>
-            &nbsp;
             <Link to={`/providers/new`}>
               <Button bsStyle="default" >
               Add new provider
               </Button>
             </Link>
+            &nbsp;
+            <Button bsStyle="default" onClick={this.handleCSVModalShow}>
+              Add providers by uploading CSV
+            </Button>
             &nbsp;
             <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
               <Glyphicon glyph="print" />
@@ -137,6 +182,11 @@ class Providers extends Component {
         </Col>
         </div>
       }
+        <CSVUploadModal
+          show={this.state.CSVModalshow}
+          onHide={this.handleCSVModalHide}
+          submit={this.handleSubmit}
+        />
       </div>
     )
   }
