@@ -76,7 +76,7 @@ class ServiceInfoBox extends Component {
     return(
       <div>
         <b>Service name: </b>
-          {<Link to={`/services/${service.id}`}>
+          {<Link to={`/service/${service.id}`}>
             {service.name}
           </Link>}
       </div>
