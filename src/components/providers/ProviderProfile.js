@@ -182,6 +182,7 @@ class ProviderProfile extends Component {
               provider.operation_hours.length !== 0 ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
           </tr>
 
+          {provider.languages &&
           <tr>
             <td><b>Languages</b></td>
             <td>{provider.languages.map(language =>
@@ -189,7 +190,7 @@ class ProviderProfile extends Component {
               )}
             </td>
           </tr>
-
+          }
 
           {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
             <tr>

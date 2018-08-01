@@ -41,7 +41,7 @@ class AddressForm extends Component {
       <div>
       <Well>
         <FormGroup controlId="street_address">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col className="required" componentClass={ControlLabel} sm={3}>
             Street Address
           </Col>
               <Col sm={9}>
@@ -67,7 +67,7 @@ class AddressForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="city">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col className="required" componentClass={ControlLabel} sm={3}>
                 City
               </Col>
               <Col sm={9}>
@@ -80,7 +80,7 @@ class AddressForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="province">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col className="required" componentClass={ControlLabel} sm={3}>
                 Province
               </Col>
               <Col sm={9}>
@@ -93,7 +93,7 @@ class AddressForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="postal_code">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col className="required" componentClass={ControlLabel} sm={3}>
                 Postal Code
               </Col>
               <Col sm={9}>
@@ -179,10 +179,10 @@ class ProviderForm extends Component {
         id: id,
         languages: provider.languages || [],
         company: provider.company || '',
-        first_name: provider.first_name,
-        last_name: provider.last_name,
-        gender: provider.gender,
-        email: provider.email,
+        first_name: provider.first_name || '',
+        last_name: provider.last_name || '',
+        gender: provider.gender || '',
+        email: provider.email || '',
         primary_phone_number: provider.primary_phone_number || '',
         primary_phone_extension: provider.primary_phone_extension || '',
         alt_phone_number: provider.alt_phone_number || '',
@@ -246,12 +246,15 @@ class ProviderForm extends Component {
     this.setState({ form: nextForm });
   }
 
+  review(e) {
+  }
+
   submit(e) {
-    e.preventDefault();
+    let form = Object.assign({}, this.state.form);
     if (this.state.mode === 'edit') {
-      const id = this.props.match.params.id
-      this.props.dispatch(updateProvider(this.state.form.id, this.state.form));
-      this.props.history.push('/provider/' + id);
+      const id = this.props.match.params.id;
+      this.props.dispatch(updateProvider(this.state.form.id, this.state.form))
+        .then(() => this.props.history.push('/provider/' + id));
     } else {
       this.props.dispatch(createProvider(this.state.form));
       this.props.history.push('/providers/new/add-service');
@@ -317,7 +320,6 @@ class ProviderForm extends Component {
       this.state.form.email.length > 0 &&
       this.state.form.first_name.length > 0 &&
       this.state.form.last_name.length > 0 &&
-      this.state.form.main_address.postal_code.length === 6 &&
       this.state.form.visibility !== 'select';
 
     let addresses = this.state.form.other_addresses.map((address, index) =>
@@ -338,7 +340,7 @@ class ProviderForm extends Component {
           <Form horizontal>
           {this.state.mode === 'new' &&
             <FormGroup controlId="provider_type">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col className="required" componentClass={ControlLabel} sm={3}>
                 Select a provider type
               </Col>
               <Col sm={9}>
@@ -358,8 +360,8 @@ class ProviderForm extends Component {
             {this.state.form.provider_type === "Individual" &&
             <div>
             <FormGroup controlId="provider_category">
-              <Col componentClass={ControlLabel} sm={3}>
-                Provider category *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Provider category
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -379,8 +381,8 @@ class ProviderForm extends Component {
             {this.state.form.provider_type === "Organization" &&
             <div>
               <FormGroup controlId="company">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Company/Organization Name *
+                <Col className="required" componentClass={ControlLabel} sm={3}>
+                  Company/Organization Name
                 </Col>
                 <Col sm={9}>
                   <FormControl
@@ -398,9 +400,9 @@ class ProviderForm extends Component {
             <h4> Contact Information </h4>
             <hr/>
             <FormGroup controlId="first_name">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col className="required" componentClass={ControlLabel} sm={3}>
                 {this.state.form.provider_type === "Individual" ?
-                  "First name *" : "Contact Person First Name *"}
+                  "First name" : "Contact Person First Name"}
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -413,9 +415,9 @@ class ProviderForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="last_name">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col className="required" componentClass={ControlLabel} sm={3}>
                 {this.state.form.provider_type === "Individual" ?
-                  "Last name *" : "Contact Person Last Name *"}
+                  "Last name" : "Contact Person Last Name"}
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -428,8 +430,8 @@ class ProviderForm extends Component {
             </FormGroup>
             {this.state.form.provider_type === "Individual" &&
               <FormGroup controlId="gender">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Gender *
+                <Col className="required" componentClass={ControlLabel} sm={3}>
+                  Gender
                 </Col>
                 <Col sm={9}>
                   <FormControl
@@ -448,8 +450,8 @@ class ProviderForm extends Component {
             }
 
             <FormGroup controlId="email">
-              <Col componentClass={ControlLabel} sm={3}>
-                Email *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Email
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -462,8 +464,8 @@ class ProviderForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="primary_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Telephone *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Telephone
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -606,8 +608,8 @@ class ProviderForm extends Component {
             <h4> Main Address </h4>
             <hr/>
             <FormGroup controlId="street_address">
-              <Col componentClass={ControlLabel} sm={3}>
-                Street Address *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Street Address
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -632,8 +634,8 @@ class ProviderForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="city">
-              <Col componentClass={ControlLabel} sm={3}>
-                City *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                City
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -645,8 +647,8 @@ class ProviderForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="province">
-              <Col componentClass={ControlLabel} sm={3}>
-                Province *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Province
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -658,8 +660,8 @@ class ProviderForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="postal_code">
-              <Col componentClass={ControlLabel} sm={3}>
-                Postal Code *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Postal Code
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -969,8 +971,8 @@ class ProviderForm extends Component {
             }
 
             <FormGroup controlId="status">
-              <Col componentClass={ControlLabel} sm={3}>
-                Status *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Status
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -991,8 +993,8 @@ class ProviderForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="visibility">
-              <Col componentClass={ControlLabel} sm={3}>
-                Allow other agencies to see this provider? *
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Allow other agencies to see this provider?
               </Col>
               <Col sm={9}>
                 <FormControl

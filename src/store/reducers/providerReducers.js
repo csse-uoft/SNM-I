@@ -10,7 +10,8 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
     case REQUEST_PROVIDERS:
       return {...state, loaded: false};
     case RECEIVE_PROVIDERS:
-      return {index: action.providers, filteredProviders: action.providers, loaded: true};
+      const providersById = _.keyBy(action.providers, provider => provider.id);
+      return {...state, byId: providersById, index: action.providers, filteredProviders: action.providers, loaded: true};
     case RECEIVE_NEW_PROVIDER:
       nextIndex = [action.provider, ...state.index]
       return {...state, index: nextIndex}
