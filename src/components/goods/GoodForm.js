@@ -6,11 +6,16 @@ import _ from 'lodash';
 
 // redux
 import { connect } from 'react-redux'
+import SelectField from '../shared/SelectField'
+import FormField from '../shared/FormField'
 import { createGood, updateGood } from '../../store/actions/goodActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js'
+import CheckboxField from '../shared/CheckboxField'
+import RadioField from '../shared/RadioField'
+import { formatLocation } from '../../helpers/location_helpers.js';
 
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
 
 class GoodForm extends Component {
   constructor(props) {
@@ -23,6 +28,7 @@ class GoodForm extends Component {
     this.state = {
       goodId: good.id,
       mode: (good.id) ? 'edit' : 'new',
+      is_provider_location: false,
       form: {
         name: good.name || '',
         desc: good.desc || '',
@@ -56,6 +62,7 @@ class GoodForm extends Component {
     this.formValChange = this.formValChange.bind(this);
     this.locationChange = this.locationChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.indicatorChange = this.indicatorChange.bind(this);
   }
 
   componentWillMount() {
@@ -63,8 +70,14 @@ class GoodForm extends Component {
     this.props.dispatch(fetchProviders());
   }
 
-  formValChange(e) {
-    let nextForm = {...this.state.form, [e.target.id]: e.target.value};
+  formValChange(e, id=e.target.id) {
+    let nextForm;
+    if (id === 'location') {
+      nextForm = {...this.state.form, [id]: JSON.parse(e.target.value)};
+    }
+    else {
+      nextForm = {...this.state.form, [id]: e.target.value};
+    }
     this.setState({ form: nextForm });
   }
 
@@ -72,6 +85,10 @@ class GoodForm extends Component {
     let nextForm = _.clone(this.state.form);
     nextForm['location'][e.target.id] = e.target.value
     this.setState({ form: nextForm });
+  }
+
+  indicatorChange(e, id) {
+    this.setState({ [id] : JSON.parse(e.target.value) });
   }
 
   submit() {
@@ -90,6 +107,11 @@ class GoodForm extends Component {
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Good Profile' : 'New Good'
 
+    let provider;
+    if (this.state.form.provider_id) {
+      provider = this.props.providersById && this.props.providersById[this.state.form.provider_id];
+    }
+
     function categoriesIntoOptions(categories) {
       return categories.map((category) => {
         return <option key={category} value={ category }>{category}</option>
@@ -105,26 +127,22 @@ class GoodForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
-            <FormGroup controlId="provider_id">
-              <Col componentClass={ControlLabel} sm={3}>
-                Provider *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.provider_id}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  {p.providers.map(provider =>
-                    <option key={provider.id} value={provider.id}>
-                      {provider.first_name + " " + provider.last_name}
-                    </option>
-                  )}
-                </FormControl>
-              </Col>
-            </FormGroup>
+            <SelectField
+              id="provider_id"
+              label="Provider"
+              options={_.reduce(p.providers, (map, provider) => {
+                if (provider.provider_type === 'Individual') {
+                  map[provider.id] = provider.first_name + " " + provider.last_name;
+                } else {
+                  map[provider.id] = provider.company
+                }
+                return map;
+              }, {})}
+              componentClass="select"
+              value={this.state.form.provider_id}
+              onChange={this.formValChange}
+              required
+            />
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
@@ -136,19 +154,14 @@ class GoodForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="name">
-              <Col componentClass={ControlLabel} sm={3}>
-                Name *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  placeholder=""
-                  value={this.state.form.name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
+            <FormField
+              id="name"
+              label="Name"
+              type="text"
+              value={this.state.form.name}
+              onChange={this.formValChange}
+              required
+            />
 
             <FormGroup controlId="desc">
               <Col componentClass={ControlLabel} sm={3}>
@@ -169,6 +182,7 @@ class GoodForm extends Component {
                   placeholder="select"
                   value={this.state.form.category}
                   onChange={this.formValChange}
+                  required
                 >
                   <option value="select">-- Not Set --</option>
                   <option value="Furniture">Furniture</option>
@@ -303,110 +317,105 @@ class GoodForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="email">
-              <Col componentClass={ControlLabel} sm={3}>
-                Contact Person Email *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.email}
-                  placeholder=""
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="primary_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Telephone *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.primary_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="alt_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Alternative Phone Number *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.alt_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="street_address">
-              <Col componentClass={ControlLabel} sm={3}>
-                Street Address *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.street_address}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="apt_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Apt. #
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.apt_number}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="city">
-              <Col componentClass={ControlLabel} sm={3}>
-                City *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.city}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="province">
-              <Col componentClass={ControlLabel} sm={3}>
-                Province *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.province}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="postal_code">
-              <Col componentClass={ControlLabel} sm={3}>
-                Postal Code *
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.location.postal_code}
-                  onChange={this.locationChange}
-                />
-              </Col>
-            </FormGroup>
+            <FormField
+              id="email"
+              label="Contact Person Email"
+              type="email"
+              value={this.state.form.email}
+              onChange={this.formValChange}
+              required
+            />
+            <FormField
+              id="primary_phone_number"
+              label="Telephone"
+              type="tel"
+              value={this.state.form.primary_phone_number}
+              onChange={this.formValChange}
+              required
+            />
+            <FormField
+              id="alt_phone_number"
+              label="Alternative Phone Number"
+              type="tel"
+              value={this.state.form.alt_phone_number}
+              onChange={this.formValChange}
+              required
+            />
+            <RadioField
+              id="is_provider_location"
+              label="Location"
+              options={{ 'Same as provider': true, 'Other': false }}
+              handleFormValChange={this.indicatorChange}
+              defaultChecked={this.state.is_provider_location}
+              required
+            />
+            {this.state.is_provider_location && this.state.form.provider_id &&
+              <div>
+                <FormGroup controlId="location">
+                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                    Select the location this good is provided at
+                  </Col>
+                  <Col sm={9}>
+                    <Radio
+                      name="provider_address"
+                      value={JSON.stringify(provider.main_address)}
+                      onChange={(e) => this.formValChange(e, 'location')}
+                    >
+                      {formatLocation(provider.main_address)}
+                    </Radio>{' '}
+                    { provider.other_addresses.map((address, index) =>
+                    <Radio
+                      name="provider_address"
+                      value={JSON.stringify(address)}
+                      onChange={(e) => this.formValChange(e, 'location')}
+                      key={index}
+                      >
+                      {formatLocation(address)}
+                    </Radio>
+                    )}
+                  </Col>
+                </FormGroup>
+              </div>
+            }
+            {!this.state.is_provider_location &&
+            <div>
+              <FormField
+                id="street_address"
+                label="Street Address"
+                type="text"
+                value={this.state.form.location.street_address}
+                onChange={this.locationChange}
+              />
+              <FormField
+                id="apt_number"
+                label="Apt. #"
+                type="text"
+                value={this.state.form.location.apt_number}
+                onChange={this.locationChange}
+              />
+              <FormField
+                id="city"
+                label="City"
+                type="text"
+                value={this.state.form.location.city}
+                onChange={this.locationChange}
+              />
+              <FormField
+                id="province"
+                label="Province"
+                type="text"
+                value={this.state.form.location.province}
+                onChange={this.locationChange}
+              />
+              <FormField
+                id="postal_code"
+                label="Postal Code"
+                type="text"
+                value={this.state.form.location.postal_code}
+                onChange={this.locationChange}
+              />
+            </div>
+            }
 
             <FormGroup controlId="share_with">
               <Col componentClass={ControlLabel} sm={3}>
@@ -480,7 +489,9 @@ const mapStateToProps = (state) => {
     servicesCategories: state.ontology.services.categories,
     categoriesLoaded: state.ontology.services.loaded,
     providers: state.providers.filteredProviders || [],
-    providersLoaded: state.providers.loaded
+    providersById: state.providers.byId,
+    providersLoaded: state.providers.loaded,
+    providerIndex: state.providers.index
   }
 }
 

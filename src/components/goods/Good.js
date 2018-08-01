@@ -23,6 +23,11 @@ class Good extends Component {
     return (
       <div className="content client">
         <h3>Good Profile</h3>
+        <Link to={`/goods/${good.id}/edit`}>
+          <Button bsStyle="primary">
+            Edit
+          </Button>
+        </Link>{' '}
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>

@@ -25,6 +25,11 @@ class Service extends Component {
     return (
       <div className="content client">
         <h3>Service Profile</h3>
+        <Link to={`/service/${service.id}/edit`}>
+          <Button bsStyle="primary">
+            Edit
+          </Button>
+        </Link>{' '}
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>

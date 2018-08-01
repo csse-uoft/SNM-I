@@ -34,7 +34,15 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "provider") {
-        goods = [...state.index].filter((good) => (good.provider.first_name + " " + good.provider.last_name).includes(action.searchValue));
+        goods = [...state.index].filter((good) => ((good.provider.company).includes(action.searchValue)) || ((good.provider.first_name + " " + good.provider.last_name).includes(action.searchValue)));
+        return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
+      }
+      else if (action.searchType === "description") {
+        goods = [...state.index].filter((good) => ((good.desc).includes(action.searchValue) ));
+        return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
+      }
+      else if (action.searchType === "category") {
+        goods = [...state.index].filter((good) => ((good.category).includes(action.searchValue) ));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
     default:

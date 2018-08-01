@@ -33,8 +33,16 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
         services = [...state.index].filter((service) => ((service.name).includes(action.searchValue) ));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
-      else if (action.searchType === "email") {
-        services = [...state.index].filter((service) => (service.email).includes(action.searchValue));
+      else if (action.searchType === "provider") {
+        services = [...state.index].filter((service) => ((service.provider.company).includes(action.searchValue)) || ((service.provider.first_name + " " + service.provider.last_name).includes(action.searchValue)));
+        return {index: [...state.index], filteredServices: services, servicesLoaded: true}
+      }
+      else if (action.searchType === "description") {
+        services = [...state.index].filter((service) => ((service.desc).includes(action.searchValue) ));
+        return {index: [...state.index], filteredServices: services, servicesLoaded: true}
+      }
+      else if (action.searchType === "category") {
+        services = [...state.index].filter((service) => ((service.category).includes(action.searchValue) ));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
     default:

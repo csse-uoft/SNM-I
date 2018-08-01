@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Glyphicon, Button } from 'react-bootstrap';
+import { Glyphicon, Dropdown, MenuItem, Button } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'
@@ -12,26 +12,60 @@ class ServiceRow extends Component {
 
     return(
       <tr>
-        <td>{service.id}</td>
         <td>
           <Link to={`/service/${service.id}`}>
             {service.name}
           </Link>
         </td>
-        <td className='centered-text'>
-          {service.email}
-        </td>
+          {service.provider.provider_type === "Organization" &&
+            <td className='centered-text'>
+              <Link to={`/provider/${service.provider.id}`}>
+                {service.provider.company}
+              </Link>
+            </td>
+          }
+
+          {service.provider.provider_type === "Individual" &&
+            <td className='centered-text'>
+              <Link to={`/provider/${service.provider.id}`}>
+                {`${service.provider.first_name} ${service.provider.last_name}`}
+              </Link>
+            </td>
+          }
+
         <td>
-          <Link to={`/services/${service.id}/edit`}>
-            <Button bsStyle="primary">
-              <Glyphicon glyph="edit" />
-            </Button>
-          </Link>
+          {service.desc}
         </td>
+
         <td>
-          <Button bsStyle="danger" onClick={() => this.props.handleShow(service.id)}>
-            <Glyphicon glyph="trash" />
-          </Button>
+          {service.category}
+        </td>
+
+        <td>
+          <Dropdown
+            id="dropdown-menu"
+            className="vertical-options"
+            pullRight
+          >
+          <Dropdown.Toggle noCaret>
+            <Glyphicon glyph="option-vertical" />
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <MenuItem eventKey="1" href={`/service/${service.id}`}>
+              View
+              <Glyphicon glyph="file" />
+            </MenuItem>
+            <MenuItem eventKey="2" href={`/service/${service.id}/edit`}>
+              Edit
+              <Glyphicon glyph="pencil" />
+            </MenuItem>
+            <MenuItem divider />
+            <MenuItem eventKey="3" onClick={() => this.props.handleShow(service.id)}>
+              Delete
+              <Glyphicon glyph="trash" />
+            </MenuItem>
+          </Dropdown.Menu>
+        </Dropdown>
         </td>
       </tr>
     )

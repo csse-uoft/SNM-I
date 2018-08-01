@@ -9,13 +9,13 @@ export default class GoodsIndex extends Component {
       <GoodSearchBar> 
       </GoodSearchBar>
       <hr />
-      <Table striped bordered condensed hover>
+      <Table className="clients-table" striped bordered condensed hover>
         <thead>
           <tr>
-            <th>#</th>
             <th>Name</th>
             <th>Provider</th>
-            <th></th>
+            <th>Description</th>
+            <th>Category</th>
             <th></th>
           </tr>
         </thead>

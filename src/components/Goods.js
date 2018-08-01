@@ -12,8 +12,77 @@ import { connect } from 'react-redux'
 import { fetchGoods, searchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
 
 // styles
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import '../stylesheets/Client.css';
+
+import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+
+class MapMarker extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isOpen: false,
+    }
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.closeInfoBox = this.closeInfoBox.bind(this);
+  }
+
+  onMouseEnter() {
+    this.setState({
+      isOpen: true
+    })
+  }
+
+  onMouseLeave() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  closeInfoBox() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  render() {
+    return (
+      <Marker
+        key={this.props.good.id}
+        position={this.props.good.location.lat_lng}
+        onMouseOver={() => this.onMouseEnter()}
+        onMouseOut={() => this.onMouseLeave()}
+      >
+      {this.state.isOpen &&
+        <InfoWindow onCloseClick={() => this.closeInfoBox()}>
+          <GoodInfoBox good={this.props.good}/>
+        </InfoWindow>
+      }
+      </Marker>
+    )
+  }
+
+}
+
+class GoodInfoBox extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const good = this.props.good;
+    return(
+      <div>
+        <b>Good name: </b>
+          {<Link to={`/good/${good.id}`}>
+            {good.name}
+          </Link>}
+      </div>
+    )
+  }
+}
 
 class Goods extends Component {
   constructor(props, context) {
@@ -80,6 +149,20 @@ class Goods extends Component {
 
   render() {
     const p = this.props;
+
+    const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
+    const GMap = withGoogleMap(props => (
+      <GoogleMap
+        defaultZoom={10}
+        defaultCenter={torontoCentroid} >
+        {
+          _.map(p.goods, (good) => {
+            return <MapMarker good={good}/>
+          })
+        }
+      </GoogleMap>
+    ));
+
     return(
       <div className='clients-table content modal-container'>
         <div>
@@ -88,7 +171,7 @@ class Goods extends Component {
             <Button bsStyle="default">
               Add new good
             </Button>
-          </Link>
+          </Link>{' '}
           <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
             Add goods by uploading CSV
           </Button>
@@ -100,7 +183,24 @@ class Goods extends Component {
               })
             }</GoodsIndex>
           }
+          <hr/>
+          { p.goodsLoaded &&
+          <div>
+          <Col sm={4}>
+            <div style={{width: '250%', height: '400px'}}>
+              <GMap
+                containerElement={
+                  <div style={{ height: `100%` }} />
+                }
+                mapElement={
+                  <div style={{ height: `100%` }} />
+                }
+              />
+            </div>
+          </Col>
+        </div> }
         </div>
+
         <CSVUploadModal
           show={this.state.CSVModalshow}
           onHide={this.handleCSVModalHide}
