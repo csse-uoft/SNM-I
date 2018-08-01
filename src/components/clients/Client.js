@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
+import { formatPhoneNumber } from '../../helpers/phone_number_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
@@ -77,11 +78,12 @@ class Client extends Component {
                 />
                 <TableRow
                   title="Phone Number"
-                  value={client.primary_phone_number}
+                  value={formatPhoneNumber(client.primary_phone_number)}
                 />
                 <TableRow
                   title="Alternative Phone Number"
-                  value={client.alt_phone_number}
+                  value={client.alt_phone_number &&
+                    formatPhoneNumber(client.alt_phone_number)}
                 />
                 <TableRow
                   title="Address"
