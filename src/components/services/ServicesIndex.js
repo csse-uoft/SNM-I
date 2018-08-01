@@ -9,13 +9,13 @@ export default class ServicesIndex extends Component {
       <ServiceSearchBar> 
       </ServiceSearchBar>
       <hr />
-      <Table striped bordered condensed hover>
+      <Table className="clients-table" striped bordered condensed hover>
         <thead>
           <tr>
-            <th>#</th>
             <th>Name</th>
-            <th>Email</th>
-            <th></th>
+            <th>Provider</th>
+            <th>Description</th>
+            <th>Category</th>
             <th></th>
           </tr>
         </thead>

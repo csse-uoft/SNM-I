@@ -47,7 +47,9 @@ class ServiceSearchBar extends Component {
           <ControlLabel> Search by: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.handleTypeChange}>
             <option value="name"> Name </option>
-            <option value="email"> Email </option>
+            <option value="provider"> Provider </option>
+            <option value="description"> Description </option>
+            <option value="category"> Category </option>
           </FormControl>
         </FormGroup>{' '}
       </Form>
