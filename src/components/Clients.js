@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import ClientSearchBar from './clients/ClientSearchBar'
 import ClientsIndex from './clients/ClientsIndex'
 import ClientRow from './clients/ClientRow'
 import CSVUploadModal from './shared/CSVUploadModal'
 import DeleteModal from './shared/DeleteModal'
+
+import { formatLocation } from '../helpers/location_helpers'
 
 // redux
 import { connect } from 'react-redux'
@@ -27,10 +30,14 @@ class Clients extends Component {
     this.handleDeleteModalShow = this.handleDeleteModalShow.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
 
+    this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
+
     this.state = {
       CSVModalshow: false,
       deleteModalshow: false,
-      objectId: null
+      objectId: null,
+      displayedClients: this.props.clients,
+      searching: false
     };
   }
 
@@ -74,6 +81,24 @@ class Clients extends Component {
     });
   }
 
+  handleSearchBarChange(type, value) {
+    let newlyDisplayed;
+    if (type === 'last_name') {
+      newlyDisplayed = _.filter(this.props.clients, client => {
+        return client.last_name.toLowerCase().includes(value.toLowerCase())
+      })
+    }
+    else if (type === 'address'){
+      newlyDisplayed = _.filter(this.props.clients, client => {
+        return formatLocation(client.address).toLowerCase().includes(value.toLowerCase())
+      })
+    }
+    this.setState({
+      displayedClients: newlyDisplayed,
+      searching: true
+    })
+  }
+
   componentWillMount() {
     this.props.dispatch(fetchClients());
   }
@@ -92,11 +117,15 @@ class Clients extends Component {
           Add clients by uploading CSV
         </Button>
         <hr/>
+        <ClientSearchBar
+          handleSearchBarChange={this.handleSearchBarChange}
+        />
+        <hr/>
         {p.clientsLoaded && (
           <div>
-            {(Object.keys(p.clients).length > 0)
+            {(Object.keys(this.state.displayedClients).length > 0)
               ? <ClientsIndex>{
-                _.map(p.clients, (client) => {
+                _.map(this.state.displayedClients, (client) => {
                   return (
                     <ClientRow
                       key={client.id}
@@ -108,7 +137,10 @@ class Clients extends Component {
               }</ClientsIndex>
               : (<div>
                   <h5>
-                    There are currently no clients stored in the database.
+                    {(this.state.searching)
+                      ? 'There are no clients matching this search query term.'
+                      : 'There are currently no clients stored in the database.'
+                    }
                   </h5>
                 </div>)
             }
