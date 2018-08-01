@@ -247,13 +247,25 @@ class ServiceForm extends Component {
               value={this.state.form.capacity}
               onChange={this.formValChange}
             />
-            <FormField
-              id="frequency"
-              label="Frequency"
-              type="text"
-              value={this.state.form.frequency}
-              onChange={this.formValChange}
-            />
+            <FormGroup controlId="frequency">
+              <Col componentClass={ControlLabel} sm={3}>
+                Frequency
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  value={this.state.form.frequency}
+                  onChange={this.formValChange}
+                >
+                  <option value="select">-- Not Set --</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Biweekly">Biweekly</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Non-repeated">Non-repeated</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
             <FormGroup controlId="billable">
               <Col componentClass={ControlLabel} sm={3}>
                 Billable
@@ -314,6 +326,7 @@ class ServiceForm extends Component {
                 >
                   <option value="select">-- Not Set --</option>
                   <option value="Self registration">Self registration</option>
+                  <option value="Registration by social worker">Registration by social worker</option>
                   <option value="No registration">No registration</option>
                 </FormControl>
               </Col>

@@ -55,7 +55,7 @@ class ServiceRow extends Component {
               View
               <Glyphicon glyph="file" />
             </MenuItem>
-            <MenuItem eventKey="2" href={`/service/${service.id}/edit`}>
+            <MenuItem eventKey="2" href={`/services/${service.id}/edit`}>
               Edit
               <Glyphicon glyph="pencil" />
             </MenuItem>
