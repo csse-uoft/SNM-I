@@ -12,8 +12,77 @@ import { connect } from 'react-redux'
 import { fetchServices, searchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
 
 // styles
-import { Button } from 'react-bootstrap';
+import { Button, Col} from 'react-bootstrap';
 import '../stylesheets/Client.css';
+
+import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+
+class MapMarker extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isOpen: false,
+    }
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.closeInfoBox = this.closeInfoBox.bind(this);
+  }
+
+  onMouseEnter() {
+    this.setState({
+      isOpen: true
+    })
+  }
+
+  onMouseLeave() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  closeInfoBox() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  render() {
+    return (
+      <Marker
+        key={this.props.service.id}
+        position={this.props.service.location.lat_lng}
+        onMouseOver={() => this.onMouseEnter()}
+        onMouseOut={() => this.onMouseLeave()}
+      >
+      {this.state.isOpen &&
+        <InfoWindow onCloseClick={() => this.closeInfoBox()}>
+          <ServiceInfoBox service={this.props.service}/>
+        </InfoWindow>
+      }
+      </Marker>
+    )
+  }
+
+}
+
+class ServiceInfoBox extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const service = this.props.service;
+    return(
+      <div>
+        <b>Service name: </b>
+          {<Link to={`/services/${service.id}`}>
+            {service.id}
+          </Link>}
+      </div>
+    )
+  }
+}
 
 class Services extends Component {
   constructor(props, context) {
@@ -80,6 +149,20 @@ class Services extends Component {
 
   render() {
     const p = this.props;
+
+    const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
+    const GMap = withGoogleMap(props => (
+      <GoogleMap
+        defaultZoom={10}
+        defaultCenter={torontoCentroid} >
+        {
+          _.map(p.services, (service) => {
+            return <MapMarker service={service}/>
+          })
+        }
+      </GoogleMap>
+    ));
+
     return(
       <div className='services-table content modal-container'>
         <div>
@@ -88,7 +171,7 @@ class Services extends Component {
             <Button bsStyle="default">
               Add new service
             </Button>
-          </Link>
+          </Link>{' '}
           <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
             Add services by uploading CSV
           </Button>
@@ -100,7 +183,25 @@ class Services extends Component {
               })
             }</ServicesIndex>
           }
+          <hr/>
+          { p.servicesLoaded &&
+          <div>
+          <Col sm={4}>
+            <div style={{width: '250%', height: '400px'}}>
+              <GMap
+                containerElement={
+                  <div style={{ height: `100%` }} />
+                }
+                mapElement={
+                  <div style={{ height: `100%` }} />
+                }
+              />
+            </div>
+          </Col>
+        </div> }
         </div>
+
+
         <CSVUploadModal
           show={this.state.CSVModalshow}
           onHide={this.handleCSVModalHide}
