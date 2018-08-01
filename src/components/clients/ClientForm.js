@@ -140,9 +140,12 @@ class ClientForm extends Component {
   handleAddFamilyButtonClick() {
     let nextForm = _.clone(this.state.form);
     nextForm['family']['members'].push({
-      'full_name': '',
-      'birth_date': '',
-      'gender': '',
+      'person': {
+        'first_name': '',
+        'last_name': '',
+        'birth_date': '',
+        'gender': ''
+      },
       'relationship': ''
     })
     this.setState({ form: nextForm });
@@ -161,7 +164,12 @@ class ClientForm extends Component {
       nextForm['family']['file_id'] = e.target.value;
     }
     else {
-      nextForm['family']['members'][index][id] = e.target.value;
+      if (id === 'relationship') {
+        nextForm['family']['members'][index][id] = e.target.value;
+      }
+      else {
+        nextForm['family']['members'][index]['person'][id] = e.target.value;
+      }
     }
     this.setState({ form: nextForm });
   }
@@ -211,6 +219,7 @@ class ClientForm extends Component {
           {this.state.currentStep === 2 &&
             <FamilyInformationFields
               family={this.state.form.family}
+              clientId={this.state.clientId}
               handleFormValChange={this.handleFamilyChange}
               handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
               handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}

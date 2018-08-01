@@ -5,11 +5,15 @@ import SelectField from '../../shared/SelectField'
 import { genderOptions, familyRelationshipOptions } from '../../../store/defaults.js';
 import { FormGroup, FormControl, ControlLabel, Col, Row, Button } from 'react-bootstrap';
 
-function FamilyMemberFields({ index, member, handleFormValChange, handleRemoveFamilyButtonClick }) {
+function FamilyMemberFields({ index,
+                              clientId,
+                              member,
+                              handleFormValChange,
+                              handleRemoveFamilyButtonClick }) {
   const count = index + 1;
   return (
     <div>
-      <FormGroup controlId="full_name">
+      <FormGroup controlId="first_name">
         <Col componentClass={ControlLabel} sm={3}>
           Family Member #{count}
         </Col>
@@ -17,14 +21,16 @@ function FamilyMemberFields({ index, member, handleFormValChange, handleRemoveFa
           <FormControl
             type="text"
             onChange={e => handleFormValChange(e, index)}
-            value={member.full_name}
-            placeholder="Full name"
+            value={member.person.first_name}
+            placeholder="First name"
+            disabled={clientId && member.person.id === clientId}
           />
         </Col>
         <Col sm={1}>
           <Button
             bsStyle="danger"
             bsSize="small"
+            disabled={clientId && member.person.id === clientId}
             onClick={e => handleRemoveFamilyButtonClick(index)}
           >
             Remove
@@ -32,18 +38,28 @@ function FamilyMemberFields({ index, member, handleFormValChange, handleRemoveFa
         </Col>
       </FormGroup>
       <FormField
+        id="last_name"
+        type="text"
+        value={member.person.last_name}
+        onChange={e => handleFormValChange(e, index)}
+        placeholder="Last name"
+        disabled={clientId && member.person.id === clientId}
+      />
+      <FormField
         id="birth_date"
         type="date"
-        value={member.birth_date}
+        value={member.person.birth_date}
         onChange={e => handleFormValChange(e, index)}
+        disabled={clientId && member.person.id === clientId}
       />
       <SelectField
         id="gender"
         options={genderOptions}
         componentClass="select"
-        value={member.gender}
+        value={member.person.gender}
         onChange={e => handleFormValChange(e, index)}
         defaultOptionTitle="Gender"
+        disabled={clientId && member.person.id === clientId}
       />
       <SelectField
         id="relationship"
@@ -58,6 +74,7 @@ function FamilyMemberFields({ index, member, handleFormValChange, handleRemoveFa
 }
 
 export default function FamilyInformationFields({ family,
+                                                  clientId,
                                                   handleFormValChange,
                                                   handleAddFamilyButtonClick,
                                                   handleRemoveFamilyButtonClick }) {
@@ -76,6 +93,7 @@ export default function FamilyInformationFields({ family,
             key={index}
             index={index}
             member={member}
+            clientId={clientId}
             handleFormValChange={handleFormValChange}
             handleRemoveFamilyButtonClick={handleRemoveFamilyButtonClick}
           />
