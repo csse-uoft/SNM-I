@@ -25,7 +25,7 @@ class Service extends Component {
     return (
       <div className="content client">
         <h3>Service Profile</h3>
-        <Link to={`/service/${service.id}/edit`}>
+        <Link to={`/services/${service.id}/edit`}>
           <Button bsStyle="primary">
             Edit
           </Button>
