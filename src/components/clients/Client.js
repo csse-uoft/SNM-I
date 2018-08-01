@@ -25,6 +25,12 @@ class Client extends Component {
     const p = this.props,
           id = p.match.params.id,
           client = p.clientsById[id];
+    if (client.family) {
+      let members = _.clone(client.family.members);
+       _.remove(members, {
+        person: { id: id }
+      });
+    }
     return (
       <div className="content client">
         <h3>Client Profile</h3>
@@ -122,23 +128,32 @@ class Client extends Component {
               <Table bordered condensed className="client-profile-table">
                 <tbody>
                   <tr>
-                    <td colSpan="4"><b>Family Members: </b></td>
+                    <td colSpan="6"><b>Family Members: </b></td>
                   </tr>
                   <tr>
                     <td></td>
-                    <td>Full name</td>
-                    <td>Date of birth</td>
-                    <td>Gender</td>
+                    <td><b>First name</b></td>
+                    <td><b>Last name</b></td>
+                    <td><b>Date of birth</b></td>
+                    <td><b>Gender</b></td>
+                    <td><b>Relationship</b></td>
                   </tr>
                   {_.map(client.family.members, (member, index) => {
-                    return (
-                      <tr key={member.id}>
-                        <td><b>Family member #{index+1}</b></td>
-                        <td>{member.full_name}</td>
-                        <td>{member.birth_date}</td>
-                        <td>{member.gender}</td>
-                      </tr>
-                    )
+                    if (member.person.id === client.id) {
+                      return null;
+                    }
+                    else {
+                      return (
+                        <tr key={member.person.id}>
+                          <td><b>Family member #{index+1}</b></td>
+                          <td>{member.person.first_name}</td>
+                          <td>{member.person.last_name}</td>
+                          <td>{member.person.birth_date}</td>
+                          <td>{member.person.gender}</td>
+                          <td>{member.relationship}</td>
+                        </tr>
+                      )
+                    }
                   })}
                 </tbody>
               </Table>
