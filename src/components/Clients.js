@@ -54,7 +54,7 @@ class Clients extends Component {
   }
 
   handleDeleteModalHide() {
-    this.setState({ deleteModalshow: false });
+    this.setState({ deleteModalShow: false });
   }
 
   handleDeleteModalShow(id) {
@@ -81,32 +81,39 @@ class Clients extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='clients-table content modal-container'>
-        <div>
-          <h1>Clients</h1>
-          <Link to='/clients/new'>
-            <Button bsStyle="default">
-              Add new client profile
-            </Button>
-          </Link>
-          <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
-            Add clients by uploading CSV
+      <div className='content modal-container'>
+        <h1>Clients</h1>
+        <Link to='/clients/new'>
+          <Button bsStyle="default">
+            Add new client profile
           </Button>
-          <hr/>
-          { p.clientsLoaded &&
-            <ClientsIndex>{
-              _.map(p.clients, (client) => {
-                return (
-                  <ClientRow
-                    key={client.id}
-                    client={client}
-                    handleShow={this.handleDeleteModalShow}
-                  />
-                )
-              })
-            }</ClientsIndex>
-          }
-        </div>
+        </Link>{' '}
+        <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
+          Add clients by uploading CSV
+        </Button>
+        <hr/>
+        {p.clientsLoaded && (
+          <div>
+            {(Object.keys(p.clients).length > 0)
+              ? <ClientsIndex>{
+                _.map(p.clients, (client) => {
+                  return (
+                    <ClientRow
+                      key={client.id}
+                      client={client}
+                      handleShow={this.handleDeleteModalShow}
+                    />
+                  )
+                })
+              }</ClientsIndex>
+              : (<div>
+                  <h5>
+                    There are currently no clients stored in the database.
+                  </h5>
+                </div>)
+            }
+          </div>)
+        }
         <CSVUploadModal
           show={this.state.CSVModalshow}
           onHide={this.handleCSVModalHide}

@@ -20,7 +20,6 @@ import AdminRoute from './components/routes/AdminRoute'
 import Providers from './components/Providers';
 import AddServicePrompt from './components/providers/AddServicePrompt'
 import ProviderForm from './components/providers/ProviderForm'
-import ProviderCSVUpload from './components/providers/UploadProviderCSV.js';
 import ProviderProfile from './components/providers/ProviderProfile'
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
@@ -58,7 +57,6 @@ const routes = (
 
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/new/upload' component={ProviderCSVUpload} />
     <PrivateRoute path='/providers/new/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />

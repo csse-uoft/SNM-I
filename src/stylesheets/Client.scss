@@ -1,6 +1,30 @@
 .clients-table {
-  a button {
-    margin-right: 10px;
+  tbody tr td, thead tr th {
+    vertical-align: middle;
+    padding-left: 10px;
+  }
+
+  th, td {
+    &:last-child{
+      padding-right: none;
+      border-left: none;
+    }
+    &:nth-child(5) {
+      border-right: none;
+    }
+  }
+
+  .dropdown{
+    float: right;
+
+    button {
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+    .glyphicon {
+      float: right;
+    }
   }
 }
 

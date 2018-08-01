@@ -128,17 +128,29 @@ export function createProvider(params) {
 }
 
 export function createProviderWithCSV(params) {
+  const formData  = new FormData();
+  formData.append('file', params);
+
   return dispatch => {
     const url = serverHost + '/providers/new/upload';
     return fetch(url, {
-      method: "POST",
-      body: params,
+      method: 'POST',
+      body: formData,
       headers: {
-        "Content-Type": "text/csv",
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(json => dispatch(receiveNewProvidersCSV(json)));
+    })
+    .then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(providers => dispatch(receiveNewProvidersCSV(providers))
+    );
   }
 }
 
