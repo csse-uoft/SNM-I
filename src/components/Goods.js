@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { fetchGoods, searchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
 
 // styles
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, Pagination } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
@@ -96,10 +96,15 @@ class Goods extends Component {
     this.handleDeleteModalShow = this.handleDeleteModalShow.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
 
+    this.changePage = this.changePage.bind(this);
+    this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
+
     this.state = {
       CSVModalshow: false,
       deleteModalshow: false,
-      objectId: null
+      objectId: null,
+      numberPerPage: 10,
+      currentPage: 1
     };
   }
 
@@ -111,6 +116,12 @@ class Goods extends Component {
     this.setState({ CSVModalshow: true })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.goods !== prevProps.goods) {
+      this.setState({currentPage: 1});
+    }
+  }
+
   handleSubmit(e) {
     const file = document.querySelector('input[type="file"]').files[0];
     this.props.dispatch(createGoods(file)).then((status) => {
@@ -120,6 +131,25 @@ class Goods extends Component {
         this.setState({ CSVModalshow: false })
       }
     });
+  }
+
+  changePage(e) {
+    this.setState({currentPage: Number(e.target.text)});
+  }
+
+  changeNumberPerPage(e) {
+    if (e.target.value === 'all') {
+      this.setState({
+        numberPerPage: this.props.goods.length,
+        currentPage: 1
+      });
+    }
+    else {
+      this.setState({
+        numberPerPage: e.target.value,
+        currentPage: 1
+      });
+    }
   }
 
   handleDeleteModalHide() {
@@ -150,6 +180,20 @@ class Goods extends Component {
   render() {
     const p = this.props;
 
+    let goodsOnPage = p.goods.slice(
+      this.state.numberPerPage * (this.state.currentPage - 1),
+      this.state.numberPerPage * this.state.currentPage);
+    let pageNumbers = [];
+    for (let number = 1; number <= Math.ceil(p.goods.length/this.state.numberPerPage); number++) {
+      pageNumbers.push(
+        <Pagination.Item
+          key={number}
+          active={number ===this.state.currentPage}
+          onClick={this.changePage}>{number}
+        </Pagination.Item>
+      )
+    }
+
     const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
     const GMap = withGoogleMap(props => (
       <GoogleMap
@@ -177,11 +221,16 @@ class Goods extends Component {
           </Button>
           <hr/>
           { p.goodsLoaded &&
-            <GoodsIndex>{
-              _.map(p.goods, (good) => {
+            <div>
+            <GoodsIndex changeNumberPerPage={this.changeNumberPerPage}>{
+              goodsOnPage.map((good) => {
                 return <GoodRow key={ good.id } good={ good } handleShow={this.handleDeleteModalShow} />
               })
             }</GoodsIndex>
+            <Pagination className="pagination">
+              {pageNumbers}
+            </Pagination>
+            </div>
           }
           <hr/>
           { p.goodsLoaded &&

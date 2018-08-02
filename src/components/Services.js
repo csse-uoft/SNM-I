@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { fetchServices, searchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
 
 // styles
-import { Button, Col} from 'react-bootstrap';
+import { Button, Col, Pagination} from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
@@ -96,10 +96,15 @@ class Services extends Component {
     this.handleDeleteModalShow = this.handleDeleteModalShow.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
 
+    this.changePage = this.changePage.bind(this);
+    this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
+
     this.state = {
       CSVModalshow: false,
       deleteModalshow: false,
-      objectId: null
+      objectId: null,
+      numberPerPage: 10,
+      currentPage: 1
     };
   }
 
@@ -111,6 +116,12 @@ class Services extends Component {
     this.setState({ CSVModalshow: true })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.services !== prevProps.services) {
+      this.setState({currentPage: 1});
+    }
+  }
+
   handleSubmit(e) {
     const file = document.querySelector('input[type="file"]').files[0];
     this.props.dispatch(createServices(file)).then((status) => {
@@ -120,6 +131,25 @@ class Services extends Component {
         this.setState({ CSVModalshow: false })
       }
     });
+  }
+
+  changePage(e) {
+    this.setState({currentPage: Number(e.target.text)});
+  }
+
+  changeNumberPerPage(e) {
+    if (e.target.value === 'all') {
+      this.setState({
+        numberPerPage: this.props.services.length,
+        currentPage: 1
+      });
+    }
+    else {
+      this.setState({
+        numberPerPage: e.target.value,
+        currentPage: 1
+      });
+    }
   }
 
   handleDeleteModalHide() {
@@ -150,6 +180,20 @@ class Services extends Component {
   render() {
     const p = this.props;
 
+    let servicesOnPage = p.services.slice(
+      this.state.numberPerPage * (this.state.currentPage - 1),
+      this.state.numberPerPage * this.state.currentPage);
+    let pageNumbers = [];
+    for (let number = 1; number <= Math.ceil(p.services.length/this.state.numberPerPage); number++) {
+      pageNumbers.push(
+        <Pagination.Item
+          key={number}
+          active={number ===this.state.currentPage}
+          onClick={this.changePage}>{number}
+        </Pagination.Item>
+      )
+    }
+
     const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
     const GMap = withGoogleMap(props => (
       <GoogleMap
@@ -177,11 +221,16 @@ class Services extends Component {
           </Button>
           <hr/>
           { p.servicesLoaded &&
-            <ServicesIndex>{
-              _.map(p.services, (service) => {
+            <div>
+            <ServicesIndex changeNumberPerPage={this.changeNumberPerPage}>{
+              servicesOnPage.map((service) => {
                 return <ServiceRow key={ service.id } service={ service } handleShow={this.handleDeleteModalShow} />
               })
             }</ServicesIndex>
+            <Pagination className="pagination">
+              {pageNumbers}
+            </Pagination>
+            </div>
           }
           <hr/>
           { p.servicesLoaded &&
@@ -200,7 +249,6 @@ class Services extends Component {
           </Col>
         </div> }
         </div>
-
 
         <CSVUploadModal
           show={this.state.CSVModalshow}
