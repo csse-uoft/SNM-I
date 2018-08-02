@@ -6,10 +6,10 @@ export default class GoodsIndex extends Component {
   render() {
     return(
       <div>
-      <GoodSearchBar> 
+      <GoodSearchBar changeNumberPerPage={this.props.changeNumberPerPage}> 
       </GoodSearchBar>
       <hr />
-      <Table className="dashboard-table"  striped bordered condensed hover>
+      <Table className="dashboard-table" striped bordered condensed hover>
         <thead>
           <tr>
             <th>Name</th>
