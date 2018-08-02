@@ -170,7 +170,16 @@ class Providers extends Component {
     let providersOnPage = p.providers.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),
       this.state.numberPerPage * this.state.currentPage);
-
+    let pageNumbers = [];
+    for (let number = 1; number <= Math.ceil(p.providers.length/this.state.numberPerPage); number++) {
+      pageNumbers.push(
+        <Pagination.Item
+          key={number}
+          active={number ===this.state.currentPage}
+          onClick={this.changePage}>{number}
+        </Pagination.Item>
+      )
+    }
     const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
 
     const GMap = withGoogleMap(props => (
@@ -179,7 +188,7 @@ class Providers extends Component {
         defaultCenter={torontoCentroid} >
         {
           _.map(providersOnPage, (provider) => {
-            return <MapMarker provider={provider}/>
+            return <MapMarker key={provider.id} provider={provider}/>
           })
         }
       </GoogleMap>
@@ -212,10 +221,8 @@ class Providers extends Component {
             })
           }
           </ProvidersIndex>
-            <Pagination className="pagination"
-              activePage={this.state.currentPage}
-              items={Math.ceil(p.providers.length/this.state.numberPerPage)}
-              onClick={this.changePage}>
+            <Pagination className="pagination">
+              {pageNumbers}
             </Pagination>
           </div>
         }
