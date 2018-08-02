@@ -35,7 +35,7 @@ class ClientSearchBar  extends Component {
           />
         </FormGroup>{' '}
         <FormGroup controlId="type">
-          <ControlLabel> Search by: </ControlLabel>{' '}
+          <ControlLabel>Search by:</ControlLabel>{' '}
           <FormControl
             componentClass="select"
             placeholder="select"
@@ -44,6 +44,21 @@ class ClientSearchBar  extends Component {
           >
             <option value="last_name">Last name</option>
             <option value="address">Address</option>
+          </FormControl>
+        </FormGroup>{' '}
+        <FormGroup controlId="sort_by">
+          <ControlLabel>Sort by:</ControlLabel>{' '}
+          <FormControl
+            componentClass="select"
+            placeholder="select"
+            value={this.props.orderBy}
+            onChange={this.props.handleSortByChange}
+          >
+            <option value="-updated_at">Last Updated</option>
+            <option value="first_name">First Name (A-Z)</option>
+            <option value="-first_name">First Name (Z-A)</option>
+            <option value="last_name">Last Name (A-Z)</option>
+            <option value="-last_name">Last Name (Z-A)</option>
           </FormControl>
         </FormGroup>
       </Form>
