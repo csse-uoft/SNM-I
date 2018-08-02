@@ -106,13 +106,15 @@ export default class BackgroundInformationFields extends Component {
           value={this.props.num_of_dependants}
           onChange={this.props.formValChange}
         />
-        <CheckboxField
-          id="eligibilities"
-          label="Eligibilities"
-          options={this.props.eligibility_criteria || []}
-          checkedOptions={this.props.eligibilities}
-          handleFormValChange={this.props.formValChange}
-        />
+        {this.props.eligibility_criteria.length > 0 &&
+          <CheckboxField
+            id="eligibilities"
+            label="Eligibilities"
+            options={this.props.eligibility_criteria || []}
+            checkedOptions={this.props.eligibilities}
+            handleFormValChange={this.props.formValChange}
+          />
+        }
       </Row>
     );
   }
