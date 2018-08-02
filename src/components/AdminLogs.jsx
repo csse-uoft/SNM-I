@@ -29,7 +29,7 @@ class AdminLogs extends Component {
           { p.logsLoaded &&
             <AdminLogsIndex>{
               _.map(p.logs, (log) => {
-                return <AdminLogRow key={ log.id } log={ log } />
+                return <AdminLogRow key={log.id} log={log} />
               })
             }</AdminLogsIndex>
           }

@@ -6,6 +6,9 @@ export default class AdminLogRow extends Component {
     const log = this.props.log;
 
     function object_url(contentType, objectId) {
+      if (contentType === 'Person') {
+        contentType = 'Client'
+      }
       return `/${contentType.toLowerCase()}s/${objectId}`
     }
 
