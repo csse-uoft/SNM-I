@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { serverHost } from '../defaults.js';
+import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
 export const REQUEST_USER = 'REQUEST_USER';
 export const RECEIVE_USER = 'RECEIVE_USER';
@@ -120,18 +120,24 @@ export function fetchUsers() {
   }
 }
 
-export function deleteUser(id) {
+export function deleteUser(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/user/' + id + '/';
 
     return fetch(url, {
       method: 'DELETE',
+      body: JSON.stringify(params),
       headers: {
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
+        'Content-Type': 'application/json'
       },
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeUser(id))
+        callback(ACTION_SUCCESS);
+      }
+      else {
+        callback(ACTION_ERROR);
       }
     });
   }

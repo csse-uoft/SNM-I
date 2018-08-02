@@ -4,14 +4,18 @@ import { Table } from 'react-bootstrap';
 export default class UsersIndex extends Component {
   render() {
     return(
-      <Table striped bordered condensed hover>
+      <Table
+        className="dashboard-table"
+        striped
+        bordered
+        condensed
+        hover
+      >
         <thead>
           <tr>
-            <th>#</th>
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
-            <th></th>
             <th></th>
           </tr>
         </thead>

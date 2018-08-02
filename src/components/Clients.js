@@ -34,7 +34,7 @@ class Clients extends Component {
 
     this.state = {
       CSVModalshow: false,
-      deleteModalshow: false,
+      deleteModalShow: false,
       objectId: null,
       clientsOrder: this.props.clientsOrder,
       searching: false,
