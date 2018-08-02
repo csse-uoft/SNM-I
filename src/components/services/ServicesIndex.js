@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
 import ServiceSearchBar from './ServiceSearchBar.js';
-import './../../stylesheets/Common.css'
 
 export default class ServicesIndex extends Component {
   render() {

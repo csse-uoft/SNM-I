@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
 import GoodSearchBar from './GoodSearchBar.js';
-import './../../stylesheets/Common.css'
 
 export default class GoodsIndex extends Component {
   render() {

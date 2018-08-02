@@ -16,7 +16,6 @@ import { fetchClients, createClients, deleteClient, CLIENT_ERROR } from '../stor
 
 // styles
 import { Button } from 'react-bootstrap';
-import '../stylesheets/Client.css';
 
 class Clients extends Component {
   constructor(props, context) {

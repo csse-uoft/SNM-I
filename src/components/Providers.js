@@ -5,8 +5,6 @@ import _ from 'lodash'
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'
-import './../stylesheets/Providers.css'
-
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
