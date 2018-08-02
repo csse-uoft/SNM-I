@@ -78,10 +78,13 @@ export function fetchClient(id) {
   }
 }
 
-export function fetchClients() {
+export function fetchClients(orderBy) {
   return dispatch => {
     dispatch(requestClients())
-    const url = serverHost + '/clients/';
+    let url = serverHost + '/clients/';
+    if (orderBy) {
+      url += '?order_by=' + orderBy;
+    }
 
     return fetch(url, {
         method: 'GET',

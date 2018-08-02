@@ -3,8 +3,8 @@ import { REQUEST_CLIENTS, RECEIVE_CLIENTS, RECEIVE_ALL_CLIENTS, REMOVE_CLIENT,
 import _ from 'lodash';
 
 
-export function clients(state = { clientsLoaded: false, byId: {} }, action) {
-  let nextById;
+export function clients(state = { clientsLoaded: false, order: [], byId: {} }, action) {
+  let nextById, nextOrder;
   switch (action.type) {
     case REQUEST_CLIENTS:
       return {...state, clientsLoaded: false }
@@ -14,11 +14,15 @@ export function clients(state = { clientsLoaded: false, byId: {} }, action) {
       return {...state, byId: nextById, clientsLoaded: true }
     case RECEIVE_ALL_CLIENTS:
       nextById = _.keyBy(action.clients, client => client.id);
-      return {...state, byId: nextById, clientsLoaded: true }
+      nextOrder = _.map(action.clients, 'id');
+      return {...state, byId: nextById, clientsLoaded: true, order: nextOrder }
     case REMOVE_CLIENT:
       nextById = _.clone(state.byId);
       delete nextById[action.id]
       return { ...state, byId: nextById }
+      nextOrder = _.clone(state.order);
+      _.remove(nextOrder, (id) => { return id === action.id });
+      return { ...state, byId: nextById, order: nextOrder }
     case REQUEST_CLIENT:
       nextById = { ...state.byId, [action.id]: { loaded: false } }
       return {...state, byId: nextById }

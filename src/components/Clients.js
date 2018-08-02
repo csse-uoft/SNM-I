@@ -30,14 +30,24 @@ class Clients extends Component {
     this.handleDelete = this.handleDelete.bind(this);
 
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
+    this.handleSortByChange = this.handleSortByChange.bind(this);
 
     this.state = {
       CSVModalshow: false,
       deleteModalshow: false,
       objectId: null,
-      displayedClients: this.props.clients,
-      searching: false
+      clientsOrder: this.props.clientsOrder,
+      searching: false,
+      orderBy: '-updated_at'
     };
+  }
+
+  componentWillMount() {
+    this.props.dispatch(fetchClients());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ clientsOrder: nextProps.clientsOrder });
   }
 
   handleCSVModalHide() {
@@ -83,23 +93,34 @@ class Clients extends Component {
   handleSearchBarChange(type, value) {
     let newlyDisplayed;
     if (type === 'last_name') {
-      newlyDisplayed = _.filter(this.props.clients, client => {
-        return client.last_name.toLowerCase().includes(value.toLowerCase())
-      })
+      newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
+        const client = this.props.clients[clientId];
+        if (client.last_name.toLowerCase().includes(value.toLowerCase())) {
+          result.push(client.id)
+        }
+        return result;
+      }, []);
     }
     else if (type === 'address'){
-      newlyDisplayed = _.filter(this.props.clients, client => {
-        return formatLocation(client.address).toLowerCase().includes(value.toLowerCase())
-      })
+      newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
+        const client = this.props.clients[clientId];
+        if (formatLocation(client.address).toLowerCase().includes(value.toLowerCase())) {
+          result.push(client.id)
+        }
+        return result;
+      }, []);
     }
     this.setState({
-      displayedClients: newlyDisplayed,
+      clientsOrder: newlyDisplayed,
       searching: true
     })
   }
 
-  componentWillMount() {
-    this.props.dispatch(fetchClients());
+  handleSortByChange(e) {
+    this.props.dispatch(fetchClients(e.target.value));
+    this.setState({
+      orderBy: e.target.value
+    })
   }
 
   render() {
@@ -118,13 +139,16 @@ class Clients extends Component {
         <hr/>
         <ClientSearchBar
           handleSearchBarChange={this.handleSearchBarChange}
+          handleSortByChange={this.handleSortByChange}
+          orderBy={this.state.orderBy}
         />
         <hr/>
         {p.clientsLoaded && (
           <div>
-            {(Object.keys(this.state.displayedClients).length > 0)
+            {(Object.keys(this.state.clientsOrder).length > 0)
               ? <ClientsIndex>{
-                _.map(this.state.displayedClients, (client) => {
+                _.map(this.state.clientsOrder, (clientId) => {
+                  const client = p.clients[clientId]
                   return (
                     <ClientRow
                       key={client.id}
@@ -165,6 +189,7 @@ class Clients extends Component {
 const mapStateToProps = (state) => {
   return {
     clients: state.clients.byId,
+    clientsOrder: state.clients.order,
     clientsLoaded: state.clients.clientsLoaded
   }
 }
