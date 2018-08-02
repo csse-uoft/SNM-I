@@ -1,19 +1,21 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import _ from 'lodash';
+import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
 
 // redux
 import { connect } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { createClient, updateClient, CLIENT_ERROR, CLIENT_SUCCESS }
-  from '../../store/actions/clientActions.js';
+import { createClient, updateClient } from '../../store/actions/clientActions.js';
 import { fetchEligibilities } from '../../store/actions/eligibilityActions.js'
 
+// components
 import PersonalInformationFields from './client_form/PersonalInformationFields';
 import FamilyInformationFields from './client_form/FamilyInformationFields';
 import BackgroundInformationFields from './client_form/BackgroundInformationFields';
 import FormWizard from './client_form/FormWizard';
 
+// styles
 import { Grid, Button, Form, Col, Row } from 'react-bootstrap';
 
 class ClientForm extends Component {
@@ -133,16 +135,17 @@ class ClientForm extends Component {
     if (this.state.mode === 'edit') {
       this.props.dispatch(
         updateClient(this.state.clientId, this.state.form, (status, err, clientId) => {
-        if (status === CLIENT_SUCCESS) {
-          this.props.history.push(`/clients/${clientId}`)
-        } else {
-          this.setState({ showAlert: true });
-        }
-      }));
+          if (status === ACTION_SUCCESS) {
+            this.props.history.push(`/clients/${clientId}`)
+          } else {
+            this.setState({ showAlert: true });
+          }
+        })
+      );
     } else {
       this.props.dispatch(
         createClient(this.state.form, (status, err, clientId) => {
-        if (status === CLIENT_SUCCESS) {
+        if (status === ACTION_SUCCESS) {
           this.props.history.push(`/clients/${clientId}`)
         } else {
           const error_messages =

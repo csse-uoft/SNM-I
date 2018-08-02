@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
-import { serverHost } from '../defaults.js';
+import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
-import {receiveClientNeeds} from './needActions'
+import { receiveClientNeeds } from './needActions'
 
 export const REQUEST_CLIENT = 'REQUEST_CLIENT';
 export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
@@ -9,8 +9,6 @@ export const REQUEST_CLIENTS = 'REQUEST_CLIENTS';
 export const RECEIVE_ALL_CLIENTS = 'RECEIVE_ALL_CLIENTS';
 export const REMOVE_CLIENT = 'REMOVE_CLIENT';
 export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
-export const CLIENT_ERROR = 'CLIENT_ERROR';
-export const CLIENT_SUCCESS = 'CLIENT_SUCCESS';
 
 
 function requestClient(id) {
@@ -98,7 +96,7 @@ export function fetchClients(orderBy) {
   }
 }
 
-export function deleteClient(id, params) {
+export function deleteClient(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/client/' + id + '/';
 
@@ -113,10 +111,10 @@ export function deleteClient(id, params) {
     .then(response => {
       if (response.status === 204) {
         dispatch(removeClient(id))
-        return CLIENT_SUCCESS
+        callback(ACTION_SUCCESS);
       }
       else {
-        return CLIENT_ERROR
+        callback(ACTION_ERROR);
       }
     })
   }
@@ -144,9 +142,9 @@ export function createClient(params, callback) {
     })
     .then(client => {
       dispatch(receiveClient(client.id, client))
-      callback(CLIENT_SUCCESS, null, client.id);
+      callback(ACTION_SUCCESS, null, client.id);
     }).catch(err => {
-      callback(CLIENT_ERROR, err);
+      callback(ACTION_ERROR, err);
     })
   }
 }
@@ -175,11 +173,11 @@ export function createClients(file) {
     })
     .then(clients => {
       dispatch(receiveClients(clients))
-      return CLIENT_SUCCESS
+      return ACTION_SUCCESS;
     })
     .catch(err => {
       // dispatch(createFailure(err))
-      return CLIENT_ERROR
+      return ACTION_ERROR;
     })
   }
 }
@@ -207,9 +205,9 @@ export function updateClient(id, params, callback) {
     })
     .then(client => {
       dispatch(receiveClient(client.id, client))
-      callback(CLIENT_SUCCESS, null, client.id);
+      callback(ACTION_SUCCESS, null, client.id);
     }).catch(err => {
-      callback(CLIENT_ERROR, err);
+      callback(ACTION_ERROR, err);
     })
   }
 }

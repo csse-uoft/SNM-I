@@ -4,12 +4,16 @@ import { Table } from 'react-bootstrap';
 export default class EligibilitiesIndex extends Component {
   render() {
     return(
-      <Table striped bordered condensed hover>
+      <Table
+        className="dashboard-table"
+        striped
+        bordered
+        condensed
+        hover
+      >
         <thead>
           <tr>
-            <th>#</th>
             <th>Title</th>
-            <th></th>
             <th></th>
           </tr>
         </thead>

@@ -47,8 +47,8 @@ const routes = (
     <PrivateRoute path='/clients' component={Clients} />
 
     <AdminRoute path='/users/:id/edit' component={UserForm} />
-    <AdminRoute path='/user/:id' component={User} />
     <AdminRoute path='/users/new' component={UserForm} />
+    <AdminRoute path='/users/:id' component={User} />
     <AdminRoute path='/users' component={Users} />
     <AdminRoute path='/admin_logs' component={AdminLogs} />
 

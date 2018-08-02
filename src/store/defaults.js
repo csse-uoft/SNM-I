@@ -8,6 +8,9 @@ else {
   serverHost = 'http://127.0.0.1:8000';
 }
 
+const ACTION_SUCCESS = 'ACTION_SUCCESS';
+const ACTION_ERROR = 'ACTION_ERROR';
+
 const genderOptions = [
   'Male',
   'Female',
@@ -135,5 +138,7 @@ module.exports = Object.freeze({
   familyRelationshipOptions: familyRelationshipOptions,
   needStatusOptions: needStatusOptions,
   serviceTypeOptions: serviceTypeOptions,
-  serviceSharedWithOptions: serviceSharedWithOptions
+  serviceSharedWithOptions: serviceSharedWithOptions,
+  ACTION_SUCCESS: ACTION_SUCCESS,
+  ACTION_ERROR: ACTION_ERROR
 });

@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { serverHost } from '../defaults.js';
+import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
 export const REQUEST_ELIGIBILITY = 'REQUEST_ELIGIBILITY';
 export const RECEIVE_ELIGIBILITY = 'RECEIVE_ELIGIBILITY';
@@ -110,19 +110,26 @@ export function fetchEligibilities() {
   }
 }
 
-export function deleteEligibility(id) {
+export function deleteEligibility(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/eligibility_criteria/' + id + '/';
 
     return fetch(url, {
       method: 'DELETE',
+      body: JSON.stringify(params),
       headers: {
-        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
+        'Content-Type': 'application/json'
       },
-    }).then(response => {
+    })
+    .then(response => {
       if (response.status === 204) {
         dispatch(removeEligibility(id))
+        callback(ACTION_SUCCESS);
       }
-    });
+      else {
+        callback(ACTION_ERROR);
+      }
+    })
   }
 }

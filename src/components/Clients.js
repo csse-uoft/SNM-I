@@ -1,6 +1,8 @@
+import _ from 'lodash';
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
+import { ACTION_ERROR } from '../store/defaults.js'
+import { formatLocation } from '../helpers/location_helpers'
 
 import ClientSearchBar from './clients/ClientSearchBar'
 import ClientsIndex from './clients/ClientsIndex'
@@ -8,11 +10,9 @@ import ClientRow from './clients/ClientRow'
 import CSVUploadModal from './shared/CSVUploadModal'
 import DeleteModal from './shared/DeleteModal'
 
-import { formatLocation } from '../helpers/location_helpers'
-
 // redux
 import { connect } from 'react-redux'
-import { fetchClients, createClients, deleteClient, CLIENT_ERROR } from '../store/actions/clientActions.js'
+import { fetchClients, createClients, deleteClient } from '../store/actions/clientActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
@@ -34,7 +34,7 @@ class Clients extends Component {
 
     this.state = {
       CSVModalshow: false,
-      deleteModalshow: false,
+      deleteModalShow: false,
       objectId: null,
       clientsOrder: this.props.clientsOrder,
       searching: false,
@@ -60,13 +60,15 @@ class Clients extends Component {
 
   handleSubmit(e) {
     const file = document.querySelector('input[type="file"]').files[0];
-    this.props.dispatch(createClients(file)).then((status) => {
-      if (status === CLIENT_ERROR) {
-        // this.setState({ displayError: true });
-      } else {
-        this.setState({ CSVModalshow: false })
-      }
-    });
+    this.props.dispatch(
+      createClients(file, (status) => {
+        if (status === ACTION_ERROR) {
+          // this.setState({ displayError: true });
+        } else {
+          this.setState({ CSVModalshow: false })
+        }
+      })
+    );
   }
 
   handleDeleteModalHide() {
@@ -81,13 +83,15 @@ class Clients extends Component {
   }
 
   handleDelete(id, form) {
-    this.props.dispatch(deleteClient(id, form)).then((status) => {
-      if (status === CLIENT_ERROR) {
-        // this.setState({ displayError: true });
-      } else {
-        this.setState({ deleteModalShow: false })
-      }
-    });
+    this.props.dispatch(
+      deleteClient(id, form, status => {
+        if (status === ACTION_ERROR) {
+          // this.setState({ displayError: true });
+        } else {
+          this.setState({ deleteModalShow: false });
+        }
+      })
+    );
   }
 
   handleSearchBarChange(type, value) {
