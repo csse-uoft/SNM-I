@@ -52,6 +52,14 @@ class ServiceSearchBar extends Component {
             <option value="category"> Category </option>
           </FormControl>
         </FormGroup>{' '}
+        <FormGroup controlId="numberPerPage">
+          <ControlLabel> Number per page: </ControlLabel>{' '}
+          <FormControl componentClass="select" placeholder="select" onChange={this.props.changeNumberPerPage}>
+            <option value="10"> 10 </option>
+            <option value="20"> 20 </option>
+            <option value="all"> All </option>
+          </FormControl>
+        </FormGroup>{' '}
       </Form>
     );
   }
