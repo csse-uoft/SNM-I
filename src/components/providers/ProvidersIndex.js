@@ -7,7 +7,7 @@ export default class ProvidersIndex extends Component {
   render() {
     return(
       <div> 
-        <ProviderSearchBar> 
+        <ProviderSearchBar changeNumberPerPage={this.props.changeNumberPerPage}>
         </ProviderSearchBar>
         <hr/>
         <Table
