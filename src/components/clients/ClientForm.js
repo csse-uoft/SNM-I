@@ -5,7 +5,8 @@ import _ from 'lodash';
 // redux
 import { connect } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { createClient, updateClient } from '../../store/actions/clientActions.js';
+import { createClient, updateClient, CLIENT_ERROR, CLIENT_SUCCESS }
+  from '../../store/actions/clientActions.js';
 import { fetchEligibilities } from '../../store/actions/eligibilityActions.js'
 
 import PersonalInformationFields from './client_form/PersonalInformationFields';
@@ -13,7 +14,7 @@ import FamilyInformationFields from './client_form/FamilyInformationFields';
 import BackgroundInformationFields from './client_form/BackgroundInformationFields';
 import FormWizard from './client_form/FormWizard';
 
-import { Grid, Button, Form, Col, Row, Checkbox } from 'react-bootstrap';
+import { Grid, Button, Form, Col, Row } from 'react-bootstrap';
 
 class ClientForm extends Component {
   constructor(props) {
@@ -130,11 +131,33 @@ class ClientForm extends Component {
 
   submit() {
     if (this.state.mode === 'edit') {
-      this.props.dispatch(updateClient(this.state.clientId, this.state.form));
+      this.props.dispatch(
+        updateClient(this.state.clientId, this.state.form, (status, err, clientId) => {
+        if (status === CLIENT_SUCCESS) {
+          this.props.history.push(`/clients/${clientId}`)
+        } else {
+          this.setState({ showAlert: true });
+        }
+      }));
     } else {
-      this.props.dispatch(createClient(this.state.form));
+      this.props.dispatch(
+        createClient(this.state.form, (status, err, clientId) => {
+        if (status === CLIENT_SUCCESS) {
+          this.props.history.push(`/clients/${clientId}`)
+        } else {
+          const error_messages =
+            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
+                .split('_').join(' ')
+              _.each(error_messages, message => {
+                result.push(message.replace('This field', titleizedField))
+              })
+              return result;
+            }, [])
+          this.setState({ showAlert: true, error_messages: error_messages });
+        }
+      }));
     }
-    this.props.history.push('/clients')
   }
 
   handleAddFamilyButtonClick() {
@@ -196,6 +219,17 @@ class ClientForm extends Component {
             currentStep={this.state.currentStep}
             handleStepClick={this.handleStepClick}
           />
+          {this.state.showAlert &&
+            <Col sm={12} className="flash-error">
+              {_.map(this.state.error_messages, (message, index) => {
+                return (
+                  <li key={index}>
+                    {message}
+                  </li>
+                );
+              })}
+            </Col>
+          }
         </Row>
         <Form horizontal>
           {this.state.currentStep === 1 &&
