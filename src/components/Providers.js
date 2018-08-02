@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
 import { formatLocation } from '../helpers/location_helpers.js'
 // styles
-import { Button, Col, Glyphicon } from 'react-bootstrap'
+import { Button, Col, Glyphicon, Pagination } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
@@ -90,7 +90,9 @@ class ProviderInfoBox extends Component {
           </text> :
           <text>
             <b>Company: </b>
+            {<Link to={`/provider/${provider.id}`}>
               {this.props.provider.company}
+            </Link>}
           </text>}
         </div>
         <div>
@@ -109,17 +111,26 @@ class Providers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      CSVModalshow: false
+      CSVModalshow: false,
+      numberPerPage: 10,
+      currentPage: 1
     }
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.changePage = this.changePage.bind(this);
+    this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.providers !== prevProps.providers) {
+      this.setState({currentPage: 1});
+    }
+  }
   handleCSVModalHide() {
     this.setState({ CSVModalshow: false });
   }
@@ -135,8 +146,31 @@ class Providers extends Component {
     );
   }
 
+  changePage(e) {
+    this.setState({currentPage: Number(e.target.text)});
+  }
+
+  changeNumberPerPage(e) {
+    if (e.target.value === 'all') {
+      this.setState({
+        numberPerPage: this.props.providers.length,
+        currentPage: 1
+      });
+    }
+    else {
+      this.setState({
+        numberPerPage: e.target.value,
+        currentPage: 1
+      });
+    }
+  }
+
   render() {
     const p = this.props;
+    let providersOnPage = p.providers.slice(
+      this.state.numberPerPage * (this.state.currentPage - 1),
+      this.state.numberPerPage * this.state.currentPage);
+
     const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
 
     const GMap = withGoogleMap(props => (
@@ -144,7 +178,7 @@ class Providers extends Component {
         defaultZoom={10}
         defaultCenter={torontoCentroid} >
         {
-          _.map(this.props.providers, (provider) => {
+          _.map(providersOnPage, (provider) => {
             return <MapMarker provider={provider}/>
           })
         }
@@ -171,12 +205,19 @@ class Providers extends Component {
           </div>
           <hr/>
         { p.providersLoaded &&
-          <ProvidersIndex>{
-            p.providers.map((provider) => {
+          <div>
+          <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
+            providersOnPage.map((provider) => {
               return <ProviderRow key={ provider.id } provider={ provider } />
             })
           }
           </ProvidersIndex>
+            <Pagination className="pagination"
+              activePage={this.state.currentPage}
+              items={Math.ceil(p.providers.length/this.state.numberPerPage)}
+              onClick={this.changePage}>
+            </Pagination>
+          </div>
         }
         <hr/>
         { p.providersLoaded &&
