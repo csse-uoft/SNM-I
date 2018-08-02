@@ -19,7 +19,6 @@ export function clients(state = { clientsLoaded: false, order: [], byId: {} }, a
     case REMOVE_CLIENT:
       nextById = _.clone(state.byId);
       delete nextById[action.id]
-      return { ...state, byId: nextById }
       nextOrder = _.clone(state.order);
       _.remove(nextOrder, (id) => { return id === action.id });
       return { ...state, byId: nextById, order: nextOrder }
