@@ -122,7 +122,7 @@ export function deleteClient(id, params) {
   }
 }
 
-export function createClient(params) {
+export function createClient(params, callback) {
   return dispatch => {
     const url = serverHost + '/clients/';
     return fetch(url, {
@@ -132,8 +132,22 @@ export function createClient(params) {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(client => dispatch(receiveClient(client.id, client)));
+    })
+    .then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(client => {
+      dispatch(receiveClient(client.id, client))
+      callback(CLIENT_SUCCESS, null, client.id);
+    }).catch(err => {
+      callback(CLIENT_ERROR, err);
+    })
   }
 }
 
@@ -170,7 +184,7 @@ export function createClients(file) {
   }
 }
 
-export function updateClient(id, params) {
+export function updateClient(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/client/' + id + '/';
 
@@ -181,7 +195,21 @@ export function updateClient(id, params) {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(client => dispatch(receiveClient(id, client)));
+    })
+    .then(async(response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(client => {
+      dispatch(receiveClient(client.id, client))
+      callback(CLIENT_SUCCESS, null, client.id);
+    }).catch(err => {
+      callback(CLIENT_ERROR, err);
+    })
   }
 }
