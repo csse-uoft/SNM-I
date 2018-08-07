@@ -13,7 +13,7 @@ class EligibilityRow extends Component {
         <td>
           <DropdownMenu
             hideViewOption
-            urlPrefix="eligibility_criteria"
+            urlPrefix="eligibility-criteria"
             objectId={eligibility.id}
             handleShow={this.props.handleShow}
           />

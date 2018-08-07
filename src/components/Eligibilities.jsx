@@ -62,7 +62,7 @@ class Eligibilities extends Component {
       <div className='content'>
         <div>
           <h1>Eligibility Criteria</h1>
-          <Link to={`/eligibility_criteria/new`}>
+          <Link to={`/eligibility-criteria/new`}>
             <Button bsStyle="default">
               Create new eligibility criteria
             </Button>

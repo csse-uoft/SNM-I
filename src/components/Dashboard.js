@@ -36,12 +36,12 @@ class Dashboard extends Component {
                     Manage Users
                   </Button>
                 </Link>
-                <Link to='/admin_logs'>
+                <Link to='/admin-logs'>
                   <Button bsStyle="default" className="btn-default-login" block>
                     Admin Logs
                   </Button>
                 </Link>
-                <Link to='/eligibility_criteria'>
+                <Link to='/eligibility-criteria'>
                   <Button bsStyle="default" className="btn-default-login" block>
                     Manage Eligibility criteria
                   </Button>
