@@ -2,21 +2,22 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
-function wizardStepStyle(currentStep, wizardStep) {
+function wizardStepStyle(currentStep, wizardStep, totalStepCount) {
+  const col = Math.floor(12 / totalStepCount)
   if (currentStep === wizardStep) {
-    return 'col-xs-4 bs-wizard-step active'
+    return `col-xs-${col} bs-wizard-step active`
   }
   else if (currentStep > wizardStep) {
-    return 'col-xs-4 bs-wizard-step complete'
+    return `col-xs-${col} bs-wizard-step complete`
   }
   else {
-    return 'col-xs-4 bs-wizard-step disabled'
+    return `col-xs-${col} bs-wizard-step disabled`
   }
 }
 
-function WizardStep({ stepNumber, currentStep, handleStepClick, title }) {
+function WizardStep({ stepNumber, currentStep, handleStepClick, title, totalStepCount }) {
   return (
-    <div className={wizardStepStyle(currentStep, stepNumber)}>
+    <div className={wizardStepStyle(currentStep, stepNumber, totalStepCount)}>
       <div className="text-center bs-wizard-stepnum">Step {stepNumber}</div>
       <div className="progress"><div className="progress-bar"></div></div>
       <div className="bs-wizard-dot" onClick={e => handleStepClick(stepNumber)}></div>
@@ -39,6 +40,7 @@ export default function FormWizard({ stepTitles, currentStep, handleStepClick })
             currentStep={currentStep}
             handleStepClick={handleStepClick}
             title={title}
+            totalStepCount={stepTitles.length}
           />
         )
       })}
