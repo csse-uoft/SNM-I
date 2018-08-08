@@ -304,9 +304,9 @@ const mapStateToProps = (state) => {
   return {
     clientsById: state.clients.byId,
     languagesCategories: state.ontology.languages.categories,
-    categoriesLoaded: state.ontology.languages.loaded,
     eligibilities: _.map(state.eligibilities.byId, eligibility => eligibility['title']),
-    eligibilitiesLoaded: state.eligibilities.eligibilitiesLoaded
+    stepsOrder: state.settings.stepsOrder,
+    formStructure: state.settings.formStructure,
   }
 }
 

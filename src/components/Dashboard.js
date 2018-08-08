@@ -46,6 +46,11 @@ class Dashboard extends Component {
                     Manage Eligibility criteria
                   </Button>
                 </Link>
+                <Link to='/settings/manage-client-fields'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Client Fields
+                  </Button>
+                </Link>
               </div>
             }
           </div>

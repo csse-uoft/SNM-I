@@ -32,6 +32,7 @@ import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
 import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
+import ManageClientFields from './components/settings/ManageClientFields';
 
 const routes = (
   <Switch>
@@ -77,6 +78,8 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria/:id/edit' component={EligibilityForm} />
     <PrivateRoute path='/eligibility-criteria/new' component={EligibilityForm} />
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
+
+    <AdminRoute path='/settings/manage-client-fields' component={ManageClientFields} />
   </Switch>
 )
 
