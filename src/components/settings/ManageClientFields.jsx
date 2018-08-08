@@ -195,7 +195,7 @@ class ManageClientFields extends Component {
                   id={field}
                   key={field}
                   label={clientFields[field]['label']}
-                  handleFormValChange={e => this.handleRadioChange(e, field)}
+                  onChange={e => this.handleRadioChange(e, field)}
                   options={{ 'Mandatory': true, 'Not mandatory': false }}
                   defaultChecked={this.state.form.form_structure[step][field]}
                 />

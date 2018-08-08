@@ -345,7 +345,7 @@ class GoodForm extends Component {
               id="is_provider_location"
               label="Location"
               options={{ 'Same as provider': true, 'Other': false }}
-              handleFormValChange={this.indicatorChange}
+              onChange={this.indicatorChange}
               defaultChecked={this.state.is_provider_location}
               required
             />

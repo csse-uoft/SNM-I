@@ -2,7 +2,12 @@ import _ from 'lodash';
 import React from 'react';
 import { Col, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-export default function SelectField({ id, label, required, options, defaultOptionTitle, ...props }) {
+export default function SelectField({ id,
+                                      label,
+                                      required,
+                                      options,
+                                      defaultOptionTitle,
+                                      ...props }) {
   return (
     <FormGroup controlId={id}>
       <Col
