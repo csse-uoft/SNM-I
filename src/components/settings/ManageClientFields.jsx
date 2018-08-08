@@ -47,7 +47,7 @@ class ManageClientFields extends Component {
   handleAddFieldClick(e, id=e.target.id) {
     let nextFormStructure = _.clone(this.state.form.form_structure);
     nextFormStructure[this.state.selectedStep][this.state.fieldToAdd] = false;
-    debugger
+
     this.setState({
       form: {
         ...this.state.form,
@@ -59,7 +59,6 @@ class ManageClientFields extends Component {
   handleAddStepClick(e, id=e.target.id) {
     let nextFormStructure = _.clone(this.state.form.form_structure);
     let nextStepsOrder = _.clone(this.state.form.steps_order);
-    debugger
     nextFormStructure[this.state.stepToAdd] = {};
     nextStepsOrder.push(this.state.stepToAdd)
 

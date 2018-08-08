@@ -236,7 +236,6 @@ function GenderStats({ data, options, totalClientsCount, ClientsCountByGender}) 
 }
 
 function MaritalStatusStats({ data, options, totalClientsCount, ClientsCountByMaritalStatus}) {
-  debugger
   return (
     <Table bordered condensed className="client-profile-table">
       <tbody>
