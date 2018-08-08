@@ -9,7 +9,7 @@ export default class AdminLogRow extends Component {
       if (contentType === 'Person') {
         return `/clients/${objectId}`
       } else if (contentType === 'EligibilityCriteria') {
-        return `/eligibility_criteria/${objectId}`
+        return `/eligibility-criteria/${objectId}`
       }
       return `/${contentType.toLowerCase()}s/${objectId}`
     }

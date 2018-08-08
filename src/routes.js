@@ -32,6 +32,7 @@ import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
 import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
+import ManageClientFields from './components/settings/ManageClientFields';
 
 const routes = (
   <Switch>
@@ -50,7 +51,7 @@ const routes = (
     <AdminRoute path='/users/new' component={UserForm} />
     <AdminRoute path='/users/:id' component={User} />
     <AdminRoute path='/users' component={Users} />
-    <AdminRoute path='/admin_logs' component={AdminLogs} />
+    <AdminRoute path='/admin-logs' component={AdminLogs} />
 
     <PrivateRoute path='/needs/:need_id/edit' component={NeedForm} />
     <PrivateRoute path='/needs/:need_id' component={Need} />
@@ -74,9 +75,11 @@ const routes = (
 
     <PrivateRoute path='/reporting' component={Reporting} />
 
-    <PrivateRoute path='/eligibility_criteria/:id/edit' component={EligibilityForm} />
-    <PrivateRoute path='/eligibility_criteria/new' component={EligibilityForm} />
-    <PrivateRoute path='/eligibility_criteria' component={Eligibilities} />
+    <PrivateRoute path='/eligibility-criteria/:id/edit' component={EligibilityForm} />
+    <PrivateRoute path='/eligibility-criteria/new' component={EligibilityForm} />
+    <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
+
+    <AdminRoute path='/settings/manage-client-fields' component={ManageClientFields} />
   </Switch>
 )
 

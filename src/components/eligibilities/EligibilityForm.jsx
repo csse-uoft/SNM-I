@@ -39,7 +39,7 @@ class EligibilityForm extends Component {
     } else {
       this.props.dispatch(createEligibility(this.state.form));
     }
-    this.props.history.push('/eligibility_criteria')
+    this.props.history.push('/eligibility-criteria')
   }
 
   render() {

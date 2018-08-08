@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
-import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { Link } from 'react-router-dom';
 import { searchGoods, fetchGoods, createGood, updateGood, deleteGood } from '../../store/actions/goodActions.js'
 import { connect } from 'react-redux';

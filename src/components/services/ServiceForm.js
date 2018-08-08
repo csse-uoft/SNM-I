@@ -358,7 +358,7 @@ class ServiceForm extends Component {
               label="Immigration Status"
               options={statusInCanadaOptions}
               checkedOptions={this.state.form.eligibility_conditions.immigration_status}
-              handleFormValChange={this.conditionsChange}
+              onChange={this.conditionsChange}
             />
             <FormField
               id="lower_age_limit"
@@ -379,14 +379,14 @@ class ServiceForm extends Component {
               label="Current Education"
               options={educationLevelOptions}
               checkedOptions={this.state.form.eligibility_conditions.current_education_level}
-              handleFormValChange={this.conditionsChange}
+              onChange={this.conditionsChange}
             />
             <CheckboxField
               id="completed_education_level"
               label="Completed Education Level"
               options={educationLevelOptions}
               checkedOptions={this.state.form.eligibility_conditions.completed_education_level}
-              handleFormValChange={this.conditionsChange}
+              onChange={this.conditionsChange}
             />
             <hr/>
             <h3>Contact Information</h3>
@@ -418,7 +418,7 @@ class ServiceForm extends Component {
               id="is_provider_location"
               label="Location"
               options={{ 'Same as provider': true, 'Other': false }}
-              handleFormValChange={this.indicatorChange}
+              onChange={this.indicatorChange}
               defaultChecked={this.state.is_provider_location}
               required
             />

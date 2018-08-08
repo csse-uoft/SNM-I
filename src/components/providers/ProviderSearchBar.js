@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import { Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
-import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { searchProviders } from '../../store/actions/providerActions.js'
 import { connect } from 'react-redux';
 

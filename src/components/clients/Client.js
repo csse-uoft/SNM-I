@@ -55,6 +55,10 @@ class Client extends Component {
                   <td colSpan="2"><b>Personal Information: </b></td>
                 </tr>
                 <TableRow
+                  title="File ID"
+                  value={client.file_id}
+                />
+                <TableRow
                   title="First Name"
                   value={client.first_name}
                 />

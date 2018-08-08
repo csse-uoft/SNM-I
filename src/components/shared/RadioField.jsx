@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Col, FormGroup, FormControl, ControlLabel, Radio } from 'react-bootstrap';
 
-export default function RadioField({ id, label, required, options, defaultChecked, handleFormValChange }) {
+export default function RadioField({ id, label, required, options, defaultChecked, onChange }) {
   return (
     <FormGroup controlId={id}>
       <Col
@@ -19,7 +19,7 @@ export default function RadioField({ id, label, required, options, defaultChecke
               name={id}
               key={value}
               value={value}
-              onChange={e => handleFormValChange(e, id, JSON.parse(value))}
+              onChange={e => onChange(e, id, JSON.parse(value))}
               defaultChecked={defaultChecked === JSON.parse(value)}
               inline
             >
