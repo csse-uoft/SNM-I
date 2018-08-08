@@ -63,8 +63,8 @@ class ClientForm extends Component {
         current_education_level: '',
         completed_education_level: '',
         num_of_dependants: '',
+        file_id: '',
         family: Object.assign({
-          file_id: '',
           members: []
         }, client.family),
         eligibilities: []
@@ -186,16 +186,11 @@ class ClientForm extends Component {
   handleFamilyChange(e, index) {
     const id = e.target.id;
     let nextForm = _.clone(this.state.form);
-    if (id === 'file_id') {
-      nextForm['family']['file_id'] = e.target.value;
+    if (id === 'relationship') {
+      nextForm['family']['members'][index][id] = e.target.value;
     }
     else {
-      if (id === 'relationship') {
-        nextForm['family']['members'][index][id] = e.target.value;
-      }
-      else {
-        nextForm['family']['members'][index]['person'][id] = e.target.value;
-      }
+      nextForm['family']['members'][index]['person'][id] = e.target.value;
     }
     this.setState({ form: nextForm });
   }
