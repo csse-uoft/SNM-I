@@ -8,7 +8,8 @@ import CSVUploadModal from './shared/CSVUploadModal'
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
-import { formatLocation } from '../helpers/location_helpers.js'
+import { formatLocation } from '../helpers/location_helpers.js';
+import ProviderSearchBar from './providers/ProviderSearchBar';
 // styles
 import { Button, Col, Glyphicon, Pagination } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
@@ -111,19 +112,83 @@ class Providers extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      filteredProviders: this.props.providers,
       CSVModalshow: false,
       numberPerPage: 10,
-      currentPage: 1
+      currentPage: 1,
+      searchText: '',
+      searchType: 'name',
+      searchProviderType: 'all',
+      selectedCategories: []
     }
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.changePage = this.changePage.bind(this);
     this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.handleTypeChange = this.handleTypeChange.bind(this);
+    this.handleProviderTypeChange = this.handleProviderTypeChange.bind(this);
+    this.handleCategorySelection = this.handleCategorySelection.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this)
   }
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
+  }
+
+  handleInput(event) {
+    const value = event.target.value;
+    this.setState({ searchText: value});
+    this.handleSearchChange(value, this.state.searchType, this.state.searchProviderType, this.state.selectedCategories)
+  }
+
+  handleTypeChange(event) {
+    const value = event.target.value;
+    this.setState({searchType: value});
+    this.handleSearchChange(this.state.searchText, value, this.state.searchProviderType, this.state.selectedCategories)
+  }
+
+  handleProviderTypeChange(event) {
+    const value = event.target.value;
+    console.log(value)
+    this.setState({searchProviderType: value});
+    this.handleSearchChange(this.state.searchText, this.state.searchType, value, this.state.selectedCategories)
+  }
+
+  handleCategorySelection(event) {
+    this.setState({selectedCategories: event});
+    this.handleSearchChange(this.state.searchText, this.state.searchType, this.state.searchProviderType, event)
+  }
+
+  handleSearchChange(searchText, searchType, providerType, categories) {
+    let providers;
+    if (categories.length > 0) {
+      providers = [];
+      categories.forEach(category => {
+        if (this.props.providersByService[category.value]) {
+          providers = providers.concat(this.props.providersByService[category.value])
+        }
+      });
+    } else {
+      providers = this.props.providers;
+    }
+
+    if (searchText && searchType === "name") {
+      providers = providers.filter(provider => (((provider.first_name).includes(searchText) ||
+            (provider.last_name).includes(searchText) || (provider.company).includes(searchText))));
+    } else if (searchText && searchType === "email") {
+      providers = providers.filter(provider => (provider.email).includes(searchText));
+    } else if (searchText && searchType === "phone") {
+      providers = providers.filter(provider =>
+        (provider.primary_phone_number).includes(searchText)
+      );
+    }
+
+    if (providerType !== "all") {
+      providers = providers.filter(provider => provider.provider_type === providerType);
+    }
+    this.setState({filteredProviders: providers})
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -167,11 +232,11 @@ class Providers extends Component {
 
   render() {
     const p = this.props;
-    let providersOnPage = p.providers.slice(
+    let providersOnPage = this.state.filteredProviders.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),
       this.state.numberPerPage * this.state.currentPage);
     let pageNumbers = [];
-    for (let number = 1; number <= Math.ceil(p.providers.length/this.state.numberPerPage); number++) {
+    for (let number = 1; number <= Math.ceil(this.state.filteredProviders.length/this.state.numberPerPage); number++) {
       pageNumbers.push(
         <Pagination.Item
           key={number}
@@ -212,6 +277,16 @@ class Providers extends Component {
               <Glyphicon glyph="print" />
             </Button>
           </div>
+          <hr/>
+          <ProviderSearchBar
+            changeNumberPerPage={this.changeNumberPerPage}
+            handleInput={this.handleInput}
+            handleTypeChange={this.handleTypeChange}
+            handleProviderTypeChange={this.handleProviderTypeChange}
+            handleCategorySelection={this.handleCategorySelection}
+            selectedCategories={this.state.selectedCategories}
+            searchValue={this.state.searchText}
+            />
           <hr/>
         { p.providersLoaded &&
           <div>
@@ -255,7 +330,8 @@ class Providers extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    providers: state.providers.filteredProviders || [], //array of json 
+    providers: state.providers.filteredProviders || [],
+    providersByService: state.providers.providersByService,
     providersLoaded: state.providers.loaded
   }
 }

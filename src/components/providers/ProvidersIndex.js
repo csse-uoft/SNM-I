@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
-import ProviderSearchBar from './ProviderSearchBar.js';
 
 export default class ProvidersIndex extends Component {
   render() {
     return(
       <div> 
-        <ProviderSearchBar changeNumberPerPage={this.props.changeNumberPerPage}>
-        </ProviderSearchBar>
-        <hr/>
         <Table
           className="dashboard-table"
           striped

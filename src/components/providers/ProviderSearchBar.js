@@ -1,58 +1,42 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 import _ from 'lodash';
 
 import { Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
-import { searchProviders } from '../../store/actions/providerActions.js'
+import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import SelectField from '../shared/SelectField';
 import { connect } from 'react-redux';
 
 
 class ProviderSearchBar extends Component {
   constructor(props) {
     super(props);
-    this.handleInput=this.handleInput.bind(this);
-    this.handleTypeChange=this.handleTypeChange.bind(this);
-    this.handleProviderTypeChange=this.handleProviderTypeChange.bind(this);
-    this.state = {
-      searchText: '',
-      searchType: 'name',
-      searchProviderType: 'both'
-    }
-  }
-  
-  handleInput(event) {
-    const value = event.target.value;
-    this.setState({ searchText: value});
-    this.props.dispatch(searchProviders(value, this.state.searchType, this.state.searchProviderType));
   }
 
-  handleTypeChange(event) {
-    const value = event.target.value;
-    console.log(value);
-    this.setState({searchType: value});
-    this.props.dispatch(searchProviders(this.state.searchText, value, this.state.searchProviderType));
-  }
-
-  handleProviderTypeChange(event) {
-    const value = event.target.value;
-    this.setState({searchProviderType: value});
-    this.props.dispatch(searchProviders(this.state.searchText, this.state.value, value));
+  componenetWillMount() {
+    this.props.dispatch(fetchOntologyCategories('services'));
   }
 
   render() {
+    const categories = this.props.servicesCategories.map(category => {
+      return {value: category, label: category};
+      }
+    );
     return (
+      <div>
       <Form inline>
         <FormGroup controlId="searchBar">
           <FormControl 
             type='text' 
             placeholder="Search..." 
-            value={this.state.value}
-            onChange={this.handleInput}
+            value={this.props.searchValue}
+            onChange={this.props.handleInput}
           />
         </FormGroup> {' '}
         <FormGroup controlId="searchBy">
           <ControlLabel> Search by: </ControlLabel>{' '}
-          <FormControl componentClass="select" placeholder="select" onChange={this.handleTypeChange}>
+          <FormControl componentClass="select" placeholder="select" onChange={this.props.handleTypeChange}>
             <option value="name"> Name </option>
             <option value="email"> Email </option>
             <option value="phone"> Phone </option>
@@ -61,7 +45,7 @@ class ProviderSearchBar extends Component {
 
         <FormGroup controlId="showOnly">
           <ControlLabel> Show: </ControlLabel>{' '}
-          <FormControl componentClass="select" placeholder="select" onChange={this.handleProviderTypeChange}>
+          <FormControl componentClass="select" placeholder="select" onChange={this.props.handleProviderTypeChange}>
             <option value="all"> All </option>
             <option value="Individual"> Individual </option>
             <option value="Organization"> Organization </option>
@@ -77,14 +61,29 @@ class ProviderSearchBar extends Component {
           </FormControl>
         </FormGroup>{' '}
       </Form>
-    );
+
+      <Select
+        value={this.props.selectedCategories}
+        isMulti={true}
+        closeMenuOnSelect={false}
+        name="categories"
+        className="basic-multi-select"
+        classNamePrefix="select"
+        options={categories}
+        onChange={(category) => this.props.handleCategorySelection(category)}
+      />
+      </div>
+    )
   }
-};
+}
+
 
 const mapStateToProps = (state) => {
   return {
-    providers: state.providers.index, //array of json 
-    providersLoaded: state.providers.loaded
+    providers: state.providers.index, //array of json
+    providersById: state.providers.byId,
+    providersLoaded: state.providers.loaded,
+    servicesCategories: state.ontology.services.categories
   }
 }
 
