@@ -6,6 +6,7 @@ import { Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootst
 import { encodePointCoordinates, parsePointCoordinates } from '../../util.js';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import SelectField from '../shared/SelectField';
+
 import { connect } from 'react-redux';
 
 

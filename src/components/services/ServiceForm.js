@@ -13,7 +13,7 @@ import { formatLocation } from '../../helpers/location_helpers.js';
 
 // redux
 import { connect } from 'react-redux'
-import { createService, updateService } from '../../store/actions/serviceActions.js'
+import { createService, updateService, SERVICE_ERROR, SERVICE_SUCCESS } from '../../store/actions/serviceActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js';
 
 
@@ -134,11 +134,42 @@ class ServiceForm extends Component {
     delete form['eligibility_conditions']['lower_age_limit']
     delete form['eligibility_conditions']['upper_age_limit']
     if (this.state.mode === 'edit') {
-      this.props.dispatch(updateService(this.state.serviceId, form));
+      this.props.dispatch(
+        updateService(this.state.serviceId, form, (status, err, serviceId) => {
+        if (status === SERVICE_SUCCESS) {
+          this.props.history.push('/services')
+        } else {
+          const error_messages =
+            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
+                .split('_').join(' ')
+              _.each(error_messages, message => {
+                result.push(message.replace('This field', titleizedField))
+              })
+              return result;
+            }, [])
+          this.setState({ showAlert: true, error_messages: error_messages });
+        }
+      }));
     } else {
-      this.props.dispatch(createService(this.state.form));
+      this.props.dispatch(
+        createService(this.state.form, (status, err, serviceId) => {
+        if (status === SERVICE_SUCCESS) {
+          this.props.history.push('/services')
+        } else {
+          const error_messages =
+            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
+                .split('_').join(' ')
+              _.each(error_messages, message => {
+                result.push(message.replace('This field', titleizedField))
+              })
+              return result;
+            }, [])
+          this.setState({ showAlert: true, error_messages: error_messages });
+        }
+      }));
     }
-    this.props.history.push('/services')
   }
 
   render() {
@@ -159,7 +190,19 @@ class ServiceForm extends Component {
           <hr />
         </Col>
         <Col sm={12}>
-          <Form horizontal>
+            <Form horizontal>
+            {this.state.showAlert &&
+              <Col sm={12} className="flash-error">
+                {_.map(this.state.error_messages, (message, index) => {
+                  return (
+                    <li key={index}>
+                      {message}
+                    </li>
+                  );
+                })}
+              </Col>
+            }
+
             <SelectField
               id="provider_id"
               label="Provider"
@@ -358,7 +401,7 @@ class ServiceForm extends Component {
               label="Immigration Status"
               options={statusInCanadaOptions}
               checkedOptions={this.state.form.eligibility_conditions.immigration_status}
-              handleFormValChange={this.conditionsChange}
+              onChange={this.conditionsChange}
             />
             <FormField
               id="lower_age_limit"
@@ -379,14 +422,14 @@ class ServiceForm extends Component {
               label="Current Education"
               options={educationLevelOptions}
               checkedOptions={this.state.form.eligibility_conditions.current_education_level}
-              handleFormValChange={this.conditionsChange}
+              onChange={this.conditionsChange}
             />
             <CheckboxField
               id="completed_education_level"
               label="Completed Education Level"
               options={educationLevelOptions}
               checkedOptions={this.state.form.eligibility_conditions.completed_education_level}
-              handleFormValChange={this.conditionsChange}
+              onChange={this.conditionsChange}
             />
             <hr/>
             <h3>Contact Information</h3>
@@ -418,7 +461,7 @@ class ServiceForm extends Component {
               id="is_provider_location"
               label="Location"
               options={{ 'Same as provider': true, 'Other': false }}
-              handleFormValChange={this.indicatorChange}
+              onChange={this.indicatorChange}
               defaultChecked={this.state.is_provider_location}
               required
             />

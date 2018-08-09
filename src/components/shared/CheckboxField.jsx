@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Col, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
 
-export default function CheckboxField({ id, label, required, options, checkedOptions, handleFormValChange }) {
+export default function CheckboxField({ id, label, required, options, checkedOptions, onChange }) {
   return (
     <FormGroup controlId={id}>
       <Col
@@ -13,19 +13,39 @@ export default function CheckboxField({ id, label, required, options, checkedOpt
         {label}
       </Col>
       <Col sm={9}>
-        {options.map((option) => {
-          return (
-            <Checkbox
-              key={option}
-              value={option}
-              checked={_.includes(checkedOptions, option)}
-              onChange={e => handleFormValChange(e, id)}
-              inline
-            >
-              {option}
-            </Checkbox>
-          )
-        })}
+        {(options.constructor === Array) ? (
+          <div>
+            {options.map((option) => {
+              return (
+                <Checkbox
+                  key={option}
+                  value={option}
+                  checked={_.includes(checkedOptions, option)}
+                  onChange={e => onChange(e, id)}
+                  inline
+                >
+                  {option}
+                </Checkbox>
+              )
+            })}
+          </div>
+        ) : (
+          <div>
+            {_.map(options, (value, title) => {
+              return (
+                <Checkbox
+                  key={value}
+                  value={value}
+                  checked={_.includes(checkedOptions, value)}
+                  onChange={e => onChange(e, value)}
+                  inline
+                >
+                  {title}
+                </Checkbox>
+              )
+            })}
+          </div>
+        )}
       </Col>
     </FormGroup>
   );

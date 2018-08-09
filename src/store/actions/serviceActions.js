@@ -37,7 +37,7 @@ function requestServices(json) {
 function receiveAllServices(json) {
   return {
     type: RECEIVE_ALL_SERVICES,
-    clients: json
+    services: json
   }
 }
 
@@ -55,11 +55,12 @@ function removeService(id) {
   }
 }
 
-export function searchServices(searchValue, searchType) {
+export function searchServices(searchValue, searchType, sortType) {
   return {
     type: SEARCH_SERVICES,
     searchValue: searchValue,
-    searchType: searchType
+    searchType: searchType,
+    sortType: sortType
   };
 }
 
@@ -122,7 +123,7 @@ export function deleteService(id, params) {
   }
 }
 
-export function createService(params) {
+export function createService(params, callback) {
   return dispatch => {
     const url = serverHost + '/services/';
     return fetch(url, {
@@ -132,8 +133,22 @@ export function createService(params) {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(service => dispatch(receiveService(service.id, service)));
+    })
+    .then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(service => {
+      dispatch(receiveService(service.id, service))
+      callback(SERVICE_SUCCESS, null, service.id);
+    }).catch(err => {
+      callback(SERVICE_ERROR, err);
+    })
   }
 }
 
@@ -169,7 +184,7 @@ export function createServices(file) {
   }
 }
 
-export function updateService(id, params) {
+export function updateService(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/service/' + id + '/';
 
@@ -180,8 +195,21 @@ export function updateService(id, params) {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(service => dispatch(receiveService(id, service)));
+    })
+      .then(async(response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        else {
+          const error = await response.json()
+          throw new Error(JSON.stringify(error))
+        }
+      })
+      .then(service => {
+        dispatch(receiveService(service.id, service))
+        callback(SERVICE_SUCCESS, null, service.id);
+      }).catch(err => {
+        callback(SERVICE_ERROR, err);
+      })
   }
-  console.log(params)
 }

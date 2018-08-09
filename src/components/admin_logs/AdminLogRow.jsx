@@ -7,7 +7,9 @@ export default class AdminLogRow extends Component {
 
     function object_url(contentType, objectId) {
       if (contentType === 'Person') {
-        contentType = 'Client'
+        return `/clients/${objectId}`
+      } else if (contentType === 'EligibilityCriteria') {
+        return `/eligibility-criteria/${objectId}`
       }
       return `/${contentType.toLowerCase()}s/${objectId}`
     }
@@ -16,7 +18,7 @@ export default class AdminLogRow extends Component {
       <tr>
         <td>{log.action_time}</td>
         <td>
-          <Link to={`/user/${log.user.id}`}>
+          <Link to={`/users/${log.user.id}`}>
             {log.user.first_name} {log.user.last_name}
           </Link>
         </td>

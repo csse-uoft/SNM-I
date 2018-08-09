@@ -6,7 +6,7 @@ export default class ServicesIndex extends Component {
   render() {
     return(
       <div>
-      <ServiceSearchBar> 
+      <ServiceSearchBar changeNumberPerPage={this.props.changeNumberPerPage}>
       </ServiceSearchBar>
       <hr />
       <Table className="dashboard-table" striped bordered condensed hover>

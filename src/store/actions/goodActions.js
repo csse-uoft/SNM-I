@@ -55,11 +55,12 @@ function removeGood(id) {
   }
 }
 
-export function searchGoods(searchValue, searchType) {
+export function searchGoods(searchValue, searchType, sortType) {
   return {
     type: SEARCH_GOODS,
     searchValue: searchValue,
-    searchType: searchType
+    searchType: searchType,
+    sortType: sortType
   };
 }
 
@@ -123,7 +124,7 @@ export function deleteGood(id, params) {
   }
 }
 
-export function createGood(params) {
+export function createGood(params, callback) {
   return dispatch => {
     const url = serverHost + '/goods/';
     return fetch(url, {
@@ -133,8 +134,21 @@ export function createGood(params) {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(good => dispatch(receiveGood(good.id, good)));
+    }).then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(good => {
+      dispatch(receiveGood(good.id, good))
+      callback(GOOD_SUCCESS, null, good.id);
+    }).catch(err => {
+      callback(GOOD_ERROR, err);
+    })
   }
 }
 
@@ -170,7 +184,7 @@ export function createGoods(file) {
   }
 }
 
-export function updateGood(id, params) {
+export function updateGood(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/good/' + id + '/';
 
@@ -181,8 +195,21 @@ export function updateGood(id, params) {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(good => dispatch(receiveGood(id, good)));
+    })
+      .then(async(response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        else {
+          const error = await response.json()
+          throw new Error(JSON.stringify(error))
+        }
+      })
+      .then(good => {
+        dispatch(receiveGood(good.id, good))
+        callback(GOOD_SUCCESS, null, good.id);
+      }).catch(err => {
+        callback(GOOD_ERROR, err);
+      })
   }
-  console.log(params)
 }

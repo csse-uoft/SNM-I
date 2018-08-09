@@ -1,19 +1,22 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import _ from 'lodash';
+import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
+import { clientFields } from '../../constants/client_fields.js'
 
 // redux
 import { connect } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { createClient, updateClient, CLIENT_ERROR, CLIENT_SUCCESS }
-  from '../../store/actions/clientActions.js';
-import { fetchEligibilities } from '../../store/actions/eligibilityActions.js'
+import { createClient, updateClient } from '../../store/actions/clientActions.js';
+import { fetchEligibilities } from '../../store/actions/eligibilityActions.js';
 
-import PersonalInformationFields from './client_form/PersonalInformationFields';
-import FamilyInformationFields from './client_form/FamilyInformationFields';
-import BackgroundInformationFields from './client_form/BackgroundInformationFields';
+// components
+import LocationFieldGroup from './client_form/LocationFieldGroup';
+import FamilyFields from './client_form/FamilyFields';
 import FormWizard from './client_form/FormWizard';
+import ClientField from './client_form/ClientField';
 
+// styles
 import { Grid, Button, Form, Col, Row } from 'react-bootstrap';
 
 class ClientForm extends Component {
@@ -61,8 +64,8 @@ class ClientForm extends Component {
         current_education_level: '',
         completed_education_level: '',
         num_of_dependants: '',
+        file_id: '',
         family: Object.assign({
-          file_id: '',
           members: []
         }, client.family),
         eligibilities: []
@@ -133,16 +136,17 @@ class ClientForm extends Component {
     if (this.state.mode === 'edit') {
       this.props.dispatch(
         updateClient(this.state.clientId, this.state.form, (status, err, clientId) => {
-        if (status === CLIENT_SUCCESS) {
-          this.props.history.push(`/clients/${clientId}`)
-        } else {
-          this.setState({ showAlert: true });
-        }
-      }));
+          if (status === ACTION_SUCCESS) {
+            this.props.history.push(`/clients/${clientId}`)
+          } else {
+            this.setState({ showAlert: true });
+          }
+        })
+      );
     } else {
       this.props.dispatch(
         createClient(this.state.form, (status, err, clientId) => {
-        if (status === CLIENT_SUCCESS) {
+        if (status === ACTION_SUCCESS) {
           this.props.history.push(`/clients/${clientId}`)
         } else {
           const error_messages =
@@ -183,16 +187,11 @@ class ClientForm extends Component {
   handleFamilyChange(e, index) {
     const id = e.target.id;
     let nextForm = _.clone(this.state.form);
-    if (id === 'file_id') {
-      nextForm['family']['file_id'] = e.target.value;
+    if (id === 'relationship') {
+      nextForm['family']['members'][index][id] = e.target.value;
     }
     else {
-      if (id === 'relationship') {
-        nextForm['family']['members'][index][id] = e.target.value;
-      }
-      else {
-        nextForm['family']['members'][index]['person'][id] = e.target.value;
-      }
+      nextForm['family']['members'][index]['person'][id] = e.target.value;
     }
     this.setState({ form: nextForm });
   }
@@ -202,12 +201,6 @@ class ClientForm extends Component {
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Client Profile' : 'New Client Profile'
 
-    const stepTitles = [
-      "Personal Information",
-      "Family Members (Optional)",
-      "Background Information (Optional)"
-    ];
-
     return (
       <Grid className="content">
         <Row>
@@ -215,7 +208,7 @@ class ClientForm extends Component {
             <h3>{formTitle}</h3>
           </Col>
           <FormWizard
-            stepTitles={stepTitles}
+            stepTitles={this.props.stepsOrder}
             currentStep={this.state.currentStep}
             handleStepClick={this.handleStepClick}
           />
@@ -232,62 +225,65 @@ class ClientForm extends Component {
           }
         </Row>
         <Form horizontal>
-          {this.state.currentStep === 1 &&
-            <PersonalInformationFields
-              first_name={this.state.form.first_name}
-              middle_name={this.state.form.middle_name}
-              last_name={this.state.form.last_name}
-              preferred_name={this.state.form.preferred_name}
-              gender={this.state.form.gender}
-              birth_date={this.state.form.birth_date}
-              marital_status={this.state.form.marital_status}
-              has_children={this.state.form.has_children}
-              num_of_children={this.state.form.num_of_children}
-              email={this.state.form.email}
-              primary_phone_number={this.state.form.primary_phone_number}
-              alt_phone_number={this.state.form.alt_phone_number}
-              handleFormValChange={this.formValChange}
-              address={this.state.form.address}
-            />
-          }
-          {this.state.currentStep === 2 &&
-            <FamilyInformationFields
-              family={this.state.form.family}
-              clientId={this.state.clientId}
-              handleFormValChange={this.handleFamilyChange}
-              handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
-              handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
-            />
-          }
-          {this.state.currentStep === 3 &&
-            <BackgroundInformationFields
-              country_of_origin={this.state.form.country_of_origin}
-              country_of_last_residence={this.state.form.country_of_last_residence}
-              first_language={this.state.form.first_language}
-              other_languages={this.state.form.other_languages}
-              pr_number={this.state.form.pr_number}
-              immigration_doc_number={this.state.form.immigration_doc_number}
-              landing_date={this.state.form.landing_date}
-              arrival_date={this.state.form.arrival_date}
-              formValChange={this.formValChange}
-              categoriesLoaded={p.categoriesLoaded}
-              languagesCategories={p.languagesCategories}
-              num_of_dependants={this.state.form.num_of_dependants}
-              income_source={this.state.form.income_source}
-              current_education_level={this.state.form.current_education_level}
-              completed_education_level={this.state.form.completed_education_level}
-              status_in_canada={this.state.form.status_in_canada}
-              eligibility_criteria={this.props.eligibilitiesLoaded && this.props.eligibilities}
-              eligibilities={this.state.form.eligibilities}
-            />
-          }
+          {_.map(this.props.formStructure[this.props.stepsOrder[this.state.currentStep - 1]], (isRequired, fieldId) => {
+            let options;
+            if (fieldId === 'first_language') {
+              options = this.props.languagesCategories;
+            }
+            else if (fieldId === 'other_languages') {
+              options = this.props.languagesCategories.filter(
+                category => category !== this.state.form.first_language)
+            }
+            else if (fieldId === 'eligibilities') {
+              options = this.props.eligibilities;
+            }
+
+            if (fieldId === 'address') {
+              return (
+                <LocationFieldGroup
+                  key="address"
+                  address={this.state.form.address}
+                  handleFormValChange={this.formValChange}
+                />
+              )
+            }
+            else if (fieldId === 'family') {
+              return (
+                <FamilyFields
+                  key="family"
+                  family={this.state.form.family}
+                  clientId={this.state.form.clientId}
+                  handleFormValChange={this.handleFamilyChange}
+                  handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
+                  handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
+                />
+              )
+            }
+            else {
+              return (
+                <ClientField
+                  key={fieldId}
+                  id={fieldId}
+                  label={clientFields[fieldId]['label']}
+                  type={clientFields[fieldId]['type']}
+                  component={clientFields[fieldId]['component']}
+                  value={this.state.form[fieldId]}
+                  onChange={this.formValChange}
+                  required={isRequired}
+                  options={clientFields[fieldId]['options'] || options}
+                />
+              );
+            }
+          })}
+
+
           <Row>
             {this.state.currentStep > 1 &&
               <Button className="previous-button" onClick={this.prev}>
                 Previous
               </Button>
             }
-            {(this.state.currentStep < 3) ? (
+            {(this.state.currentStep < this.props.stepsOrder.length) ? (
               <Button className="next-button" onClick={this.next}>
                 Next
               </Button>) : (
@@ -306,9 +302,9 @@ const mapStateToProps = (state) => {
   return {
     clientsById: state.clients.byId,
     languagesCategories: state.ontology.languages.categories,
-    categoriesLoaded: state.ontology.languages.loaded,
     eligibilities: _.map(state.eligibilities.byId, eligibility => eligibility['title']),
-    eligibilitiesLoaded: state.eligibilities.eligibilitiesLoaded
+    stepsOrder: state.settings.stepsOrder,
+    formStructure: state.settings.formStructure,
   }
 }
 

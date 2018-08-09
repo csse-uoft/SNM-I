@@ -73,20 +73,14 @@ function FamilyMemberFields({ index,
   )
 }
 
-export default function FamilyInformationFields({ family,
-                                                  clientId,
-                                                  handleFormValChange,
-                                                  handleAddFamilyButtonClick,
-                                                  handleRemoveFamilyButtonClick }) {
+export default function FamilyFields({ family,
+                                       clientId,
+                                       handleFormValChange,
+                                       handleAddFamilyButtonClick,
+                                       handleRemoveFamilyButtonClick,
+                                       clientFormFields }) {
   return (
-    <Row>
-      <FormField
-        id="file_id"
-        label="File ID"
-        type="text"
-        value={family.file_id}
-        onChange={handleFormValChange}
-      />
+    <div>
       {_.map(family.members, (member, index) => {
         return (
           <FamilyMemberFields
@@ -106,6 +100,6 @@ export default function FamilyInformationFields({ family,
           </Button>
         </Col>
       </FormGroup>
-    </Row>
+    </div>
   );
 }
