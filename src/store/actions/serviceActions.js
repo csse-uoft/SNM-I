@@ -55,11 +55,12 @@ function removeService(id) {
   }
 }
 
-export function searchServices(searchValue, searchType) {
+export function searchServices(searchValue, searchType, sortType) {
   return {
     type: SEARCH_SERVICES,
     searchValue: searchValue,
-    searchType: searchType
+    searchType: searchType,
+    sortType: sortType
   };
 }
 
