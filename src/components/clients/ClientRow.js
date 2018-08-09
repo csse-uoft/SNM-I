@@ -13,7 +13,7 @@ class ClientRow extends Component {
         <td>{client.first_name}</td>
         <td>{client.last_name}</td>
         <td>
-          {formatPhoneNumber(client.primary_phone_number)}
+          {client.primary_phone_number}
         </td>
         <td>{client.email}</td>
         <td>
