@@ -10,8 +10,9 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
     case REQUEST_PROVIDERS:
       return {...state, loaded: false};
     case RECEIVE_PROVIDERS:
-      const providersById = _.keyBy(action.providers, provider => provider.id);
-      return {...state, byId: providersById, index: action.providers, filteredProviders: action.providers, loaded: true};
+      const providersById = _.keyBy(action.info.providers, provider => provider.id);
+      return {...state, byId: providersById, index: action.info.providers, filteredProviders: action.info.providers,
+              providersByService: action.info.providersByService, loaded: true};
     case RECEIVE_NEW_PROVIDER:
       nextIndex = [action.provider, ...state.index]
       return {...state, index: nextIndex}
@@ -31,37 +32,6 @@ export function providers(state = {index: [], byId: {}, loaded: false, value: ''
     case REQUEST_PROVIDER:
       nextById = { ...state.byId, [action.id]: { loaded: false } }
       return {...state, byId: nextById }
-    case SEARCH_PROVIDERS:
-      if (action.searchProviderType === 'all') {
-        if (action.searchValue === '') {
-          return {index: [...state.index], filteredProviders: [...state.index], loaded: true}
-        }
-        else if (action.searchType === "name") {
-          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) ||
-            (provider.last_name).includes(action.searchValue) || (provider.company).includes(action.searchValue)) &&
-            provider.provider_type === action.searchProviderType));
-          return {index: [...state.index], filteredProviders: providers, loaded: true}
-        }
-        else if (action.searchType === "email") {
-          providers = [...state.index].filter((provider) => (provider.email).includes(action.searchValue));
-          return {index: [...state.index], filteredProviders: providers, loaded: true}
-        }
-      }
-      else if (action.searchProviderType !== 'all') {
-        if (action.searchValue === '') {
-          providers = [...state.index].filter((provider) => provider.provider_type === action.searchProviderType);
-          return {index: [...state.index], filteredProviders: providers, loaded: true}
-        }
-        else if (action.searchType === "name") {
-          providers = [...state.index].filter((provider) => (((provider.first_name).includes(action.searchValue) ||
-            (provider.last_name).includes(action.searchValue)) && provider.provider_type === action.searchProviderType ));
-          return {index: [...state.index], filteredProviders: providers, loaded: true}
-        }
-        else if (action.searchType === "email") {
-          providers = [...state.index].filter((provider) => (provider.email).includes(action.searchValue) && provider.provider_type === action.searchProviderType);
-          return {index: [...state.index], filteredProviders: providers, loaded: true}
-        }
-      }
     default:
       return state
   }

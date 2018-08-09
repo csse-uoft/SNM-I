@@ -22,7 +22,7 @@ function requestProviders() {
 function receiveProviders(json) {
   return {
     type: RECEIVE_PROVIDERS,
-    providers: json,
+    info: json,
     receivedAt: Date.now(),
   }
 }
