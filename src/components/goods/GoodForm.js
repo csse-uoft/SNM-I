@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux'
 import SelectField from '../shared/SelectField'
 import FormField from '../shared/FormField'
-import { createGood, updateGood } from '../../store/actions/goodActions.js'
+import { createGood, updateGood, GOOD_ERROR, GOOD_SUCCESS } from '../../store/actions/goodActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js'
 import CheckboxField from '../shared/CheckboxField'
 import RadioField from '../shared/RadioField'
@@ -66,7 +66,7 @@ class GoodForm extends Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(fetchOntologyCategories('services'));
+    this.props.dispatch(fetchOntologyCategories('goods'));
     this.props.dispatch(fetchProviders());
   }
 
@@ -92,13 +92,44 @@ class GoodForm extends Component {
   }
 
   submit() {
+    let form = Object.assign({}, this.state.form);
     if (this.state.mode === 'edit') {
-      let form = Object.assign({}, this.state.form);
-      this.props.dispatch(updateGood(this.state.goodId, form));
+      this.props.dispatch(
+        updateGood(this.state.goodId, form, (status, err, goodId) => {
+        if (status === GOOD_SUCCESS) {
+          this.props.history.push('/goods/')
+        } else {
+          const error_messages =
+            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
+                .split('_').join(' ')
+              _.each(error_messages, message => {
+                result.push(message.replace('This field', titleizedField))
+              })
+              return result;
+            }, [])
+          this.setState({ showAlert: true, error_messages: error_messages });
+        }
+      }));
     } else {
-      this.props.dispatch(createGood(this.state.form));
+      this.props.dispatch(
+        createGood(this.state.form, (status, err, goodId) => {
+        if (status === GOOD_SUCCESS) {
+          this.props.history.push('/goods/')
+        } else {
+          const error_messages =
+            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
+                .split('_').join(' ')
+              _.each(error_messages, message => {
+                result.push(message.replace('This field', titleizedField))
+              })
+              return result;
+            }, [])
+          this.setState({ showAlert: true, error_messages: error_messages });
+        }
+      }));
     }
-    this.props.history.push('/goods')
   }
 
   render() {
@@ -126,7 +157,18 @@ class GoodForm extends Component {
           <hr />
         </Col>
         <Col sm={12}>
-          <Form horizontal>
+            <Form horizontal>
+            {this.state.showAlert &&
+              <Col sm={12} className="flash-error">
+                {_.map(this.state.error_messages, (message, index) => {
+                  return (
+                    <li key={index}>
+                      {message}
+                    </li>
+                  );
+                })}
+              </Col>
+            }
             <SelectField
               id="provider_id"
               label="Provider"
