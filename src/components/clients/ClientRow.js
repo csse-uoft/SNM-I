@@ -17,7 +17,6 @@ class ClientRow extends Component {
         </td>
         <td>{client.email}</td>
         <td>
-          {formatLocation(client.address)}
         </td>
         <td>
           <DropdownMenu
