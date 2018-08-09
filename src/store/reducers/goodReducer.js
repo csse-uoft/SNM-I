@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 
 export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false, byId: {} }, action) {
-  let nextIndex, nextById, goods, provider_name;
+  let nextIndex, nextById, sortedGoods, goods, provider_name;
   switch (action.type) {
     case REQUEST_GOODS:
       return {...state, goodsLoaded: false }
@@ -26,23 +26,39 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
       nextById = {...state.byId, [action.id]: { ...action.good, goodsLoaded: true }}
       return {...state, byId: nextById }
     case SEARCH_GOODS:
+      if (action.sortType === '') {
+        sortedGoods = [...state.index];
+      }
+      else if (action.sortType === "name") {
+        sortedGoods = [...state.index].sort((a, b) => (a.name).localeCompare(b.name));
+      }
+      else if (action.sortType === "provider") {
+        sortedGoods = [...state.index].sort((a, b) => (a.provider.first_name).localeCompare(b.provider.first_name));
+      }
+      else if (action.sortType === "description") {
+        sortedGoods = [...state.index].sort((a, b) => (a.desc).localeCompare(b.desc));
+      }
+      else if (action.sortType === "category") {
+        sortedGoods = [...state.index].sort((a, b) => (a.category).localeCompare(b.category));
+      }
+
       if (action.searchValue === '') {
-        return {index: [...state.index], filteredGoods: [...state.index], goodsLoaded: true}
+        return {index: sortedGoods, filteredGoods: sortedGoods, goodsLoaded: true}
       }
       else if (action.searchType === "name") {
-        goods = [...state.index].filter((good) => ((good.name).includes(action.searchValue) ));
+        goods = sortedGoods.filter((good) => ((good.name).includes(action.searchValue) ));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "provider") {
-        goods = [...state.index].filter((good) => ((good.provider.company).includes(action.searchValue)) || ((good.provider.first_name + " " + good.provider.last_name).includes(action.searchValue)));
+        goods = sortedGoods.filter((good) => ((good.provider.company).includes(action.searchValue)) || ((good.provider.first_name + " " + good.provider.last_name).includes(action.searchValue)));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "description") {
-        goods = [...state.index].filter((good) => ((good.desc).includes(action.searchValue) ));
+        goods = sortedGoods.filter((good) => ((good.desc).includes(action.searchValue) ));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "category") {
-        goods = [...state.index].filter((good) => ((good.category).includes(action.searchValue) ));
+        goods = sortedGoods.filter((good) => ((good.category).includes(action.searchValue) ));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
     default:
