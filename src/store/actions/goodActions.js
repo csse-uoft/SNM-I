@@ -55,11 +55,12 @@ function removeGood(id) {
   }
 }
 
-export function searchGoods(searchValue, searchType) {
+export function searchGoods(searchValue, searchType, sortType) {
   return {
     type: SEARCH_GOODS,
     searchValue: searchValue,
-    searchType: searchType
+    searchType: searchType,
+    sortType: sortType
   };
 }
 
