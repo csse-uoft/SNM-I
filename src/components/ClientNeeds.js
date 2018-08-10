@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import NeedsIndex from './client_needs/NeedsIndex'
 import DeleteModal from './shared/DeleteModal'
+import NeedGroupPanel from './client_needs/NeedGroupPanel'
 
 import { Button } from 'react-bootstrap';
 
@@ -51,6 +52,18 @@ class ClientNeeds extends Component {
   render() {
     const p = this.props,
           clientId = p.clientId;
+    const needGroups = p.need_groups.map(need_group =>
+      <NeedGroupPanel
+        needGroup={need_group.category}
+        needs={need_group.needs}
+        needGroupId={need_group.id}
+        status={need_group.status}
+        clientId={clientId}
+        handleShow={this.handleShow}
+        needsOrder={p.needsOrder}
+      />
+    );
+
     return (
       <div className="client-needs">
         <h3>Needs</h3>
@@ -60,12 +73,7 @@ class ClientNeeds extends Component {
           </Button>
         </Link>
         <hr/>
-        <NeedsIndex
-          needs={p.needs}
-          needsOrder={p.needsOrder}
-          clientId={p.clientId}
-          handleShow={this.handleShow}
-        />
+        {needGroups}
         <DeleteModal
           contentType='Need'
           objectId={this.state.objectId}
