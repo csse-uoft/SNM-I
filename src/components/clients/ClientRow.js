@@ -13,11 +13,11 @@ class ClientRow extends Component {
         <td>{client.first_name}</td>
         <td>{client.last_name}</td>
         <td>
-          {client.primary_phone_number}
+          {client.primary_phone_number ? formatPhoneNumber(client.primary_phone_number) : "None provided"}
         </td>
         <td>{client.email}</td>
         <td>
-          {formatLocation(client.address)}
+          {client.address ? formatLocation(client.address) : "None provided"}
         </td>
         <td>
           <DropdownMenu

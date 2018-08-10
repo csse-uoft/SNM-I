@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import TableRow from '../shared/TableRow'
 import ClientNeeds from '../ClientNeeds';
+import NeedGroupPanel from '../client_needs/NeedGroupPanel';
 
 // redux
 import { connect } from 'react-redux'
@@ -31,6 +32,17 @@ class Client extends Component {
         person: { id: id }
       });
     }
+    console.log(client)
+    const needGroups = client.need_groups.map(need_group =>
+      <NeedGroupPanel
+        needGroup={need_group.category}
+        needs={need_group.needs}
+        needGroupId={need_group.id}
+        status={need_group.status}
+        clientId={client.id}
+      />
+    );
+
     return (
       <div className="content client">
         <h3>Client Profile</h3>
@@ -88,7 +100,7 @@ class Client extends Component {
                 />
                 <TableRow
                   title="Phone Number"
-                  value={formatPhoneNumber(client.primary_phone_number)}
+                  value={client.primary_phone_number ? formatPhoneNumber(client.primary_phone_number) : "None provided"}
                 />
                 <TableRow
                   title="Alternative Phone Number"
@@ -97,7 +109,7 @@ class Client extends Component {
                 />
                 <TableRow
                   title="Address"
-                  value={formatLocation(client.address)}
+                  value={client.address ? formatLocation(client.address) : "None provided"}
                 />
               </tbody>
             </Table>
@@ -229,7 +241,13 @@ class Client extends Component {
         }
         <hr />
         { client && client.loaded && p.needsLoaded &&
-          <ClientNeeds clientId={client.id} needs={p.needsById} needsOrder={p.needsOrder} />
+          <div>
+          <ClientNeeds
+            clientId={client.id}
+            need_groups={client.need_groups}
+            needsOrder={p.needsOrder}
+          />
+          </div>
         }
       </div>
     );
