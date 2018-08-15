@@ -5,13 +5,14 @@ import { clientFields } from '../../constants/client_fields.js'
 // redux
 import { connect } from 'react-redux';
 import { fetchClientFields, updateClientFields } from '../../store/actions/settingActions.js';
+import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
 
 // components
 import RadioField from '../shared/RadioField'
 import CheckboxField from '../shared/CheckboxField'
 
 // styles
-import { Grid, Row, Button, FormGroup, Form, Col, InputGroup, FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Grid, Row, Button, FormGroup, Form, Col, InputGroup, FormControl, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 class ManageClientFields extends Component {
   constructor(props) {
@@ -34,6 +35,8 @@ class ManageClientFields extends Component {
     this.handleRadioChange = this.handleRadioChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRemoveFieldClick = this.handleRemoveFieldClick.bind(this);
+    this.handleRemoveStepClick = this.handleRemoveStepClick.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +50,6 @@ class ManageClientFields extends Component {
   handleAddFieldClick(e, id=e.target.id) {
     let nextFormStructure = _.clone(this.state.form.form_structure);
     nextFormStructure[this.state.selectedStep][this.state.fieldToAdd] = false;
-
     this.setState({
       form: {
         ...this.state.form,
@@ -90,6 +92,30 @@ class ManageClientFields extends Component {
     });
   }
 
+  handleRemoveFieldClick(e, id, step) {
+    let nextFormStructure = _.clone(this.state.form.form_structure);
+    delete nextFormStructure[step][id];
+    this.setState({
+      form: {
+        ...this.state.form,
+        form_structure: nextFormStructure }
+    });
+  }
+
+  handleRemoveStepClick(e, step) {
+    let nextFormStructure = _.clone(this.state.form.form_structure);
+    let nextStepsOrder = _.clone(this.state.form.steps_order);
+    delete nextFormStructure[step];
+    nextStepsOrder.splice(nextStepsOrder.indexOf(step), 1);
+    this.setState({
+      form: {
+        ...this.state.form,
+        form_structure: nextFormStructure,
+        steps_order: nextStepsOrder
+      }
+    });
+  }
+
   handleCheckboxChange(e, id) {
     let nextIndexFields = _.clone(this.state.form.index_fields);
 
@@ -111,6 +137,9 @@ class ManageClientFields extends Component {
 
   handleSubmit() {
     this.props.dispatch(updateClientFields(this.state.form));
+    if (ACTION_SUCCESS) {
+      this.props.history.push(`/dashboard`)
+    }
   }
 
   render() {
@@ -184,20 +213,41 @@ class ManageClientFields extends Component {
           </FormGroup>
           {_.map(this.state.form.steps_order, (step, index) => (
             <div key={step}>
-              <FormGroup>
-                <Col sm={12}>
-                  <h5>Step {index+1}: {step}</h5>
+              <Row>
+                <Col sm={1}>
+                  <Button onClick={e => this.handleRemoveStepClick(e, step)} bsStyle="link">
+                    <Glyphicon glyph="remove"/>
+                  </Button>
                 </Col>
-              </FormGroup>
+                <Col sm={11}>
+                  <FormGroup>
+                    <Col sm={12}>
+                      <h5>Step {index+1}: {step}</h5>
+                    </Col>
+                  </FormGroup>
+                </Col>
+              </Row>
               {_.map(this.state.form.form_structure[step], (isRequired, field) => (
-                <RadioField
-                  id={field}
-                  key={field}
-                  label={clientFields[field]['label']}
-                  onChange={e => this.handleRadioChange(e, field)}
-                  options={{ 'Mandatory': true, 'Not mandatory': false }}
-                  defaultChecked={this.state.form.form_structure[step][field]}
-                />
+                <div key={field}>
+                  <Row>
+                    <Col sm={1}/>
+                    <Col sm={2}>
+                      <Button onClick={e => this.handleRemoveFieldClick(e, field, step)} bsStyle="link">
+                        <Glyphicon glyph="remove"/>
+                      </Button>
+                    </Col>
+                    <Col sm={9}>
+                      <RadioField
+                        id={field}
+                        key={field}
+                        label={clientFields[field]['label']}
+                        onChange={e => this.handleRadioChange(e, field)}
+                        options={{ 'Mandatory': true, 'Not mandatory': false }}
+                        defaultChecked={this.state.form.form_structure[step][field]}
+                      />
+                    </Col>
+                  </Row>
+                </div>
               ))}
             </div>
           ))}

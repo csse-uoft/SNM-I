@@ -265,7 +265,8 @@ const mapStateToProps = (state) => {
     needsByNeedGroup: state.needs.needGroups,
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
-    clientLoaded: state.clients.indexLoaded
+    clientLoaded: state.clients.indexLoaded,
+    formStructure: state.settings.formStructure,
   }
 }
 
