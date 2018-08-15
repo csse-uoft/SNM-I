@@ -71,7 +71,7 @@ export function fetchClient(id) {
         dispatch(receiveClient(id, json))
       })
       .then(() => {
-        dispatch(receiveClientNeeds(id, client['needs']))
+        dispatch(receiveClientNeeds(id, client['needs'], client['need_groups']))
       })
   }
 }

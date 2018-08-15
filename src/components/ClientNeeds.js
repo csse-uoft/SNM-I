@@ -52,8 +52,9 @@ class ClientNeeds extends Component {
   render() {
     const p = this.props,
           clientId = p.clientId;
-    const needGroups = p.need_groups.map(need_group =>
+    const needGroups = p.needGroups.map(need_group =>
       <NeedGroupPanel
+        key={need_group.id}
         needGroup={need_group.category}
         needs={need_group.needs}
         needGroupId={need_group.id}

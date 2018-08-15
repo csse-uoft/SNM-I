@@ -1,25 +1,38 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { updateClientNeedGroup } from './../../store/actions/needActions';
 import { Glyphicon, Panel, Button, ListGroup, ListGroupItem, Label, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'
 
 
-export default class NeedGroupPanel extends Component {
+class NeedGroupPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: true
     };
     this.toggleNeedsList = this.toggleNeedsList.bind(this);
+    this.changeNeedGroupStatus = this.changeNeedGroupStatus.bind(this);
   }
 
   toggleNeedsList() {
     this.setState({open: !this.state.open});
   }
 
+  changeNeedGroupStatus() {
+    let needGroup = {
+      category: this.props.needGroup,
+      status: (this.props.status === "Unmet") ? "Met" : "Unmet",
+      person_id: this.props.clientId,
+      id: this.props.needGroupId
+    }
+    this.props.dispatch(updateClientNeedGroup(this.props.clientId, needGroup.id, needGroup));
+  }
+
   render() {
     const needs = this.props.needs.map(need =>
-      <ListGroupItem>
+      <ListGroupItem key={need.id}>
         <Row>
           <Col sm={2}>
             <Label bsStyle="primary">{need.type}</Label>{' '}
@@ -62,7 +75,12 @@ export default class NeedGroupPanel extends Component {
                   {this.props.needGroup}
                 </Col>
                 <Col sm={2}>
-                  {this.props.status}
+                  <Button
+                    bsStyle={(this.props.status === "Unmet") ? "danger" : "success"}
+                    onClick={this.changeNeedGroupStatus}
+                  >
+                    {this.props.status}
+                  </Button>{' '}
                 </Col>
               </Row>
             </Panel.Title>
@@ -77,3 +95,5 @@ export default class NeedGroupPanel extends Component {
     );
   }
 }
+
+export default connect()(NeedGroupPanel);
