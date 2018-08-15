@@ -4,14 +4,16 @@ import { serverHost } from '../defaults.js';
 export const RECEIVE_CLIENT_NEEDS = 'RECEIVE_CLIENT_NEEDS';
 export const RECEIVE_CLIENT_NEED = 'RECEIVE_CLIENT_NEED';
 export const REMOVE_CLIENT_NEED = 'REMOVE_CLIENT_NEED';
-export const REQUEST_NEED = 'REQUEST_NEED'
+export const REQUEST_NEED = 'REQUEST_NEED';
+export const RECEIVE_CLIENT_NEED_GROUP = 'RECEIVE_CLIENT_NEED_GROUP';
 export const ERROR = 'ERROR';
 
-export function receiveClientNeeds(clientId, json) {
+export function receiveClientNeeds(clientId, json, needGroups) {
   return {
     type: RECEIVE_CLIENT_NEEDS,
     clientId: clientId,
-    needs: json
+    needs: json,
+    needGroups: needGroups
   }
 }
 
@@ -29,6 +31,15 @@ function removeClientNeed(clientId, needId) {
     type: REMOVE_CLIENT_NEED,
     clientId: clientId,
     needId: needId
+  }
+}
+
+function receiveClientNeedGroup(clientId, needGroupId, json) {
+  return {
+    type: RECEIVE_CLIENT_NEED_GROUP,
+    clientId: clientId,
+    needGroupId: needGroupId,
+    needGroup: json
   }
 }
 
@@ -69,6 +80,22 @@ export function updateClientNeed(clientId, needId, params) {
       }
     }).then(response => response.json())
       .then(json => dispatch(receiveClientNeed(clientId, needId, json)));
+  }
+}
+
+export function updateClientNeedGroup(clientId, needGroupId, params) {
+  return dispatch => {
+    const url = serverHost + '/clients/' + clientId + '/need_groups/' + needGroupId + '/';
+
+    return fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      }
+    }).then(response => response.json())
+      .then(json => dispatch(receiveClientNeedGroup(clientId, needGroupId, json)));
   }
 }
 

@@ -153,7 +153,7 @@ class MatchedServices extends Component {
                           <h5>View Service Detail</h5>
                         </Link>
                         <Link to={`/provider/${match.service.provider.id}`} target="_blank">
-                          <h5>View Prover Detail</h5>
+                          <h5>View Provider Detail</h5>
                         </Link>
                       </Col>
                     </Panel.Body>

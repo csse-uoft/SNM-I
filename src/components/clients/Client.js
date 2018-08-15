@@ -32,16 +32,20 @@ class Client extends Component {
         person: { id: id }
       });
     }
-    console.log(client)
-    const needGroups = client.need_groups.map(need_group =>
-      <NeedGroupPanel
-        needGroup={need_group.category}
-        needs={need_group.needs}
-        needGroupId={need_group.id}
-        status={need_group.status}
-        clientId={client.id}
-      />
-    );
+    console.log(p.needsByNeedGroup)
+    let needGroups;
+    if (p.needsByNeedGroup) {
+      needGroups = p.needsByNeedGroup.map(need_group =>
+        <NeedGroupPanel
+          key={need_group.id}
+          needGroup={need_group.category}
+          needs={need_group.needs}
+          needGroupId={need_group.id}
+          status={need_group.status}
+          clientId={client.id}
+        />
+      );
+    }
 
     return (
       <div className="content client">
@@ -244,7 +248,7 @@ class Client extends Component {
           <div>
           <ClientNeeds
             clientId={client.id}
-            need_groups={client.need_groups}
+            needGroups={this.props.needsByNeedGroup}
             needsOrder={p.needsOrder}
           />
           </div>
@@ -258,6 +262,7 @@ const mapStateToProps = (state) => {
   return {
     needsById: state.needs.byId,
     needsOrder: state.needs.order,
+    needsByNeedGroup: state.needs.needGroups,
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
     clientLoaded: state.clients.indexLoaded

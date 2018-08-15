@@ -286,16 +286,16 @@ class Providers extends Component {
             handleCategorySelection={this.handleCategorySelection}
             selectedCategories={this.state.selectedCategories}
             searchValue={this.state.searchText}
-            />
+          />
           <hr/>
         { p.providersLoaded &&
           <div>
-          <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
-            providersOnPage.map((provider) => {
-              return <ProviderRow key={ provider.id } provider={ provider } />
-            })
-          }
-          </ProvidersIndex>
+            <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
+              providersOnPage.map((provider) => {
+                return <ProviderRow key={ provider.id } provider={ provider } />
+              })
+            }
+            </ProvidersIndex>
             <Pagination className="pagination">
               {pageNumbers}
             </Pagination>
