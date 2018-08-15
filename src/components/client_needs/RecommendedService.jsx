@@ -57,7 +57,7 @@ class RecommendedService extends Component {
           </Col>
           <Col sm={12}>
             <Button bsStyle="default" onClick={e => this.submit(need.id, service.id)}>
-              Match
+              Select
             </Button>
           </Col>
         </Row>

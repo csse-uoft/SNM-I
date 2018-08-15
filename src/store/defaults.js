@@ -72,7 +72,9 @@ const incomeSourceOptions = [
 ]
 
 const matchStatusOptions = [
-  'Fulfilled',
+  'Selected',
+  'Contacted',
+  'Matched',
   'Referred'
 ]
 
