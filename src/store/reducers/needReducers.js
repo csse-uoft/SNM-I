@@ -1,5 +1,5 @@
 import { RECEIVE_CLIENT_NEEDS, RECEIVE_CLIENT_NEED, REQUEST_NEED,
-         REMOVE_CLIENT_NEED, RECEIVE_CLIENT_NEED_GROUP } from '../actions/needActions.js';
+         REMOVE_CLIENT_NEED, RECEIVE_CLIENT_NEED_GROUP, RECEIVE_CLIENT_NEED_INFO } from '../actions/needActions.js';
 import _ from 'lodash';
 
 export function needs(state = { byId: {}, needGroups: [], clientId: null, loaded: false }, action) {
@@ -18,7 +18,17 @@ export function needs(state = { byId: {}, needGroups: [], clientId: null, loaded
       else {
         nextNeedGroup = [...nextNeedGroup, action.needGroup]
       }
-      return {...state, needGroups: nextNeedGroup, byId: nextById}
+      return {...state, needGroups: nextNeedGroup, byId: nextById, clientId: action.clientId}
+    case RECEIVE_CLIENT_NEED_INFO:
+      nextById = {...state.byId, [action.needId]: { ...action.need, loaded: true }}
+      nextNeedGroup = _.clone(state.needGroups)
+      needGroupIndex = nextNeedGroup.map(needGroup => needGroup.id.toString()).indexOf(action.need.need_group_id);
+      if (needGroupIndex >= 0) {
+        const needIndex = nextNeedGroup[needGroupIndex].needs.map(need => need.id).indexOf(action.needId);
+        (nextNeedGroup[needGroupIndex].needs)[needIndex] = action.need;
+        return {...state, needGroups: nextNeedGroup, byId: nextById, clientId: action.clientId}
+      }
+      return {...state, byId: nextById, clientId: action.clientId}
     case REMOVE_CLIENT_NEED:
       const need = state.byId[action.needId];
       nextById = _.clone(state.byId);

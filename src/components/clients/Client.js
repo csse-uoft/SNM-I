@@ -9,12 +9,75 @@ import NeedGroupPanel from '../client_needs/NeedGroupPanel';
 // redux
 import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
+import { clientFields } from '../../constants/client_fields.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 import { formatPhoneNumber } from '../../helpers/phone_number_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
+class ClientInfoTable extends Component {
+  render() {
+    const client = this.props.client;
+    const infoRows = this.props.infoFields.map(infoField => {
+      if (infoField !== "family") {
+        if (infoField === "primary_phone_number" || infoField === "alt_phone_number") {
+          return (
+            <TableRow
+              key={infoField}
+              title={clientFields[infoField].label}
+              value={client[infoField] ? formatPhoneNumber(client[infoField]) : "None provided"}
+            />
+          );
+        } else if (infoField === "address") {
+          return (
+            <TableRow
+              key={infoField}
+              title={clientFields[infoField].label}
+              value={client[infoField] ? formatLocation(client.address) : "None provided"}
+            />
+          );
+        } else if (infoField === "has_children") {
+          return (
+            <TableRow
+              key={infoField}
+              title={clientFields[infoField].label}
+              value={client[infoField] ? 'Yes' : 'No'}
+            />
+          );
+        } else if (infoField === "other_languages" || infoField === "eligibilities") {
+          return (
+            <TableRow
+              key={infoField}
+              title={clientFields[infoField].label}
+              value={(client[infoField] || []).join(', ')}
+            />
+          );
+        } else {
+          return (
+            <TableRow
+              key={infoField}
+              title={clientFields[infoField].label}
+              value={client[infoField]}
+            />
+            );
+          }
+        }
+      }
+    );
+
+    return (
+      <Table bordered condensed className="client-profile-table">
+        <tbody>
+          <tr>
+            <td colSpan="2"><b>{this.props.step} </b></td>
+          </tr>
+          {infoRows}
+        </tbody>
+      </Table>
+    )
+  }
+}
 
 class Client extends Component {
   componentWillMount() {
@@ -45,7 +108,17 @@ class Client extends Component {
         />
       );
     }
-
+    const infoTables = [];
+    Object.keys(this.props.formStructure).forEach( step =>
+      infoTables.push(
+        <ClientInfoTable
+          key={step}
+          clientId={id}
+          client={client}
+          step={step}
+          infoFields={Object.keys(this.props.formStructure[step])}
+        />)
+    )
     return (
       <div className="content client">
         <h3>Client Profile</h3>
@@ -64,85 +137,8 @@ class Client extends Component {
                 <Label bsStyle="danger">deleted</Label>
               </h4>
             }
-            <Table bordered condensed className="client-profile-table">
-              <tbody>
-                <tr>
-                  <td colSpan="2"><b>Personal Information: </b></td>
-                </tr>
-                <TableRow
-                  title="File ID"
-                  value={client.file_id}
-                />
-                <TableRow
-                  title="First Name"
-                  value={client.first_name}
-                />
-                <TableRow
-                  title="Middle Name"
-                  value={client.middle_name}
-                />
-                <TableRow
-                  title="Last Name"
-                  value={client.last_name}
-                />
-                <TableRow
-                  title="Preferred Name"
-                  value={client.preferred_name}
-                />
-                <TableRow
-                  title="Gender"
-                  value={client.gender}
-                />
-                <TableRow
-                  title="Date of Birth"
-                  value={client.birth_date}
-                />
-                <TableRow
-                  title="Email"
-                  value={client.email}
-                />
-                <TableRow
-                  title="Phone Number"
-                  value={client.primary_phone_number ? formatPhoneNumber(client.primary_phone_number) : "None provided"}
-                />
-                <TableRow
-                  title="Alternative Phone Number"
-                  value={client.alt_phone_number &&
-                    formatPhoneNumber(client.alt_phone_number)}
-                />
-                <TableRow
-                  title="Address"
-                  value={client.address ? formatLocation(client.address) : "None provided"}
-                />
-              </tbody>
-            </Table>
-            <Table bordered condensed className="client-profile-table">
-              <tbody>
-                <tr>
-                  <td colSpan="2"><b>Family: </b></td>
-                </tr>
-                {client.family &&
-                  <TableRow
-                    title="File ID"
-                    value={client.family.file_id}
-                  />
-                }
-                <TableRow
-                  title="Marital Status"
-                  value={client.marital_status}
-                />
-                <TableRow
-                  title="Has children?"
-                  value={client.has_children ? 'Yes' : 'No'}
-                />
-                {client.has_children &&
-                  <TableRow
-                    title="Number of children"
-                    value={client.num_of_children}
-                  />
-                }
-              </tbody>
-            </Table>
+            {infoTables}
+
             {(client.family && client.family.members.length > 0) &&
               <Table bordered condensed className="client-profile-table">
                 <tbody>
@@ -177,69 +173,6 @@ class Client extends Component {
                 </tbody>
               </Table>
             }
-            <Table bordered condensed className="client-profile-table">
-              <tbody>
-                <tr>
-                  <td colSpan="2"><b>Background Information: </b></td>
-                </tr>
-                <TableRow
-                  title="Status in Canada"
-                  value={client.status_in_canada}
-                />
-                <TableRow
-                  title="Country of Origin"
-                  value={client.country_of_origin}
-                />
-                <TableRow
-                  title="Country of Last Residence"
-                  value={client.country_of_last_residence}
-                />
-                <TableRow
-                  title="First Language"
-                  value={client.first_language}
-                />
-                <TableRow
-                  title="Other Language(s) spoken"
-                  value={(client.other_languages || []).join(', ')}
-                />
-                <TableRow
-                  title="Permanent Residence Card Number (PR card)"
-                  value={client.pr_number}
-                />
-                <TableRow
-                  title="Immigration Document Number"
-                  value={client.immigration_doc_number}
-                />
-                <TableRow
-                  title="Landing Date"
-                  value={client.landing_date}
-                />
-                <TableRow
-                  title="Arrival Date"
-                  value={client.arrival_date}
-                />
-                <TableRow
-                  title="Current Education Level"
-                  value={client.current_education_level}
-                />
-                <TableRow
-                  title="Completed Education Level"
-                  value={client.completed_education_level}
-                />
-                <TableRow
-                  title="Income Source"
-                  value={client.income_source}
-                />
-                <TableRow
-                  title="Number of Dependants"
-                  value={client.num_of_dependants}
-                />
-                <TableRow
-                  title="Eligibilities"
-                  value={(client.eligibilities || []).join(', ')}
-                />
-              </tbody>
-            </Table>
           </div>
         }
         <hr />
@@ -265,7 +198,7 @@ const mapStateToProps = (state) => {
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
     clientLoaded: state.clients.indexLoaded,
-    formStructure: state.settings.formStructure,
+    formStructure: state.settings.formStructure
   }
 }
 
