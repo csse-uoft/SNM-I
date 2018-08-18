@@ -3,8 +3,6 @@ import { withRouter } from 'react-router';
 import FormField from '../shared/FormField'
 import SelectField from '../shared/SelectField'
 
-import { needStatusOptions } from '../../store/defaults.js'
-
 // redux
 import { connect } from 'react-redux'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
@@ -153,17 +151,6 @@ class NeedForm extends Component {
                   value={this.state.form.condition}
                   onChange={this.formValChange}
                   componentClass="textarea"
-                />
-              }
-              {s.mode === 'edit' &&
-                <SelectField
-                  id="status"
-                  label="Status"
-                  options={needStatusOptions}
-                  componentClass="select"
-                  value={this.state.form.status}
-                  onChange={this.formValChange}
-                  required
                 />
               }
               <FormGroup>
