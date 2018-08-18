@@ -32,7 +32,6 @@ class Client extends Component {
         person: { id: id }
       });
     }
-    console.log(p.needsByNeedGroup)
     let needGroups;
     if (p.needsByNeedGroup) {
       needGroups = p.needsByNeedGroup.map(need_group =>

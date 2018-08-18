@@ -9,7 +9,7 @@ export function ontology(state = { needs: DEFAULT_CATEGORY_STATE,
                          action) {
   switch (action.type) {
     case RECEIVE_CATEGORIES:
-      return {...state, [action.category_type]: { categories: action.categories, loaded: true } }
+      return {...state, [action.category_type]: { categories: action.categories.sort(), loaded: true } }
     default:
       return state
   }

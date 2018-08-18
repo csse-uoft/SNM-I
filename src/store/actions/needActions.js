@@ -17,12 +17,12 @@ export function receiveClientNeeds(clientId, json, needGroups) {
   }
 }
 
-function receiveClientNeed(clientId, needId, json) {
+function receiveClientNeed(clientId, need, needGroup) {
   return {
     type: RECEIVE_CLIENT_NEED,
     clientId: clientId,
-    needId: needId,
-    need: json
+    need: need,
+    needGroup: needGroup
   }
 }
 
@@ -34,12 +34,11 @@ function removeClientNeed(clientId, needId) {
   }
 }
 
-function receiveClientNeedGroup(clientId, needGroupId, json) {
+function receiveClientNeedGroup(clientId, needGroup) {
   return {
     type: RECEIVE_CLIENT_NEED_GROUP,
     clientId: clientId,
-    needGroupId: needGroupId,
-    needGroup: json
+    needGroup: needGroup
   }
 }
 
@@ -63,7 +62,7 @@ export function createClientNeed(clientId, params) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeed(clientId, need.id, need)));
+    .then(needInfo => dispatch(receiveClientNeed(clientId, needInfo.need, needInfo.need_group)));
   }
 }
 
@@ -79,7 +78,7 @@ export function updateClientNeed(clientId, needId, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveClientNeed(clientId, needId, json)));
+      .then(needInfo => dispatch(receiveClientNeed(clientId, needInfo.need, needInfo.need_group)));
   }
 }
 
@@ -95,7 +94,7 @@ export function updateClientNeedGroup(clientId, needGroupId, params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     }).then(response => response.json())
-      .then(json => dispatch(receiveClientNeedGroup(clientId, needGroupId, json)));
+      .then(needGroup => dispatch(receiveClientNeedGroup(clientId, needGroup)));
   }
 }
 

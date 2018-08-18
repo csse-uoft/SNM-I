@@ -34,8 +34,16 @@ class NeedGroupPanel extends Component {
     const needs = this.props.needs.map(need =>
       <ListGroupItem key={need.id}>
         <Row>
-          <Col sm={2}>
+          <Col sm={1}>
             <Label bsStyle="primary">{need.type}</Label>{' '}
+          </Col>
+          <Col sm={1}>
+          {need.is_urgent && (
+            <span className='need-urgent'>
+              <Glyphicon glyph="exclamation-sign" />
+              {' '}
+            </span>)
+          }
           </Col>
           <Col sm={7}>
             <Link to={`/needs/${need.id}`}>
