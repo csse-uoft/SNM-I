@@ -6,6 +6,7 @@ export const RECEIVE_CLIENT_NEED = 'RECEIVE_CLIENT_NEED';
 export const REMOVE_CLIENT_NEED = 'REMOVE_CLIENT_NEED';
 export const REQUEST_NEED = 'REQUEST_NEED';
 export const RECEIVE_CLIENT_NEED_GROUP = 'RECEIVE_CLIENT_NEED_GROUP';
+export const RECEIVE_CLIENT_NEED_INFO = ' RECEIVE_CLIENT_NEED_INFO';
 export const ERROR = 'ERROR';
 
 export function receiveClientNeeds(clientId, json, needGroups) {
@@ -23,6 +24,15 @@ function receiveClientNeed(clientId, need, needGroup) {
     clientId: clientId,
     need: need,
     needGroup: needGroup
+  }
+}
+
+function receiveClientNeedInfo(clientId, needId, need) {
+  return {
+    type: RECEIVE_CLIENT_NEED_INFO,
+    clientId: clientId,
+    needId: needId,
+    need: need
   }
 }
 
@@ -111,7 +121,7 @@ export function matchClientNeed(needId, params) {
       }
     }).then(response => response.json())
       .then(need => {
-        dispatch(receiveClientNeed(need.client_id, needId, need))
+        dispatch(receiveClientNeedInfo(need.person_id, needId, need))
       });
   }
 }
@@ -147,7 +157,7 @@ export function fetchNeed(needId) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+    .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
   }
 }
 
@@ -164,7 +174,7 @@ export function updateMatchStatus(matchId, params) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+    .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
   }
 }
 
@@ -181,6 +191,6 @@ export function createMatchNote(params) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeed(need.client_id, need.id, need)));
+    .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
   }
 }
