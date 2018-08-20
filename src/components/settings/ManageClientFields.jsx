@@ -12,7 +12,8 @@ import RadioField from '../shared/RadioField'
 import CheckboxField from '../shared/CheckboxField'
 
 // styles
-import { Grid, Row, Button, FormGroup, Form, Col, InputGroup, FormControl, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+import { Grid, Row, Button, FormGroup, Form, Col, InputGroup, FormControl,
+  DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 class ManageClientFields extends Component {
   constructor(props) {
@@ -136,10 +137,11 @@ class ManageClientFields extends Component {
   }
 
   handleSubmit() {
-    this.props.dispatch(updateClientFields(this.state.form));
-    if (ACTION_SUCCESS) {
-      this.props.history.push(`/dashboard`)
-    }
+    this.props.dispatch(updateClientFields(this.state.form, status => {
+      if (ACTION_SUCCESS) {
+        this.props.history.push(`/dashboard`)
+      }
+    }));
   }
 
   render() {
@@ -203,7 +205,7 @@ class ManageClientFields extends Component {
                 <InputGroup.Button>
                   <Button
                     onClick={this.handleAddFieldClick}
-                    disabled={this.state.fieldToAdd === ''}
+                    disabled={this.state.fieldToAdd === '' || this.state.selectedStep === ''}
                   >
                     Add field
                   </Button>
