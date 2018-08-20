@@ -166,14 +166,14 @@ class ProviderProfile extends Component {
             <td>{formatLocation(provider.main_address)}</td>
           </tr>
 
-          {provider.other_addresses.length !== 0 &&
-          <tr>
-            <td><b>Alternate Address(es)</b></td>
-            <td>
-              {provider.other_addresses.map( address =>
-                <li key={address.id}>{formatLocation(address)}</li>)}
-            </td>
-          </tr>
+          {(provider.other_addresses && provider.other_addresses.length > 0) &&
+            <tr>
+              <td><b>Alternate Address(es)</b></td>
+              <td>
+                {provider.other_addresses.map(address =>
+                  <li key={address.id}>{formatLocation(address)}</li>)}
+              </td>
+            </tr>
           }
 
           <tr>
