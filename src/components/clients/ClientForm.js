@@ -252,7 +252,7 @@ class ClientForm extends Component {
                 <FamilyFields
                   key="family"
                   family={this.state.form.family}
-                  clientId={this.state.form.clientId}
+                  clientId={this.state.clientId}
                   handleFormValChange={this.handleFamilyChange}
                   handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
                   handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}

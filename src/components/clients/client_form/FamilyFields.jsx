@@ -67,7 +67,8 @@ function FamilyMemberFields({ index,
         componentClass="select"
         value={member.relationship}
         onChange={e => handleFormValChange(e, index)}
-        defaultOptionTitle="Relationship"
+        defaultOptionTitle={(clientId && member.person.id === clientId) ? 'Self' : 'Relationship'}
+        disabled={clientId && member.person.id === clientId}
       />
     </div>
   )
