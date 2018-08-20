@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { serverHost } from '../defaults.js';
+import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
 export const RECEIVE_CLIENT_FIELDS = 'RECEIVE_CLIENT_FIELDS'
 
@@ -26,7 +26,7 @@ export function fetchClientFields() {
   }
 }
 
-export function updateClientFields(params) {
+export function updateClientFields(params, callback) {
   return dispatch => {
     const url = serverHost + '/settings/update_client_fields/';
     return fetch(url, {
@@ -37,11 +37,22 @@ export function updateClientFields(params) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     })
-    .then(response => response.json())
+    .then(async(response) => {
+      if (response.status === 200) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
     .then(json => {
       dispatch(receiveClientFields(json['form_structure'],
                                    json['index_fields'],
                                    json['steps_order']))
-    });
+      callback(ACTION_SUCCESS);
+    }).catch(err => {
+      callback(ACTION_ERROR);
+    })
   }
 }
