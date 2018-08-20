@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import TableRow from '../shared/TableRow'
 import ClientNeeds from '../ClientNeeds';
+import ClientInfoTable from './client_table/ClientInfoTable';
 import NeedGroupPanel from '../client_needs/NeedGroupPanel';
 
 // redux
@@ -16,68 +17,6 @@ import { formatPhoneNumber } from '../../helpers/phone_number_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
-class ClientInfoTable extends Component {
-  render() {
-    const client = this.props.client;
-    const infoRows = this.props.infoFields.map(infoField => {
-      if (infoField !== "family") {
-        if (infoField === "primary_phone_number" || infoField === "alt_phone_number") {
-          return (
-            <TableRow
-              key={infoField}
-              title={clientFields[infoField].label}
-              value={client[infoField] ? formatPhoneNumber(client[infoField]) : "None provided"}
-            />
-          );
-        } else if (infoField === "address") {
-          return (
-            <TableRow
-              key={infoField}
-              title={clientFields[infoField].label}
-              value={client[infoField] ? formatLocation(client.address) : "None provided"}
-            />
-          );
-        } else if (infoField === "has_children") {
-          return (
-            <TableRow
-              key={infoField}
-              title={clientFields[infoField].label}
-              value={client[infoField] ? 'Yes' : 'No'}
-            />
-          );
-        } else if (infoField === "other_languages" || infoField === "eligibilities") {
-          return (
-            <TableRow
-              key={infoField}
-              title={clientFields[infoField].label}
-              value={(client[infoField] || []).join(', ')}
-            />
-          );
-        } else {
-          return (
-            <TableRow
-              key={infoField}
-              title={clientFields[infoField].label}
-              value={client[infoField]}
-            />
-            );
-          }
-        }
-      }
-    );
-
-    return (
-      <Table bordered condensed className="client-profile-table">
-        <tbody>
-          <tr>
-            <td colSpan="2"><b>{this.props.step} </b></td>
-          </tr>
-          {infoRows}
-        </tbody>
-      </Table>
-    )
-  }
-}
 
 class Client extends Component {
   componentWillMount() {
@@ -108,17 +47,6 @@ class Client extends Component {
         />
       );
     }
-    const infoTables = [];
-    Object.keys(this.props.formStructure).forEach( step =>
-      infoTables.push(
-        <ClientInfoTable
-          key={step}
-          clientId={id}
-          client={client}
-          step={step}
-          infoFields={Object.keys(this.props.formStructure[step])}
-        />)
-    )
     return (
       <div className="content client">
         <h3>Client Profile</h3>
@@ -130,15 +58,24 @@ class Client extends Component {
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>
-        { client && client.loaded &&
+        {client && client.loaded &&
           <div>
-            { client.is_deleted &&
+            {client.is_deleted &&
               <h4>
                 <Label bsStyle="danger">deleted</Label>
               </h4>
             }
-            {infoTables}
-
+            {_.map(this.props.formStructure, (infoFields, step) => {
+              return (
+                <ClientInfoTable
+                  key={step}
+                  step={step}
+                  client={client}
+                  clientFields={clientFields}
+                  infoFields={_.keys(_.omit(infoFields, 'family'))}
+                />
+              )
+            })}
             {(client.family && client.family.members.length > 0) &&
               <Table bordered condensed className="client-profile-table">
                 <tbody>
@@ -153,22 +90,19 @@ class Client extends Component {
                     <td><b>Gender</b></td>
                     <td><b>Relationship</b></td>
                   </tr>
-                  {_.map(client.family.members, (member, index) => {
-                    if (member.person.id === client.id) {
-                      return null;
-                    }
-                    else {
-                      return (
-                        <tr key={member.person.id}>
-                          <td><b>Family member #{index+1}</b></td>
-                          <td>{member.person.first_name}</td>
-                          <td>{member.person.last_name}</td>
-                          <td>{member.person.birth_date}</td>
-                          <td>{member.person.gender}</td>
-                          <td>{member.relationship}</td>
-                        </tr>
-                      )
-                    }
+                  {_.map(_.filter(client.family.members, member => {
+                    return member.person.id !== client.id
+                  }), (member, index) => {
+                    return (
+                      <tr key={member.person.id}>
+                        <td><b>Family member #{index+1}</b></td>
+                        <td>{member.person.first_name}</td>
+                        <td>{member.person.last_name}</td>
+                        <td>{member.person.birth_date}</td>
+                        <td>{member.person.gender}</td>
+                        <td>{member.relationship}</td>
+                      </tr>
+                    )
                   })}
                 </tbody>
               </Table>
