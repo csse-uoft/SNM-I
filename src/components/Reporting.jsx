@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Bar as BarChart, Pie as PieChart } from 'react-chartjs';
 import { Table, Glyphicon, Button } from 'react-bootstrap';
 import { serverHost } from '../store/defaults.js';
-
+import SelectField from './shared/SelectField';
 // styles
 import '../stylesheets/Reporting.css';
 
@@ -17,9 +17,14 @@ export default class Report extends Component {
       number_of_clients_by_gender: {},
       number_of_clients_by_birth_year: {},
       number_of_clients_by_marital_status: {},
-      type: false
+      number_of_clients_by_language: {},
+      number_of_providers_by_status: {},
+      number_of_providers_by_type: {},
+      number_of_individual_providers_by_category: {},
+      selectedCategory: '',
+      selectedAttribute: '',
     }
-    this.updateType = this.updateType.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   componentWillMount() {
@@ -35,30 +40,40 @@ export default class Report extends Component {
           total_clients: data.total_clients,
           number_of_clients_by_gender: data.number_of_clients_by_gender,
           number_of_clients_by_birth_year: data.number_of_clients_by_birth_year,
-          number_of_clients_by_marital_status: data.number_of_clients_by_marital_status
+          number_of_clients_by_marital_status: data.number_of_clients_by_marital_status,
+          number_of_clients_by_birth_year: data.number_of_clients_by_birth_year,
+          number_of_clients_by_language: data.number_of_clients_by_language,
+          number_of_providers_by_status: data.number_of_providers_by_status,
+          number_of_providers_by_type: data.number_of_providers_by_type,
+          number_of_individual_providers_by_category: data.number_of_individual_providers_by_category
         })
       }
     );
   }
 
-  updateType(type) {
-    this.setState({ type: type })
+  handleSelectChange(e) {
+    this.setState({ [e.target.id]: e.target.value })
   }
 
   render() {
+    const reportingCategoryOptions = ['Clients', 'Providers', 'Services', 'Matches']
+
+    const attributeOptions = {
+      'Clients': ['Birth Year', 'Gender', 'Language', 'Marital Status'],
+      'Providers': ['Individuals by Category', 'Status', 'Type'],
+      'Services': ['Category', 'Type'],
+      'Matches': ['Time between selected and matched', 'Time between selected and fulfilled']
+
+    }
+
     const year_labels = _.map(START_YEARS, (start_year) => {
       return `${start_year}-${start_year + 9}`
     });
 
-    const barChartData = {
+    const barChartDataBirthYear = {
       labels: year_labels,
       datasets: [{
         data: Object.values(this.state.number_of_clients_by_birth_year),
-        color: [
-          "#FF5A5E",
-          "#FF5A5E",
-          "#FF5A5G"
-          ]
       }]
     }
 
@@ -70,6 +85,13 @@ export default class Report extends Component {
           }
         }]
       }
+    }
+
+    const barChartDataLanguage = {
+      labels: Object.keys(this.state.number_of_clients_by_language),
+      datasets: [{
+        data: Object.values(this.state.number_of_clients_by_language),
+      }]
     }
 
     const pieChartDataGender = [
@@ -93,38 +115,57 @@ export default class Report extends Component {
       }
     ]
 
-    const pieChartDataMaritalStatus = [
+    const pieChartDataProviderStatus = [
       {
-        value: this.state.number_of_clients_by_marital_status["Single"],
-        color:"#F7464A",
-        label: "Single"
-      },
-      {
-        value: this.state.number_of_clients_by_marital_status["Married"],
+        value: this.state.number_of_providers_by_status["Internal"],
         color: "#46BFBD",
-        label: "Married"
+        highlight: "#5AD3D1",
+        label: "Internal"
       },
       {
-        value: this.state.number_of_clients_by_marital_status["Common_Law"],
+        value: this.state.number_of_providers_by_status["External"],
         color: "#FDB45C",
-        label: "Common Law"
-      },
-      {
-        value: this.state.number_of_clients_by_marital_status["Separated"],
-        color:"#1E1D47",
-        label: "Separated"
-      },
-      {
-        value: this.state.number_of_clients_by_marital_status["Divorced"],
-        color: "#A32FC2",
-        label: "Divorced"
-      },
-      {
-        value: this.state.number_of_clients_by_marital_status["Widowed"],
-        color: "5EC22F",
-        label: "Widowed"
+        highlight: "#FFC870",
+        label: "External"
       }
     ]
+
+        const pieChartDataIndividualProviderCategory = [
+      {
+        value: this.state.number_of_individual_providers_by_category["Volunteer/Goods Donor"],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "Volunteer/Goods Donor"
+      },
+      {
+        value: this.state.number_of_individual_providers_by_category["Professional Service Provider"],
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: "Professional Service Provider"
+      }
+    ]
+
+    const pieChartDataProviderType = [
+      {
+        value: this.state.number_of_providers_by_type["Individual"],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "Individual"
+      },
+      {
+        value: this.state.number_of_providers_by_type["Organization"],
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: "Organization"
+      }
+    ]
+
+    const barChartDataMaritalStatus = {
+      labels: Object.keys(this.state.number_of_clients_by_marital_status),
+      datasets: [{
+        data: Object.values(this.state.number_of_clients_by_marital_status),
+      }]
+    }
 
     const pieChartOptions = {
       maintainAspectRatio: false,
@@ -143,44 +184,31 @@ export default class Report extends Component {
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>
-        <Table bordered condensed className="client-profile-table">
-          <tbody>
-            <tr>
-              <td colSpan="1"><b>Available Statistics:</b></td>
-            </tr>
-            <tr>
-              <td>
-                <span
-                  className="update-type-button"
-                  onClick={e => this.updateType('gender')}
-                >
-                  Breakdown of clients by Gender
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span
-                  className="update-type-button"
-                  onClick={e => this.updateType('birthyear')}
-                >
-                  Distribution of clients by birth year
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span
-                  className="update-type-button"
-                  onClick={e => this.updateType('maritalstatus')}
-                >
-                  Breakdown of clients by Marital Status
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-        {(this.state.type === 'gender') &&
+        <SelectField
+          id='selectedCategory'
+          componentClass="select"
+          label='Get a report on'
+          value={this.state.selectedCategory}
+          options={reportingCategoryOptions}
+          onChange={this.handleSelectChange}
+        />
+        <br></br>
+        <br></br>
+        <SelectField
+          id='selectedAttribute'
+          componentClass="select"
+          label='Select attribute'
+          value={this.state.selectedAttribute}
+          options={(this.state.selectedCategory !== '')
+            ? attributeOptions[this.state.selectedCategory]
+            : []}
+          onChange={this.handleSelectChange}
+        />
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        {(this.state.selectedCategory === 'Clients' && this.state.selectedAttribute === 'Gender') &&
           <GenderStats
             data={pieChartDataGender}
             options={pieChartOptions}
@@ -188,19 +216,48 @@ export default class Report extends Component {
             ClientsCountByGender={this.state.number_of_clients_by_gender}
           />
         }
-        {(this.state.type === 'maritalstatus') &&
+        {(this.state.selectedCategory === 'Clients' && this.state.selectedAttribute ==='Language') &&
+          <LanguageStats
+            data={barChartDataLanguage}
+            options={barChartOptions}
+            totalClientsCount={this.state.total_clients}
+            ClientsCountByLanguage={this.state.number_of_clients_by_language}
+          />
+        }
+        {(this.state.selectedCategory === 'Clients' && this.state.selectedAttribute === 'Marital Status') &&
           <MaritalStatusStats
-            data={pieChartDataMaritalStatus}
-            options={pieChartOptions}
+            data={barChartDataMaritalStatus}
+            options={barChartOptions}
             totalClientsCount={this.state.total_clients}
             ClientsCountByMaritalStatus={this.state.number_of_clients_by_marital_status}
           />
         }
-        {(this.state.type === 'birthyear') &&
+        {(this.state.selectedCategory === 'Clients' && this.state.selectedAttribute === 'Birth Year') &&
           <BirthYearStats
-            data={barChartData}
+            data={barChartDataBirthYear}
             options={barChartOptions}
             ClientsCountByBirthYear={this.state.number_of_clients_by_birth_year}
+          />
+        }
+        {(this.state.selectedCategory === 'Providers' && this.state.selectedAttribute === 'Status') &&
+          <ProviderStatusStats
+            data={pieChartDataProviderStatus}
+            options={pieChartOptions}
+            ProvidersCountByStatus={this.state.number_of_providers_by_status}
+          />
+        }
+        {(this.state.selectedCategory === 'Providers' && this.state.selectedAttribute === 'Type') &&
+          <ProviderTypeStats
+            data={pieChartDataProviderType}
+            options={pieChartOptions}
+            ProvidersCountByType={this.state.number_of_providers_by_type}
+          />
+        }
+        {(this.state.selectedCategory === 'Providers' && this.state.selectedAttribute === 'Individuals by Category') &&
+          <IndividualProviderCategoryStats
+            data={pieChartDataIndividualProviderCategory}
+            options={pieChartOptions}
+            IndividualProvidersCountByCategory={this.state.number_of_individual_providers_by_category}
           />
         }
       </div>
@@ -235,17 +292,109 @@ function GenderStats({ data, options, totalClientsCount, ClientsCountByGender}) 
   );
 }
 
-function MaritalStatusStats({ data, options, totalClientsCount, ClientsCountByMaritalStatus}) {
+function ProviderStatusStats({ data, options, ProvidersCountByStatus}) {
+  return (
+    <Table bordered condensed className="client-profile-table">
+      <tbody>
+        <tr>
+          <td><b>Breakdown of providers by Status</b></td>
+          <td>
+            <PieChart data={data} options={options} />
+            {
+              _.map(ProvidersCountByStatus, (count, status) => {
+                return (
+                  <div key={status}>
+                    <b>{status} = {count}</b>
+                  </div>
+                );
+              })
+            }
+          </td>
+        </tr>
+      </tbody>
+    </Table>
+  );
+}
+
+function IndividualProviderCategoryStats({ data, options, IndividualProvidersCountByCategory}) {
+  return (
+    <Table bordered condensed className="client-profile-table">
+      <tbody>
+        <tr>
+          <td><b>Breakdown of individual providers by Category</b></td>
+          <td>
+            <PieChart data={data} options={options} />
+            {
+              _.map(IndividualProvidersCountByCategory, (count, status) => {
+                return (
+                  <div key={status}>
+                    <b>{status} = {count}</b>
+                  </div>
+                );
+              })
+            }
+          </td>
+        </tr>
+      </tbody>
+    </Table>
+  );
+}
+
+function ProviderTypeStats({ data, options, ProvidersCountByType}) {
+  return (
+    <Table bordered condensed className="client-profile-table">
+      <tbody>
+        <tr>
+          <td><b>Breakdown of providers by type</b></td>
+          <td>
+            <PieChart data={data} options={options} />
+            {
+              _.map(ProvidersCountByType, (count, status) => {
+                return (
+                  <div key={status}>
+                    <b>{status} = {count}</b>
+                  </div>
+                );
+              })
+            }
+          </td>
+        </tr>
+      </tbody>
+    </Table>
+  );
+}
+
+function LanguageStats({ data, options, ClientsCountByLanguage}) {
+  return (
+    <Table bordered condensed className="client-profile-table">
+      <tbody>
+        <tr>
+          <td><b>Breakdown of clients by Language</b></td>
+          <td>
+            <BarChart data={data} options={options} />
+            {
+              _.map(ClientsCountByLanguage, (count, first_language) => {
+                return (
+                  <div key={first_language}>
+                    <b>{first_language} = {count}</b>
+                  </div>
+                );
+              })
+            }
+          </td>
+        </tr>
+      </tbody>
+    </Table>
+  );
+}
+function MaritalStatusStats({ data, options, ClientsCountByMaritalStatus}) {
   return (
     <Table bordered condensed className="client-profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of clients by Marital Status</b></td>
           <td>
-            <PieChart data={data} options={options} />
-            <div>
-              <b>Total = {totalClientsCount}</b>
-            </div>
+            <BarChart data={data} options={options} />
             {
               _.map(ClientsCountByMaritalStatus, (count, marital_status) => {
                 return (
