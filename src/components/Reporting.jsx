@@ -388,7 +388,6 @@ function LanguageStats({ data, options, ClientsCountByLanguage}) {
   );
 }
 function MaritalStatusStats({ data, options, ClientsCountByMaritalStatus}) {
-  debugger
   return (
     <Table bordered condensed className="client-profile-table">
       <tbody>
