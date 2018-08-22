@@ -25,8 +25,7 @@ class RecommendedService extends Component {
 
   render() {
     const service = this.props.service,
-          need = this.props.need,
-          distance = this.props.distance,
+          needId = this.props.needId,
           label = this.props.label;
 
     return (
@@ -39,7 +38,7 @@ class RecommendedService extends Component {
             </Link>
             <Label>{service.category}</Label>
             {' '}
-            <Label>{Math.round(distance * 100) / 100} km</Label>
+            <Label>{Math.round(service.distance * 100) / 100} km</Label>
             <p>{service.desc}</p>
             <p>{formatLocation(service.location)}</p>
           </Col>
@@ -56,7 +55,7 @@ class RecommendedService extends Component {
             </Link>
           </Col>
           <Col sm={12}>
-            <Button bsStyle="default" onClick={e => this.submit(need.id, service.id)}>
+            <Button bsStyle="default" onClick={e => this.submit(needId, service.id)}>
               Select
             </Button>
           </Col>
