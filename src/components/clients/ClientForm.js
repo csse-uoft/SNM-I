@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClient, updateClient } from '../../store/actions/clientActions.js';
 import { fetchEligibilities } from '../../store/actions/eligibilityActions.js';
+import { fetchClientFields } from '../../store/actions/settingActions.js';
 
 // components
 import LocationFieldGroup from './client_form/LocationFieldGroup';
@@ -85,6 +86,9 @@ class ClientForm extends Component {
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('languages'));
     this.props.dispatch(fetchEligibilities());
+    if (this.props.stepsOrder.length == 0) {
+      this.props.dispatch(fetchClientFields());
+    }
   }
 
   next() {
