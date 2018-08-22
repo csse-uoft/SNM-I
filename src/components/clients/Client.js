@@ -6,14 +6,13 @@ import TableRow from '../shared/TableRow'
 import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';
 import NeedGroupPanel from '../client_needs/NeedGroupPanel';
+import ServiceRow from '../services/ServiceRow';
+import ProviderRow from '../providers/ProviderRow';
 
 // redux
 import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
 import { clientFields } from '../../constants/client_fields.js'
-
-import { formatLocation } from '../../helpers/location_helpers'
-import { formatPhoneNumber } from '../../helpers/phone_number_helpers'
 
 import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
@@ -28,6 +27,24 @@ class Client extends Component {
     const p = this.props,
           id = p.match.params.id,
           client = p.clientsById[id];
+    let services = {},
+        providers = {};
+    _.each(client.need_groups, need_group => {
+      _.each(need_group.needs, need => {
+        _.each(need.matches, match => {
+          if (!services[match.service.id]) {
+            services[match.service.id] = match.service;
+          }
+          if (!providers[match.service.provider.id]) {
+
+            providers[match.service.provider.id] = match.service.provider;
+          }
+        })
+      })
+    })
+    services = Object.values(services)
+    providers = Object.values(providers)
+
     if (client.family) {
       let members = _.clone(client.family.members);
        _.remove(members, {
@@ -111,14 +128,54 @@ class Client extends Component {
         }
         <hr />
         { client && client.loaded && p.needsLoaded &&
-          <div>
           <ClientNeeds
             clientId={client.id}
             needGroups={this.props.needsByNeedGroup}
             needsOrder={p.needsOrder}
           />
-          </div>
         }
+        <hr />
+        <h3>Services for Client</h3>
+        { client && client.loaded && p.needsLoaded &&
+          <Table className="dashboard-table" striped bordered condensed hover>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Provider</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {services.map((service) => {
+                return <ServiceRow key={ service.id } service={ service }/>
+              })}
+            </tbody>
+          </Table>
+        }
+        <hr />
+        <h3>Providers for Client</h3>
+        { client && client.loaded && p.needsLoaded && providers.length > 0 &&
+          <Table className="dashboard-table" striped bordered condensed hover>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {providers.map(provider => {
+                return <ProviderRow key={provider.id} provider={provider} />
+              })}
+            </tbody>
+          </Table>
+        }
+
       </div>
     );
   }
