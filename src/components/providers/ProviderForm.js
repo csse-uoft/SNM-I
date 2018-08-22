@@ -142,7 +142,7 @@ class ProviderForm extends Component {
     this.mainAddressChange = this.mainAddressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
     this.languagesChange = this.languagesChange.bind(this);
-    this.cateogiresIntoCheckboxes = this.cateogiresIntoCheckboxes.bind(this);
+    this.categoriesIntoCheckboxes = this.categoriesIntoCheckboxes.bind(this);
     this.otherAddressChange = this.otherAddressChange.bind(this);
     this.toggleAddressButton = this.toggleAddressButton.bind(this);
     this.submitAddress = this.submitAddress.bind(this);
@@ -185,8 +185,10 @@ class ProviderForm extends Component {
         email: provider.email || '',
         primary_phone_number: provider.primary_phone_number || '',
         primary_phone_extension: provider.primary_phone_extension || '',
+        primary_phone_type: provider.primary_phone_type || '',
         alt_phone_number: provider.alt_phone_number || '',
         alt_phone_extension: provider.alt_phone_extension || '',
+        alt_phone_type: provider.alt_phone_type || '',
         sec_contact_first_name: provider.sec_contact_first_name || '',
         sec_contact_last_name:provider.sec_contact_last_name || '',
         sec_contact_email: provider.sec_contact_email || '',
@@ -209,7 +211,26 @@ class ProviderForm extends Component {
         skills: provider.skills || '',
         visibility: provider.visibility,
         status: provider.status,
-        notes: provider.notes || ''
+        notes: provider.notes || '',
+        emergency_contact_name: provider.emergency_contact_name || '',
+        emergency_contact_email: provider.emergency_contact_email || '',
+        emergency_contact_phone: provider.emergency_contact_phone || '',
+        emergency_contact_relationship: provider.emergency_contact_relationship || '',
+        commitment: provider.commitment || '',
+        start_date: provider.start_date || '',
+        affiliation: provider.affiliation || '',
+        education: provider.education || '',
+        employment: provider.employment || '',
+        mentoring: provider.mentoring || '',
+        experience: provider.experience || '',
+        interests: provider.interests || '',
+        reason_for_volunteering: provider.reason_for_volunteering || '',
+        reference1_name: provider.reference1_name || '',
+        reference1_name: provider.reference1_phone || '',
+        reference1_name: provider.reference1_email || '',
+        reference2_name: provider.reference2_name || '',
+        reference2_name: provider.reference2_phone || '',
+        reference2_name: provider.reference2_email || ''
       }
     } 
   }
@@ -233,7 +254,7 @@ class ProviderForm extends Component {
     let dayIndex = {
       mon_operation_hours: 0,
       tues_operation_hours: 1,
-      wed_operation_hours: 2,
+      weds_operation_hours: 2,
       thurs_operation_hours: 3,
       fri_operation_hours: 4,
       sat_operation_hours: 5,
@@ -287,7 +308,7 @@ class ProviderForm extends Component {
     this.setState({form: nextForm});
   }
 
-  cateogiresIntoCheckboxes(categories, checkedCategories) {
+  categoriesIntoCheckboxes(categories, checkedCategories) {
     let updatedCategories = _.clone(categories)
     return updatedCategories.map((category) => {
       return (
@@ -430,7 +451,7 @@ class ProviderForm extends Component {
             </FormGroup>
             {this.state.form.provider_type === "Individual" &&
               <FormGroup controlId="gender">
-                <Col className="required" componentClass={ControlLabel} sm={3}>
+                <Col componentClass={ControlLabel} sm={3}>
                   Gender
                 </Col>
                 <Col sm={9}>
@@ -465,7 +486,7 @@ class ProviderForm extends Component {
 
             <FormGroup controlId="primary_phone_number">
               <Col className="required" componentClass={ControlLabel} sm={3}>
-                Telephone
+                Primary phone number
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -489,9 +510,29 @@ class ProviderForm extends Component {
               </Col>
             </FormGroup>
 
+            <FormGroup controlId="primary_phone_type">
+              <Col className="required" componentClass={ControlLabel} sm={3}>
+                Primary phone type
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="select"
+                  value={this.state.form.primary_phone_type}
+                  onChange={this.formValChange}
+                  componentClass="select"
+                  placeholder="select"
+                >
+                  <option value="">--- Not Set ---</option>
+                  <option value="Home">Home</option>
+                  <option value="Cell">Cell</option>
+                  <option value="Work">Work</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
+
             <FormGroup controlId="alt_phone_number">
               <Col componentClass={ControlLabel} sm={3}>
-                Alternative Phone Number
+                Alternative phone number
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -504,7 +545,7 @@ class ProviderForm extends Component {
 
             <FormGroup controlId="alt_phone_extension">
               <Col componentClass={ControlLabel} sm={3}>
-                Extension for Alternative Phone Number
+                Extension for Alternative phone number
               </Col>
               <Col sm={9}>
                 <FormControl
@@ -513,8 +554,29 @@ class ProviderForm extends Component {
                   onChange={this.formValChange}/>
               </Col>
             </FormGroup>
+
+            <FormGroup controlId="alt_phone_type">
+              <Col componentClass={ControlLabel} sm={3}>
+                Alternative phone type
+              </Col>
+              <Col sm={9}>
+                <FormControl
+                  type="select"
+                  value={this.state.form.alt_phone_type}
+                  onChange={this.formValChange}
+                  componentClass="select"
+                  placeholder="select"
+                >
+                  <option value="">--- Not Set ---</option>
+                  <option value="Home">Home</option>
+                  <option value="Cell">Cell</option>
+                  <option value="Work">Work</option>
+                </FormControl>
+              </Col>
+            </FormGroup>
             </div>
             }
+
             {this.state.form.provider_type === "Organization" &&
             <div>
               <hr/>
@@ -599,6 +661,57 @@ class ProviderForm extends Component {
                     onChange={this.formValChange}/>
                 </Col>
               </FormGroup>
+            </div>
+            }
+
+            {this.state.form.provider_category === "Volunteer/Goods Donor" &&
+            <div>
+              <hr/>
+              <h4> Emergency contact </h4>
+              <hr/>
+              <FormGroup controlId="emergency_contact_name">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Name
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.emergency_contact_name}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="emergency_contact_phone">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Phone
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.emergency_contact_phone}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="emergency_contact_email">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Email
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.emergency_contact_email}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="emergency_contact_relationship">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Relationship
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="tel"
+                    value={this.state.form.emergency_contact_relationship}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+              </FormGroup>
+
             </div>
             }
 
@@ -694,7 +807,7 @@ class ProviderForm extends Component {
               </Col>
               <Col sm={9}>
                 {this.props.categoriesLoaded &&
-                  this.cateogiresIntoCheckboxes(
+                  this.categoriesIntoCheckboxes(
                     this.props.languagesCategories,
                     this.state.form.languages
                   )
@@ -745,6 +858,25 @@ class ProviderForm extends Component {
                   />
                 </Col>
               </FormGroup>
+
+              <FormGroup controlId="mon_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[0].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
             </Form>
 
             <Form inline>
@@ -774,6 +906,25 @@ class ProviderForm extends Component {
                     value={this.state.form.operation_hours[1].end_time}
                     onChange={this.operationHourChange}
                   />
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="tues_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[1].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
                 </Col>
               </FormGroup>
             </Form>
@@ -807,6 +958,24 @@ class ProviderForm extends Component {
                   />
                 </Col>
               </FormGroup>
+              <FormGroup controlId="weds_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[2].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
             </Form>
 
             <Form inline>
@@ -836,6 +1005,24 @@ class ProviderForm extends Component {
                     value={this.state.form.operation_hours[3].end_time}
                     onChange={this.operationHourChange}
                   />
+                </Col>
+              </FormGroup>
+              <FormGroup controlId="thurs_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[3].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
                 </Col>
               </FormGroup>
             </Form>
@@ -869,6 +1056,25 @@ class ProviderForm extends Component {
                   />
                 </Col>
               </FormGroup>
+
+              <FormGroup controlId="fri_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[4].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
             </Form>
 
             <Form inline>
@@ -898,6 +1104,25 @@ class ProviderForm extends Component {
                     value={this.state.form.operation_hours[5].end_time}
                     onChange={this.operationHourChange}
                   />
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="sat_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[5].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
                 </Col>
               </FormGroup>
             </Form>
@@ -931,10 +1156,41 @@ class ProviderForm extends Component {
                   />
                 </Col>
               </FormGroup>
+
+              <FormGroup controlId="sun_operation_hours-start_time">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Period
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    value={this.state.form.operation_hours[6].start_time}
+                    placeholder="select"
+                    onChange={this.operationHourChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
             </Form>
             <hr/>
             {this.state.form.provider_category === "Volunteer/Goods Donor" &&
               <div>
+              <FormGroup controlId="start_date">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Start date for availability
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    type="date"
+                    value={this.state.form.start_date}
+                    onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
               <FormGroup controlId="own_car">
                 <Col componentClass={ControlLabel} sm={3}>
                   Own a car
@@ -947,8 +1203,27 @@ class ProviderForm extends Component {
                     onChange={this.formValChange}
                   >
                     <option value="">--- Not Set ---</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="commitment">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Commitment length
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    placeholder="select"
+                    value={this.state.form.commitment}
+                    onChange={this.formValChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Short term">Short term</option>
+                    <option value="Six months">Six months</option>
+                    <option value="One year">One year</option>
                   </FormControl>
                 </Col>
               </FormGroup>
@@ -967,7 +1242,158 @@ class ProviderForm extends Component {
                 </Col>
               </FormGroup>
 
-              </div>
+              <FormGroup controlId="education">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Education/Training
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="Please describe the education and training you have received"
+                    value={this.state.form.education}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+            </FormGroup>
+
+            <FormGroup controlId="employment">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Employment
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="Please tell us about your work experience, area(s) of expertise, and/or area(s) of 
+                                 knowledge"
+                    value={this.state.form.employment}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+            </FormGroup>
+
+            <FormGroup controlId="experience">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Volunteering experience
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="Please describe the length and nature of any previous volunteer experience"
+                    value={this.state.form.experience}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+            </FormGroup>
+
+            <FormGroup controlId="interests">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Interests/hobbies
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="Please tell us about your special skills, interests, or hobbies"
+                    value={this.state.form.interests}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+            </FormGroup>
+
+            <FormGroup controlId="reason_for_volunteering">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Reason for volunteering
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="Please tell us why you would like to volunteer with us"
+                    value={this.state.form.reason_for_volunteering}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+            </FormGroup>
+
+            <FormGroup controlId="affiliation">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Organization affiliation
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="textarea"
+                    placeholder="If you are affiliated with a particular organization (such as a synagogue, a JCC, or 
+                                 a school), please write the organization's name"
+                    value={this.state.form.affiliation}
+                    onChange={this.formValChange}
+                  />
+                </Col>
+            </FormGroup>
+
+            <hr/>
+              <h4> References </h4>
+              <hr/>
+              <FormGroup controlId="reference1_name">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Name
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.reference1_name}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="reference1_phone">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Phone
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.reference1_phone}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="reference1_email">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Email
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.reference1_email}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <hr/>
+              <FormGroup controlId="reference2_name">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Name
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.reference2_name}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="reference2_phone">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Phone
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.reference2_phone}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <FormGroup controlId="reference2_email">
+                <Col componentClass={ControlLabel} sm={3}>
+                  Email
+                </Col>
+                <Col sm={9}>
+                  <FormControl type="text" value={this.state.form.reference2_email}
+                    placeholder="" onChange={this.formValChange}/>
+                </Col>
+              </FormGroup>
+
+              <hr/>
+            </div>
             }
 
             <FormGroup controlId="status">
