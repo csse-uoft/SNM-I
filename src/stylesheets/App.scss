@@ -72,6 +72,15 @@ label.required:after {
   display:inline;
 }
 
+.tab-content {
+  padding-top: 25px;
+}
+
+.nav-tabs > li {
+  width: 50%;
+  text-align: center;
+}
+
 /*Form Wizard*/
 .bs-wizard {margin-top: 80px;margin-bottom: 40px;padding: 0 0 10px 0;}
 .bs-wizard > .bs-wizard-step {padding: 0; position: relative;}

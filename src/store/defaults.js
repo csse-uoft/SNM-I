@@ -11,6 +11,8 @@ else {
 const ACTION_SUCCESS = 'ACTION_SUCCESS';
 const ACTION_ERROR = 'ACTION_ERROR';
 
+const torontoCoordinates = { lat: 43.6497, lng: -79.3763 };
+
 const genderOptions = [
   'Male',
   'Female',
@@ -131,6 +133,7 @@ const serviceSharedWithOptions = [
 
 module.exports = Object.freeze({
   serverHost: serverHost,
+  torontoCoordinates: torontoCoordinates,
   genderOptions: genderOptions,
   maritalStatusOptions: maritalStatusOptions,
   statusInCanadaOptions: statusInCanadaOptions,
