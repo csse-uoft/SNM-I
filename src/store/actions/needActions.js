@@ -5,9 +5,25 @@ export const RECEIVE_CLIENT_NEEDS = 'RECEIVE_CLIENT_NEEDS';
 export const RECEIVE_CLIENT_NEED = 'RECEIVE_CLIENT_NEED';
 export const REMOVE_CLIENT_NEED = 'REMOVE_CLIENT_NEED';
 export const REQUEST_NEED = 'REQUEST_NEED';
+export const REQUEST_NEEDS = 'REQUEST_NEEDS';
+export const RECEIVE_NEEDS = 'RECEIVE_NEEDS';
 export const RECEIVE_CLIENT_NEED_GROUP = 'RECEIVE_CLIENT_NEED_GROUP';
 export const RECEIVE_CLIENT_NEED_INFO = ' RECEIVE_CLIENT_NEED_INFO';
 export const ERROR = 'ERROR';
+
+function requestNeeds(json) {
+  return {
+    type: REQUEST_NEEDS,
+    needs: json
+  }
+}
+
+function receiveNeeds(json) {
+  return {
+    type: RECEIVE_NEEDS,
+    needs: json
+  }
+}
 
 export function receiveClientNeeds(clientId, json, needGroups) {
   return {
@@ -158,6 +174,23 @@ export function fetchNeed(needId) {
     })
     .then(response => response.json())
     .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
+  }
+}
+
+export function fetchNeeds() {
+  return dispatch => {
+    dispatch(requestNeeds())
+    const url = serverHost + '/needs/';
+
+    return fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        },
+      }).then(response => response.json())
+      .then(json => {
+        dispatch(receiveNeeds(json))
+      })
   }
 }
 
