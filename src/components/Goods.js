@@ -10,6 +10,7 @@ import DeleteModal from './shared/DeleteModal'
 // redux
 import { connect } from 'react-redux'
 import { fetchGoods, searchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
+import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
 import { Button, Col, Pagination } from 'react-bootstrap';
@@ -175,6 +176,7 @@ class Goods extends Component {
 
   componentWillMount() {
     this.props.dispatch(fetchGoods());
+    this.props.dispatch(fetchNeeds());
   }
 
   render() {
@@ -211,6 +213,10 @@ class Goods extends Component {
       <div className='clients-table content modal-container'>
         <div>
           <h1>Goods</h1>
+          <Link to='/notifications'>      
+          You have {p.needs.length} notification(s)
+          </Link>
+          <hr/>
           <Link to='/goods/new'>
             <Button bsStyle="default">
               Add new good
@@ -270,6 +276,7 @@ class Goods extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    needs: state.needs.needs,
     goods: state.goods.filteredGoods || [],
     goodsLoaded: state.goods.goodsLoaded
   }

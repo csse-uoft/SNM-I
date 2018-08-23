@@ -1,10 +1,14 @@
-import { RECEIVE_CLIENT_NEEDS, RECEIVE_CLIENT_NEED, REQUEST_NEED,
+import { RECEIVE_CLIENT_NEEDS, RECEIVE_CLIENT_NEED, REQUEST_NEED, REQUEST_NEEDS, RECEIVE_NEEDS,
          REMOVE_CLIENT_NEED, RECEIVE_CLIENT_NEED_GROUP, RECEIVE_CLIENT_NEED_INFO } from '../actions/needActions.js';
 import _ from 'lodash';
 
-export function needs(state = { byId: {}, needGroups: [], clientId: null, loaded: false }, action) {
+export function needs(state = { byId: {}, needGroups: [], clientId: null, loaded: false, needs: [] }, action) {
   let nextById, nextNeedGroup, needGroupIndex;
   switch (action.type) {
+    case REQUEST_NEEDS:
+      return {...state, loaded: false }
+    case RECEIVE_NEEDS:
+      return {...state, needs: action.needs, loaded: true }
     case RECEIVE_CLIENT_NEEDS:
       nextById = _.keyBy(action.needs, need => need.id);
       return {...state, byId: nextById, needGroups: action.needGroups, loaded: true, clientId: action.clientId}

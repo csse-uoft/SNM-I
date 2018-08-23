@@ -12,11 +12,9 @@ export default class NeedGroup extends Component {
         <thead>
           <tr>
             <th>#</th>
+            <th>Client</th>
             <th>Type</th>
-            <th>Category</th>
             <th>Description</th>
-            <th>Status</th>
-            <th />
             <th />
           </tr>
         </thead>

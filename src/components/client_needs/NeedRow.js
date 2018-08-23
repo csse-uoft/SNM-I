@@ -4,10 +4,18 @@ import { Link } from 'react-router-dom';
 // styles
 import { Button, Glyphicon } from 'react-bootstrap';
 
+import { connect } from 'react-redux'
+import { fetchClients } from '../../store/actions/clientActions.js'
+
 
 class NeedRow extends Component {
+  componentWillMount() {
+      this.props.dispatch(fetchClients());
+  }
+
   render() {
-    const need = this.props.need
+    const p = this.props;
+    const need = p.need;
 
     return(
       <tr>
@@ -22,10 +30,13 @@ class NeedRow extends Component {
             {need.id}
           </Link>
         </td>
+        <td>
+          <Link to={`/clients/${need.person_id}/`}>
+            {p.clients[need.person_id].first_name + ' ' + p.clients[need.person_id].last_name}
+          </Link>
+        </td>
         <td>{need.type}</td>
-        <td>{need.category}</td>
         <td>{need.description}</td>
-        <td>{need.status}</td>
         <td>
           <Link to={`/needs/${need.id}/edit`}>
             <Button bsStyle="primary">
@@ -33,14 +44,19 @@ class NeedRow extends Component {
             </Button>
           </Link>
         </td>
-        <td>
-          <Button bsStyle="danger" onClick={() => this.props.handleShow(need.id)}>
-            <Glyphicon glyph="trash" />
-          </Button>
-        </td>
       </tr>
     )
   }
 }
 
-export default NeedRow;
+const mapStateToProps = (state) => {
+  return {
+    clients: state.clients.byId,
+    clientsOrder: state.clients.order,
+    clientsLoaded: state.clients.clientsLoaded
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(NeedRow);
