@@ -4,6 +4,9 @@ let serverHost;
 if (hostname === 'social-needs-marketplace.herokuapp.com') {
   serverHost = 'https://snm-impact-server.herokuapp.com';
 }
+else if (hostname === 'social-needs-marketplace-jias.herokuapp.com') {
+  serverHost = 'https://snm-impact-server-jias.herokuapp.com';
+}
 else {
   serverHost = 'http://127.0.0.1:8000';
 }
