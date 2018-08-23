@@ -13,6 +13,7 @@ import DeleteModal from './shared/DeleteModal'
 // redux
 import { connect } from 'react-redux'
 import { fetchClients, createClients, deleteClient } from '../store/actions/clientActions.js'
+import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
@@ -44,6 +45,7 @@ class Clients extends Component {
 
   componentWillMount() {
     this.props.dispatch(fetchClients());
+    this.props.dispatch(fetchNeeds());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -132,6 +134,10 @@ class Clients extends Component {
     return(
       <div className='content modal-container'>
         <h1>Clients</h1>
+        <Link to='/notifications'>      
+          You have {p.needs.length} notification(s)
+        </Link>
+        <hr/>
         <Link to='/clients/new'>
           <Button bsStyle="default">
             Add new client profile
@@ -192,6 +198,7 @@ class Clients extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    needs: state.needs.needs,
     clients: state.clients.byId,
     clientsOrder: state.clients.order,
     clientsLoaded: state.clients.clientsLoaded

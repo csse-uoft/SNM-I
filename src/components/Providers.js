@@ -8,6 +8,8 @@ import CSVUploadModal from './shared/CSVUploadModal'
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
+import { fetchServices, searchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
+import { fetchNeeds } from '../store/actions/needActions.js'
 import { formatLocation } from '../helpers/location_helpers.js';
 import ProviderSearchBar from './providers/ProviderSearchBar';
 // styles
@@ -135,6 +137,7 @@ class Providers extends Component {
 
   componentWillMount() {
     this.props.dispatch(fetchProviders());
+    this.props.dispatch(fetchNeeds());
   }
 
   handleInput(event) {
@@ -263,6 +266,10 @@ class Providers extends Component {
       <div className='providers content'>
         <h3 className='title'>Providers</h3>
           <div>
+            <Link to='/notifications'>      
+              You have {p.needs.length} notification(s)
+            </Link>
+            <hr/>
             <Link to={`/providers/new`}>
               <Button bsStyle="default" >
               Add new provider
@@ -330,6 +337,7 @@ class Providers extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    needs: state.needs.needs,
     providers: state.providers.filteredProviders || [],
     providersByService: state.providers.providersByService,
     providersLoaded: state.providers.loaded
