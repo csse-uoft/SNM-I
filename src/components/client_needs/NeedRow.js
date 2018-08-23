@@ -32,7 +32,7 @@ class NeedRow extends Component {
         </td>
         <td>
           <Link to={`/clients/${need.person_id}/`}>
-            {p.clients[need.person_id].first_name + ' ' + p.clients[need.person_id].first_name}
+            {p.clients[need.person_id].first_name + ' ' + p.clients[need.person_id].last_name}
           </Link>
         </td>
         <td>{need.type}</td>
