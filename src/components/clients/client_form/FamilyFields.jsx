@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import FormField from '../../shared/FormField'
+import GeneralField from '../../shared/GeneralField'
 import SelectField from '../../shared/SelectField'
 import { genderOptions, familyRelationshipOptions } from '../../../store/defaults.js';
 import { FormGroup, FormControl, ControlLabel, Col, Row, Button } from 'react-bootstrap';
@@ -37,7 +37,7 @@ function FamilyMemberFields({ index,
           </Button>
         </Col>
       </FormGroup>
-      <FormField
+      <GeneralField
         id="last_name"
         type="text"
         value={member.person.last_name}
@@ -45,7 +45,7 @@ function FamilyMemberFields({ index,
         placeholder="Last name"
         disabled={clientId && member.person.id === clientId}
       />
-      <FormField
+      <GeneralField
         id="birth_date"
         type="date"
         value={member.person.birth_date}

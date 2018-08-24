@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import FormField from '../shared/FormField'
+import GeneralField from '../shared/GeneralField';
 
 // redux
 import { connect } from 'react-redux'
@@ -54,7 +54,7 @@ class EligibilityForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
-            <FormField
+            <GeneralField
               id="title"
               label="Title"
               type="text"

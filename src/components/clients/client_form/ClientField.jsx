@@ -1,14 +1,14 @@
 import React from 'react';
 
-import FormField from '../../shared/FormField';
+import GeneralField from '../../shared/GeneralField';
 import SelectField from '../../shared/SelectField';
 import RadioField from '../../shared/RadioField';
 import CheckboxField from '../../shared/CheckboxField';
 
 export default function ClientField({ component, options, value, ...props }) {
-  if (component === 'FormField') {
+  if (component === 'GeneralField') {
     return (
-      <FormField
+      <GeneralField
         value={value}
         {...props}
       />

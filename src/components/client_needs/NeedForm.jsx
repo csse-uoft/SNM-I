@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import FormField from '../shared/FormField'
+import GeneralField from '../shared/GeneralField'
 import SelectField from '../shared/SelectField'
 
 // redux
@@ -127,14 +127,14 @@ class NeedForm extends Component {
                 onChange={this.formValChange}
                 required
               />
-              <FormField
+              <GeneralField
                 id="needed_by"
                 label="Needed By"
                 type="date"
                 value={this.state.form.needed_by}
                 onChange={this.formValChange}
               />
-              <FormField
+              <GeneralField
                 id="description"
                 label="Description"
                 type="textarea"
@@ -144,7 +144,7 @@ class NeedForm extends Component {
                 required
               />
               {this.state.form.type === 'Good' &&
-                <FormField
+                <GeneralField
                   id="condition"
                   label="Condition"
                   type="textarea"

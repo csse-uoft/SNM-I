@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { statusInCanadaOptions, educationLevelOptions,
   serviceSharedWithOptions, serviceTypeOptions } from '../../store/defaults'
-import FormField from '../shared/FormField'
+import GeneralField from '../shared/GeneralField'
 import SelectField from '../shared/SelectField'
 import CheckboxField from '../shared/CheckboxField'
 import RadioField from '../shared/RadioField'
@@ -237,7 +237,7 @@ class ServiceForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="name"
               label="Name"
               type="text"
@@ -245,7 +245,7 @@ class ServiceForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="desc"
               label="Description"
               type="text"
@@ -261,14 +261,14 @@ class ServiceForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="available_from"
               label="Available from"
               type="date"
               value={this.state.form.available_from}
               onChange={this.formValChange}
             />
-            <FormField
+            <GeneralField
               id="available_to"
               label="Available until"
               type="date"
@@ -283,7 +283,7 @@ class ServiceForm extends Component {
               value={this.state.form.language}
               onChange={this.formValChange}
             />
-            <FormField
+            <GeneralField
               id="capacity"
               label="Capacity"
               type="text"
@@ -327,7 +327,7 @@ class ServiceForm extends Component {
               </Col>
             </FormGroup>
             {this.state.form.billable === "Yes" &&
-              <FormField
+              <GeneralField
                 id="price"
                 label="Price"
                 type="text"
@@ -403,14 +403,14 @@ class ServiceForm extends Component {
               checkedOptions={this.state.form.eligibility_conditions.immigration_status}
               onChange={this.conditionsChange}
             />
-            <FormField
+            <GeneralField
               id="lower_age_limit"
               label="Age greater than"
               type="text"
               value={this.state.form.eligibility_conditions.lower_age_limit}
               onChange={this.conditionsChange}
             />
-            <FormField
+            <GeneralField
               id="upper_age_limit"
               label="Age less than"
               type="text"
@@ -433,7 +433,7 @@ class ServiceForm extends Component {
             />
             <hr/>
             <h3>Contact Information</h3>
-            <FormField
+            <GeneralField
               id="email"
               label="Contact Person Email"
               type="email"
@@ -441,7 +441,7 @@ class ServiceForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="primary_phone_number"
               label="Telephone"
               type="tel"
@@ -449,7 +449,7 @@ class ServiceForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="alt_phone_number"
               label="Alternative Phone Number"
               type="tel"
@@ -495,35 +495,35 @@ class ServiceForm extends Component {
             }
             {!this.state.is_provider_location &&
             <div>
-              <FormField
+              <GeneralField
                 id="street_address"
                 label="Street Address"
                 type="text"
                 value={this.state.form.location.street_address}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="apt_number"
                 label="Apt. #"
                 type="text"
                 value={this.state.form.location.apt_number}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="city"
                 label="City"
                 type="text"
                 value={this.state.form.location.city}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="province"
                 label="Province"
                 type="text"
                 value={this.state.form.location.province}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="postal_code"
                 label="Postal Code"
                 type="text"
@@ -540,7 +540,7 @@ class ServiceForm extends Component {
               value={this.state.form.share_with}
               onChange={this.formValChange}
             />
-            <FormField
+            <GeneralField
               id="notes"
               label="Notes"
               type="text"
