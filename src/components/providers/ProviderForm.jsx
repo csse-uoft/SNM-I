@@ -147,27 +147,18 @@ class ProviderForm extends Component {
     this.toggleAddressButton = this.toggleAddressButton.bind(this);
     this.submitAddress = this.submitAddress.bind(this);
     this.removeOtherAddress = this.removeOtherAddress.bind(this);
+
     const id = this.props.match.params.id;
-    let provider = {};
-    let availability = [
-      {week_day: 'Mon', start_time: "", end_time: ""},
-      {week_day: 'Tues', start_time: "", end_time: ""},
-      {week_day: 'Weds', start_time: "", end_time: ""},
-      {week_day: 'Thurs', start_time: "", end_time: ""},
-      {week_day: 'Fri', start_time: "", end_time: ""},
-      {week_day: 'Sat', start_time: "", end_time: ""},
-      {week_day: 'Sun', start_time: "", end_time: ""}
+    const provider = id ? this.props.providersById[id] : {};
+    const availability = [
+      { week_day: 'Monday', start_time: "", end_time: "" },
+      { week_day: 'Tuesday', start_time: "", end_time: "" },
+      { week_day: 'Wednesday', start_time: "", end_time: "" },
+      { week_day: 'Thursday', start_time: "", end_time: "" },
+      { week_day: 'Friday', start_time: "", end_time: "" },
+      { week_day: 'Saturday', start_time: "", end_time: "" },
+      { week_day: 'Sunday', start_time: "", end_time: "" }
     ]
-    if (id) {
-      provider = this.props.providersById[id];
-      const days_index = {'Mon': 0, 'Tues': 1, 'Weds': 2, 'Thurs': 3, 'Fri': 4, 'Sat': 5, 'Sun': 6};
-      const operation_hour_list = provider.operation_hours;
-      operation_hour_list.forEach(op_hour => {
-        const index = days_index[op_hour.week_day];
-        availability[index].start_time = op_hour.start_time;
-        availability[index].end_time = op_hour.end_time;
-      });
-    }
 
     this.state = {
       providerId: provider.id,
@@ -205,7 +196,7 @@ class ProviderForm extends Component {
         }, provider.main_address),
         lng_lat: "",
         other_addresses: provider.other_addresses || [],
-        operation_hours: availability,
+        operation_hours: Object.assign(availability, provider.operation_hours),
         referrer: provider.referrer || '',
         own_car: provider.own_car || '',
         skills: provider.skills || '',
@@ -232,7 +223,7 @@ class ProviderForm extends Component {
         reference2_name: provider.reference2_phone || '',
         reference2_name: provider.reference2_email || ''
       }
-    } 
+    }
   }
 
   componentWillMount() {
@@ -250,20 +241,9 @@ class ProviderForm extends Component {
     this.setState({ form : next });
   }
 
-  operationHourChange(e) {
-    let dayIndex = {
-      mon_operation_hours: 0,
-      tues_operation_hours: 1,
-      weds_operation_hours: 2,
-      thurs_operation_hours: 3,
-      fri_operation_hours: 4,
-      sat_operation_hours: 5,
-      sun_operation_hours: 6
-    }
+  operationHourChange(e, weekDay, index) {
     let nextForm = _.clone(this.state.form);
-    let dayTime = e.target.id.split('-');
-    let day = dayIndex[dayTime[0]];
-    nextForm['operation_hours'][day][dayTime[1]] = e.target.value;
+    nextForm['operation_hours'][index][e.target.id] = e.target.value;
     this.setState({ form: nextForm });
   }
 
@@ -326,7 +306,7 @@ class ProviderForm extends Component {
   }
 
   toggleAddressButton() {
-    this.setState({addressButtonClicked: !this.state.addressButtonClicked})
+    this.setState({ addressButtonClicked: !this.state.addressButtonClicked })
   }
 
   removeOtherAddress(index) {
@@ -379,28 +359,25 @@ class ProviderForm extends Component {
             </FormGroup>
             }
             {this.state.form.provider_type === "Individual" &&
-            <div>
-            <FormGroup controlId="provider_category">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Provider category
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.provider_category}
-                  onChange={this.formValChange}
-                >
-                  <option value="">--- Not Set ---</option>
-                  <option value="Volunteer/Goods Donor">Volunteer/Goods Donor</option>
-                  <option value="Professional Service Provider">Professional Service Provider</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            </div>
+              <FormGroup controlId="provider_category">
+                <Col className="required" componentClass={ControlLabel} sm={3}>
+                  Provider category
+                </Col>
+                <Col sm={9}>
+                  <FormControl
+                    componentClass="select"
+                    placeholder="select"
+                    value={this.state.form.provider_category}
+                    onChange={this.formValChange}
+                  >
+                    <option value="">--- Not Set ---</option>
+                    <option value="Volunteer/Goods Donor">Volunteer/Goods Donor</option>
+                    <option value="Professional Service Provider">Professional Service Provider</option>
+                  </FormControl>
+                </Col>
+              </FormGroup>
             }
             {this.state.form.provider_type === "Organization" &&
-            <div>
               <FormGroup controlId="company">
                 <Col className="required" componentClass={ControlLabel} sm={3}>
                   Company/Organization Name
@@ -413,7 +390,6 @@ class ProviderForm extends Component {
                     onChange={this.formValChange}/>
                 </Col>
               </FormGroup>
-            </div>
             }
             {this.state.form.provider_type &&
             <div>
@@ -829,353 +805,38 @@ class ProviderForm extends Component {
             <hr/>
             <h4> Availability </h4>
             <hr/>
-            <Form inline>
-              <h4> Monday </h4>
-              <FormGroup controlId="mon_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[0].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
+            {_.map(this.state.form.operation_hours, (operation_hour, index) => {
+              return (
+                <div key={operation_hour.week_day}>
+                  <h4>{operation_hour.week_day}</h4>
+                  <FormGroup controlId="start_time">
+                    <Col componentClass={ControlLabel} sm={3}>
+                      Start Time
+                    </Col>
+                    <Col sm={9}>
+                      <FormControl
+                        type="text"
+                        value={operation_hour.start_time}
+                        onChange={e => this.operationHourChange(e, operation_hour.week_day, index)}
+                      />
+                    </Col>
+                  </FormGroup>
 
-              <FormGroup controlId="mon_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[0].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="mon_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[0].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-
-            <Form inline>
-              <h4> Tuesday </h4>
-              <FormGroup controlId="tues_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[1].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="tues_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[1].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="tues_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[1].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-
-            <Form inline>
-              <h4> Wednesday </h4>
-              <FormGroup controlId="weds_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[2].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="weds_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[2].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup controlId="weds_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[2].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-
-            <Form inline>
-              <h4> Thursday </h4>
-              <FormGroup controlId="thurs_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[3].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="thurs_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[3].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup controlId="thurs_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[3].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-
-            <Form inline>
-              <h4> Friday </h4>
-              <FormGroup controlId="fri_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[4].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="fri_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[4].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="fri_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[4].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-
-            <Form inline>
-              <h4> Saturday </h4>
-              <FormGroup controlId="sat_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[5].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sat_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[5].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sat_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[5].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
-
-            <Form inline>
-              <h4> Sunday </h4>
-              <FormGroup controlId="sun_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start Time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.operation_hours[6].start_time}
-                    placeholder=""
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sun_operation_hours-end_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  End time
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    placeholder=""
-                    value={this.state.form.operation_hours[6].end_time}
-                    onChange={this.operationHourChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sun_operation_hours-start_time">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Period
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    value={this.state.form.operation_hours[6].start_time}
-                    placeholder="select"
-                    onChange={this.operationHourChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Afternoon">Afternoon</option>
-                    <option value="Evening">Evening</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Form>
+                  <FormGroup controlId="end_time">
+                    <Col componentClass={ControlLabel} sm={3}>
+                      End time
+                    </Col>
+                    <Col sm={9}>
+                      <FormControl
+                        type="text"
+                        value={operation_hour.end_time}
+                        onChange={e => this.operationHourChange(e, operation_hour.week_day, index)}
+                      />
+                    </Col>
+                  </FormGroup>
+                </div>
+              )
+            })}
             <hr/>
             {this.state.form.provider_category === "Volunteer/Goods Donor" &&
               <div>
@@ -1263,7 +924,7 @@ class ProviderForm extends Component {
                 <Col sm={9}>
                   <FormControl
                     componentClass="textarea"
-                    placeholder="Please tell us about your work experience, area(s) of expertise, and/or area(s) of 
+                    placeholder="Please tell us about your work experience, area(s) of expertise, and/or area(s) of
                                  knowledge"
                     value={this.state.form.employment}
                     onChange={this.formValChange}
@@ -1320,7 +981,7 @@ class ProviderForm extends Component {
                 <Col sm={9}>
                   <FormControl
                     componentClass="textarea"
-                    placeholder="If you are affiliated with a particular organization (such as a synagogue, a JCC, or 
+                    placeholder="If you are affiliated with a particular organization (such as a synagogue, a JCC, or
                                  a school), please write the organization's name"
                     value={this.state.form.affiliation}
                     onChange={this.formValChange}
@@ -1391,7 +1052,6 @@ class ProviderForm extends Component {
                     placeholder="" onChange={this.formValChange}/>
                 </Col>
               </FormGroup>
-
               <hr/>
             </div>
             }
