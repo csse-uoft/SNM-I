@@ -135,7 +135,6 @@ class ProviderForm extends Component {
           province: '',
           postal_code: ''
         }, provider.main_address),
-        lng_lat: "",
         other_addresses: provider.other_addresses || [],
         operation_hours: Object.assign(availability, provider.operation_hours),
         referrer: provider.referrer || '',
@@ -150,13 +149,6 @@ class ProviderForm extends Component {
         emergency_contact_relationship: provider.emergency_contact_relationship || '',
         commitment: provider.commitment || '',
         start_date: provider.start_date || '',
-        affiliation: provider.affiliation || '',
-        education: provider.education || '',
-        employment: provider.employment || '',
-        mentoring: provider.mentoring || '',
-        experience: provider.experience || '',
-        interests: provider.interests || '',
-        reason_for_volunteering: provider.reason_for_volunteering || '',
         reference1_name: provider.reference1_name || '',
         reference1_name: provider.reference1_phone || '',
         reference1_name: provider.reference1_email || '',
@@ -755,93 +747,6 @@ class ProviderForm extends Component {
                   />
                 </Col>
               </FormGroup>
-
-              <FormGroup controlId="education">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Education/Training
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="Please describe the education and training you have received"
-                    value={this.state.form.education}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-            </FormGroup>
-
-            <FormGroup controlId="employment">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Employment
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="Please tell us about your work experience, area(s) of expertise, and/or area(s) of
-                                 knowledge"
-                    value={this.state.form.employment}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-            </FormGroup>
-
-            <FormGroup controlId="experience">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Volunteering experience
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="Please describe the length and nature of any previous volunteer experience"
-                    value={this.state.form.experience}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-            </FormGroup>
-
-            <FormGroup controlId="interests">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Interests/hobbies
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="Please tell us about your special skills, interests, or hobbies"
-                    value={this.state.form.interests}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-            </FormGroup>
-
-            <FormGroup controlId="reason_for_volunteering">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Reason for volunteering
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="Please tell us why you would like to volunteer with us"
-                    value={this.state.form.reason_for_volunteering}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-            </FormGroup>
-
-            <FormGroup controlId="affiliation">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Organization affiliation
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder="If you are affiliated with a particular organization (such as a synagogue, a JCC, or
-                                 a school), please write the organization's name"
-                    value={this.state.form.affiliation}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-            </FormGroup>
-
             <hr/>
               <h4> References </h4>
               <hr/>
