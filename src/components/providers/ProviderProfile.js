@@ -175,14 +175,6 @@ class ProviderProfile extends Component {
               </td>
             </tr>
           }
-
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Emergency contact</b></td>
-              <td>{provider.emergency_contact_name ? provider.emergency_contact_name + ", " + provider.emergency_contact_phone + ", " + provider.emergency_contact_email + ", " + provider.emergency_contact_relationship : ""}</td>
-            </tr>
-          }
-
           <tr>
             <td><b>{provider.provider_type === "Organization" ? "Operation Hours" : "Availability"}</b></td>
             <td>
@@ -225,36 +217,6 @@ class ProviderProfile extends Component {
             <tr>
               <td><b>Skills</b></td>
               <td>{provider.skills}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Education</b></td>
-              <td>{provider.education}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Employment</b></td>
-              <td>{provider.employment}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Volunteering experience</b></td>
-              <td>{provider.experience}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Interests/hobbies</b></td>
-              <td>{provider.interests}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Reason for volunteering</b></td>
-              <td>{provider.reason_for_volunteering}</td>
             </tr>
           }
           {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Checkbox, Well, ListGroup } from 'react-bootstrap';
+import { Button, Form, FormGroup, Col, Row, Well, ListGroup } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
 import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { formatLocation } from '../../helpers/location_helpers'
+import { providerFields } from '../../constants/provider_fields.js'
 
 // components
+import FieldGroup from '../shared/FieldGroup';
 import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
 import LocationFieldGroup from '../shared/LocationFieldGroup';
 
@@ -83,7 +85,6 @@ class ProviderForm extends Component {
     this.mainAddressChange = this.mainAddressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
     this.languagesChange = this.languagesChange.bind(this);
-    this.categoriesIntoCheckboxes = this.categoriesIntoCheckboxes.bind(this);
     this.otherAddressChange = this.otherAddressChange.bind(this);
     this.toggleAddressButton = this.toggleAddressButton.bind(this);
     this.submitAddress = this.submitAddress.bind(this);
@@ -138,23 +139,19 @@ class ProviderForm extends Component {
         other_addresses: provider.other_addresses || [],
         operation_hours: Object.assign(availability, provider.operation_hours),
         referrer: provider.referrer || '',
-        own_car: provider.own_car || '',
+        own_car: provider.own_car || false,
         skills: provider.skills || '',
-        visibility: provider.visibility,
+        visibility: provider.visibility || false,
         status: provider.status,
         notes: provider.notes || '',
-        emergency_contact_name: provider.emergency_contact_name || '',
-        emergency_contact_email: provider.emergency_contact_email || '',
-        emergency_contact_phone: provider.emergency_contact_phone || '',
-        emergency_contact_relationship: provider.emergency_contact_relationship || '',
         commitment: provider.commitment || '',
         start_date: provider.start_date || '',
         reference1_name: provider.reference1_name || '',
-        reference1_name: provider.reference1_phone || '',
-        reference1_name: provider.reference1_email || '',
+        reference1_phone: provider.reference1_phone || '',
+        reference1_email: provider.reference1_email || '',
         reference2_name: provider.reference2_name || '',
-        reference2_name: provider.reference2_phone || '',
-        reference2_name: provider.reference2_email || ''
+        reference2_phone: provider.reference2_phone || '',
+        reference2_email: provider.reference2_email || ''
       }
     }
   }
@@ -169,8 +166,8 @@ class ProviderForm extends Component {
     this.setState({ form: nextForm, addressButtonClicked: false });
   }
 
-  formValChange(e) {
-    let next = {...this.state.form, [e.target.id] : e.target.value};
+  formValChange(e, id=e.target.id) {
+    let next = {...this.state.form, [id] : e.target.value};
     this.setState({ form : next });
   }
 
@@ -178,9 +175,6 @@ class ProviderForm extends Component {
     let nextForm = _.clone(this.state.form);
     nextForm['operation_hours'][index][e.target.id] = e.target.value;
     this.setState({ form: nextForm });
-  }
-
-  review(e) {
   }
 
   submit(e) {
@@ -221,23 +215,6 @@ class ProviderForm extends Component {
     this.setState({form: nextForm});
   }
 
-  categoriesIntoCheckboxes(categories, checkedCategories) {
-    let updatedCategories = _.clone(categories)
-    return updatedCategories.map((category) => {
-      return (
-        <Checkbox
-          key={category}
-          value={category}
-          checked={_.includes(checkedCategories, category)}
-          onChange={this.languagesChange}
-          inline
-        >
-        {category}
-        </Checkbox>
-      )
-    })
-  }
-
   toggleAddressButton() {
     this.setState({ addressButtonClicked: !this.state.addressButtonClicked })
   }
@@ -272,217 +249,134 @@ class ProviderForm extends Component {
         </Col>
         <Col sm={12}>
           <Form horizontal>
-          {this.state.mode === 'new' &&
-            <FormGroup controlId="provider_type">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Select a provider type
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.provider_type}
-                  onChange={this.formValChange}
-                >
-                  <option value="">Select</option>
-                  <option value="Individual">Individual</option>
-                  <option value="Organization">Organization</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
+            {this.state.mode === 'new' &&
+              <FieldGroup
+                id='provider_type'
+                label={providerFields['provider_type']['label']}
+                type={providerFields['provider_type']['type']}
+                component={providerFields['provider_type']['component']}
+                value={this.state.form['provider_type']}
+                onChange={this.formValChange}
+                options={providerFields['provider_type']['options']}
+              />
             }
             {this.state.form.provider_type === "Individual" &&
-              <FormGroup controlId="provider_category">
-                <Col className="required" componentClass={ControlLabel} sm={3}>
-                  Provider category
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    placeholder="select"
-                    value={this.state.form.provider_category}
-                    onChange={this.formValChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Volunteer/Goods Donor">Volunteer/Goods Donor</option>
-                    <option value="Professional Service Provider">Professional Service Provider</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
+              <FieldGroup
+                id='provider_category'
+                label={providerFields['provider_category']['label']}
+                type={providerFields['provider_category']['type']}
+                component={providerFields['provider_category']['component']}
+                value={this.state.form['provider_category']}
+                onChange={this.formValChange}
+                options={providerFields['provider_category']['options']}
+              />
             }
             {this.state.form.provider_type === "Organization" &&
-              <FormGroup controlId="company">
-                <Col className="required" componentClass={ControlLabel} sm={3}>
-                  Company/Organization Name
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.company}
-                    placeholder="Company Name"
-                    onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
+              <FieldGroup
+                id='company'
+                label={providerFields['company']['label']}
+                type={providerFields['company']['type']}
+                component={providerFields['company']['component']}
+                value={this.state.form['company']}
+                onChange={this.formValChange}
+                options={providerFields['company']['options']}
+              />
             }
             {this.state.form.provider_type &&
             <div>
             <hr/>
             <h4> Contact Information </h4>
             <hr/>
-            <FormGroup controlId="first_name">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                {this.state.form.provider_type === "Individual" ?
-                  "First name" : "Contact Person First Name"}
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  placeholder="First name"
-                  value={this.state.form.first_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="last_name">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                {this.state.form.provider_type === "Individual" ?
-                  "Last name" : "Contact Person Last Name"}
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  placeholder="Last name"
-                  value={this.state.form.last_name}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-            {this.state.form.provider_type === "Individual" &&
-              <FormGroup controlId="gender">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Gender
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    placeholder="select"
-                    value={this.state.form.gender}
-                    onChange={this.formValChange}
-                  >
-                    <option value="select">-- Not Set --</option>
-                    <option value="Other">Other</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            }
-
-            <FormGroup controlId="email">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Email
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.email}
-                  placeholder="youremail@gmail.com"
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="primary_phone_number">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Primary phone number
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.primary_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="primary_phone_extension">
-              <Col componentClass={ControlLabel} sm={3}>
-                Extension
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.primary_phone_extension}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="primary_phone_type">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Primary phone type
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="select"
-                  value={this.state.form.primary_phone_type}
-                  onChange={this.formValChange}
-                  componentClass="select"
-                  placeholder="select"
-                >
-                  <option value="">--- Not Set ---</option>
-                  <option value="Home">Home</option>
-                  <option value="Cell">Cell</option>
-                  <option value="Work">Work</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="alt_phone_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Alternative phone number
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="tel"
-                  value={this.state.form.alt_phone_number}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="alt_phone_extension">
-              <Col componentClass={ControlLabel} sm={3}>
-                Extension for Alternative phone number
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.alt_phone_extension}
-                  onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="alt_phone_type">
-              <Col componentClass={ControlLabel} sm={3}>
-                Alternative phone type
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="select"
-                  value={this.state.form.alt_phone_type}
-                  onChange={this.formValChange}
-                  componentClass="select"
-                  placeholder="select"
-                >
-                  <option value="">--- Not Set ---</option>
-                  <option value="Home">Home</option>
-                  <option value="Cell">Cell</option>
-                  <option value="Work">Work</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
+            <FieldGroup
+              id='first_name'
+              label={providerFields['first_name']['label']}
+              type={providerFields['first_name']['type']}
+              component={providerFields['first_name']['component']}
+              value={this.state.form['first_name']}
+              onChange={this.formValChange}
+              options={providerFields['first_name']['options']}
+            />
+            <FieldGroup
+              id='last_name'
+              label={providerFields['last_name']['label']}
+              type={providerFields['last_name']['type']}
+              component={providerFields['last_name']['component']}
+              value={this.state.form['last_name']}
+              onChange={this.formValChange}
+              options={providerFields['last_name']['options']}
+            />
+            <FieldGroup
+              id='gender'
+              label={providerFields['gender']['label']}
+              type={providerFields['gender']['type']}
+              component={providerFields['gender']['component']}
+              value={this.state.form['gender']}
+              onChange={this.formValChange}
+              options={providerFields['gender']['options']}
+            />
+            <FieldGroup
+              id='email'
+              label={providerFields['email']['label']}
+              type={providerFields['email']['type']}
+              component={providerFields['email']['component']}
+              value={this.state.form['email']}
+              onChange={this.formValChange}
+              options={providerFields['email']['options']}
+            />
+            <FieldGroup
+              id='primary_phone_number'
+              label={providerFields['primary_phone_number']['label']}
+              type={providerFields['primary_phone_number']['type']}
+              component={providerFields['primary_phone_number']['component']}
+              value={this.state.form['primary_phone_number']}
+              onChange={this.formValChange}
+              options={providerFields['primary_phone_number']['options']}
+            />
+            <FieldGroup
+              id='primary_phone_extension'
+              label={providerFields['primary_phone_extension']['label']}
+              type={providerFields['primary_phone_extension']['type']}
+              component={providerFields['primary_phone_extension']['component']}
+              value={this.state.form['primary_phone_extension']}
+              onChange={this.formValChange}
+              options={providerFields['primary_phone_extension']['options']}
+            />
+            <FieldGroup
+              id='primary_phone_type'
+              label={providerFields['primary_phone_type']['label']}
+              type={providerFields['primary_phone_type']['type']}
+              component={providerFields['primary_phone_type']['component']}
+              value={this.state.form['primary_phone_type']}
+              onChange={this.formValChange}
+              options={providerFields['primary_phone_type']['options']}
+            />
+            <FieldGroup
+              id='alt_phone_number'
+              label={providerFields['alt_phone_number']['label']}
+              type={providerFields['alt_phone_number']['type']}
+              component={providerFields['alt_phone_number']['component']}
+              value={this.state.form['alt_phone_number']}
+              onChange={this.formValChange}
+              options={providerFields['alt_phone_number']['options']}
+            />
+            <FieldGroup
+              id='alt_phone_extension'
+              label={providerFields['alt_phone_extension']['label']}
+              type={providerFields['alt_phone_extension']['type']}
+              component={providerFields['alt_phone_extension']['component']}
+              value={this.state.form['alt_phone_extension']}
+              onChange={this.formValChange}
+              options={providerFields['alt_phone_extension']['options']}
+            />
+            <FieldGroup
+              id='alt_phone_type'
+              label={providerFields['alt_phone_type']['label']}
+              type={providerFields['alt_phone_type']['type']}
+              component={providerFields['alt_phone_type']['component']}
+              value={this.state.form['alt_phone_type']}
+              onChange={this.formValChange}
+              options={providerFields['alt_phone_type']['options']}
+            />
             </div>
             }
 
@@ -491,139 +385,71 @@ class ProviderForm extends Component {
               <hr/>
               <h4> Secondary Contact Information </h4>
               <hr/>
-              <FormGroup controlId="sec_contact_first_name">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Secondary Contact Person First Name
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.sec_contact_first_name}
-                    placeholder="First name" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sec_contact_last_name">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Secondary Contact Person Last Name
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.sec_contact_last_name}
-                    placeholder="Last name" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sec_contact_email">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Email
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.sec_contact_email}
-                    placeholder="youremail@gmail.com" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sec_contact_primary_phone_number">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Telephone
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="tel"
-                    value={this.state.form.sec_contact_primary_phone_number}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sec_contact_primary_phone_extension">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Extension
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.sec_contact_primary_phone_extension}
-                    onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sec_contact_alt_phone_number">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Alternative Phone Number
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="tel"
-                    value={this.state.form.sec_contact_alt_phone_number}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="sec_contact_alt_phone_extension">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Extension for Alternative Phone Number
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="text"
-                    value={this.state.form.sec_contact_alt_phone_extension}
-                    onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-            </div>
+              <FieldGroup
+                id='sec_contact_first_name'
+                label={providerFields['sec_contact_first_name']['label']}
+                type={providerFields['sec_contact_first_name']['type']}
+                component={providerFields['sec_contact_first_name']['component']}
+                value={this.state.form['sec_contact_first_name']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_first_name']['options']}
+              />
+              <FieldGroup
+                id='sec_contact_last_name'
+                label={providerFields['sec_contact_last_name']['label']}
+                type={providerFields['sec_contact_last_name']['type']}
+                component={providerFields['sec_contact_last_name']['component']}
+                value={this.state.form['sec_contact_last_name']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_last_name']['options']}
+              />
+              <FieldGroup
+                id='sec_contact_email'
+                label={providerFields['sec_contact_email']['label']}
+                type={providerFields['sec_contact_email']['type']}
+                component={providerFields['sec_contact_email']['component']}
+                value={this.state.form['sec_contact_email']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_email']['options']}
+              />
+              <FieldGroup
+                id='sec_contact_primary_phone_number'
+                label={providerFields['sec_contact_primary_phone_number']['label']}
+                type={providerFields['sec_contact_primary_phone_number']['type']}
+                component={providerFields['sec_contact_primary_phone_number']['component']}
+                value={this.state.form['sec_contact_primary_phone_number']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_primary_phone_number']['options']}
+              />
+              <FieldGroup
+                id='sec_contact_primary_phone_extension'
+                label={providerFields['sec_contact_primary_phone_extension']['label']}
+                type={providerFields['sec_contact_primary_phone_extension']['type']}
+                component={providerFields['sec_contact_primary_phone_extension']['component']}
+                value={this.state.form['sec_contact_primary_phone_extension']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_primary_phone_extension']['options']}
+              />
+              <FieldGroup
+                id='sec_contact_alt_phone_number'
+                label={providerFields['sec_contact_alt_phone_number']['label']}
+                type={providerFields['sec_contact_alt_phone_number']['type']}
+                component={providerFields['sec_contact_alt_phone_number']['component']}
+                value={this.state.form['sec_contact_alt_phone_number']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_alt_phone_number']['options']}
+              />
+              <FieldGroup
+                id='sec_contact_alt_phone_extension'
+                label={providerFields['sec_contact_alt_phone_extension']['label']}
+                type={providerFields['sec_contact_alt_phone_extension']['type']}
+                component={providerFields['sec_contact_alt_phone_extension']['component']}
+                value={this.state.form['sec_contact_alt_phone_extension']}
+                onChange={this.formValChange}
+                options={providerFields['sec_contact_alt_phone_extension']['options']}
+              />
+              </div>
             }
-
-            {this.state.form.provider_category === "Volunteer/Goods Donor" &&
-            <div>
-              <hr/>
-              <h4> Emergency contact </h4>
-              <hr/>
-              <FormGroup controlId="emergency_contact_name">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Name
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.emergency_contact_name}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="emergency_contact_phone">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Phone
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.emergency_contact_phone}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="emergency_contact_email">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Email
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.emergency_contact_email}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="emergency_contact_relationship">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Relationship
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="tel"
-                    value={this.state.form.emergency_contact_relationship}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
-
-            </div>
-            }
-
             {this.state.form.provider_type &&
             <div>
             <hr/>
@@ -649,34 +475,26 @@ class ProviderForm extends Component {
               />
             }
             <hr/>
-
-            <FormGroup controlId="languages">
-              <Col componentClass={ControlLabel} sm={3}>
-                Languages
-              </Col>
-              <Col sm={9}>
-                {this.props.categoriesLoaded &&
-                  this.categoriesIntoCheckboxes(
-                    this.props.languagesCategories,
-                    this.state.form.languages
-                  )
-                }
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="referrer">
-              <Col componentClass={ControlLabel} sm={3}>
-                Referrer
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.referrer}
-                  onChange={this.formValChange}/>
-              </Col>
-            </FormGroup>
+            <FieldGroup
+              id='languages'
+              label={providerFields['languages']['label']}
+              type={providerFields['languages']['type']}
+              component={providerFields['languages']['component']}
+              value={this.state.form['languages']}
+              onChange={this.languagesChange}
+              options={providerFields['languages']['options'] || this.props.languagesCategories}
+            />
+            <FieldGroup
+              id='referrer'
+              label={providerFields['referrer']['label']}
+              type={providerFields['referrer']['type']}
+              component={providerFields['referrer']['component']}
+              value={this.state.form['referrer']}
+              onChange={this.formValChange}
+              options={providerFields['referrer']['options']}
+            />
             <hr/>
-            <h4> Availability </h4>
+            <h4>Availability</h4>
             <hr/>
             <OperationHoursFieldGroup
               operationHours={this.state.form.operation_hours}
@@ -685,187 +503,130 @@ class ProviderForm extends Component {
             <hr/>
             {this.state.form.provider_category === "Volunteer/Goods Donor" &&
               <div>
-              <FormGroup controlId="start_date">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Start date for availability
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    type="date"
-                    value={this.state.form.start_date}
-                    onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="own_car">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Own a car
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    placeholder="select"
-                    value={this.state.form.own_car}
-                    onChange={this.formValChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="commitment">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Commitment length
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="select"
-                    placeholder="select"
-                    value={this.state.form.commitment}
-                    onChange={this.formValChange}
-                  >
-                    <option value="">--- Not Set ---</option>
-                    <option value="Short term">Short term</option>
-                    <option value="Six months">Six months</option>
-                    <option value="One year">One year</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="skills">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Skills
-                </Col>
-                <Col sm={9}>
-                  <FormControl
-                    componentClass="textarea"
-                    placeholder=""
-                    value={this.state.form.skills}
-                    onChange={this.formValChange}
-                  />
-                </Col>
-              </FormGroup>
+              <FieldGroup
+                id='start_date'
+                label={providerFields['start_date']['label']}
+                type={providerFields['start_date']['type']}
+                component={providerFields['start_date']['component']}
+                value={this.state.form['start_date']}
+                onChange={this.formValChange}
+                options={providerFields['start_date']['options']}
+              />
+              <FieldGroup
+                id='own_car'
+                label={providerFields['own_car']['label']}
+                type={providerFields['own_car']['type']}
+                component={providerFields['own_car']['component']}
+                value={this.state.form['own_car']}
+                onChange={this.formValChange}
+                options={providerFields['own_car']['options']}
+              />
+              <FieldGroup
+                id='commitment'
+                label={providerFields['commitment']['label']}
+                type={providerFields['commitment']['type']}
+                component={providerFields['commitment']['component']}
+                value={this.state.form['commitment']}
+                onChange={this.formValChange}
+                options={providerFields['commitment']['options']}
+              />
+              <FieldGroup
+                id='skills'
+                label={providerFields['skills']['label']}
+                type={providerFields['skills']['type']}
+                component={providerFields['skills']['component']}
+                value={this.state.form['skills']}
+                onChange={this.formValChange}
+                options={providerFields['skills']['options']}
+              />
             <hr/>
-              <h4> References </h4>
+              <h4>References</h4>
               <hr/>
-              <FormGroup controlId="reference1_name">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Name
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.reference1_name}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="reference1_phone">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Phone
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.reference1_phone}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="reference1_email">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Email
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.reference1_email}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
+              <FieldGroup
+                id='reference1_name'
+                label={providerFields['reference1_name']['label']}
+                type={providerFields['reference1_name']['type']}
+                component={providerFields['reference1_name']['component']}
+                value={this.state.form['reference1_name']}
+                onChange={this.formValChange}
+                options={providerFields['reference1_name']['options']}
+              />
+              <FieldGroup
+                id='reference1_phone'
+                label={providerFields['reference1_phone']['label']}
+                type={providerFields['reference1_phone']['type']}
+                component={providerFields['reference1_phone']['component']}
+                value={this.state.form['reference1_phone']}
+                onChange={this.formValChange}
+                options={providerFields['reference1_phone']['options']}
+              />
+              <FieldGroup
+                id='reference1_email'
+                label={providerFields['reference1_email']['label']}
+                type={providerFields['reference1_email']['type']}
+                component={providerFields['reference1_email']['component']}
+                value={this.state.form['reference1_email']}
+                onChange={this.formValChange}
+                options={providerFields['reference1_email']['options']}
+              />
               <hr/>
-              <FormGroup controlId="reference2_name">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Name
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.reference2_name}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="reference2_phone">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Phone
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.reference2_phone}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
-
-              <FormGroup controlId="reference2_email">
-                <Col componentClass={ControlLabel} sm={3}>
-                  Email
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" value={this.state.form.reference2_email}
-                    placeholder="" onChange={this.formValChange}/>
-                </Col>
-              </FormGroup>
+              <FieldGroup
+                id='reference2_name'
+                label={providerFields['reference2_name']['label']}
+                type={providerFields['reference2_name']['type']}
+                component={providerFields['reference2_name']['component']}
+                value={this.state.form['reference2_name']}
+                onChange={this.formValChange}
+                options={providerFields['reference2_name']['options']}
+              />
+              <FieldGroup
+                id='reference2_phone'
+                label={providerFields['reference2_phone']['label']}
+                type={providerFields['reference2_phone']['type']}
+                component={providerFields['reference2_phone']['component']}
+                value={this.state.form['reference2_phone']}
+                onChange={this.formValChange}
+                options={providerFields['reference2_phone']['options']}
+              />
+              <FieldGroup
+                id='reference2_email'
+                label={providerFields['reference2_email']['label']}
+                type={providerFields['reference2_email']['type']}
+                component={providerFields['reference2_email']['component']}
+                value={this.state.form['reference2_email']}
+                onChange={this.formValChange}
+                options={providerFields['reference2_email']['options']}
+              />
               <hr/>
             </div>
             }
-
-            <FormGroup controlId="status">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Status
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.status}
-                  onChange={this.formValChange}
-                  disabled={this.state.form.status === "Home Agency"}
-                >
-                  <option value="select">--- Not Set ---</option>
-                  <option value="External">External</option>
-                  <option value="Internal">Internal</option>
-                  { this.state.form.status === "Home Agency" ? (
-                      <option value="Home Agency">Home Agency</option>
-                    ): null }
-                </FormControl>
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="visibility">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Allow other agencies to see this provider?
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.visibility}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="notes">
-              <Col componentClass={ControlLabel} sm={3}>
-                Additional notes
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="textarea"
-                  value={this.state.form.notes}
-                  onChange={this.formValChange}
-                />
-              </Col>
-            </FormGroup>
-
+            <FieldGroup
+              id='status'
+              label={providerFields['status']['label']}
+              type={providerFields['status']['type']}
+              component={providerFields['status']['component']}
+              value={this.state.form['status']}
+              onChange={this.formValChange}
+              options={providerFields['status']['options']}
+            />
+            <FieldGroup
+              id='visibility'
+              label={providerFields['visibility']['label']}
+              type={providerFields['visibility']['type']}
+              component={providerFields['visibility']['component']}
+              value={this.state.form['visibility']}
+              onChange={this.formValChange}
+              options={providerFields['visibility']['options']}
+            />
+            <FieldGroup
+              id='notes'
+              label={providerFields['notes']['label']}
+              type={providerFields['notes']['type']}
+              component={providerFields['notes']['component']}
+              value={this.state.form['notes']}
+              onChange={this.formValChange}
+              options={providerFields['notes']['options']}
+            />
             <FormGroup>
               <Col smOffset={3} sm={9}>
                 <Button
