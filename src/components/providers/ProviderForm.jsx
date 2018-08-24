@@ -10,6 +10,7 @@ import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js'
 import { formatLocation } from '../../helpers/location_helpers'
 
 // components
+import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
 import LocationFieldGroup from '../shared/LocationFieldGroup';
 
 class AddressForm extends Component {
@@ -685,38 +686,10 @@ class ProviderForm extends Component {
             <hr/>
             <h4> Availability </h4>
             <hr/>
-            {_.map(this.state.form.operation_hours, (operation_hour, index) => {
-              return (
-                <div key={operation_hour.week_day}>
-                  <h4>{operation_hour.week_day}</h4>
-                  <FormGroup controlId="start_time">
-                    <Col componentClass={ControlLabel} sm={3}>
-                      Start Time
-                    </Col>
-                    <Col sm={9}>
-                      <FormControl
-                        type="text"
-                        value={operation_hour.start_time}
-                        onChange={e => this.operationHourChange(e, operation_hour.week_day, index)}
-                      />
-                    </Col>
-                  </FormGroup>
-
-                  <FormGroup controlId="end_time">
-                    <Col componentClass={ControlLabel} sm={3}>
-                      End time
-                    </Col>
-                    <Col sm={9}>
-                      <FormControl
-                        type="text"
-                        value={operation_hour.end_time}
-                        onChange={e => this.operationHourChange(e, operation_hour.week_day, index)}
-                      />
-                    </Col>
-                  </FormGroup>
-                </div>
-              )
-            })}
+            <OperationHoursFieldGroup
+              operationHours={this.state.form.operation_hours}
+              handleFormValChange={this.operationHourChange}
+            />
             <hr/>
             {this.state.form.provider_category === "Volunteer/Goods Donor" &&
               <div>

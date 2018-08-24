@@ -1,5 +1,5 @@
 import React from 'react';
-import GeneralField from './GeneralField'
+import GeneralField from './GeneralField';
 
 export default function LocationFieldGroup({ address, handleFormValChange }) {
   return (
