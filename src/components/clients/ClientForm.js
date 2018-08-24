@@ -12,9 +12,9 @@ import { fetchEligibilities } from '../../store/actions/eligibilityActions.js';
 import { fetchClientFields } from '../../store/actions/settingActions.js';
 
 // components
-import LocationFieldGroup from './client_form/LocationFieldGroup';
+import LocationFieldGroup from '../shared/LocationFieldGroup';
 import FamilyFields from './client_form/FamilyFields';
-import FormWizard from './client_form/FormWizard';
+import FormWizard from '../shared/FormWizard';
 import FieldGroup from '../shared/FieldGroup';
 
 // styles
