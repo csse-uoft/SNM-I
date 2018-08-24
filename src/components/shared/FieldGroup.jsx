@@ -1,11 +1,11 @@
 import React from 'react';
 
-import GeneralField from '../../shared/GeneralField';
-import SelectField from '../../shared/SelectField';
-import RadioField from '../../shared/RadioField';
-import CheckboxField from '../../shared/CheckboxField';
+import GeneralField from './GeneralField';
+import SelectField from './SelectField';
+import RadioField from './RadioField';
+import CheckboxField from './CheckboxField';
 
-export default function ClientField({ component, options, value, ...props }) {
+export default function FieldGroup({ component, options, value, ...props }) {
   if (component === 'GeneralField') {
     return (
       <GeneralField

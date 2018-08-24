@@ -15,7 +15,7 @@ import { fetchClientFields } from '../../store/actions/settingActions.js';
 import LocationFieldGroup from './client_form/LocationFieldGroup';
 import FamilyFields from './client_form/FamilyFields';
 import FormWizard from './client_form/FormWizard';
-import ClientField from './client_form/ClientField';
+import FieldGroup from '../shared/FieldGroup';
 
 // styles
 import { Grid, Button, Form, Col, Row } from 'react-bootstrap';
@@ -265,7 +265,7 @@ class ClientForm extends Component {
             }
             else {
               return (
-                <ClientField
+                <FieldGroup
                   key={fieldId}
                   id={fieldId}
                   label={clientFields[fieldId]['label']}
