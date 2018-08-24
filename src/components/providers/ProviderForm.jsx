@@ -9,6 +9,8 @@ import { createProvider, updateProvider } from '../../store/actions/providerActi
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { formatLocation } from '../../helpers/location_helpers'
 
+// components
+import LocationFieldGroup from '../shared/LocationFieldGroup';
 
 class AddressForm extends Component {
   constructor(props) {
@@ -38,75 +40,13 @@ class AddressForm extends Component {
 
   render() {
     return (
-      <div>
       <Well>
-        <FormGroup controlId="street_address">
-          <Col className="required" componentClass={ControlLabel} sm={3}>
-            Street Address
-          </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.address.street_address}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="apt_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Apt. #
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.address.apt_number}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="city">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                City
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.address.city}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="province">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Province
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.address.province}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="postal_code">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Postal Code
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.address.postal_code}
-                  onChange={this.addressChange}
-                />
-              </Col>
-            </FormGroup>
-            <Button onClick={this.submitClick}> Submit Address </Button>
-        </Well>
-      </div>
+        <LocationFieldGroup
+          address={this.state.address}
+          handleFormValChange={this.addressChange}
+        />
+        <Button onClick={this.submitClick}> Submit Address </Button>
+      </Well>
     )
   }
 }
@@ -696,70 +636,10 @@ class ProviderForm extends Component {
             <hr/>
             <h4> Main Address </h4>
             <hr/>
-            <FormGroup controlId="street_address">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Street Address
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.main_address.street_address}
-                  onChange={this.mainAddressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="apt_number">
-              <Col componentClass={ControlLabel} sm={3}>
-                Apt. #
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.main_address.apt_number}
-                  onChange={this.mainAddressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="city">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                City
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.main_address.city}
-                  onChange={this.mainAddressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="province">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Province
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.main_address.province}
-                  onChange={this.mainAddressChange}
-                />
-              </Col>
-            </FormGroup>
-
-            <FormGroup controlId="postal_code">
-              <Col className="required" componentClass={ControlLabel} sm={3}>
-                Postal Code
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={this.state.form.main_address.postal_code}
-                  onChange={this.mainAddressChange}
-                />
-              </Col>
-            </FormGroup>
+            <LocationFieldGroup
+              address={this.state.form.main_address}
+              handleFormValChange={this.mainAddressChange}
+            />
             <hr/>
             <h4>Alternate Addresses</h4>
             <ListGroup>
