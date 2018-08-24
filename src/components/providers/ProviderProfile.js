@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 // components
 import { formatLocation } from '../../helpers/location_helpers'
-import { formatOperationHours } from '../../helpers/operation_hour_helpers'
+import { formatOperationHour } from '../../helpers/operation_hour_helpers'
 
 // styles
 import { Table, Button, ListGroup, Well, Badge, Col, Row, Glyphicon } from 'react-bootstrap'
@@ -185,8 +185,12 @@ class ProviderProfile extends Component {
 
           <tr>
             <td><b>{provider.provider_type === "Organization" ? "Operation Hours" : "Availability"}</b></td>
-            <td>{
-              provider.operation_hours.length !== 0 ? formatOperationHours(provider.operation_hours).split("\n").map(day => <p key={day}> {day} </p>) : "None provided"} </td>
+            <td>
+              {(provider.operation_hours && provider.operation_hours.length > 0)
+                ? _.map(provider.operation_hours, day =>
+                  <p key={day.week_day}>{formatOperationHour(day)}</p>)
+                : "None provided"}
+              </td>
           </tr>
 
           {provider.languages &&
