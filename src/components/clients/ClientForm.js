@@ -18,7 +18,7 @@ import FormWizard from '../shared/FormWizard';
 import FieldGroup from '../shared/FieldGroup';
 
 // styles
-import { Grid, Button, Form, Col, Row } from 'react-bootstrap';
+import { Grid, Form, Col, Row } from 'react-bootstrap';
 
 class ClientForm extends Component {
   constructor(props) {
@@ -211,11 +211,6 @@ class ClientForm extends Component {
           <Col sm={12}>
             <h3>{formTitle}</h3>
           </Col>
-          <FormWizard
-            stepTitles={this.props.stepsOrder}
-            currentStep={this.state.currentStep}
-            handleStepClick={this.handleStepClick}
-          />
           {this.state.showAlert &&
             <Col sm={12} className="flash-error">
               {_.map(this.state.error_messages, (message, index) => {
@@ -228,75 +223,67 @@ class ClientForm extends Component {
             </Col>
           }
         </Row>
-        <Form horizontal>
-          {_.map(this.props.formStructure[this.props.stepsOrder[this.state.currentStep - 1]], (isRequired, fieldId) => {
-            let options;
-            if (fieldId === 'first_language') {
-              options = this.props.languagesCategories;
-            }
-            else if (fieldId === 'other_languages') {
-              options = this.props.languagesCategories.filter(
-                category => category !== this.state.form.first_language)
-            }
-            else if (fieldId === 'eligibilities') {
-              options = this.props.eligibilities;
-            }
+        <FormWizard
+          stepTitles={this.props.stepsOrder}
+          currentStep={this.state.currentStep}
+          handleStepClick={this.handleStepClick}
+          prev={this.prev}
+          next={this.next}
+          submit={this.submit}
+        >
+          <Form horizontal>
+            {_.map(this.props.formStructure[this.props.stepsOrder[this.state.currentStep - 1]], (isRequired, fieldId) => {
+              let options;
+              if (fieldId === 'first_language') {
+                options = this.props.languagesCategories;
+              }
+              else if (fieldId === 'other_languages') {
+                options = this.props.languagesCategories.filter(
+                  category => category !== this.state.form.first_language)
+              }
+              else if (fieldId === 'eligibilities') {
+                options = this.props.eligibilities;
+              }
 
-            if (fieldId === 'address') {
-              return (
-                <LocationFieldGroup
-                  key="address"
-                  address={this.state.form.address}
-                  handleFormValChange={this.formValChange}
-                />
-              )
-            }
-            else if (fieldId === 'family') {
-              return (
-                <FamilyFields
-                  key="family"
-                  family={this.state.form.family}
-                  clientId={this.state.clientId}
-                  handleFormValChange={this.handleFamilyChange}
-                  handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
-                  handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
-                />
-              )
-            }
-            else {
-              return (
-                <FieldGroup
-                  key={fieldId}
-                  id={fieldId}
-                  label={clientFields[fieldId]['label']}
-                  type={clientFields[fieldId]['type']}
-                  component={clientFields[fieldId]['component']}
-                  value={this.state.form[fieldId]}
-                  onChange={this.formValChange}
-                  required={isRequired}
-                  options={clientFields[fieldId]['options'] || options}
-                />
-              );
-            }
-          })}
-
-
-          <Row>
-            {this.state.currentStep > 1 &&
-              <Button className="previous-button" onClick={this.prev}>
-                Previous
-              </Button>
-            }
-            {(this.state.currentStep < this.props.stepsOrder.length) ? (
-              <Button className="next-button" onClick={this.next}>
-                Next
-              </Button>) : (
-              <Button className="submit-button" onClick={this.submit}>
-                Submit
-              </Button>)
-            }
-          </Row>
-        </Form>
+              if (fieldId === 'address') {
+                return (
+                  <LocationFieldGroup
+                    key="address"
+                    address={this.state.form.address}
+                    handleFormValChange={this.formValChange}
+                  />
+                )
+              }
+              else if (fieldId === 'family') {
+                return (
+                  <FamilyFields
+                    key="family"
+                    family={this.state.form.family}
+                    clientId={this.state.clientId}
+                    handleFormValChange={this.handleFamilyChange}
+                    handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
+                    handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
+                  />
+                )
+              }
+              else {
+                return (
+                  <FieldGroup
+                    key={fieldId}
+                    id={fieldId}
+                    label={clientFields[fieldId]['label']}
+                    type={clientFields[fieldId]['type']}
+                    component={clientFields[fieldId]['component']}
+                    value={this.state.form[fieldId]}
+                    onChange={this.formValChange}
+                    required={isRequired}
+                    options={clientFields[fieldId]['options'] || options}
+                  />
+                );
+              }
+            })}
+          </Form>
+        </FormWizard>
       </Grid>
     );
   }

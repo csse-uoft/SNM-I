@@ -2,6 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 
+// styles
+import { Button } from 'react-bootstrap';
+
 function wizardStepStyle(currentStep, wizardStep, totalStepCount) {
   const col = Math.floor(12 / totalStepCount)
   if (currentStep === wizardStep) {
@@ -28,22 +31,38 @@ function WizardStep({ stepNumber, currentStep, handleStepClick, title, totalStep
   );
 }
 
-export default function FormWizard({ stepTitles, currentStep, handleStepClick }) {
+export default function FormWizard({ stepTitles, currentStep, handleStepClick, ...props }) {
   return (
-    <div className="row bs-wizard">
-      {_.map(stepTitles, (title, index) => {
-        const stepNumber = index + 1;
-        return (
-          <WizardStep
-            key={stepNumber}
-            stepNumber={stepNumber}
-            currentStep={currentStep}
-            handleStepClick={handleStepClick}
-            title={title}
-            totalStepCount={stepTitles.length}
-          />
-        )
-      })}
+    <div>
+      <div className="row bs-wizard">
+        {_.map(stepTitles, (title, index) => {
+          const stepNumber = index + 1;
+          return (
+            <WizardStep
+              key={stepNumber}
+              stepNumber={stepNumber}
+              currentStep={currentStep}
+              handleStepClick={handleStepClick}
+              title={title}
+              totalStepCount={stepTitles.length}
+            />
+          )
+        })}
+      </div>
+      {props.children}
+      {currentStep > 1 &&
+        <Button className="previous-button" onClick={props.prev}>
+          Previous
+        </Button>
+      }
+      {(currentStep < stepTitles.length) ? (
+        <Button className="next-button" onClick={props.next}>
+          Next
+        </Button>) : (
+        <Button className="submit-button" onClick={props.submit}>
+          Submit
+        </Button>)
+      }
     </div>
   );
 }

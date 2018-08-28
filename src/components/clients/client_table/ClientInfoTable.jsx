@@ -30,7 +30,6 @@ export default function ClientInfoTable({ step, client, infoFields, clientFields
       default:
         rowValue = client[infoField];
     }
-
     return (
       <TableRow
         key={infoField}
