@@ -267,7 +267,7 @@ export default class Report extends Component {
 
 function GenderStats({ data, options, totalClientsCount, ClientsCountByGender}) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of clients by Gender</b></td>
@@ -294,7 +294,7 @@ function GenderStats({ data, options, totalClientsCount, ClientsCountByGender}) 
 
 function ProviderStatusStats({ data, options, ProvidersCountByStatus}) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of providers by Status</b></td>
@@ -318,7 +318,7 @@ function ProviderStatusStats({ data, options, ProvidersCountByStatus}) {
 
 function IndividualProviderCategoryStats({ data, options, IndividualProvidersCountByCategory}) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of individual providers by Category</b></td>
@@ -342,7 +342,7 @@ function IndividualProviderCategoryStats({ data, options, IndividualProvidersCou
 
 function ProviderTypeStats({ data, options, ProvidersCountByType}) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of providers by type</b></td>
@@ -366,7 +366,7 @@ function ProviderTypeStats({ data, options, ProvidersCountByType}) {
 
 function LanguageStats({ data, options, ClientsCountByLanguage}) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of clients by Language</b></td>
@@ -389,7 +389,7 @@ function LanguageStats({ data, options, ClientsCountByLanguage}) {
 }
 function MaritalStatusStats({ data, options, ClientsCountByMaritalStatus}) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Breakdown of clients by Marital Status</b></td>
@@ -413,7 +413,7 @@ function MaritalStatusStats({ data, options, ClientsCountByMaritalStatus}) {
 
 function BirthYearStats({ data, options, ClientsCountByBirthYear }) {
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td><b>Distribution of clients by Birth Year</b></td>

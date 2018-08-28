@@ -36,7 +36,6 @@ class Client extends Component {
             services[match.service.id] = match.service;
           }
           if (!providers[match.service.provider.id]) {
-
             providers[match.service.provider.id] = match.service.provider;
           }
         })
@@ -94,7 +93,7 @@ class Client extends Component {
               )
             })}
             {(client.family && client.family.members.length > 0) &&
-              <Table bordered condensed className="client-profile-table">
+              <Table bordered condensed className="profile-table">
                 <tbody>
                   <tr>
                     <td colSpan="6"><b>Family Members: </b></td>
