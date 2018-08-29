@@ -34,6 +34,8 @@ import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
 import ManageClientFields from './components/settings/ManageClientFields';
 import ManageProviderFields from './components/settings/ManageProviderFields';
+import Questions from './components/Questions';
+import QuestionForm from './components/questions/QuestionForm';
 
 const routes = (
   <Switch>
@@ -79,6 +81,10 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria/:id/edit' component={EligibilityForm} />
     <PrivateRoute path='/eligibility-criteria/new' component={EligibilityForm} />
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
+
+    <PrivateRoute path='/questions/:id/edit' component={QuestionForm} />
+    <PrivateRoute path='/questions/new' component={QuestionForm} />
+    <PrivateRoute path='/questions' component={Questions} />
 
     <AdminRoute path='/settings/manage-client-fields' component={ManageClientFields} />
     <AdminRoute path='/settings/manage-provider-fields' component={ManageProviderFields} />

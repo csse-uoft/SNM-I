@@ -56,6 +56,11 @@ class Dashboard extends Component {
                     Manage Provider Fields
                   </Button>
                 </Link>
+                <Link to='/questions'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Questions
+                  </Button>
+                </Link>
               </div>
             }
           </div>
