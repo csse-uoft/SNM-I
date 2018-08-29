@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, Col, Row, Well, ListGroup } from 'react-bootstrap';
+import { Button, Form, Col, Row, Well, ListGroup, Label } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
 
@@ -9,11 +9,15 @@ import { createProvider, updateProvider } from '../../store/actions/providerActi
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { formatLocation } from '../../helpers/location_helpers'
 import { providerFields } from '../../constants/provider_fields.js'
+import { fetchProviderFields } from '../../store/actions/settingActions.js';
+import { providerFormTypes } from '../../constants/provider_fields.js'
 
 // components
 import FieldGroup from '../shared/FieldGroup';
 import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
 import LocationFieldGroup from '../shared/LocationFieldGroup';
+import FormWizard from '../shared/FormWizard';
+
 
 class AddressForm extends Component {
   constructor(props) {
@@ -84,11 +88,13 @@ class ProviderForm extends Component {
     this.submit = this.submit.bind(this);
     this.mainAddressChange = this.mainAddressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
-    this.languagesChange = this.languagesChange.bind(this);
     this.otherAddressChange = this.otherAddressChange.bind(this);
     this.toggleAddressButton = this.toggleAddressButton.bind(this);
     this.submitAddress = this.submitAddress.bind(this);
     this.removeOtherAddress = this.removeOtherAddress.bind(this);
+    this.next = this.next.bind(this);
+    this.prev = this.prev.bind(this);
+    this.handleStepClick = this.handleStepClick.bind(this);
 
     const id = this.props.match.params.id;
     const provider = id ? this.props.providersById[id] : {};
@@ -102,14 +108,31 @@ class ProviderForm extends Component {
       { week_day: 'Sunday', start_time: "", end_time: "" }
     ]
 
+    let providerType, providerCategory, formType;
+    if (id) {
+      if (provider.provider_type === 'Organization') {
+        formType = 'Organization'
+      } else {
+        formType = provider.provider_category.split(' ').join('_').toLowerCase()
+      }
+    }
+    else {
+      if (this.props.match.params.formType === 'organization') {
+        providerType = 'Organization'
+      } else {
+        providerType = 'Individual'
+        providerCategory = providerFormTypes[this.props.match.params.formType]
+      }
+    }
+
     this.state = {
       providerId: provider.id,
       mode: (provider.id) ? 'edit' : 'new',
       addressButtonClicked: false,
+      formType: this.props.match.params.formType || formType,
       form : {
-        provider_type: provider.provider_type || '',
-        provider_category: provider.provider_category || '',
-        id: id,
+        provider_type: provider.provider_type || providerType,
+        provider_category: provider.provider_category || providerCategory,
         languages: provider.languages || [],
         company: provider.company || '',
         first_name: provider.first_name || '',
@@ -152,12 +175,16 @@ class ProviderForm extends Component {
         reference2_name: provider.reference2_name || '',
         reference2_phone: provider.reference2_phone || '',
         reference2_email: provider.reference2_email || ''
-      }
+      },
+      currentStep: 1,
     }
   }
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('languages'));
+    if (this.props.formSetting.length == 0) {
+      this.props.dispatch(fetchProviderFields());
+    }
   }
 
   submitAddress(address) {
@@ -167,8 +194,20 @@ class ProviderForm extends Component {
   }
 
   formValChange(e, id=e.target.id) {
-    let next = {...this.state.form, [id] : e.target.value};
-    this.setState({ form : next });
+    let nextForm = _.clone(this.state.form);
+    if (id === 'languages') {
+      if (e.target.checked) {
+        nextForm[id].push(e.target.value)
+      } else {
+        _.remove(nextForm[id], (value) => {
+          return value === e.target.value
+        });
+      }
+    }
+    else {
+      nextForm[id] = e.target.value
+    }
+    this.setState({ form: nextForm });
   }
 
   operationHourChange(e, weekDay, index) {
@@ -178,10 +217,9 @@ class ProviderForm extends Component {
   }
 
   submit(e) {
-    let form = Object.assign({}, this.state.form);
     if (this.state.mode === 'edit') {
       const id = this.props.match.params.id;
-      this.props.dispatch(updateProvider(this.state.form.id, this.state.form))
+      this.props.dispatch(updateProvider(this.state.providerId, this.state.form))
         .then(() => this.props.history.push('/provider/' + id));
     } else {
       this.props.dispatch(createProvider(this.state.form));
@@ -203,18 +241,6 @@ class ProviderForm extends Component {
     this.setState({ form: nextForm });
   }
 
-  languagesChange(e) {
-    let nextForm = _.clone(this.state.form);
-    if (e.target.checked) {
-      nextForm['languages'].push(e.target.value)
-    } else {
-      _.remove(nextForm['languages'], (language) => {
-        return language === e.target.value
-      });
-    }
-    this.setState({form: nextForm});
-  }
-
   toggleAddressButton() {
     this.setState({ addressButtonClicked: !this.state.addressButtonClicked })
   }
@@ -223,6 +249,24 @@ class ProviderForm extends Component {
     let nextForm = _.clone(this.state.form);
     nextForm['other_addresses'].splice(index, 1);
     this.setState({ form: nextForm });
+  }
+
+  next() {
+   this.setState({
+     currentStep: this.state.currentStep + 1
+   });
+  }
+
+  prev() {
+    this.setState({
+      currentStep: this.state.currentStep - 1
+    });
+  }
+
+  handleStepClick(step) {
+    this.setState({
+      currentStep: step
+    });
   }
 
   render() {
@@ -235,413 +279,98 @@ class ProviderForm extends Component {
 
     let addresses = this.state.form.other_addresses.map((address, index) =>
       <AddressListItem
+        key={index}
         address={address}
         removeOtherAddress={this.removeOtherAddress}
         addressIndex={index}
       />
     )
 
+    let formStructure, stepsOrder;
+    formStructure = this.props.formSetting[this.state.formType] && this.props.formSetting[this.state.formType].form_structure
+    stepsOrder = this.props.formSetting[this.state.formType] && this.props.formSetting[this.state.formType].steps_order
+
     return (
       <Row className="content">
         <Col sm={12}>
           <h3>{(this.state.mode === 'edit') ? 'Edit Provider Profile' : 'New Provider Profile'}</h3>
+          <Label>{this.state.form.provider_type}</Label>{' '}
+          <Label>{this.state.form.provider_category}</Label>
           <hr/>
         </Col>
-        <Col sm={12}>
-          <Form horizontal>
-            {this.state.mode === 'new' &&
-              <FieldGroup
-                id='provider_type'
-                label={providerFields['provider_type']['label']}
-                type={providerFields['provider_type']['type']}
-                component={providerFields['provider_type']['component']}
-                value={this.state.form['provider_type']}
-                onChange={this.formValChange}
-                options={providerFields['provider_type']['options']}
-              />
-            }
-            {this.state.form.provider_type === "Individual" &&
-              <FieldGroup
-                id='provider_category'
-                label={providerFields['provider_category']['label']}
-                type={providerFields['provider_category']['type']}
-                component={providerFields['provider_category']['component']}
-                value={this.state.form['provider_category']}
-                onChange={this.formValChange}
-                options={providerFields['provider_category']['options']}
-              />
-            }
-            {this.state.form.provider_type === "Organization" &&
-              <FieldGroup
-                id='company'
-                label={providerFields['company']['label']}
-                type={providerFields['company']['type']}
-                component={providerFields['company']['component']}
-                value={this.state.form['company']}
-                onChange={this.formValChange}
-                options={providerFields['company']['options']}
-              />
-            }
-            {this.state.form.provider_type &&
-            <div>
-            <hr/>
-            <h4> Contact Information </h4>
-            <hr/>
-            <FieldGroup
-              id='first_name'
-              label={providerFields['first_name']['label']}
-              type={providerFields['first_name']['type']}
-              component={providerFields['first_name']['component']}
-              value={this.state.form['first_name']}
-              onChange={this.formValChange}
-              options={providerFields['first_name']['options']}
-            />
-            <FieldGroup
-              id='last_name'
-              label={providerFields['last_name']['label']}
-              type={providerFields['last_name']['type']}
-              component={providerFields['last_name']['component']}
-              value={this.state.form['last_name']}
-              onChange={this.formValChange}
-              options={providerFields['last_name']['options']}
-            />
-            <FieldGroup
-              id='gender'
-              label={providerFields['gender']['label']}
-              type={providerFields['gender']['type']}
-              component={providerFields['gender']['component']}
-              value={this.state.form['gender']}
-              onChange={this.formValChange}
-              options={providerFields['gender']['options']}
-            />
-            <FieldGroup
-              id='email'
-              label={providerFields['email']['label']}
-              type={providerFields['email']['type']}
-              component={providerFields['email']['component']}
-              value={this.state.form['email']}
-              onChange={this.formValChange}
-              options={providerFields['email']['options']}
-            />
-            <FieldGroup
-              id='primary_phone_number'
-              label={providerFields['primary_phone_number']['label']}
-              type={providerFields['primary_phone_number']['type']}
-              component={providerFields['primary_phone_number']['component']}
-              value={this.state.form['primary_phone_number']}
-              onChange={this.formValChange}
-              options={providerFields['primary_phone_number']['options']}
-            />
-            <FieldGroup
-              id='primary_phone_extension'
-              label={providerFields['primary_phone_extension']['label']}
-              type={providerFields['primary_phone_extension']['type']}
-              component={providerFields['primary_phone_extension']['component']}
-              value={this.state.form['primary_phone_extension']}
-              onChange={this.formValChange}
-              options={providerFields['primary_phone_extension']['options']}
-            />
-            <FieldGroup
-              id='primary_phone_type'
-              label={providerFields['primary_phone_type']['label']}
-              type={providerFields['primary_phone_type']['type']}
-              component={providerFields['primary_phone_type']['component']}
-              value={this.state.form['primary_phone_type']}
-              onChange={this.formValChange}
-              options={providerFields['primary_phone_type']['options']}
-            />
-            <FieldGroup
-              id='alt_phone_number'
-              label={providerFields['alt_phone_number']['label']}
-              type={providerFields['alt_phone_number']['type']}
-              component={providerFields['alt_phone_number']['component']}
-              value={this.state.form['alt_phone_number']}
-              onChange={this.formValChange}
-              options={providerFields['alt_phone_number']['options']}
-            />
-            <FieldGroup
-              id='alt_phone_extension'
-              label={providerFields['alt_phone_extension']['label']}
-              type={providerFields['alt_phone_extension']['type']}
-              component={providerFields['alt_phone_extension']['component']}
-              value={this.state.form['alt_phone_extension']}
-              onChange={this.formValChange}
-              options={providerFields['alt_phone_extension']['options']}
-            />
-            <FieldGroup
-              id='alt_phone_type'
-              label={providerFields['alt_phone_type']['label']}
-              type={providerFields['alt_phone_type']['type']}
-              component={providerFields['alt_phone_type']['component']}
-              value={this.state.form['alt_phone_type']}
-              onChange={this.formValChange}
-              options={providerFields['alt_phone_type']['options']}
-            />
-            </div>
-            }
+        {this.state.formType && this.props.formSetting[this.state.formType] &&
+          <FormWizard
+            stepTitles={stepsOrder}
+            currentStep={this.state.currentStep}
+            handleStepClick={this.handleStepClick}
+            prev={this.prev}
+            next={this.next}
+            submit={this.submit}
+          >
+            <Form horizontal>
+              {_.map(formStructure[stepsOrder[this.state.currentStep - 1]], (isRequired, fieldId) => {
+                let options;
+                if (fieldId === 'languages') {
+                  options = this.props.languagesCategories.filter(
+                    category => category !== this.state.form.first_language)
+                }
 
-            {this.state.form.provider_type === "Organization" &&
-            <div>
-              <hr/>
-              <h4> Secondary Contact Information </h4>
-              <hr/>
-              <FieldGroup
-                id='sec_contact_first_name'
-                label={providerFields['sec_contact_first_name']['label']}
-                type={providerFields['sec_contact_first_name']['type']}
-                component={providerFields['sec_contact_first_name']['component']}
-                value={this.state.form['sec_contact_first_name']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_first_name']['options']}
-              />
-              <FieldGroup
-                id='sec_contact_last_name'
-                label={providerFields['sec_contact_last_name']['label']}
-                type={providerFields['sec_contact_last_name']['type']}
-                component={providerFields['sec_contact_last_name']['component']}
-                value={this.state.form['sec_contact_last_name']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_last_name']['options']}
-              />
-              <FieldGroup
-                id='sec_contact_email'
-                label={providerFields['sec_contact_email']['label']}
-                type={providerFields['sec_contact_email']['type']}
-                component={providerFields['sec_contact_email']['component']}
-                value={this.state.form['sec_contact_email']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_email']['options']}
-              />
-              <FieldGroup
-                id='sec_contact_primary_phone_number'
-                label={providerFields['sec_contact_primary_phone_number']['label']}
-                type={providerFields['sec_contact_primary_phone_number']['type']}
-                component={providerFields['sec_contact_primary_phone_number']['component']}
-                value={this.state.form['sec_contact_primary_phone_number']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_primary_phone_number']['options']}
-              />
-              <FieldGroup
-                id='sec_contact_primary_phone_extension'
-                label={providerFields['sec_contact_primary_phone_extension']['label']}
-                type={providerFields['sec_contact_primary_phone_extension']['type']}
-                component={providerFields['sec_contact_primary_phone_extension']['component']}
-                value={this.state.form['sec_contact_primary_phone_extension']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_primary_phone_extension']['options']}
-              />
-              <FieldGroup
-                id='sec_contact_alt_phone_number'
-                label={providerFields['sec_contact_alt_phone_number']['label']}
-                type={providerFields['sec_contact_alt_phone_number']['type']}
-                component={providerFields['sec_contact_alt_phone_number']['component']}
-                value={this.state.form['sec_contact_alt_phone_number']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_alt_phone_number']['options']}
-              />
-              <FieldGroup
-                id='sec_contact_alt_phone_extension'
-                label={providerFields['sec_contact_alt_phone_extension']['label']}
-                type={providerFields['sec_contact_alt_phone_extension']['type']}
-                component={providerFields['sec_contact_alt_phone_extension']['component']}
-                value={this.state.form['sec_contact_alt_phone_extension']}
-                onChange={this.formValChange}
-                options={providerFields['sec_contact_alt_phone_extension']['options']}
-              />
-              </div>
-            }
-            {this.state.form.provider_type &&
-            <div>
-            <hr/>
-            <h4> Main Address </h4>
-            <hr/>
-            <LocationFieldGroup
-              address={this.state.form.main_address}
-              handleFormValChange={this.mainAddressChange}
-            />
-            <hr/>
-            <h4>Alternate Addresses</h4>
-            <ListGroup>
-              {addresses}
-            </ListGroup>
-            <Button onClick={this.toggleAddressButton}>
-              Add Alternate Address
-            </Button>
-            {this.state.addressButtonClicked &&
-              <AddressForm
-                addressIndex={this.state.form.other_addresses.length}
-                addressChange={this.otherAddressChange}
-                submitAddress={this.submitAddress}
-              />
-            }
-            <hr/>
-            <FieldGroup
-              id='languages'
-              label={providerFields['languages']['label']}
-              type={providerFields['languages']['type']}
-              component={providerFields['languages']['component']}
-              value={this.state.form['languages']}
-              onChange={this.languagesChange}
-              options={providerFields['languages']['options'] || this.props.languagesCategories}
-            />
-            <FieldGroup
-              id='referrer'
-              label={providerFields['referrer']['label']}
-              type={providerFields['referrer']['type']}
-              component={providerFields['referrer']['component']}
-              value={this.state.form['referrer']}
-              onChange={this.formValChange}
-              options={providerFields['referrer']['options']}
-            />
-            <hr/>
-            <h4>Availability</h4>
-            <hr/>
-            <OperationHoursFieldGroup
-              operationHours={this.state.form.operation_hours}
-              handleFormValChange={this.operationHourChange}
-            />
-            <hr/>
-            {this.state.form.provider_category === "Volunteer/Goods Donor" &&
-              <div>
-              <FieldGroup
-                id='start_date'
-                label={providerFields['start_date']['label']}
-                type={providerFields['start_date']['type']}
-                component={providerFields['start_date']['component']}
-                value={this.state.form['start_date']}
-                onChange={this.formValChange}
-                options={providerFields['start_date']['options']}
-              />
-              <FieldGroup
-                id='own_car'
-                label={providerFields['own_car']['label']}
-                type={providerFields['own_car']['type']}
-                component={providerFields['own_car']['component']}
-                value={this.state.form['own_car']}
-                onChange={this.formValChange}
-                options={providerFields['own_car']['options']}
-              />
-              <FieldGroup
-                id='commitment'
-                label={providerFields['commitment']['label']}
-                type={providerFields['commitment']['type']}
-                component={providerFields['commitment']['component']}
-                value={this.state.form['commitment']}
-                onChange={this.formValChange}
-                options={providerFields['commitment']['options']}
-              />
-              <FieldGroup
-                id='skills'
-                label={providerFields['skills']['label']}
-                type={providerFields['skills']['type']}
-                component={providerFields['skills']['component']}
-                value={this.state.form['skills']}
-                onChange={this.formValChange}
-                options={providerFields['skills']['options']}
-              />
-            <hr/>
-              <h4>References</h4>
-              <hr/>
-              <FieldGroup
-                id='reference1_name'
-                label={providerFields['reference1_name']['label']}
-                type={providerFields['reference1_name']['type']}
-                component={providerFields['reference1_name']['component']}
-                value={this.state.form['reference1_name']}
-                onChange={this.formValChange}
-                options={providerFields['reference1_name']['options']}
-              />
-              <FieldGroup
-                id='reference1_phone'
-                label={providerFields['reference1_phone']['label']}
-                type={providerFields['reference1_phone']['type']}
-                component={providerFields['reference1_phone']['component']}
-                value={this.state.form['reference1_phone']}
-                onChange={this.formValChange}
-                options={providerFields['reference1_phone']['options']}
-              />
-              <FieldGroup
-                id='reference1_email'
-                label={providerFields['reference1_email']['label']}
-                type={providerFields['reference1_email']['type']}
-                component={providerFields['reference1_email']['component']}
-                value={this.state.form['reference1_email']}
-                onChange={this.formValChange}
-                options={providerFields['reference1_email']['options']}
-              />
-              <hr/>
-              <FieldGroup
-                id='reference2_name'
-                label={providerFields['reference2_name']['label']}
-                type={providerFields['reference2_name']['type']}
-                component={providerFields['reference2_name']['component']}
-                value={this.state.form['reference2_name']}
-                onChange={this.formValChange}
-                options={providerFields['reference2_name']['options']}
-              />
-              <FieldGroup
-                id='reference2_phone'
-                label={providerFields['reference2_phone']['label']}
-                type={providerFields['reference2_phone']['type']}
-                component={providerFields['reference2_phone']['component']}
-                value={this.state.form['reference2_phone']}
-                onChange={this.formValChange}
-                options={providerFields['reference2_phone']['options']}
-              />
-              <FieldGroup
-                id='reference2_email'
-                label={providerFields['reference2_email']['label']}
-                type={providerFields['reference2_email']['type']}
-                component={providerFields['reference2_email']['component']}
-                value={this.state.form['reference2_email']}
-                onChange={this.formValChange}
-                options={providerFields['reference2_email']['options']}
-              />
-              <hr/>
-            </div>
-            }
-            <FieldGroup
-              id='status'
-              label={providerFields['status']['label']}
-              type={providerFields['status']['type']}
-              component={providerFields['status']['component']}
-              value={this.state.form['status']}
-              onChange={this.formValChange}
-              options={providerFields['status']['options']}
-            />
-            <FieldGroup
-              id='visibility'
-              label={providerFields['visibility']['label']}
-              type={providerFields['visibility']['type']}
-              component={providerFields['visibility']['component']}
-              value={this.state.form['visibility']}
-              onChange={this.formValChange}
-              options={providerFields['visibility']['options']}
-            />
-            <FieldGroup
-              id='notes'
-              label={providerFields['notes']['label']}
-              type={providerFields['notes']['type']}
-              component={providerFields['notes']['component']}
-              value={this.state.form['notes']}
-              onChange={this.formValChange}
-              options={providerFields['notes']['options']}
-            />
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
-                <Button
-                  disabled={!isEnabled}
-                  type="submit"
-                  onClick={this.submit}
-                >
-                  Submit
-                </Button>
-              </Col>
-            </FormGroup>
-            </div>
-          }
-          </Form>
-        </Col>
+                if (fieldId === 'address') {
+                  return (
+                    <div key={fieldId}>
+                      <h4>Main Addresses</h4>
+                      <hr/>
+                      <LocationFieldGroup
+                        address={this.state.form.main_address}
+                        handleFormValChange={this.mainAddressChange}
+                      />
+                      <hr/>
+                      <h4>Alternate Addresses</h4>
+                      <hr/>
+                      <ListGroup>
+                        {addresses}
+                      </ListGroup>
+                      <Button onClick={this.toggleAddressButton}>
+                        Add Alternate Address
+                      </Button>
+                      {this.state.addressButtonClicked &&
+                        <AddressForm
+                          addressIndex={this.state.form.other_addresses.length}
+                          addressChange={this.otherAddressChange}
+                          submitAddress={this.submitAddress}
+                        />
+                      }
+                    </div>
+                  )
+                }
+                else if (fieldId === 'availability') {
+                  return (
+                    <OperationHoursFieldGroup
+                      key={fieldId}
+                      operationHours={this.state.form.operation_hours}
+                      handleFormValChange={this.operationHourChange}
+                    />
+                  )
+                }
+                else {
+                  return (
+                    <FieldGroup
+                      key={fieldId}
+                      id={fieldId}
+                      label={providerFields[fieldId]['label']}
+                      type={providerFields[fieldId]['type']}
+                      component={providerFields[fieldId]['component']}
+                      value={this.state.form[fieldId]}
+                      onChange={this.formValChange}
+                      required={isRequired}
+                      options={providerFields[fieldId]['options'] || options}
+                    />
+                  );
+                }
+              })}
+            </Form>
+          </FormWizard>
+        }
       </Row>
       );
     }
@@ -652,7 +381,8 @@ const mapStateToProps = (state) => {
     providersById: state.providers.byId || {},
     providerLoaded: state.providers.indexLoaded,
     languagesCategories: state.ontology.languages.categories,
-    categoriesLoaded: state.ontology.languages.loaded
+    categoriesLoaded: state.ontology.languages.loaded,
+    formSetting: state.settings.providers || {}
   }
 }
 export default connect(mapStateToProps)(withRouter(ProviderForm));

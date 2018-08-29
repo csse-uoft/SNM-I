@@ -80,7 +80,7 @@ class ProviderProfile extends Component {
           </tr>
 
           {provider.provider_type === "Individual" &&
-            <tr> 
+            <tr>
               <td><b>Gender</b></td>
               <td>{provider.gender}</td>
             </tr>
@@ -129,7 +129,7 @@ class ProviderProfile extends Component {
               <td>{provider.sec_contact_last_name} </td>
             </tr>
           }
-          {provider.provider_type === "Organization" && provider.sec_contact_email &&   
+          {provider.provider_type === "Organization" && provider.sec_contact_email &&
             <tr>
               <td><b>Secondary Contact Email</b></td>
               <td>{provider.sec_contact_email} </td>
@@ -163,7 +163,7 @@ class ProviderProfile extends Component {
 
           <tr>
             <td><b>Address</b></td>
-            <td>{formatLocation(provider.main_address)}</td>
+            <td>{provider.main_address && formatLocation(provider.main_address)}</td>
           </tr>
 
           {(provider.other_addresses && provider.other_addresses.length > 0) &&
@@ -286,7 +286,7 @@ class ProviderProfile extends Component {
     <ProviderServiceTable provider={provider}/>
     </div>
   }
-  </div>  
+  </div>
   );
   }
 }
@@ -366,12 +366,12 @@ class ProviderServiceRow extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     providersById: state.providers.byId || {},
     providerLoaded: state.providers.loaded
-  } 
+  }
 }
 
 export default connect(
-  mapStateToProps  
+  mapStateToProps
 )(ProviderProfile);

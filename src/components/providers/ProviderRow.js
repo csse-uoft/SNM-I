@@ -20,7 +20,7 @@ class ProviderRow extends Component {
   render() {
     const p = this.props.provider;
     const currentUser = this.props.currentUser;
-    const url = '/provider/' + p.id + '/edit/' + p.provider_type.toLowerCase();
+    const url = '/provider/' + p.id + '/edit/';
 
     return (
       <tr>
@@ -39,7 +39,7 @@ class ProviderRow extends Component {
           {p.primary_phone_number}
         </td>
         <td className='centered-text'>
-          {formatLocation(p.main_address)}
+          {p.main_address && formatLocation(p.main_address)}
         </td>
         <td>
           <Dropdown

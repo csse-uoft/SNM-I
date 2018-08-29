@@ -5,6 +5,9 @@ import _ from 'lodash'
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'
+
+import { providerFormTypes } from '../constants/provider_fields.js'
+
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
@@ -12,8 +15,9 @@ import { fetchServices, searchServices, createServices, deleteService, SERVICE_E
 import { fetchNeeds } from '../store/actions/needActions.js'
 import { formatLocation } from '../helpers/location_helpers.js';
 import ProviderSearchBar from './providers/ProviderSearchBar';
+
 // styles
-import { Button, Col, Glyphicon, Pagination } from 'react-bootstrap'
+import { Button, Col, Glyphicon, Pagination, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
@@ -56,21 +60,25 @@ class MapMarker extends Component {
   }
 
   render() {
-    return (
-      <Marker
-        key={this.props.provider.id}
-        position={this.props.provider.main_address.lat_lng}
-        onMouseOver={() => this.onMouseEnter()}
-        onMouseOut={() => this.onMouseLeave()}
-        onClick={this.openInfoBox}
-      >
-      {(this.state.isOpen || this.state.isClicked) &&
-        <InfoWindow onCloseClick={() => this.closeInfoBox()}>
-          <ProviderInfoBox provider={this.props.provider}/>
-        </InfoWindow>
-      }
-      </Marker>
-    )
+    if (this.props.provider.main_address) {
+      return (
+        <Marker
+          key={this.props.provider.id}
+          position={this.props.provider.main_address.lat_lng}
+          onMouseOver={() => this.onMouseEnter()}
+          onMouseOut={() => this.onMouseLeave()}
+          onClick={this.openInfoBox}
+        >
+        {(this.state.isOpen || this.state.isClicked) &&
+          <InfoWindow onCloseClick={() => this.closeInfoBox()}>
+            <ProviderInfoBox provider={this.props.provider}/>
+          </InfoWindow>
+        }
+        </Marker>
+      )
+    } else {
+      return null
+    }
   }
 
 }
@@ -266,20 +274,30 @@ class Providers extends Component {
       <div className='providers content'>
         <h3 className='title'>Providers</h3>
           <div>
-            <Link to='/notifications'>      
+            <Link to='/notifications'>
               You have {p.needs.length} notification(s)
             </Link>
             <hr/>
-            <Link to={`/providers/new`}>
-              <Button bsStyle="default" >
-              Add new provider
-              </Button>
-            </Link>
-            &nbsp;
+            <DropdownButton
+              id="provider-form-type-dropdown"
+              bsStyle="default"
+              title="Add new provider"
+            >
+              {_.map(providerFormTypes, (formType, value) =>
+                <MenuItem
+                  key={value}
+                  eventKey={value}
+                  href={`/providers/${value}/new`}
+                >
+                  {formType}
+                </MenuItem>
+              )}
+            </DropdownButton>
+            {' '}
             <Button bsStyle="default" onClick={this.handleCSVModalShow}>
               Add providers by uploading CSV
             </Button>
-            &nbsp;
+            {' '}
             <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
               <Glyphicon glyph="print" />
             </Button>
