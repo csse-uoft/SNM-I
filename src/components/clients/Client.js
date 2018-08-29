@@ -188,7 +188,7 @@ const mapStateToProps = (state) => {
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
     clientLoaded: state.clients.indexLoaded,
-    formStructure: state.settings.formStructure
+    formStructure: state.settings.clients.formStructure
   }
 }
 

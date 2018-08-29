@@ -33,6 +33,7 @@ import Reporting from './components/Reporting';
 import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
 import ManageClientFields from './components/settings/ManageClientFields';
+import ManageProviderFields from './components/settings/ManageProviderFields';
 
 const routes = (
   <Switch>
@@ -80,6 +81,7 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
 
     <AdminRoute path='/settings/manage-client-fields' component={ManageClientFields} />
+    <AdminRoute path='/settings/manage-provider-fields' component={ManageProviderFields} />
   </Switch>
 )
 

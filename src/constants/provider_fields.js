@@ -2,14 +2,18 @@ import { genderOptions, statusInCanadaOptions,
          educationLevelOptions, incomeSourceOptions } from '../store/defaults.js';
 
 const providerTypeOptions = ['Individual', 'Organization']
-const providerCategoryOptions = ['Volunteer/Goods Donor', 'Professional Service Provider']
+const IndividualProviderOptions = ['Volunteer', 'Goods Donor', 'Professional Service Provider']
+export const providerFormTypes = {
+  'organization': 'Organization',
+  'volunteer': 'Volunteer',
+  'goods_donor': 'Goods Donor',
+  'professional_service_provider': 'Professional Service Provider',
+}
 const phoneTypes = ['Home', 'Cell', 'Work']
 const providerStatus = ['External', 'Internal', 'Home Agency']
 const commitmentOptions = ['Short term', 'Six months', 'One year']
 
 export const providerFields = {
-  provider_type: { component: 'SelectField', label: 'Select a provider type', options: providerTypeOptions },
-  provider_category: { component: 'SelectField', label: 'Provider category', options: providerCategoryOptions },
   company: { component: 'GeneralField', type: 'text', label: 'Company/Organization Name' },
   languages: { component: 'CheckboxField', label: 'Languages' },
   referrer: { component: 'GeneralField', type: 'text', label: 'Referrer' },
@@ -43,4 +47,6 @@ export const providerFields = {
   reference2_name: { component: 'GeneralField', type: 'text', label: 'Reference 2 Name' },
   reference2_phone: { component: 'GeneralField', type: 'text', label: 'Reference 2 phone' },
   reference2_email: { component: 'GeneralField', type: 'text', label: 'Reference 2 Email' },
+  address: { label: 'Address' },
+  availability: { label: 'Availability' }
 }
