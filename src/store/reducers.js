@@ -12,7 +12,8 @@ import { eligibilities } from './reducers/eligibilityReducer.js';
 import { settings } from './reducers/settingReducer.js';
 import { questions } from './reducers/questionReducer.js';
 
-export const rootReducer = combineReducers({
+
+const appReducer = combineReducers({
   services,
   clients,
   goods,
@@ -26,3 +27,13 @@ export const rootReducer = combineReducers({
   settings,
   questions
 });
+
+const initialState = appReducer({}, {})
+
+export const rootReducer = (state, action) => {
+  if (action.type === 'LOGGED_OUT') {
+    state = initialState
+  }
+
+  return appReducer(state, action)
+}
