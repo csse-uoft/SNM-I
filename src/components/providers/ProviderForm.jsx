@@ -174,15 +174,17 @@ class ProviderForm extends Component {
         reference1_email: provider.reference1_email || '',
         reference2_name: provider.reference2_name || '',
         reference2_phone: provider.reference2_phone || '',
-        reference2_email: provider.reference2_email || ''
+        reference2_email: provider.reference2_email || '',
+        responses: provider.responses || []
       },
       currentStep: 1,
+      responsesByQuestionId: _.keyBy(provider.responses, response => response.question_id)
     }
   }
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('languages'));
-    if (this.props.formSetting.length == 0) {
+    if (_.keys(this.props.formSetting).length === 0) {
       this.props.dispatch(fetchProviderFields());
     }
   }
@@ -251,6 +253,26 @@ class ProviderForm extends Component {
     this.setState({ form: nextForm });
   }
 
+  handleResponseChange(e, questionId) {
+    let nextForm = _.clone(this.state.form);
+    const questionIndex = _.findIndex(nextForm.responses, response => {
+      return response.question_id === questionId
+    })
+
+    if (questionIndex === -1) {
+      nextForm.responses.push({
+        text: e.target.value,
+        question_id: questionId
+      })
+    } else {
+      nextForm.responses[questionIndex].text = e.target.value;
+    }
+    this.setState({
+      form: nextForm,
+      responsesByQuestionId: _.keyBy(nextForm.responses, response => response.question_id)
+    });
+  }
+
   next() {
    this.setState({
      currentStep: this.state.currentStep + 1
@@ -308,64 +330,87 @@ class ProviderForm extends Component {
             submit={this.submit}
           >
             <Form horizontal>
-              {_.map(formStructure[stepsOrder[this.state.currentStep - 1]], (isRequired, fieldId) => {
-                let options;
-                if (fieldId === 'languages') {
-                  options = this.props.languagesCategories.filter(
-                    category => category !== this.state.form.first_language)
-                }
+              {_.map(formStructure[stepsOrder[this.state.currentStep - 1]], (data, fieldId) => {
+                if (data.type === 'field') {
+                  let options;
+                  if (fieldId === 'languages') {
+                    options = this.props.languagesCategories.filter(
+                      category => category !== this.state.form.first_language)
+                  }
 
-                if (fieldId === 'address') {
-                  return (
-                    <div key={fieldId}>
-                      <h4>Main Addresses</h4>
-                      <hr/>
-                      <LocationFieldGroup
-                        address={this.state.form.main_address}
-                        handleFormValChange={this.mainAddressChange}
-                      />
-                      <hr/>
-                      <h4>Alternate Addresses</h4>
-                      <hr/>
-                      <ListGroup>
-                        {addresses}
-                      </ListGroup>
-                      <Button onClick={this.toggleAddressButton}>
-                        Add Alternate Address
-                      </Button>
-                      {this.state.addressButtonClicked &&
-                        <AddressForm
-                          addressIndex={this.state.form.other_addresses.length}
-                          addressChange={this.otherAddressChange}
-                          submitAddress={this.submitAddress}
+                  if (fieldId === 'main_address') {
+                    return (
+                      <div key={fieldId}>
+                        <h4>Main Addresses</h4>
+                        <hr/>
+                        <LocationFieldGroup
+                          address={this.state.form.main_address}
+                          handleFormValChange={this.mainAddressChange}
                         />
-                      }
-                    </div>
-                  )
+                        <hr/>
+                      </div>
+                    )
+                  }
+                  else if (fieldId === 'other_addresses') {
+                    return (
+                      <div key={fieldId}>
+                        <h4>Alternate Addresses</h4>
+                        <hr/>
+                        <ListGroup>
+                          {addresses}
+                        </ListGroup>
+                        <Button onClick={this.toggleAddressButton}>
+                          Add Alternate Address
+                        </Button>
+                        {this.state.addressButtonClicked &&
+                          <AddressForm
+                            addressIndex={this.state.form.other_addresses.length}
+                            addressChange={this.otherAddressChange}
+                            submitAddress={this.submitAddress}
+                          />
+                        }
+                      </div>
+                    )
+                  }
+                  else if (fieldId === 'availability') {
+                    return (
+                      <OperationHoursFieldGroup
+                        key={fieldId}
+                        operationHours={this.state.form.operation_hours}
+                        handleFormValChange={this.operationHourChange}
+                      />
+                    )
+                  }
+                  else {
+                    return (
+                      <FieldGroup
+                        key={fieldId}
+                        id={fieldId}
+                        label={providerFields[fieldId]['label']}
+                        type={providerFields[fieldId]['type']}
+                        component={providerFields[fieldId]['component']}
+                        value={this.state.form[fieldId]}
+                        onChange={this.formValChange}
+                        required={data.required}
+                        options={providerFields[fieldId]['options'] || options}
+                      />
+                    );
+                  }
                 }
-                else if (fieldId === 'availability') {
-                  return (
-                    <OperationHoursFieldGroup
-                      key={fieldId}
-                      operationHours={this.state.form.operation_hours}
-                      handleFormValChange={this.operationHourChange}
-                    />
-                  )
-                }
-                else {
+                else if (data.type === 'question'){
                   return (
                     <FieldGroup
                       key={fieldId}
-                      id={fieldId}
-                      label={providerFields[fieldId]['label']}
-                      type={providerFields[fieldId]['type']}
-                      component={providerFields[fieldId]['component']}
-                      value={this.state.form[fieldId]}
-                      onChange={this.formValChange}
-                      required={isRequired}
-                      options={providerFields[fieldId]['options'] || options}
+                      id={data.id.toString()}
+                      label={fieldId}
+                      type="text"
+                      component="GeneralField"
+                      value={this.state.responsesByQuestionId[data.id] &&
+                        this.state.responsesByQuestionId[data.id].text}
+                      onChange={e => this.handleResponseChange(e, data.id)}
+                      required={data.required}
                     />
-                  );
+                  )
                 }
               })}
             </Form>

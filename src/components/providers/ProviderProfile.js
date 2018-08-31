@@ -1,27 +1,43 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom';
-import StarRatingComponent from 'react-star-rating-component';
 import _ from 'lodash'
+import StarRatingComponent from 'react-star-rating-component';
+import { providerFields } from '../../constants/provider_fields.js'
 
 // components
-import { formatLocation } from '../../helpers/location_helpers'
 import { formatOperationHour } from '../../helpers/operation_hour_helpers'
+import ProviderInfoTable from './provider_table/ProviderInfoTable';
 
 // styles
 import { Table, Button, ListGroup, Well, Badge, Col, Row, Glyphicon } from 'react-bootstrap'
-import { fetchProvider } from '../../store/actions/providerActions.js'
+
+// redux
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
+import { fetchProvider } from '../../store/actions/providerActions.js'
+import { fetchProviderFields } from '../../store/actions/settingActions.js';
+
+
 
 class ProviderProfile extends Component {
   componentWillMount() {
     const id = this.props.match.params.id
     this.props.dispatch(fetchProvider(id));
+    if (_.keys(this.props.formSetting).length === 0) {
+      this.props.dispatch(fetchProviderFields());
+    }
   }
 
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
+
+    let formType
+    if (provider.provider_type === 'Organization') {
+      formType = 'Organization'
+    } else if (provider.provider_type === 'Individual') {
+      formType = provider.provider_category.split(' ').join('_').toLowerCase()
+    }
+
     return (
       <div className="content">
         <h3>Provider Profile</h3>
@@ -43,208 +59,18 @@ class ProviderProfile extends Component {
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>
-
-        <Table striped bordered condensed hover>
-          <tbody>
-            <tr>
-              <td><b>Type</b></td>
-              <td>{provider.provider_type}</td>
-            </tr>
-
-            {provider.provider_category &&
-              <tr>
-                <td><b>Category</b></td>
-                <td>{provider.provider_category}</td>
-              </tr>
-            }
-
-            <tr>
-              <td><b>Status</b></td>
-              <td>{provider.status}</td>
-            </tr>
-
-          {provider.provider_type === "Organization" &&
-            <tr>
-              <td><b>Company Name</b></td>
-              <td>{provider.company}</td>
-            </tr>
-          }
-
-          <tr>
-            <td><b>{provider.provider_type === "Individual" ? "First Name" : "Contact Person First Name"}</b></td>
-            <td>{provider.first_name}</td>
-          </tr>
-          <tr>
-            <td><b>{provider.provider_type === "Individual" ? "Last Name" : "Contact Person Last Name"}</b></td>
-            <td>{provider.last_name}</td>
-          </tr>
-
-          {provider.provider_type === "Individual" &&
-            <tr>
-              <td><b>Gender</b></td>
-              <td>{provider.gender}</td>
-            </tr>
-          }
-
-          <tr>
-            <td><b>Email</b></td>
-            <td>{provider.email}</td>
-          </tr>
-
-          <tr>
-            <td><b>Phone</b></td>
-            <td>{provider.primary_phone_number}</td>
-          </tr>
-
-          {provider.primary_phone_extension &&
-          <tr>
-            <td><b>Extension</b></td>
-            <td>{provider.primary_phone_extension}</td>
-          </tr>
-          }
-
-          {provider.alt_phone_number &&
-          <tr>
-            <td><b>Alternate Phone Number</b></td>
-            <td>{provider.alt_phone_number} </td>
-          </tr>
-          }
-
-          {provider.alt_phone_extension &&
-          <tr>
-            <td><b>Alternate Phone Extension</b></td>
-            <td>{provider.alt_phone_extension} </td>
-          </tr>
-          }
-
-          {provider.provider_type === "Organization" && provider.sec_contact_first_name &&
-            <tr>
-              <td><b>Secondary Contact First Name</b></td>
-              <td>{provider.sec_contact_first_name} </td>
-            </tr>
-          }
-          {provider.provider_type === "Organization" && provider.sec_contact_last_name &&
-            <tr>
-              <td><b>Secondary Contact Last Name</b></td>
-              <td>{provider.sec_contact_last_name} </td>
-            </tr>
-          }
-          {provider.provider_type === "Organization" && provider.sec_contact_email &&
-            <tr>
-              <td><b>Secondary Contact Email</b></td>
-              <td>{provider.sec_contact_email} </td>
-            </tr>
-          }
-
-          {provider.provider_type === "Organization" && provider.sec_contact_primary_phone_number &&
-            <tr>
-              <td><b>Secondary Contact Phone Number</b></td>
-              <td>{provider.sec_contact_primary_phone_number} </td>
-            </tr>
-          }
-          {provider.provider_type === "Organization" && provider.primary_phone_extension &&
-            <tr>
-              <td><b>Secondary Contact Extension</b></td>
-              <td>{provider.sec_contact_primary_phone_extension} </td>
-             </tr>
-          }
-          {provider.provider_type === "Organization" && provider.sec_contact_alt_phone_number &&
-            <tr>
-              <td><b>Secondary Contact Alternate Phone Number</b></td>
-              <td>{provider.sec_contact_alt_phone_number} </td>
-            </tr>
-          }
-          {provider.provider_type === "Organization" && provider.sec_contact_alt_phone_extension &&
-            <tr>
-              <td><b>Secondary Contact Alternate Extension</b></td>
-              <td>{provider.sec_contact_alt_phone_extension} </td>
-            </tr>
-          }
-
-          <tr>
-            <td><b>Address</b></td>
-            <td>{provider.main_address && formatLocation(provider.main_address)}</td>
-          </tr>
-
-          {(provider.other_addresses && provider.other_addresses.length > 0) &&
-            <tr>
-              <td><b>Alternate Address(es)</b></td>
-              <td>
-                {provider.other_addresses.map(address =>
-                  <li key={address.id}>{formatLocation(address)}</li>)}
-              </td>
-            </tr>
-          }
-          <tr>
-            <td><b>{provider.provider_type === "Organization" ? "Operation Hours" : "Availability"}</b></td>
-            <td>
-              {(provider.operation_hours && provider.operation_hours.length > 0)
-                ? _.map(provider.operation_hours, day =>
-                  <p key={day.week_day}>{formatOperationHour(day)}</p>)
-                : "None provided"}
-              </td>
-          </tr>
-
-          {provider.languages &&
-          <tr>
-            <td><b>Languages</b></td>
-            <td>{provider.languages.map(language =>
-              <li key={language}>{language}</li>
-              )}
-            </td>
-          </tr>
-          }
-
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Own Car</b></td>
-              <td>{provider.own_car}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Start date</b></td>
-              <td>{provider.start_date}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Commitment</b></td>
-              <td>{provider.commitment}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Skills</b></td>
-              <td>{provider.skills}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Reference 1</b></td>
-              <td>{provider.reference1_name ? provider.reference1_name + ", " + provider.reference1_phone + ", " + provider.reference1_email : ""}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.provider_category === "Volunteer/Goods Donor" &&
-            <tr>
-              <td><b>Reference 2</b></td>
-              <td>{provider.reference2_name ? provider.reference2_name + ", " + provider.reference2_phone + ", " + provider.reference2_email : ""}</td>
-            </tr>
-          }
-          {provider.provider_type === "Individual" && provider.referrer &&
-            <tr>
-              <td><b>Referrer</b></td>
-              <td>{provider.referrer}</td>
-            </tr>
-          }
-          {provider.notes &&
-            <tr>
-              <td><b>Additional notes</b></td>
-              <td>{provider.notes}</td>
-            </tr>
-          }
-         </tbody>
-        </Table>
+        {this.props.formSetting[formType] &&
+          _.map(this.props.formSetting[formType].form_structure, (infoFields, step) => {
+          return (
+            <ProviderInfoTable
+              key={step}
+              step={step}
+              provider={provider}
+              providerFields={providerFields}
+              infoFields={infoFields}
+            />
+          )
+        })}
     <hr/>
 
     <h3> Reviews </h3>
@@ -368,7 +194,8 @@ class ProviderServiceRow extends Component {
 const mapStateToProps = (state) => {
   return {
     providersById: state.providers.byId || {},
-    providerLoaded: state.providers.loaded
+    providerLoaded: state.providers.loaded,
+    formSetting: state.settings.providers
   }
 }
 

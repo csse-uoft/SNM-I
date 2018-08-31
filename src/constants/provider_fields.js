@@ -47,6 +47,7 @@ export const providerFields = {
   reference2_name: { component: 'GeneralField', type: 'text', label: 'Reference 2 Name' },
   reference2_phone: { component: 'GeneralField', type: 'text', label: 'Reference 2 phone' },
   reference2_email: { component: 'GeneralField', type: 'text', label: 'Reference 2 Email' },
-  address: { label: 'Address' },
+  main_address: { label: 'Address' },
+  other_addresses: { label: 'Other Addresses' },
   availability: { label: 'Availability' }
 }

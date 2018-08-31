@@ -4,6 +4,7 @@ import { providerFields, providerFormTypes } from '../../constants/provider_fiel
 
 // redux
 import { connect } from 'react-redux';
+import { fetchQuestions } from '../../store/actions/questionActions.js'
 import { fetchProviderFields, updateProviderFields } from '../../store/actions/settingActions.js';
 import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
 
@@ -39,6 +40,7 @@ class ManageProviderFields extends Component {
   }
 
   componentDidMount() {
+    this.props.dispatch(fetchQuestions());
     this.props.dispatch(fetchProviderFields());
   }
 
@@ -62,7 +64,24 @@ class ManageProviderFields extends Component {
 
   handleAddFieldClick(e, id=e.target.id) {
     let nextFormStructure = _.clone(this.state.form[this.state.formType].form_structure);
-    nextFormStructure[this.state.selectedStep][this.state.fieldToAdd] = false;
+    const question = _.find(this.props.questions, question => {
+      return this.state.fieldToAdd === question.text
+    })
+
+    if (question) {
+      nextFormStructure[this.state.selectedStep][this.state.fieldToAdd] = {
+        type: 'question',
+        id: question.id,
+        required: false
+      };
+    }
+    else {
+      nextFormStructure[this.state.selectedStep][this.state.fieldToAdd] = {
+        type: 'field',
+        required: false
+      };
+    }
+
     this.setState({
       form: {
         ...this.state.form,
@@ -107,7 +126,10 @@ class ManageProviderFields extends Component {
             ...this.state.form.form_structure,
             [step]: {
               ...this.state.form.form_structure[step],
-              [id]: JSON.parse(e.target.value)
+              [id]: {
+                ...this.state.form.form_structure[step][id],
+                required: JSON.parse(e.target.value)
+              }
             }
           }
         }
@@ -235,11 +257,22 @@ class ManageProviderFields extends Component {
                       onChange={e => this.handleFormValChange(e, 'fieldToAdd')}
                     >
                       <option value="select">-- Choose field --</option>
-                      {_.map(providerFields, (props, field) => (
-                        <option key={field} value={field}>
-                          {props['label']}
-                        </option>)
-                      )}
+                      <optgroup label = "Fields" >
+                        {_.map(providerFields, (props, field) => (
+                          <option key={field} value={field}>
+                            {props['label']}
+                          </option>)
+                        )}
+                      </optgroup>
+                      {this.props.questions && this.props.questions.length > 0 &&
+                        <optgroup label = "Questions">
+                          {_.map(this.props.questions, question => (
+                            <option key={question.id} value={question.text}>
+                              {question.text}
+                            </option>)
+                          )}
+                        </optgroup>
+                      }
                     </FormControl>
                     <InputGroup.Button>
                       <Button
@@ -268,7 +301,7 @@ class ManageProviderFields extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
-                  {_.map(this.state.form[this.state.formType].form_structure[step], (isRequired, field) => (
+                  {_.map(this.state.form[this.state.formType].form_structure[step], (data, field) => (
                     <div key={field}>
                       <Row>
                         <Col sm={1}/>
@@ -281,10 +314,10 @@ class ManageProviderFields extends Component {
                           <RadioField
                             id={field}
                             key={field}
-                            label={providerFields[field]['label']}
+                            label={(providerFields[field] && providerFields[field]['label']) || field}
                             onChange={e => this.handleRadioChange(e, field)}
                             options={{ 'Mandatory': true, 'Not mandatory': false }}
-                            defaultChecked={this.state.form[this.state.formType].form_structure[step][field]}
+                            defaultChecked={data.required}
                           />
                         </Col>
                       </Row>
@@ -310,8 +343,12 @@ class ManageProviderFields extends Component {
 }
 
 const mapStateToProps = (state) => {
+  const questions = _.filter(state.questions.byId, question => {
+    return question.content_type === 'provider'
+  });
   return {
-    providerSetting: state.settings.providers || {}
+    questions: questions,
+    providerSetting: state.settings.providers
   }
 }
 
