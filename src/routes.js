@@ -33,6 +33,9 @@ import Reporting from './components/Reporting';
 import Eligibilities from './components/Eligibilities';
 import EligibilityForm from './components/eligibilities/EligibilityForm'
 import ManageClientFields from './components/settings/ManageClientFields';
+import ManageProviderFields from './components/settings/ManageProviderFields';
+import Questions from './components/Questions';
+import QuestionForm from './components/questions/QuestionForm';
 
 const routes = (
   <Switch>
@@ -58,7 +61,7 @@ const routes = (
 
     <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/new/' component={ProviderForm} />
+    <PrivateRoute path='/providers/:formType/new' component={ProviderForm} />
     <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
     <PrivateRoute path='/provider/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
@@ -79,7 +82,12 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria/new' component={EligibilityForm} />
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
 
+    <PrivateRoute path='/questions/:id/edit' component={QuestionForm} />
+    <PrivateRoute path='/questions/new' component={QuestionForm} />
+    <PrivateRoute path='/questions' component={Questions} />
+
     <AdminRoute path='/settings/manage-client-fields' component={ManageClientFields} />
+    <AdminRoute path='/settings/manage-provider-fields' component={ManageProviderFields} />
   </Switch>
 )
 

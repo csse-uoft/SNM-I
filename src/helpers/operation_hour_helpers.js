@@ -1,8 +1,3 @@
-export function formatOperationHours(operationHours) {
-  let operationHourRep = "";
-  for (let i = 0; i < operationHours.length; i++) {
-    operationHourRep = operationHourRep + operationHours[i].week_day + ": " +
-                        operationHours[i].start_time + " - " + operationHours[i].end_time + "\n";
-  }
-  return operationHourRep;
+export function formatOperationHour(operationHour) {
+  return `${operationHour.week_day}: ${operationHour.start_time} - ${operationHour.end_time}`
 }

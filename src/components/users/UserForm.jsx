@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import FormField from '../shared/FormField'
+import GeneralField from '../shared/GeneralField'
 import SelectField from '../shared/SelectField'
 
 // redux
@@ -87,7 +87,7 @@ class UserForm extends Component {
                 </Radio>{' '}
               </Col>
             </FormGroup>
-            <FormField
+            <GeneralField
               id="first_name"
               label="First name"
               type="text"
@@ -95,7 +95,7 @@ class UserForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="last_name"
               label="Last name"
               type="text"
@@ -103,7 +103,7 @@ class UserForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="username"
               label="Username"
               type="text"
@@ -111,7 +111,7 @@ class UserForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="email"
               label="Email"
               type="email"
@@ -120,7 +120,7 @@ class UserForm extends Component {
               required
             />
             {(this.state.mode === 'new') &&
-              <FormField
+              <GeneralField
                 id="password"
                 label="Password"
                 type="password"
@@ -129,7 +129,7 @@ class UserForm extends Component {
                 required
               />
             }
-            <FormField
+            <GeneralField
               id="primary_phone_number"
               label="Telephone"
               type="tel"
@@ -137,7 +137,7 @@ class UserForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="alt_phone_number"
               label="Alternative Phone Number"
               type="tel"

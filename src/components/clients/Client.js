@@ -36,7 +36,6 @@ class Client extends Component {
             services[match.service.id] = match.service;
           }
           if (!providers[match.service.provider.id]) {
-
             providers[match.service.provider.id] = match.service.provider;
           }
         })
@@ -94,7 +93,7 @@ class Client extends Component {
               )
             })}
             {(client.family && client.family.members.length > 0) &&
-              <Table bordered condensed className="client-profile-table">
+              <Table bordered condensed className="profile-table">
                 <tbody>
                   <tr>
                     <td colSpan="6"><b>Family Members: </b></td>
@@ -189,7 +188,7 @@ const mapStateToProps = (state) => {
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
     clientLoaded: state.clients.indexLoaded,
-    formStructure: state.settings.formStructure
+    formStructure: state.settings.clients.formStructure
   }
 }
 

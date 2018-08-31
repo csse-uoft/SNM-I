@@ -7,7 +7,7 @@ import _ from 'lodash';
 // redux
 import { connect } from 'react-redux'
 import SelectField from '../shared/SelectField'
-import FormField from '../shared/FormField'
+import GeneralField from '../shared/GeneralField'
 import { createGood, updateGood, GOOD_ERROR, GOOD_SUCCESS } from '../../store/actions/goodActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js'
 import CheckboxField from '../shared/CheckboxField'
@@ -196,7 +196,7 @@ class GoodForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormField
+            <GeneralField
               id="name"
               label="Name"
               type="text"
@@ -359,7 +359,7 @@ class GoodForm extends Component {
               </Col>
             </FormGroup>
 
-            <FormField
+            <GeneralField
               id="email"
               label="Contact Person Email"
               type="email"
@@ -367,7 +367,7 @@ class GoodForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="primary_phone_number"
               label="Telephone"
               type="tel"
@@ -375,7 +375,7 @@ class GoodForm extends Component {
               onChange={this.formValChange}
               required
             />
-            <FormField
+            <GeneralField
               id="alt_phone_number"
               label="Alternative Phone Number"
               type="tel"
@@ -421,35 +421,35 @@ class GoodForm extends Component {
             }
             {!this.state.is_provider_location &&
             <div>
-              <FormField
+              <GeneralField
                 id="street_address"
                 label="Street Address"
                 type="text"
                 value={this.state.form.location.street_address}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="apt_number"
                 label="Apt. #"
                 type="text"
                 value={this.state.form.location.apt_number}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="city"
                 label="City"
                 type="text"
                 value={this.state.form.location.city}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="province"
                 label="Province"
                 type="text"
                 value={this.state.form.location.province}
                 onChange={this.locationChange}
               />
-              <FormField
+              <GeneralField
                 id="postal_code"
                 label="Postal Code"
                 type="text"

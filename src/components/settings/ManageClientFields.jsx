@@ -282,9 +282,9 @@ class ManageClientFields extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    stepsOrder: state.settings.stepsOrder,
-    formStructure: state.settings.formStructure,
-    clientIndexFields: state.settings.clientIndexFields
+    stepsOrder: state.settings.clients.stepsOrder,
+    formStructure: state.settings.clients.formStructure,
+    clientIndexFields: state.settings.clients.clientIndexFields
   }
 }
 

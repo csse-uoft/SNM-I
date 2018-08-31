@@ -10,6 +10,7 @@ import { goods } from './reducers/goodReducer.js';
 import { admin_logs } from './reducers/adminLogReducer.js';
 import { eligibilities } from './reducers/eligibilityReducer.js';
 import { settings } from './reducers/settingReducer.js';
+import { questions } from './reducers/questionReducer.js';
 
 export const rootReducer = combineReducers({
   services,
@@ -22,5 +23,6 @@ export const rootReducer = combineReducers({
   ontology,
   admin_logs,
   eligibilities,
-  settings
+  settings,
+  questions
 });

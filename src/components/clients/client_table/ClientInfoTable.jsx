@@ -30,7 +30,6 @@ export default function ClientInfoTable({ step, client, infoFields, clientFields
       default:
         rowValue = client[infoField];
     }
-
     return (
       <TableRow
         key={infoField}
@@ -41,7 +40,7 @@ export default function ClientInfoTable({ step, client, infoFields, clientFields
   })
 
   return (
-    <Table bordered condensed className="client-profile-table">
+    <Table bordered condensed className="profile-table">
       <tbody>
         <tr>
           <td colSpan="2"><b>{step}</b></td>

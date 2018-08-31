@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-export default function FormField({ id, label, required, ...props }) {
+export default function GeneralField({ id, label, required, ...props }) {
   return (
     <FormGroup controlId={id}>
       <Col

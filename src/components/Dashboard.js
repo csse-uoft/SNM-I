@@ -51,6 +51,16 @@ class Dashboard extends Component {
                     Manage Client Fields
                   </Button>
                 </Link>
+                <Link to='/settings/manage-provider-fields'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Provider Fields
+                  </Button>
+                </Link>
+                <Link to='/questions'>
+                  <Button bsStyle="default" className="btn-default-login" block>
+                    Manage Questions
+                  </Button>
+                </Link>
               </div>
             }
           </div>
