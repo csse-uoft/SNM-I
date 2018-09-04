@@ -15,7 +15,7 @@ const commitmentOptions = ['Short term', 'Six months', 'One year']
 
 export const providerFields = {
   company: { component: 'GeneralField', type: 'text', label: 'Company/Organization Name' },
-  languages: { component: 'CheckboxField', label: 'Languages' },
+  languages: { component: 'MultiSelectField', label: 'Languages' },
   referrer: { component: 'GeneralField', type: 'text', label: 'Referrer' },
   notes: { component: 'GeneralField', type: 'text', label: 'Additional notes '},
   visibility: { component: 'RadioField', label: 'Allow other agencies to see this provider?', options: { 'Yes': true, 'No': false } },

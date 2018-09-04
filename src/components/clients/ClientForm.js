@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
+import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { clientFields } from '../../constants/client_fields.js'
+import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
 
 // redux
 import { connect } from 'react-redux';
@@ -81,12 +82,13 @@ class ClientForm extends Component {
     this.handleStepClick = this.handleStepClick.bind(this);
     this.handleAddFamilyButtonClick = this.handleAddFamilyButtonClick.bind(this);
     this.handleRemoveFamilyButtonClick = this.handleRemoveFamilyButtonClick.bind(this);
+    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
   }
 
   componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('languages'));
     this.props.dispatch(fetchEligibilities());
-    if (this.props.stepsOrder.length == 0) {
+    if (this.props.stepsOrder.length === 0) {
       this.props.dispatch(fetchClientFields());
     }
   }
@@ -109,6 +111,18 @@ class ClientForm extends Component {
     });
   }
 
+  handleMultiSelectChange(id, selectedOption, actionMeta) {
+    const preValue = this.state.form[id]
+    const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
+
+    this.setState({
+      form: {
+        ...this.state.form,
+        [id]: newValue
+      }
+    });
+  }
+
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
     const addressFields = [
@@ -118,7 +132,7 @@ class ClientForm extends Component {
       'province',
       'postal_code'
     ]
-    if (id === 'other_languages' || id === 'eligibilities') {
+    if (id === 'eligibilities') {
       if (e.target.checked) {
         nextForm[id].push(e.target.value)
       } else {
@@ -201,7 +215,6 @@ class ClientForm extends Component {
   }
 
   render() {
-    const p = this.props;
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Client Profile' : 'New Client Profile'
 
@@ -275,7 +288,9 @@ class ClientForm extends Component {
                     type={clientFields[fieldId]['type']}
                     component={clientFields[fieldId]['component']}
                     value={this.state.form[fieldId]}
-                    onChange={this.formValChange}
+                    onChange={clientFields[fieldId]['component'] === 'MultiSelectField'
+                      ? this.handleMultiSelectChange
+                      : this.formValChange}
                     required={isRequired}
                     options={clientFields[fieldId]['options'] || options}
                   />
