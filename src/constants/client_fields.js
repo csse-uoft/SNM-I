@@ -26,7 +26,7 @@ export const clientFields = {
   num_of_dependants: { component: 'GeneralField', type: 'number', label: 'Number of Dependants' },
   num_of_children: { component: 'GeneralField', type: 'number', label: 'Number of Children' },
   has_children: { component: 'RadioField', label: 'Do you have children?', options: { 'Yes': true, 'No': false } },
-  other_languages: { component: 'CheckboxField', label: 'Other languages' },
+  other_languages: { component: 'MultiSelectField', label: 'Other languages' },
   first_language: { component: 'SelectField', label: 'First Language' },
   eligibilities: { component: 'CheckboxField', label: 'Eligibilities' },
   address: { label: 'Address' },

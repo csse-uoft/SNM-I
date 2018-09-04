@@ -15,7 +15,7 @@ import FieldGroup from '../shared/FieldGroup'
 
 // styles
 import { Grid, Row, Button, FormGroup, Form, Col, InputGroup, FormControl,
-  DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+  Glyphicon } from 'react-bootstrap';
 
 class ManageProviderFields extends Component {
   constructor(props) {
@@ -257,7 +257,7 @@ class ManageProviderFields extends Component {
                       onChange={e => this.handleFormValChange(e, 'fieldToAdd')}
                     >
                       <option value="select">-- Choose field --</option>
-                      <optgroup label = "Fields" >
+                      <optgroup label="Fields" >
                         {_.map(providerFields, (props, field) => (
                           <option key={field} value={field}>
                             {props['label']}
@@ -265,7 +265,7 @@ class ManageProviderFields extends Component {
                         )}
                       </optgroup>
                       {this.props.questions && this.props.questions.length > 0 &&
-                        <optgroup label = "Questions">
+                        <optgroup label="Questions">
                           {_.map(this.props.questions, question => (
                             <option key={question.id} value={question.text}>
                               {question.text}

@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { providerFields, providerFormTypes } from '../../constants/provider_fields.js'
+import { formatLocation } from '../../helpers/location_helpers'
+import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
 
-import { Button, Form, Col, Row, Well, ListGroup, Label } from 'react-bootstrap';
+
+// redux
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
-
 import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { formatLocation } from '../../helpers/location_helpers'
-import { providerFields } from '../../constants/provider_fields.js'
 import { fetchProviderFields } from '../../store/actions/settingActions.js';
-import { providerFormTypes } from '../../constants/provider_fields.js'
 
 // components
 import FieldGroup from '../shared/FieldGroup';
 import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
 import LocationFieldGroup from '../shared/LocationFieldGroup';
 import FormWizard from '../shared/FormWizard';
+
+// styles
+import { Button, Form, Col, Row, Well, ListGroup, Label } from 'react-bootstrap';
 
 
 class AddressForm extends Component {
@@ -95,6 +98,7 @@ class ProviderForm extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.handleStepClick = this.handleStepClick.bind(this);
+    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
 
     const id = this.props.match.params.id;
     const provider = id ? this.props.providersById[id] : {};
@@ -111,7 +115,7 @@ class ProviderForm extends Component {
     let providerType, providerCategory, formType;
     if (id) {
       if (provider.provider_type === 'Organization') {
-        formType = 'Organization'
+        formType = 'organization'
       } else {
         formType = provider.provider_category.split(' ').join('_').toLowerCase()
       }
@@ -197,18 +201,7 @@ class ProviderForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    if (id === 'languages') {
-      if (e.target.checked) {
-        nextForm[id].push(e.target.value)
-      } else {
-        _.remove(nextForm[id], (value) => {
-          return value === e.target.value
-        });
-      }
-    }
-    else {
-      nextForm[id] = e.target.value
-    }
+    nextForm[id] = e.target.value;
     this.setState({ form: nextForm });
   }
 
@@ -291,6 +284,18 @@ class ProviderForm extends Component {
     });
   }
 
+  handleMultiSelectChange(id, selectedOption, actionMeta) {
+    const preValue = this.state.form[id]
+    const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
+
+    this.setState({
+      form: {
+        ...this.state.form,
+        [id]: newValue
+      }
+    });
+  }
+
   render() {
     const isEnabled =
       this.state.form.primary_phone_number.length > 0 &&
@@ -334,8 +339,7 @@ class ProviderForm extends Component {
                 if (data.type === 'field') {
                   let options;
                   if (fieldId === 'languages') {
-                    options = this.props.languagesCategories.filter(
-                      category => category !== this.state.form.first_language)
+                    options = this.props.languagesCategories
                   }
 
                   if (fieldId === 'main_address') {
@@ -390,7 +394,9 @@ class ProviderForm extends Component {
                         type={providerFields[fieldId]['type']}
                         component={providerFields[fieldId]['component']}
                         value={this.state.form[fieldId]}
-                        onChange={this.formValChange}
+                        onChange={providerFields[fieldId]['component'] === 'MultiSelectField'
+                          ? this.handleMultiSelectChange
+                          : this.formValChange}
                         required={data.required}
                         options={providerFields[fieldId]['options'] || options}
                       />
