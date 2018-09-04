@@ -4,6 +4,7 @@ import GeneralField from './GeneralField';
 import SelectField from './SelectField';
 import RadioField from './RadioField';
 import CheckboxField from './CheckboxField';
+import MultiSelectField from './MultiSelectField';
 
 export default function FieldGroup({ component, options, value, ...props }) {
   if (component === 'GeneralField') {
@@ -18,6 +19,15 @@ export default function FieldGroup({ component, options, value, ...props }) {
     return (
       <SelectField
         componentClass="select"
+        options={options}
+        value={value}
+        {...props}
+      />
+    );
+  }
+  else if (component === 'MultiSelectField') {
+    return (
+      <MultiSelectField
         options={options}
         value={value}
         {...props}
