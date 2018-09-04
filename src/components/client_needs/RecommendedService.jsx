@@ -5,7 +5,7 @@ import { formatLocation } from '../../helpers/location_helpers'
 import _ from 'lodash';
 
 import { connect } from 'react-redux'
-import { ListGroupItem, Label, Row, Col, Button, Form, FormGroup } from 'react-bootstrap';
+import { ListGroupItem, Label, Row, Col, Button } from 'react-bootstrap';
 import { matchClientNeed } from '../../store/actions/needActions.js'
 
 class RecommendedService extends Component {
