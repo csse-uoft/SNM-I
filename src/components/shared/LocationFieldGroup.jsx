@@ -1,5 +1,7 @@
 import React from 'react';
 import GeneralField from './GeneralField';
+import SelectField from './SelectField';
+import { provinceOptions } from '../../store/defaults';
 
 export default function LocationFieldGroup({ address, handleFormValChange }) {
   return (
@@ -27,11 +29,12 @@ export default function LocationFieldGroup({ address, handleFormValChange }) {
         onChange={handleFormValChange}
         required
       />
-      <GeneralField
+      <SelectField
         id="province"
         label="Province"
-        type="text"
+        componentClass="select"
         value={address.province}
+        options={provinceOptions}
         onChange={handleFormValChange}
         required
       />
