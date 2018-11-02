@@ -129,6 +129,10 @@ class ProviderForm extends Component {
       }
     }
 
+    let status;
+    if (props.location.state && props.location.state.status) {
+      status = props.location.state.status
+    }
     this.state = {
       providerId: provider.id,
       mode: (provider.id) ? 'edit' : 'new',
@@ -169,7 +173,7 @@ class ProviderForm extends Component {
         own_car: provider.own_car || false,
         skills: provider.skills || '',
         visibility: provider.visibility || false,
-        status: provider.status,
+        status: provider.status || status,
         notes: provider.notes || '',
         commitment: provider.commitment || '',
         start_date: provider.start_date || '',
