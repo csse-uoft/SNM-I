@@ -3,6 +3,7 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import _ from 'lodash';
+import { provinceOptions } from '../../store/defaults';
 
 // redux
 import { connect } from 'react-redux'
@@ -442,10 +443,11 @@ class GoodForm extends Component {
                 value={this.state.form.location.city}
                 onChange={this.locationChange}
               />
-              <GeneralField
+              <SelectField
                 id="province"
                 label="Province"
-                type="text"
+                options={provinceOptions}
+                componentClass="select"
                 value={this.state.form.location.province}
                 onChange={this.locationChange}
               />

@@ -134,6 +134,19 @@ const serviceSharedWithOptions = [
   'Parkdale Community Food Bank'
 ]
 
+const provinceOptions = [
+  'Alberta',
+  'British Columbia',
+  'Manitoba',
+  'New Brunswick',
+  'Newfoundland and Labrador',
+  'Nova Scotia',
+  'Ontario',
+  'Prince Edward Island',
+  'Quebec',
+  'Saskatchewan'
+]
+
 module.exports = Object.freeze({
   serverHost: serverHost,
   torontoCoordinates: torontoCoordinates,
@@ -147,6 +160,7 @@ module.exports = Object.freeze({
   needStatusOptions: needStatusOptions,
   serviceTypeOptions: serviceTypeOptions,
   serviceSharedWithOptions: serviceSharedWithOptions,
+  provinceOptions: provinceOptions,
   ACTION_SUCCESS: ACTION_SUCCESS,
   ACTION_ERROR: ACTION_ERROR
 });

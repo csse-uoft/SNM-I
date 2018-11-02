@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { statusInCanadaOptions, educationLevelOptions,
-  serviceSharedWithOptions, serviceTypeOptions } from '../../store/defaults'
+  serviceSharedWithOptions, serviceTypeOptions, provinceOptions } from '../../store/defaults'
 import GeneralField from '../shared/GeneralField'
 import SelectField from '../shared/SelectField'
 import CheckboxField from '../shared/CheckboxField'
@@ -190,7 +190,6 @@ class ServiceForm extends Component {
 
   render() {
     const p = this.props;
-    debugger
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Service Profile' : 'New Service'
 
@@ -533,11 +532,12 @@ class ServiceForm extends Component {
                 value={this.state.form.location.city}
                 onChange={this.locationChange}
               />
-              <GeneralField
+              <SelectField
                 id="province"
                 label="Province"
-                type="text"
+                componentClass="select"
                 value={this.state.form.location.province}
+                options={provinceOptions}
                 onChange={this.locationChange}
               />
               <GeneralField
