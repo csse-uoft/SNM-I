@@ -9,7 +9,9 @@ import GeneralField from '../shared/GeneralField'
 import SelectField from '../shared/SelectField'
 import CheckboxField from '../shared/CheckboxField'
 import RadioField from '../shared/RadioField'
+import MultiSelectField from '../shared/MultiSelectField';
 import { formatLocation } from '../../helpers/location_helpers.js';
+import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers';
 
 // redux
 import { connect } from 'react-redux'
@@ -57,7 +59,7 @@ class ServiceForm extends Component {
           province: '',
           postal_code: ''
         }, service.location),
-        share_with: service.share_with || '',
+        share_with: service.share_with || [],
         notes: service.notes || '',
         eligibility_conditions: Object.assign({
           'upper_age_limit': '',
@@ -66,7 +68,8 @@ class ServiceForm extends Component {
           'current_education_level': [],
           'completed_education_level': []
         }, service.eligibility_conditions),
-        provider_id: (service.provider && service.provider.id) || ''
+        provider_id: (service.provider && service.provider.id) || '',
+        is_public: service.is_public || false
       }
     }
 
@@ -75,6 +78,7 @@ class ServiceForm extends Component {
     this.submit = this.submit.bind(this);
     this.indicatorChange = this.indicatorChange.bind(this);
     this.conditionsChange = this.conditionsChange.bind(this);
+    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
   }
 
   componentWillMount() {
@@ -104,9 +108,21 @@ class ServiceForm extends Component {
     this.setState({form: nextForm});
   }
 
+  handleMultiSelectChange(id, selectedOption, actionMeta) {
+    const preValue = this.state.form[id]
+    const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
+
+    this.setState({
+      form: {
+        ...this.state.form,
+        [id]: newValue
+      }
+    });
+  }
+
   formValChange(e, id=e.target.id) {
     let nextForm;
-    if (id === 'location') {
+    if (id === 'location' || id === 'is_public') {
       nextForm = {...this.state.form, [id]: JSON.parse(e.target.value)};
     }
     else {
@@ -174,7 +190,7 @@ class ServiceForm extends Component {
 
   render() {
     const p = this.props;
-
+    debugger
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Service Profile' : 'New Service'
 
@@ -479,15 +495,16 @@ class ServiceForm extends Component {
                     >
                       {formatLocation(provider.main_address)}
                     </Radio>{' '}
-                    { provider.other_addresses.map((address, index) =>
-                    <Radio
-                      name="provider_address"
-                      value={JSON.stringify(address)}
-                      onChange={(e) => this.formValChange(e, 'location')}
-                      key={index}
+                    {provider.other_addresses &&
+                     provider.other_addresses.map((address, index) =>
+                      <Radio
+                        name="provider_address"
+                        value={JSON.stringify(address)}
+                        onChange={(e) => this.formValChange(e, 'location')}
+                        key={index}
                       >
-                      {formatLocation(address)}
-                    </Radio>
+                        {formatLocation(address)}
+                      </Radio>
                     )}
                   </Col>
                 </FormGroup>
@@ -532,13 +549,20 @@ class ServiceForm extends Component {
               />
             </div>
             }
-            <SelectField
+            <RadioField
+              id="is_public"
+              label="Public?"
+              options={{ 'Yes': true, 'No': false }}
+              onChange={this.formValChange}
+              defaultChecked={this.state.form.is_public}
+              required
+            />
+            <MultiSelectField
               id="share_with"
               label="Share with"
               options={serviceSharedWithOptions}
-              componentClass="select"
               value={this.state.form.share_with}
-              onChange={this.formValChange}
+              onChange={this.handleMultiSelectChange}
             />
             <GeneralField
               id="notes"

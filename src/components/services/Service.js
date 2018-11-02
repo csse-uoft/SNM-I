@@ -144,10 +144,13 @@ class Service extends Component {
                 </td>
               </tr>
               }
-
+              <tr>
+                <td><b>Public? </b></td>
+                <td>{service.is_public ? 'Yes': 'No'}</td>
+              </tr>
               <tr>
                 <td><b>Share with</b></td>
-                <td>{service.share_with}</td>
+                <td>{service.share_with.join(', ')}</td>
               </tr>
               <tr>
                 <td><b>Notes</b></td>
