@@ -32,10 +32,10 @@ class ProviderProfile extends Component {
     const provider = this.props.providersById[id];
 
     let formType
-    if (provider.provider_type === 'Organization') {
+    if (provider.type === 'Organization') {
       formType = 'Organization'
-    } else if (provider.provider_type === 'Individual') {
-      formType = provider.provider_category.split(' ').join('_').toLowerCase()
+    } else if (provider.type === 'Individual') {
+      formType = provider.category.split(' ').join('_').toLowerCase()
     }
 
     return (

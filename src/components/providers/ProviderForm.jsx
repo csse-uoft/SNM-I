@@ -114,10 +114,10 @@ class ProviderForm extends Component {
 
     let providerType, providerCategory, formType;
     if (id) {
-      if (provider.provider_type === 'Organization') {
+      if (provider.type === 'Organization') {
         formType = 'organization'
       } else {
-        formType = provider.provider_category.split(' ').join('_').toLowerCase()
+        formType = provider.category.split(' ').join('_').toLowerCase()
       }
     }
     else {
@@ -139,8 +139,8 @@ class ProviderForm extends Component {
       addressButtonClicked: false,
       formType: this.props.match.params.formType || formType,
       form : {
-        provider_type: provider.provider_type || providerType,
-        provider_category: provider.provider_category || providerCategory,
+        type: provider.type || providerType,
+        category: provider.category || providerCategory,
         languages: provider.languages || [],
         company: provider.company || '',
         first_name: provider.first_name || '',
@@ -325,8 +325,8 @@ class ProviderForm extends Component {
       <Row className="content">
         <Col sm={12}>
           <h3>{(this.state.mode === 'edit') ? 'Edit Provider Profile' : 'New Provider Profile'}</h3>
-          <Label>{this.state.form.provider_type}</Label>{' '}
-          <Label>{this.state.form.provider_category}</Label>
+          <Label>{this.state.form.type}</Label>{' '}
+          <Label>{this.state.form.category}</Label>
           <hr/>
         </Col>
         {this.state.formType && this.props.formSetting[this.state.formType] &&

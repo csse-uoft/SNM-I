@@ -17,21 +17,21 @@ class ServiceRow extends Component {
             {service.name}
           </Link>
         </td>
-          {service.provider.provider_type === "Organization" &&
-            <td className='centered-text'>
-              <Link to={`/provider/${service.provider.id}`}>
-                {service.provider.company}
-              </Link>
-            </td>
-          }
+        {service.provider.type === "Organization" &&
+          <td className='centered-text'>
+            <Link to={`/provider/${service.provider.id}`}>
+              {service.provider.company}
+            </Link>
+          </td>
+        }
 
-          {service.provider.provider_type === "Individual" &&
-            <td className='centered-text'>
-              <Link to={`/provider/${service.provider.id}`}>
-                {`${service.provider.first_name} ${service.provider.last_name}`}
-              </Link>
-            </td>
-          }
+        {service.provider.type === "Individual" &&
+          <td className='centered-text'>
+            <Link to={`/provider/${service.provider.id}`}>
+              {`${service.provider.first_name} ${service.provider.last_name}`}
+            </Link>
+          </td>
+        }
 
         <td>
           {service.desc}

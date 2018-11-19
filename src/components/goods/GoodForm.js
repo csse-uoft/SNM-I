@@ -174,7 +174,7 @@ class GoodForm extends Component {
               id="provider_id"
               label="Provider"
               options={_.reduce(p.providers, (map, provider) => {
-                if (provider.provider_type === 'Individual') {
+                if (provider.type === 'Individual') {
                   map[provider.id] = provider.first_name + " " + provider.last_name;
                 } else {
                   map[provider.id] = provider.company

@@ -26,11 +26,11 @@ class ProviderRow extends Component {
       <tr>
         <td>
           <Link to={`/provider/${p.id}`}>
-            {p.provider_type==="Individual" ? p.first_name + " " + p.last_name : p.company}
+            {p.type==="Individual" ? p.first_name + " " + p.last_name : p.company}
           </Link>
         </td>
         <td>
-          {p.provider_type}
+          {p.type}
         </td>
         <td className='centered-text'>
           {p.email}
