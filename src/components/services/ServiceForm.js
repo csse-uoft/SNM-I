@@ -41,7 +41,7 @@ class ServiceForm extends Component {
         category: service.category || '',
         available_from: service.available_from || '',
         available_to: service.available_to || '',
-        language: service.language || '',
+        languages: service.languages || [],
         capacity: service.capacity || '',
         frequency: service.frequency || '',
         billable: service.billable || '',
@@ -290,13 +290,13 @@ class ServiceForm extends Component {
               value={this.state.form.available_to}
               onChange={this.formValChange}
             />
-            <SelectField
-              id="language"
-              label="Language"
+            <MultiSelectField
+              id="languages"
+              label="Languages"
               options={p.languagesCategories}
               componentClass="select"
-              value={this.state.form.language}
-              onChange={this.formValChange}
+              value={this.state.form.languages}
+              onChange={this.handleMultiSelectChange}
             />
             <GeneralField
               id="capacity"

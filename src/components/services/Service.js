@@ -66,8 +66,8 @@ class Service extends Component {
                 <td>{service.available_to}</td>
               </tr>
               <tr>
-                <td><b>Language</b></td>
-                <td>{service.language}</td>
+                <td><b>Languages</b></td>
+                <td>{service.languages.join(', ')}</td>
               </tr>
               <tr>
                 <td><b>Capacity</b></td>
@@ -174,10 +174,10 @@ class Service extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     servicesById: state.services.byId,
-    serviceLoaded: state.services.indexLoaded 
-  }  
+    serviceLoaded: state.services.indexLoaded
+  }
 }
 
 export default connect(
