@@ -92,7 +92,7 @@ class ProviderInfoBox extends Component {
     const provider = this.props.provider;
     return(
       <div>
-        <div> {this.props.provider.provider_type === "Individual" ?
+        <div> {this.props.provider.type === "Individual" ?
           <text>
             <b>Provider name: </b>
             {<Link to={`/provider/${provider.id}`}>
@@ -197,7 +197,7 @@ class Providers extends Component {
     }
 
     if (providerType !== "all") {
-      providers = providers.filter(provider => provider.provider_type === providerType);
+      providers = providers.filter(provider => provider.type === providerType);
     }
     this.setState({filteredProviders: providers})
   }

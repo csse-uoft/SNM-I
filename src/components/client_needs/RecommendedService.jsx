@@ -44,9 +44,9 @@ class RecommendedService extends Component {
           </Col>
           <Col sm={4}>
             <h5>Provider</h5>
-            <Label bsStyle="primary">{service.provider.provider_type}</Label>
+            <Label bsStyle="primary">{service.provider.type}</Label>
             <Link to={`/provider/${service.provider.id}`}>
-              { (service.provider.provider_type === "Individual") ? (
+              { (service.provider.type === "Individual") ? (
                   <p>{`${service.provider.first_name} ${service.provider.last_name}`}</p>
                 ) : (
                   <p>{service.provider.company}</p>

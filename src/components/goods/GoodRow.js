@@ -16,7 +16,7 @@ class GoodRow extends Component {
             {good.name}
           </Link>
         </td>
-          {good.provider.provider_type === "Organization" &&
+          {good.provider.type === "Organization" &&
             <td className='centered-text'>
               <Link to={`/provider/${good.provider.id}`}>
                 {good.provider.company}
@@ -24,7 +24,7 @@ class GoodRow extends Component {
             </td>
           }
 
-          {good.provider.provider_type === "Individual" &&
+          {good.provider.type === "Individual" &&
             <td className='centered-text'>
               <Link to={`/provider/${good.provider.id}`}>
                 {`${good.provider.first_name} ${good.provider.last_name}`}
