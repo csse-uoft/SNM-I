@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import GeneralField from '../shared/GeneralField'
 import SelectField from '../shared/SelectField'
+import MultiSelectField from '../shared/MultiSelectField';
+import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers';
 
 // redux
 import { connect } from 'react-redux'
@@ -29,12 +31,14 @@ class NeedForm extends Component {
         needed_by: need.needed_by || '',
         condition: need.condition || '',
         status: need.status || '',
-        is_urgent: need.is_urgent || false
+        is_urgent: need.is_urgent || false,
+        languages: need.languages || []
       }
     }
 
     this.formValChange = this.formValChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
   }
 
   componentWillMount() {
@@ -44,6 +48,18 @@ class NeedForm extends Component {
   formValChange(e, id=e.target.id, value=e.target.value) {
     let nextForm = {...this.state.form, [id]: value};
     this.setState({ form: nextForm });
+  }
+
+  handleMultiSelectChange(id, selectedOption, actionMeta) {
+    const preValue = this.state.form[id]
+    const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
+
+    this.setState({
+      form: {
+        ...this.state.form,
+        [id]: newValue
+      }
+    });
   }
 
   submit() {
@@ -134,6 +150,14 @@ class NeedForm extends Component {
                 value={this.state.form.needed_by}
                 onChange={this.formValChange}
               />
+              <MultiSelectField
+                id="languages"
+                label="Languages"
+                options={p.languagesCategories}
+                componentClass="select"
+                value={this.state.form.languages}
+                onChange={this.handleMultiSelectChange}
+              />
               <GeneralField
                 id="description"
                 label="Description"
@@ -173,6 +197,7 @@ const mapStateToProps = (state) => {
     needsById: state.needs.byId,
     clientId: state.needs.clientId,
     needsCategories: state.ontology.needs.categories,
+    languagesCategories: state.ontology.languages.categories,
     categoriesLoaded: state.ontology.needs.loaded
   }
 }

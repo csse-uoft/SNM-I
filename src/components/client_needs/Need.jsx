@@ -113,6 +113,10 @@ class Need extends Component {
                     title="Status"
                     value={need.status}
                   />
+                  <TableRow
+                    title="Languages"
+                    value={need.languages.join(', ')}
+                  />
                 </tbody>
               </Table>
             </Col>
