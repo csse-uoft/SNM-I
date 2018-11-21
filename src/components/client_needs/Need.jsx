@@ -115,7 +115,7 @@ class Need extends Component {
                   />
                   <TableRow
                     title="Languages"
-                    value={need.languages.join(', ')}
+                    value={(need.languages || []).join(', ')}
                   />
                 </tbody>
               </Table>
