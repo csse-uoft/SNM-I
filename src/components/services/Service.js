@@ -150,7 +150,7 @@ class Service extends Component {
               </tr>
               <tr>
                 <td><b>Share with</b></td>
-                <td>{service.share_with.join(', ')}</td>
+                <td>{(service.share_with || []).join(', ')}</td>
               </tr>
               <tr>
                 <td><b>Notes</b></td>
