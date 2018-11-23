@@ -105,7 +105,7 @@ class Good extends Component {
               </tr>
               <tr>
                 <td><b>Share with</b></td>
-                <td>{good.share_with}</td>
+                <td>{(good.share_with || []).join(', ')}</td>
               </tr>
               <tr>
                 <td><b>Notes</b></td>
