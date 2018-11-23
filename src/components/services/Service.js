@@ -67,7 +67,7 @@ class Service extends Component {
               </tr>
               <tr>
                 <td><b>Languages</b></td>
-                <td>{service.languages.join(', ')}</td>
+                <td>{(service.languages || []).join(', ')}</td>
               </tr>
               <tr>
                 <td><b>Capacity</b></td>
