@@ -10,10 +10,6 @@ import { connect } from 'react-redux';
 
 
 class ProviderSearchBar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componenetWillMount() {
     this.props.dispatch(fetchOntologyCategories('services'));
   }

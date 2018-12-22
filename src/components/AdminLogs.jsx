@@ -11,10 +11,6 @@ import { fetchAdminLogs } from '../store/actions/adminLogActions.js'
 
 
 class AdminLogs extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-
   componentWillMount() {
     this.props.dispatch(fetchAdminLogs());
   }

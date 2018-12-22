@@ -68,10 +68,6 @@ class MapMarker extends Component {
 }
 
 class GoodInfoBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const good = this.props.good;
     return(

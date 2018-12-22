@@ -84,10 +84,6 @@ class MapMarker extends Component {
 }
 
 class ProviderInfoBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const provider = this.props.provider;
     return(

@@ -67,22 +67,15 @@ class MapMarker extends Component {
 
 }
 
-class ServiceInfoBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const service = this.props.service;
-    return(
-      <div>
-        <b>Service name: </b>
-          {<Link to={`/service/${service.id}`}>
-            {service.name}
-          </Link>}
-      </div>
-    )
-  }
+function ServiceInfoBox({ service }) {
+  return (
+    <div>
+      <b>Service name: </b>
+        {<Link to={`/service/${service.id}`}>
+          {service.name}
+        </Link>}
+    </div>
+  );
 }
 
 class Services extends Component {
