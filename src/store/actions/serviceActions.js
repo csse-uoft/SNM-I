@@ -34,13 +34,6 @@ function requestServices(json) {
   }
 }
 
-function receiveAllServices(json) {
-  return {
-    type: RECEIVE_ALL_SERVICES,
-    services: json
-  }
-}
-
 function receiveServices(json) {
   return {
     type: RECEIVE_SERVICES,
@@ -69,7 +62,6 @@ export function fetchService(id) {
   return dispatch => {
     dispatch(requestService(id))
     const url = serverHost + '/service/' + id + '/';
-    let service = null;
     return fetch(url, {
         method: 'GET',
         headers: {
@@ -77,7 +69,6 @@ export function fetchService(id) {
         },
       }).then(response => response.json())
       .then(json => {
-        service = json
         dispatch(receiveService(id, json))
       })
   }

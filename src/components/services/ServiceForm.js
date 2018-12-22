@@ -15,7 +15,7 @@ import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers';
 
 // redux
 import { connect } from 'react-redux'
-import { createService, updateService, SERVICE_ERROR, SERVICE_SUCCESS } from '../../store/actions/serviceActions.js'
+import { createService, updateService, SERVICE_SUCCESS } from '../../store/actions/serviceActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js';
 
 

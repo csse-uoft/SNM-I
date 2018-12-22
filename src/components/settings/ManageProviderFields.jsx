@@ -6,11 +6,10 @@ import { providerFields, providerFormTypes } from '../../constants/provider_fiel
 import { connect } from 'react-redux';
 import { fetchQuestions } from '../../store/actions/questionActions.js'
 import { fetchProviderFields, updateProviderFields } from '../../store/actions/settingActions.js';
-import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
+import { ACTION_SUCCESS } from '../../store/defaults.js';
 
 // components
 import RadioField from '../shared/RadioField'
-import CheckboxField from '../shared/CheckboxField'
 import FieldGroup from '../shared/FieldGroup'
 
 // styles

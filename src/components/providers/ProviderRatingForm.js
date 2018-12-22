@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux'
-import { fetchProvider, fetchProviders, createProvider, updateProvider, deleteProvider, rateProvider } from '../../store/actions/providerActions.js'
+import { Button, FormGroup, FormControl, ControlLabel, Col } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { rateProvider } from '../../store/actions/providerActions.js';
 import StarRatingComponent from 'react-star-rating-component';
 
 class ProviderRatingForm extends Component {
@@ -35,7 +33,6 @@ class ProviderRatingForm extends Component {
   }
   handleSubmit(e) {
     const id = this.props.match.params.id
-    const provider = this.props.providersById[id];
     this.props.dispatch(rateProvider(id, this.state));
     this.props.history.push('/provider/' + id);
   }

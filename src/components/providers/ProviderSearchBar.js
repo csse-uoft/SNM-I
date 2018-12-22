@@ -2,18 +2,13 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import SelectField from '../shared/SelectField';
 
 import { connect } from 'react-redux';
 
 
 class ProviderSearchBar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componenetWillMount() {
     this.props.dispatch(fetchOntologyCategories('services'));
   }
@@ -27,13 +22,13 @@ class ProviderSearchBar extends Component {
       <div>
       <Form inline>
         <FormGroup controlId="searchBar">
-          <FormControl 
-            type='text' 
-            placeholder="Search..." 
+          <FormControl
+            type="text"
+            placeholder="Search..."
             value={this.props.searchValue}
             onChange={this.props.handleInput}
           />
-        </FormGroup> {' '}
+        </FormGroup>{' '}
         <FormGroup controlId="searchBy">
           <ControlLabel> Search by: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.props.handleTypeChange}>

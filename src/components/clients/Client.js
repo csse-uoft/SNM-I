@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
-import TableRow from '../shared/TableRow'
 import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';
 import NeedGroupPanel from '../client_needs/NeedGroupPanel';

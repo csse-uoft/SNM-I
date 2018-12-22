@@ -59,10 +59,10 @@ class Users extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='users-table content'>
+      <div className="users-table content">
         <div>
           <h1>Users</h1>
-          <Link to={`/users/new`}>
+          <Link to="/users/new">
             <Button bsStyle="default">
               Create new user
             </Button>
@@ -83,7 +83,7 @@ class Users extends Component {
           }
         </div>
         <DeleteModal
-          contentType='User'
+          contentType="User"
           objectId={this.state.objectId}
           show={this.state.deleteModalShow}
           onHide={this.handleDeleteModalHide}

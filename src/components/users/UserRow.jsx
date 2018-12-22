@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import DropdownMenu from '../shared/DropdownMenu'
 
-// redux
-import { connect } from 'react-redux'
-import { deleteUser } from '../../store/actions/userActions.js'
-
 export default class UserRow extends Component {
   render() {
     const user = this.props.user;

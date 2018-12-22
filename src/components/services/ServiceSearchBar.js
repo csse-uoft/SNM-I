@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { searchServices, fetchServices, createService, updateService, deleteService } from '../../store/actions/serviceActions.js'
+import { Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { searchServices } from '../../store/actions/serviceActions.js'
 import { connect } from 'react-redux';
 
 
@@ -44,13 +43,13 @@ class ServiceSearchBar extends Component {
     return (
       <Form inline>
         <FormGroup controlId="searchBar">
-          <FormControl 
-            type='text' 
-            placeholder="Search..." 
+          <FormControl
+            type="text"
+            placeholder="Search..."
             value={this.state.value}
             onChange={this.handleInput}
           />
-        </FormGroup> {' '}
+        </FormGroup>{' '}
         <FormGroup controlId="searchBy">
           <ControlLabel> Search by: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.handleSearchChange}>
@@ -84,7 +83,7 @@ class ServiceSearchBar extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    services: state.services.index, //array of json 
+    services: state.services.index, //array of json
     servicesLoaded: state.services.servicesLoaded
   }
 }

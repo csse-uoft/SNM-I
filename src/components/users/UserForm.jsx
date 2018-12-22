@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import GeneralField from '../shared/GeneralField'
-import SelectField from '../shared/SelectField'
+import GeneralField from '../shared/GeneralField';
 
 // redux
 import { connect } from 'react-redux'
 import { createUser, updateUser } from '../../store/actions/userActions.js'
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
+import { Button, Form, FormGroup, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
 
 class UserForm extends Component {
   constructor(props) {
@@ -69,7 +68,7 @@ class UserForm extends Component {
               <Col sm={9}>
                 <Radio
                   name="radioGroup"
-                  value='1'
+                  value="1"
                   onChange={e => this.formValChange(e, 'is_superuser')}
                   defaultChecked={this.state.form.is_superuser === true}
                   inline
@@ -78,7 +77,7 @@ class UserForm extends Component {
                 </Radio>{' '}
                 <Radio
                   name="radioGroup"
-                  value='0'
+                  value="0"
                   onChange={e => this.formValChange(e, 'is_superuser')}
                   defaultChecked={this.state.form.is_superuser === false}
                   inline

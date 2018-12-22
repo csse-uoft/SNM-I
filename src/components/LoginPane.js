@@ -12,7 +12,7 @@ import '../stylesheets/Login.css';
 class LoginPane extends Component {
   render() {
     return(
-      <Row className='content login-pane'>
+      <Row className="content login-pane">
         <h3>Sign in</h3>
         <Col md={12}>
           <LoginForm />

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
 
 
 class ClientSearchBar  extends Component {

@@ -5,10 +5,9 @@ export const REQUEST_ADMIN_LOGS = 'REQUEST_ADMIN_LOGS';
 export const RECEIVE_ADMIN_LOGS = 'RECEIVE_ADMIN_LOGS';
 
 
-function requestAdminLogs(json) {
+function requestAdminLogs() {
   return {
-    type: REQUEST_ADMIN_LOGS,
-    logs: json
+    type: REQUEST_ADMIN_LOGS
   }
 }
 
@@ -22,8 +21,8 @@ function receiveAdminLogs(json) {
 
 export function fetchAdminLogs() {
   return dispatch => {
+    dispatch(requestAdminLogs())
     const url = serverHost + '/admin_logs/';
-
     return fetch(url, {
         method: 'GET',
         headers: {

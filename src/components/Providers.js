@@ -11,7 +11,6 @@ import { providerFormTypes } from '../constants/provider_fields.js'
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
-import { fetchServices, searchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
 import { fetchNeeds } from '../store/actions/needActions.js'
 import { formatLocation } from '../helpers/location_helpers.js';
 import ProviderSearchBar from './providers/ProviderSearchBar';
@@ -20,7 +19,6 @@ import ProviderSearchBar from './providers/ProviderSearchBar';
 import { Button, Col, Glyphicon, Pagination, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class MapMarker extends Component {
   constructor(props){
@@ -84,10 +82,6 @@ class MapMarker extends Component {
 }
 
 class ProviderInfoBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const provider = this.props.provider;
     return(
@@ -271,10 +265,10 @@ class Providers extends Component {
     ));
 
     return(
-      <div className='providers content'>
-        <h3 className='title'>Providers</h3>
+      <div className="providers content">
+        <h3 className="title">Providers</h3>
           <div>
-            <Link to='/notifications'>
+            <Link to="/notifications">
               You have {p.needs.length} notification(s)
             </Link>
             <hr/>

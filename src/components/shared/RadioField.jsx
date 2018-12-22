@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Col, FormGroup, FormControl, ControlLabel, Radio } from 'react-bootstrap';
+import { Col, FormGroup, ControlLabel, Radio } from 'react-bootstrap';
 
 export default function RadioField({ id, label, required, options, defaultChecked, onChange }) {
   return (

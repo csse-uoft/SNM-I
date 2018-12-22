@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import Select from 'react-select';
 
-import { Col, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Col, FormGroup, ControlLabel } from 'react-bootstrap';
 
 export default function MultiSelectField({ id,
                                            label,

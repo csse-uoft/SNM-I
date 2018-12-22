@@ -24,19 +24,19 @@ class TopNavbar extends Component {
   render() {
     const navItems = (this.props.isLoggedin) ? (
       <Nav>
-        <IndexLinkContainer to={`/clients`}>
+        <IndexLinkContainer to="/clients">
           <NavItem eventKey={1} href="#">Clients</NavItem>
         </IndexLinkContainer>
-        <IndexLinkContainer to={`/services`}>
+        <IndexLinkContainer to="/services">
           <NavItem eventKey={2} href="#">Services</NavItem>
         </IndexLinkContainer>
-        <IndexLinkContainer to={`/goods`}>
+        <IndexLinkContainer to="/goods">
           <NavItem eventKey={2} href="#">Goods</NavItem>
         </IndexLinkContainer>
-        <IndexLinkContainer to={`/providers`}>
+        <IndexLinkContainer to="/providers">
           <NavItem eventKey={3} href="#">Providers</NavItem>
         </IndexLinkContainer>
-        <IndexLinkContainer to={`/reporting`}>
+        <IndexLinkContainer to="/reporting">
           <NavItem eventKey={4} href="#">Reporting</NavItem>
         </IndexLinkContainer>
 
@@ -49,13 +49,13 @@ class TopNavbar extends Component {
         <Navbar.Header>
           <Navbar.Brand>
             {(this.props.isLoggedin) ? (
-              <IndexLinkContainer to='/dashboard'>
+              <IndexLinkContainer to="/dashboard">
                 <div>
                   <span>SNM Impact</span>
                 </div>
               </IndexLinkContainer>
             ) : (
-              <IndexLinkContainer to='/'>
+              <IndexLinkContainer to="/">
                 <div>
                   <span>SNM Impact</span>
                 </div>
@@ -72,7 +72,7 @@ class TopNavbar extends Component {
             {(this.props.isLoggedin) ? (
               <NavItem eventKey={4} href="#" onClick={this.signout}>Log Out</NavItem>
             ) : (
-              <IndexLinkContainer to={`/login`}>
+              <IndexLinkContainer to="/login">
                 <NavItem eventKey={4} href="#">Log In</NavItem>
               </IndexLinkContainer>
             )}

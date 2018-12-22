@@ -4,7 +4,6 @@ import StarRatingComponent from 'react-star-rating-component';
 import { providerFields } from '../../constants/provider_fields.js'
 
 // components
-import { formatOperationHour } from '../../helpers/operation_hour_helpers'
 import ProviderInfoTable from './provider_table/ProviderInfoTable';
 
 // styles
@@ -177,13 +176,13 @@ class ProviderServiceRow extends Component {
             {this.props.service.name}
           </Link>
         </td>
-        <td className='centered-text'>
+        <td className="centered-text">
           {this.props.service.category}
         </td>
-        <td className='centered-text'>
+        <td className="centered-text">
           {this.props.service.desc}
         </td>
-        <td className='centered-text'>
+        <td className="centered-text">
           {this.props.service.capacity}
         </td>
       </tr>

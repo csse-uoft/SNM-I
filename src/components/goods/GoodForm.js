@@ -9,9 +9,8 @@ import { provinceOptions } from '../../store/defaults';
 import { connect } from 'react-redux'
 import SelectField from '../shared/SelectField'
 import GeneralField from '../shared/GeneralField'
-import { createGood, updateGood, GOOD_ERROR, GOOD_SUCCESS } from '../../store/actions/goodActions.js'
+import { createGood, updateGood, GOOD_SUCCESS } from '../../store/actions/goodActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js'
-import CheckboxField from '../shared/CheckboxField'
 import RadioField from '../shared/RadioField'
 import { formatLocation } from '../../helpers/location_helpers.js';
 
@@ -144,13 +143,6 @@ class GoodForm extends Component {
       provider = this.props.providersById && this.props.providersById[this.state.form.provider_id];
     }
 
-    function categoriesIntoOptions(categories) {
-      return categories.map((category) => {
-        return <option key={category} value={ category }>{category}</option>
-      })
-    }
-
-
     return (
       <Row className="content">
         <Col sm={12}>
@@ -189,7 +181,7 @@ class GoodForm extends Component {
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
-                <Link to={`/providers/new`}>
+                <Link to="/providers/new">
                   <Button>
                     Add new provider
                   </Button>

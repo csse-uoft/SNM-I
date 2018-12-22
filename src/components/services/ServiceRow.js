@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Glyphicon, Dropdown, MenuItem, Button } from 'react-bootstrap';
+import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'
@@ -18,7 +18,7 @@ class ServiceRow extends Component {
           </Link>
         </td>
         {service.provider.type === "Organization" &&
-          <td className='centered-text'>
+          <td className="centered-text">
             <Link to={`/provider/${service.provider.id}`}>
               {service.provider.company}
             </Link>
@@ -26,7 +26,7 @@ class ServiceRow extends Component {
         }
 
         {service.provider.type === "Individual" &&
-          <td className='centered-text'>
+          <td className="centered-text">
             <Link to={`/provider/${service.provider.id}`}>
               {`${service.provider.first_name} ${service.provider.last_name}`}
             </Link>

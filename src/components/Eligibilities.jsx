@@ -59,10 +59,10 @@ class Eligibilities extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='content'>
+      <div className="content">
         <div>
           <h1>Eligibility Criteria</h1>
-          <Link to={`/eligibility-criteria/new`}>
+          <Link to="/eligibility-criteria/new">
             <Button bsStyle="default">
               Create new eligibility criteria
             </Button>
@@ -82,7 +82,7 @@ class Eligibilities extends Component {
             }</EligibilitiesIndex>
           }
           <DeleteModal
-            contentType='Eligibility Criteria'
+            contentType="Eligibility Criteria"
             objectId={this.state.objectId}
             show={this.state.deleteModalShow}
             onHide={this.handleDeleteModalHide}

@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClientNeed, updateClientNeed } from '../../store/actions/needActions.js'
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
+import { Button, Form, FormGroup, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
 
 class NeedForm extends Component {
   constructor(props) {
@@ -72,7 +72,7 @@ class NeedForm extends Component {
   }
 
   render() {
-    const p = this.props, s = this.state;
+    const p = this.props;
     const formTitle = (this.state.mode === 'edit') ? 'Edit Need' : 'Create Need'
 
     if (this.state.form.type === undefined) {

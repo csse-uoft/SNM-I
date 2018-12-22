@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Glyphicon, Dropdown, MenuItem, Button } from 'react-bootstrap';
+import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
 
 // redux
 import { connect } from 'react-redux'

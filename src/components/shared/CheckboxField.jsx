@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Col, FormGroup, FormControl, ControlLabel, Checkbox } from 'react-bootstrap';
+import { Col, FormGroup, ControlLabel, Checkbox } from 'react-bootstrap';
 
 export default function CheckboxField({ id, label, required, options, checkedOptions, onChange }) {
   return (

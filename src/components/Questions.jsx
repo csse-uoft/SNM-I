@@ -59,10 +59,10 @@ class Questions extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='content'>
+      <div className="content">
         <div>
           <h1>Questions</h1>
-          <Link to={`/questions/new`}>
+          <Link to="/questions/new">
             <Button bsStyle="default">
               Create new question
             </Button>
@@ -82,7 +82,7 @@ class Questions extends Component {
             }</QuestionsIndex>
           }
           <DeleteModal
-            contentType='Question'
+            contentType="Question"
             objectId={this.state.objectId}
             show={this.state.deleteModalShow}
             onHide={this.handleDeleteModalHide}

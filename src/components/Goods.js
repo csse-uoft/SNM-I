@@ -9,7 +9,7 @@ import DeleteModal from './shared/DeleteModal'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchGoods, searchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
+import { fetchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
 import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
@@ -17,7 +17,6 @@ import { Button, Col, Pagination } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class MapMarker extends Component {
   constructor(props){
@@ -68,10 +67,6 @@ class MapMarker extends Component {
 }
 
 class GoodInfoBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const good = this.props.good;
     return(
@@ -210,14 +205,14 @@ class Goods extends Component {
     ));
 
     return(
-      <div className='clients-table content modal-container'>
+      <div className="clients-table content modal-container">
         <div>
           <h1>Goods</h1>
-          <Link to='/notifications'>      
+          <Link to="/notifications">
           You have {p.needs.length} notification(s)
           </Link>
           <hr/>
-          <Link to='/goods/new'>
+          <Link to="/goods/new">
             <Button bsStyle="default">
               Add new good
             </Button>
@@ -262,7 +257,7 @@ class Goods extends Component {
           submit={this.handleSubmit}
         />
         <DeleteModal
-          contentType='Good'
+          contentType="Good"
           objectId={this.state.objectId}
           show={this.state.deleteModalShow}
           onHide={this.handleDeleteModalHide}

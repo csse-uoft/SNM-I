@@ -9,7 +9,7 @@ import DeleteModal from './shared/DeleteModal'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchServices, searchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
+import { fetchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
 import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
@@ -17,7 +17,6 @@ import { Button, Col, Pagination} from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class MapMarker extends Component {
   constructor(props){
@@ -67,22 +66,15 @@ class MapMarker extends Component {
 
 }
 
-class ServiceInfoBox extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const service = this.props.service;
-    return(
-      <div>
-        <b>Service name: </b>
-          {<Link to={`/service/${service.id}`}>
-            {service.name}
-          </Link>}
-      </div>
-    )
-  }
+function ServiceInfoBox({ service }) {
+  return (
+    <div>
+      <b>Service name: </b>
+        {<Link to={`/service/${service.id}`}>
+          {service.name}
+        </Link>}
+    </div>
+  );
 }
 
 class Services extends Component {
@@ -203,21 +195,24 @@ class Services extends Component {
         defaultCenter={torontoCentroid} >
         {
           _.map(p.services, (service) => {
-            return <MapMarker service={service}/>
+            return <MapMarker
+              key={service.id}
+              service={service}
+            />
           })
         }
       </GoogleMap>
     ));
 
     return(
-      <div className='services-table content modal-container'>
+      <div className="services-table content modal-container">
         <div>
           <h1>Services</h1>
-          <Link to='/notifications'>      
+          <Link to="/notifications">
           You have {p.needs.length} notification(s)
           </Link>
           <hr/>
-          <Link to='/services/new'>
+          <Link to="/services/new">
             <Button bsStyle="default">
               Add new service
             </Button>

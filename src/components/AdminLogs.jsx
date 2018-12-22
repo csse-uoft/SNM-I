@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import AdminLogsIndex from './admin_logs/AdminLogsIndex'
@@ -11,10 +10,6 @@ import { fetchAdminLogs } from '../store/actions/adminLogActions.js'
 
 
 class AdminLogs extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-
   componentWillMount() {
     this.props.dispatch(fetchAdminLogs());
   }
@@ -22,7 +17,7 @@ class AdminLogs extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='clients-table content'>
+      <div className="clients-table content">
         <div>
           <h1>AdminLogs</h1>
           <hr/>
