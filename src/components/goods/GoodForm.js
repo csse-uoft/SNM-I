@@ -181,7 +181,7 @@ class GoodForm extends Component {
 
             <FormGroup>
               <Col smOffset={3} sm={9}>
-                <Link to={`/providers/new`}>
+                <Link to="/providers/new">
                   <Button>
                     Add new provider
                   </Button>

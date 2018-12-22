@@ -39,7 +39,7 @@ class NeedGroupPanel extends Component {
           </Col>
           <Col sm={1}>
           {need.is_urgent && (
-            <span className='need-urgent'>
+            <span className="need-urgent">
               <Glyphicon glyph="exclamation-sign" />
               {' '}
             </span>)

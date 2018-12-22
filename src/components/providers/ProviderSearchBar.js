@@ -22,13 +22,13 @@ class ProviderSearchBar extends Component {
       <div>
       <Form inline>
         <FormGroup controlId="searchBar">
-          <FormControl 
-            type='text' 
-            placeholder="Search..." 
+          <FormControl
+            type="text"
+            placeholder="Search..."
             value={this.props.searchValue}
             onChange={this.props.handleInput}
           />
-        </FormGroup> {' '}
+        </FormGroup>{' '}
         <FormGroup controlId="searchBy">
           <ControlLabel> Search by: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.props.handleTypeChange}>

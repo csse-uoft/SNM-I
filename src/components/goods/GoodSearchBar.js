@@ -43,9 +43,9 @@ class GoodSearchBar extends Component {
     return (
       <Form inline>
         <FormGroup controlId="searchBar">
-          <FormControl 
-            type='text' 
-            placeholder="Search..." 
+          <FormControl
+            type="text"
+            placeholder="Search..."
             value={this.state.value}
             onChange={this.handleInput}
           />

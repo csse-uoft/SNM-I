@@ -68,7 +68,7 @@ class UserForm extends Component {
               <Col sm={9}>
                 <Radio
                   name="radioGroup"
-                  value='1'
+                  value="1"
                   onChange={e => this.formValChange(e, 'is_superuser')}
                   defaultChecked={this.state.form.is_superuser === true}
                   inline
@@ -77,7 +77,7 @@ class UserForm extends Component {
                 </Radio>{' '}
                 <Radio
                   name="radioGroup"
-                  value='0'
+                  value="0"
                   onChange={e => this.formValChange(e, 'is_superuser')}
                   defaultChecked={this.state.form.is_superuser === false}
                   inline

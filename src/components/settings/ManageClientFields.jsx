@@ -153,7 +153,7 @@ class ManageClientFields extends Component {
         </Row>
         <hr />
         <Form horizontal>
-          <FormGroup controlId='stepToAdd'>
+          <FormGroup controlId="stepToAdd">
             <Col sm={12}>
               <InputGroup>
                 <FormControl

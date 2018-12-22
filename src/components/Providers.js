@@ -265,10 +265,10 @@ class Providers extends Component {
     ));
 
     return(
-      <div className='providers content'>
-        <h3 className='title'>Providers</h3>
+      <div className="providers content">
+        <h3 className="title">Providers</h3>
           <div>
-            <Link to='/notifications'>
+            <Link to="/notifications">
               You have {p.needs.length} notification(s)
             </Link>
             <hr/>

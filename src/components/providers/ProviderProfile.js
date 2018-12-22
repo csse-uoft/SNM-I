@@ -176,13 +176,13 @@ class ProviderServiceRow extends Component {
             {this.props.service.name}
           </Link>
         </td>
-        <td className='centered-text'>
+        <td className="centered-text">
           {this.props.service.category}
         </td>
-        <td className='centered-text'>
+        <td className="centered-text">
           {this.props.service.desc}
         </td>
-        <td className='centered-text'>
+        <td className="centered-text">
           {this.props.service.capacity}
         </td>
       </tr>

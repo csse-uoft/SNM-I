@@ -12,7 +12,7 @@ class Dashboard extends Component {
   render() {
     const p = this.props;
     return(
-      <Row className='content login-pane'>
+      <Row className="content login-pane">
         <Col md={12}>
           <div className="login-buttons">
             { p.isLoggedin && p.currentUser.is_admin && !p.organization.id &&
@@ -31,32 +31,32 @@ class Dashboard extends Component {
             }
             { p.isLoggedin && p.currentUser.is_admin &&
               <div>
-                <Link to='/users'>
+                <Link to="/users">
                   <Button bsStyle="default" className="btn-default-login" block>
                     Manage Users
                   </Button>
                 </Link>
-                <Link to='/admin-logs'>
+                <Link to="/admin-logs">
                   <Button bsStyle="default" className="btn-default-login" block>
                     Admin Logs
                   </Button>
                 </Link>
-                <Link to='/eligibility-criteria'>
+                <Link to="/eligibility-criteria">
                   <Button bsStyle="default" className="btn-default-login" block>
                     Manage Eligibility criteria
                   </Button>
                 </Link>
-                <Link to='/settings/manage-client-fields'>
+                <Link to="/settings/manage-client-fields">
                   <Button bsStyle="default" className="btn-default-login" block>
                     Manage Client Fields
                   </Button>
                 </Link>
-                <Link to='/settings/manage-provider-fields'>
+                <Link to="/settings/manage-provider-fields">
                   <Button bsStyle="default" className="btn-default-login" block>
                     Manage Provider Fields
                   </Button>
                 </Link>
-                <Link to='/questions'>
+                <Link to="/questions">
                   <Button bsStyle="default" className="btn-default-login" block>
                     Manage Questions
                   </Button>

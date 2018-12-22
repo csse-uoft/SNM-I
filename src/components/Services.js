@@ -205,14 +205,14 @@ class Services extends Component {
     ));
 
     return(
-      <div className='services-table content modal-container'>
+      <div className="services-table content modal-container">
         <div>
           <h1>Services</h1>
-          <Link to='/notifications'>      
+          <Link to="/notifications">
           You have {p.needs.length} notification(s)
           </Link>
           <hr/>
-          <Link to='/services/new'>
+          <Link to="/services/new">
             <Button bsStyle="default">
               Add new service
             </Button>

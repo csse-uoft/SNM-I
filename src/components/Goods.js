@@ -205,14 +205,14 @@ class Goods extends Component {
     ));
 
     return(
-      <div className='clients-table content modal-container'>
+      <div className="clients-table content modal-container">
         <div>
           <h1>Goods</h1>
-          <Link to='/notifications'>      
+          <Link to="/notifications">
           You have {p.needs.length} notification(s)
           </Link>
           <hr/>
-          <Link to='/goods/new'>
+          <Link to="/goods/new">
             <Button bsStyle="default">
               Add new good
             </Button>
@@ -257,7 +257,7 @@ class Goods extends Component {
           submit={this.handleSubmit}
         />
         <DeleteModal
-          contentType='Good'
+          contentType="Good"
           objectId={this.state.objectId}
           show={this.state.deleteModalShow}
           onHide={this.handleDeleteModalHide}

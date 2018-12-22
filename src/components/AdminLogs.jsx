@@ -17,7 +17,7 @@ class AdminLogs extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='clients-table content'>
+      <div className="clients-table content">
         <div>
           <h1>AdminLogs</h1>
           <hr/>

@@ -132,13 +132,13 @@ class Clients extends Component {
   render() {
     const p = this.props;
     return(
-      <div className='content modal-container'>
+      <div className="content modal-container">
         <h1>Clients</h1>
-        <Link to='/notifications'>      
+        <Link to="/notifications">
           You have {p.needs.length} notification(s)
         </Link>
         <hr/>
-        <Link to='/clients/new'>
+        <Link to="/clients/new">
           <Button bsStyle="default">
             Add new client profile
           </Button>
@@ -185,7 +185,7 @@ class Clients extends Component {
           submit={this.handleSubmit}
         />
         <DeleteModal
-          contentType='Client'
+          contentType="Client"
           objectId={this.state.objectId}
           show={this.state.deleteModalShow}
           onHide={this.handleDeleteModalHide}
