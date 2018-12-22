@@ -34,13 +34,6 @@ function requestGoods(json) {
   }
 }
 
-function receiveAllGoods(json) {
-  return {
-    type: RECEIVE_ALL_GOODS,
-    clients: json
-  }
-}
-
 function receiveGoods(json) {
   return {
     type: RECEIVE_GOODS,
@@ -69,7 +62,6 @@ export function fetchGood(id) {
   return dispatch => {
     dispatch(requestGood(id))
     const url = serverHost + '/good/' + id + '/';
-    let good = null;
     return fetch(url, {
         method: 'GET',
         headers: {
@@ -77,7 +69,6 @@ export function fetchGood(id) {
         },
       }).then(response => response.json())
       .then(json => {
-        good = json
         dispatch(receiveGood(id, json))
       })
   }

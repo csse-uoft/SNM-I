@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import { RECEIVE_PROVIDER, REQUEST_PROVIDER, SEARCH_PROVIDERS, REQUEST_PROVIDERS, RECEIVE_PROVIDERS,
+import { RECEIVE_PROVIDER, REQUEST_PROVIDER, REQUEST_PROVIDERS, RECEIVE_PROVIDERS,
           RECEIVE_NEW_PROVIDER, REMOVE_PROVIDER, RECEIVE_NEW_PROVIDERS_CSV } from '../actions/providerActions.js'
 
 
 export function providers(state = {index: [], byId: {}, loaded: false, value: '', filteredProviders: []}, action) {
-  let nextIndex, nextById, providers, prevIndex;
+  let nextIndex, nextById;
   switch (action.type) {
     case REQUEST_PROVIDERS:
       return {...state, loaded: false};

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import NeedsIndex from './client_needs/NeedsIndex'
-import DeleteModal from './shared/DeleteModal'
-import NeedGroupPanel from './client_needs/NeedGroupPanel'
+import DeleteModal from './shared/DeleteModal';
+import NeedGroupPanel from './client_needs/NeedGroupPanel';
 
 import { Button } from 'react-bootstrap';
 

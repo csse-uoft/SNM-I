@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import SelectField from '../shared/SelectField';
 
 import { connect } from 'react-redux';
 

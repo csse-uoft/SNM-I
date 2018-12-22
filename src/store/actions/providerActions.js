@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
-import { receiveNeeds } from './needActions.js'
 import { updateAuthOrganization } from './authAction.js'
 
 export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';

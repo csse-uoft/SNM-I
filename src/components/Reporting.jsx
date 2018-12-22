@@ -41,7 +41,6 @@ export default class Report extends Component {
           number_of_clients_by_gender: data.number_of_clients_by_gender,
           number_of_clients_by_birth_year: data.number_of_clients_by_birth_year,
           number_of_clients_by_marital_status: data.number_of_clients_by_marital_status,
-          number_of_clients_by_birth_year: data.number_of_clients_by_birth_year,
           number_of_clients_by_language: data.number_of_clients_by_language,
           number_of_providers_by_status: data.number_of_providers_by_status,
           number_of_providers_by_type: data.number_of_providers_by_type,

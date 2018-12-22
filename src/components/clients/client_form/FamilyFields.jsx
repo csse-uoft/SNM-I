@@ -3,7 +3,7 @@ import React from 'react';
 import GeneralField from '../../shared/GeneralField'
 import SelectField from '../../shared/SelectField'
 import { genderOptions, familyRelationshipOptions } from '../../../store/defaults.js';
-import { FormGroup, FormControl, ControlLabel, Col, Row, Button } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, Col, Button } from 'react-bootstrap';
 
 function FamilyMemberFields({ index,
                               clientId,

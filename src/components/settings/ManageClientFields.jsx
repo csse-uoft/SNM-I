@@ -5,15 +5,14 @@ import { clientFields } from '../../constants/client_fields.js'
 // redux
 import { connect } from 'react-redux';
 import { fetchClientFields, updateClientFields } from '../../store/actions/settingActions.js';
-import { ACTION_SUCCESS, ACTION_ERROR } from '../../store/defaults.js';
+import { ACTION_SUCCESS } from '../../store/defaults.js';
 
 // components
-import RadioField from '../shared/RadioField'
-import CheckboxField from '../shared/CheckboxField'
+import RadioField from '../shared/RadioField';
 
 // styles
 import { Grid, Row, Button, FormGroup, Form, Col, InputGroup, FormControl,
-  DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
+  Glyphicon } from 'react-bootstrap';
 
 class ManageClientFields extends Component {
   constructor(props) {

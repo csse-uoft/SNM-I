@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { searchServices, fetchServices, createService, updateService, deleteService } from '../../store/actions/serviceActions.js'
+import { Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { searchServices } from '../../store/actions/serviceActions.js'
 import { connect } from 'react-redux';
 
 

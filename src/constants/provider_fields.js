@@ -1,5 +1,4 @@
-import { genderOptions, statusInCanadaOptions,
-         educationLevelOptions, incomeSourceOptions } from '../store/defaults.js';
+import { genderOptions } from '../store/defaults.js';
 
 const providerTypeOptions = ['Individual', 'Organization']
 const IndividualProviderOptions = ['Volunteer', 'Goods Donor', 'Professional Service Provider']

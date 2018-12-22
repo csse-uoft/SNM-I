@@ -9,7 +9,7 @@ import DeleteModal from './shared/DeleteModal'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchGoods, searchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
+import { fetchGoods, createGoods, deleteGood, GOOD_ERROR } from '../store/actions/goodActions.js'
 import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
@@ -17,7 +17,6 @@ import { Button, Col, Pagination } from 'react-bootstrap';
 import '../stylesheets/Client.css';
 
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 class MapMarker extends Component {
   constructor(props){

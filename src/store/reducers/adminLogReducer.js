@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 
 export function admin_logs(state = { logsLoaded: false, byId: {} }, action) {
-  let nextById;
   switch (action.type) {
     case REQUEST_ADMIN_LOGS:
       return { ...state, logsLoaded: false }

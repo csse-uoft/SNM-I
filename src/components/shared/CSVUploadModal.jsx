@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Modal, Button, FormGroup, FormControl } from 'react-bootstrap';
 
 export default class CSVUploadModal extends Component {
   render() {

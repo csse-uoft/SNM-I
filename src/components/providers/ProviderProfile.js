@@ -4,7 +4,6 @@ import StarRatingComponent from 'react-star-rating-component';
 import { providerFields } from '../../constants/provider_fields.js'
 
 // components
-import { formatOperationHour } from '../../helpers/operation_hour_helpers'
 import ProviderInfoTable from './provider_table/ProviderInfoTable';
 
 // styles

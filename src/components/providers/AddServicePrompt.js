@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import { Row, Col, Table, Button } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 
 export default class AddServicePrompt extends Component {
   render() {

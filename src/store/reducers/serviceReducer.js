@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 
 export function services(state = {index: [], filteredServices: [], servicesLoaded: false, byId: {} }, action) {
-  let nextIndex, nextById, sortedServices, services;
+  let nextById, sortedServices, services;
   switch (action.type) {
     case REQUEST_SERVICES:
       return {...state, servicesLoaded: false }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import AdminLogsIndex from './admin_logs/AdminLogsIndex'
