@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableRow from '../shared/TableRow'
 
 // redux
 import { connect } from 'react-redux'
@@ -37,125 +38,126 @@ class Service extends Component {
         { service && service.servicesLoaded &&
           <Table striped bordered condensed hover>
             <tbody>
-              <tr>
-                <td><b>Name</b></td>
-                <td>{service.name}</td>
-              </tr>
-              <tr>
-                <td><b>Type</b></td>
-                <td>{service.type}</td>
-              </tr>
-              <tr>
-                <td><b>Description</b></td>
-                <td>{service.desc}</td>
-              </tr>
-              <tr>
-                <td><b>Category</b></td>
-                <td>{service.category}</td>
-              </tr>
-              <tr>
-                <td><b>Eligibility</b></td>
-                <td>{service.eligibility}</td>
-              </tr>
-              <tr>
-                <td><b>Available from</b></td>
-                <td>{service.available_from}</td>
-              </tr>
-              <tr>
-                <td><b>Available until</b></td>
-                <td>{service.available_to}</td>
-              </tr>
-              <tr>
-                <td><b>Languages</b></td>
-                <td>{(service.languages || []).join(', ')}</td>
-              </tr>
-              <tr>
-                <td><b>Max Capacity</b></td>
-                <td>{service.max_capacity}</td>
-              </tr>
-              <tr>
-                <td><b>Current capacity</b></td>
-                <td>{service.current_capacity}</td>
-              </tr>
-              <tr>
-                <td><b>Frequency</b></td>
-                <td>{service.frequency}</td>
-              </tr>
-              <tr>
-                <td><b>Billable</b></td>
-                <td>{service.billable}</td>
-              </tr>
-              <tr>
-                <td><b>Price</b></td>
-                <td>{service.price}</td>
-              </tr>
-              <tr>
-                <td><b>Method of delivery</b></td>
-                <td>{service.method_of_delivery}</td>
-              </tr>
-              <tr>
-                <td><b>Method of registration</b></td>
-                <td>{service.method_of_registration}</td>
-              </tr>
-              <tr>
-                <td><b>Registration</b></td>
-                <td>{service.registration}</td>
-              </tr>
-              <tr>
-                <td><b>Contact Person Email</b></td>
-                <td>{service.email}</td>
-              </tr>
-              <tr>
-                <td><b>Contact Person Phone</b></td>
-                <td>{service.primary_phone_number}</td>
-              </tr>
-              <tr>
-                <td><b>Secondary Phone</b></td>
-                <td>{service.alt_phone_number}</td>
-              </tr>
+              <TableRow
+                title="Name"
+                value={service.name}
+              />
+
+              <TableRow
+                title="Type"
+                value={service.type}
+              />
+              <TableRow
+                title="Description"
+                value={service.desc}
+              />
+              <TableRow
+                title="Category"
+                value={service.category}
+              />
+              <TableRow
+                title="Eligibility"
+                value={service.eligibility}
+              />
+              <TableRow
+                title="Available from"
+                value={service.available_from}
+              />
+              <TableRow
+                title="Available until"
+                value={service.available_to}
+              />
+              <TableRow
+                title="Languages"
+                value={(service.languages || []).join(', ')}
+              />
+              <TableRow
+                title="Max Capacity"
+                value={service.max_capacity}
+              />
+              <TableRow
+                title="Current capacity"
+                value={service.current_capacity}
+              />
+              <TableRow
+                title="Frequency"
+                value={service.frequency}
+              />
+              <TableRow
+                title="Billable"
+                value={service.billable}
+              />
+              <TableRow
+                title="Price"
+                value={service.price}
+              />
+              <TableRow
+                title="Method of delivery"
+                value={service.method_of_delivery}
+              />
+              <TableRow
+                title="Method of registration"
+                value={service.method_of_registration}
+              />
+              <TableRow
+                title="Registration"
+                value={service.registration}
+              />
+              <TableRow
+                title="Contact Person Email"
+                value={service.email}
+              />
+              <TableRow
+                title="Contact Person Phone"
+                value={service.primary_phone_number}
+              />
+              <TableRow
+                title="Secondary Phone"
+                value={service.alt_phone_number}
+              />
               <tr>
                 <td><b>Location</b></td>
                 <td>{formatLocation(service.location)}</td>
               </tr>
 
-              {service.eligibility_conditions &&
-              <tr>
-                <td><b>Eligibility Conditions</b></td>
-                <td>
-                  {_.map(
-                      _.omit(service.eligibility_conditions, ['lower_age_limit', 'upper_age_limit']
-                    ), (value, type) => {
-                    return (
-                      <li key={type}>
-                        {formatEligibilityConditions(type, value)}
+              {_.keys(_.omit(service.eligibility_conditions, ['lower_age_limit', 'upper_age_limit'])) > 0 &&
+                <tr>
+                  <td><b>Eligibility Conditions</b></td>
+                  <td>
+                    {_.map(
+                        _.omit(service.eligibility_conditions, ['lower_age_limit', 'upper_age_limit']
+                      ), (value, type) => {
+                      return (
+                        <li key={type}>
+                          {formatEligibilityConditions(type, value)}
+                        </li>
+                      );
+                    })}
+                    {service.eligibility_conditions.lower_age_limit &&
+                      <li>
+                        {formatEligibilityConditions('Age greater than' , service.eligibility_conditions.lower_age_limit)}
                       </li>
-                    );
-                  })}
-                  {service.eligibility_conditions.lower_age_limit &&
-                    <li>
-                      {formatEligibilityConditions('Age greater than' , service.eligibility_conditions.lower_age_limit)}
-                    </li>
-                  }
-                  {service.eligibility_conditions.upper_age_limit &&
-                    <li>
-                      {formatEligibilityConditions('Age less than' , service.eligibility_conditions.upper_age_limit)}
-                    </li>
-                  }
-                </td>
-              </tr>
+                    }
+                    {service.eligibility_conditions.upper_age_limit &&
+                      <li>
+                        {formatEligibilityConditions('Age less than' , service.eligibility_conditions.upper_age_limit)}
+                      </li>
+                    }
+                  </td>
+                </tr>
               }
-              <tr>
-                <td><b>Public? </b></td>
-                <td>{service.is_public ? 'Yes': 'No'}</td>
-              </tr>
-              <tr>
-                <td><b>Share with</b></td>
-                <td>{(service.share_with || []).join(', ')}</td>
-              </tr>
-              <tr>
-                <td><b>Notes</b></td>
-                <td>{service.notes}</td>
-              </tr>
+              <TableRow
+                title="Public?"
+                value={service.is_public ? 'Yes': 'No'}
+              />
+              <TableRow
+                title="Share with"
+                value={(service.share_with || []).join(', ')}
+              />
+              <TableRow
+                title="Notes"
+                value={service.notes}
+              />
               <tr>
                 <td><b>Provider</b></td>
                 <td>
