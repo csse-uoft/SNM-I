@@ -160,7 +160,11 @@ class Service extends Component {
                 <td><b>Provider</b></td>
                 <td>
                   <Link to={`/provider/${service.provider.id}`}>
-                    {`${service.provider.first_name} ${service.provider.last_name}`}
+                    {(service.provider.type === 'Organization') ?
+                      service.provider.company
+                    :
+                      `${service.provider.first_name} ${service.provider.last_name}`
+                    }
                   </Link>
                 </td>
               </tr>

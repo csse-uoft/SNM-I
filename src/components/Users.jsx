@@ -58,7 +58,7 @@ class Users extends Component {
 
   render() {
     const p = this.props;
-    return(
+    return (
       <div className="users-table content">
         <div>
           <h1>Users</h1>
