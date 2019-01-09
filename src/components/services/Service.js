@@ -70,12 +70,12 @@ class Service extends Component {
                 <td>{(service.languages || []).join(', ')}</td>
               </tr>
               <tr>
-                <td><b>Capacity</b></td>
-                <td>{service.capacity}</td>
+                <td><b>Max Capacity</b></td>
+                <td>{service.max_capacity}</td>
               </tr>
               <tr>
-                <td><b>Available capacity</b></td>
-                <td>{service.available_capacity}</td>
+                <td><b>Current capacity</b></td>
+                <td>{service.current_capacity}</td>
               </tr>
               <tr>
                 <td><b>Frequency</b></td>
