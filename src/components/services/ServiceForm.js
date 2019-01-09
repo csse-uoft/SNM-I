@@ -42,7 +42,8 @@ class ServiceForm extends Component {
         available_from: service.available_from || '',
         available_to: service.available_to || '',
         languages: service.languages || [],
-        capacity: service.capacity || '',
+        max_capacity: service.max_capacity || '',
+        current_capacity: service.current_capacity || 0,
         frequency: service.frequency || '',
         billable: service.billable || '',
         price: service.price || '',
@@ -299,12 +300,23 @@ class ServiceForm extends Component {
               onChange={this.handleMultiSelectChange}
             />
             <GeneralField
-              id="capacity"
-              label="Capacity"
-              type="text"
-              value={this.state.form.capacity}
+              id="max_capacity"
+              label="Max Capacity"
+              type="number"
+              value={this.state.form.max_capacity}
+              min="0"
               onChange={this.formValChange}
             />
+            {parseInt(this.state.form.max_capacity, 10) > 0 &&
+              <GeneralField
+                id="current_capacity"
+                label="Current Capacity"
+                type="number"
+                value={this.state.form.current_capacity}
+                min="0"
+                onChange={this.formValChange}
+              />
+            }
             <FormGroup controlId="frequency">
               <Col componentClass={ControlLabel} sm={3}>
                 Frequency
