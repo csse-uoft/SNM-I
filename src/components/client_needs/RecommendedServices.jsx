@@ -9,8 +9,8 @@ import { Row, Col } from 'react-bootstrap';
 
 const GMap = withGoogleMap(props => (
   <GoogleMap
-    defaultZoom={10}
-    defaultCenter={props.latlng}>
+    zoom={10}
+    center={props.latlng}>
     {_.map(props.recommended_services, (service, index) => {
       return (
         <Marker
