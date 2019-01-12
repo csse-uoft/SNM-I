@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { ListGroupItem, Label, Row, Col, Button } from 'react-bootstrap';
 import { matchClientNeed } from '../../store/actions/needActions.js'
 
-class RecommendedService extends Component {
+class ServiceListItem extends Component {
   constructor(props) {
     super(props);
     this.submit = this.submit.bind(this);
@@ -65,4 +65,4 @@ class RecommendedService extends Component {
   }
 }
 
-export default connect()(withRouter(RecommendedService));
+export default connect()(withRouter(ServiceListItem));

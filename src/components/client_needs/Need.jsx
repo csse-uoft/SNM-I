@@ -5,7 +5,7 @@ import TableRow from '../shared/TableRow';
 import { torontoCoordinates, serverHost } from '../../store/defaults.js';
 
 import MatchedServices from './MatchedServices'
-import RecommendedServices from './RecommendedServices'
+import ServiceList from './ServiceList'
 import ServiceSearchBar from './ServiceSearchBar'
 
 // redux
@@ -148,9 +148,9 @@ class Need extends Component {
                     needId={need.id}
                   />
                   {need.recommended_services && need.recommended_services.length > 0 &&
-                    <RecommendedServices
+                    <ServiceList
                       need={need}
-                      recommended_services={this.state.recommendedServices}
+                      services={this.state.recommendedServices}
                       latlng={this.state.location}
                     />
                   }
@@ -162,9 +162,9 @@ class Need extends Component {
                     enableQueryTerm
                   />
                   {this.state.searchResult && this.state.searchResult.length > 0 &&
-                    <RecommendedServices
+                    <ServiceList
                       need={need}
-                      recommended_services={this.state.searchResult}
+                      services={this.state.searchResult}
                       latlng={this.state.location}
                     />
                   }
