@@ -2,16 +2,16 @@ import React from 'react';
 import _ from 'lodash';
 
 import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
-import RecommendedService from './RecommendedService';
+import ServiceListItem from './ServiceListItem';
 
 import { Row, Col } from 'react-bootstrap';
 
 
 const GMap = withGoogleMap(props => (
   <GoogleMap
-    defaultZoom={10}
-    defaultCenter={props.latlng}>
-    {_.map(props.recommended_services, (service, index) => {
+    zoom={10}
+    center={props.latlng}>
+    {_.map(props.services, (service, index) => {
       return (
         <Marker
           key={service.id}
@@ -23,13 +23,13 @@ const GMap = withGoogleMap(props => (
   </GoogleMap>
 ));
 
-export default function RecommendedServices({ need, recommended_services, latlng }) {
+export default function ServiceList({ need, services, latlng }) {
   return (
     <Row>
       <Col sm={8}>
-        {_.map(recommended_services, (service, index) => {
+        {_.map(services, (service, index) => {
           return (
-            <RecommendedService
+            <ServiceListItem
               key={service.id}
               needId={need.id}
               label={index+1}
@@ -48,7 +48,7 @@ export default function RecommendedServices({ need, recommended_services, latlng
               <div style={{ height: `100%` }} />
             }
             latlng={latlng}
-            recommended_services={recommended_services}
+            services={services}
           />
         </div>
       </Col>
