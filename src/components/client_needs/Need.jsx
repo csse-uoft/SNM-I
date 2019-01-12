@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import TableRow from '../shared/TableRow'
+import TableRow from '../shared/TableRow';
 
 import { torontoCoordinates, serverHost } from '../../store/defaults.js';
 
@@ -12,18 +12,20 @@ import ServiceSearchBar from './ServiceSearchBar'
 import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
 
-import { Grid, Row, Col, Table, Label, Tabs, Tab } from 'react-bootstrap';
+import { Grid, Row, Col, Table, Label, Tabs, Tab, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap';
 
 class Need extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      searchBy: '',
-      queryTerm: '',
-      searchResult: []
+      searchResult: [],
+      location: props.client.address ? props.client.address.lat_lng : torontoCoordinates,
+      recommendedServices: props.needsById[props.match.params.need_id].recommended_services
     }
 
     this.handleSearchService = this.handleSearchService.bind(this);
+    this.handleSearchRecommendedServices = this.handleSearchRecommendedServices.bind(this);
   }
 
   componentWillMount() {
@@ -31,8 +33,8 @@ class Need extends Component {
     this.props.dispatch(fetchNeed(id));
   }
 
-  handleSearchService(searchBy, queryTerm) {
-    const url = serverHost + '/services/search?search_by=' + searchBy + '&query_term=' + queryTerm;
+  handleSearchService(queryTerm, location) {
+    const url = serverHost + '/services/search?query_term=' + queryTerm + '&location=' + location;
     fetch(url, {
         method: 'get',
         headers: new Headers({
@@ -40,8 +42,23 @@ class Need extends Component {
         }),
       })
       .then(response => response.json())
-      .then(data => {
-        this.setState({ searchResult: data })
+      .then(json => {
+        this.setState({ searchResult: json.data, location: json.location })
+      }
+    );
+  }
+
+  handleSearchRecommendedServices(location, needId) {
+    const url = serverHost + '/needs/' + needId + '/recommended_services?location=' + location;
+    fetch(url, {
+        method: 'get',
+        headers: new Headers({
+          'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+        }),
+      })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({ recommendedServices: json.data, location: json.location })
       }
     );
   }
@@ -50,8 +67,7 @@ class Need extends Component {
     const p = this.props,
           id = p.match.params.need_id,
           need = p.needsById[id],
-          client = p.client,
-          latlng = client.address ? client.address.lat_lng : torontoCoordinates;
+          client = p.client
 
     function DeletedLabel({ is_deleted }) {
       if (is_deleted) {
@@ -126,23 +142,30 @@ class Need extends Component {
             <Col sm={12}>
               <Tabs defaultActiveKey={1} id="serviceList">
                 <Tab eventKey={1} title="RecommendedServices">
+                  <ServiceSearchBar
+                    search={this.handleSearchRecommendedServices}
+                    location={client.address}
+                    needId={need.id}
+                  />
                   {need.recommended_services && need.recommended_services.length > 0 &&
                     <RecommendedServices
                       need={need}
-                      recommended_services={need.recommended_services}
-                      latlng={latlng}
+                      recommended_services={this.state.recommendedServices}
+                      latlng={this.state.location}
                     />
                   }
                 </Tab>
                 <Tab eventKey={2} title="Search for Services">
                   <ServiceSearchBar
                     search={this.handleSearchService}
+                    location={client.address}
+                    enableQueryTerm
                   />
                   {this.state.searchResult && this.state.searchResult.length > 0 &&
                     <RecommendedServices
                       need={need}
                       recommended_services={this.state.searchResult}
-                      latlng={latlng}
+                      latlng={this.state.location}
                     />
                   }
                 </Tab>

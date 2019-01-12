@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
+import { formatLocation } from '../../helpers/location_helpers'
 
 import { Col, Form, FormGroup, InputGroup, Button, FormControl } from 'react-bootstrap';
 
@@ -9,8 +10,8 @@ export default class ServiceSearchBar  extends Component {
     super(props);
 
     this.state = {
-      searchBy: '',
-      queryTerm: ''
+      queryTerm: '',
+      location: props.location.street_address
     }
 
     this.handleFormValChange = this.handleFormValChange.bind(this);
@@ -26,31 +27,37 @@ export default class ServiceSearchBar  extends Component {
         <FormGroup>
           <Col sm={12}>
             <InputGroup>
-              <FormControl
-                componentClass="select"
-                value={this.state.searchBy}
-                onChange={e => this.handleFormValChange(e, 'searchBy')}
-              >
-                <option value="select">-- Search by --</option>
-                <option value="name">Name</option>
-                <option value="provider">Provider</option>
-                <option value="category">Category</option>
-                <option value="des">Description</option>
-              </FormControl>
-              <InputGroup.Button>
-              </InputGroup.Button>
+              {this.props.enableQueryTerm &&
+                <InputGroup.Addon>Find</InputGroup.Addon>
+              }
+              {this.props.enableQueryTerm &&
+                <FormControl
+                  type="text"
+                  value={this.state.queryTerm}
+                  onChange={e => this.handleFormValChange(e, 'queryTerm')}
+                  placeholder="Dental service, language class..."
+                />
+              }
+              <InputGroup.Addon>Near</InputGroup.Addon>
               <FormControl
                 type="text"
-                value={this.state.queryTerm}
-                onChange={e => this.handleFormValChange(e, 'queryTerm')}
+                value={this.state.location}
+                onChange={e => this.handleFormValChange(e, 'location')}
               />
               <InputGroup.Button>
-                <Button
-                  onClick={e => this.props.search(this.state.searchBy, this.state.queryTerm)}
-                  disabled={this.state.searchBy === '' || this.state.queryTerm === ''}
-                >
-                  Search
-                </Button>
+                {this.props.enableQueryTerm ? (
+                  <Button
+                    onClick={e => this.props.search(this.state.queryTerm, this.state.location)}
+                  >
+                    Search
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={e => this.props.search(this.state.location, this.props.needId)}
+                  >
+                    Search
+                  </Button>
+                )}
               </InputGroup.Button>
             </InputGroup>
           </Col>
