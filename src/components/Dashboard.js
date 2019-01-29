@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
 
 import { Button, Row, Col } from 'react-bootstrap';
-import '../stylesheets/Dashboard.css';
+import '../stylesheets/Dashboard.scss';
 
 
 class Dashboard extends Component {

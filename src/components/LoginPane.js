@@ -6,7 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import LoginForm from './login/LoginForm.js';
 
 // styles
-import '../stylesheets/Login.css';
+import '../stylesheets/Login.scss';
 
 
 class LoginPane extends Component {

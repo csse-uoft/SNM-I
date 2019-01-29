@@ -6,7 +6,7 @@ import Footer from './components/layouts/Footer'
 import routes from "./routes";
 
 // style
-import './stylesheets/App.css';
+import './stylesheets/App.scss';
 
 class App extends Component {
   render() {

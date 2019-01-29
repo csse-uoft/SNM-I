@@ -5,7 +5,7 @@ import { Table, Glyphicon, Button } from 'react-bootstrap';
 import { serverHost } from '../store/defaults.js';
 import SelectField from './shared/SelectField';
 // styles
-import '../stylesheets/Reporting.css';
+import '../stylesheets/Reporting.scss';
 
 const START_YEARS = [1931, 1941, 1951, 1961, 1971, 1981, 1991, 2001, 2011]
 
