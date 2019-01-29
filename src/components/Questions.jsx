@@ -13,7 +13,7 @@ import { fetchQuestions, deleteQuestion } from '../store/actions/questionActions
 
 // styles
 import { Button } from 'react-bootstrap';
-import '../stylesheets/Client.css';
+import '../stylesheets/Client.scss';
 
 class Questions extends Component {
   constructor(props, context) {

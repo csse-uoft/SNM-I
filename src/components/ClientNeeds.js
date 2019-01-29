@@ -10,7 +10,7 @@ import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import { deleteClientNeed, ERROR } from '../store/actions/needActions.js'
 
-import '../stylesheets/ClientNeeds.css';
+import '../stylesheets/ClientNeeds.scss';
 
 class ClientNeeds extends Component {
   constructor(props) {

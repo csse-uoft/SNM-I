@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
-import './../../stylesheets/Common.css'
+import './../../stylesheets/Common.scss'
 
 export default class ClientsIndex extends Component {
   render() {

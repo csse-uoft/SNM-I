@@ -13,7 +13,7 @@ import { fetchUsers, deleteUser } from '../store/actions/userActions.js'
 
 // styles
 import { Button } from 'react-bootstrap';
-import '../stylesheets/Client.css';
+import '../stylesheets/Client.scss';
 
 class Users extends Component {
   constructor(props, context) {

@@ -14,7 +14,7 @@ import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
 import { Button, Col, Pagination } from 'react-bootstrap';
-import '../stylesheets/Client.css';
+import '../stylesheets/Client.scss';
 
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 

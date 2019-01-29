@@ -13,7 +13,7 @@ import { fetchEligibilities, deleteEligibility } from '../store/actions/eligibil
 
 // styles
 import { Button } from 'react-bootstrap';
-import '../stylesheets/Client.css';
+import '../stylesheets/Client.scss';
 
 class Eligibilities extends Component {
   constructor(props, context) {

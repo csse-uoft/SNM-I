@@ -6,7 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import LoginButtons from './login/LoginButtons.js';
 
 // styles
-import '../stylesheets/Login.css';
+import '../stylesheets/Login.scss';
 
 
 class Login extends Component {
