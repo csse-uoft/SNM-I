@@ -19,7 +19,7 @@ import { createService, updateService, SERVICE_SUCCESS } from '../../store/actio
 import { fetchProviders } from '../../store/actions/providerActions.js';
 
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio, HelpBlock } from 'react-bootstrap';
 
 
 class ServiceForm extends Component {
@@ -33,7 +33,6 @@ class ServiceForm extends Component {
     this.state = {
       serviceId: service.id,
       mode: (service.id) ? 'edit' : 'new',
-      is_provider_location: false,
       form: {
         name: service.name || '',
         type: service.type || '',
@@ -54,12 +53,14 @@ class ServiceForm extends Component {
         primary_phone_number: service.primary_phone_number || '',
         alt_phone_number: service.alt_phone_number || '',
         location: Object.assign({
+          id: '',
           street_address: '',
           apt_number: '',
           city: '',
           province: '',
           postal_code: ''
         }, service.location),
+        location_same_as_provider: service.location_same_as_provider || false,
         share_with: service.share_with || [],
         notes: service.notes || '',
         eligibility_conditions: Object.assign({
@@ -123,7 +124,7 @@ class ServiceForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm;
-    if (id === 'location' || id === 'is_public') {
+    if (id === 'is_public' || id === 'location_same_as_provider') {
       nextForm = {...this.state.form, [id]: JSON.parse(e.target.value)};
     }
     else {
@@ -132,9 +133,9 @@ class ServiceForm extends Component {
     this.setState({ form: nextForm });
   }
 
-  locationChange(e) {
+  locationChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    nextForm['location'][e.target.id] = e.target.value
+    nextForm['location'][id] = e.target.value
     this.setState({ form: nextForm });
   }
 
@@ -194,9 +195,10 @@ class ServiceForm extends Component {
     const formTitle = (this.state.mode === 'edit') ?
       'Edit Service Profile' : 'New Service'
 
-    let provider;
+    let provider, provider_locations;
     if (this.state.form.provider_id) {
       provider = this.props.providersById && this.props.providersById[this.state.form.provider_id];
+      provider_locations = (provider.other_addresses || []).concat([provider.main_address])
     }
 
     return (
@@ -485,81 +487,82 @@ class ServiceForm extends Component {
               required
             />
             <RadioField
-              id="is_provider_location"
+              id="location_same_as_provider"
               label="Location"
               options={{ 'Same as provider': true, 'Other': false }}
-              onChange={this.indicatorChange}
-              defaultChecked={this.state.is_provider_location}
+              onChange={this.formValChange}
+              defaultChecked={this.state.form.location_same_as_provider}
               required
             />
-            {this.state.is_provider_location && this.state.form.provider_id &&
+            {this.state.form.location_same_as_provider && this.state.form.provider_id &&
               <div>
-                <FormGroup controlId="location">
+                <FormGroup controlId="locationId">
                   <Col className="required" componentClass={ControlLabel} sm={3}>
                     Select the location this service is provided at
                   </Col>
                   <Col sm={9}>
-                    <Radio
-                      name="provider_address"
-                      value={JSON.stringify(provider.main_address)}
-                      onChange={(e) => this.formValChange(e, 'location')}
-                    >
-                      {formatLocation(provider.main_address)}
-                    </Radio>{' '}
-                    {provider.other_addresses &&
-                     provider.other_addresses.map((address, index) =>
+                    {provider_locations && provider_locations.map((address, index) =>
                       <Radio
                         name="provider_address"
-                        value={JSON.stringify(address)}
-                        onChange={(e) => this.formValChange(e, 'location')}
+                        value={address.id}
+                        onChange={e => this.locationChange(e, 'id')}
                         key={index}
+                        defaultChecked={this.state.form.location.id === address.id}
                       >
                         {formatLocation(address)}
                       </Radio>
                     )}
+                    {!_.includes(_.map(provider_locations, 'id'), this.state.form.location.id) &&
+                      <HelpBlock>
+                        {`The current location of service is at
+                          ${formatLocation(this.state.form.location)}, which has
+                          been removed from provider locations. Please select a
+                          new location.`}
+                      </HelpBlock>
+                    }
                   </Col>
                 </FormGroup>
               </div>
             }
-            {!this.state.is_provider_location &&
-            <div>
-              <GeneralField
-                id="street_address"
-                label="Street Address"
-                type="text"
-                value={this.state.form.location.street_address}
-                onChange={this.locationChange}
-              />
-              <GeneralField
-                id="apt_number"
-                label="Apt. #"
-                type="text"
-                value={this.state.form.location.apt_number}
-                onChange={this.locationChange}
-              />
-              <GeneralField
-                id="city"
-                label="City"
-                type="text"
-                value={this.state.form.location.city}
-                onChange={this.locationChange}
-              />
-              <SelectField
-                id="province"
-                label="Province"
-                componentClass="select"
-                value={this.state.form.location.province}
-                options={provinceOptions}
-                onChange={this.locationChange}
-              />
-              <GeneralField
-                id="postal_code"
-                label="Postal Code"
-                type="text"
-                value={this.state.form.location.postal_code}
-                onChange={this.locationChange}
-              />
-            </div>
+            {!this.state.form.location_same_as_provider &&
+              <div>
+                <GeneralField
+                  id="apt_number"
+                  label="Apt. #"
+                  type="text"
+                  value={this.state.form.location.apt_number}
+                  onChange={this.locationChange}
+                />
+                <GeneralField
+                  id="street_address"
+                  label="Street Address"
+                  type="text"
+                  value={this.state.form.location.street_address}
+                  onChange={this.locationChange}
+                />
+                <GeneralField
+                  id="city"
+                  label="City"
+                  type="text"
+                  value={this.state.form.location.city}
+                  onChange={this.locationChange}
+                />
+                <SelectField
+                  id="province"
+                  label="Province"
+                  componentClass="select"
+                  value={this.state.form.location.province}
+                  options={provinceOptions}
+                  onChange={this.locationChange}
+                />
+                <GeneralField
+                  id="postal_code"
+                  label="Postal Code"
+                  type="text"
+                  value={this.state.form.location.postal_code}
+                  onChange={this.locationChange}
+                />
+              </div>
             }
             <RadioField
               id="is_public"
