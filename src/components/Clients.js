@@ -101,7 +101,7 @@ class Clients extends Component {
     if (type === 'last_name') {
       newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
         const client = this.props.clients[clientId];
-        if (client.last_name.toLowerCase().includes(value.toLowerCase())) {
+        if (client.profile.last_name.toLowerCase().includes(value.toLowerCase())) {
           result.push(client.id)
         }
         return result;

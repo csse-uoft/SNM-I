@@ -10,12 +10,12 @@ class ClientRow extends Component {
 
     return (
       <tr>
-        <td>{client.first_name}</td>
-        <td>{client.last_name}</td>
+        <td>{client.profile.first_name}</td>
+        <td>{client.profile.last_name}</td>
         <td>
-          {client.primary_phone_number ? formatPhoneNumber(client.primary_phone_number) : "None provided"}
+          {client.profile.primary_phone_number ? formatPhoneNumber(client.profile.primary_phone_number) : "None provided"}
         </td>
-        <td>{client.email}</td>
+        <td>{client.profile.email}</td>
         <td>
           {client.address ? formatLocation(client.address) : "None provided"}
         </td>
