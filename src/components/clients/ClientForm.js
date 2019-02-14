@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { clientFields } from '../../constants/client_fields.js'
+import { profileFields } from '../../constants/default_fields.js'
 import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
 
 // redux
@@ -34,18 +35,7 @@ class ClientForm extends Component {
       clientId: client.id,
       mode: (client.id) ? 'edit' : 'new',
       form: Object.assign({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-        preferred_name: '',
-        gender: '',
-        birth_date: '',
-        marital_status: '',
-        has_children: false,
-        num_of_children: '',
-        email: '',
-        primary_phone_number: '',
-        alt_phone_number: '',
+        profile: Object.assign(profileFields, client.profile),
         address: Object.assign({
           street_address: '',
           apt_number: '',
@@ -53,6 +43,9 @@ class ClientForm extends Component {
           province: '',
           postal_code: ''
         }, client.address),
+        marital_status: '',
+        has_children: false,
+        num_of_children: '',
         country_of_origin: '',
         country_of_last_residence: '',
         first_language: '',
@@ -71,7 +64,7 @@ class ClientForm extends Component {
           members: []
         }, client.family),
         eligibilities: []
-      }, _.omit(client, ['address', 'family']))
+      }, _.omit(client, ['address', 'family', 'profile']))
     }
 
     this.formValChange = this.formValChange.bind(this);
@@ -143,6 +136,9 @@ class ClientForm extends Component {
     }
     else if (_.includes(addressFields, id)) {
       nextForm['address'][e.target.id] = e.target.value;
+    }
+    else if (_.includes(_.keys(profileFields), id)) {
+      nextForm['profile'][e.target.id] = e.target.value;
     }
     else {
       nextForm[id] = e.target.value
@@ -276,6 +272,23 @@ class ClientForm extends Component {
                     handleFormValChange={this.handleFamilyChange}
                     handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
                     handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
+                  />
+                )
+              }
+              else if (_.includes(_.keys(profileFields), fieldId)) {
+                return (
+                  <FieldGroup
+                    key={fieldId}
+                    id={fieldId}
+                    label={clientFields[fieldId]['label']}
+                    type={clientFields[fieldId]['type']}
+                    component={clientFields[fieldId]['component']}
+                    value={this.state.form.profile[fieldId]}
+                    onChange={clientFields[fieldId]['component'] === 'MultiSelectField'
+                      ? this.handleMultiSelectChange
+                      : this.formValChange}
+                    required={isRequired}
+                    options={clientFields[fieldId]['options'] || options}
                   />
                 )
               }
