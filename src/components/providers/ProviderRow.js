@@ -26,7 +26,7 @@ class ProviderRow extends Component {
       <tr>
         <td>
           <Link to={`/provider/${p.id}`}>
-            {p.type==="Individual" ? p.first_name + " " + p.last_name : p.company}
+            {p.type==="Individual" ? p.profile.first_name + " " + p.profile.last_name : p.company}
           </Link>
         </td>
         <td>

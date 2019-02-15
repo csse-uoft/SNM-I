@@ -90,7 +90,7 @@ class ProviderInfoBox extends Component {
           <text>
             <b>Provider name: </b>
             {<Link to={`/provider/${provider.id}`}>
-              {this.props.provider.first_name + " " + this.props.provider.last_name}
+              {this.props.provider.profile.first_name + " " + this.props.provider.profile.last_name}
             </Link>}
           </text> :
           <text>
@@ -180,13 +180,13 @@ class Providers extends Component {
     }
 
     if (searchText && searchType === "name") {
-      providers = providers.filter(provider => (((provider.first_name).includes(searchText) ||
-            (provider.last_name).includes(searchText) || (provider.company).includes(searchText))));
+      providers = providers.filter(provider => (((provider.profile.first_name).includes(searchText) ||
+            (provider.profile.last_name).includes(searchText) || (provider.company).includes(searchText))));
     } else if (searchText && searchType === "email") {
       providers = providers.filter(provider => (provider.email).includes(searchText));
     } else if (searchText && searchType === "phone") {
       providers = providers.filter(provider =>
-        (provider.primary_phone_number).includes(searchText)
+        (provider.profile.primary_phone_number).includes(searchText)
       );
     }
 

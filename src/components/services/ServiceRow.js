@@ -28,7 +28,7 @@ class ServiceRow extends Component {
         {service.provider.type === "Individual" &&
           <td className="centered-text">
             <Link to={`/provider/${service.provider.id}`}>
-              {`${service.provider.first_name} ${service.provider.last_name}`}
+              {`${service.provider.profile.first_name} ${service.provider.profile.last_name}`}
             </Link>
           </td>
         }

@@ -47,7 +47,7 @@ class ServiceListItem extends Component {
             <Label bsStyle="primary">{service.provider.type}</Label>
             <Link to={`/provider/${service.provider.id}`}>
               { (service.provider.type === "Individual") ? (
-                  <p>{`${service.provider.first_name} ${service.provider.last_name}`}</p>
+                  <p>{`${service.provider.profile.first_name} ${service.provider.profile.last_name}`}</p>
                 ) : (
                   <p>{service.provider.company}</p>
                 )

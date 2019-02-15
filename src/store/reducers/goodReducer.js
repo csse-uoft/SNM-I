@@ -33,7 +33,7 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
         sortedGoods = [...state.index].sort((a, b) => (a.name).localeCompare(b.name));
       }
       else if (action.sortType === "provider") {
-        sortedGoods = [...state.index].sort((a, b) => (a.provider.first_name).localeCompare(b.provider.first_name));
+        sortedGoods = [...state.index].sort((a, b) => (a.provider.profile.first_name).localeCompare(b.provider.profile.first_name));
       }
       else if (action.sortType === "description") {
         sortedGoods = [...state.index].sort((a, b) => (a.desc).localeCompare(b.desc));
@@ -50,7 +50,7 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "provider") {
-        goods = sortedGoods.filter((good) => ((good.provider.company).includes(action.searchValue)) || ((good.provider.first_name + " " + good.provider.last_name).includes(action.searchValue)));
+        goods = sortedGoods.filter((good) => ((good.provider.company).includes(action.searchValue)) || ((good.provider.profile.first_name + " " + good.provider.profile.last_name).includes(action.searchValue)));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
       else if (action.searchType === "description") {

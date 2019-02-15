@@ -34,7 +34,7 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
         sortedServices = [...state.index].sort((a, b) => (a.name).localeCompare(b.name));
       }
       else if (action.sortType === "provider") {
-        sortedServices = [...state.index].sort((a, b) => (a.provider.first_name).localeCompare(b.provider.first_name));
+        sortedServices = [...state.index].sort((a, b) => (a.provider.profile.first_name).localeCompare(b.provider.profile.first_name));
       }
       else if (action.sortType === "description") {
         sortedServices = [...state.index].sort((a, b) => (a.desc).localeCompare(b.desc));
@@ -51,7 +51,7 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "provider") {
-        services = sortedServices.filter((service) => ((service.provider.company).includes(action.searchValue)) || ((service.provider.first_name + " " + service.provider.last_name).includes(action.searchValue)));
+        services = sortedServices.filter((service) => ((service.provider.company).includes(action.searchValue)) || ((service.provider.profile.first_name + " " + service.provider.profile.last_name).includes(action.searchValue)));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "description") {

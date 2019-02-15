@@ -9,3 +9,11 @@ export const profileFields = {
   primary_phone_number: '',
   alt_phone_number: '',
 }
+
+export const defaultContactFields = {
+  first_name: '',
+  last_name: '',
+  email: '',
+  primary_phone_number: '',
+  alt_phone_number: '',
+}
