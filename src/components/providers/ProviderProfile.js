@@ -32,7 +32,7 @@ class ProviderProfile extends Component {
 
     let formType
     if (provider.type === 'Organization') {
-      formType = 'Organization'
+      formType = 'organization'
     } else if (provider.type === 'Individual') {
       formType = provider.category.split(' ').join('_').toLowerCase()
     }
