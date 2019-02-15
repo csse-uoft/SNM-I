@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { providerFields, providerFormTypes } from '../../constants/provider_fields.js'
+import { profileFields, defaultContactFields } from '../../constants/default_fields.js'
 import { formatLocation } from '../../helpers/location_helpers'
 import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
-
 
 // redux
 import { withRouter } from 'react-router';
@@ -99,6 +99,7 @@ class ProviderForm extends Component {
     this.prev = this.prev.bind(this);
     this.handleStepClick = this.handleStepClick.bind(this);
     this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
+    this.contactFieldsChange = this.contactFieldsChange.bind(this);
 
     const id = this.props.match.params.id;
     const provider = id ? this.props.providersById[id] : {};
@@ -143,23 +144,16 @@ class ProviderForm extends Component {
         category: provider.category || providerCategory,
         languages: provider.languages || [],
         company: provider.company || '',
-        first_name: provider.first_name || '',
-        last_name: provider.last_name || '',
-        gender: provider.gender || '',
+        profile: Object.assign(profileFields, provider.profile),
         email: provider.email || '',
         primary_phone_number: provider.primary_phone_number || '',
-        primary_phone_extension: provider.primary_phone_extension || '',
-        primary_phone_type: provider.primary_phone_type || '',
         alt_phone_number: provider.alt_phone_number || '',
-        alt_phone_extension: provider.alt_phone_extension || '',
-        alt_phone_type: provider.alt_phone_type || '',
-        sec_contact_first_name: provider.sec_contact_first_name || '',
-        sec_contact_last_name:provider.sec_contact_last_name || '',
-        sec_contact_email: provider.sec_contact_email || '',
-        sec_contact_primary_phone_number: provider.sec_contact_primary_phone_number || '',
-        sec_contact_primary_phone_extension: provider.sec_contact_primary_phone_extension || '',
-        sec_contact_alt_phone_number: provider.sec_contact_alt_phone_number || '',
-        sec_contact_alt_phone_extension: provider.sec_contact_alt_phone_extension || '',
+        primary_contact: Object.assign({
+          profile: _.clone(defaultContactFields),
+        }, provider.primary_contact),
+        secondary_contact: Object.assign({
+          profile: _.clone(defaultContactFields),
+        }, provider.secondary_contact),
         main_address: Object.assign({
           street_address: '',
           apt_number: '',
@@ -205,7 +199,19 @@ class ProviderForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    nextForm[id] = e.target.value;
+    if (_.includes(_.keys(profileFields), id) && this.state.form.type === 'Individual') {
+      nextForm['profile'][id] = e.target.value;
+    }
+    else {
+      nextForm[id] = e.target.value;
+    }
+    this.setState({ form: nextForm });
+  }
+
+  contactFieldsChange(e, prefix) {
+    const id = e.target.id.split(':')[1]
+    let nextForm = _.clone(this.state.form);
+    nextForm[prefix]['profile'][id] = e.target.value;
     this.setState({ form: nextForm });
   }
 
@@ -301,13 +307,6 @@ class ProviderForm extends Component {
   }
 
   render() {
-    const isEnabled =
-      this.state.form.primary_phone_number.length > 0 &&
-      this.state.form.email.length > 0 &&
-      this.state.form.first_name.length > 0 &&
-      this.state.form.last_name.length > 0 &&
-      this.state.form.visibility !== 'select';
-
     let addresses = this.state.form.other_addresses.map((address, index) =>
       <AddressListItem
         key={index}
@@ -359,6 +358,28 @@ class ProviderForm extends Component {
                       </div>
                     )
                   }
+                  else if (fieldId === 'primary_contact' || fieldId === 'secondary_contact') {
+                    return (
+                      <div key={fieldId}>
+                        <h4>{providerFields[fieldId]['label']}</h4>
+                        <hr/>
+                        {_.map(_.keys(defaultContactFields), contactField => {
+                          return (
+                            <FieldGroup
+                              key={fieldId + ':' + contactField}
+                              id={fieldId + ':' + contactField}
+                              label={providerFields[contactField]['label']}
+                              type={providerFields[contactField]['type']}
+                              component={providerFields[contactField]['component']}
+                              value={this.state.form[fieldId]['profile'][contactField]}
+                              onChange={e => this.contactFieldsChange(e, fieldId)}
+                            />
+                          )
+                        })}
+                      </div>
+                    )
+
+                  }
                   else if (fieldId === 'other_addresses') {
                     return (
                       <div key={fieldId}>
@@ -388,6 +409,24 @@ class ProviderForm extends Component {
                         handleFormValChange={this.operationHourChange}
                       />
                     )
+                  }
+                  else if (_.includes(_.keys(profileFields), fieldId) &&
+                    this.state.form.type === 'Individual') {
+                    return (
+                      <FieldGroup
+                        key={fieldId}
+                        id={fieldId}
+                        label={providerFields[fieldId]['label']}
+                        type={providerFields[fieldId]['type']}
+                        component={providerFields[fieldId]['component']}
+                        value={this.state.form['profile'][fieldId]}
+                        onChange={providerFields[fieldId]['component'] === 'MultiSelectField'
+                          ? this.handleMultiSelectChange
+                          : this.formValChange}
+                        required={data.required}
+                        options={providerFields[fieldId]['options'] || options}
+                      />
+                    );
                   }
                   else {
                     return (

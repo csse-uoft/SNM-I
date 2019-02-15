@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import TableRow from '../../shared/TableRow';
-
+import { defaultContactFields } from '../../../constants/default_fields.js'
 import { formatLocation } from '../../../helpers/location_helpers';
 import { formatPhoneNumber } from '../../../helpers/phone_number_helpers';
 import { formatOperationHour } from '../../../helpers/operation_hour_helpers';
@@ -15,9 +15,26 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
     if (data.type === 'field') {
       rowTitle = providerFields[fieldId].label;
       switch(fieldId) {
+        case 'first_name':
+        case 'middle_name':
+        case 'last_name':
+        case 'preferred_name':
+        case 'gender':
+        case 'birth_date':
+        case 'email':
+          if (provider.type === 'Individual') {
+            rowValue = provider.profile[fieldId];
+          } else {
+            rowValue = provider[fieldId];
+          }
+          break;
         case 'primary_phone_number':
         case 'alt_phone_number':
-          rowValue = provider[fieldId] ? formatPhoneNumber(provider[fieldId]) : 'None provided';
+          if (provider.type === 'Individual') {
+            rowValue = provider.profile[fieldId] ? formatPhoneNumber(provider.profile[fieldId]) : 'None provided';
+          } else {
+            rowValue = provider[fieldId] ? formatPhoneNumber(provider[fieldId]) : 'None provided';
+          }
           break;
         case "main_address":
           rowValue = provider[fieldId] ? formatLocation(provider[fieldId]) : "None provided";
@@ -38,6 +55,19 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
           rowValue = _.map(provider.operation_hours, day =>
             <p key={day.week_day}>{formatOperationHour(day)}</p>)
           break;
+        case 'primary_contact':
+        case 'secondary_contact':
+          rowValue = _.map(_.keys(defaultContactFields), contactField => {
+            if (provider[fieldId]['profile'][contactField]) {
+              return (
+                <li key={contactField}>
+                  {`${providerFields[contactField]['label']}: ${provider[fieldId]['profile'][contactField]}`}
+                </li>
+              )
+            }
+          })
+          break;
+
         default:
           rowValue = provider[fieldId];
       }
