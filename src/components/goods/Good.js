@@ -115,7 +115,7 @@ class Good extends Component {
                 <td><b>Provider</b></td>
                 <td>
                   <Link to={`/provider/${good.provider.id}`}>
-                    {`${good.provider.first_name} ${good.provider.last_name}`}
+                    {`${good.provider.profile.first_name} ${good.provider.profile.last_name}`}
                   </Link>
                 </td>
               </tr>

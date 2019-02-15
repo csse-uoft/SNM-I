@@ -27,7 +27,7 @@ class GoodRow extends Component {
           {good.provider.type === "Individual" &&
             <td className='centered-text'>
               <Link to={`/provider/${good.provider.id}`}>
-                {`${good.provider.first_name} ${good.provider.last_name}`}
+                {`${good.provider.profile.first_name} ${good.provider.profile.last_name}`}
               </Link>
             </td>
           }

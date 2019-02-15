@@ -165,7 +165,7 @@ class Service extends Component {
                     {(service.provider.type === 'Organization') ?
                       service.provider.company
                     :
-                      `${service.provider.first_name} ${service.provider.last_name}`
+                      `${service.provider.profile.first_name} ${service.provider.profile.last_name}`
                     }
                   </Link>
                 </td>
