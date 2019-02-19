@@ -31,8 +31,8 @@ class NeedRow extends Component {
           </Link>
         </td>
         <td>
-          <Link to={`/clients/${need.person_id}/`}>
-            {p.clients[need.person_id].first_name + ' ' + p.clients[need.person_id].last_name}
+          <Link to={`/clients/${need.client_id}/`}>
+            {p.clients[need.client_id].profile.first_name + ' ' + p.clients[need.client_id].profile.last_name}
           </Link>
         </td>
         <td>{need.type}</td>
