@@ -137,7 +137,7 @@ export function matchClientNeed(needId, params) {
       }
     }).then(response => response.json())
       .then(need => {
-        dispatch(receiveClientNeedInfo(need.person_id, needId, need))
+        dispatch(receiveClientNeedInfo(need.client_id, needId, need))
       });
   }
 }
@@ -173,7 +173,7 @@ export function fetchNeed(needId) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
+    .then(need => dispatch(receiveClientNeedInfo(need.client_id, need.id, need)));
   }
 }
 
@@ -207,7 +207,7 @@ export function updateMatchStatus(matchId, params) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
+    .then(need => dispatch(receiveClientNeedInfo(need.client_id, need.id, need)));
   }
 }
 
@@ -224,6 +224,6 @@ export function createMatchNote(params) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeedInfo(need.person_id, need.id, need)));
+    .then(need => dispatch(receiveClientNeedInfo(need.client_id, need.id, need)));
   }
 }
