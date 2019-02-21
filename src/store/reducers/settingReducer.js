@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { RECEIVE_CLIENT_FIELDS, RECEIVE_PROVIDER_FIELDS } from '../actions/settingActions.js';
 
 const DEFAULT_STATE = {

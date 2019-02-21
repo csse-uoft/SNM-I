@@ -160,7 +160,7 @@ export function deleteClientNeed(clientId, needId, params) {
   }
 }
 
-export function fetchNeed(needId) {
+export function fetchNeed(needId, callback) {
   return dispatch => {
     dispatch(requestNeed(needId))
     const url = serverHost + '/needs/' + needId;
@@ -173,7 +173,10 @@ export function fetchNeed(needId) {
       }
     })
     .then(response => response.json())
-    .then(need => dispatch(receiveClientNeedInfo(need.client_id, need.id, need)));
+    .then(need => {
+      dispatch(receiveClientNeedInfo(need.client_id, need.id, need))
+      callback(need)
+    });
   }
 }
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import TableRow from '../shared/TableRow';
 
 import { torontoCoordinates, serverHost } from '../../store/defaults.js';
@@ -12,16 +11,17 @@ import ServiceSearchBar from './ServiceSearchBar'
 import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
 
-import { Grid, Row, Col, Table, Label, Tabs, Tab, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Table, Label, Tabs, Tab } from 'react-bootstrap';
 
 class Need extends Component {
   constructor(props) {
     super(props);
 
+    const need = props.needsById[props.match.params.need_id];
     this.state = {
       searchResult: [],
       location: props.client.address ? props.client.address.lat_lng : torontoCoordinates,
-      recommendedServices: props.needsById[props.match.params.need_id].recommended_services
+      recommendedServices: (need && need.recommended_services) || []
     }
 
     this.handleSearchService = this.handleSearchService.bind(this);
@@ -30,7 +30,9 @@ class Need extends Component {
 
   componentWillMount() {
     const id = this.props.match.params.need_id
-    this.props.dispatch(fetchNeed(id));
+    this.props.dispatch(fetchNeed(id, need => {
+      this.setState({ recommendedServices: need.recommended_services })
+    }));
   }
 
   handleSearchService(queryTerm, location) {
@@ -137,7 +139,10 @@ class Need extends Component {
               </Table>
             </Col>
             {(need.matches.length > 0) &&
-              <MatchedServices matches={need.matches} />
+              <MatchedServices
+                clientId={client.id}
+                matches={need.matches}
+              />
             }
             <Col sm={12}>
               <Tabs defaultActiveKey={1} id="serviceList">
