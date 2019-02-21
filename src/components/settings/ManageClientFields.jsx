@@ -25,7 +25,7 @@ class ManageClientFields extends Component {
       form: {
         steps_order: props.stepsOrder,
         form_structure: props.formStructure,
-        index_fields: props.clientIndexFields
+        index_fields: props.indexFields
       }
     }
 
@@ -283,7 +283,7 @@ const mapStateToProps = (state) => {
   return {
     stepsOrder: state.settings.clients.stepsOrder,
     formStructure: state.settings.clients.formStructure,
-    clientIndexFields: state.settings.clients.clientIndexFields
+    indexFields: state.settings.clients.indexFields
   }
 }
 
