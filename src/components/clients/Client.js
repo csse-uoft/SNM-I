@@ -5,8 +5,7 @@ import _ from 'lodash';
 import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';
 import NeedGroupPanel from '../client_needs/NeedGroupPanel';
-import ServiceRow from '../services/ServiceRow';
-import ProviderRow from '../providers/ProviderRow';
+import AppointmentRow from '../appointments/AppointmentRow';
 
 // redux
 import { connect } from 'react-redux'
@@ -133,46 +132,30 @@ class Client extends Component {
           />
         }
         <hr />
-        <h3>Services for Client</h3>
-        { client && client.loaded && p.needsLoaded &&
+        <h3>Appointments</h3>
+        { client && client.loaded &&
           <Table className="dashboard-table" striped bordered condensed hover>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Provider</th>
-                <th>Description</th>
                 <th>Category</th>
-                <th></th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Description</th>
               </tr>
             </thead>
             <tbody>
-              {services.map((service) => {
-                return <ServiceRow key={ service.id } service={ service }/>
+              {client.appointments.map(appointment => {
+                return (
+                  <AppointmentRow
+                    key={appointment.id}
+                    appointment={appointment}
+                  />
+                )
               })}
             </tbody>
           </Table>
         }
         <hr />
-        <h3>Providers for Client</h3>
-        { client && client.loaded && p.needsLoaded && providers.length > 0 &&
-          <Table className="dashboard-table" striped bordered condensed hover>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {providers.map(provider => {
-                return <ProviderRow key={provider.id} provider={provider} />
-              })}
-            </tbody>
-          </Table>
-        }
 
       </div>
     );
@@ -181,7 +164,6 @@ class Client extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    needsById: state.needs.byId,
     needsOrder: state.needs.order,
     needsByNeedGroup: state.needs.needGroups,
     needsLoaded: state.needs.loaded,

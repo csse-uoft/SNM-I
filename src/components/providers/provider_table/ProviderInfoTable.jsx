@@ -57,15 +57,20 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
           break;
         case 'primary_contact':
         case 'secondary_contact':
-          rowValue = _.map(_.keys(defaultContactFields), contactField => {
-            if (provider[fieldId]['profile'][contactField]) {
-              return (
-                <li key={contactField}>
-                  {`${providerFields[contactField]['label']}: ${provider[fieldId]['profile'][contactField]}`}
-                </li>
-              )
-            }
-          })
+          if (provider[fieldId]) {
+            rowValue = _.map(_.keys(defaultContactFields), contactField => {
+              if (provider[fieldId]['profile'][contactField]) {
+                return (
+                  <li key={contactField}>
+                    {`${providerFields[contactField]['label']}: ${provider[fieldId]['profile'][contactField]}`}
+                  </li>
+                )
+              }
+            })
+          }
+          else {
+            rowValue = null;
+          }
           break;
 
         default:

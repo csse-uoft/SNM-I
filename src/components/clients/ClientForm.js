@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { clientFields } from '../../constants/client_fields.js'
-import { profileFields } from '../../constants/default_fields.js'
+import { defaultProfileFields, defaultLocationFields } from '../../constants/default_fields.js'
 import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
 
 // redux
@@ -35,14 +35,8 @@ class ClientForm extends Component {
       clientId: client.id,
       mode: (client.id) ? 'edit' : 'new',
       form: Object.assign({
-        profile: Object.assign(profileFields, client.profile),
-        address: Object.assign({
-          street_address: '',
-          apt_number: '',
-          city: '',
-          province: '',
-          postal_code: ''
-        }, client.address),
+        profile: Object.assign(_.clone(defaultProfileFields), client.profile),
+        address: Object.assign(_.clone(defaultLocationFields), client.address),
         marital_status: '',
         has_children: false,
         num_of_children: '',
@@ -118,13 +112,8 @@ class ClientForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    const addressFields = [
-      'street_address',
-      'apt_number',
-      'city',
-      'province',
-      'postal_code'
-    ]
+    const addressFields = _.keys(defaultLocationFields);
+    
     if (id === 'eligibilities') {
       if (e.target.checked) {
         nextForm[id].push(e.target.value)
@@ -137,7 +126,7 @@ class ClientForm extends Component {
     else if (_.includes(addressFields, id)) {
       nextForm['address'][e.target.id] = e.target.value;
     }
-    else if (_.includes(_.keys(profileFields), id)) {
+    else if (_.includes(_.keys(defaultProfileFields), id)) {
       nextForm['profile'][e.target.id] = e.target.value;
     }
     else {
@@ -275,7 +264,7 @@ class ClientForm extends Component {
                   />
                 )
               }
-              else if (_.includes(_.keys(profileFields), fieldId)) {
+              else if (_.includes(_.keys(defaultProfileFields), fieldId)) {
                 return (
                   <FieldGroup
                     key={fieldId}
