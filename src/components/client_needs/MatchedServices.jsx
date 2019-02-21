@@ -1,11 +1,11 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import AppointmentModal from '../appointments/AppointmentModal';
 import { matchStatusOptions } from '../../store/defaults.js';
-import _ from 'lodash';
-
-import { connect } from 'react-redux'
 import { updateMatchStatus, createMatchNote } from '../../store/actions/needActions.js'
 
 import { Col, Label, Panel, PanelGroup, Form, FormGroup, ControlLabel,
@@ -18,7 +18,9 @@ class MatchedServices extends Component {
     this.state = {
       activeKey: null,
       matchStatusForm: {},
-      noteForm: {}
+      noteForm: {},
+      modalShow: false,
+      appointmentServiceId: null
     }
 
     this.handleSelect = this.handleSelect.bind(this);
@@ -27,6 +29,9 @@ class MatchedServices extends Component {
     this.textAreaChange = this.textAreaChange.bind(this);
     this.submitMatchStatus = this.submitMatchStatus.bind(this);
     this.submitNote = this.submitNote.bind(this);
+
+    this.handleModalHide = this.handleModalHide.bind(this);
+    this.handleModalShow = this.handleModalShow.bind(this);
   }
 
   submitMatchStatus(matchId) {
@@ -50,6 +55,17 @@ class MatchedServices extends Component {
     this.setState({
       noteForm: nextForm
     });
+  }
+
+  handleModalHide() {
+    this.setState({ modalshow: false });
+  }
+
+  handleModalShow(serviceId) {
+    this.setState({
+      modalshow: true,
+      appointmentServiceId: serviceId
+    })
   }
 
   handleSelect(activeKey) {
@@ -147,6 +163,9 @@ class MatchedServices extends Component {
                             </Col>
                           </FormGroup>
                         </Form>
+                        <Button bsStyle="default"  onClick={e => this.handleModalShow(match.service.id)}>
+                          Add appointment
+                        </Button>
                       </Col>
                       <Col sm={4}>
                         <Link to={`/service/${match.service.id}`} target="_blank">
@@ -163,6 +182,12 @@ class MatchedServices extends Component {
             }
           </PanelGroup>
         </Col>
+        <AppointmentModal
+          clientId={this.props.clientId}
+          serviceId={this.state.appointmentServiceId}
+          show={this.state.modalshow}
+          onHide={this.handleModalHide}
+        />
       </div>
     )
   }
