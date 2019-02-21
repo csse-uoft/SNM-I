@@ -10,7 +10,6 @@ import DeleteModal from './shared/DeleteModal'
 // redux
 import { connect } from 'react-redux'
 import { fetchServices, createServices, deleteService, SERVICE_ERROR } from '../store/actions/serviceActions.js'
-import { fetchNeeds } from '../store/actions/needActions.js'
 
 // styles
 import { Button, Col, Pagination} from 'react-bootstrap';
@@ -168,7 +167,6 @@ class Services extends Component {
 
   componentWillMount() {
     this.props.dispatch(fetchServices());
-    this.props.dispatch(fetchNeeds());
   }
 
   render() {
@@ -208,9 +206,6 @@ class Services extends Component {
       <div className="services-table content modal-container">
         <div>
           <h1>Services</h1>
-          <Link to="/notifications">
-          You have {p.needs.length} notification(s)
-          </Link>
           <hr/>
           <Link to="/services/new">
             <Button bsStyle="default">
@@ -270,7 +265,6 @@ class Services extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    needs: state.needs.needs,
     services: state.services.filteredServices || [],
     servicesLoaded: state.services.servicesLoaded
   }
