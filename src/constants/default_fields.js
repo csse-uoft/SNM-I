@@ -1,4 +1,4 @@
-export const profileFields = {
+export const defaultProfileFields = {
   first_name: '',
   middle_name: '',
   last_name: '',
@@ -16,4 +16,12 @@ export const defaultContactFields = {
   email: '',
   primary_phone_number: '',
   alt_phone_number: '',
+}
+
+export const defaultLocationFields = {
+  street_address: '',
+  apt_number: '',
+  city: '',
+  province: '',
+  postal_code: ''
 }

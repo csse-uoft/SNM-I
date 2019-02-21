@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { providerFields, providerFormTypes } from '../../constants/provider_fields.js'
-import { profileFields, defaultContactFields } from '../../constants/default_fields.js'
+import { defaultProfileFields, defaultContactFields } from '../../constants/default_fields.js'
 import { formatLocation } from '../../helpers/location_helpers'
 import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
 
@@ -144,7 +144,7 @@ class ProviderForm extends Component {
         category: provider.category || providerCategory,
         languages: provider.languages || [],
         company: provider.company || '',
-        profile: Object.assign(profileFields, provider.profile),
+        profile: Object.assign(_.clone(defaultProfileFields), provider.profile),
         email: provider.email || '',
         primary_phone_number: provider.primary_phone_number || '',
         alt_phone_number: provider.alt_phone_number || '',
@@ -199,7 +199,7 @@ class ProviderForm extends Component {
 
   formValChange(e, id=e.target.id) {
     let nextForm = _.clone(this.state.form);
-    if (_.includes(_.keys(profileFields), id) && this.state.form.type === 'Individual') {
+    if (_.includes(_.keys(defaultProfileFields), id) && this.state.form.type === 'Individual') {
       nextForm['profile'][id] = e.target.value;
     }
     else {
@@ -410,7 +410,7 @@ class ProviderForm extends Component {
                       />
                     )
                   }
-                  else if (_.includes(_.keys(profileFields), fieldId) &&
+                  else if (_.includes(_.keys(defaultProfileFields), fieldId) &&
                     this.state.form.type === 'Individual') {
                     return (
                       <FieldGroup
