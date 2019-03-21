@@ -9,7 +9,7 @@ const AdminRoute = ({ component: Component, isLoggedin, isAdmin, ...rest }) => (
       (isLoggedin === true && isAdmin === true) ? (
         <Component {...props} />
       ) : (
-        <Redirect to="/login" />
+        <Redirect to="/login-pane" />
       )
     }
   />
