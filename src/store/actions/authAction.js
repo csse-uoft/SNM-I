@@ -69,7 +69,14 @@ export function login(params) {
       dispatch(login_success(user, organization))
       return LOGIN_SUCCESS
     }).catch(err => {
-      dispatch(login_failure('The username or password you entered is incorrect. Please try again.'))
+      let alert;
+      if (err.message === "Failed to fetch") {
+        alert = 'Server is unavailable due to a temporary outage.'
+      }
+      else {
+        alert = 'The username or password you entered is incorrect. Please try again.'
+      }
+      dispatch(login_failure(alert))
       return LOGIN_FAILURE
     })
   }
