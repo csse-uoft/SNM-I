@@ -5,7 +5,8 @@ import TableRow from '../../shared/TableRow';
 import { defaultContactFields } from '../../../constants/default_fields.js'
 import { formatLocation } from '../../../helpers/location_helpers';
 import { formatPhoneNumber } from '../../../helpers/phone_number_helpers';
-import { formatOperationHour } from '../../../helpers/operation_hour_helpers';
+import { operationHourListToObject, OperationHourTable }
+  from '../../../helpers/operation_hour_helpers';
 
 import { Table } from 'react-bootstrap';
 
@@ -52,8 +53,8 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
           rowValue = (provider[fieldId] || []).join(', ')
           break;
         case "availability":
-          rowValue = _.map(provider.operation_hours, day =>
-            <p key={day.week_day}>{formatOperationHour(day)}</p>)
+          const operation_hours = operationHourListToObject(provider.operation_hours)
+          rowValue = <OperationHourTable operationHourObj={operation_hours} />
           break;
         case 'primary_contact':
         case 'secondary_contact':
