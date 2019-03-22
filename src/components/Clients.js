@@ -108,7 +108,7 @@ class Clients extends Component {
     else if (type === 'address'){
       newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
         const client = this.props.clients[clientId];
-        if (formatLocation(client.address).toLowerCase().includes(value.toLowerCase())) {
+        if (client.address && formatLocation(client.address).toLowerCase().includes(value.toLowerCase())) {
           result.push(client.id)
         }
         return result;

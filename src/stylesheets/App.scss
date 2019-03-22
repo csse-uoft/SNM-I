@@ -4,10 +4,7 @@
   margin-bottom: 0;
   background-color: white;
   color: #064b74;
-  .navbar-brand {
-    color: #064b74;
-    font-weight: 500;
-  }
+  border-radius: 0;
 }
 
 .content {
@@ -99,3 +96,9 @@ label.required:after {
 .bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot:after {opacity: 0;}
 .bs-wizard > .bs-wizard-step:last-child > .progress {width: 0;}
 .bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none; }
+
+.btn-default {
+  text-shadow: none;
+  box-shadow: none;
+  background-image: unset;
+}

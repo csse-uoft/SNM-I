@@ -89,12 +89,25 @@ export function fetchClients(orderBy) {
         headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
         },
-      }).then(response => response.json())
+      })
+      .then(async(response) => {
+        if (response.status === 200) {
+          return response.json()
+        }
+        else {
+          const error = await response.json()
+          throw new Error(JSON.stringify(error))
+        }
+      })
       .then(json => {
         dispatch(receiveAllClients(json))
       })
+      .catch(err => {
+        return ACTION_ERROR;
+      })
   }
 }
+
 
 export function deleteClient(id, params, callback) {
   return dispatch => {

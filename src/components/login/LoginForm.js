@@ -3,14 +3,14 @@ import { withRouter } from 'react-router';
 
 // redux
 import { connect } from 'react-redux';
-import { login, LOGIN_SUCCESS } from '../../store/actions/authAction';
+import { login, LOGIN_SUCCESS, clearAlert } from '../../store/actions/authAction';
 import { FormGroup, Form, Col, FormControl, Button, HelpBlock, Glyphicon } from 'react-bootstrap';
 
 class LoginForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { 
+    this.state = {
       form: {
         username: '',
         password: ''
@@ -20,6 +20,20 @@ class LoginForm extends Component {
 
     this.submit = this.submit.bind(this);
     this.formValChange = this.formValChange.bind(this);
+    this.componentCleanup = this.componentCleanup.bind(this);
+  }
+
+  componentCleanup() {
+    this.props.dispatch(clearAlert());
+  }
+
+  componentDidMount(){
+      window.addEventListener('beforeunload', this.componentCleanup);
+    }
+
+  componentWillUnmount() {
+    this.componentCleanup();
+    window.removeEventListener('beforeunload', this.componentCleanup);
   }
 
   submit() {
@@ -27,26 +41,23 @@ class LoginForm extends Component {
       const p = this.props
       if (status === LOGIN_SUCCESS) {
         p.history.push('/dashboard')
-      } else {
-        this.setState({ displayError: true });
       }
     });
   }
 
   formValChange(e) {
     let nextForm = {...this.state.form, [e.target.id]: e.target.value};
-    this.setState({ form: nextForm });    
+    this.setState({ form: nextForm });
   }
 
   render() {
     const s = this.state;
     return (
       <Form horizontal>
-        { s.displayError &&
+        { this.props.alert &&
           <div className="flash-error">
             <Glyphicon glyph="exclamation-sign" />
-            The username or password you entered is incorrect.
-            Please try again.
+            {this.props.alert}
           </div>
         }
         <FormGroup controlId="username">
@@ -63,9 +74,14 @@ class LoginForm extends Component {
 
         <FormGroup>
           <Col sm={12}>
-            <Button onClick={this.submit}>
-              Sign in
-            </Button>
+            <div className="login-buttons">
+              <Button
+                className="btn-default-login"
+                onClick={this.submit}
+              >
+                Sign in
+              </Button>
+            </div>
           </Col>
           <HelpBlock className="forgot-password">
             Forgot password?
@@ -76,4 +92,10 @@ class LoginForm extends Component {
   }
 }
 
-export default connect()(withRouter(LoginForm));
+const mapStateToProps = (state) => {
+  return {
+    alert: state.auth.alert
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(LoginForm));

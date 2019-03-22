@@ -9,7 +9,7 @@ const PrivateRoute = ({ component: Component, isLoggedin, ...rest }) => (
       isLoggedin === true ? (
         <Component {...props} />
       ) : (
-        <Redirect to="/login" />
+        <Redirect to="/login-pane" />
       )
     }
   />
