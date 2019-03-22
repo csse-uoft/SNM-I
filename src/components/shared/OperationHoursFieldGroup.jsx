@@ -1,11 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-import GeneralField from './GeneralField';
 import Select from 'react-select';
 import { operationHourOptions, operationHourMapping } from '../../helpers/operation_hour_helpers'
 
 import '../../stylesheets/OperationHour.scss';
-import { Button, Col, Row, Glyphicon } from 'react-bootstrap';
+import { Button, Glyphicon } from 'react-bootstrap';
 
 export default function OperationHoursFieldGroup({ operationHours,
                                                    handleFormValChange,
@@ -74,7 +73,7 @@ export default function OperationHoursFieldGroup({ operationHours,
                       </Button>
                     }
                     {' '}
-                    {idx != 0 && idx === (timeSlots.length - 1) &&
+                    {idx !== 0 && idx === (timeSlots.length - 1) &&
                       <Button
                         bsStyle="danger"
                         bsSize="small"

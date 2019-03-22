@@ -5,7 +5,7 @@ import TableRow from '../../shared/TableRow';
 import { defaultContactFields } from '../../../constants/default_fields.js'
 import { formatLocation } from '../../../helpers/location_helpers';
 import { formatPhoneNumber } from '../../../helpers/phone_number_helpers';
-import { formatOperationHour, operationHourListToObject, OperationHourTable }
+import { operationHourListToObject, OperationHourTable }
   from '../../../helpers/operation_hour_helpers';
 
 import { Table } from 'react-bootstrap';
