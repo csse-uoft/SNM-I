@@ -71,12 +71,12 @@ export function OperationHourTable({ operationHourObj }) {
       <tbody>
         {_.map(operationHourObj, (times, day) => {
           return (
-            <tr>
+            <tr key={day}>
               <td>{day}</td>
               <td>
                 {_.map(times, (time, _) => {
                   return (
-                    <div>
+                    <div key={day + time.start_time}>
                       {`${operationHourMapping[time.start_time]} -
                         ${operationHourMapping[time.end_time]}`}
                     </div>
