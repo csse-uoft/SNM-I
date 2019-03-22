@@ -227,8 +227,14 @@ class ProviderForm extends Component {
       this.props.dispatch(updateProvider(this.state.providerId, this.state.form))
         .then(() => this.props.history.push('/provider/' + id));
     } else {
-      this.props.dispatch(createProvider(this.state.form));
-      this.props.history.push('/providers/new/add-service');
+      this.props.dispatch(createProvider(this.state.form), (status, err, id) => {
+        if (status === ACTION_SUCCESS) {
+          this.props.history.push('/provider/' + id)
+        }
+        else {
+          console.log(err)
+        }
+      })
     }
   }
 

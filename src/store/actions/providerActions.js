@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { serverHost } from '../defaults.js';
+import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 import { updateAuthOrganization } from './authAction.js'
 
 export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';
@@ -106,7 +106,7 @@ export function fetchProviders() {
   }
 }
 
-export function createProvider(params) {
+export function createProvider(params, callback) {
   return dispatch => {
     const url = serverHost + '/providers/';
     return fetch(url, {
@@ -116,13 +116,25 @@ export function createProvider(params) {
         "Content-Type": "application/json",
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
-    }).then(response => response.json())
-      .then(provider => {
-        dispatch(receiveNewProvider(provider))
-        if (provider.status === 'Home Agency') {
-          dispatch(updateAuthOrganization(provider))
-        }
-    });
+    })
+    .then(async(response) => {
+      if (response.status === 201) {
+        return response.json()
+      }
+      else {
+        const error = await response.json()
+        throw new Error(JSON.stringify(error))
+      }
+    })
+    .then(provider => {
+      dispatch(receiveNewProvider(provider))
+      if (provider.status === 'Home Agency') {
+        dispatch(updateAuthOrganization(provider))
+      }
+      callback(ACTION_SUCCESS, null, provider.id);
+    }).catch(err => {
+      callback(ACTION_ERROR, err);
+    })
   }
 }
 
