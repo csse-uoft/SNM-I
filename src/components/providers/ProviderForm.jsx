@@ -4,10 +4,13 @@ import { providerFields, providerFormTypes } from '../../constants/provider_fiel
 import { defaultProfileFields, defaultContactFields } from '../../constants/default_fields.js'
 import { formatLocation } from '../../helpers/location_helpers'
 import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
+import { defaultTimeSlot, defaultOperationHour, operationHourListToObject,
+  operationHourObjectToList } from '../../helpers/operation_hour_helpers';
 
 // redux
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux'
+import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { fetchProviderFields } from '../../store/actions/settingActions.js';
@@ -20,7 +23,6 @@ import FormWizard from '../shared/FormWizard';
 
 // styles
 import { Button, Form, Col, Row, Well, ListGroup, Label } from 'react-bootstrap';
-
 
 class AddressForm extends Component {
   constructor(props) {
@@ -91,6 +93,7 @@ class ProviderForm extends Component {
     this.submit = this.submit.bind(this);
     this.mainAddressChange = this.mainAddressChange.bind(this);
     this.operationHourChange = this.operationHourChange.bind(this);
+    this.handleOperationHourOnClick = this.handleOperationHourOnClick.bind(this);
     this.otherAddressChange = this.otherAddressChange.bind(this);
     this.toggleAddressButton = this.toggleAddressButton.bind(this);
     this.submitAddress = this.submitAddress.bind(this);
@@ -103,16 +106,6 @@ class ProviderForm extends Component {
 
     const id = this.props.match.params.id;
     const provider = id ? this.props.providersById[id] : {};
-    const availability = [
-      { week_day: 'Monday', start_time: "", end_time: "" },
-      { week_day: 'Tuesday', start_time: "", end_time: "" },
-      { week_day: 'Wednesday', start_time: "", end_time: "" },
-      { week_day: 'Thursday', start_time: "", end_time: "" },
-      { week_day: 'Friday', start_time: "", end_time: "" },
-      { week_day: 'Saturday', start_time: "", end_time: "" },
-      { week_day: 'Sunday', start_time: "", end_time: "" }
-    ]
-
     let providerType, providerCategory, formType;
     if (id) {
       if (provider.type === 'Organization') {
@@ -162,7 +155,10 @@ class ProviderForm extends Component {
           postal_code: ''
         }, provider.main_address),
         other_addresses: provider.other_addresses || [],
-        operation_hours: Object.assign(availability, provider.operation_hours),
+        operation_hours: Object.assign(
+          defaultOperationHour,
+          operationHourListToObject(provider.operation_hours)
+        ),
         referrer: provider.referrer || '',
         own_car: provider.own_car || false,
         skills: provider.skills || '',
@@ -215,16 +211,29 @@ class ProviderForm extends Component {
     this.setState({ form: nextForm });
   }
 
-  operationHourChange(e, weekDay, index) {
+  operationHourChange(e, weekDay, slotIndex, id) {
     let nextForm = _.clone(this.state.form);
-    nextForm['operation_hours'][index][e.target.id] = e.target.value;
+    nextForm['operation_hours'][weekDay][slotIndex][id] = e && e.value;
+    this.setState({ form: nextForm });
+  }
+
+  handleOperationHourOnClick(e, weekDay, action) {
+    let nextForm = _.clone(this.state.form);
+
+    if (action === 'add') {
+      nextForm['operation_hours'][weekDay].push(_.clone(defaultTimeSlot))
+    } else {
+      nextForm['operation_hours'][weekDay].pop()
+    }
     this.setState({ form: nextForm });
   }
 
   submit(e) {
     if (this.state.mode === 'edit') {
       const id = this.props.match.params.id;
-      this.props.dispatch(updateProvider(this.state.providerId, this.state.form))
+      let form = _.clone(this.state.form);
+      form['operation_hours'] = operationHourObjectToList(form['operation_hours'])
+      this.props.dispatch(updateProvider(this.state.providerId, form))
         .then(() => this.props.history.push('/provider/' + id));
     } else {
       this.props.dispatch(createProvider(this.state.form), (status, err, id) => {
@@ -413,6 +422,7 @@ class ProviderForm extends Component {
                         key={fieldId}
                         operationHours={this.state.form.operation_hours}
                         handleFormValChange={this.operationHourChange}
+                        handleOperationHourOnClick={this.handleOperationHourOnClick}
                       />
                     )
                   }
