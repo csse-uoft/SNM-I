@@ -3,9 +3,9 @@ import TableRow from '../shared/TableRow';
 
 import { torontoCoordinates, serverHost } from '../../store/defaults.js';
 
-import MatchedServices from './MatchedServices'
-import ServiceList from './ServiceList'
-import ServiceSearchBar from './ServiceSearchBar'
+import MatchedServices from './MatchedServices';
+import ServiceList from './ServiceList';
+import ServiceSearchBar from './ServiceSearchBar';
 
 // redux
 import { connect } from 'react-redux'
@@ -20,7 +20,7 @@ class Need extends Component {
     const need = props.needsById[props.match.params.need_id];
     this.state = {
       searchResult: [],
-      location: props.client.address ? props.client.address.lat_lng : torontoCoordinates,
+      location: props.client.address ? { lat: parseFloat(props.client.address.lat), lng: parseFloat(props.client.address.lng) }: torontoCoordinates,
       recommendedServices: (need && need.recommended_services) || []
     }
 

@@ -1,11 +1,8 @@
 const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
-if (hostname === 'social-needs-marketplace.herokuapp.com') {
-  serverHost = 'https://snm-impact-server.herokuapp.com';
-}
-else if (hostname === 'social-needs-marketplace-jias.herokuapp.com') {
-  serverHost = 'https://snm-impact-server-jias.herokuapp.com';
+if (hostname === 'snm-i-production.s3-website.ca-central-1.amazonaws.com') {
+  serverHost = 'http://snm-i-jias.ca-central-1.elasticbeanstalk.com';
 }
 else {
   serverHost = 'http://127.0.0.1:8000';
