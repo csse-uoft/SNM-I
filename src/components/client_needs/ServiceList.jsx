@@ -16,7 +16,7 @@ const GMap = withGoogleMap(props => (
         <Marker
           key={service.id}
           label={(index+1).toString()}
-          position={service.location.lat_lng}
+          position={{ lat: parseFloat(service.location.lat), lng: parseFloat(service.location.lng)}}
         />
       )
     })}
