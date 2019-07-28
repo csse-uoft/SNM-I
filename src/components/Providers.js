@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
 import _ from 'lodash'
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom';
 import { ACTION_ERROR } from '../store/defaults.js'
+import { formatLocation } from '../helpers/location_helpers.js';
 
-
-// components
+import ProviderSearchBar from './providers/ProviderSearchBar';
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'
@@ -14,12 +15,9 @@ import { providerFormTypes } from '../constants/provider_fields.js'
 // redux
 import { connect } from 'react-redux'
 import { fetchProviders, createProviderWithCSV, deleteProvider} from '../store/actions/providerActions.js'
-import { formatLocation } from '../helpers/location_helpers.js';
-import ProviderSearchBar from './providers/ProviderSearchBar';
 
 // styles
 import { Button, Col, Glyphicon, Pagination, DropdownButton, MenuItem } from 'react-bootstrap'
-import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 
 class MapMarker extends Component {
@@ -152,6 +150,11 @@ class Providers extends Component {
     console.log("------------------>componentWillMount");
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ filteredProviders: nextProps.providers });
+    console.log("-------->componentWillReceiveProps", this.props);
+  }
+
   // for search bar
   handleInput(event) {
     const value = event.target.value;
@@ -206,18 +209,6 @@ class Providers extends Component {
       providers = providers.filter(provider => provider.type === providerType);
     }
     this.setState({filteredProviders: providers})
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.providers !== prevProps.providers) {
-      this.setState({currentPage: 1});
-    }
-    console.log("------------------>componentDidUpdate");
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ clientsOrder: nextProps.clientsOrder });
-    console.log("-------->componentWillReceiveProps", this.props);
   }
 
   handleCSVModalHide() {
@@ -359,14 +350,13 @@ class Providers extends Component {
             searchValue={this.state.searchText}
           />
           <hr/>
-        { p.providersLoaded &&
+        { p.providersLoaded && 
           <div>
             <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
               providersOnPage.map((provider) => {
-                return <ProviderRow key={ provider.id } provider={ provider } />
+                return <ProviderRow key={ provider.id } provider={ provider } handleShow={this.handleDeleteModalShow}/>
               })
-            }
-            </ProvidersIndex>
+            }</ProvidersIndex>
             <Pagination className="pagination">
               {pageNumbers}
             </Pagination>
@@ -404,7 +394,15 @@ class Providers extends Component {
     </div>
     )
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //     if (this.props.providers !== prevProps.providers) {
+  //       this.setState({currentPage: 1});
+  //     }
+  //     console.log("------------------>componentDidUpdate");
+  // }
 }
+
 
 const mapStateToProps = (state) => {
   return {

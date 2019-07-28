@@ -67,8 +67,7 @@ class ProviderRow extends Component {
             <MenuItem divider />
             <MenuItem
               eventKey="3"
-              onClick={() => this.props.handleShow(p.id)}
-            >
+              onClick={() => this.props.handleShow(p.id)}>
               Delete
               <Glyphicon glyph="trash" />
             </MenuItem>
