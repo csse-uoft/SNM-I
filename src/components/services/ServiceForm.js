@@ -158,14 +158,14 @@ class ServiceForm extends Component {
           this.props.history.push('/services')
         } else {
           const error_messages =
-            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+            _.reduce(JSON.parse(err.message, (result, error_messages, field) => {
               const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
                 .split('_').join(' ')
               _.each(error_messages, message => {
                 result.push(message.replace('This field', titleizedField))
               })
               return result;
-            }, [])
+            }), [])
           this.setState({ showAlert: true, error_messages: error_messages });
         }
       }));
@@ -176,14 +176,14 @@ class ServiceForm extends Component {
           this.props.history.push('/services')
         } else {
           const error_messages =
-            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
+            _.reduce(JSON.parse(err.message, (result, error_messages, field) => {
               const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
                 .split('_').join(' ')
               _.each(error_messages, message => {
                 result.push(message.replace('This field', titleizedField))
               })
               return result;
-            }, [])
+            }), [])
           this.setState({ showAlert: true, error_messages: error_messages });
         }
       }));

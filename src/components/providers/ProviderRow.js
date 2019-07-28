@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { formatPhoneNumber } from '../../helpers/phone_number_helpers'
+import DropdownMenu from '../shared/DropdownMenu'
 
 // redux
 import { connect } from 'react-redux';
@@ -11,6 +13,7 @@ class ProviderRow extends Component {
   constructor(props) {
     super(props);
     this.delete = this.delete.bind(this);
+    console.log("this.props: ", this.props);
   }
 
   delete(id) {
@@ -53,16 +56,19 @@ class ProviderRow extends Component {
             <Glyphicon glyph="option-vertical" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <MenuItem eventKey="1" href={`/provider/${p.id}`}>
-              View
-              <Glyphicon glyph="file" />
+            <MenuItem eventKey="1"
+            href={`/provider/${p.id}`}
+            target="_blank"
+          >
+            View
+            <Glyphicon glyph="file" />
             </MenuItem>
             <EditButton currentUser={currentUser} providerStatus={p.status} url={url}/>
             <MenuItem divider />
             <MenuItem
               eventKey="3"
-              onClick={() => this.delete(p.id)}
-              disabled={p.status === 'Home Agency'}>
+              onClick={() => this.props.handleShow(p.id)}
+            >
               Delete
               <Glyphicon glyph="trash" />
             </MenuItem>
@@ -75,16 +81,19 @@ class ProviderRow extends Component {
 }
 
 function EditButton({ currentUser, providerStatus, url }) {
+  console.log("------------------>edit");
   if (providerStatus === 'Home Agency' && currentUser && !currentUser.is_admin) {
     return (
-      <MenuItem eventKey="2" disabled>
+      <MenuItem eventKey="2" disabled 
+      target="_blank">
         Edit
         <Glyphicon glyph="pencil" />
       </MenuItem>
     )
   }
   return (
-    <MenuItem eventKey="2" href={url}>
+    <MenuItem eventKey="2" href={url}
+    target="_blank">
       Edit
       <Glyphicon glyph="pencil" />
     </MenuItem>

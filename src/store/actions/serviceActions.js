@@ -5,9 +5,9 @@ export const RECEIVE_NEW_SERVICE = 'RECEIVE_NEW_SERVICE';
 export const REQUEST_SERVICE = 'REQUEST_SERVICE';
 export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
 export const REQUEST_SERVICES = 'REQUEST_SERVICES';
+export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const RECEIVE_ALL_SERVICES = 'RECEIVE_ALL_SERVICES';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
-export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const SEARCH_SERVICES = 'SEARCH_SERVICES';
 export const SERVICE_ERROR = 'SERVICE_ERROR';
 export const SERVICE_SUCCESS = 'SERVICE_SUCCESS';
@@ -94,7 +94,6 @@ export function fetchServices() {
 export function deleteService(id, params) {
   return dispatch => {
     const url = serverHost + '/service/' + id + '/';
-
     return fetch(url, {
       method: 'DELETE',
       body: JSON.stringify(params),
