@@ -29,7 +29,9 @@ class ProviderProfile extends Component {
   render() {
     const id = this.props.match.params.id;
     const provider = this.props.providersById[id];
-
+    if (provider == null){
+      return null
+    }
     let formType
     if (provider.type === 'Organization') {
       formType = 'organization'
