@@ -20,7 +20,7 @@ import { Button } from 'react-bootstrap';
 class Clients extends Component {
   constructor(props, context) {
     super(props, context);
-    console.log("------------>", props);
+    console.log("------------>", props, "------------------------>", context);
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -49,7 +49,7 @@ class Clients extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({ clientsOrder: nextProps.clientsOrder });
-    console.log("-------->componentWillReceiveProps", this.props);
+    console.log("-------->componentWillReceiveProps", nextProps);
   }
 
   handleCSVModalHide() {
