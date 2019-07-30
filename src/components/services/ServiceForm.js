@@ -15,9 +15,9 @@ import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers';
 
 // redux
 import { connect } from 'react-redux'
-import { createService, updateService, SERVICE_SUCCESS } from '../../store/actions/serviceActions.js'
+import { createService, updateService } from '../../store/actions/serviceActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js';
-
+import { ACTION_SUCCESS } from '../../store/defaults.js';
 
 import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio, HelpBlock } from 'react-bootstrap';
 
@@ -154,7 +154,7 @@ class ServiceForm extends Component {
     if (this.state.mode === 'edit') {
       this.props.dispatch(
         updateService(this.state.serviceId, form, (status, err, serviceId) => {
-        if (status === SERVICE_SUCCESS) {
+        if (status === ACTION_SUCCESS) {
           this.props.history.push('/services')
         } else {
           const error_messages =
@@ -172,7 +172,7 @@ class ServiceForm extends Component {
     } else {
       this.props.dispatch(
         createService(this.state.form, (status, err, serviceId) => {
-        if (status === SERVICE_SUCCESS) {
+        if (status === ACTION_SUCCESS) {
           this.props.history.push('/services')
         } else {
           const error_messages =
@@ -198,7 +198,7 @@ class ServiceForm extends Component {
     let provider, provider_locations;
     if (this.state.form.provider_id) {
       provider = this.props.providersById && this.props.providersById[this.state.form.provider_id];
-      provider_locations = (provider.other_addresses || []).concat([provider.main_address])
+      provider_locations = provider.other_addresses ? provider.other_addresses.concat([provider.main_address]) : []
     }
 
     return (

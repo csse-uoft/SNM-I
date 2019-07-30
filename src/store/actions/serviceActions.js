@@ -1,7 +1,8 @@
 import fetch from 'isomorphic-fetch';
-import { serverHost } from '../defaults.js';
+import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
 export const RECEIVE_NEW_SERVICE = 'RECEIVE_NEW_SERVICE';
+export const RECEIVE_NEW_SERVICE_CSV = 'RECEIVE_NEW_SERVICE_CSV';
 export const REQUEST_SERVICE = 'REQUEST_SERVICE';
 export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
 export const REQUEST_SERVICES = 'REQUEST_SERVICES';
@@ -9,8 +10,12 @@ export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const RECEIVE_ALL_SERVICES = 'RECEIVE_ALL_SERVICES';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
 export const SEARCH_SERVICES = 'SEARCH_SERVICES';
-export const SERVICE_ERROR = 'SERVICE_ERROR';
-export const SERVICE_SUCCESS = 'SERVICE_SUCCESS';
+
+function requestServices() {
+  return {
+    type: REQUEST_SERVICES
+  }
+}
 
 function requestService(id) {
   return {
@@ -27,17 +32,25 @@ function receiveService(id, json) {
   }
 }
 
-function requestServices(json) {
-  return {
-    type: REQUEST_SERVICES,
-    services: json
-  }
-}
-
 function receiveServices(json) {
   return {
     type: RECEIVE_SERVICES,
     services: json
+  }
+}
+
+function receiveNewService(id, json) {
+  return {
+    type: RECEIVE_NEW_SERVICE,
+    id: id,
+    provider: json
+  }
+}
+
+function receiveNewServicesCSV(json) {
+  return {
+    type: RECEIVE_NEW_SERVICE_CSV,
+    providers: json
   }
 }
 
@@ -84,14 +97,25 @@ export function fetchServices() {
         headers: {
           'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
         },
-      }).then(response => response.json())
+      }).then(async(response) => {
+        if (response.status === 200) {
+          return response.json()
+        }
+        else {
+          const error = await response.json()
+          throw new Error(JSON.stringify(error))
+        }
+      })
       .then(json => {
         dispatch(receiveServices(json))
+      })
+      .catch(err => {
+        return ACTION_ERROR;
       })
   }
 }
 
-export function deleteService(id, params) {
+export function deleteService(id, params, callback) {
   return dispatch => {
     const url = serverHost + '/service/' + id + '/';
     return fetch(url, {
@@ -104,12 +128,12 @@ export function deleteService(id, params) {
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeService(id))
-        return SERVICE_SUCCESS
+        callback(ACTION_SUCCESS);
       }
       else {
-        return SERVICE_ERROR
+        callback(ACTION_ERROR);
       }
-    });
+    })
   }
 }
 
@@ -134,10 +158,10 @@ export function createService(params, callback) {
       }
     })
     .then(service => {
-      dispatch(receiveService(service.id, service))
-      callback(SERVICE_SUCCESS, null, service.id);
+      dispatch(receiveNewService(service.id, service))
+      callback(ACTION_SUCCESS, null, service.id);
     }).catch(err => {
-      callback(SERVICE_ERROR, err);
+      callback(ACTION_ERROR, err);
     })
   }
 }
@@ -165,11 +189,11 @@ export function createServices(file) {
       }
     })
     .then(services => {
-      dispatch(receiveServices(services))
-      return SERVICE_SUCCESS
+      dispatch(receiveNewServicesCSV(services))
+      return ACTION_SUCCESS
     })
     .catch(err => {
-      return SERVICE_ERROR
+      return ACTION_ERROR
     })
   }
 }
@@ -196,10 +220,10 @@ export function updateService(id, params, callback) {
         }
       })
       .then(service => {
-        dispatch(receiveService(service.id, service))
-        callback(SERVICE_SUCCESS, null, service.id);
+        dispatch(receiveNewService(service.id, service))
+        callback(ACTION_SUCCESS, null, service.id);
       }).catch(err => {
-        callback(SERVICE_ERROR, err);
+        callback(ACTION_ERROR, err);
       })
   }
 }

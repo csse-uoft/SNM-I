@@ -18,6 +18,21 @@ function requestProviders() {
   }
 }
 
+function requestProvider(id) {
+  return {
+    type: REQUEST_PROVIDER,
+    id: id
+  }
+}
+
+function receiveProvider(id, json) {
+  return {
+    type: RECEIVE_PROVIDER,
+    info: json,
+    id: id
+  }
+}
+
 function receiveProviders(json) {
   return {
     type: RECEIVE_PROVIDERS,
@@ -44,21 +59,6 @@ function receiveNewProvidersCSV(json) {
 function removeProvider(id) {
   return {
     type: REMOVE_PROVIDER,
-    id: id
-  }
-}
-
-function receiveProvider(id, json) {
-  return {
-    type: RECEIVE_PROVIDER,
-    info: json,
-    id: id
-  }
-}
-
-function requestProvider(id) {
-  return {
-    type: REQUEST_PROVIDER,
     id: id
   }
 }
