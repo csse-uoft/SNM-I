@@ -31,6 +31,7 @@ class ServiceForm extends Component {
     }
 
     this.state = {
+      errors: {},
       serviceId: service.id,
       mode: (service.id) ? 'edit' : 'new',
       form: {
@@ -151,44 +152,56 @@ class ServiceForm extends Component {
     ]
     delete form['eligibility_conditions']['lower_age_limit']
     delete form['eligibility_conditions']['upper_age_limit']
+    if (this.validateForm()) {
     if (this.state.mode === 'edit') {
       this.props.dispatch(
         updateService(this.state.serviceId, form, (status, err, serviceId) => {
         if (status === ACTION_SUCCESS) {
           this.props.history.push('/services')
-        } else {
-          const error_messages =
-            _.reduce(JSON.parse(err.message, (result, error_messages, field) => {
-              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
-                .split('_').join(' ')
-              _.each(error_messages, message => {
-                result.push(message.replace('This field', titleizedField))
-              })
-              return result;
-            }), [])
-          this.setState({ showAlert: true, error_messages: error_messages });
-        }
+          this.forceUpdate()
+        } 
       }));
     } else {
       this.props.dispatch(
         createService(this.state.form, (status, err, serviceId) => {
-        if (status === ACTION_SUCCESS) {
           this.props.history.push('/services')
-        } else {
-          const error_messages =
-            _.reduce(JSON.parse(err.message, (result, error_messages, field) => {
-              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
-                .split('_').join(' ')
-              _.each(error_messages, message => {
-                result.push(message.replace('This field', titleizedField))
-              })
-              return result;
-            }), [])
-          this.setState({ showAlert: true, error_messages: error_messages });
-        }
+          this.forceUpdate()
       }));
     }
   }
+  }
+
+  validateForm() {
+
+    let errors = {};
+    let formIsValid = true;
+    if (!this.state.form.provider_id) {
+      formIsValid = false;
+      errors["provider_id"] = "*Please enter a provider.";      
+    }
+
+    if (!this.state.form.type) {
+      formIsValid = false;
+      errors["type"] = "*Please enter the type.";
+    }
+
+    if (!this.state.form.name) {
+      formIsValid = false;
+      errors["type"] = "*Please enter the name.";
+    }
+
+    if (!this.state.form.category) {
+      formIsValid = false;
+      errors["category"] = "*Please enter the category.";
+    }
+
+    this.setState({
+      errors: errors
+    });
+
+    return formIsValid;
+
+    }
 
   render() {
     const p = this.props;
@@ -236,7 +249,7 @@ class ServiceForm extends Component {
               value={this.state.form.provider_id}
               onChange={this.formValChange}
               required
-            />
+            /><div className="errorMsg">{this.state.errors.provider_id}</div>
             <FormGroup>
               <Col smOffset={3} sm={9}>
                 <Link to={`/providers/new`}>
@@ -254,7 +267,7 @@ class ServiceForm extends Component {
               value={this.state.form.type}
               onChange={this.formValChange}
               required
-            />
+            /><div className="errorMsg">{this.state.errors.type}</div>
             <GeneralField
               id="name"
               label="Name"
@@ -262,7 +275,7 @@ class ServiceForm extends Component {
               value={this.state.form.name}
               onChange={this.formValChange}
               required
-            />
+            /><div className="errorMsg">{this.state.errors.name}</div>
             <GeneralField
               id="desc"
               label="Description"
@@ -278,7 +291,7 @@ class ServiceForm extends Component {
               value={this.state.form.category}
               onChange={this.formValChange}
               required
-            />
+            /><div className="errorMsg">{this.state.errors.category}</div>
             <GeneralField
               id="available_from"
               label="Available from"
@@ -468,7 +481,7 @@ class ServiceForm extends Component {
               type="email"
               value={this.state.form.email}
               onChange={this.formValChange}
-              required
+              
             />
             <GeneralField
               id="primary_phone_number"
@@ -476,7 +489,7 @@ class ServiceForm extends Component {
               type="tel"
               value={this.state.form.primary_phone_number}
               onChange={this.formValChange}
-              required
+              
             />
             <GeneralField
               id="alt_phone_number"
@@ -484,7 +497,7 @@ class ServiceForm extends Component {
               type="tel"
               value={this.state.form.alt_phone_number}
               onChange={this.formValChange}
-              required
+              
             />
             <RadioField
               id="location_same_as_provider"
@@ -492,7 +505,7 @@ class ServiceForm extends Component {
               options={{ 'Same as provider': true, 'Other': false }}
               onChange={this.formValChange}
               defaultChecked={this.state.form.location_same_as_provider}
-              required
+              
             />
             {this.state.form.location_same_as_provider && this.state.form.provider_id &&
               <div>
