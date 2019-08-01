@@ -23,10 +23,12 @@ class MapMarker extends Component {
     super(props);
     this.state = {
       isOpen: false,
+      isClicked: false      
     }
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.closeInfoBox = this.closeInfoBox.bind(this);
+    this.openInfoBox = this.openInfoBox.bind(this);
   }
 
   onMouseEnter() {
@@ -47,6 +49,12 @@ class MapMarker extends Component {
     })
   }
 
+  openInfoBox() {
+    this.setState({
+      isClicked: true
+    })
+  }
+
   render() {
     return (
       <Marker
@@ -54,8 +62,9 @@ class MapMarker extends Component {
         position={this.props.service.location.lat_lng}
         onMouseOver={() => this.onMouseEnter()}
         onMouseOut={() => this.onMouseLeave()}
+        onClick={this.openInfoBox}
       >
-      {this.state.isOpen &&
+      {(this.state.isOpen || this.state.isClicked) &&
         <InfoWindow onCloseClick={() => this.closeInfoBox()}>
           <ServiceInfoBox service={this.props.service}/>
         </InfoWindow>
@@ -80,7 +89,7 @@ function ServiceInfoBox({ service }) {
 class Services extends Component {
   constructor(props, context) {
     super(props, context);
-    console.log("--------------------->this.props: ", this.props);
+    console.log("--------------------->this.props: ", this);
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -109,8 +118,10 @@ class Services extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({ filteredServices: nextProps.services });
+    this.forceUpdate();
     console.log("-------->componentWillReceiveProps", nextProps);
   }
+
   handleCSVModalHide() {
     this.setState({ CSVModalshow: false });
   }
@@ -129,7 +140,7 @@ class Services extends Component {
           this.setState({ CSVModalshow: false })
         }
       })
-    );
+    )
   }
 
   changePage(e) {
@@ -152,7 +163,7 @@ class Services extends Component {
   }
 
   handleDeleteModalHide() {
-    this.setState({ deleteModalshow: false });
+    this.setState({ deleteModalShow: false });
   }
 
   handleDeleteModalShow(id) {
@@ -165,7 +176,7 @@ class Services extends Component {
 
   handleDelete(id, form) {
     this.props.dispatch(
-      deleteService(id, form, (status) => {
+      deleteService(id, form, status => {
         if (status === ACTION_ERROR) {
           // this.setState({ displayError: true });
         } else {
@@ -200,14 +211,15 @@ class Services extends Component {
         defaultCenter={torontoCentroid} >
         {
           _.map(servicesOnPage, (service) => {
-            return <MapMarker key={service.id} service={service} />
+            return <MapMarker key={service.id} 
+            service={service} />
           })
         }
       </GoogleMap>
     ));
 
     return(
-      <div className="services-table content modal-container">
+      <div className="services content modal-container">
         <h1>Services</h1>
         <hr/>
           <div>
@@ -215,8 +227,7 @@ class Services extends Component {
               <Button bsStyle="default">
                 Add new service
               </Button>
-            </Link>
-            {' '}
+            </Link>{' '}
             <Button bsStyle="default"  onClick={this.handleCSVModalShow}>
               Add services by uploading CSV
             </Button>
@@ -226,13 +237,20 @@ class Services extends Component {
             </Button>
             </div>
             <hr/>
-            { p.servicesLoaded &&
+            { p.servicesLoaded && 
               <div>
-              <ServicesIndex changeNumberPerPage={this.changeNumberPerPage}>{
-                servicesOnPage.map((service) => {
-                  return <ServiceRow key={ service.id } service={ service } handleShow={this.handleDeleteModalShow} />
-                })
-              }</ServicesIndex>
+                <ServicesIndex changeNumberPerPage={this.changeNumberPerPage}>{
+                  servicesOnPage.map((service) => {
+                    //const service = p.services[service.id]
+                    return (
+                      <ServiceRow 
+                        key={service.id} 
+                        service={service} 
+                        handleShow={this.handleDeleteModalShow} 
+                      />
+                    )
+                  })
+                }</ServicesIndex>
               <Pagination className="pagination">
                 {pageNumbers}
               </Pagination>
@@ -270,17 +288,18 @@ class Services extends Component {
     )
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.services !== prevProps.services) {
-      this.setState({currentPage: 1});
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.services !== prevProps.services) {
+  //     this.setState({filteredServices: this.props.services});
+  //   }
+  // }
 }
 
 const mapStateToProps = (state) => {
   return {
     services: state.services.filteredServices || [],
-    servicesLoaded: state.services.servicesLoaded
+    servicesLoaded: state.services.servicesLoaded,
+
   }
 }
 

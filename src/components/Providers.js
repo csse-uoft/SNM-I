@@ -280,7 +280,7 @@ class Providers extends Component {
   }
 
   render() {
-    console.log("------------------>render");
+    console.log("------------------>render", this.props);
     const p = this.props;
     let providersOnPage = this.state.filteredProviders.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),

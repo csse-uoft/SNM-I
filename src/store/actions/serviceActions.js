@@ -1,21 +1,14 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
-export const RECEIVE_NEW_SERVICE = 'RECEIVE_NEW_SERVICE';
-export const RECEIVE_NEW_SERVICE_CSV = 'RECEIVE_NEW_SERVICE_CSV';
 export const REQUEST_SERVICE = 'REQUEST_SERVICE';
 export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
 export const REQUEST_SERVICES = 'REQUEST_SERVICES';
-export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const RECEIVE_ALL_SERVICES = 'RECEIVE_ALL_SERVICES';
+export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
 export const SEARCH_SERVICES = 'SEARCH_SERVICES';
 
-function requestServices() {
-  return {
-    type: REQUEST_SERVICES
-  }
-}
 
 function requestService(id) {
   return {
@@ -32,25 +25,24 @@ function receiveService(id, json) {
   }
 }
 
-function receiveServices(json) {
+function requestServices(json) {
   return {
-    type: RECEIVE_SERVICES,
+    type: REQUEST_SERVICES,
     services: json
   }
 }
 
-function receiveNewService(id, json) {
+function receiveAllServices(json) {
   return {
-    type: RECEIVE_NEW_SERVICE,
-    id: id,
-    provider: json
+    type: RECEIVE_ALL_SERVICES,
+    services: json
   }
 }
 
-function receiveNewServicesCSV(json) {
+function receiveServices(json) {
   return {
-    type: RECEIVE_NEW_SERVICE_CSV,
-    providers: json
+    type: RECEIVE_SERVICES,
+    services: json
   }
 }
 
@@ -158,7 +150,7 @@ export function createService(params, callback) {
       }
     })
     .then(service => {
-      dispatch(receiveNewService(service.id, service))
+      dispatch(receiveService(service.id, service))
       callback(ACTION_SUCCESS, null, service.id);
     }).catch(err => {
       callback(ACTION_ERROR, err);
@@ -189,7 +181,7 @@ export function createServices(file) {
       }
     })
     .then(services => {
-      dispatch(receiveNewServicesCSV(services))
+      dispatch(receiveServices(services))
       return ACTION_SUCCESS
     })
     .catch(err => {
@@ -220,7 +212,7 @@ export function updateService(id, params, callback) {
         }
       })
       .then(service => {
-        dispatch(receiveNewService(service.id, service))
+        dispatch(receiveService(service.id, service))
         callback(ACTION_SUCCESS, null, service.id);
       }).catch(err => {
         callback(ACTION_ERROR, err);

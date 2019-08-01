@@ -52,10 +52,10 @@ class ServiceRow extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.auth.currentUser
-  }
-}
+// const mapStateToProps = (state) => {
+//   return {
+//     currentUser: state.auth.currentUser
+//   }
+// }
 
 export default ServiceRow;
