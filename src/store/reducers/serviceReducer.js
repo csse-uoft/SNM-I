@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 
 export function services(state = {index: [], filteredServices: [], servicesLoaded: false, byId: {} }, action) {
-  let nextById, sortedServices, services;
+  let nextById, sortedServices, services, nextIndex;
   switch (action.type) {
     case REQUEST_SERVICES:
       return {...state, servicesLoaded: false }
@@ -13,12 +13,14 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
       nextById = { ...state.byId, ...newServicesById }
       return {...state, byId: nextById, servicesLoaded: true, index: action.services, filteredServices:action.services }
     case RECEIVE_ALL_SERVICES:
-      nextById = _.keyBy(action.services, service => service.id);
-      return {...state, byId: nextById, servicesLoaded: true, index: action.services, filteredServices:action.services }
+      nextById = _.keyBy(action.clients, client => client.id);
+      return {...state, byId: nextById, servicesLoaded: true}
     case REMOVE_SERVICE:
-      nextById = _.clone(state.byId);
-      delete nextById[action.id]
-      return { ...state, byId: nextById }
+      //nextById = _.clone(state.byId);
+      //delete nextById[action.id]
+      nextIndex = _.clone(state.index);
+      _.remove(nextIndex, (n) => { return n.id === action.id });
+      return { ...state, byId: nextById, filteredProviders: nextIndex }
     case REQUEST_SERVICE:
       nextById = { ...state.byId, [action.id]: { servicesLoaded: false } }
       return {...state, byId: nextById }

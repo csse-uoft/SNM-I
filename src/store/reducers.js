@@ -35,5 +35,5 @@ export const rootReducer = (state, action) => {
     state = initialState
   }
 
-  return appReducer(state, action)
+  return appReducer(state, action);
 }
