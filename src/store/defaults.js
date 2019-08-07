@@ -1,11 +1,8 @@
 const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
-if (hostname === 'jias-snmi-client.s3-website.ca-central-1.amazonaws.com') {
-  serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
-}
-else if (hostname === 'jias.snmi.ca') {
-  serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
+if (hostname === 'snm-i-production.s3-website.ca-central-1.amazonaws.com') {
+  serverHost = 'http://snm-i-jias.ca-central-1.elasticbeanstalk.com';
 }
 else {
   serverHost = 'http://127.0.0.1:8000';
@@ -17,121 +14,121 @@ const ACTION_ERROR = 'ACTION_ERROR';
 const torontoCoordinates = { lat: 43.6497, lng: -79.3763 };
 
 const genderOptions = [
-  'Male',
   'Female',
+  'Male',
   'Other'
 ]
 
 const maritalStatusOptions = [
-  'Single',
-  'Married',
   'Common Law',
-  'Separated',
   'Divorced',
-  'Widowed',
-  'Other'
+  'Married',
+  'Other',
+  'Separated',
+  'Single',
+  'Widowed'
 ]
 
 const statusInCanadaOptions = [
-  'Permanent Resident - Skilled Worker and Skilled Trades',
-  'Permanent Resident - Provincial Nominee',
-  'Permanent Resident - Business Class',
-  'Permanent Resident - Canadian Experience Class',
-  'Permanent Resident - Live-in Caregiver',
-  'Permanent Resident - Family Class',
-  'Permanent Resident - Refugees',
-  'Permanent Resident -  Humanitarian and Compassionate',
-  'Application in Process - Independent',
   'Application in Process - Family',
   'Application in Process - Humanitarian and Compassionate',
+  'Application in Process - Independent',
   'Application in Process - Refugee',
-  'Temporary Resident',
   'Canadian Citizen',
   'Immigrant',
-  'Work Permit',
+  'Other',
+  'Permanent Resident - Business Class',
+  'Permanent Resident - Canadian Experience Class',
+  'Permanent Resident - Family Class',
+  'Permanent Resident -  Humanitarian and Compassionate',
+  'Permanent Resident - Live-in Caregiver',
+  'Permanent Resident - Provincial Nominee',
+  'Permanent Resident - Refugees',
+  'Permanent Resident - Skilled Worker and Skilled Trades',
+  'Temporary Resident',
   'Visitors Visa',
-  'Other'
+  'Work Permit'
 ]
 
 const educationLevelOptions = [
-  'Elementary',
-  'Secondary',
   'College',
-  'University',
-  'Post Graduate'
+  'Elementary',
+  'Post Graduate',
+  'Secondary',
+  'University'
 ]
 
 const incomeSourceOptions = [
+ 'Crowd Ward',
+ 'Dependent of OW/ODSP',
  'Employment',
  'Employment Insurance',
+ 'Family Members Income',
+ 'None',
  'Ontario Disability Support Program',
  'Ontario Works',
- 'Dependent of OW/ODSP',
- 'Family Members Income',
- 'Workers Safety and Insurance',
+ 'Other',
  'Pension',
- 'Crowd Ward',
  'Unknown',
- 'None',
- 'Other'
+ 'Workers Safety and Insurance'
 ]
 
 const matchStatusOptions = [
-  'Selected',
   'Contacted',
   'Matched',
-  'Referred'
+  'Referred',
+  'Selected'
 ]
 
 const familyRelationshipOptions = [
-  'Parent',
-  'Spouse',
   'Child',
-  'Sibling'
+  'Parent',
+  'Sibling',
+  'Spouse'
 ]
 
 const needStatusOptions = [
-  'Unmatched',
-  'Pending',
+  'Fulfilled',
   'In Progress',
   'Matched',
-  'Fulfilled'
+  'Pending',
+  'Unmatched'
 ]
 
 const serviceTypeOptions = [
-  'Internal',
   'External',
-  'Volunteer based',
-  'Professional/Community'
+  'Internal',
+  'Professional/Community',
+  'Volunteer based'
 ]
 
 const serviceSharedWithOptions = [
-  'Private',
-  'Public',
-  'Boost Child & Youth Advocacy Centre',
   "Children's Aid Society of Toronto",
-  'Abrigo Centre',
-  'Barbra Schlifer Commemorative Clinic',
-  'Durham Rape Crisis Centre',
   "Durham Children's Aid Society",
+  "Eva's Initiatives",
+  'Abrigo Centre',
+  'Adventist community services',
+  'AIDS Committee of Durham Region',
+  'Albion Neighbourhood Services',
   'Alexandra Park Community Centre',
   'Applegrove Community Complex',
-  'Albion Neighbourhood Services',
-  'Kababayan Multicultural Centre',
+  'Arab Community Centre of Toronto',
+  'Aurora Food Pantry',
+  'Barbra Schlifer Commemorative Clinic',
+  'Bluffs Food Bank',
+  'Boost Child & Youth Advocacy Centre',
+  'Brock Community Food Bank',
   'Central Toronto Youth Services',
   'Covenant House Toronto',
+  'Durham Rape Crisis Centre',
   'Durham Youth Housing and Support Services',
-  "Eva's Initiatives",
   'Horizons for Youth',
-  'AIDS Committee of Durham Region',
-  'Arab Community Centre of Toronto',
-  'Pediatric Oncology Group of Ontario',
-  'Adventist community services',
-  'Aurora Food Pantry',
-  'Bluffs Food Bank',
-  'Brock Community Food Bank',
+  'Kababayan Multicultural Centre',
   'Markham Food Bank',
-  'Parkdale Community Food Bank'
+  'Parkdale Community Food Bank',
+  'Pediatric Oncology Group of Ontario',
+  'Private',
+  'Public'
 ]
 
 const provinceOptions = [
