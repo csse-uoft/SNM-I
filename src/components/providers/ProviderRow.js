@@ -13,7 +13,7 @@ class ProviderRow extends Component {
   constructor(props) {
     super(props);
     this.delete = this.delete.bind(this);
-    console.log("this.props: ", this.props);
+    console.log("this.props: ", this);
   }
 
   delete(id) {

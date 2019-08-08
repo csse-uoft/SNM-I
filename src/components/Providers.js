@@ -145,7 +145,7 @@ class Providers extends Component {
     this.handleSearchChange = this.handleSearchChange.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.dispatch(fetchProviders());
     console.log("------------------>componentWillMount");
   }
@@ -264,7 +264,6 @@ class Providers extends Component {
   }
 
   changeNumberPerPage(e) {
-    console.log("------------------>changeNumberPerPage");
     if (e.target.value === 'all') {
       this.setState({
         numberPerPage: this.props.providers.length,
