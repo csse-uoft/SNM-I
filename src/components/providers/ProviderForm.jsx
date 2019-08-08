@@ -233,19 +233,27 @@ class ProviderForm extends Component {
       const id = this.props.match.params.id;
       let form = _.clone(this.state.form);
       form['operation_hours'] = operationHourObjectToList(form['operation_hours'])
-      this.props.dispatch(updateProvider(this.state.providerId, form))
-        .then(() => this.props.history.push('/provider/' + id));
-    } else {
-      this.props.dispatch(createProvider(this.state.form), (status, err, id) => {
+      this.props.dispatch(updateProvider(this.state.providerId, form, (status, err, id) => {
         if (status === ACTION_SUCCESS) {
           this.props.history.push('/provider/' + id)
         }
         else {
           console.log(err)
         }
-      })
+      }))
+        .then(() => this.props.history.push('/provider/' + id));
+    } else {
+      this.props.dispatch(createProvider(this.state.form, (status, err, id) => {
+        if (status === ACTION_SUCCESS) {
+          this.props.history.push('/provider/' + id)
+        }
+        else {
+          console.log(err)
+        }
+      }))
     }
   }
+
 
   mainAddressChange(e) {
     let nextForm = _.clone(this.state.form);

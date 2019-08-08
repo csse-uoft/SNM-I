@@ -1,22 +1,23 @@
-import React, { Component } from 'react'
 import _ from 'lodash'
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom';
+import { ACTION_ERROR } from '../store/defaults.js'
+import { formatLocation } from '../helpers/location_helpers.js';
 
-// components
+import ProviderSearchBar from './providers/ProviderSearchBar';
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'
+import DeleteModal from './shared/DeleteModal'
 
 import { providerFormTypes } from '../constants/provider_fields.js'
 
 // redux
 import { connect } from 'react-redux'
-import { fetchProviders, createProviderWithCSV } from '../store/actions/providerActions.js'
-import { formatLocation } from '../helpers/location_helpers.js';
-import ProviderSearchBar from './providers/ProviderSearchBar';
+import { fetchProviders, createProviderWithCSV, deleteProvider} from '../store/actions/providerActions.js'
 
 // styles
 import { Button, Col, Glyphicon, Pagination, DropdownButton, MenuItem } from 'react-bootstrap'
-import { Link } from 'react-router-dom';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 
 class MapMarker extends Component {
@@ -80,6 +81,7 @@ class MapMarker extends Component {
 
 }
 
+// this will show a info box for each provider on the map
 class ProviderInfoBox extends Component {
   render() {
     const provider = this.props.provider;
@@ -115,6 +117,8 @@ class Providers extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      deleteModalshow: false,
+      objectId: null,
       filteredProviders: this.props.providers,
       CSVModalshow: false,
       numberPerPage: 10,
@@ -127,6 +131,11 @@ class Providers extends Component {
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.handleDeleteModalHide = this.handleDeleteModalHide.bind(this);
+    this.handleDeleteModalShow = this.handleDeleteModalShow.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+
     this.changePage = this.changePage.bind(this);
     this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
     this.handleInput = this.handleInput.bind(this);
@@ -136,10 +145,17 @@ class Providers extends Component {
     this.handleSearchChange = this.handleSearchChange.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.dispatch(fetchProviders());
+    console.log("------------------>componentWillMount");
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ filteredProviders: nextProps.providers });
+    console.log("-------->componentWillReceiveProps", this.props);
+  }
+
+  // for search bar
   handleInput(event) {
     const value = event.target.value;
     this.setState({ searchText: value});
@@ -147,6 +163,7 @@ class Providers extends Component {
   }
 
   handleTypeChange(event) {
+    console.log("------------------>handleTypeChange", event);
     const value = event.target.value;
     this.setState({searchType: value});
     this.handleSearchChange(this.state.searchText, value, this.state.searchProviderType, this.state.selectedCategories)
@@ -154,7 +171,7 @@ class Providers extends Component {
 
   handleProviderTypeChange(event) {
     const value = event.target.value;
-    console.log(value)
+    console.log("----------------->handleProviderTypeChange", value);
     this.setState({searchProviderType: value});
     this.handleSearchChange(this.state.searchText, this.state.searchType, value, this.state.selectedCategories)
   }
@@ -194,11 +211,6 @@ class Providers extends Component {
     this.setState({filteredProviders: providers})
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.providers !== prevProps.providers) {
-      this.setState({currentPage: 1});
-    }
-  }
   handleCSVModalHide() {
     this.setState({ CSVModalshow: false });
   }
@@ -209,10 +221,43 @@ class Providers extends Component {
 
   handleSubmit(e) {
     const file = document.querySelector('input[type="file"]').files[0];
-    this.props.dispatch(createProviderWithCSV(file)).then(() =>
-        this.setState({ CSVModalshow: false })
-    );
+    this.props.dispatch(
+      createProviderWithCSV(file, (status) => {
+        if (status === ACTION_ERROR) {
+          // this.setState({ displayError: true });
+        } else {
+          this.setState({ CSVModalshow: false })
+        }
+      })
+    )
   }
+
+  handleDeleteModalHide() {
+    this.setState({ deleteModalShow: false });
+    console.log("------------------>handleDeleteModalHide");
+  }
+
+  handleDeleteModalShow(id) {
+    this.setState({
+      deleteModalShow: true,
+      objectId: id
+    })
+    console.log("------------------>handleDeleteModalShow");
+  }
+
+  handleDelete(id, form) {
+    this.props.dispatch(
+      deleteProvider(id, form, status => {
+        if (status === ACTION_ERROR) {
+          // this.setState({ displayError: true });
+        } else {
+          this.setState({ deleteModalShow: false });
+        }
+      })
+    );
+    console.log("------------------>handleDelete");
+  }
+
 
   changePage(e) {
     this.setState({currentPage: Number(e.target.text)});
@@ -234,6 +279,7 @@ class Providers extends Component {
   }
 
   render() {
+    console.log("------------------>render", this.props);
     const p = this.props;
     let providersOnPage = this.state.filteredProviders.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),
@@ -248,23 +294,25 @@ class Providers extends Component {
         </Pagination.Item>
       )
     }
-    const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
 
+    const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
     const GMap = withGoogleMap(props => (
       <GoogleMap
         defaultZoom={10}
         defaultCenter={torontoCentroid} >
         {
           _.map(providersOnPage, (provider) => {
-            return <MapMarker key={provider.id} provider={provider}/>
+            return <MapMarker key={provider.id} 
+            provider={provider}/>
           })
         }
       </GoogleMap>
     ));
 
     return(
-      <div className="providers content">
-        <h3 className="title">Providers</h3>
+       <div className="providers content">
+        <h1>Providers</h1>
+        <hr/>
           <div>
             <DropdownButton
               id="provider-form-type-dropdown"
@@ -301,14 +349,13 @@ class Providers extends Component {
             searchValue={this.state.searchText}
           />
           <hr/>
-        { p.providersLoaded &&
+        { p.providersLoaded && 
           <div>
             <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
               providersOnPage.map((provider) => {
-                return <ProviderRow key={ provider.id } provider={ provider } />
+                return <ProviderRow key={ provider.id } provider={ provider } handleShow={this.handleDeleteModalShow}/>
               })
-            }
-            </ProvidersIndex>
+            }</ProvidersIndex>
             <Pagination className="pagination">
               {pageNumbers}
             </Pagination>
@@ -331,15 +378,30 @@ class Providers extends Component {
         </Col>
         </div>
       }
-        <CSVUploadModal
-          show={this.state.CSVModalshow}
-          onHide={this.handleCSVModalHide}
-          submit={this.handleSubmit}
-        />
-      </div>
+      <CSVUploadModal
+        show={this.state.CSVModalshow}
+        onHide={this.handleCSVModalHide}
+        submit={this.handleSubmit}
+      />
+      <DeleteModal
+        contentType="Provider"
+        objectId={this.state.objectId}
+        show={this.state.deleteModalShow}
+        onHide={this.handleDeleteModalHide}
+        delete={this.handleDelete}
+      />
+    </div>
     )
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //     if (this.props.providers !== prevProps.providers) {
+  //       this.setState({currentPage: 1});
+  //     }
+  //     console.log("------------------>componentDidUpdate");
+  // }
 }
+
 
 const mapStateToProps = (state) => {
   return {

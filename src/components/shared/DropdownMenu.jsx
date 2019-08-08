@@ -3,6 +3,7 @@ import React from 'react';
 import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
 
 export default function DropdownMenu({ urlPrefix, objectId, handleShow, hideViewOption }) {
+  console.log("-------->dropdown");
   return (
     <Dropdown
       id="dropdown-menu"

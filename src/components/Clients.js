@@ -20,7 +20,7 @@ import { Button } from 'react-bootstrap';
 class Clients extends Component {
   constructor(props, context) {
     super(props, context);
-
+    console.log("------------>", props, "------------------------>", context);
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -42,20 +42,31 @@ class Clients extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount(){
     this.props.dispatch(fetchClients());
+    console.log("----------->componentDidMount", this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ clientsOrder: nextProps.clientsOrder });
+    console.log("-------->componentWillReceiveProps", nextProps);
   }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   return nextProps.clientsOrder === prevState.clientsOrder
+  //   ? {}
+  //   : {clientsOrder: nextProps.clientsOrder}
+  // }
 
   handleCSVModalHide() {
     this.setState({ CSVModalshow: false });
+    console.log("-------->handleCSVModalHide", this.props);
+
   }
 
   handleCSVModalShow() {
-    this.setState({ CSVModalshow: true })
+    this.setState({ CSVModalshow: true });
+    console.log("-------->handleCSVModalShow", this.props);
   }
 
   handleSubmit(e) {
@@ -73,13 +84,15 @@ class Clients extends Component {
 
   handleDeleteModalHide() {
     this.setState({ deleteModalShow: false });
+    console.log("-------->handleDeleteModalHide", this.props);
   }
 
   handleDeleteModalShow(id) {
     this.setState({
       deleteModalShow: true,
       objectId: id
-    })
+    });
+    console.log("-------->handleDeleteModalShow", this.props);
   }
 
   handleDelete(id, form) {
@@ -92,6 +105,7 @@ class Clients extends Component {
         }
       })
     );
+    console.log("-------->handleDelete", this.props);
   }
 
   handleSearchBarChange(type, value) {
@@ -128,6 +142,7 @@ class Clients extends Component {
   }
 
   render() {
+    console.log("-------->render", this.props);
     const p = this.props;
     return(
       <div className="content modal-container">
@@ -154,13 +169,15 @@ class Clients extends Component {
               ? <ClientsIndex>{
                 _.map(this.state.clientsOrder, (clientId) => {
                   const client = p.clients[clientId]
-                  return (
-                    <ClientRow
-                      key={client.id}
-                      client={client}
-                      handleShow={this.handleDeleteModalShow}
-                    />
-                  )
+                  if (client){
+                    return (
+                      <ClientRow
+                        key={client.id}
+                        client={client}
+                        handleShow={this.handleDeleteModalShow}
+                      />
+                    )
+                  }  
                 })
               }</ClientsIndex>
               : (<div>

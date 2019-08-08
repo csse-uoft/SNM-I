@@ -38,7 +38,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
+<<<<<<< HEAD
     "deploy": "aws s3 sync build/ s3://jias.snmi.ca"
+=======
+    "deploy": "aws s3 sync build/ s3://jias.snmi.ca" 
+>>>>>>> 436e2aa2b8a13eb70c72621910284fe6d30e96bf
   },
   "browserslist": [
     ">0.2%",

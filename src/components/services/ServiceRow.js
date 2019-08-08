@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
+import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap'
+import DropdownMenu from '../shared/DropdownMenu'
 
-// redux
-import { connect } from 'react-redux'
 
 class ServiceRow extends Component {
 
@@ -40,36 +39,23 @@ class ServiceRow extends Component {
         <td>
           {service.category}
         </td>
-
         <td>
-          <Dropdown
-            id="dropdown-menu"
-            className="vertical-options"
-            pullRight
-          >
-          <Dropdown.Toggle noCaret>
-            <Glyphicon glyph="option-vertical" />
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <MenuItem eventKey="1" href={`/service/${service.id}`}>
-              View
-              <Glyphicon glyph="file" />
-            </MenuItem>
-            <MenuItem eventKey="2" href={`/services/${service.id}/edit`}>
-              Edit
-              <Glyphicon glyph="pencil" />
-            </MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey="3" onClick={() => this.props.handleShow(service.id)}>
-              Delete
-              <Glyphicon glyph="trash" />
-            </MenuItem>
-          </Dropdown.Menu>
-        </Dropdown>
+          <DropdownMenu
+            urlPrefix="service"
+            objectId={service.id}
+            handleShow={this.props.handleShow}
+          />
         </td>
       </tr>
     )
   }
 }
 
-export default connect()(ServiceRow);
+
+// const mapStateToProps = (state) => {
+//   return {
+//     currentUser: state.auth.currentUser
+//   }
+// }
+
+export default ServiceRow;

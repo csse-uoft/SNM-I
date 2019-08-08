@@ -26,6 +26,7 @@ class ManageProviderFields extends Component {
       selectedStep: '',
       formType: '',
       form: props.providerSetting
+
     }
 
     this.handleFormValChange = this.handleFormValChange.bind(this);
@@ -44,6 +45,8 @@ class ManageProviderFields extends Component {
   }
 
   handleFormValChange(e, id=e.target.id) {
+    console.log("this.state.form");
+    console.log(this.state.form);
     if (id === 'formType' && !this.state.form[e.target.value]) {
       this.setState({
         [id]: e.target.value,
@@ -116,17 +119,18 @@ class ManageProviderFields extends Component {
     const step = _.findKey(this.state.form[this.state.formType].form_structure, (fields, stepTitle) => {
       return _.includes(_.keys(fields), id)
     })
+
     this.setState({
       form: {
         ...this.state.form,
         [this.state.formType]: {
           ...this.state.form[this.state.formType],
           form_structure: {
-            ...this.state.form.form_structure,
+            ...this.state.form[this.state.formType].form_structure,
             [step]: {
-              ...this.state.form.form_structure[step],
+              ...this.state.form[this.state.formType].form_structure[step],
               [id]: {
-                ...this.state.form.form_structure[step][id],
+                ...this.state.form[this.state.formType].form_structure[step][id],
                 required: JSON.parse(e.target.value)
               }
             }
@@ -134,6 +138,8 @@ class ManageProviderFields extends Component {
         }
       }
     });
+
+    
   }
 
   handleRemoveFieldClick(e, id, step) {
@@ -155,6 +161,8 @@ class ManageProviderFields extends Component {
     let nextStepsOrder = _.clone(this.state.form[this.state.formType].steps_order);
     delete nextFormStructure[step];
     nextStepsOrder.splice(nextStepsOrder.indexOf(step), 1);
+    console.log("remove form structure:");
+    console.log(this.state.formType.form_structure);
     this.setState({
       form: {
         ...this.state.form,
