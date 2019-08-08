@@ -4,6 +4,9 @@ let serverHost;
 if (hostname === 'jias-snmi-client.s3-website.ca-central-1.amazonaws.com') {
   serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
 }
+else if (hostname === 'jias.snmi.ca.s3-website.ca-central-1.amazonaws.com') {
+  serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
+}
 else if (hostname === 'jias.snmi.ca') {
   serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
 }
