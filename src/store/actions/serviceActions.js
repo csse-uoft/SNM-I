@@ -105,6 +105,7 @@ export function fetchServices() {
         return ACTION_ERROR;
       })
   }
+  
 }
 
 export function deleteService(id, params, callback) {

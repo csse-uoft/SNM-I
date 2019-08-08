@@ -87,8 +87,16 @@ function ServiceInfoBox({ service }) {
 }
 
 class Services extends Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
+    this.state = {
+      CSVModalshow: false,
+      deleteModalshow: false,
+      objectId: null,
+      numberPerPage: 10,
+      currentPage: 1,
+      filteredServices: this.props.services
+    }
     console.log("--------------------->this.props: ", this);
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
@@ -100,27 +108,29 @@ class Services extends Component {
 
     this.changePage = this.changePage.bind(this);
     this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
-
-    this.state = {
-      CSVModalshow: false,
-      deleteModalshow: false,
-      objectId: null,
-      numberPerPage: 10,
-      currentPage: 1,
-      filteredServices: this.props.services
-    }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.dispatch(fetchServices());
-    console.log("-------->componentWillMount", this);
+    console.log("-------->componentDidMount", this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ filteredServices: nextProps.services });
-    this.forceUpdate();
     console.log("-------->componentWillReceiveProps", nextProps);
   }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   return nextProps.services === prevState.filteredServices
+  //   ? {}
+  //   : {filteredServices: nextProps.services}
+  // }
+
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.services.length !== prevProps.services.length) {
+  //     this.setState({filteredServices: this.props.services});
+  //   }
+  // }
 
   handleCSVModalHide() {
     this.setState({ CSVModalshow: false });
@@ -184,7 +194,6 @@ class Services extends Component {
         }
       })
     );
-    console.log("------------------->handleDelete");
   }
 
   render() {
@@ -219,7 +228,7 @@ class Services extends Component {
     ));
 
     return(
-      <div className="services content modal-container">
+      <div className="services content">
         <h1>Services</h1>
         <hr/>
           <div>

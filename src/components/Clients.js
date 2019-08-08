@@ -42,15 +42,21 @@ class Clients extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount(){
     this.props.dispatch(fetchClients());
-    console.log("-------->componentWillMount", this);
+    console.log("----------->componentDidMount", this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ clientsOrder: nextProps.clientsOrder });
     console.log("-------->componentWillReceiveProps", nextProps);
   }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   return nextProps.clientsOrder === prevState.clientsOrder
+  //   ? {}
+  //   : {clientsOrder: nextProps.clientsOrder}
+  // }
 
   handleCSVModalHide() {
     this.setState({ CSVModalshow: false });
@@ -163,13 +169,15 @@ class Clients extends Component {
               ? <ClientsIndex>{
                 _.map(this.state.clientsOrder, (clientId) => {
                   const client = p.clients[clientId]
-                  return (
-                    <ClientRow
-                      key={client.id}
-                      client={client}
-                      handleShow={this.handleDeleteModalShow}
-                    />
-                  )
+                  if (client){
+                    return (
+                      <ClientRow
+                        key={client.id}
+                        client={client}
+                        handleShow={this.handleDeleteModalShow}
+                      />
+                    )
+                  }  
                 })
               }</ClientsIndex>
               : (<div>
