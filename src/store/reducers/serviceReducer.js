@@ -7,28 +7,31 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
   let nextById, sortedServices, services, nextIndex;
   switch (action.type) {
     case REQUEST_SERVICES:
+    // should be for fetching all serves in componentWillMount
       return {...state, servicesLoaded: false }
     case RECEIVE_SERVICES:
+    // should be for fetching all serves in componentWillMount
       const newServicesById = _.keyBy(action.services, service => service.id);
       nextById = { ...state.byId, ...newServicesById }
       return {...state, byId: nextById, servicesLoaded: true, index: action.services, filteredServices:action.services }
-    case RECEIVE_ALL_SERVICES:
-      nextById = _.keyBy(action.clients, client => client.id);
-      return {...state, byId: nextById, servicesLoaded: true}
+    // case RECEIVE_ALL_SERVICES:
+    //   nextById = _.keyBy(action.clients, client => client.id);
+    //   return {...state, byId: nextById, servicesLoaded: true}
     case REMOVE_SERVICE:
-      //nextById = _.clone(state.byId);
-      //delete nextById[action.id]
+    // should be for delete function
       nextIndex = _.clone(state.index);
       _.remove(nextIndex, (n) => { return n.id === action.id });
-      return { ...state, byId: nextById, filteredProviders: nextIndex }
+      return { ...state, index: nextIndex, filteredServices: nextIndex }
     case REQUEST_SERVICE:
+    // for single servce viewing
       nextById = { ...state.byId, [action.id]: { servicesLoaded: false } }
       return {...state, byId: nextById }
     case RECEIVE_SERVICE:
+    // same as above
       nextById = {...state.byId, [action.id]: { ...action.service, servicesLoaded: true }}
       return {...state, byId: nextById }
     case SEARCH_SERVICES:
-
+    // for search bar
       if (action.sortType === '') {
         sortedServices = [...state.index];
       }

@@ -6,7 +6,6 @@ import { receiveClientNeeds } from './needActions'
 export const REQUEST_CLIENT = 'REQUEST_CLIENT';
 export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
 export const REQUEST_CLIENTS = 'REQUEST_CLIENTS';
-export const RECEIVE_ALL_CLIENTS = 'RECEIVE_ALL_CLIENTS';
 export const REMOVE_CLIENT = 'REMOVE_CLIENT';
 export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
 
@@ -29,13 +28,6 @@ function receiveClient(id, json) {
 function requestClients(json) {
   return {
     type: REQUEST_CLIENTS,
-    clients: json
-  }
-}
-
-function receiveAllClients(json) {
-  return {
-    type: RECEIVE_ALL_CLIENTS,
     clients: json
   }
 }
@@ -100,7 +92,7 @@ export function fetchClients(orderBy) {
         }
       })
       .then(json => {
-        dispatch(receiveAllClients(json))
+        dispatch(receiveClients(json))
       })
       .catch(err => {
         return ACTION_ERROR;

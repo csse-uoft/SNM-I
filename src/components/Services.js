@@ -185,6 +185,7 @@ class Services extends Component {
   }
 
   handleDelete(id, form) {
+    console.log("-------------->handleDelete id: ", id);
     this.props.dispatch(
       deleteService(id, form, status => {
         if (status === ACTION_ERROR) {
@@ -198,7 +199,7 @@ class Services extends Component {
 
   render() {
     const p = this.props;
-    console.log("-------->render", this.props);
+    console.log("-------->render: this: ", this);
     let servicesOnPage = this.state.filteredServices.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),
       this.state.numberPerPage * this.state.currentPage);
