@@ -46,6 +46,7 @@ class ClientSearchBar  extends Component {
             <option value="address">Address</option>
           </FormControl>
         </FormGroup>{' '}
+        
         <FormGroup controlId="sort_by">
           <ControlLabel>Sort by:</ControlLabel>{' '}
           <FormControl
@@ -61,6 +62,15 @@ class ClientSearchBar  extends Component {
             <option value="-last_name">Last Name (Z-A)</option>
           </FormControl>
         </FormGroup>
+
+        <FormGroup controlId="numberPerPage">
+          <ControlLabel> Number per page: </ControlLabel>{' '}
+          <FormControl componentClass="select" placeholder="select" onChange={this.props.changeNumberPerPage}>
+            <option value="10"> 10 </option>
+            <option value="20"> 20 </option>
+            <option value="all"> All </option>
+          </FormControl>
+        </FormGroup>{' '}
       </Form>
     );
   }

@@ -63,6 +63,7 @@ function removeProvider(id) {
   }
 }
 
+
 export function searchProviders(searchValue, searchType, searchProviderType) {
   return {
     type: SEARCH_PROVIDERS,
@@ -141,7 +142,7 @@ export function createProvider(params, callback) {
       }
     })
     .then(provider => {
-      dispatch(receiveNewProvider(provider))
+      dispatch(receiveProvider(provider))
       if (provider.status === 'Home Agency') {
         dispatch(updateAuthOrganization(provider))
       }
@@ -175,11 +176,10 @@ export function createProviderWithCSV(file) {
       }
     })
     .then(providers => {
-      dispatch(receiveNewProvidersCSV(providers))
+      dispatch(receiveProviders(providers))
       return ACTION_SUCCESS;
     })
       .catch(err => {
-      // dispatch(createFailure(err))
       return ACTION_ERROR;
     })
   }
@@ -197,7 +197,6 @@ export function updateProvider(id, params, callback) {
         'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
       }
     })
-    //.then(response => response.json())
     .then(async(response) => {
       if (response.status === 200) {
         return response.json();
@@ -208,7 +207,7 @@ export function updateProvider(id, params, callback) {
       }
     })
       .then(provider => {
-        dispatch(receiveNewProvider(provider))
+        dispatch(receiveProvider(provider))
         if (provider.status === 'Home Agency') {
           dispatch(updateAuthOrganization(provider.id, provider))
         }

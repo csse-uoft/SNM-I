@@ -1,12 +1,16 @@
 const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
-if (hostname === 'snm-i-production.s3-website.ca-central-1.amazonaws.com') {
-  serverHost = 'http://snm-i-jias.ca-central-1.elasticbeanstalk.com';
+if (hostname === 'jias.snmi.ca.s3-website.ca-central-1.amazonaws.com') {
+  serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
+}
+else if (hostname === 'jias.snmi.ca') {
+  serverHost = 'http://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
 }
 else {
   serverHost = 'http://127.0.0.1:8000';
 }
+
 
 const ACTION_SUCCESS = 'ACTION_SUCCESS';
 const ACTION_ERROR = 'ACTION_ERROR';
