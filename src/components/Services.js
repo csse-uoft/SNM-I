@@ -306,10 +306,10 @@ class Services extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("----------------->mapStateToProps: ", state);
   return {
     services: state.services.filteredServices || [],
     servicesLoaded: state.services.servicesLoaded,
-
   }
 }
 

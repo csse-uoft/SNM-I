@@ -2,14 +2,12 @@ import fetch from 'isomorphic-fetch';
 import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 import { updateAuthOrganization } from './authAction.js'
 
-export const RECEIVE_NEW_PROVIDER = 'RECEIVE_NEW_PROVIDER';
 export const REQUEST_PROVIDERS = 'REQUEST_PROVIDERS';
 export const RECEIVE_PROVIDERS = 'RECEIVE_PROVIDERS';
 export const REMOVE_PROVIDER = 'REMOVE_PROVIDER';
 export const RECEIVE_PROVIDER = 'RECEIVE_PROVIDER';
 export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
 export const SEARCH_PROVIDERS = 'SEARCH_PROVIDERS';
-export const RECEIVE_NEW_PROVIDERS_CSV = 'RECEIVE_NEW_PROVIDERS_CSV';
 
 
 function requestProviders() {
@@ -38,21 +36,6 @@ function receiveProviders(json) {
     type: RECEIVE_PROVIDERS,
     info: json,
     receivedAt: Date.now(),
-  }
-}
-
-function receiveNewProvider(id, json) {
-  return {
-    type: RECEIVE_NEW_PROVIDER,
-    id: id,
-    provider: json
-  }
-}
-
-function receiveNewProvidersCSV(json) {
-  return {
-    type: RECEIVE_NEW_PROVIDERS_CSV,
-    providers: json
   }
 }
 

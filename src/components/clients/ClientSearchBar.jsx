@@ -2,36 +2,54 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 
 import { Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
+import { searchClients } from '../../store/actions/clientActions.js'
+import { connect } from 'react-redux';
 
 
 class ClientSearchBar  extends Component {
   constructor(props) {
     super(props);
+    this.handleInput=this.handleInput.bind(this);
+    this.handleSearchChange=this.handleSearchChange.bind(this);
+    this.handleSortChange=this.handleSortChange.bind(this);
 
     this.state = {
-      type: 'last_name',
-      value: ''
+      searchType: 'last_name',
+      searchText: '',
+      sortType: 'name'
     }
-
-    this.handleFormValChange = this.handleFormValChange.bind(this);
   }
 
-  handleFormValChange(e) {
-    this.setState(
-      { [e.target.id] : e.target.value },
-      () => this.props.handleSearchBarChange(this.state.type, this.state.value)
-    );
+  handleInput(event) {
+    const value = event.target.value;
+    this.setState({ searchText: value});
+    this.props.dispatch(searchClients(value, this.state.searchType, this.state.sortType));
+  }
+
+  handleSearchChange(event) {
+    const value = event.target.value;
+    console.log(value);
+    this.setState({searchType: value});
+    this.props.dispatch(searchClients(this.state.searchText, value, this.state.sortType));
+  }
+
+  handleSortChange(event) {
+    const value = event.target.value;
+    console.log(value);
+    this.setState({sortType: value});
+    this.props.dispatch(searchClients(this.state.searchText, this.state.searchType, value));
   }
 
   render() {
     return (
       <Form inline>
-        <FormGroup controlId="value">
+        <FormGroup controlId="searchBar">
+        {/* <FormGroup controlId="value"> */}
           <FormControl
             type="text"
             placeholder="Search..."
             value={this.state.value}
-            onChange={this.handleFormValChange}
+            onChange={this.handleInput}
           />
         </FormGroup>{' '}
         <FormGroup controlId="type">
@@ -46,7 +64,7 @@ class ClientSearchBar  extends Component {
             <option value="address">Address</option>
           </FormControl>
         </FormGroup>{' '}
-        
+
         <FormGroup controlId="sort_by">
           <ControlLabel>Sort by:</ControlLabel>{' '}
           <FormControl
@@ -76,4 +94,13 @@ class ClientSearchBar  extends Component {
   }
 };
 
-export default ClientSearchBar;
+const mapStateToProps = (state) => {
+  return {
+    clients: state.clients.index, //array of json
+    clientsLoaded: state.clients.clientsLoaded
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(ClientSearchBar);

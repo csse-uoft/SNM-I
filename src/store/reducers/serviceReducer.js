@@ -1,5 +1,5 @@
 import { REQUEST_SERVICES, RECEIVE_SERVICES, SEARCH_SERVICES, REMOVE_SERVICE,
-         REQUEST_SERVICE, RECEIVE_SERVICE, RECEIVE_ALL_SERVICES } from '../actions/serviceActions.js';
+         REQUEST_SERVICE, RECEIVE_SERVICE } from '../actions/serviceActions.js';
 import _ from 'lodash';
 
 
@@ -14,9 +14,6 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
       const newServicesById = _.keyBy(action.services, service => service.id);
       nextById = { ...state.byId, ...newServicesById }
       return {...state, byId: nextById, servicesLoaded: true, index: action.services, filteredServices:action.services }
-    // case RECEIVE_ALL_SERVICES:
-    //   nextById = _.keyBy(action.clients, client => client.id);
-    //   return {...state, byId: nextById, servicesLoaded: true}
     case REMOVE_SERVICE:
     // should be for delete function
       nextIndex = _.clone(state.index);
@@ -32,31 +29,31 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
       return {...state, byId: nextById }
     case SEARCH_SERVICES:
     // for search bar
-      if (action.sortType === '') {
-        sortedServices = [...state.index];
-      }
-      else if (action.sortType === "name") {
-        sortedServices = [...state.index].sort((a, b) => (a.name).localeCompare(b.name));
+      if (action.sortType === '' || action.sortType === "name") {
+        sortedServices = [...state.index].sort((a, b) => (a.name ? a.name.toLowerCase(): "").localeCompare(b.name ? b.name.toLowerCase():""));
       }
       else if (action.sortType === "provider") {
-        sortedServices = [...state.index].sort((a, b) => (a.provider.profile.first_name).localeCompare(b.provider.profile.first_name));
+        sortedServices = [...state.index].sort((a, b) => (a.provider.profile.first_name?a.provider.profile.first_name.toLowerCase():"").localeCompare(b.provider.profile.first_name?b.provider.profile.first_name.toLowerCase():""));
       }
       else if (action.sortType === "description") {
-        sortedServices = [...state.index].sort((a, b) => (a.desc).localeCompare(b.desc));
+        sortedServices = [...state.index].sort((a, b) => (a.desc?a.desc:"").localeCompare(b.desc?b.desc:""));
       }
       else if (action.sortType === "category") {
-        sortedServices = [...state.index].sort((a, b) => (a.category).localeCompare(b.category));
+        sortedServices = [...state.index].sort((a, b) => (a.category? a.category:"").localeCompare(b.category?b.category:""));
       }
       
       if (action.searchValue === '') {
         return {index: sortedServices, filteredServices: sortedServices, servicesLoaded: true}
       }
       else if (action.searchType === "name") {
-        services = sortedServices.filter((service) => ((service.name).includes(action.searchValue) ));
+        services = sortedServices.filter((service) => ((service.name.toLowerCase()).includes(action.searchValue) ));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "provider") {
-        services = sortedServices.filter((service) => ((service.provider.company).includes(action.searchValue)) || ((service.provider.profile.first_name + " " + service.provider.profile.last_name).includes(action.searchValue)));
+        services = sortedServices.filter((service) => (service.provider.company ? (service.provider.company).includes(action.searchValue) : "") 
+        || ((service.provider.profile.first_name ? service.provider.profile.first_name.toLowerCase() : "")
+         + " " + 
+         (service.provider.profile.last_name ? service.provider.profile.last_name.toLowerCase().includes(action.searchValue): "")));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "description") {

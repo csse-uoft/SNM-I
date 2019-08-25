@@ -10,7 +10,13 @@ export default class ServicesIndex extends Component {
       <ServiceSearchBar changeNumberPerPage={this.props.changeNumberPerPage}>
       </ServiceSearchBar>
       <hr />
-      <Table className="dashboard-table" striped bordered condensed hover>
+      <Table 
+        className="dashboard-table" 
+        striped 
+        bordered 
+        condensed 
+        hover
+      >
         <thead>
           <tr>
             <th>Name</th>

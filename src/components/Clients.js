@@ -116,6 +116,7 @@ class Clients extends Component {
 
   handleSearchBarChange(type, value) {
     let newlyDisplayed;
+    console.log("--------------------> search bar change value: ", value);
     if (type === 'last_name') {
       newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
         const client = this.props.clients[clientId];
@@ -153,8 +154,9 @@ class Clients extends Component {
 
   changeNumberPerPage(e) {
     if (e.target.value === 'all') {
+      console.log("------------>change number per page: ", this.props);
       this.setState({
-        numberPerPage: this.props.clients.length,
+        numberPerPage: this.props.clientsOrder.length,
         currentPage: 1
       });
     }
