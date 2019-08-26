@@ -21,7 +21,8 @@ class ServiceSearchBar extends Component {
   }
   
   handleInput(event) {
-    const value = event.target.value;
+    console.log("service search bar -------------> event: ", event.target.value);
+    const value = event.target.value.toLowerCase();
     this.setState({ searchText: value});
     this.props.dispatch(searchServices(value, this.state.searchType, this.state.sortType));
   }
@@ -78,7 +79,7 @@ class ServiceSearchBar extends Component {
             <option value="description"> Description </option>
           </FormControl>
         </FormGroup>{' '}
-        
+
         <FormGroup controlId="numberPerPage">
           <ControlLabel> Number per page: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.props.changeNumberPerPage}>

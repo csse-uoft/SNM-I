@@ -14,14 +14,15 @@ class ClientSearchBar  extends Component {
     this.handleSortChange=this.handleSortChange.bind(this);
 
     this.state = {
-      searchType: 'last_name',
+      searchType: 'first_name',
       searchText: '',
-      sortType: 'name'
+      sortType: 'first_name'
     }
   }
 
   handleInput(event) {
-    const value = event.target.value;
+    console.log("client search bar ---------> event.target.value: ", event.target.value);
+    const value = event.target.value.toLowerCase();
     this.setState({ searchText: value});
     this.props.dispatch(searchClients(value, this.state.searchType, this.state.sortType));
   }
@@ -40,11 +41,38 @@ class ClientSearchBar  extends Component {
     this.props.dispatch(searchClients(this.state.searchText, this.state.searchType, value));
   }
 
+
+  // handleSearchBarChange(type, value) {
+  //   let newlyDisplayed;
+  //   console.log("--------------------> search bar change value: ", value);
+  //   if (type === 'last_name') {
+  //     newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
+  //       const client = this.props.clients[clientId];
+  //       if (client.profile.last_name && client.profile.last_name.toLowerCase().includes(value.toLowerCase())) {
+  //         result.push(client.id)
+  //       }
+  //       return result;
+  //     }, []);
+  //   }
+  //   else if (type === 'address'){
+  //     newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
+  //       const client = this.props.clients[clientId];
+  //       if (client.address && formatLocation(client.address).toLowerCase().includes(value.toLowerCase())) {
+  //         result.push(client.id)
+  //       }
+  //       return result;
+  //     }, []);
+  //   }
+  //   this.setState({
+  //     clientsOrder: newlyDisplayed,
+  //     searching: true
+  //   })
+  // }
+
   render() {
     return (
       <Form inline>
         <FormGroup controlId="searchBar">
-        {/* <FormGroup controlId="value"> */}
           <FormControl
             type="text"
             placeholder="Search..."
@@ -52,7 +80,7 @@ class ClientSearchBar  extends Component {
             onChange={this.handleInput}
           />
         </FormGroup>{' '}
-        <FormGroup controlId="type">
+        <FormGroup controlId="searchBy">
           <ControlLabel>Search by:</ControlLabel>{' '}
           <FormControl
             componentClass="select"
@@ -60,20 +88,20 @@ class ClientSearchBar  extends Component {
             value={this.state.type}
             onChange={this.handleFormValChange}
           >
+            <option value="first_name">First name</option>
             <option value="last_name">Last name</option>
             <option value="address">Address</option>
           </FormControl>
         </FormGroup>{' '}
 
-        <FormGroup controlId="sort_by">
+        <FormGroup controlId="sortBy">
           <ControlLabel>Sort by:</ControlLabel>{' '}
           <FormControl
             componentClass="select"
             placeholder="select"
             value={this.props.orderBy}
-            onChange={this.props.handleSortByChange}
+            onChange={this.handleSortByChange}
           >
-            <option value="-updated_at">Last Updated</option>
             <option value="first_name">First Name (A-Z)</option>
             <option value="-first_name">First Name (Z-A)</option>
             <option value="last_name">Last Name (A-Z)</option>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import { Glyphicon, Dropdown, MenuItem } from 'react-bootstrap'
 import DropdownMenu from '../shared/DropdownMenu'
 
 
@@ -50,12 +49,5 @@ class ServiceRow extends Component {
     )
   }
 }
-
-
-// const mapStateToProps = (state) => {
-//   return {
-//     currentUser: state.auth.currentUser
-//   }
-// }
 
 export default ServiceRow;

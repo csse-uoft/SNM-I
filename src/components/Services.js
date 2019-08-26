@@ -89,6 +89,8 @@ function ServiceInfoBox({ service }) {
 class Services extends Component {
   constructor(props) {
     super(props);
+    console.log("constructor: ", this.props.services);
+
     this.state = {
       CSVModalshow: false,
       deleteModalshow: false,
@@ -124,12 +126,6 @@ class Services extends Component {
   //   return nextProps.services === prevState.filteredServices
   //   ? {}
   //   : {filteredServices: nextProps.services}
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.services.length !== prevProps.services.length) {
-  //     this.setState({filteredServices: this.props.services});
-  //   }
   // }
 
   handleCSVModalHide() {
@@ -200,6 +196,7 @@ class Services extends Component {
   render() {
     const p = this.props;
     console.log("-------->render: this: ", this);
+    console.log("---------------> this.state.filteredServices: ", this.state.filteredServices);
     let servicesOnPage = this.state.filteredServices.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),
       this.state.numberPerPage * this.state.currentPage);
@@ -297,12 +294,6 @@ class Services extends Component {
       </div>
     )
   }
-
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.services !== prevProps.services) {
-  //     this.setState({filteredServices: this.props.services});
-  //   }
-  // }
 }
 
 const mapStateToProps = (state) => {

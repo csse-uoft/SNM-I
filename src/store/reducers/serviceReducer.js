@@ -10,6 +10,7 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
     // should be for fetching all serves in componentWillMount
       return {...state, servicesLoaded: false }
     case RECEIVE_SERVICES:
+      console.log("reducer check: ", action);
     // should be for fetching all serves in componentWillMount
       const newServicesById = _.keyBy(action.services, service => service.id);
       nextById = { ...state.byId, ...newServicesById }
@@ -27,9 +28,11 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
     // same as above
       nextById = {...state.byId, [action.id]: { ...action.service, servicesLoaded: true }}
       return {...state, byId: nextById }
+
     case SEARCH_SERVICES:
     // for search bar
       if (action.sortType === '' || action.sortType === "name") {
+        console.log("service reducer :", [...state.index]);
         sortedServices = [...state.index].sort((a, b) => (a.name ? a.name.toLowerCase(): "").localeCompare(b.name ? b.name.toLowerCase():""));
       }
       else if (action.sortType === "provider") {
@@ -46,7 +49,7 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
         return {index: sortedServices, filteredServices: sortedServices, servicesLoaded: true}
       }
       else if (action.searchType === "name") {
-        services = sortedServices.filter((service) => ((service.name.toLowerCase()).includes(action.searchValue) ));
+        services = sortedServices.filter((service) => ((service.name?service.name.toLowerCase():"").includes(action.searchValue) ));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "provider") {

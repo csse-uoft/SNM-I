@@ -4,7 +4,6 @@ import ServiceSearchBar from './ServiceSearchBar.js';
 
 export default class ServicesIndex extends Component {
   render() {
-    console.log("------------->service index this: ", this);
     return(
       <div>
       <ServiceSearchBar changeNumberPerPage={this.props.changeNumberPerPage}>
