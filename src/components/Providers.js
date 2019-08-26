@@ -116,18 +116,6 @@ class ProviderInfoBox extends Component {
 class Providers extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      deleteModalshow: false,
-      objectId: null,
-      filteredProviders: this.props.providers,
-      CSVModalshow: false,
-      numberPerPage: 10,
-      currentPage: 1,
-      searchText: '',
-      searchType: 'name',
-      searchProviderType: 'all',
-      selectedCategories: []
-    }
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -143,11 +131,24 @@ class Providers extends Component {
     this.handleProviderTypeChange = this.handleProviderTypeChange.bind(this);
     this.handleCategorySelection = this.handleCategorySelection.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this)
+
+    this.state = {
+      deleteModalshow: false,
+      objectId: null,
+      filteredProviders: this.props.providers,
+      CSVModalshow: false,
+      numberPerPage: 10,
+      currentPage: 1,
+      searchText: '',
+      searchType: 'name',
+      searchProviderType: 'all',
+      selectedCategories: []
+    }
   }
 
   componentDidMount() {
     this.props.dispatch(fetchProviders());
-    console.log("------------------>componentWillMount");
+    console.log("------------------>componentDidMount");
   }
 
   componentWillReceiveProps(nextProps) {
@@ -393,13 +394,6 @@ class Providers extends Component {
     </div>
     )
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //     if (this.props.providers !== prevProps.providers) {
-  //       this.setState({currentPage: 1});
-  //     }
-  //     console.log("------------------>componentDidUpdate");
-  // }
 }
 
 

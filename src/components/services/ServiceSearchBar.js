@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 class ServiceSearchBar extends Component {
   constructor(props) {
     super(props);
+    console.log("---------------------------------> service search bar:", this);
     this.handleInput=this.handleInput.bind(this);
     this.handleSearchChange=this.handleSearchChange.bind(this);
     this.handleSortChange=this.handleSortChange.bind(this);
@@ -52,22 +53,32 @@ class ServiceSearchBar extends Component {
         </FormGroup>{' '}
         <FormGroup controlId="searchBy">
           <ControlLabel> Search by: </ControlLabel>{' '}
-          <FormControl componentClass="select" placeholder="select" onChange={this.handleSearchChange}>
+          <FormControl 
+            componentClass="select" 
+            placeholder="select" 
+            onChange={this.handleSearchChange}
+          >
             <option value="name"> Name </option>
             <option value="provider"> Provider </option>
             <option value="description"> Description </option>
             <option value="category"> Category </option>
           </FormControl>
         </FormGroup>{' '}
+
         <FormGroup controlId="sortBy">
           <ControlLabel> Sort by: </ControlLabel>{' '}
-          <FormControl componentClass="select" placeholder="select" onChange={this.handleSortChange}>
+          <FormControl 
+            componentClass="select" 
+            placeholder="select" 
+            onChange={this.handleSortChange}
+          >
+            <option value="category"> Category </option>
             <option value="name"> Name </option>
             <option value="provider"> Provider </option>
             <option value="description"> Description </option>
-            <option value="category"> Category </option>
           </FormControl>
         </FormGroup>{' '}
+        
         <FormGroup controlId="numberPerPage">
           <ControlLabel> Number per page: </ControlLabel>{' '}
           <FormControl componentClass="select" placeholder="select" onChange={this.props.changeNumberPerPage}>

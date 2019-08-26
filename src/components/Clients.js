@@ -15,12 +15,13 @@ import { connect } from 'react-redux'
 import { fetchClients, createClients, deleteClient } from '../store/actions/clientActions.js'
 
 // styles
-import { Button } from 'react-bootstrap';
+import { Button, Pagination } from 'react-bootstrap';
 
 class Clients extends Component {
   constructor(props, context) {
     super(props, context);
     console.log("------------>", props, "------------------------>", context);
+    console.log("---------------->initial this: ", this);
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,6 +32,9 @@ class Clients extends Component {
 
     this.handleSearchBarChange = this.handleSearchBarChange.bind(this);
     this.handleSortByChange = this.handleSortByChange.bind(this);
+    this.changePage = this.changePage.bind(this);
+    this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
+
 
     this.state = {
       CSVModalshow: false,
@@ -38,7 +42,9 @@ class Clients extends Component {
       objectId: null,
       clientsOrder: this.props.clientsOrder,
       searching: false,
-      orderBy: '-updated_at'
+      orderBy: '-updated_at',
+      numberPerPage: 10,
+      currentPage: 1
     };
   }
 
@@ -110,10 +116,11 @@ class Clients extends Component {
 
   handleSearchBarChange(type, value) {
     let newlyDisplayed;
+    console.log("--------------------> search bar change value: ", value);
     if (type === 'last_name') {
       newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
         const client = this.props.clients[clientId];
-        if (client.profile.last_name.toLowerCase().includes(value.toLowerCase())) {
+        if (client.profile.last_name && client.profile.last_name.toLowerCase().includes(value.toLowerCase())) {
           result.push(client.id)
         }
         return result;
@@ -141,9 +148,43 @@ class Clients extends Component {
     })
   }
 
+  changePage(e) {
+    this.setState({currentPage: Number(e.target.text)});
+  }
+
+  changeNumberPerPage(e) {
+    if (e.target.value === 'all') {
+      console.log("------------>change number per page: ", this.props);
+      this.setState({
+        numberPerPage: this.props.clientsOrder.length,
+        currentPage: 1
+      });
+    }
+    else {
+      this.setState({
+        numberPerPage: e.target.value,
+        currentPage: 1
+      });
+    }
+  }
+
   render() {
-    console.log("-------->render", this.props);
+    console.log("-------->render: ", this);
     const p = this.props;
+    let clientsOnPage = this.state.clientsOrder.slice(
+      this.state.numberPerPage * (this.state.currentPage - 1),
+      this.state.numberPerPage * this.state.currentPage);
+    let pageNumbers = [];
+    for (let number = 1; number <= Math.ceil(this.state.clientsOrder.length/this.state.numberPerPage); number++) {
+      pageNumbers.push(
+        <Pagination.Item
+          key={number}
+          active={number ===this.state.currentPage}
+          onClick={this.changePage}>{number}
+        </Pagination.Item>
+      )
+    }
+
     return(
       <div className="content modal-container">
         <h1>Clients</h1>
@@ -158,6 +199,7 @@ class Clients extends Component {
         </Button>
         <hr/>
         <ClientSearchBar
+          changeNumberPerPage={this.changeNumberPerPage}
           handleSearchBarChange={this.handleSearchBarChange}
           handleSortByChange={this.handleSortByChange}
           orderBy={this.state.orderBy}
@@ -166,19 +208,12 @@ class Clients extends Component {
         {p.clientsLoaded && (
           <div>
             {(Object.keys(this.state.clientsOrder).length > 0)
-              ? <ClientsIndex>{
-                _.map(this.state.clientsOrder, (clientId) => {
-                  const client = p.clients[clientId]
-                  if (client){
-                    return (
-                      <ClientRow
-                        key={client.id}
-                        client={client}
-                        handleShow={this.handleDeleteModalShow}
-                      />
-                    )
-                  }  
-                })
+              ? <ClientsIndex changeNumberPerPage={this.changeNumberPerPage}>{
+                  clientsOnPage.map((this.state.clientsOrder, (clientId) => {
+                    const client = p.clients[clientId]
+                    if (client){
+                      return <ClientRow key={client.id} client={client}  handleShow={this.handleDeleteModalShow} />
+                    }}))
               }</ClientsIndex>
               : (<div>
                   <h5>
@@ -189,6 +224,9 @@ class Clients extends Component {
                   </h5>
                 </div>)
             }
+            <Pagination className="pagination">
+            {pageNumbers}
+            </Pagination>
           </div>)
         }
         <CSVUploadModal
@@ -209,6 +247,7 @@ class Clients extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("----------------->mapStateToProps: ", state);
   return {
     clients: state.clients.byId,
     clientsOrder: state.clients.order,

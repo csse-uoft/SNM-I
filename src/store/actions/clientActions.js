@@ -9,6 +9,7 @@ export const REQUEST_CLIENTS = 'REQUEST_CLIENTS';
 export const RECEIVE_ALL_CLIENTS = 'RECEIVE_ALL_CLIENTS';
 export const REMOVE_CLIENT = 'REMOVE_CLIENT';
 export const RECEIVE_CLIENTS = 'RECEIVE_CLIENTS';
+export const SEARCH_CLIENTS = 'SEARCH_CLIENTS';
 
 
 function requestClient(id) {
@@ -27,6 +28,7 @@ function receiveClient(id, json) {
 }
 
 function requestClients(json) {
+  console.log("---------> request clients json: ", json);
   return {
     type: REQUEST_CLIENTS,
     clients: json
@@ -52,6 +54,15 @@ function removeClient(id) {
     type: REMOVE_CLIENT,
     id: id
   }
+}
+
+export function searchClients(searchValue, searchType, sortType) {
+  return {
+    type: SEARCH_CLIENTS,
+    searchValue: searchValue,
+    searchType: searchType,
+    sortType: sortType
+  };
 }
 
 

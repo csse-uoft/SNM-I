@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { Table } from 'react-bootstrap';
 import './../../stylesheets/Common.scss'
+import ClientSearchBar from './ClientSearchBar';
 
 export default class ClientsIndex extends Component {
   render() {
     return(
+      <div>
+      <ClientSearchBar changeNumberPerPage={this.props.changeNumberPerPage}>
+      </ClientSearchBar>
+        <hr />
       <Table
         className="dashboard-table"
         striped
@@ -26,6 +31,7 @@ export default class ClientsIndex extends Component {
           { this.props.children }
         </tbody>
       </Table>
+      </div>
     )
   }
 }
