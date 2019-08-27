@@ -10,9 +10,10 @@ export const REQUEST_PROVIDER = 'REQUEST_PROVIDER';
 export const SEARCH_PROVIDERS = 'SEARCH_PROVIDERS';
 
 
-function requestProviders() {
+function requestProviders(json) {
   return {
-    type: REQUEST_PROVIDERS
+    type: REQUEST_PROVIDERS,
+    providers: json
   }
 }
 
@@ -26,7 +27,7 @@ function requestProvider(id) {
 function receiveProvider(id, json) {
   return {
     type: RECEIVE_PROVIDER,
-    info: json,
+    provider: json,
     id: id
   }
 }
@@ -34,7 +35,7 @@ function receiveProvider(id, json) {
 function receiveProviders(json) {
   return {
     type: RECEIVE_PROVIDERS,
-    info: json,
+    providers: json,
     receivedAt: Date.now(),
   }
 }
@@ -47,12 +48,13 @@ function removeProvider(id) {
 }
 
 
-export function searchProviders(searchValue, searchType, searchProviderType) {
+export function searchProviders(searchValue, searchType, searchProviderType, sortType) {
   return {
     type: SEARCH_PROVIDERS,
     searchValue: searchValue,
     searchType: searchType,
-    searchProviderType: searchProviderType
+    displayType: searchProviderType, 
+    sortType: sortType
   };
 }
 
@@ -125,7 +127,7 @@ export function createProvider(params, callback) {
       }
     })
     .then(provider => {
-      dispatch(receiveProvider(provider))
+      dispatch(receiveProvider(provider.id, provider))
       if (provider.status === 'Home Agency') {
         dispatch(updateAuthOrganization(provider))
       }

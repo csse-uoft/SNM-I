@@ -41,34 +41,6 @@ class ClientSearchBar  extends Component {
     this.props.dispatch(searchClients(this.state.searchText, this.state.searchType, value));
   }
 
-
-  // handleSearchBarChange(type, value) {
-  //   let newlyDisplayed;
-  //   console.log("--------------------> search bar change value: ", value);
-  //   if (type === 'last_name') {
-  //     newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
-  //       const client = this.props.clients[clientId];
-  //       if (client.profile.last_name && client.profile.last_name.toLowerCase().includes(value.toLowerCase())) {
-  //         result.push(client.id)
-  //       }
-  //       return result;
-  //     }, []);
-  //   }
-  //   else if (type === 'address'){
-  //     newlyDisplayed = _.reduce(this.props.clientsOrder, (result, clientId) => {
-  //       const client = this.props.clients[clientId];
-  //       if (client.address && formatLocation(client.address).toLowerCase().includes(value.toLowerCase())) {
-  //         result.push(client.id)
-  //       }
-  //       return result;
-  //     }, []);
-  //   }
-  //   this.setState({
-  //     clientsOrder: newlyDisplayed,
-  //     searching: true
-  //   })
-  // }
-
   render() {
     return (
       <Form inline>
@@ -85,8 +57,7 @@ class ClientSearchBar  extends Component {
           <FormControl
             componentClass="select"
             placeholder="select"
-            value={this.state.type}
-            onChange={this.handleFormValChange}
+            onChange={this.handleSearchChange}
           >
             <option value="first_name">First name</option>
             <option value="last_name">Last name</option>
@@ -99,15 +70,14 @@ class ClientSearchBar  extends Component {
           <FormControl
             componentClass="select"
             placeholder="select"
-            value={this.props.orderBy}
-            onChange={this.handleSortByChange}
+            onChange={this.handleSortChange}
           >
-            <option value="first_name">First Name (A-Z)</option>
             <option value="-first_name">First Name (Z-A)</option>
+            <option value="first_name">First Name (A-Z)</option>
             <option value="last_name">Last Name (A-Z)</option>
             <option value="-last_name">Last Name (Z-A)</option>
           </FormControl>
-        </FormGroup>
+        </FormGroup>{' '}
 
         <FormGroup controlId="numberPerPage">
           <ControlLabel> Number per page: </ControlLabel>{' '}

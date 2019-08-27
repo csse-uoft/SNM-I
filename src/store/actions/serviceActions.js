@@ -4,7 +4,6 @@ import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 export const REQUEST_SERVICE = 'REQUEST_SERVICE';
 export const RECEIVE_SERVICE = 'RECEIVE_SERVICE';
 export const REQUEST_SERVICES = 'REQUEST_SERVICES';
-export const RECEIVE_ALL_SERVICES = 'RECEIVE_ALL_SERVICES';
 export const REMOVE_SERVICE = 'REMOVE_SERVICE';
 export const RECEIVE_SERVICES = 'RECEIVE_SERVICES';
 export const SEARCH_SERVICES = 'SEARCH_SERVICES';
@@ -28,13 +27,6 @@ function receiveService(id, json) {
 function requestServices(json) {
   return {
     type: REQUEST_SERVICES,
-    services: json
-  }
-}
-
-function receiveAllServices(json) {
-  return {
-    type: RECEIVE_ALL_SERVICES,
     services: json
   }
 }

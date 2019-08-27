@@ -83,9 +83,6 @@ export function fetchClients() {
   return dispatch => {
     dispatch(requestClients())
     let url = serverHost + '/clients/';
-    // if (orderBy) {
-    //   url += '?order_by=' + orderBy;
-    // }
 
     return fetch(url, {
         method: 'GET',

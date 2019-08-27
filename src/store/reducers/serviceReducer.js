@@ -50,6 +50,7 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
       }
       else if (action.searchType === "name") {
         services = sortedServices.filter((service) => ((service.name?service.name.toLowerCase():"").includes(action.searchValue) ));
+        console.log("service reducer return: ", {index: [...state.index], filteredServices: services, servicesLoaded: true});
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "provider") {

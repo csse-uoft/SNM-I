@@ -28,33 +28,35 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
     // for search bar
       if (action.sortType === '' || action.sortType === "first_name") {
         console.log("client reducer :", [...state.index]);
-        sortedClients = [...state.index].sort((a, b) => (a.first_name ? a.first_name.toLowerCase(): "").localeCompare(b.first_name ? b.first_name.toLowerCase():""));
+        sortedClients = [...state.index].sort((a, b) => (a.profile.first_name ? a.profile.first_name.toLowerCase(): "").localeCompare(b.profile.first_name ? b.profile.first_name.toLowerCase():""));
       }
       else if (action.sortType === "-first_name") {
-        sortedClients = [...state.index].sort((a, b) => (a.first_name ? a.first_name.toLowerCase(): "").localeCompare(b.first_name ? b.first_name.toLowerCase():""));
+        sortedClients = [...state.index].sort((a, b) => (a.profile.first_name ? a.profile.first_name.toLowerCase(): "").localeCompare(b.profile.first_name ? b.profile.first_name.toLowerCase():""));
         sortedClients = sortedClients.reverse();
       }
       else if (action.sortType === "last_name") {
-        sortedClients = [...state.index].sort((a, b) => (a.last_name ? a.last_name.toLowerCase(): "").localeCompare(b.last_name ? b.last_name.toLowerCase():""));
+        sortedClients = [...state.index].sort((a, b) => (a.profile.last_name ? a.profile.last_name.toLowerCase(): "").localeCompare(b.profile.last_name ? b.profile.last_name.toLowerCase():""));
       }
       else if (action.sortType === "-last_name") {
-        sortedClients = [...state.index].sort((a, b) => (a.last_name ? a.last_name.toLowerCase(): "").localeCompare(b.last_name ? b.last_name.toLowerCase():""));
+        sortedClients = [...state.index].sort((a, b) => (a.profile.last_name ? a.profile.last_name.toLowerCase(): "").localeCompare(b.profile.last_name ? b.profile.last_name.toLowerCase():""));
         sortedClients = sortedClients.reverse();        
       }
       
       if (action.searchValue === ''){
         return {index: sortedClients, filteredClients: sortedClients, clientsLoaded: true}
       }
-      else if (action.searchValue === 'first_name') {
-        clients = sortedClients.filter((client) => ((client.first_name?client.first_name.toLowerCase():"").inclides(action.searchValue)));
+      else if (action.searchType === 'first_name') {
+        console.log("clients: ", sortedClients);
+        clients = sortedClients.filter((client) => ((client.profile.first_name?client.profile.first_name.toLowerCase():"").includes(action.searchValue)));
+        console.log("client reducer return: ", {index: [...state.index], filteredClients: clients, clientsLoaded: true});
         return {index: [...state.index], filteredClients: clients, clientsLoaded: true}
       }
-      else if (action.searchValue === 'last_name') {
-        clients = sortedClients.filter((client) => ((client.last_name?client.last_name.toLowerCase():"").inclides(action.searchValue)));
+      else if (action.searchType === 'last_name') {
+        clients = sortedClients.filter((client) => ((client.profile.last_name?client.profile.last_name.toLowerCase():"").includes(action.searchValue)));
         return {index: [...state.index], filteredClients: clients, clientsLoaded: true}
       }
-      else if (action.searchValue === 'address') {
-        clients = sortedClients.filter((client) => ((client.address?client.address.toLowerCase():"").inclides(action.searchValue)));
+      else if (action.searchType === 'address') {
+        clients = sortedClients.filter((client) => ((client.address?client.address.toLowerCase():"").includes(action.searchValue)));
         return {index: [...state.index], filteredClients: clients, clientsLoaded: true}
       }
 

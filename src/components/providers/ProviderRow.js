@@ -6,18 +6,12 @@ import DropdownMenu from '../shared/DropdownMenu'
 
 // redux
 import { connect } from 'react-redux';
-import { deleteProvider } from '../../store/actions/providerActions.js'
 import { formatLocation } from '../../helpers/location_helpers.js'
 
 class ProviderRow extends Component {
   constructor(props) {
     super(props);
-    this.delete = this.delete.bind(this);
     console.log("this.props: ", this);
-  }
-
-  delete(id) {
-    this.props.dispatch(deleteProvider(id));
   }
 
   render() {

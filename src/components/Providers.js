@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { ACTION_ERROR } from '../store/defaults.js'
 import { formatLocation } from '../helpers/location_helpers.js';
 
-import ProviderSearchBar from './providers/ProviderSearchBar';
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'
@@ -116,6 +115,7 @@ class ProviderInfoBox extends Component {
 class Providers extends Component {
   constructor(props) {
     super(props);
+    console.log("-----------> constructor props: ", this.props);
     this.handleCSVModalHide = this.handleCSVModalHide.bind(this);
     this.handleCSVModalShow = this.handleCSVModalShow.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -126,12 +126,7 @@ class Providers extends Component {
 
     this.changePage = this.changePage.bind(this);
     this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-    this.handleTypeChange = this.handleTypeChange.bind(this);
-    this.handleProviderTypeChange = this.handleProviderTypeChange.bind(this);
-    this.handleCategorySelection = this.handleCategorySelection.bind(this);
-    this.handleSearchChange = this.handleSearchChange.bind(this)
-
+    
     this.state = {
       deleteModalshow: false,
       objectId: null,
@@ -139,10 +134,6 @@ class Providers extends Component {
       CSVModalshow: false,
       numberPerPage: 10,
       currentPage: 1,
-      searchText: '',
-      searchType: 'name',
-      searchProviderType: 'all',
-      selectedCategories: []
     }
   }
 
@@ -154,62 +145,6 @@ class Providers extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({ filteredProviders: nextProps.providers });
     console.log("-------->componentWillReceiveProps", this.props);
-  }
-
-  // for search bar
-  handleInput(event) {
-    const value = event.target.value;
-    this.setState({ searchText: value});
-    this.handleSearchChange(value, this.state.searchType, this.state.searchProviderType, this.state.selectedCategories)
-  }
-
-  handleTypeChange(event) {
-    console.log("------------------>handleTypeChange", event);
-    const value = event.target.value;
-    this.setState({searchType: value});
-    this.handleSearchChange(this.state.searchText, value, this.state.searchProviderType, this.state.selectedCategories)
-  }
-
-  handleProviderTypeChange(event) {
-    const value = event.target.value;
-    console.log("----------------->handleProviderTypeChange", value);
-    this.setState({searchProviderType: value});
-    this.handleSearchChange(this.state.searchText, this.state.searchType, value, this.state.selectedCategories)
-  }
-
-  handleCategorySelection(event) {
-    this.setState({selectedCategories: event});
-    this.handleSearchChange(this.state.searchText, this.state.searchType, this.state.searchProviderType, event)
-  }
-
-  handleSearchChange(searchText, searchType, providerType, categories) {
-    let providers;
-    if (categories.length > 0) {
-      providers = [];
-      categories.forEach(category => {
-        if (this.props.providersByService[category.value]) {
-          providers = providers.concat(this.props.providersByService[category.value])
-        }
-      });
-    } else {
-      providers = this.props.providers;
-    }
-
-    if (searchText && searchType === "name") {
-      providers = providers.filter(provider => (((provider.profile.first_name).includes(searchText) ||
-            (provider.profile.last_name).includes(searchText) || (provider.company).includes(searchText))));
-    } else if (searchText && searchType === "email") {
-      providers = providers.filter(provider => (provider.email).includes(searchText));
-    } else if (searchText && searchType === "phone") {
-      providers = providers.filter(provider =>
-        (provider.profile.primary_phone_number).includes(searchText)
-      );
-    }
-
-    if (providerType !== "all") {
-      providers = providers.filter(provider => provider.type === providerType);
-    }
-    this.setState({filteredProviders: providers})
   }
 
   handleCSVModalHide() {
@@ -281,6 +216,8 @@ class Providers extends Component {
 
   render() {
     console.log("------------------>render", this.props);
+    console.log("provider render state: ", this.state);
+
     const p = this.props;
     let providersOnPage = this.state.filteredProviders.slice(
       this.state.numberPerPage * (this.state.currentPage - 1),
@@ -339,17 +276,7 @@ class Providers extends Component {
               <Glyphicon glyph="print" />
             </Button>
           </div>
-          <hr/>
-          <ProviderSearchBar
-            changeNumberPerPage={this.changeNumberPerPage}
-            handleInput={this.handleInput}
-            handleTypeChange={this.handleTypeChange}
-            handleProviderTypeChange={this.handleProviderTypeChange}
-            handleCategorySelection={this.handleCategorySelection}
-            selectedCategories={this.state.selectedCategories}
-            searchValue={this.state.searchText}
-          />
-          <hr/>
+         <hr/>
         { p.providersLoaded && 
           <div>
             <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
@@ -398,10 +325,10 @@ class Providers extends Component {
 
 
 const mapStateToProps = (state) => {
+  console.log('map state to prop provider state:', state);
   return {
-    providers: state.providers.filteredProviders || [],
-    providersByService: state.providers.providersByService,
-    providersLoaded: state.providers.loaded
+    providers: state.providers.filteredProviders.providers || [],
+    providersLoaded: state.providers.providerLoaded
   }
 }
 

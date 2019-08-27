@@ -38,11 +38,6 @@ class Clients extends Component {
 
     this.changePage = this.changePage.bind(this);
     this.changeNumberPerPage = this.changeNumberPerPage.bind(this);
-
-    console.log("constructor: ", this.props.clients);
-    // for (var key in Object.keys(this.props.clients)){
-    //   this.state.filteredClients.push(this.props.clients[key]);
-    // }
   }
     
 
@@ -166,22 +161,12 @@ class Clients extends Component {
         <hr/>
         {p.clientsLoaded && 
           <div>
-            {(Object.keys(this.state.filteredClients).length > 0)
-              ? <ClientsIndex changeNumberPerPage={this.changeNumberPerPage}>{
-                  clientsOnPage.map((client) => {
-                    if (client){
-                      return <ClientRow key={client.id} client={client}  handleShow={this.handleDeleteModalShow} />
-                    }})
-              }</ClientsIndex>
-              : (<div>
-                  <h5>
-                    {(this.state.searching)
-                      ? 'There are no clients matching this search query term.'
-                      : 'There are currently no clients stored in the database.'
-                    }
-                  </h5>
-                </div>)
-            }
+            <ClientsIndex changeNumberPerPage={this.changeNumberPerPage}>{
+                clientsOnPage.map((client) => {
+                  if (client){
+                    return <ClientRow key={client.id} client={client}  handleShow={this.handleDeleteModalShow} />
+                  }})
+            }</ClientsIndex>
             <Pagination className="pagination">
             {pageNumbers}
             </Pagination>
