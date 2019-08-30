@@ -52,9 +52,9 @@ class Clients extends Component {
   }
 
   // static getDerivedStateFromProps(nextProps, prevState) {
-  //   return nextProps.clientsOrder === prevState.clientsOrder
+  //   return nextProps.clients === prevState.filteredClients
   //   ? {}
-  //   : {clientsOrder: nextProps.clientsOrder}
+  //   : {filteredClients: nextProps.clients}
   // }
 
   handleCSVModalHide() {

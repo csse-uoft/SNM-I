@@ -327,7 +327,7 @@ class Providers extends Component {
 const mapStateToProps = (state) => {
   console.log('map state to prop provider state:', state);
   return {
-    providers: state.providers.filteredProviders.providers || [],
+    providers: state.providers.filteredProviders || [],
     providersLoaded: state.providers.providerLoaded
   }
 }
