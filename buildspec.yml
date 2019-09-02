@@ -1,0 +1,7 @@
+version: 0.1
+phases:
+    install:
+        commands:
+        - npm install
+        - npm run build
+        - aws s3 sync build s3://jias-snmi-ca
