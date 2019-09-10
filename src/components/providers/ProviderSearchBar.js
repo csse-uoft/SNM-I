@@ -56,7 +56,6 @@ class ProviderSearchBar extends Component {
   // }
 
   render() {
-    console.log("provider render state: ", this.state);
     return (
       <Form inline>
         <FormGroup controlId="searchBar">
