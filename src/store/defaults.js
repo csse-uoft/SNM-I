@@ -2,10 +2,10 @@ const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
 if (hostname === 'jias.snmi.ca.s3-website.ca-central-1.amazonaws.com') {
-  serverHost = 'https://jias-server.snmi.ca';
+  serverHost = 'https://jias-snmi-server.ca-central-1.elasticbeanstalk.com';
 }
 else if (hostname === 'jias-snmi-ca.s3-website.ca-central-1.amazonaws.com') {
-  serverHost = 'https://jias-server.snmi.ca'
+  serverHost = 'https://jias-snmi-server.ca-central-1.elasticbeanstalk.com'
 }
 else if (hostname === 'jias.snmi.ca') {
   serverHost = 'https://jias-server.snmi.ca';
