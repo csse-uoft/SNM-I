@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { ACTION_ERROR } from '../store/defaults.js'
 
+import './style.css';
+
 import ClientsIndex from './clients/ClientsIndex'
 import ClientRow from './clients/ClientRow'
 import CSVUploadModal from './shared/CSVUploadModal'

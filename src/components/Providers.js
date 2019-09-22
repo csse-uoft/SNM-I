@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { ACTION_ERROR } from '../store/defaults.js'
 import { formatLocation } from '../helpers/location_helpers.js';
 
+import './style.css';
+
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'

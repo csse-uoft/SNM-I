@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import './style.css';
+
 import GoodsIndex from './goods/GoodsIndex.js'
 import GoodRow from './goods/GoodRow.js'
 import CSVUploadModal from './shared/CSVUploadModal'
