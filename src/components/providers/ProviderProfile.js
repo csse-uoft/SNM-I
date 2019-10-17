@@ -18,17 +18,36 @@ import { fetchProviderFields } from '../../store/actions/settingActions.js';
 
 
 class ProviderProfile extends Component {
+
   componentWillMount() {
+    console.log("ProviderProfile.js - componentWillMount this.props.match.params.id", this.props.match.params.id);
     const id = this.props.match.params.id
     this.props.dispatch(fetchProvider(id));
+    
+    //console.log("ProviderProfile.js - componentWillMount _.keys(this.props.formSetting)", _.keys(this.props.formSetting));
+    //console.log("ProviderProfile.js - componentWillMount _.keys(this.props.formSetting).length", _.keys(this.props.formSetting).length);
+    
     if (_.keys(this.props.formSetting).length === 0) {
+      
       this.props.dispatch(fetchProviderFields());
     }
   }
 
   render() {
+    
+    //console.log("ProviderProfile.js - render this.props.match.params.id", this.props.match.params.id);
+    //console.log("ProviderProfile.js - render this.props.providersById[id]", this.props.providersById[this.props.match.params.id]);
+    console.log("ProviderProfile.js - render this.props", this.props);
+    
     const id = this.props.match.params.id;
-    const provider = this.props.providersById[id];
+    const provider = this.props.providersById[id].provider;
+    //const providerLoaded = this.props.providersById[id].providerLoaded
+    const providerLoaded = this.props.providerLoaded
+    
+    //console.log("ProviderProfile.js - render id", id);
+    console.log("ProviderProfile.js - render providerLoaded", providerLoaded);
+    console.log("ProviderProfile.js - render provider", provider);
+    
     if (provider == null){
       return null
     }
@@ -38,29 +57,30 @@ class ProviderProfile extends Component {
     } else if (provider.type === 'Individual') {
       formType = provider.category.split(' ').join('_').toLowerCase()
     }
-
+    console.log("ProviderProfile.js formType ", formType );
+    
     return (
       <div className="content">
         <h3>Provider Profile</h3>
 
-      { provider && provider.loaded &&
+      { provider && providerLoaded &&
         <div>
          <Link to={`/provider/${id}/edit/`}>
           <Button bsStyle="default">
             Edit
           </Button>
-        </Link>
-        &nbsp;
-        <Link to={`/provider/${id}/rate`}>
+         </Link>
+         &nbsp;
+         <Link to={`/provider/${id}/rate`}>
           <Button bsStyle="default">
             Rate Provider
           </Button>
-        </Link>
-        &nbsp;
-        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+         </Link>
+         &nbsp;
+         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
-        </Button>
-        {this.props.formSetting[formType] &&
+         </Button>
+         {this.props.formSetting[formType] &&
           _.map(this.props.formSetting[formType].form_structure, (infoFields, step) => {
           return (
             <ProviderInfoTable
@@ -71,13 +91,14 @@ class ProviderProfile extends Component {
               infoFields={infoFields}
             />
           )
-        })}
-    <hr/>
+          })
+         }
+        <hr/>
 
-    <h3> Reviews </h3>
-    <p/>
-    <Well bsSize="small">
-      <Row>
+      <h3> Reviews </h3>
+      <p/>
+      <Well bsSize="small">
+       <Row>
         <Col sm={3}>
           Overall Rating:
         </Col>
@@ -89,28 +110,28 @@ class ProviderProfile extends Component {
             value={((provider.reviews.map(review => review.rating))
                       .reduce((first, second) => first + second, 0)) / provider.reviews.length}
           />
-        </Col>
-      </Row>
-    </Well>
-    <hr/>
-    <ListGroup componentClass="ul">
-      {provider.reviews.map(review =>
-        <StarCommentRating
+         </Col>
+        </Row>
+       </Well>
+       <hr/>
+       <ListGroup componentClass="ul">
+        {provider.reviews.map(review =>
+         <StarCommentRating
           key={review.created_at}
           rating={review.rating}
           comment={review.comment}
           createdAt={review.created_at}/>)
-      }
-    </ListGroup>
-
+        }
+       </ListGroup>
+ 
      <h3>Services</h3>
       <Link to="/services/new">
-        <Button bsStyle="default">
-          Add Service
-        </Button>
-      </Link>
-    <hr/>
-    <ProviderServiceTable provider={provider}/>
+       <Button bsStyle="default">
+         Add Service
+       </Button>
+     </Link>
+   <hr/>
+  
     </div>
   }
   </div>
@@ -118,8 +139,25 @@ class ProviderProfile extends Component {
   }
 }
 
+/*
+<h3>Services</h3>
+      <Link to="/services/new">
+       <Button bsStyle="default">
+         Add Service
+       </Button>
+     </Link>
+   <hr/>
+   <ProviderServiceTable provider={provider}/>
+    </div>
+  }
+  </div>
+  );
+  }
+}
+*/
 class StarCommentRating extends Component {
   render() {
+    console.log("StarCommentRating"); 
     return(
       <li className="list-group-item">
         <Row>
@@ -144,8 +182,9 @@ class StarCommentRating extends Component {
   }
 }
 
-class ProviderServiceTable extends Component {
+/*class ProviderServiceTable extends Component {
   render() {
+    console.log("ProviderServiceTable");
     return(
       <Table striped bordered condensed hover>
         <thead>
@@ -158,10 +197,11 @@ class ProviderServiceTable extends Component {
           </tr>
         </thead>
           <tbody>
-            {this.props.provider.services.map((service) => {
+           {this.props.provider.services.map((service) => {
               return <ProviderServiceRow key={ service.id } service={service}/>
               })
             }
+            
           </tbody>
       </Table>
     )
@@ -170,6 +210,7 @@ class ProviderServiceTable extends Component {
 
 class ProviderServiceRow extends Component {
   render() {
+    ProviderServiceTable("ProviderServiceRow");  
     return(
       <tr>
         <td>{this.props.service.id}</td>
@@ -191,12 +232,18 @@ class ProviderServiceRow extends Component {
     )
   }
 }
+*/
 
 const mapStateToProps = (state) => {
+   console.log("ProviderProfile #######mapStateToProps state", state); 
+  //console.log("ProviderProfile  #######mapStateToProps state.providers.byId", state.providers.byId);
+  //console.log("ProviderProfile  #######mapStateToProps state.providers.providerLoaded", state.providers.providerLoaded);
   return {
     providersById: state.providers.byId || {},
-    providerLoaded: state.providers.loaded,
-    formSetting: state.settings.providers
+    providerLoaded: state.providers.providerLoaded,
+    servicesById: state.services.byID || {},
+    services: state.services || [],
+    formSetting: state.settings.providers || {}
   }
 }
 

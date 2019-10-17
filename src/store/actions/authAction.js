@@ -8,6 +8,7 @@ export const UPDATE_ORGANIZATION = 'UPDATE_ORGANIZATION';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
 
 function login_success(user, organization) {
+  console.log("File: authActions.js - Function: login_success - Parameters: user, organization. - Values: ", user, organization);
   return {
     type: LOGIN_SUCCESS,
     user: user,
@@ -16,6 +17,7 @@ function login_success(user, organization) {
 }
 
 function login_failure(alert) {
+  console.log("File: authActions.js -  Function: login_failure - Parameters: alert - Values:  ", alert);
   return {
     type: LOGIN_FAILURE,
     alert
@@ -23,6 +25,7 @@ function login_failure(alert) {
 }
 
 function logged_out(sessionExpired) {
+  console.log("File: authActions.js -  Function: logged_out - Parameters: sessionExpired - Values: ", sessionExpired);
   return {
     type: LOGGED_OUT,
     alert: sessionExpired && 'Your session has expired. Please login again.'
@@ -30,6 +33,7 @@ function logged_out(sessionExpired) {
 }
 
 export function updateAuthOrganization(provider) {
+  console.log("File: authActions.js -  Function: updateAuthOrganization - Parameters: provider - Values:", provider);
   return {
     type: UPDATE_ORGANIZATION,
     provider: provider
@@ -37,6 +41,7 @@ export function updateAuthOrganization(provider) {
 }
 
 export function login(params) {
+  console.log("File: authActions.js -  Function: login -  Parameters: params - Values:  ", params);
   return dispatch => {
     const url = serverHost + '/api-token-auth/';
 
@@ -57,6 +62,8 @@ export function login(params) {
       }
     })
     .then(json => {
+    
+      console.log("File: authActions.js -  Function: login - Step 2  json:  ", json);
       const decoded_token = jwt_decode(json.token);
       let user = (({ user_id, username, email }) => ({ user_id, username, email }))(decoded_token);
       user['expired_at'] = decoded_token['exp'] * 1000

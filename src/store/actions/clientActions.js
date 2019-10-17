@@ -133,6 +133,8 @@ export function deleteClient(id, params, callback) {
 }
 
 export function createClient(params, callback) {
+  console.log("createClient params", params);
+  
   return dispatch => {
     const url = serverHost + '/clients/';
     return fetch(url, {
@@ -144,6 +146,7 @@ export function createClient(params, callback) {
       }
     })
     .then(async(response) => {
+      console.log("createClient response.status", response.status);
       if (response.status === 201) {
         return response.json()
       }
@@ -195,6 +198,7 @@ export function createClients(file) {
 }
 
 export function updateClient(id, params, callback) {
+  console.log("updateClient id, params", id, params);
   return dispatch => {
     const url = serverHost + '/client/' + id + '/';
 

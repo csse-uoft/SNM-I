@@ -41,16 +41,20 @@ class AddressForm extends Component {
   }
 
   submitClick() {
+    console.log("ProviderForm.jsx, submitClick() this.state.address", this.state.address); 
     this.props.submitAddress(this.state.address);
   }
 
   addressChange(e) {
+    console.log("ProviderForm.jsx, addressChange()");
     let nextAddress = _.clone(this.state.address);
     nextAddress[e.target.id] = e.target.value;
     this.setState({ address: nextAddress });
+    console.log("ProviderForm.jsx, addressChange() this.state.address", this.state.address);  
   }
 
   render() {
+    console.log("ProviderForm.jsx, render() this.state.address", this.state.address);
     return (
       <Well>
         <LocationFieldGroup
@@ -74,6 +78,7 @@ class AddressListItem extends Component {
   }
 
   render() {
+  console.log("ProviderForm.jsx, AddressListItem render() this.props.addressIndex", this.props.addressIndex);
     return (
         <li className="list-group-item" key={this.props.address.postal_code}>
           <h4>
@@ -105,8 +110,13 @@ class ProviderForm extends Component {
     this.contactFieldsChange = this.contactFieldsChange.bind(this);
 
     const id = this.props.match.params.id;
-    const provider = id ? this.props.providersById[id] : {};
+    const provider = id ? this.props.providersById[id].provider : {};
+    
     let providerType, providerCategory, formType;
+    //console.log("ProviderForm.jsx, ProviderForm constructor this.props.match.params.id", this.props.match.params.id);
+    console.log("ProviderForm.jsx, ProviderForm constructor this.props", this.props);
+    console.log("ProviderForm.jsx, ProviderForm constructor provider", provider);
+    
     if (id) {
       if (provider.type === 'Organization') {
         formType = 'organization'
@@ -123,6 +133,11 @@ class ProviderForm extends Component {
       }
     }
 
+    console.log("ProviderForm.jsx, ProviderForm constructor provider.type", provider.type); 
+    
+    console.log("ProviderForm.jsx, ProviderForm constructor props.location.state", props.location.state);
+    
+    
     let status;
     if (props.location.state && props.location.state.status) {
       status = props.location.state.status
@@ -181,6 +196,7 @@ class ProviderForm extends Component {
   }
 
   componentWillMount() {
+   console.log("ProviderForm.jsx, ProviderForm componentWillMount()");
     this.props.dispatch(fetchOntologyCategories('languages'));
     if (_.keys(this.props.formSetting).length === 0) {
       this.props.dispatch(fetchProviderFields());
@@ -188,12 +204,14 @@ class ProviderForm extends Component {
   }
 
   submitAddress(address) {
+    console.log("ProviderForm.jsx, ProviderForm submitAddress(address) ");
     let nextForm = _.clone(this.state.form);
     nextForm.other_addresses.push(address);
     this.setState({ form: nextForm, addressButtonClicked: false });
   }
 
   formValChange(e, id=e.target.id) {
+    console.log("ProviderForm.jsx, ProviderForm formValChange");
     let nextForm = _.clone(this.state.form);
     if (_.includes(_.keys(defaultProfileFields), id) && this.state.form.type === 'Individual') {
       nextForm['profile'][id] = e.target.value;
@@ -205,6 +223,7 @@ class ProviderForm extends Component {
   }
 
   contactFieldsChange(e, prefix) {
+    console.log("ProviderForm.jsx, ProviderForm fcontactFieldsChange");
     const id = e.target.id.split(':')[1]
     let nextForm = _.clone(this.state.form);
     nextForm[prefix]['profile'][id] = e.target.value;
@@ -212,12 +231,14 @@ class ProviderForm extends Component {
   }
 
   operationHourChange(e, weekDay, slotIndex, id) {
+    console.log("ProviderForm.jsx, ProviderForm operationHour");
     let nextForm = _.clone(this.state.form);
     nextForm['operation_hours'][weekDay][slotIndex][id] = e && e.value;
     this.setState({ form: nextForm });
   }
 
   handleOperationHourOnClick(e, weekDay, action) {
+    console.log("ProviderForm.jsx, ProviderForm  handleOperationHourOnClick");
     let nextForm = _.clone(this.state.form);
 
     if (action === 'add') {
@@ -229,18 +250,12 @@ class ProviderForm extends Component {
   }
 
   submit(e) {
+    console.log("ProviderForm.jsx, ProviderForm  submit(e)");
     if (this.state.mode === 'edit') {
       const id = this.props.match.params.id;
       let form = _.clone(this.state.form);
       form['operation_hours'] = operationHourObjectToList(form['operation_hours'])
-      this.props.dispatch(updateProvider(this.state.providerId, form, (status, err, id) => {
-        if (status === ACTION_SUCCESS) {
-          this.props.history.push('/provider/' + id)
-        }
-        else {
-          console.log(err)
-        }
-      }))
+      this.props.dispatch(updateProvider(this.state.providerId, form))
         .then(() => this.props.history.push('/provider/' + id));
     } else {
       this.props.dispatch(createProvider(this.state.form, (status, err, id) => {
@@ -254,14 +269,15 @@ class ProviderForm extends Component {
     }
   }
 
-
   mainAddressChange(e) {
+    console.log("ProviderForm.jsx, ProviderForm  mainAddressChange(e)");
     let nextForm = _.clone(this.state.form);
     nextForm['main_address'][e.target.id] = e.target.value;
     this.setState({ form: nextForm });
   }
 
   otherAddressChange(e) {
+    console.log("ProviderForm.jsx, ProviderForm  otherAddressChange(e)");
     let nextForm = _.clone(this.state.form);
     const address_index = e.target.id.split('-')[0];
     const address_field = e.target.id.split('-')[1];
@@ -270,16 +286,19 @@ class ProviderForm extends Component {
   }
 
   toggleAddressButton() {
+    console.log("ProviderForm.jsx, ProviderForm toggleAddressButton");
     this.setState({ addressButtonClicked: !this.state.addressButtonClicked })
   }
 
   removeOtherAddress(index) {
+     console.log("ProviderForm.jsx, ProviderForm removeOtherAddress");
     let nextForm = _.clone(this.state.form);
     nextForm['other_addresses'].splice(index, 1);
     this.setState({ form: nextForm });
   }
 
   handleResponseChange(e, questionId) {
+    console.log("ProviderForm.jsx, ProviderForm handleResponseChange()");
     let nextForm = _.clone(this.state.form);
     const questionIndex = _.findIndex(nextForm.responses, response => {
       return response.question_id === questionId
@@ -300,24 +319,28 @@ class ProviderForm extends Component {
   }
 
   next() {
+    console.log("ProviderForm.jsx, ProviderForm next()");
    this.setState({
      currentStep: this.state.currentStep + 1
    });
   }
 
   prev() {
+    console.log("ProviderForm.jsx, ProviderForm prev");
     this.setState({
       currentStep: this.state.currentStep - 1
     });
   }
 
   handleStepClick(step) {
+    console.log("ProviderForm.jsx, ProviderForm handleStepClick");
     this.setState({
       currentStep: step
     });
   }
 
   handleMultiSelectChange(id, selectedOption, actionMeta) {
+    console.log("ProviderForm.jsx, ProviderForm handleMultiSelect");
     const preValue = this.state.form[id]
     const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
 
@@ -330,6 +353,7 @@ class ProviderForm extends Component {
   }
 
   render() {
+    console.log("ProviderForm.jsx, ProviderForm render()");
     let addresses = this.state.form.other_addresses.map((address, index) =>
       <AddressListItem
         key={index}
@@ -342,7 +366,8 @@ class ProviderForm extends Component {
     let formStructure, stepsOrder;
     formStructure = this.props.formSetting[this.state.formType] && this.props.formSetting[this.state.formType].form_structure
     stepsOrder = this.props.formSetting[this.state.formType] && this.props.formSetting[this.state.formType].steps_order
-
+    console.log("ProviderForm.jsx, ProviderForm before render() return");
+    
     return (
       <Row className="content">
         <Col sm={12}>
@@ -495,12 +520,20 @@ class ProviderForm extends Component {
   }
 
 const mapStateToProps = (state) => {
+  console.log("ProviderForm ##### mapStateToProps state", state); 
   return {
     providersById: state.providers.byId || {},
     providerLoaded: state.providers.indexLoaded,
     languagesCategories: state.ontology.languages.categories,
-    categoriesLoaded: state.ontology.languages.loaded,
+    categoriesLoaded: state.ontology.services.categories,
     formSetting: state.settings.providers || {}
+    
+    
+    //providersById: state.providers.byId || {},
+    //providerLoaded: state.providers.providerLoaded,
+    //servicesById: state.services.byID || {},
+    //services: state.services,
+    //formSetting: state.settings.providers
   }
 }
 export default connect(mapStateToProps)(withRouter(ProviderForm));

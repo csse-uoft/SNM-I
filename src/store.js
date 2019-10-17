@@ -21,6 +21,7 @@ const authMiddleware = store => next => action => {
 }
 
 export default function configureStore(preloadedState) {
+  console.log("File: store.js - Function: configureStore  Parameters: preloadedState ->  ", preloadedState) 
   let store = createStore(
     persistedReducer,
     preloadedState,

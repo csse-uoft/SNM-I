@@ -135,8 +135,13 @@ class ClientForm extends Component {
     this.setState({ form: nextForm });
   }
 
-  submit() {
+  submit(e) {
+    console.log("submit e", e);
+    console.log("submit this.state.mode", this.state.mode);
+    
     if (this.state.mode === 'edit') {
+      console.log("edit");
+      
       this.props.dispatch(
         updateClient(this.state.clientId, this.state.form, (status, err, clientId) => {
           if (status === ACTION_SUCCESS) {
@@ -147,10 +152,16 @@ class ClientForm extends Component {
         })
       );
     } else {
+      console.log("else: this.state.form", this.state.form);
+      
       this.props.dispatch(
         createClient(this.state.form, (status, err, clientId) => {
+        
+        console.log("else: status, err, clientId", status, err, clientId)
+        
         if (status === ACTION_SUCCESS) {
-          this.props.history.push(`/clients/${clientId}`)
+          //this.props.history.push(`/clients/${clientId}`) 
+           this.props.history.push('/clients/' + clientId)
         } else {
           const error_messages =
             _.reduce(JSON.parse(err.message), (result, error_messages, field) => {

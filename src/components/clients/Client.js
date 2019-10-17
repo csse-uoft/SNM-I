@@ -17,14 +17,19 @@ import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
 
 class Client extends Component {
   componentWillMount() {
+    console.log("componentWillMount");
     const id = this.props.match.params.id
     this.props.dispatch(fetchClient(id));
   }
 
   render() {
+    console.log("&&&&&&&& render()");
+    
     const p = this.props,
-          id = p.match.params.id,
-          client = p.clientsById[id];
+    id = p.match.params.id,
+    client = p.clientsById[id];
+    const clientLoaded = p.clientLoaded
+    
     let services = {},
         providers = {};
     _.each(client.need_groups, need_group => {
@@ -48,7 +53,9 @@ class Client extends Component {
         person: { id: id }
       });
     }
+    
     let needGroups;
+    
     if (p.needsByNeedGroup) {
       needGroups = p.needsByNeedGroup.map(need_group =>
         <NeedGroupPanel
@@ -72,7 +79,7 @@ class Client extends Component {
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
           <Glyphicon glyph="print" />
         </Button>
-        {client && client.loaded &&
+        {client && clientLoaded &&
           <div>
             {client.is_deleted &&
               <h4>
@@ -85,8 +92,8 @@ class Client extends Component {
                   key={step}
                   step={step}
                   client={client}
-                  clientFields={clientFields}
                   infoFields={_.keys(_.omit(infoFields, 'family'))}
+                  clientFields={clientFields}
                 />
               )
             })}
@@ -163,12 +170,13 @@ class Client extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("mapStateToProps state", state);
   return {
     needsOrder: state.needs.order,
     needsByNeedGroup: state.needs.needGroups,
     needsLoaded: state.needs.loaded,
     clientsById: state.clients.byId,
-    clientLoaded: state.clients.indexLoaded,
+    clientLoaded: state.clients.clientsLoaded,
     formStructure: state.settings.clients.formStructure
   }
 }

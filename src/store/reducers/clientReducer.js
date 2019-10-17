@@ -7,8 +7,10 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
   let nextById, clients, nextIndex, sortedClients;
   switch (action.type) {
     case REQUEST_CLIENTS:
+      console.log()
       return {...state, clientsLoaded: false }
     case RECEIVE_CLIENTS:
+      console.log(RECEIVE_CLIENTS); 
       const newClientsById = _.keyBy(action.clients, client => client.id);
       nextById = { ...state.byId, ...newClientsById }
       console.log("reducer check: ", action);
@@ -21,6 +23,7 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
       nextById = { ...state.byId, [action.id]: { clientsLoaded: false } }
       return {...state, byId: nextById }
     case RECEIVE_CLIENT:
+      console.log(RECEIVE_CLIENT); 
       nextById = {...state.byId, [action.id]: { ...action.client, clientsLoaded: true }}
       return {...state, byId: nextById }
 

@@ -40,9 +40,21 @@ class ManageClientFields extends Component {
   }
 
   componentDidMount() {
+    console.log("componentDidMount")
     this.props.dispatch(fetchClientFields());
+    
+    console.log("stepsOrder: ", this.props.stepsOrder);
+    console.log("formStructure: ", this.props.formStructure);
+    console.log("indexFields: ", this.props.formStructure);
   }
 
+/*
+  componentDidUpdate() {
+    console.log("componentDidUpdate")
+    this.props.dispatch(fetchClientFields());
+  }
+*/
+ 
   handleFormValChange(e, id=e.target.id) {
     this.setState({ [id]: e.target.value });
   }
@@ -144,6 +156,7 @@ class ManageClientFields extends Component {
   }
 
   render() {
+    console.log("@@@@@@@ ********** render ManageClientFields");
     return(
       <Grid className="content">
         <Row>
@@ -280,6 +293,7 @@ class ManageClientFields extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("mapStateToProps, state:", state);
   return {
     stepsOrder: state.settings.clients.stepsOrder,
     formStructure: state.settings.clients.formStructure,

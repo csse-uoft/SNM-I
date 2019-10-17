@@ -18,6 +18,7 @@ function requestProviders(json) {
 }
 
 function requestProvider(id) {
+  console.log("requestProvider id", id);
   return {
     type: REQUEST_PROVIDER,
     id: id
@@ -25,6 +26,7 @@ function requestProvider(id) {
 }
 
 function receiveProvider(id, json) {
+  console.log("receiveProvider json", json);
   return {
     type: RECEIVE_PROVIDER,
     provider: json,
@@ -33,6 +35,7 @@ function receiveProvider(id, json) {
 }
 
 function receiveProviders(json) {
+  console.log("receiveProviders json", json);
   return {
     type: RECEIVE_PROVIDERS,
     providers: json,
@@ -61,6 +64,7 @@ export function searchProviders(searchValue, searchType, searchProviderType, sor
 
 export function fetchProvider(id) {
   return dispatch => {
+    console.log("fetchProvider, id", id);
     dispatch(requestProvider(id))
     const url = serverHost + '/provider/' + id + '/';
 
@@ -71,6 +75,7 @@ export function fetchProvider(id) {
         },
       }).then(response => response.json())
       .then(json => {
+        console.log("dispatch(receiveProvider id", id);
         dispatch(receiveProvider(id, json))
       })
   }
@@ -152,7 +157,7 @@ export function createProviderWithCSV(file) {
       }
     })
     .then(async(response) => {
-      if (response.status === 201) {
+      if (response.status === 200) {
         return response.json()
       }
       else {
@@ -171,6 +176,7 @@ export function createProviderWithCSV(file) {
 }
 
 export function updateProvider(id, params, callback) {
+  console.log("updateProvider id, params", id, params);
   return dispatch => {
     const url = serverHost + '/provider/' + id + '/';
 
@@ -192,16 +198,26 @@ export function updateProvider(id, params, callback) {
       }
     })
       .then(provider => {
-        dispatch(receiveProvider(provider))
-        if (provider.status === 'Home Agency') {
+        console.log("updateProvider provider.id, provider", provider.id, provider);
+        dispatch(receiveProvider(provider.id, provider))
+ /*       if (provider.status === 'Home Agency') {
           dispatch(updateAuthOrganization(provider.id, provider))
-        }
+        } */
         callback(ACTION_SUCCESS, null, provider.id);
       }).catch(err => {
         callback(ACTION_ERROR, err);
     })
   }
 }
+
+/*
+.then(client => {
+      dispatch(receiveClient(client.id, client))
+      callback(ACTION_SUCCESS, null, client.id);
+    }).catch(err => {
+      callback(ACTION_ERROR, err);
+
+*/
 
 export function deleteProvider(id, params, callback) {
   return dispatch => {

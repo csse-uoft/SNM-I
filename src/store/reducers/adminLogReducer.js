@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 
 export function admin_logs(state = { logsLoaded: false, byId: {} }, action) {
+  console.log("File adminLogReducer.js Function: admin_logs Parameters: state -> ", state)
   switch (action.type) {
     case REQUEST_ADMIN_LOGS:
       return { ...state, logsLoaded: false }
