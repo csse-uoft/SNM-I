@@ -40,7 +40,7 @@ class ProviderProfile extends Component {
     console.log("ProviderProfile.js - render this.props", this.props);
     
     const id = this.props.match.params.id;
-    const provider = this.props.providersById[id].provider;
+    const provider = this.props.providersById.providersById[id];
     //const providerLoaded = this.props.providersById[id].providerLoaded
     const providerLoaded = this.props.providerLoaded
     

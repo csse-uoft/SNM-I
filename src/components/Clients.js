@@ -15,7 +15,84 @@ import { connect } from 'react-redux'
 import { fetchClients, createClients, deleteClient } from '../store/actions/clientActions.js'
 
 // styles
-import { Button, Pagination } from 'react-bootstrap';
+import { Button, Col, Pagination } from 'react-bootstrap';
+import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
+
+class MapMarker extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isOpen: false,
+      isClicked: false
+    }
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.closeInfoBox = this.closeInfoBox.bind(this);
+    this.openInfoBox = this.openInfoBox.bind(this);
+  }
+
+  onMouseEnter() {
+    this.setState({
+      isOpen: true
+    })
+  }
+
+  onMouseLeave() {
+    this.setState({
+      isOpen: false
+    })
+  }
+
+  closeInfoBox() {
+    this.setState({
+      isClicked: false
+    })
+  }
+
+  openInfoBox() {
+    this.setState({
+      isClicked: true
+    })
+  }
+
+  render() {
+    if (this.props.client.address) {
+      return (
+        <Marker
+          key={this.props.client.id}
+          position = {{ lat: parseFloat(this.props.client.address.lat),
+                        lng: parseFloat(this.props.client.address.lng) }}
+          onMouseOver={() => this.onMouseEnter()}
+          onMouseOut={() => this.onMouseLeave()}
+          onClick={this.openInfoBox}
+        >
+        {(this.state.isOpen || this.state.isClicked) &&
+          <InfoWindow onCloseClick={() => this.closeInfoBox()}>
+            <ClientInfoBox client={this.props.client}/>
+          </InfoWindow>
+        }
+        </Marker>
+      )
+    } else {
+      return null
+    }
+  }
+}
+
+// this will show a info box for each client on the map
+class ClientInfoBox extends Component {
+  render() {
+    const client = this.props.client;
+    return(
+      <div>
+        <b>Client: </b>
+          {<Link to={`/clients/${client.id}`}>
+            {client.profile.first_name.concat(" ", client.profile.last_name)}
+          </Link>}
+      </div>
+    )
+  }
+}
 
 class Clients extends Component {
   constructor(props) {
@@ -148,6 +225,21 @@ class Clients extends Component {
       )
     }
 
+    const torontoCentroid = { lat: 43.6870, lng: -79.4132 }
+    const GMap = withGoogleMap(props => (
+      <GoogleMap
+        defaultZoom={10}
+        defaultCenter={torontoCentroid}
+      >
+        {         
+          _.map(clientsOnPage, (client) => {            
+              return <MapMarker key={client.id} 
+                client={client}/>
+          })
+        }
+      </GoogleMap>
+    ));
+
     return(
       <div className="content modal-container">
         <h1>Clients</h1>
@@ -172,6 +264,23 @@ class Clients extends Component {
             <Pagination className="pagination">
             {pageNumbers}
             </Pagination>
+          </div>
+        }
+        <hr/>
+        { p.clientsLoaded &&
+          <div>
+            <Col sm={4}>
+              <div style={{width: '250%', height: '500px'}}>
+                <GMap
+                  containerElement={
+                    <div style={{ height: `100%` }} />
+                  }
+                  mapElement={
+                    <div style={{ height: `80%` }} />
+                  }
+                />
+              </div>
+            </Col>
           </div>
         }
         <CSVUploadModal
