@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { ACTION_ERROR } from '../store/defaults.js'
 import { formatLocation } from '../helpers/location_helpers.js';
 
-import './style.css';
 
 import ProvidersIndex from './providers/ProvidersIndex.js'
 import ProviderRow from './providers/ProviderRow.js'
@@ -256,7 +255,7 @@ class Providers extends Component {
           <div>
             <DropdownButton
               id="provider-form-type-dropdown"
-              bsStyle="default"
+              bs="default"
               title="Add new provider"
             >
               {_.map(providerFormTypes, (formType, value) =>
@@ -295,13 +294,13 @@ class Providers extends Component {
         { p.providersLoaded &&
         <div>
         <Col sm={4}>
-          <div style={{width: '250%', height: '400px'}}>
+          <div style={{width: '250%', height: '500px'}}>
             <GMap
               containerElement={
                 <div style={{ height: `100%` }} />
               }
               mapElement={
-                <div style={{ height: `100%` }} />
+                <div style={{ height: `80%` }} />
               }
             />
           </div>

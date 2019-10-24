@@ -267,13 +267,13 @@ class Services extends Component {
             { p.servicesLoaded &&
             <div>
             <Col sm={4}>
-              <div style={{width: '250%', height: '400px'}}>
+              <div style={{width: '250%', height: '500px'}}>
                 <GMap
                   containerElement={
                     <div style={{ height: `100%` }} />
                   }
                   mapElement={
-                    <div style={{ height: `100%` }} />
+                    <div style={{ height: `80%` }} />
                   }
                 />
               </div>

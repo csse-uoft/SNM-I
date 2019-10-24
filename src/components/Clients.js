@@ -78,6 +78,7 @@ class Clients extends Component {
           // this.setState({ displayError: true });
         } else {
           this.setState({ CSVModalshow: false })
+          console.log("csvmodalshow false");
         }
       })
     );

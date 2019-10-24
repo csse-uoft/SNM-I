@@ -583,7 +583,6 @@ class ServiceForm extends Component {
               options={{ 'Yes': true, 'No': false }}
               onChange={this.formValChange}
               defaultChecked={this.state.form.is_public}
-              required
             />
             <MultiSelectField
               id="share_with"

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
-import './style.css';
 
 import GoodsIndex from './goods/GoodsIndex.js'
 import GoodRow from './goods/GoodRow.js'
@@ -235,13 +234,13 @@ class Goods extends Component {
           { p.goodsLoaded &&
           <div>
           <Col sm={4}>
-            <div style={{width: '250%', height: '400px'}}>
+            <div style={{width: '250%', height: '500px'}}>
               <GMap
                 containerElement={
                   <div style={{ height: `100%` }} />
                 }
                 mapElement={
-                  <div style={{ height: `100%` }} />
+                  <div style={{ height: `80%` }} />
                 }
               />
             </div>
