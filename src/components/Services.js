@@ -59,7 +59,8 @@ class MapMarker extends Component {
     return (
       <Marker
         key={this.props.service.id}
-        position={this.props.service.location.lat_lng}
+        position = {{ lat: parseFloat(this.props.service.location.lat),
+          lng: parseFloat(this.props.service.location.lng) }}
         onMouseOver={() => this.onMouseEnter()}
         onMouseOut={() => this.onMouseLeave()}
         onClick={this.openInfoBox}

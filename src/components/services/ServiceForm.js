@@ -153,22 +153,22 @@ class ServiceForm extends Component {
     delete form['eligibility_conditions']['lower_age_limit']
     delete form['eligibility_conditions']['upper_age_limit']
     if (this.validateForm()) {
-    if (this.state.mode === 'edit') {
-      this.props.dispatch(
-        updateService(this.state.serviceId, form, (status, err, serviceId) => {
-        if (status === ACTION_SUCCESS) {
-          this.props.history.push('/services')
-          this.forceUpdate()
-        } 
-      }));
-    } else {
-      this.props.dispatch(
-        createService(this.state.form, (status, err, serviceId) => {
-          this.props.history.push('/services')
-          this.forceUpdate()
-      }));
+      if (this.state.mode === 'edit') {
+        this.props.dispatch(
+          updateService(this.state.serviceId, form, (status, err, serviceId) => {
+          if (status === ACTION_SUCCESS) {
+            this.props.history.push('/services')
+            this.forceUpdate()
+          } 
+        }));
+      } else {
+        this.props.dispatch(
+          createService(this.state.form, (status, err, serviceId) => {
+            this.props.history.push('/services')
+            this.forceUpdate()
+        }));
+      }
     }
-  }
   }
 
   validateForm() {
@@ -210,7 +210,7 @@ class ServiceForm extends Component {
 
     let provider, provider_locations;
     if (this.state.form.provider_id) {
-      provider = this.props.providersById && this.props.providersById[this.state.form.provider_id];
+      provider = this.props.providersById && this.props.providersById.providersById[this.state.form.provider_id];
       provider_locations = provider.other_addresses ? provider.other_addresses.concat([provider.main_address]) : []
     }
 
