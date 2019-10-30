@@ -62,7 +62,8 @@ class MapMarker extends Component {
       return (
         <Marker
           key={this.props.provider.id}
-          position={this.props.provider.main_address.lat_lng}
+          position = {{ lat: parseFloat(this.props.provider.main_address.lat),
+                        lng: parseFloat(this.props.provider.main_address.lng) }}
           onMouseOver={() => this.onMouseEnter()}
           onMouseOut={() => this.onMouseLeave()}
           onClick={this.openInfoBox}
@@ -78,7 +79,6 @@ class MapMarker extends Component {
       return null
     }
   }
-
 }
 
 // this will show a info box for each provider on the map
@@ -238,11 +238,12 @@ class Providers extends Component {
     const GMap = withGoogleMap(props => (
       <GoogleMap
         defaultZoom={10}
-        defaultCenter={torontoCentroid} >
-        {
-          _.map(providersOnPage, (provider) => {
-            return <MapMarker key={provider.id} 
-            provider={provider}/>
+        defaultCenter={torontoCentroid}
+      >
+        {         
+          _.map(providersOnPage, (provider) => {            
+              return <MapMarker key={provider.id} 
+                provider={provider}/>
           })
         }
       </GoogleMap>
@@ -252,32 +253,32 @@ class Providers extends Component {
        <div className="providers content">
         <h1>Providers</h1>
         <hr/>
-          <div>
-            <DropdownButton
-              id="provider-form-type-dropdown"
-              bs="default"
-              title="Add new provider"
-            >
-              {_.map(providerFormTypes, (formType, value) =>
-                <MenuItem
-                  key={value}
-                  eventKey={value}
-                  href={`/providers/${value}/new`}
-                >
-                  {formType}
-                </MenuItem>
-              )}
-            </DropdownButton>
-            {' '}
-            <Button bsStyle="default" onClick={this.handleCSVModalShow}>
-              Add providers by uploading CSV
-            </Button>
-            {' '}
-            <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-              <Glyphicon glyph="print" />
-            </Button>
-          </div>
-         <hr/>
+        <div>
+          <DropdownButton
+            id="provider-form-type-dropdown"
+            bs="default"
+            title="Add new provider"
+          >
+            {_.map(providerFormTypes, (formType, value) =>
+              <MenuItem
+                key={value}
+                eventKey={value}
+                href={`/providers/${value}/new`}
+              >
+                {formType}
+              </MenuItem>
+            )}
+          </DropdownButton>
+          {' '}
+          <Button bsStyle="default" onClick={this.handleCSVModalShow}>
+            Add providers by uploading CSV
+          </Button>
+          {' '}
+          <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
+            <Glyphicon glyph="print" />
+          </Button>
+        </div>
+        <hr/>
         { p.providersLoaded && 
           <div>
             <ProvidersIndex changeNumberPerPage={this.changeNumberPerPage}>{
