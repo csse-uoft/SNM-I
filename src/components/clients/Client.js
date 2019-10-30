@@ -24,11 +24,13 @@ class Client extends Component {
 
   render() {
     console.log("&&&&&&&& render()");
-    
     const p = this.props,
     id = p.match.params.id,
     client = p.clientsById[id];
+    console.log("client: ", client);
     const clientLoaded = p.clientLoaded
+    console.log("clientLoaded: ", clientLoaded);
+    console.log("p: ", p);
     
     let services = {},
         providers = {};
@@ -131,7 +133,7 @@ class Client extends Component {
           </div>
         }
         <hr />
-        { client && client.loaded && p.needsLoaded &&
+        { client && clientLoaded && p.needsLoaded &&
           <ClientNeeds
             clientId={client.id}
             needGroups={this.props.needsByNeedGroup}
@@ -140,7 +142,7 @@ class Client extends Component {
         }
         <hr />
         <h3>Appointments</h3>
-        { client && client.loaded &&
+        { client && client.Loaded &&
           <Table className="dashboard-table" striped bordered condensed hover>
             <thead>
               <tr>
