@@ -41,7 +41,3 @@ This was a questionable sacrifice made in the name of building the MVP as quickl
 ### Layout and style definitions
 
 Extensive use of React-Bootstrap has been made to define the layout and style of the application. In the case of custom defined styles, they are written as SASS. A different structure for defining custom styles would likely be easy to transition to at this point, if desired, as their aren't very many so far.
-
-### Configure the variables "CHANGETHISVARIABLE" in the following file(s) before deploying:
-./src/store/defaults.js
-./package.json
