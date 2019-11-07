@@ -189,6 +189,7 @@ export function updateProvider(id, params, callback) {
       }
     })
     .then(async(response) => {
+      console.log(response.json());
       if (response.status === 200) {
         return response.json();
       }

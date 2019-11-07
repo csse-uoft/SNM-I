@@ -16,15 +16,24 @@ export const defaultOperationHour = {
 let options = [];
 let mapping = {};
 for (let hour = 1; hour <= 12; hour++) {
-  const hourString = (hour / 10 < 1) ? '0' + String(hour) : String(hour)
+  const hourStringam = (hour / 10 < 1) ? '0' + String(hour) : String(hour)
   for (let minutes = 0; minutes <= 45; minutes += 30) {
     const minuteString = (minutes === 0) ? '00' : String(minutes)
-    const timeSlot = hourString + ':' + minuteString
+    const timeSlot = hourStringam + ':' + minuteString
     options.push({
       value: hour * 100 + minutes,
       label: timeSlot + ' AM',
     })
     mapping[hour * 100 + minutes] = timeSlot + ' AM'
+  }
+}
+
+
+for (let hour = 1; hour <= 12; hour++) {
+  for (let minutes = 0; minutes <= 45; minutes += 30) {
+    const hourStringpm = (hour / 10 < 1) ? '0' + String(hour) : String(hour)
+    const minuteString = (minutes === 0) ? '00' : String(minutes)
+    const timeSlot = hourStringpm + ':' + minuteString
     options.push({
       value: (hour + 12) * 100  + minutes,
       label: timeSlot + ' PM',
@@ -32,6 +41,7 @@ for (let hour = 1; hour <= 12; hour++) {
     mapping[(hour + 12) * 100  + minutes] = timeSlot + ' PM'
   }
 }
+
 
 export const operationHourOptions = options;
 export const operationHourMapping = mapping;

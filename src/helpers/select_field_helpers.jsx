@@ -5,7 +5,7 @@ export function newMultiSelectFieldValue(preValue,
                                          actionMeta) {
   let newValue;
   switch (actionMeta.action) {
-
+    case 'pop-value':
     case 'remove-value':
        _.remove(preValue, (value) => {
         return value === actionMeta.removedValue.value
