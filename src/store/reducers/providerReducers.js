@@ -22,6 +22,9 @@ export function providers(state = {index: [], byId: {}, providerLoaded: false, v
       return {...state, index: nextIndex, filteredProviders: nextIndex}
     case RECEIVE_PROVIDER:
       nextById = {...state.byId, [action.id]: { ...action.provider, providerLoaded: true }}
+      if (action.provider.provider) {
+        nextById.providersById = {...nextById.providersById, [action.id]: { ...action.provider.provider}}
+      }
       console.log("ProviderReducer.js - RECEIVE_PROVIDER state", state);
       console.log("ProviderReducer.js - RECEIVE_PROVIDER nextById", nextById);
       return {...state, byId: nextById }
