@@ -18,7 +18,7 @@ export default function DropdownMenu({ urlPrefix, objectId, handleShow, hideView
           <MenuItem
             eventKey="1"
             href={`/${urlPrefix}/${objectId}`}
-            target="_blank"
+//            target="_blank"
           >
             View
             <Glyphicon glyph="file" />
@@ -27,7 +27,7 @@ export default function DropdownMenu({ urlPrefix, objectId, handleShow, hideView
         <MenuItem
           eventKey="2"
           href={`/${urlPrefix}/${objectId}/edit`}
-          target="_blank"
+//          target="_blank"
         >
           Edit
           <Glyphicon glyph="pencil" />
