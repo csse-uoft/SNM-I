@@ -1,9 +1,20 @@
 export function formatLocation(location) {
-  if (location.apt_number && location.apt_number.length > 0) {
-    return `${location.apt_number}-${location.street_address},
-      ${location.city}, ${location.province} ${location.postal_code}`
-  } else {
-    return `${location.street_address}, ${location.city}, ${location.province}
-      ${location.postal_code}`
+  if (Object.keys(location).length == 1) {
+    return "None provided"
   }
+
+  let format_location = ''
+  if (location.apt_number !== undefined){
+    format_location += `${location.apt_number}-`
+  }
+  if (location.street_address !== undefined){
+    format_location += `${location.street_address}, `
+  }
+  if (location.city !== undefined)
+    format_location += `${location.city}, `
+  if (location.province !== undefined)
+    format_location += `${location.province}, `
+  if (location.postal_code !== undefined)
+    format_location += `${location.postal_code}`
+  return format_location
 }
