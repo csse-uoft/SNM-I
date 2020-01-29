@@ -25,6 +25,7 @@
   color: #aaa;
   text-align: center;
   border-radius: 2px 2px 0 0;
+  z-index: 100;
 
   @media print {
     display: none;
