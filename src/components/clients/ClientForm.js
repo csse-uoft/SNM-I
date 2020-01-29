@@ -164,11 +164,13 @@ class ClientForm extends Component {
            this.props.history.push('/clients/' + clientId)
         } else {
           const error_messages =
-            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
-              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
-                .split('_').join(' ')
-              _.each(error_messages, message => {
-                result.push(message.replace('This field', titleizedField))
+            _.reduce(JSON.parse(err.message), (result, errorMessages, field) => {
+              _.each(errorMessages, function(message, key) {
+                let splitKeys = key.split('_')
+                splitKeys = splitKeys.map(key => key.charAt(0)
+                .toUpperCase() + key.slice(1))
+                const titleizedKey = splitKeys.join(' ')
+                result.push(titleizedKey + ": " + message)
               })
               return result;
             }, [])
