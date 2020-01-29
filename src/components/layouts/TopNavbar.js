@@ -45,7 +45,7 @@ class TopNavbar extends Component {
       : (null);
 
     return (
-      <Navbar inverse collapseOnSelect>
+      <Navbar inverse collapseOnSelect fixedTop>
         <Navbar.Header>
           <Navbar.Brand>
             {(this.props.isLoggedin) ? (
