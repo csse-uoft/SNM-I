@@ -209,7 +209,9 @@ class ServiceForm extends Component {
       'Edit Service Profile' : 'New Service'
 
     let provider, provider_locations;
-    if (this.state.form.provider_id) {
+    if (isInt(this.state.form.provider_id)) {
+      // assumption: this.state.form.provider_id should be an integer
+      // Delete this condition check if the assumption is no longer needed
       provider = this.props.providersById && this.props.providersById.providersById[this.state.form.provider_id];
       provider_locations = provider.other_addresses ? provider.other_addresses.concat([provider.main_address]) : []
     }
@@ -624,6 +626,12 @@ const mapStateToProps = (state) => {
     providersLoaded: state.providers.loaded,
     providerIndex: state.providers.index
   }
+}
+
+function isInt(value) {
+  return !isNaN(value) && 
+         parseInt(Number(value)) == value && 
+         !isNaN(parseInt(value, 10));
 }
 
 export default connect(mapStateToProps)(withRouter(ServiceForm));
