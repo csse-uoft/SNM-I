@@ -210,6 +210,8 @@ class ServiceForm extends Component {
 
     let provider, provider_locations;
     if (isInt(this.state.form.provider_id)) {
+      // assumption: this.state.form.provider_id should be an integer
+      // Delete this condition check if the assumption is no longer needed
       provider = this.props.providersById && this.props.providersById.providersById[this.state.form.provider_id];
       provider_locations = provider.other_addresses ? provider.other_addresses.concat([provider.main_address]) : []
     }
