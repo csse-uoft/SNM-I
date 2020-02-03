@@ -55,6 +55,7 @@ class MapMarker extends Component {
     })
   }
 
+  // show marker for each client's address
   render() {
     if (this.props.client.address) {
       return (
