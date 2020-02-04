@@ -153,13 +153,9 @@ class ClientForm extends Component {
       );
     } else {
       console.log("else: this.state.form", this.state.form);
-      
-      if (!verifyForm(this.state.form)){
-        // TODO: when expanding verification not only on postal code in the future, make sure
-        // change the error message to dynamic
-        let error_messages = []
-        error_messages.push("Postal Code: Invalid postal code!")
-        this.setState({ showAlert: true, error_messages: error_messages});
+      const errMsgs = verifyForm(this.state.form)
+      if (errMsgs.length != 0){
+        this.setState({ showAlert: true, error_messages: errMsgs});
       } else {
         this.props.dispatch(
         createClient(this.state.form, (status, err, clientId) => {
@@ -341,13 +337,18 @@ const mapStateToProps = (state) => {
 // Verify the params filled in client form
 function verifyForm(form){
   let is_postal_code_valid = false;
+  let result = new Array();
   if (!form.address.postal_code){
-    return true;
+    return new Array();
   } else {
     const postal_code_regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
     is_postal_code_valid = postal_code_regex.test(form.address.postal_code);
+    if (!is_postal_code_valid){
+      result.push("Postal Code: Invalid postal code! ".concat("They are in the format A1A 1A1, ")
+        .concat("where A is a letter and 1 is a digit"));
+    }
+    return result;
   }
-  return is_postal_code_valid;
 }
 
 export default connect(mapStateToProps)(withRouter(ClientForm));
