@@ -153,8 +153,11 @@ class ClientForm extends Component {
       );
     } else {
       console.log("else: this.state.form", this.state.form);
-      
-      this.props.dispatch(
+      const errMsgs = verifyForm(this.state.form)
+      if (errMsgs.length != 0){
+        this.setState({ showAlert: true, error_messages: errMsgs});
+      } else {
+        this.props.dispatch(
         createClient(this.state.form, (status, err, clientId) => {
         
         console.log("else: status, err, clientId", status, err, clientId)
@@ -164,17 +167,21 @@ class ClientForm extends Component {
            this.props.history.push('/clients/' + clientId)
         } else {
           const error_messages =
-            _.reduce(JSON.parse(err.message), (result, error_messages, field) => {
-              const titleizedField = (field.charAt(0).toUpperCase() + field.slice(1))
-                .split('_').join(' ')
-              _.each(error_messages, message => {
-                result.push(message.replace('This field', titleizedField))
+            _.reduce(JSON.parse(err.message), (result, errorMessages, field) => {
+              _.each(errorMessages, function(message, key) {
+                let splitKeys = key.split('_')
+                splitKeys = splitKeys.map(key => key.charAt(0)
+                .toUpperCase() + key.slice(1))
+                const titleizedKey = splitKeys.join(' ')
+                result.push(titleizedKey + ": " + message)
               })
               return result;
             }, [])
           this.setState({ showAlert: true, error_messages: error_messages });
-        }
-      }));
+          }
+        }));
+      }
+      
     }
   }
 
@@ -324,6 +331,23 @@ const mapStateToProps = (state) => {
     eligibilities: _.map(state.eligibilities.byId, eligibility => eligibility['title']),
     stepsOrder: state.settings.clients.stepsOrder,
     formStructure: state.settings.clients.formStructure,
+  }
+}
+
+// Verify the params filled in client form
+function verifyForm(form){
+  let is_postal_code_valid = false;
+  let result = new Array();
+  if (!form.address.postal_code){
+    return new Array();
+  } else {
+    const postal_code_regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+    is_postal_code_valid = postal_code_regex.test(form.address.postal_code);
+    if (!is_postal_code_valid){
+      result.push("Postal Code: Invalid postal code! ".concat("They are in the format A1A 1A1, ")
+        .concat("where A is a letter and 1 is a digit"));
+    }
+    return result;
   }
 }
 
