@@ -1,6 +1,6 @@
 export function formatLocation(location) {
-  if (Object.keys(location).length == 1) {
-    return "None provided"
+  if (Object.keys(location).length === 1) {
+    return "Not Provided"
   }
 
   let format_location = ''

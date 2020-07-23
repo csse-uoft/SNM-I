@@ -1,85 +1,72 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from './shared'
 
 // redux
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { Button, Row, Col } from 'react-bootstrap';
-import '../stylesheets/Dashboard.scss';
+import { Container, Button } from "@material-ui/core";
+import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
 
-
-class Dashboard extends Component {
-  render() {
-    const p = this.props;
-    return(
-      <Row className="content login-pane">
-        <Col md={12}>
-          <div className="login-buttons">
-            { p.isLoggedin && p.currentUser.is_admin && !p.organization.id &&
-              <Link to={{ pathname: '/providers/organization/new', state: { status: 'Home Agency'} }}>
-                <Button bsStyle="default" className="btn-default-login" block>
-                  Create organization profile for home agency
-                </Button>
-              </Link>
-            }
-            { p.isLoggedin && p.currentUser.is_admin && p.organization.id &&
-              <Link to={`/provider/${p.organization.id}/edit/organization`}>
-                <Button bsStyle="default" className="btn-default-login" block>
-                  Edit organization profile for home agency
-                </Button>
-              </Link>
-            }
-            { p.isLoggedin && p.currentUser.is_admin &&
-              <div>
-                <Link to="/users">
-                  <Button bsStyle="default" className="btn-default-login" block>
-                    Manage Users
-                  </Button>
-                </Link>
-                <Link to="/admin-logs">
-                  <Button bsStyle="default" className="btn-default-login" block>
-                    Admin Logs
-                  </Button>
-                </Link>
-                <Link to="/eligibility-criteria">
-                  <Button bsStyle="default" className="btn-default-login" block>
-                    Manage Eligibility criteria
-                  </Button>
-                </Link>
-                <Link to="/settings/manage-client-fields">
-                  <Button bsStyle="default" className="btn-default-login" block>
-                    Manage Client Fields
-                  </Button>
-                </Link>
-                <Link to="/settings/manage-provider-fields">
-                  <Button bsStyle="default" className="btn-default-login" block>
-                    Manage Provider Fields
-                  </Button>
-                </Link>
-                <Link to="/questions">
-                  <Button bsStyle="default" className="btn-default-login" block>
-                    Manage Questions
-                  </Button>
-                </Link>
-              </div>
-            }
-          </div>
-        </Col>
-      </Row>
-
-    )
+const useStyles = makeStyles(() => ({
+  container: {
+    paddingTop: 80,
+    textAlign: 'center',
+    maxWidth: 600,
+  },
+  button: {
+    width: 400,
+    height: 50,
+    textTransform: 'none',
+    margin: 5,
   }
+}));
+
+function NavButton({to, text, icon}) {
+  const classes = useStyles();
+  return (
+    <Link to={to}>
+      <Button color="default" variant="outlined" className={classes.button} startIcon={icon} size="large">
+        {text}
+      </Button>
+    </Link>
+  )
 }
 
+function Dashboard() {
+  const classes = useStyles();
+  const {isLoggedin, currentUser, organization} = useSelector(state => state.auth);
+  if (!isLoggedin || !currentUser.is_admin)
+    return <span>"You don't have the permission to view this page."</span>;
 
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.auth.currentUser,
-    organization: state.auth.organization,
-    isLoggedin: state.auth.isLoggedin
-  }
+  return (
+    <Container className={classes.container}>
+
+      {!organization.id &&
+      <NavButton to={{pathname: '/providers/organization/new', state: {status: 'Home Agency'}}}
+                 text="Create organization profile for home agency" icon={<Create/>}/>}
+
+      {organization.id &&
+      <NavButton to={`/provider/${organization.id}/edit/organization`} icon={<Edit/>}
+                 text="Edit organization profile for home agency"/>}
+
+      <NavButton to={`/users`} icon={<People/>}
+                 text="Manage Users"/>
+
+      <NavButton to={`/admin-logs`} icon={<Log/>}
+                 text="Admin Logs"/>
+
+      <NavButton to={`/eligibility-criteria`} icon={<Criteria/>}
+                 text="Manage Eligibility criteria"/>
+
+      <NavButton to={'/settings/manage-fields'} icon={<Edit/>}
+                 text="Manage Client/Provider Fields"/>
+
+      <NavButton to={'/questions'} icon={<Edit/>}
+                 text="Manage Questions"/>
+
+    </Container>
+  )
 }
 
-export default connect(
-  mapStateToProps
-)(Dashboard);
+export default Dashboard;

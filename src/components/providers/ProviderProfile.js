@@ -1,253 +1,125 @@
-import React, { Component } from 'react'
-import _ from 'lodash'
-import StarRatingComponent from 'react-star-rating-component';
+import React, { useState, useEffect } from "react";
+import _ from 'lodash';
+import { useParams } from "react-router";
+import { useDispatch } from "react-redux";
+import { Container } from "@material-ui/core";
+import Button from '@material-ui/core/Button'
+import { Edit, RateReview, Print } from '@material-ui/icons';
+import { Link } from '../shared'
+import Rating from '@material-ui/lab/Rating';
+import Box from '@material-ui/core/Box';
+
 import { providerFields } from '../../constants/provider_fields.js'
 
 // components
 import ProviderInfoTable from './provider_table/ProviderInfoTable';
 
-// styles
-import { Table, Button, ListGroup, Well, Badge, Col, Row, Glyphicon } from 'react-bootstrap'
 
-// redux
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom';
 import { fetchProvider } from '../../store/actions/providerActions.js'
-import { fetchProviderFields } from '../../store/actions/settingActions.js';
+import { fetchProviderFields } from '../../api/settingApi';
+
+export default function ProviderProfile() {
+  //redux hooks
+  const dispatch = useDispatch();
+  const {id} = useParams();
+
+  const [state, setState] = useState({
+    data: null,
+    formSetting: null
+  });
 
 
+  useEffect(() => {
+      dispatch(fetchProvider(id)).then(data => {
+        setState(state => ({
+          ...state,
+          data
+        }))
+      })
+    }, [dispatch, id]
+  );
 
-class ProviderProfile extends Component {
+  useEffect(() => {
+      if (state.formSetting == null) {
+        fetchProviderFields(false).then(json => {
+          setState(state => ({
+            ...state,
+            formSetting: json
+          }))
+        })
+      }
+    }, [dispatch, state.formSetting]
+  );
+  if (state.data && state.formSetting) {
+    const {provider} = state.data;
+    const {formSetting} = state;
 
-  componentWillMount() {
-    console.log("ProviderProfile.js - componentWillMount this.props.match.params.id", this.props.match.params.id);
-    const id = this.props.match.params.id
-    this.props.dispatch(fetchProvider(id));
-    
-    //console.log("ProviderProfile.js - componentWillMount _.keys(this.props.formSetting)", _.keys(this.props.formSetting));
-    //console.log("ProviderProfile.js - componentWillMount _.keys(this.props.formSetting).length", _.keys(this.props.formSetting).length);
-    
-    if (_.keys(this.props.formSetting).length === 0) {
-      
-      this.props.dispatch(fetchProviderFields());
-    }
-  }
-
-  render() {
-    
-    //console.log("ProviderProfile.js - render this.props.match.params.id", this.props.match.params.id);
-    //console.log("ProviderProfile.js - render this.props.providersById[id]", this.props.providersById[this.props.match.params.id]);
-    console.log("ProviderProfile.js - render this.props", this.props);
-    
-    const id = this.props.match.params.id;
-    //const provider = this.props.providersById[id].provider;
-    const provider = this.props.providersById.providersById[id];
-    //const providerLoaded = this.props.providersById[id].providerLoaded
-    const providerLoaded = this.props.providerLoaded
-    
-    //console.log("ProviderProfile.js - render id", id);
-    console.log("ProviderProfile.js - render providerLoaded", providerLoaded);
-    console.log("ProviderProfile.js - render provider", provider);
-    
-    if (provider == null){
-      return null
-    }
-    let formType
+    let formType;
     if (provider.type === 'Organization') {
       formType = 'organization'
     } else if (provider.type === 'Individual') {
       formType = provider.category.split(' ').join('_').toLowerCase()
     }
-    console.log("ProviderProfile.js formType ", formType );
-    
+    const reviewValue = ((provider.reviews.map(review => review.rating))
+      .reduce((first, second) => first + second, 0)) / provider.reviews.length;
     return (
-      <div className="content">
+      <Container>
         <h3>Provider Profile</h3>
-
-      { provider && providerLoaded &&
         <div>
-         <Link to={`/provider/${id}/edit/`}>
-          <Button bsStyle="default">
-            Edit
-          </Button>
-         </Link>
-         &nbsp;
-         <Link to={`/provider/${id}/rate`}>
-          <Button bsStyle="default">
-            Rate Provider
-          </Button>
-         </Link>
-         &nbsp;
-         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-          <Glyphicon glyph="print" />
-         </Button>
-         {this.props.formSetting[formType] &&
-          _.map(this.props.formSetting[formType].form_structure, (infoFields, step) => {
-          return (
-            <ProviderInfoTable
-              key={step}
-              step={step}
-              provider={provider}
-              providerFields={providerFields}
-              infoFields={infoFields}
-            />
-          )
-          })
-         }
-        <hr/>
-
-      <h3> Reviews </h3>
-      <p/>
-      <Well bsSize="small">
-       <Row>
-        <Col sm={3}>
-          Overall Rating:
-        </Col>
-        <Col>
-          <StarRatingComponent
-            name="rating"
-            editing={false}
-            starCount={5}
-            value={((provider.reviews.map(review => review.rating))
-                      .reduce((first, second) => first + second, 0)) / provider.reviews.length}
-          />
-         </Col>
-        </Row>
-       </Well>
-       <hr/>
-       <ListGroup componentClass="ul">
-        {provider.reviews.map(review =>
-         <StarCommentRating
-          key={review.created_at}
-          rating={review.rating}
-          comment={review.comment}
-          createdAt={review.created_at}/>)
-        }
-       </ListGroup>
- 
-     <h3>Services</h3>
-      <Link to="/services/new">
-       <Button bsStyle="default">
-         Add Service
-       </Button>
-     </Link>
-   <hr/>
-  
-    </div>
-  }
-  </div>
-  );
-  }
-}
-
-/*
-<h3>Services</h3>
-      <Link to="/services/new">
-       <Button bsStyle="default">
-         Add Service
-       </Button>
-     </Link>
-   <hr/>
-   <ProviderServiceTable provider={provider}/>
-    </div>
-  }
-  </div>
-  );
-  }
-}
-*/
-class StarCommentRating extends Component {
-  render() {
-    console.log("StarCommentRating"); 
-    return(
-      <li className="list-group-item">
-        <Row>
-          <Col sm={10}>
-            <StarRatingComponent
-              name="rating"
-              editing={false}
-              starCount={5}
-              value={this.props.rating}
-            />
-            <p/>
-            {this.props.comment}
-          </Col>
-          <Col>
-            <p>
-              <Badge>{"Date: " + this.props.createdAt.split("T")[0]}</Badge>
-            </p>
-          </Col>
-        </Row>
-      </li>
-    )
-  }
-}
-
-/*class ProviderServiceTable extends Component {
-  render() {
-    console.log("ProviderServiceTable");
-    return(
-      <Table striped bordered condensed hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Capacity</th>
-          </tr>
-        </thead>
-          <tbody>
-           {this.props.provider.services.map((service) => {
-              return <ProviderServiceRow key={ service.id } service={service}/>
-              })
-            }
-            
-          </tbody>
-      </Table>
-    )
-  }
-}
-
-class ProviderServiceRow extends Component {
-  render() {
-    ProviderServiceTable("ProviderServiceRow");  
-    return(
-      <tr>
-        <td>{this.props.service.id}</td>
-        <td>
-          <Link to={`/service/${this.props.service.id}`}>
-            {this.props.service.name}
+          <Link to={`/providers/${id}/edit/`}>
+            <Button
+              variant="contained"
+              startIcon={<Edit/>}>
+              Edit
+            </Button>
           </Link>
-        </td>
-        <td className="centered-text">
-          {this.props.service.category}
-        </td>
-        <td className="centered-text">
-          {this.props.service.desc}
-        </td>
-        <td className="centered-text">
-          {this.props.service.capacity}
-        </td>
-      </tr>
+          &nbsp;
+          <Link to={`/providers/${id}/rate`}>
+            <Button
+              variant="contained"
+              startIcon={<RateReview/>}>
+              Rate Provider
+            </Button>
+          </Link>
+          {' '}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.print()}
+            startIcon={<Print/>}>
+            Print
+          </Button>
+
+          {formSetting[formType] &&
+          _.map(formSetting[formType].form_structure, (infoFields, step) => {
+            return (
+              <ProviderInfoTable
+                key={step}
+                step={step}
+                provider={provider}
+                providerFields={providerFields}
+                infoFields={infoFields}
+              />
+            )
+          })
+          }
+
+          <h3> Reviews </h3>
+          <Box component="fieldset" mb={3} borderColor="transparent">
+            <Rating size="large" name = "provider-rating" value={reviewValue}/>
+          </Box>
+
+          <h3>Services</h3>
+          <Link to="/services/new">
+            <Button variant="contained">
+              Add Service
+            </Button>
+          </Link>
+
+        </div>
+      </Container>
     )
+  } else {
+    return '';
   }
 }
-*/
-
-const mapStateToProps = (state) => {
-   console.log("ProviderProfile #######mapStateToProps state", state); 
-  //console.log("ProviderProfile  #######mapStateToProps state.providers.byId", state.providers.byId);
-  //console.log("ProviderProfile  #######mapStateToProps state.providers.providerLoaded", state.providers.providerLoaded);
-  return {
-    providersById: state.providers.byId || {},
-    providerLoaded: state.providers.providerLoaded,
-    servicesById: state.services.byID || {},
-    services: state.services || [],
-    formSetting: state.settings.providers || {}
-  }
-}
-
-export default connect(
-  mapStateToProps
-)(ProviderProfile);

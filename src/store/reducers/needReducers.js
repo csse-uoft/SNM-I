@@ -10,8 +10,12 @@ export function needs(state = { byId: {}, needGroups: [], clientId: null, loaded
     case RECEIVE_NEEDS:
       return {...state, needs: action.needs, loaded: true }
     case RECEIVE_CLIENT_NEEDS:
-      nextById = _.keyBy(action.needs, need => need.id);
-      return {...state, byId: nextById, needGroups: action.needGroups, loaded: true, clientId: action.clientId}
+      if (action.needs){
+        nextById = _.keyBy(action.needs, need => need.id);
+        return {...state, byId: nextById, needGroups: action.needGroups, loaded: true, clientId: action.clientId}
+      } else {
+        return {...state, needGroups: action.needGroups, loaded: true, clientId: action.clientId}
+      }
     case RECEIVE_CLIENT_NEED:
       nextById = {...state.byId, [action.need.id]: { ...action.need, loaded: true }}
       nextNeedGroup = _.clone(state.needGroups)

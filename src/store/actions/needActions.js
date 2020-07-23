@@ -88,7 +88,9 @@ export function createClientNeed(clientId, params) {
       }
     })
     .then(response => response.json())
-    .then(needInfo => dispatch(receiveClientNeed(clientId, needInfo.need, needInfo.need_group)));
+    .then(needInfo =>
+      dispatch(receiveClientNeed(clientId, needInfo.need, needInfo.need_group))
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import TableRow from '../shared/TableRow'
+import TR from '../shared/TR'
 
 // redux
 import { connect } from 'react-redux'
@@ -38,80 +38,80 @@ class Service extends Component {
         { service && service.servicesLoaded &&
           <Table striped bordered condensed hover>
             <tbody>
-              <TableRow
+              <TR
                 title="Name"
                 value={service.name}
               />
 
-              <TableRow
+              <TR
                 title="Type"
                 value={service.type}
               />
-              <TableRow
+              <TR
                 title="Description"
                 value={service.desc}
               />
-              <TableRow
+              <TR
                 title="Category"
                 value={service.category}
               />
-              <TableRow
+              <TR
                 title="Eligibility"
                 value={service.eligibility}
               />
-              <TableRow
+              <TR
                 title="Available from"
                 value={service.available_from}
               />
-              <TableRow
+              <TR
                 title="Available until"
                 value={service.available_to}
               />
-              <TableRow
+              <TR
                 title="Languages"
                 value={(service.languages || []).join(', ')}
               />
-              <TableRow
+              <TR
                 title="Max Capacity"
                 value={service.max_capacity}
               />
-              <TableRow
+              <TR
                 title="Current capacity"
                 value={service.current_capacity}
               />
-              <TableRow
+              <TR
                 title="Frequency"
                 value={service.frequency}
               />
-              <TableRow
+              <TR
                 title="Billable"
                 value={service.billable}
               />
-              <TableRow
+              <TR
                 title="Price"
                 value={service.price}
               />
-              <TableRow
+              <TR
                 title="Method of delivery"
                 value={service.method_of_delivery}
               />
-              <TableRow
+              <TR
                 title="Method of registration"
                 value={service.method_of_registration}
               />
-              <TableRow
+              <TR
                 title="Registration"
                 value={service.registration}
               />
-              <TableRow
+              <TR
                 title="Contact Person Email"
                 value={service.email}
               />
-              <TableRow
+              <TR
                 title="Contact Person Phone"
                 value={service.primary_phone_number}
               />
-              <TableRow
+              <TR
                 title="Secondary Phone"
                 value={service.alt_phone_number}
               />
@@ -146,15 +146,15 @@ class Service extends Component {
                   </td>
                 </tr>
               }
-              <TableRow
+              <TR
                 title="Public?"
                 value={service.is_public ? 'Yes': 'No'}
               />
-              <TableRow
+              <TR
                 title="Share with"
                 value={(service.share_with || []).join(', ')}
               />
-              <TableRow
+              <TR
                 title="Notes"
                 value={service.notes}
               />

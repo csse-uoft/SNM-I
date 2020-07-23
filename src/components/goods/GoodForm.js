@@ -7,11 +7,11 @@ import { provinceOptions } from '../../store/defaults';
 
 // redux
 import { connect } from 'react-redux'
-import SelectField from '../shared/SelectField'
-import GeneralField from '../shared/GeneralField'
+import SelectField from '../shared/fields/SelectField'
+import GeneralField from '../shared/fields/GeneralField'
 import { createGood, updateGood, GOOD_SUCCESS } from '../../store/actions/goodActions.js'
 import { fetchProviders } from '../../store/actions/providerActions.js'
-import RadioField from '../shared/RadioField'
+import RadioField from '../shared/fields/RadioField'
 import { formatLocation } from '../../helpers/location_helpers.js';
 
 

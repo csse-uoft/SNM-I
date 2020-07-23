@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 
 import { Button, FormGroup, FormControl, ControlLabel, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
@@ -50,9 +49,9 @@ class ProviderRatingForm extends Component {
             Rate this provider (0-5)
           </Col>
           <Col sm={9}>
-            <FormControl 
+            <FormControl
               type="text"
-              placeholder="A number between 0 and 5" 
+              placeholder="A number between 0 and 5"
               value={this.state.rating}
               onChange={this.handleTextRating}
             />
@@ -65,7 +64,7 @@ class ProviderRatingForm extends Component {
             value={this.state.rating}
             onStarClick={this.handleStarSelection}
           />
-        </Col>        
+        </Col>
         <Col sm={9}>
           <hr/>
           <FormGroup controlId="comments">
@@ -85,12 +84,12 @@ class ProviderRatingForm extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { 
+  return {
     providersById: state.providers.byId || {},
     providerLoaded: state.providers.indexLoaded
-  } 
+  }
 }
 
 export default connect(
-  mapStateToProps  
+  mapStateToProps
 )(ProviderRatingForm);

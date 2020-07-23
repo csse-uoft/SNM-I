@@ -18,7 +18,8 @@ export function fetchOntologyCategories(type) {
     return fetch(url, { method: "GET" })
       .then(response => response.json())
       .then(json => {
-        dispatch(receiveCategories(type, json['categories']))
+        dispatch(receiveCategories(type, json['categories']));
+        return json.categories;
       });
   }
 }

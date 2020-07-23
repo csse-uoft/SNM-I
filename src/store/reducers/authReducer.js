@@ -1,6 +1,4 @@
-import { LOGIN_SUCCESS, LOGGED_OUT, UPDATE_ORGANIZATION, LOGIN_FAILURE,
-  CLEAR_ALERT } from '../actions/authAction.js';
-import _ from 'lodash';
+import { LOGIN_SUCCESS, LOGGED_OUT, UPDATE_ORGANIZATION, LOGIN_FAILURE} from '../actions/authAction.js';
 
 const DEFAULT_STATE = {
   currentUser: null,
@@ -39,11 +37,6 @@ export function auth(state = DEFAULT_STATE, action) {
           id: action.provider.id,
           name: action.provider.company
         }
-      })
-    case CLEAR_ALERT:
-      console.log("File: authReducer.js, Function: auth, case CLEAR_ALERT, Parameters: state, action -> ", state, action)
-      return Object.assign({}, state, {
-        alert: null
       })
     default:
       return state

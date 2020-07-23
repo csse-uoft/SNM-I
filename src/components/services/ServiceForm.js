@@ -1,17 +1,18 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link } from '../shared';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { statusInCanadaOptions, educationLevelOptions,
-  serviceSharedWithOptions, serviceTypeOptions, provinceOptions } from '../../store/defaults'
-import GeneralField from '../shared/GeneralField'
-import SelectField from '../shared/SelectField'
-import CheckboxField from '../shared/CheckboxField'
-import RadioField from '../shared/RadioField'
-import MultiSelectField from '../shared/MultiSelectField';
+import {
+  statusInCanadaOptions, educationLevelOptions,
+  serviceSharedWithOptions, serviceTypeOptions
+} from '../../store/defaults'
+import GeneralField from '../shared/fields/GeneralField'
+import SelectField from '../shared/fields/SelectField'
+import RadioField from '../shared/fields/RadioField'
+import MultiSelectField from '../shared/fields/MultiSelectField';
 import { formatLocation } from '../../helpers/location_helpers.js';
-import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers';
+import { Validator } from "../../helpers/index.js";
 
 // redux
 import { connect } from 'react-redux'
@@ -19,8 +20,27 @@ import { createService, updateService } from '../../store/actions/serviceActions
 import { fetchProviders } from '../../store/actions/providerActions.js';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio, HelpBlock } from 'react-bootstrap';
+import { Alert } from "@material-ui/lab";
+import { Container, Divider, Typography, Button } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import LocationFieldGroup from "../shared/LocationFieldGroup";
+import EligibilityCondition from './EligibilityCondition'
+import { transformToBackendType, transformToFrontendType } from '../../helpers/formulaHelpers';
 
+const styles = {
+  root: {
+    width: '80%'
+  },
+  divider: {
+    margin: '20px 0',
+  },
+  errorText: {
+    color: '#e41919'
+  },
+  title: {
+    fontWeight: 600,
+  }
+};
 
 class ServiceForm extends Component {
   constructor(props) {
@@ -45,7 +65,7 @@ class ServiceForm extends Component {
         max_capacity: service.max_capacity || '',
         current_capacity: service.current_capacity || 0,
         frequency: service.frequency || '',
-        billable: service.billable || '',
+        billable: service.billable || 'No',
         price: service.price || '',
         method_of_delivery: service.method_of_delivery || '',
         method_of_registration: service.method_of_registration || '',
@@ -72,112 +92,73 @@ class ServiceForm extends Component {
           'completed_education_level': []
         }, service.eligibility_conditions),
         provider_id: (service.provider && service.provider.id) || '',
-        is_public: service.is_public || false
+        is_public: service.is_public || false,
+        /**
+         * @type {[{condition_clauses: [field_name, clauses: [{left_operand, right_operand, operator}]]}]}
+         **/
+        eligibility_criteria: transformToFrontendType(service.eligibility_criteria) || []
       }
-    }
+    };
 
-    this.formValChange = this.formValChange.bind(this);
-    this.locationChange = this.locationChange.bind(this);
-    this.submit = this.submit.bind(this);
-    this.indicatorChange = this.indicatorChange.bind(this);
-    this.conditionsChange = this.conditionsChange.bind(this);
-    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
-  }
-
-  componentWillMount() {
     this.props.dispatch(fetchOntologyCategories('services'));
     this.props.dispatch(fetchOntologyCategories('languages'));
     this.props.dispatch(fetchProviders());
   }
 
-  conditionsChange(e, id=e.target.id) {
-    let nextForm = _.clone(this.state.form);
-
-    if (id === "upper_age_limit" || id === "lower_age_limit") {
-      nextForm['eligibility_conditions'][id] = e.target.value;
-    }
-    else {
-      if (e.target.checked) {
-        if (!nextForm['eligibility_conditions'][id]) {
-          nextForm['eligibility_conditions'][id] = [];
-        }
-        nextForm['eligibility_conditions'][id].push(e.target.value)
-      } else {
-        _.remove(nextForm['eligibility_conditions'][id], (condition) => {
-          return condition === e.target.value
-        });
+  formValChange = (name, render) => e => {
+    const {value} = e.target;
+    const splits = name.split('.');
+    const {form} = this.state;
+    if (splits.length === 1) {
+      form[name] = value;
+    } else {
+      let parent = this.state.form;
+      for (let i = 0; i < splits.length - 1; i++) {
+        parent = parent[splits[i]];
       }
+      parent[splits[splits.length - 1]] = value || '';
     }
-    this.setState({form: nextForm});
-  }
+    if (render) this.setState(state => ({form: {...state.form}}));
+  };
 
-  handleMultiSelectChange(id, selectedOption, actionMeta) {
-    const preValue = this.state.form[id]
-    const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
-
-    this.setState({
-      form: {
-        ...this.state.form,
-        [id]: newValue
-      }
-    });
-  }
-
-  formValChange(e, id=e.target.id) {
-    let nextForm;
-    if (id === 'is_public' || id === 'location_same_as_provider') {
-      nextForm = {...this.state.form, [id]: JSON.parse(e.target.value)};
-    }
-    else {
-      nextForm = {...this.state.form, [id]: e.target.value};
-    }
-    this.setState({ form: nextForm });
-  }
-
-  locationChange(e, id=e.target.id) {
-    let nextForm = _.clone(this.state.form);
-    nextForm['location'][id] = e.target.value
-    this.setState({ form: nextForm });
-  }
-
-  indicatorChange(e, id) {
-    this.setState({ [id] : JSON.parse(e.target.value) });
-  }
-
-  submit() {
+  submit = () => {
+    console.log(this.state.form);
     let form = Object.assign({}, this.state.form);
     form['eligibility_conditions']['age'] = [
       form['eligibility_conditions']['lower_age_limit'] || null,
       form['eligibility_conditions']['upper_age_limit'] || null
-    ]
-    delete form['eligibility_conditions']['lower_age_limit']
-    delete form['eligibility_conditions']['upper_age_limit']
+    ];
+    delete form['eligibility_conditions']['lower_age_limit'];
+    delete form['eligibility_conditions']['upper_age_limit'];
+
+    form.eligibility_criteria = transformToBackendType(form.eligibility_criteria);
+
     if (this.validateForm()) {
       if (this.state.mode === 'edit') {
         this.props.dispatch(
           updateService(this.state.serviceId, form, (status, err, serviceId) => {
-          if (status === ACTION_SUCCESS) {
-            this.props.history.push('/services')
-            this.forceUpdate()
-          } 
-        }));
+            if (status === ACTION_SUCCESS) {
+              this.props.history.push('/services');
+              this.forceUpdate()
+            }
+          }));
       } else {
         this.props.dispatch(
           createService(this.state.form, (status, err, serviceId) => {
-            this.props.history.push('/services')
+            this.props.history.push('/services');
             this.forceUpdate()
-        }));
+          }));
       }
     }
-  }
+  };
 
-  validateForm() {
+  validateForm = () => {
 
     let errors = {};
     let formIsValid = true;
     if (!this.state.form.provider_id) {
       formIsValid = false;
-      errors["provider_id"] = "*Please enter a provider.";      
+      errors["provider_id"] = "*Please enter a provider.";
     }
 
     if (!this.state.form.type) {
@@ -187,12 +168,40 @@ class ServiceForm extends Component {
 
     if (!this.state.form.name) {
       formIsValid = false;
-      errors["type"] = "*Please enter the name.";
+      errors["name"] = "*Please enter the name.";
     }
 
     if (!this.state.form.category) {
       formIsValid = false;
       errors["category"] = "*Please enter the category.";
+    }
+
+    if (this.state.form.primary_phone_number) {
+      const errMsg = Validator.phone(this.state.form.primary_phone_number);
+      if (errMsg) {
+        errors['primary_phone_number'] = "*" + errMsg;
+      }
+    }
+
+    if (this.state.form.alt_phone_number) {
+      const errMsg = Validator.phone(this.state.form.alt_phone_number);
+      if (errMsg) {
+        errors['alt_phone_number'] = "*" + errMsg;
+      }
+    }
+
+    if (this.state.form.email) {
+      const errMsg = Validator.email(this.state.form.email);
+      if (errMsg) {
+        errors['email'] = "*" + errMsg;
+      }
+    }
+
+    if (this.state.form.location.postal_code) {
+      const errMsg = Validator.postalCode(this.state.form.location.postal_code);
+      if (errMsg) {
+        errors['postal_code'] = "*" + errMsg;
+      }
     }
 
     this.setState({
@@ -201,12 +210,13 @@ class ServiceForm extends Component {
 
     return formIsValid;
 
-    }
+  };
 
   render() {
+    const {classes} = this.props;
     const p = this.props;
     const formTitle = (this.state.mode === 'edit') ?
-      'Edit Service Profile' : 'New Service'
+      'Edit Service Profile' : 'New Service';
 
     let provider, provider_locations;
     if (isInt(this.state.form.provider_id)) {
@@ -216,400 +226,287 @@ class ServiceForm extends Component {
       provider_locations = provider.other_addresses ? provider.other_addresses.concat([provider.main_address]) : []
     }
 
+    const locations = {}, location2Obj = {};
+    if (provider_locations) provider_locations.forEach((address, index) => {
+      const loc = formatLocation(address);
+      locations[loc] = loc;
+      location2Obj[loc] = address;
+    });
+
     return (
-      <Row className="content">
-        <Col sm={12}>
-          <h3>{formTitle}</h3>
-          <hr />
-        </Col>
-        <Col sm={12}>
-            <Form horizontal>
-            {this.state.showAlert &&
-              <Col sm={12} className="flash-error">
-                {_.map(this.state.error_messages, (message, index) => {
-                  return (
-                    <li key={index}>
-                      {message}
-                    </li>
-                  );
-                })}
-              </Col>
+      <Container className={classes.root}>
+        <Typography variant="h5" className={classes.title}>
+          {formTitle}
+        </Typography>
+
+        {this.state.showAlert && this.state.error_messages.map((message, index) =>
+          <Alert key={index} severity="error">{message}</Alert>)}
+
+        <Divider className={classes.divider}/>
+        <Typography variant="h5">
+          Service Information
+        </Typography>
+        <SelectField
+          label="Provider"
+          options={_.reduce(p.providers, (map, provider) => {
+            if (provider.type === 'Individual') {
+              map[provider.id] = provider.profile && provider.profile.first_name + " " + provider.profile.last_name;
+            } else {
+              map[provider.id] = provider.company
             }
+            return map;
+          }, {})}
+          value={this.state.form.provider_id}
+          onChange={this.formValChange('provider_id')}
+          required
+        />
+        <div className={classes.errorText}>{this.state.errors.provider_id}</div>
+        <Link to={'/providers'} color>
+          <Typography>
+            Add new provider
+          </Typography>
+        </Link>
+        <SelectField
+          label="Type"
+          options={serviceTypeOptions}
+          value={this.state.form.type}
+          onChange={this.formValChange('type')}
+          required
+        />
+        <div className={classes.errorText}>{this.state.errors.type}</div>
+        <GeneralField
+          label="Name"
+          type="text"
+          value={this.state.form.name}
+          onChange={this.formValChange('name')}
+          required
+        />
+        <div className={classes.errorText}>{this.state.errors.name}</div>
+        <GeneralField
+          label="Description"
+          type="text"
+          value={this.state.form.desc}
+          onChange={this.formValChange('desc')}
+        />
+        <SelectField
+          label="Category"
+          options={p.servicesCategories}
+          value={this.state.form.category}
+          onChange={this.formValChange('category')}
+          required
+        />
+        <div className={classes.errorText}>{this.state.errors.category}</div>
+        <GeneralField
+          label="Available from"
+          type="date"
+          value={this.state.form.available_from}
+          onChange={this.formValChange('available_from')}
+        />
+        <GeneralField
+          label="Available until"
+          type="date"
+          value={this.state.form.available_to}
+          onChange={this.formValChange('available_to')}
+        />
+        <MultiSelectField
+          label="Languages"
+          options={p.languagesCategories}
+          value={this.state.form.languages}
+          onChange={this.formValChange('languages')}
+        />
+        <GeneralField
+          label="Max Capacity"
+          type="number"
+          value={this.state.form.max_capacity}
+          min="0"
+          onChange={this.formValChange('max_capacity')}
+        />
+        {parseInt(this.state.form.max_capacity, 10) > 0 &&
+        <GeneralField
+          label="Current Capacity"
+          type="number"
+          value={this.state.form.current_capacity}
+          min="0"
+          onChange={this.formValChange('current_capacity')}
+        />
+        }
+        <SelectField
+          label="Frequency"
+          value={this.state.form.frequency}
+          onChange={this.formValChange('frequency')}
+          options={['Weekly', 'Biweekly', 'Monthly', 'Non-repeated']}
+        />
+        <RadioField
+          label="Billable"
+          value={this.state.form.billable}
+          onChange={this.formValChange('billable', true)}
+          options={{Yes: 'Yes', No: 'No'}}
+        >
+        </RadioField>
 
-            <SelectField
-              id="provider_id"
-              label="Provider"
-              options={_.reduce(p.providers, (map, provider) => {
-                if (provider.type === 'Individual') {
-                  map[provider.id] = provider.profile && provider.profile.first_name + " " + provider.profile.last_name;
-                } else {
-                  map[provider.id] = provider.company
-                }
-                return map;
-              }, {})}
-              componentClass="select"
-              value={this.state.form.provider_id}
-              onChange={this.formValChange}
-              required
-            /><div className="errorMsg">{this.state.errors.provider_id}</div>
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
-                <Link to={`/providers/new`}>
-                  <Button>
-                    Add new provider
-                  </Button>
-                </Link>
-              </Col>
-            </FormGroup>
-            <SelectField
-              id="type"
-              label="Type"
-              options={serviceTypeOptions}
-              componentClass="select"
-              value={this.state.form.type}
-              onChange={this.formValChange}
-              required
-            /><div className="errorMsg">{this.state.errors.type}</div>
-            <GeneralField
-              id="name"
-              label="Name"
-              type="text"
-              value={this.state.form.name}
-              onChange={this.formValChange}
-              required
-            /><div className="errorMsg">{this.state.errors.name}</div>
-            <GeneralField
-              id="desc"
-              label="Description"
-              type="text"
-              value={this.state.form.desc}
-              onChange={this.formValChange}
-            />
-            <SelectField
-              id="category"
-              label="Category"
-              options={p.servicesCategories}
-              componentClass="select"
-              value={this.state.form.category}
-              onChange={this.formValChange}
-              required
-            /><div className="errorMsg">{this.state.errors.category}</div>
-            <GeneralField
-              id="available_from"
-              label="Available from"
-              type="date"
-              value={this.state.form.available_from}
-              onChange={this.formValChange}
-            />
-            <GeneralField
-              id="available_to"
-              label="Available until"
-              type="date"
-              value={this.state.form.available_to}
-              onChange={this.formValChange}
-            />
-            <MultiSelectField
-              id="languages"
-              label="Languages"
-              options={p.languagesCategories}
-              componentClass="select"
-              value={this.state.form.languages}
-              onChange={this.handleMultiSelectChange}
-            />
-            <GeneralField
-              id="max_capacity"
-              label="Max Capacity"
-              type="number"
-              value={this.state.form.max_capacity}
-              min="0"
-              onChange={this.formValChange}
-            />
-            {parseInt(this.state.form.max_capacity, 10) > 0 &&
-              <GeneralField
-                id="current_capacity"
-                label="Current Capacity"
-                type="number"
-                value={this.state.form.current_capacity}
-                min="0"
-                onChange={this.formValChange}
-              />
-            }
-            <FormGroup controlId="frequency">
-              <Col componentClass={ControlLabel} sm={3}>
-                Frequency
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.frequency}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="Weekly">Weekly</option>
-                  <option value="Biweekly">Biweekly</option>
-                  <option value="Monthly">Monthly</option>
-                  <option value="Non-repeated">Non-repeated</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="billable">
-              <Col componentClass={ControlLabel} sm={3}>
-                Billable
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.billable}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
-            {this.state.form.billable === "Yes" &&
-              <GeneralField
-                id="price"
-                label="Price"
-                type="text"
-                value={this.state.form.price}
-                onChange={this.formValChange}
-              />
-            }
-            <FormGroup controlId="method_of_delivery">
-              <Col componentClass={ControlLabel} sm={3}>
-                Method of delivery
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.method_of_delivery}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="Online">Online</option>
-                  <optgroup label="In person">
-                  <option value="One on one">One on one</option>
-                  <option value="Group">Group</option>
-                  </optgroup>
-                </FormControl>
-              </Col>
-            </FormGroup>
+        {this.state.form.billable === "Yes" &&
+        <GeneralField
+          label="Price"
+          type="text"
+          value={this.state.form.price}
+          onChange={this.formValChange('price')}
+        />}
 
-            <FormGroup controlId="method_of_registration">
-              <Col componentClass={ControlLabel} sm={3}>
-                Method of registration
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.method_of_registration}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="Self registration">Self registration</option>
-                  <option value="Registration by social worker">Registration by social worker</option>
-                  <option value="No registration">No registration</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
+        <SelectField
+          label="Method of delivery"
+          value={this.state.form.method_of_delivery}
+          onChange={this.formValChange('method_of_delivery')}
+          options={{
+            Online: 'Online',
+            'One on one (In person)': 'One on one (In person)',
+            Group: 'Group (In person)'
+          }} // In person
+        />
 
-            <FormGroup controlId="registration">
-              <Col componentClass={ControlLabel} sm={3}>
-                Registration
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  value={this.state.form.registration}
-                  onChange={this.formValChange}
-                >
-                  <option value="select">-- Not Set --</option>
-                  <option value="Online">Online</option>
-                  <option value="In person">In person</option>
-                  <option value="By phone">By phone</option>
-                </FormControl>
-              </Col>
-            </FormGroup>
+        <SelectField
+          label="Method of registration"
+          value={this.state.form.method_of_registration}
+          onChange={this.formValChange('method_of_registration')}
+          options={['Self registration', 'Registration by social worker', 'No registration']}
+        />
 
-            <hr/>
-            <h3>Eligibility</h3>
-            <CheckboxField
-              id="immigration_status"
-              label="Immigration Status"
-              options={statusInCanadaOptions}
-              checkedOptions={this.state.form.eligibility_conditions.immigration_status}
-              onChange={this.conditionsChange}
-            />
-            <GeneralField
-              id="lower_age_limit"
-              label="Age greater than"
-              type="text"
-              value={this.state.form.eligibility_conditions.lower_age_limit}
-              onChange={this.conditionsChange}
-            />
-            <GeneralField
-              id="upper_age_limit"
-              label="Age less than"
-              type="text"
-              value={this.state.form.eligibility_conditions.upper_age_limit}
-              onChange={this.conditionsChange}
-            />
-            <CheckboxField
-              id="current_education_level"
-              label="Current Education"
-              options={educationLevelOptions}
-              checkedOptions={this.state.form.eligibility_conditions.current_education_level}
-              onChange={this.conditionsChange}
-            />
-            <CheckboxField
-              id="completed_education_level"
-              label="Completed Education Level"
-              options={educationLevelOptions}
-              checkedOptions={this.state.form.eligibility_conditions.completed_education_level}
-              onChange={this.conditionsChange}
-            />
-            <hr/>
-            <h3>Contact Information</h3>
-            <GeneralField
-              id="email"
-              label="Contact Person Email"
-              type="email"
-              value={this.state.form.email}
-              onChange={this.formValChange}
-              
-            />
-            <GeneralField
-              id="primary_phone_number"
-              label="Telephone"
-              type="tel"
-              value={this.state.form.primary_phone_number}
-              onChange={this.formValChange}
-              
-            />
-            <GeneralField
-              id="alt_phone_number"
-              label="Alternative Phone Number"
-              type="tel"
-              value={this.state.form.alt_phone_number}
-              onChange={this.formValChange}
-              
-            />
-            <RadioField
-              id="location_same_as_provider"
-              label="Location"
-              options={{ 'Same as provider': true, 'Other': false }}
-              onChange={this.formValChange}
-              defaultChecked={this.state.form.location_same_as_provider}
-              
-            />
-            {this.state.form.location_same_as_provider && this.state.form.provider_id &&
-              <div>
-                <FormGroup controlId="locationId">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
-                    Select the location this service is provided at
-                  </Col>
-                  <Col sm={9}>
-                    {provider_locations && provider_locations.map((address, index) =>
-                      <Radio
-                        name="provider_address"
-                        value={address.id}
-                        onChange={e => this.locationChange(e, 'id')}
-                        key={index}
-                        defaultChecked={this.state.form.location.id === address.id}
-                      >
-                        {formatLocation(address)}
-                      </Radio>
-                    )}
-                    {!_.includes(_.map(provider_locations, 'id'), this.state.form.location.id) &&
-                      <HelpBlock>
-                        {`The current location of service is at
+        <SelectField
+          label="Registration"
+          placeholder="select"
+          value={this.state.form.registration}
+          onChange={this.formValChange('registration')}
+          options={['Online', 'In person', 'By phone']}
+        />
+
+        <Divider className={classes.divider}/>
+        <Typography variant="h5">
+          Eligibility
+        </Typography>
+        <EligibilityCondition
+          value={this.state.form.eligibility_criteria}
+          formValChange={this.formValChange('eligibility_criteria')}
+        />
+        <MultiSelectField
+          label="Immigration Status"
+          options={statusInCanadaOptions}
+          value={this.state.form.eligibility_conditions.immigration_status}
+          onChange={this.formValChange('eligibility_conditions.immigration_status')}
+        />
+        <GeneralField
+          label="Age greater than"
+          type="text"
+          value={this.state.form.eligibility_conditions.lower_age_limit}
+          onChange={this.formValChange('eligibility_conditions.lower_age_limit')}
+        />
+        <GeneralField
+          id="upper_age_limit"
+          label="Age less than"
+          type="text"
+          value={this.state.form.eligibility_conditions.upper_age_limit}
+          onChange={this.formValChange('eligibility_conditions.upper_age_limit')}
+        />
+        <MultiSelectField
+          label="Current Education"
+          options={educationLevelOptions}
+          value={this.state.form.eligibility_conditions.current_education_level}
+          onChange={this.formValChange('eligibility_conditions.current_education_level')}
+        />
+        <MultiSelectField
+          label="Completed Education Level"
+          options={educationLevelOptions}
+          value={this.state.form.eligibility_conditions.completed_education_level}
+          onChange={this.formValChange('eligibility_conditions.completed_education_level')}
+        />
+        <Divider className={classes.divider}/>
+        <Typography variant="h5">
+          Contact Information
+        </Typography>
+        <GeneralField
+          label="Contact Person Email"
+          type="email"
+          value={this.state.form.email}
+          onChange={this.formValChange('email')}
+        />
+        <div className={classes.errorText}>{this.state.errors.email}</div>
+        <GeneralField
+          label="Telephone"
+          type="tel"
+          value={this.state.form.primary_phone_number}
+          onChange={this.formValChange('primary_phone_number')}
+        />
+        <div className={classes.errorText}>{this.state.errors.primary_phone_number}</div>
+        <GeneralField
+          label="Alternative Phone Number"
+          type="tel"
+          value={this.state.form.alt_phone_number}
+          onChange={this.formValChange('alt_phone_number')}
+        />
+        <div className={classes.errorText}>{this.state.errors.alt_phone_number}</div>
+        <RadioField
+          label="Location"
+          options={{'Same as provider': true, 'Other': false}}
+          onChange={this.formValChange('location_same_as_provider', true)}
+          value={this.state.form.location_same_as_provider}
+        />
+
+        {this.state.form.location_same_as_provider && this.state.form.provider_id &&
+        <div>
+          <RadioField
+            label="Select the location this service is provided at"
+            value={this.state.form.location}
+            options={locations}
+            onChange={(e) => {
+              const {form} = this.state;
+              form.location = {...locations[e.target.value]};
+              this.formValChange('location');
+            }}
+          />
+          {!_.includes(_.map(provider_locations, 'id'), this.state.form.location.id) &&
+          <Typography style={{marginTop: 10}}>
+            {`The current location of service is at
                           ${formatLocation(this.state.form.location)}, which has
                           been removed from provider locations. Please select a
                           new location.`}
-                      </HelpBlock>
-                    }
-                  </Col>
-                </FormGroup>
-              </div>
-            }
-            {!this.state.form.location_same_as_provider &&
-              <div>
-                <GeneralField
-                  id="apt_number"
-                  label="Apt. #"
-                  type="text"
-                  value={this.state.form.location.apt_number}
-                  onChange={this.locationChange}
-                />
-                <GeneralField
-                  id="street_address"
-                  label="Street Address"
-                  type="text"
-                  value={this.state.form.location.street_address}
-                  onChange={this.locationChange}
-                />
-                <GeneralField
-                  id="city"
-                  label="City"
-                  type="text"
-                  value={this.state.form.location.city}
-                  onChange={this.locationChange}
-                />
-                <SelectField
-                  id="province"
-                  label="Province"
-                  componentClass="select"
-                  value={this.state.form.location.province}
-                  options={provinceOptions}
-                  onChange={this.locationChange}
-                />
-                <GeneralField
-                  id="postal_code"
-                  label="Postal Code"
-                  type="text"
-                  value={this.state.form.location.postal_code}
-                  onChange={this.locationChange}
-                />
-              </div>
-            }
-            <RadioField
-              id="is_public"
-              label="Public?"
-              options={{ 'Yes': true, 'No': false }}
-              onChange={this.formValChange}
-              defaultChecked={this.state.form.is_public}
-            />
-            <MultiSelectField
-              id="share_with"
-              label="Share with"
-              options={serviceSharedWithOptions}
-              value={this.state.form.share_with}
-              onChange={this.handleMultiSelectChange}
-            />
-            <GeneralField
-              id="notes"
-              label="Notes"
-              type="text"
-              value={this.state.form.notes}
-              onChange={this.formValChange}
-            />
-            <FormGroup>
-              <Col smOffset={3} sm={9}>
-                <Button onClick={this.submit}>
-                  Submit
-                </Button>
-              </Col>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
+          </Typography>
+          }
+        </div>
+        }
+        {!this.state.form.location_same_as_provider &&
+        <LocationFieldGroup
+          key="address"
+          address={this.state.form.location}
+          errMsg={this.state.errors}
+        />
+        }
+        <RadioField
+          label="Public?"
+          options={{'Yes': true, 'No': false}}
+          onChange={this.formValChange('is_public')}
+          value={this.state.form.is_public}
+        />
+        <Divider className={classes.divider}/>
+        <Typography variant="h5">
+          Other Information
+        </Typography>
+        <MultiSelectField
+          label="Share with"
+          options={serviceSharedWithOptions}
+          value={this.state.form.share_with}
+          onChange={this.formValChange('share_with')}
+        />
+        <GeneralField
+          label="Notes"
+          type="text"
+          value={this.state.form.notes}
+          onChange={this.formValChange('notes')}
+          multiline
+          variant="outlined"
+          fullWidth
+        />
+        <Button onClick={this.submit} variant="outlined" color="primary" style={{margin: '12px 0'}}>
+          Submit
+        </Button>
+      </Container>
     );
   }
 }
@@ -626,12 +523,12 @@ const mapStateToProps = (state) => {
     providersLoaded: state.providers.loaded,
     providerIndex: state.providers.index
   }
-}
+};
 
 function isInt(value) {
   return !isNaN(value) && 
-         parseInt(Number(value)) == value && 
+         parseInt(Number(value)) === value && 
          !isNaN(parseInt(value, 10));
 }
 
-export default connect(mapStateToProps)(withRouter(ServiceForm));
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(ServiceForm)));

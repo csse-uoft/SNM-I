@@ -1,97 +1,96 @@
-import React, { Component } from 'react';
-import { IndexLinkContainer } from 'react-router-bootstrap';
-import { withRouter } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { AppBar, Toolbar, Typography, Button, Tabs, Tab } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { Link } from "../shared";
 
 // redux
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/actions/authAction.js';
 
-class TopNavbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      redirect: false
-    };
-    this.signout = this.signout.bind(this);
-  }
+const StyledTabs = withStyles({
+  indicator: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#ccc',
+    transition: 'none',
+  },
+})(props => <Tabs {...props} />);
 
-  signout() {
-    this.props.dispatch(logout())
-  }
+const StyledTab = withStyles(theme => ({
+  root: {
+    textTransform: 'none',
+    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: theme.typography.pxToRem(15),
+    marginRight: theme.spacing(1),
+    minWidth: 60,
+  },
+}))(({to, ...props}) => <Tab {...props}/>);
 
-  render() {
-    const navItems = (this.props.isLoggedin) ? (
-      <Nav>
-        <IndexLinkContainer to="/clients">
-          <NavItem eventKey={1} href="#">Clients</NavItem>
-        </IndexLinkContainer>
-        <IndexLinkContainer to="/services">
-          <NavItem eventKey={2} href="#">Services</NavItem>
-        </IndexLinkContainer>
-        <IndexLinkContainer to="/goods">
-          <NavItem eventKey={2} href="#">Goods</NavItem>
-        </IndexLinkContainer>
-        <IndexLinkContainer to="/providers">
-          <NavItem eventKey={3} href="#">Providers</NavItem>
-        </IndexLinkContainer>
-        <IndexLinkContainer to="/reporting">
-          <NavItem eventKey={4} href="#">Reporting</NavItem>
-        </IndexLinkContainer>
+const useStyles = makeStyles(theme => ({
+  appBar: {
+    backgroundColor: 'rgb(39, 44, 52)'
+  },
+  title: {
+    paddingRight: 20,
+    whiteSpace: 'pre',
+    color: 'white',
+    textDecorationLine: 'none',
+  },
+  rightButtons: {
+    marginLeft: 'auto',
+    textDecorationLine: 'none',
+    whiteSpace: 'pre'
+  },
+}));
 
-      </Nav>
-      )
-      : (null);
+function TopNavBar() {
+  const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const {isLoggedin} = useSelector(state => state.auth);
+  const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
+  const [value, setValue] = useState(
+    tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
+  );
 
-    return (
-      <Navbar inverse collapseOnSelect fixedTop>
-        <Navbar.Header>
-          <Navbar.Brand>
-            {(this.props.isLoggedin) ? (
-              <IndexLinkContainer to="/dashboard">
-                <div>
-                  <span>SNM Impact</span>
-                </div>
-              </IndexLinkContainer>
-            ) : (
-              <IndexLinkContainer to="/">
-                <div>
-                  <span>SNM Impact</span>
-                </div>
-              </IndexLinkContainer>
-            )}
-          </Navbar.Brand>
-        </Navbar.Header>
-        <Navbar.Collapse>
-          {navItems}
-          <div className="home-agency-branding">
-            {this.props.organization && this.props.organization.name}
-          </div>
-          <Nav pullRight>
-            {(this.props.isLoggedin) ? (
-              <NavItem eventKey={4} href="#" onClick={this.signout}>Log Out</NavItem>
-            ) : (
-              <IndexLinkContainer to="/login">
-                <NavItem eventKey={4} href="#">Log In</NavItem>
-              </IndexLinkContainer>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    );
-  }
+  useEffect(() => {
+    setValue(tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false);
+  }, [history.location.pathname, tabNames]);
+
+  const tabOnChange = (e, newValue) => {
+    setValue(newValue);
+    history.push(newValue);
+  };
+
+  return (
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar variant="dense">
+        <Link to={isLoggedin ? "/dashboard" : "/"} className={classes.title}>
+          <Typography variant="h6">
+            Dashboard
+          </Typography>
+        </Link>
+
+        {isLoggedin ? (
+          <StyledTabs value={value} onChange={tabOnChange} variant="scrollable">
+            <StyledTab label="Clients" value="/clients"/>
+            <StyledTab label="Services" value="/services"/>
+            <StyledTab label="Goods" value="/goods"/>
+            <StyledTab label="Providers" value="/providers"/>
+            <StyledTab label="Reporting" value="/reporting"/>
+          </StyledTabs>
+        ) : null}
+
+        <Button color="inherit" className={classes.rightButtons}
+                onClick={() => isLoggedin ? dispatch(logout()) : history.push('/login')}>
+          {isLoggedin ? 'Log out' : 'Login'}
+        </Button>
+
+      </Toolbar>
+    </AppBar>
+  )
 }
 
-
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.auth.currentUser,
-    organization: state.auth.organization,
-    isLoggedin: state.auth.isLoggedin
-  }
-}
-
-export default connect(
-  mapStateToProps
-)(withRouter(TopNavbar));
+export default TopNavBar;

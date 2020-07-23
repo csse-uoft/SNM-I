@@ -44,7 +44,7 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
       else if (action.sortType === "category") {
         sortedServices = [...state.index].sort((a, b) => (a.category? a.category:"").localeCompare(b.category?b.category:""));
       }
-      
+
       if (action.searchValue === '') {
         return {index: sortedServices, filteredServices: sortedServices, servicesLoaded: true}
       }
@@ -54,9 +54,9 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
       else if (action.searchType === "provider") {
-        services = sortedServices.filter((service) => (service.provider.company ? (service.provider.company).includes(action.searchValue) : "") 
+        services = sortedServices.filter((service) => (service.provider.company ? (service.provider.company).includes(action.searchValue) : "")
         || ((service.provider.profile.first_name ? service.provider.profile.first_name.toLowerCase() : "")
-         + " " + 
+         + " " +
          (service.provider.profile.last_name ? service.provider.profile.last_name.toLowerCase().includes(action.searchValue): "")));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
       }
@@ -67,8 +67,8 @@ export function services(state = {index: [], filteredServices: [], servicesLoade
       else if (action.searchType === "category") {
         services = sortedServices.filter((service) => ((service.category).includes(action.searchValue) ));
         return {index: [...state.index], filteredServices: services, servicesLoaded: true}
-      } 
-
+      }
+      break;
     default:
       return state
   }

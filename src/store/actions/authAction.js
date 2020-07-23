@@ -5,7 +5,6 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const LOGGED_OUT = 'LOGGED_OUT';
 export const UPDATE_ORGANIZATION = 'UPDATE_ORGANIZATION';
-export const CLEAR_ALERT = 'CLEAR_ALERT';
 
 function login_success(user, organization) {
   console.log("File: authActions.js - Function: login_success - Parameters: user, organization. - Values: ", user, organization);
@@ -57,24 +56,23 @@ export function login(params) {
         return response.json()
       }
       else {
-        const error = await response.json()
+        const error = await response.json();
         throw new Error(JSON.stringify(error['non_field_errors']))
       }
     })
     .then(json => {
-    
       console.log("File: authActions.js -  Function: login - Step 2  json:  ", json);
       const decoded_token = jwt_decode(json.token);
       let user = (({ user_id, username, email }) => ({ user_id, username, email }))(decoded_token);
-      user['expired_at'] = decoded_token['exp'] * 1000
-      user['is_admin'] = json.is_admin
+      user['expired_at'] = decoded_token['exp'] * 1000;
+      user['is_admin'] = json.is_admin;
       const organization = {
         id: json.provider_id,
         name: json.organization_name
-      }
+      };
       localStorage.setItem('jwt_token', json.token);
-      dispatch(login_success(user, organization))
-      return LOGIN_SUCCESS
+      dispatch(login_success(user, organization));
+      return {status: LOGIN_SUCCESS}
     }).catch(err => {
       let alert;
       if (err.message === "Failed to fetch") {
@@ -83,8 +81,8 @@ export function login(params) {
       else {
         alert = 'The username or password you entered is incorrect. Please try again.'
       }
-      dispatch(login_failure(alert))
-      return LOGIN_FAILURE
+      dispatch(login_failure(alert));
+      return {status: LOGIN_FAILURE, message: alert};
     })
   }
 }
@@ -93,13 +91,5 @@ export function logout(sessionExpired) {
   return dispatch => {
     dispatch(logged_out(sessionExpired))
     localStorage.removeItem('jwt_token');
-  }
-}
-
-export function clearAlert() {
-  return dispatch => {
-    dispatch({
-      type: CLEAR_ALERT
-    })
   }
 }

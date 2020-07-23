@@ -1,9 +1,6 @@
 import { maritalStatusOptions, statusInCanadaOptions, educationLevelOptions, genderOptions,
          incomeSourceOptions } from '../store/defaults.js';
 
-import { profileFields } from './shared_fields.js'
-
-
 export const clientFields = {
   address: { label: 'Address' },
   alt_phone_number: { component: 'GeneralField', type: 'tel', label: 'Alternative Phone Number' },
@@ -13,7 +10,7 @@ export const clientFields = {
   country_of_last_residence: { component: 'GeneralField', type: 'text', label: 'Country of Last Residence' },
   country_of_origin: { component: 'GeneralField', type: 'text', label: 'Country of Origin' },
   current_education_level: { component: 'SelectField', label: 'Current Education Level', options: educationLevelOptions },
-  eligibilities: { component: 'CheckboxField', label: 'Eligibilities' },
+  ngo_conditions: { component: 'CheckboxField', label: 'NGO Conditions' },
   email: { component: 'GeneralField', type: 'email', label: 'Email' },
   family: { label: 'Family' },
   file_id: { component: 'GeneralField', type: 'text', label: 'File ID' },

@@ -27,7 +27,6 @@ function receiveClient(id, json) {
 }
 
 function requestClients(json) {
-  console.log("---------> request clients json: ", json);
   return {
     type: REQUEST_CLIENTS,
     clients: json
@@ -62,7 +61,6 @@ export function fetchClient(id) {
   return dispatch => {
     dispatch(requestClient(id))
     const url = serverHost + '/client/' + id + '/';
-    let client = null;
     return fetch(url, {
         method: 'GET',
         headers: {
@@ -70,12 +68,10 @@ export function fetchClient(id) {
         },
       }).then(response => response.json())
       .then(json => {
-        client = json
-        dispatch(receiveClient(id, json))
-      })
-      .then(() => {
-        dispatch(receiveClientNeeds(id, client['needs'], client['need_groups']))
-      })
+        dispatch(receiveClient(id, json));
+        dispatch(receiveClientNeeds(id, json['needs'], json['need_groups']));
+        return json;
+      });
   }
 }
 
@@ -100,7 +96,8 @@ export function fetchClients() {
         }
       })
       .then(json => {
-        dispatch(receiveClients(json))
+        dispatch(receiveClients(json));
+        return json;
       })
       .catch(err => {
         return ACTION_ERROR;
@@ -109,7 +106,7 @@ export function fetchClients() {
 }
 
 
-export function deleteClient(id, params, callback) {
+export function deleteClient(id, params) {
   return dispatch => {
     const url = serverHost + '/client/' + id + '/';
     return fetch(url, {
@@ -122,11 +119,11 @@ export function deleteClient(id, params, callback) {
     })
     .then(response => {
       if (response.status === 204) {
-        dispatch(removeClient(id))
-        callback(ACTION_SUCCESS);
+        dispatch(removeClient(id));
+        return ACTION_SUCCESS;
       }
       else {
-        callback(ACTION_ERROR);
+        return ACTION_ERROR;
       }
     })
   }
@@ -134,7 +131,7 @@ export function deleteClient(id, params, callback) {
 
 export function createClient(params, callback) {
   console.log("createClient params", params);
-  
+
   return dispatch => {
     const url = serverHost + '/clients/';
     return fetch(url, {

@@ -1,94 +1,103 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import _ from 'lodash';
+import { useParams } from "react-router";
+import { useDispatch } from "react-redux";
+import { Container } from "@material-ui/core";
+import Button from '@material-ui/core/Button'
+import { Edit, Print } from '@material-ui/icons';
+import { Link } from '../shared'
+import Alert from '@material-ui/lab/Alert';
 
 import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';
-import NeedGroupPanel from '../client_needs/NeedGroupPanel';
 import AppointmentRow from '../appointments/AppointmentRow';
 
-// redux
-import { connect } from 'react-redux'
 import { fetchClient } from '../../store/actions/clientActions.js'
+import { fetchClientFields } from "../../api/settingApi";
 import { clientFields } from '../../constants/client_fields.js'
 
-import { Table, Label, Glyphicon, Button } from 'react-bootstrap';
+//Table
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+export default function Client() {
+  //redux hooks
+  const dispatch = useDispatch();
+  const {id} = useParams();
+
+  const [state, setState] = useState({
+    data: null,
+    CF: null,
+    CN: null
+  });
 
 
-class Client extends Component {
-  componentWillMount() {
-    console.log("componentWillMount");
-    const id = this.props.match.params.id
-    this.props.dispatch(fetchClient(id));
-  }
-
-  render() {
-    console.log("&&&&&&&& render()");
-    const p = this.props,
-    id = p.match.params.id,
-    client = p.clientsById[id];
-    console.log("client: ", client);
-    const clientLoaded = p.clientLoaded
-    console.log("clientLoaded: ", clientLoaded);
-    console.log("p: ", p);
-    
-    let services = {},
-        providers = {};
-    _.each(client.need_groups, need_group => {
-      _.each(need_group.needs, need => {
-        _.each(need.matches, match => {
-          if (!services[match.service.id]) {
-            services[match.service.id] = match.service;
-          }
-          if (!providers[match.service.provider.id]) {
-            providers[match.service.provider.id] = match.service.provider;
-          }
-        })
+  useEffect(() => {
+      dispatch(fetchClient(id)).then(data => {
+        setState(state => ({
+          ...state,
+          data
+        }))
       })
-    })
-    services = Object.values(services)
-    providers = Object.values(providers)
+  }, [dispatch, id]);
+
+  useEffect(() => {
+      if (state.CF == null) {
+        fetchClientFields().then(json => {
+          setState(state => ({
+            ...state,
+            CF: json
+          }))
+        })
+      }
+    }, [dispatch, state.CF]
+  );
+
+
+  if (state.data && state.CF) {
+    const client = state.data;
+    const CF = state.CF;
+    const formStructure = CF['form_structure'];
 
     if (client.family) {
       let members = _.clone(client.family.members);
-       _.remove(members, {
+      _.remove(members, {
         person: { id: id }
       });
     }
-    
-    let needGroups;
-    
-    if (p.needsByNeedGroup) {
-      needGroups = p.needsByNeedGroup.map(need_group =>
-        <NeedGroupPanel
-          key={need_group.id}
-          needGroup={need_group.category}
-          needs={need_group.needs}
-          needGroupId={need_group.id}
-          status={need_group.status}
-          clientId={client.id}
-        />
-      );
-    }
+
     return (
-      <div className="content client">
+      <Container>
         <h3>Client Profile</h3>
-        <Link to={`/clients/${client.id}/edit`}>
-          <Button bsStyle="primary">
-            Edit
+        <div>
+          <Link to={`/clients/${id}/edit/`}>
+            <Button
+              variant="contained"
+              startIcon={<Edit/>}>
+              Edit
+            </Button>
+          </Link>
+          &nbsp;
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.print()}
+            startIcon={<Print/>}>
+            Print
           </Button>
-        </Link>{' '}
-        <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-          <Glyphicon glyph="print" />
-        </Button>
-        {client && clientLoaded &&
+
           <div>
             {client.is_deleted &&
-              <h4>
-                <Label bsStyle="danger">deleted</Label>
-              </h4>
+            <Alert variant="filled" severity="error">
+              The client has been deleted
+            </Alert>
             }
-            {_.map(this.props.formStructure, (infoFields, step) => {
+            {/*Client info tables*/}
+            {_.map(formStructure, (infoFields, step) => {
               return (
                 <ClientInfoTable
                   key={step}
@@ -99,90 +108,97 @@ class Client extends Component {
                 />
               )
             })}
+
+            {/*Family*/}
+            {/*TODO: have family tested*/}
             {(client.family && client.family.members.length > 0) &&
-              <Table bordered condensed className="profile-table">
-                <tbody>
-                  <tr>
-                    <td colSpan="6"><b>Family Members: </b></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td><b>First name</b></td>
-                    <td><b>Last name</b></td>
-                    <td><b>Date of birth</b></td>
-                    <td><b>Gender</b></td>
-                    <td><b>Relationship</b></td>
-                  </tr>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow >
+                      <TableCell>First name</TableCell>
+                      <TableCell>Last name</TableCell>
+                      <TableCell>Date of Birth</TableCell>
+                      <TableCell>Gender</TableCell>
+                      <TableCell>Relationship</TableCell>
+                    </TableRow>
+                  </TableHead>
                   {_.map(_.filter(client.family.members, member => {
                     return member.person.id !== client.id
                   }), (member, index) => {
                     return (
-                      <tr key={member.person.id}>
-                        <td><b>Family member #{index+1}</b></td>
-                        <td>{member.person.first_name}</td>
-                        <td>{member.person.last_name}</td>
-                        <td>{member.person.birth_date}</td>
-                        <td>{member.person.gender}</td>
-                        <td>{member.relationship}</td>
-                      </tr>
-                    )
+                      <clientFamilyTableRow
+                        member = {member}
+                        index = {index}
+                      />
+                      )
                   })}
-                </tbody>
-              </Table>
+                </Table>
+              </TableContainer>
             }
           </div>
-        }
-        <hr />
-        { client && clientLoaded && p.needsLoaded &&
+
+          {/*TODO： client needs*/}
+          <h3>Needs</h3>
+          <Link to={`/clients/${client.id}/needs/new`}>
+            <Button variant="contained">
+              Add need
+            </Button>
+          </Link>
+          { client && client.need_groups.length > 0 &&
           <ClientNeeds
             clientId={client.id}
-            needGroups={this.props.needsByNeedGroup}
-            needsOrder={p.needsOrder}
+            needGroups={client.need_groups}
           />
-        }
-        <hr />
-        <h3>Appointments</h3>
-        { client && client.Loaded &&
-          <Table className="dashboard-table" striped bordered condensed hover>
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {client.appointments.map(appointment => {
-                return (
-                  <AppointmentRow
-                    key={appointment.id}
-                    appointment={appointment}
-                  />
-                )
-              })}
-            </tbody>
-          </Table>
-        }
-        <hr />
+          }
 
-      </div>
-    );
+          <h3>Appointments</h3>
+          { client && client.appointments.length > 0 &&
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow >
+                  <TableCell>Category</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Time</TableCell>
+                  <TableCell>Description</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {client.appointments.map(appointment => {
+                  return (
+                    <AppointmentRow
+                      key={appointment.id}
+                      appointment={appointment}
+                    />
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          }
+          <hr />
+
+        </div>
+      </Container>
+    )
+  } else {
+    return null;
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log("mapStateToProps state", state);
-  return {
-    needsOrder: state.needs.order,
-    needsByNeedGroup: state.needs.needGroups,
-    needsLoaded: state.needs.loaded,
-    clientsById: state.clients.byId,
-    clientLoaded: state.clients.clientsLoaded,
-    formStructure: state.settings.clients.formStructure
-  }
+function clientFamilyTableRow({member, index}) {
+  return (
+    <TableRow key={member.person.id}>
+      <TableCell component="th" scope="row">
+        Family member #{index + 1}
+      </TableCell>
+      <TableCell align="left">{member.person.first_name}</TableCell>
+      <TableCell align="left">{member.person.last_name}</TableCell>
+      <TableCell align="left">{member.person.birth_date}</TableCell>
+      <TableCell align="left">{member.person.gender}</TableCell>
+      <TableCell align="left">{member.relationship}</TableCell>
+    </TableRow>
+  );
 }
-
-export default connect(
-  mapStateToProps
-)(Client);

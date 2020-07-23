@@ -1,354 +1,199 @@
-import _ from 'lodash';
-import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useParams, useHistory } from 'react-router';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { clientFields } from '../../constants/client_fields.js'
-import { defaultProfileFields, defaultLocationFields } from '../../constants/default_fields.js'
-import { newMultiSelectFieldValue } from '../../helpers/select_field_helpers'
+import { defaultProfileFields, generateClientField } from '../../constants/default_fields.js'
 
 // redux
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { createClient, updateClient } from '../../store/actions/clientActions.js';
-import { fetchEligibilities } from '../../store/actions/eligibilityActions.js';
-import { fetchClientFields } from '../../store/actions/settingActions.js';
+import { createClient, updateClient, fetchClient } from '../../store/actions/clientActions.js';
+import { fetchEligibilities } from '../../api/eligibilityApi';
+import { fetchClientFields } from '../../api/settingApi';
 
 // components
 import LocationFieldGroup from '../shared/LocationFieldGroup';
 import FamilyFields from './client_form/FamilyFields';
-import FormWizard from '../shared/FormWizard';
 import FieldGroup from '../shared/FieldGroup';
 
-// styles
-import { Grid, Form, Col, Row } from 'react-bootstrap';
+import { makeStyles } from '@material-ui/core/styles';
+import { Container } from '@material-ui/core';
+import { Loading, FormStepper } from "../shared";
+import { client_verify_form } from '../../helpers/client_verify_form.js';
 
-class ClientForm extends Component {
-  constructor(props) {
-    super(props);
-    let client = {};
-    if (this.props.match.params.id) {
-      client = this.props.clientsById[this.props.match.params.id]
-    }
-
-    this.state = {
-      currentStep: 1,
-      clientId: client.id,
-      mode: (client.id) ? 'edit' : 'new',
-      form: Object.assign({
-        profile: Object.assign(_.clone(defaultProfileFields), client.profile),
-        address: Object.assign(_.clone(defaultLocationFields), client.address),
-        marital_status: '',
-        has_children: false,
-        num_of_children: '',
-        country_of_origin: '',
-        country_of_last_residence: '',
-        first_language: '',
-        other_languages: [],
-        pr_number: '',
-        immigration_doc_number: '',
-        landing_date: '',
-        arrival_date: '',
-        status_in_canada: '',
-        income_source: '',
-        current_education_level: '',
-        completed_education_level: '',
-        num_of_dependants: '',
-        file_id: '',
-        family: Object.assign({
-          members: []
-        }, client.family),
-        eligibilities: []
-      }, _.omit(client, ['address', 'family', 'profile']))
-    }
-
-    this.formValChange = this.formValChange.bind(this);
-    this.handleFamilyChange = this.handleFamilyChange.bind(this);
-    this.submit = this.submit.bind(this);
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
-    this.handleStepClick = this.handleStepClick.bind(this);
-    this.handleAddFamilyButtonClick = this.handleAddFamilyButtonClick.bind(this);
-    this.handleRemoveFamilyButtonClick = this.handleRemoveFamilyButtonClick.bind(this);
-    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
+const useStyles = makeStyles(theme => ({
+  content: {
+    width: '80%',
+    margin: 'auto',
+    paddingBottom: 10,
   }
+}));
 
-  componentWillMount() {
-    this.props.dispatch(fetchOntologyCategories('languages'));
-    this.props.dispatch(fetchEligibilities());
-    if (this.props.stepsOrder.length === 0) {
-      this.props.dispatch(fetchClientFields());
+export default function ClientForm() {
+  const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const {id} = useParams();
+  const mode = id ? 'edit' : 'new';
+  const [state, setState] = useState({
+    loading: true,
+    languageOptions: [],
+    all_ngo_conditions: [],
+    stepNames: [],
+    steps: [],
+    client: null,
+    dispatchErrorMsg: [],
+    fieldErrorMsg: {},
+  });
+
+  // DO NOT store form as state, it degrades the performance as all form got rendered every time user type anything.
+  // Instead, for large form like this page, store the form as a variable and pass it to child components (input)
+  const form = useMemo(() => generateClientField(state.client), [state.client]);
+
+  // const [form, setForm] = useState(generateClientField());
+
+  useEffect(() => {
+    const promises = [];
+    promises.push(dispatch(fetchOntologyCategories('languages'))
+      .then(data => setState(state => ({...state, languageOptions: data}))));
+    promises.push(fetchEligibilities()
+      .then(data => {
+        setState(state => ({...state, all_ngo_conditions: data.map(data => data.title)}))
+      }));
+    promises.push(fetchClientFields()
+      .then(data => {
+        if (data == null || data.steps_order.length === 0
+          || Object.values(data.form_structure).length === 0) {
+          setState(state => ({...state, loading: true, dispatchErrorMsg: ['No fields are available.']}));
+        } else {
+          setState(state => ({
+            ...state,
+            stepNames: data.steps_order,
+            steps: Object.values(data.form_structure)
+          }));
+        }
+      }));
+    id && promises.push(dispatch(fetchClient(id))
+      .then(data => setState(state => ({...state, client: data}))));
+    Promise.all(promises).then(() => setState(state => ({...state, loading: false})));
+  }, [dispatch, id]);
+
+  const handleFinish = () => {
+    // TODO: pretty error message
+    const fieldErrorMsg = client_verify_form(form, state.steps);
+    if (Object.keys(fieldErrorMsg).length !== 0) {
+      setState(state => ({...state, fieldErrorMsg}));
+      return;
     }
-  }
-
-  next() {
-   this.setState({
-     currentStep: this.state.currentStep + 1
-   });
-  }
-
-  prev() {
-    this.setState({
-      currentStep: this.state.currentStep - 1
-    });
-  }
-
-  handleStepClick(step) {
-    this.setState({
-      currentStep: step
-    });
-  }
-
-  handleMultiSelectChange(id, selectedOption, actionMeta) {
-    const preValue = this.state.form[id]
-    const newValue = newMultiSelectFieldValue(preValue, selectedOption, actionMeta)
-
-    this.setState({
-      form: {
-        ...this.state.form,
-        [id]: newValue
-      }
-    });
-  }
-
-  formValChange(e, id=e.target.id) {
-    let nextForm = _.clone(this.state.form);
-    const addressFields = _.keys(defaultLocationFields);
-    
-    if (id === 'eligibilities') {
-      if (e.target.checked) {
-        nextForm[id].push(e.target.value)
-      } else {
-        _.remove(nextForm[id], (value) => {
-          return value === e.target.value
-        });
-      }
-    }
-    else if (_.includes(addressFields, id)) {
-      nextForm['address'][e.target.id] = e.target.value;
-    }
-    else if (_.includes(_.keys(defaultProfileFields), id)) {
-      nextForm['profile'][e.target.id] = e.target.value;
-    }
-    else {
-      nextForm[id] = e.target.value
-    }
-    this.setState({ form: nextForm });
-  }
-
-  submit(e) {
-    console.log("submit e", e);
-    console.log("submit this.state.mode", this.state.mode);
-    
-    if (this.state.mode === 'edit') {
-      console.log("edit");
-      
-      this.props.dispatch(
-        updateClient(this.state.clientId, this.state.form, (status, err, clientId) => {
+    if (mode === 'edit') {
+      dispatch(
+        updateClient(id, form, (status, err, clientId) => {
           if (status === ACTION_SUCCESS) {
-            this.props.history.push(`/clients/${clientId}`)
+            history.push(`/clients/${clientId}`)
           } else {
-            this.setState({ showAlert: true });
+            setState(state => ({...state, dispatchErrorMsg: [err.toString()]}));
           }
         })
       );
     } else {
-      console.log("else: this.state.form", this.state.form);
-      const errMsgs = verifyForm(this.state.form)
-      if (errMsgs.length != 0){
-        this.setState({ showAlert: true, error_messages: errMsgs});
-      } else {
-        this.props.dispatch(
-        createClient(this.state.form, (status, err, clientId) => {
-        
-        console.log("else: status, err, clientId", status, err, clientId)
-        
-        if (status === ACTION_SUCCESS) {
-          //this.props.history.push(`/clients/${clientId}`) 
-           this.props.history.push('/clients/' + clientId)
-        } else {
-          const error_messages =
-            _.reduce(JSON.parse(err.message), (result, errorMessages, field) => {
-              _.each(errorMessages, function(message, key) {
-                let splitKeys = key.split('_')
-                splitKeys = splitKeys.map(key => key.charAt(0)
-                .toUpperCase() + key.slice(1))
-                const titleizedKey = splitKeys.join(' ')
-                result.push(titleizedKey + ": " + message)
-              })
-              return result;
-            }, [])
-          this.setState({ showAlert: true, error_messages: error_messages });
+      dispatch(
+        createClient(form, (status, err, clientId) => {
+          if (status === ACTION_SUCCESS) {
+            history.push('/clients/' + clientId)
+          } else {
+            setState(state => ({...state, dispatchErrorMsg: [err.toString()]}));
           }
         }));
+
+    }
+  };
+
+  /**
+   * Handle changes in form
+   * @param name {string}
+   * @returns {Function}
+   */
+  const handleChange = useCallback(name => e => {
+    const {value} = e.target;
+    const splits = name.split('.');
+    if (splits.length === 1) {
+      form[name] = value;
+    } else {
+      let parent = form;
+      for (let i = 0; i < splits.length - 1; i++) {
+        parent = parent[splits[i]];
       }
-      
+      parent[splits[splits.length - 1]] = value || '';
     }
-  }
+  }, [form]);
 
-  handleAddFamilyButtonClick() {
-    let nextForm = _.clone(this.state.form);
-    nextForm['family']['members'].push({
-      'person': {
-        'first_name': '',
-        'last_name': '',
-        'birth_date': '',
-        'gender': ''
-      },
-      'relationship': ''
-    })
-    this.setState({ form: nextForm });
-  }
+  const getStepContent = idx => {
+    const step = state.steps[idx];
+    return <div className={classes.content}>
+      {Object.entries(step).map(([field, required]) => {
+        let options;
+        // console.log(field)
+        let errMsg = state.fieldErrorMsg[field];
+        if (field === 'first_language') {
+          options = state.languageOptions;
+        } else if (field === 'other_languages') {
+          options = state.languageOptions.filter(
+            category => category !== form.first_language)
+        } else if (field === 'ngo_conditions') {
+          options = state.all_ngo_conditions;
+        }
 
-  handleRemoveFamilyButtonClick(index) {
-    let nextForm = _.clone(this.state.form);
-    nextForm['family']['members'].splice(index, 1);
-    this.setState({ form: nextForm });
-  }
+        if (field === 'address') {
+          return (
+            <LocationFieldGroup
+              key="address"
+              address={form.address}
+              required={required}
+              errMsg={errMsg}
+            />
+          );
+        } else if (field === 'family') {
+          return (
+            <FamilyFields
+              key="family"
+              family={form.family}
+              clientId={id}
+              required={required}
+              errMsg={errMsg}
+            />
+          );
+        } else {
+          const isProfile = Object.keys(defaultProfileFields).includes(field);
+          return (
+            <FieldGroup
+              key={field}
+              label={clientFields[field].label}
+              type={clientFields[field].type}
+              component={clientFields[field].component}
+              value={isProfile ? form.profile[field] : form[field]}
+              onChange={handleChange(isProfile ? 'profile.' + field : field)}
+              required={required}
+              options={clientFields[field].options || options}
+              error={errMsg != null}
+              helperText={errMsg}
+            />
+          );
+        }
+      })}
+    </div>
+  };
 
-  handleFamilyChange(e, index) {
-    const id = e.target.id;
-    let nextForm = _.clone(this.state.form);
-    if (id === 'relationship') {
-      nextForm['family']['members'][index][id] = e.target.value;
-    }
-    else {
-      nextForm['family']['members'][index]['person'][id] = e.target.value;
-    }
-    this.setState({ form: nextForm });
-  }
+  if (state.loading)
+    return <Loading message={`Loading...`}/>;
 
-  render() {
-    const formTitle = (this.state.mode === 'edit') ?
-      'Edit Client Profile' : 'New Client Profile'
-
-    return (
-      <Grid className="content">
-        <Row>
-          <Col sm={12}>
-            <h3>{formTitle}</h3>
-          </Col>
-          {this.state.showAlert &&
-            <Col sm={12} className="flash-error">
-              {_.map(this.state.error_messages, (message, index) => {
-                return (
-                  <li key={index}>
-                    {message}
-                  </li>
-                );
-              })}
-            </Col>
-          }
-        </Row>
-        <FormWizard
-          stepTitles={this.props.stepsOrder}
-          currentStep={this.state.currentStep}
-          handleStepClick={this.handleStepClick}
-          prev={this.prev}
-          next={this.next}
-          submit={this.submit}
-        >
-          <Form horizontal>
-            {_.map(this.props.formStructure[this.props.stepsOrder[this.state.currentStep - 1]], (isRequired, fieldId) => {
-              let options;
-              if (fieldId === 'first_language') {
-                options = this.props.languagesCategories;
-              }
-              else if (fieldId === 'other_languages') {
-                options = this.props.languagesCategories.filter(
-                  category => category !== this.state.form.first_language)
-              }
-              else if (fieldId === 'eligibilities') {
-                options = this.props.eligibilities;
-              }
-
-              if (fieldId === 'address') {
-                return (
-                  <LocationFieldGroup
-                    key="address"
-                    address={this.state.form.address}
-                    handleFormValChange={this.formValChange}
-                  />
-                )
-              }
-              else if (fieldId === 'family') {
-                return (
-                  <FamilyFields
-                    key="family"
-                    family={this.state.form.family}
-                    clientId={this.state.clientId}
-                    handleFormValChange={this.handleFamilyChange}
-                    handleAddFamilyButtonClick={this.handleAddFamilyButtonClick}
-                    handleRemoveFamilyButtonClick={this.handleRemoveFamilyButtonClick}
-                  />
-                )
-              }
-              else if (_.includes(_.keys(defaultProfileFields), fieldId)) {
-                return (
-                  <FieldGroup
-                    key={fieldId}
-                    id={fieldId}
-                    label={clientFields[fieldId]['label']}
-                    type={clientFields[fieldId]['type']}
-                    component={clientFields[fieldId]['component']}
-                    value={this.state.form.profile[fieldId]}
-                    onChange={clientFields[fieldId]['component'] === 'MultiSelectField'
-                      ? this.handleMultiSelectChange
-                      : this.formValChange}
-                    required={isRequired}
-                    options={clientFields[fieldId]['options'] || options}
-                  />
-                )
-              }
-              else {
-                return (
-                  <FieldGroup
-                    key={fieldId}
-                    id={fieldId}
-                    label={clientFields[fieldId]['label']}
-                    type={clientFields[fieldId]['type']}
-                    component={clientFields[fieldId]['component']}
-                    value={this.state.form[fieldId]}
-                    onChange={clientFields[fieldId]['component'] === 'MultiSelectField'
-                      ? this.handleMultiSelectChange
-                      : this.formValChange}
-                    required={isRequired}
-                    options={clientFields[fieldId]['options'] || options}
-                  />
-                );
-              }
-            })}
-          </Form>
-        </FormWizard>
-      </Grid>
-    );
-  }
+  return (
+    <Container>
+      <FormStepper
+        getStepContent={getStepContent}
+        handleFinish={handleFinish}
+        stepNames={state.stepNames}
+        error={state.dispatchErrorMsg}
+      />
+    </Container>
+  );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    clientsById: state.clients.byId,
-    languagesCategories: state.ontology.languages.categories,
-    eligibilities: _.map(state.eligibilities.byId, eligibility => eligibility['title']),
-    stepsOrder: state.settings.clients.stepsOrder,
-    formStructure: state.settings.clients.formStructure,
-  }
-}
-
-// Verify the params filled in client form
-function verifyForm(form){
-  let is_postal_code_valid = false;
-  let result = new Array();
-  if (!form.address.postal_code){
-    return new Array();
-  } else {
-    const postal_code_regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-    is_postal_code_valid = postal_code_regex.test(form.address.postal_code);
-    if (!is_postal_code_valid){
-      result.push("Postal Code: Invalid postal code! ".concat("They are in the format A1A 1A1, ")
-        .concat("where A is a letter and 1 is a digit"));
-    }
-    return result;
-  }
-}
-
-export default connect(mapStateToProps)(withRouter(ClientForm));

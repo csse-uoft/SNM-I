@@ -1,4 +1,4 @@
-import { REQUEST_CLIENTS, RECEIVE_CLIENTS, REMOVE_CLIENT, REQUEST_CLIENT, 
+import { REQUEST_CLIENTS, RECEIVE_CLIENTS, REMOVE_CLIENT, REQUEST_CLIENT,
          RECEIVE_CLIENT, SEARCH_CLIENTS } from '../actions/clientActions.js';
 import _ from 'lodash';
 
@@ -10,10 +10,9 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
       console.log()
       return {...state, clientsLoaded: false }
     case RECEIVE_CLIENTS:
-      console.log(RECEIVE_CLIENTS); 
+      console.log(RECEIVE_CLIENTS);
       const newClientsById = _.keyBy(action.clients, client => client.id);
       nextById = { ...state.byId, ...newClientsById }
-      console.log("reducer check: ", action);
       return {...state, byId: nextById, clientsLoaded: true, index: action.clients, filteredClients: action.clients }
     case REMOVE_CLIENT:
       nextIndex = _.clone(state.index);
@@ -23,7 +22,7 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
       nextById = { ...state.byId, [action.id]: { clientsLoaded: false } }
       return {...state, byId: nextById }
     case RECEIVE_CLIENT:
-      console.log(RECEIVE_CLIENT); 
+      console.log(RECEIVE_CLIENT);
       nextById = {...state.byId, [action.id]: { ...action.client, clientsLoaded: true }}
       return {...state, byId: nextById }
 
@@ -42,9 +41,9 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
       }
       else if (action.sortType === "-last_name") {
         sortedClients = [...state.index].sort((a, b) => (a.profile.last_name ? a.profile.last_name.toLowerCase(): "").localeCompare(b.profile.last_name ? b.profile.last_name.toLowerCase():""));
-        sortedClients = sortedClients.reverse();        
+        sortedClients = sortedClients.reverse();
       }
-      
+
       if (action.searchValue === ''){
         return {index: sortedClients, filteredClients: sortedClients, clientsLoaded: true}
       }
@@ -62,9 +61,10 @@ export function clients(state = {index: [], filteredClients: [], clientsLoaded: 
         clients = sortedClients.filter((client) => ((client.address?client.address.toLowerCase():"").includes(action.searchValue)));
         return {index: [...state.index], filteredClients: clients, clientsLoaded: true}
       }
+      break;
 
     default:
       return state
-      
+
   }
 }

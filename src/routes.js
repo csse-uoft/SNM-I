@@ -30,12 +30,9 @@ import Good from './components/goods/Good';
 import GoodForm from './components/goods/GoodForm'
 import AdminLogs from './components/AdminLogs';
 import Reporting from './components/Reporting';
-import Eligibilities from './components/Eligibilities';
-import EligibilityForm from './components/eligibilities/EligibilityForm'
-import ManageClientFields from './components/settings/ManageClientFields';
-import ManageProviderFields from './components/settings/ManageProviderFields';
-import Questions from './components/Questions';
-import QuestionForm from './components/questions/QuestionForm';
+import Eligibilities from './components/additionalFIelds/Eligibilities';
+import ManageFields from './components/settings/ManageFields';
+import Questions from './components/additionalFIelds/Questions';
 
 const routes = (
   <Switch>
@@ -59,36 +56,31 @@ const routes = (
     <PrivateRoute path='/needs/:need_id/edit' component={NeedForm} />
     <PrivateRoute path='/needs/:need_id' component={Need} />
 
-    <PrivateRoute path='/provider/:id/rate' component={ProviderRatingForm} />
+    <PrivateRoute path='/providers/:id/rate' component={ProviderRatingForm} />
     <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
     <PrivateRoute path='/providers/:formType/new' component={ProviderForm} />
-    <PrivateRoute path='/provider/:id/edit/' component={ProviderForm} />
-    <PrivateRoute path='/provider/:id' component={ProviderProfile} />
+    <PrivateRoute path='/providers/:id/edit/' component={ProviderForm} />
+    <PrivateRoute path='/providers/:id' component={ProviderProfile} />
     <PrivateRoute path='/providers' component={Providers} />
 
     <PrivateRoute path='/services/:id/edit' component={ServiceForm} />
-    <PrivateRoute path='/service/:id' component={Service} />
     <PrivateRoute path='/services/new' component={ServiceForm} />
+    <PrivateRoute path='/services/:id' component={Service} />
     <PrivateRoute path='/services' component={Services} />
 
     <PrivateRoute path='/goods/:id/edit' component={GoodForm} />
-    <PrivateRoute path='/good/:id' component={Good} />
     <PrivateRoute path='/goods/new' component={GoodForm} />
+    <PrivateRoute path='/goods/:id' component={Good} />
     <PrivateRoute path='/goods' component={Goods} />
 
     <PrivateRoute path='/reporting' component={Reporting} />
 
-    <PrivateRoute path='/eligibility-criteria/:id/edit' component={EligibilityForm} />
-    <PrivateRoute path='/eligibility-criteria/new' component={EligibilityForm} />
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
 
-    <PrivateRoute path='/questions/:id/edit' component={QuestionForm} />
-    <PrivateRoute path='/questions/new' component={QuestionForm} />
     <PrivateRoute path='/questions' component={Questions} />
 
-    <AdminRoute path='/settings/manage-client-fields' component={ManageClientFields} />
-    <AdminRoute path='/settings/manage-provider-fields' component={ManageProviderFields} />
+    <AdminRoute path='/settings/manage-fields' component={ManageFields} />
   </Switch>
-)
+);
 
 export default routes;

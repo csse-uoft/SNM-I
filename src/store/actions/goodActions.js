@@ -86,7 +86,8 @@ export function fetchGoods() {
         },
       }).then(response => response.json())
       .then(json => {
-        dispatch(receiveGoods(json))
+        dispatch(receiveGoods(json));
+        return json;
       })
   }
 }

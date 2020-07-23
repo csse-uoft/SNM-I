@@ -1,5 +1,4 @@
 import { RECEIVE_CATEGORIES } from '../actions/ontologyActions.js';
-import _ from 'lodash';
 
 const DEFAULT_CATEGORY_STATE = { categories: [], loaded: false }
 

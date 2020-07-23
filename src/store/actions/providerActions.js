@@ -56,7 +56,7 @@ export function searchProviders(searchValue, searchType, searchProviderType, sor
     type: SEARCH_PROVIDERS,
     searchValue: searchValue,
     searchType: searchType,
-    displayType: searchProviderType, 
+    displayType: searchProviderType,
     sortType: sortType
   };
 }
@@ -75,8 +75,8 @@ export function fetchProvider(id) {
         },
       }).then(response => response.json())
       .then(json => {
-        console.log("dispatch(receiveProvider id", id);
         dispatch(receiveProvider(id, json))
+        return json;
       })
   }
 }
@@ -103,7 +103,8 @@ export function fetchProviders() {
         }
       })
       .then(json => {
-        dispatch(receiveProviders(json))
+        dispatch(receiveProviders(json));
+        return json;
       })
       .catch(err => {
         return ACTION_ERROR;
@@ -231,11 +232,11 @@ export function deleteProvider(id, params, callback) {
         },
     }).then(response => {
       if (response.status === 204) {
-        dispatch(removeProvider(id))
-        callback(ACTION_SUCCESS);
+        dispatch(removeProvider(id));
+        return ACTION_SUCCESS;
       }
       else {
-        callback(ACTION_ERROR);
+        return ACTION_ERROR;
       }
     })
   }

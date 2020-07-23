@@ -61,6 +61,7 @@ export function goods(state = {index: [], filteredGoods: [], goodsLoaded: false,
         goods = sortedGoods.filter((good) => ((good.category).includes(action.searchValue) ));
         return {index: [...state.index], filteredGoods: goods, goodsLoaded: true}
       }
+      break;
     default:
       return state
   }

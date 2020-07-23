@@ -1,25 +1,52 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { Typography, Button, Container, Grid } from "@material-ui/core";
+import { Link } from './shared';
+import { makeStyles } from "@material-ui/core/styles";
 
-import { Row, Col } from 'react-bootstrap';
+const useStyles = makeStyles(() => ({
+  container: {
+    paddingTop: 80,
+    maxWidth: '500px',
+  },
+  button: {
+    width: 300,
+  },
+}));
 
-// components
-import LoginButtons from './login/LoginButtons.js';
-
-// styles
-import '../stylesheets/Login.scss';
-
-
-class Login extends Component {
-  render() {
-    return(
-      <Row className="content login-pane">
-        <h3>Log in to your Dashboard</h3>
-        <Col md={12}>
-          <LoginButtons />
-        </Col>
-      </Row>
-    )
-  }
+function Login() {
+  const classes = useStyles();
+  return (
+    <Container className={classes.container}>
+      <Grid container direction="column" spacing={3} alignItems="center">
+        <Grid item>
+          <Typography variant="h5">
+            Log in to your Dashboard
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Link to={`/login-pane`}>
+            <Button color="default" variant="outlined" className={classes.button}>
+              Sign in with SNM account
+            </Button>
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link to={`/login-pane`}>
+            <Button color="primary" variant="outlined" className={classes.button}>
+              Facebook
+            </Button>
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link to={`/login-pane`}>
+            <Button color="secondary" variant="outlined" className={classes.button}>
+              Google
+            </Button>
+          </Link>
+        </Grid>
+      </Grid>
+    </Container>
+  )
 }
 
 export default Login;

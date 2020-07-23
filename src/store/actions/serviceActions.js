@@ -92,12 +92,13 @@ export function fetchServices() {
       })
       .then(json => {
         dispatch(receiveServices(json))
+        return json;
       })
       .catch(err => {
         return ACTION_ERROR;
       })
   }
-  
+
 }
 
 export function deleteService(id, params, callback) {
@@ -113,10 +114,10 @@ export function deleteService(id, params, callback) {
     }).then(response => {
       if (response.status === 204) {
         dispatch(removeService(id))
-        callback(ACTION_SUCCESS);
+        return ACTION_SUCCESS;
       }
       else {
-        callback(ACTION_ERROR);
+        return ACTION_ERROR;
       }
     })
   }
