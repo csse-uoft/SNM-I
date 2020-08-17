@@ -3,6 +3,7 @@ phases:
    install:
         runtime-versions:
           nodejs: 10
+        stdin_open: true
         commands:
         - npm install
         - npm run build

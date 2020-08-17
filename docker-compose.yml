@@ -1,7 +1,6 @@
 version: '3.7'
 
 services:
-
   sample:
     container_name: snm_react
     build:
@@ -14,3 +13,4 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=development
+    stdin_open: true
