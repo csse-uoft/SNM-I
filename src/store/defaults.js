@@ -2,12 +2,14 @@ const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
 if (hostname === 'jias.snmi.ca') {
-  // serverHost = 'http://ec2-15-223-116-198.ca-central-1.compute.amazonaws.com:8000';
+  serverHost = 'http://15.223.116.198:8000/';
   // Obsolete
-  serverHost = 'https://jias-server.snmi.ca';
+  // serverHost = 'https://jias-server.snmi.ca';
 }
 else {
+  // serverHost = 'http://ec2-15-223-116-198.ca-central-1.compute.amazonaws.com:8000';
   serverHost = 'http://127.0.0.1:8000';
+  // serverHost = 'http://15.223.116.198:8000/';
 }
 
 

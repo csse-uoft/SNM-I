@@ -209,5 +209,5 @@ export const nameFunc = () => {
     .then(data => eligibilityConditionConfigs.ngo_conditions.options= data.map(data => data.title)));
   Promise.all(promises)
 }
-nameFunc()
+// nameFunc()
 
