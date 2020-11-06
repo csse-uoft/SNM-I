@@ -8,7 +8,7 @@ if (hostname === 'jias.snmi.ca') {
 }
 else {
   serverHost = 'http://127.0.0.1:8000';
-  // serverHost = 'https://3.97.37.175:80';
+  // serverHost = 'https://3.97.37.175:8000';
   // serverHost = 'https://jias-server.snmi.ca';
 }
 

@@ -23,7 +23,10 @@ export async function getJson(url) {
   url = serverHost + url;
   const response = await fetch(url, {
     method: 'GET',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+    },
   });
   if (response.status >= 400 && response.status < 600) {
     const e = new Error("Bad response from server: " + response.status);
@@ -39,8 +42,8 @@ async function sendJson(url, body, method, rawResponse = false) {
     method,
     body: JSON.stringify(body),
     headers: {
-      ...headers,
       'Content-Type': 'application/json',
+      'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
     },
   });
   if (response.status >= 400 && response.status < 600) {
