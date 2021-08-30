@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from "react-router";
 
 import { TextField, Container, Paper, Typography, Button, Divider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Link } from './shared';
 
 import { login, LOGIN_SUCCESS } from '../store/actions/authAction';

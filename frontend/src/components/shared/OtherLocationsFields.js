@@ -3,8 +3,8 @@ import { Button, FormLabel } from '@material-ui/core';
 import { FieldsWrapper } from "./index";
 import LocationFieldGroup from "./LocationFieldGroup";
 import { defaultLocationFields } from "../../constants/default_fields";
-import { makeStyles } from "@material-ui/core/styles";
-import { Alert } from "@material-ui/lab";
+import makeStyles from '@material-ui/styles/makeStyles';
+import { Alert } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   button: {

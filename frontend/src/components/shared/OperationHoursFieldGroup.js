@@ -5,8 +5,8 @@ import { IconButton, Typography, Grid } from '@material-ui/core';
 import { Delete, Add, ArrowRightAltOutlined as Arrow } from '@material-ui/icons';
 import { FieldsWrapper } from "./index";
 import SelectField from "./fields/SelectField";
-import { makeStyles } from "@material-ui/core/styles";
-import { Alert } from "@material-ui/lab";
+import makeStyles from '@material-ui/styles/makeStyles';
+import { Alert } from '@material-ui/core';
 
 import { format } from 'date-fns';
 import GeneralField, {dateFormat} from './fields/GeneralField.js'
@@ -100,25 +100,29 @@ export default function OperationHoursFieldGroup({operationHours, operationDates
               helperText={"leave empty if not sure"}
             />
             {idx === (operationDates.length - 1) &&
-            <IconButton className={classes.button}
-                        onClick={e => {
-                          operationDates.push({start_date: null, end_date: null});
-                          forceUpdate();
-                        }}>
+            <IconButton
+              className={classes.button}
+              onClick={e => {
+                operationDates.push({start_date: null, end_date: null});
+                forceUpdate();
+              }}
+              size="large">
               <Add/>
             </IconButton>
             }
             {idx !== 0 && idx === (operationDates.length - 1) &&
-            <IconButton className={classes.button}
-                        onClick={e => {
-                          operationDates.splice(idx, 1);
-                          forceUpdate();
-                        }}>
+            <IconButton
+              className={classes.button}
+              onClick={e => {
+                operationDates.splice(idx, 1);
+                forceUpdate();
+              }}
+              size="large">
               <Delete/>
             </IconButton>
             }
           </Grid>
-        )
+        );
       })}
 
 
@@ -150,24 +154,28 @@ export default function OperationHoursFieldGroup({operationHours, operationDates
                       // InputLabelProps={{ shrink: true }}
                     />
                     {idx === (timeSlots.length - 1) &&
-                    <IconButton className={classes.button}
-                                onClick={e => handleOperationHourOnClick(e, weekDay, 'add')}>
+                    <IconButton
+                      className={classes.button}
+                      onClick={e => handleOperationHourOnClick(e, weekDay, 'add')}
+                      size="large">
                       <Add/>
                     </IconButton>
                     }
                     {idx !== 0 && idx === (timeSlots.length - 1) &&
-                    <IconButton className={classes.button}
-                                onClick={e => handleOperationHourOnClick(e, weekDay, 'remove')}>
+                    <IconButton
+                      className={classes.button}
+                      onClick={e => handleOperationHourOnClick(e, weekDay, 'remove')}
+                      size="large">
                       <Delete/>
                     </IconButton>
                     }
                   </div>
-                )
+                );
               })}
             </div>
 
           </div>
-        )
+        );
       })}
       {errMsg &&
       <Alert severity="error">{errMsg}</Alert>}

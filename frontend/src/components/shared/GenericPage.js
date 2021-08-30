@@ -104,7 +104,7 @@ export default function GenericPage(props) {
 
   const tableOptions = {
     selectableRows: 'none',
-    responsive: 'scrollMaxHeight',
+    responsive: 'standard',
     rowsPerPageOptions: [10, 20, 100, 1e5],
     download: false,
     customToolbar: () =>

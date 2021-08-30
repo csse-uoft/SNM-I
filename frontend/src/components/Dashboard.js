@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import { Container, Button } from "@material-ui/core";
 import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@material-ui/icons";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -26,11 +26,15 @@ function NavButton({to, text, icon}) {
   const classes = useStyles();
   return (
     <Link to={to}>
-      <Button color="default" variant="outlined" className={classes.button} startIcon={icon} size="large">
+      <Button
+        variant="outlined"
+        className={classes.button}
+        startIcon={icon}
+        size="large">
         {text}
       </Button>
     </Link>
-  )
+  );
 }
 
 function Dashboard() {

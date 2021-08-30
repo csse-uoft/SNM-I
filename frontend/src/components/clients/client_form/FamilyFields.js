@@ -3,8 +3,8 @@ import GeneralField from '../../shared/fields/GeneralField'
 import SelectField from '../../shared/fields/SelectField'
 import { genderOptions, familyRelationshipOptions } from '../../../store/defaults.js';
 import { Paper, Button, FormLabel } from '@material-ui/core';
-import { makeStyles } from "@material-ui/core/styles";
-import { Alert } from "@material-ui/lab";
+import makeStyles from '@material-ui/styles/makeStyles';
+import { Alert } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {},

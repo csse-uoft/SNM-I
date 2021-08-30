@@ -1,7 +1,7 @@
 import React from 'react'
 import { Typography, Button, Container, Grid } from "@material-ui/core";
 import { Link } from './shared';
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -25,7 +25,7 @@ function Login() {
         </Grid>
         <Grid item>
           <Link to={`/login-pane`}>
-            <Button color="default" variant="outlined" className={classes.button}>
+            <Button variant="outlined" className={classes.button}>
               Sign in with SNM account
             </Button>
           </Link>
@@ -46,7 +46,7 @@ function Login() {
         </Grid>
       </Grid>
     </Container>
-  )
+  );
 }
 
 export default Login;

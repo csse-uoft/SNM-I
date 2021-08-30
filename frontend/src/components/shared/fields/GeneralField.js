@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { format, parse } from 'date-fns';
 import { TextField } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,

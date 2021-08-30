@@ -6,7 +6,7 @@ import { Button, Container, Typography } from "@material-ui/core";
 import { userFormFields } from "../../constants/userFields";
 import { fetchUser, updateUser, createUser } from "../../api/userApi";
 import { Loading } from "../shared"
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { isFieldEmpty } from "../../helpers";
 import { REQUIRED_HELPER_TEXT } from "../../constants";
 

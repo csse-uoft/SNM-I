@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../store/defaults.js';
+import { resolve } from "chart.js/helpers";
 
 export const ACTION_SUCCESS = 'ACTION_SUCCESS';
 export const ACTION_ERROR = 'ACTION_ERROR';
@@ -67,4 +68,12 @@ export async function putJson(url, body) {
 // return raw response
 export async function deleteJson(url, body) {
   return sendJson(url, body, 'DELETE', true);
+}
+
+export function sleep(milliseconds) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds)
+  })
 }

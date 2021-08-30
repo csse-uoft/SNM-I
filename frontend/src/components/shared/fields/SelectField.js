@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { UN_SET } from '../../../constants';
 

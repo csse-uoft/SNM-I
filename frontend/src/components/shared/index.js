@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, MenuItem, CircularProgress, Typography, Chip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Link as DomLink, useHistory } from 'react-router-dom';
 import { Add as AddIcon, CloudUpload as UploadIcon } from '@material-ui/icons';
 import GoogleMap from './GoogleMap';

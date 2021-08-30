@@ -9,7 +9,8 @@ import {
   FormControl,
   FormHelperText
 } from "@material-ui/core";
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles(theme => ({

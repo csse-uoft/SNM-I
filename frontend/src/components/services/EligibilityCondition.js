@@ -96,12 +96,12 @@ export function CustomEligibilityField({value, handleChange, fields, onDelete}) 
             handleChange({operator});
           }}/>
         {rightOperand}
-        <IconButton onClick={onDelete}>
+        <IconButton onClick={onDelete} size="large">
           <DeleteIcon/>
         </IconButton>
       </Grid>
     </div>
-  )
+  );
 }
 
 export default function EligibilityCondition({value: originalValue, formValChange}) {
@@ -195,18 +195,14 @@ export default function EligibilityCondition({value: originalValue, formValChang
                 onClick={handleRemoveCondition(idx)}
                 style={{margin: 12, float: 'right'}}
                 variant="contained"
-                color="default"
-                startIcon={<DeleteIcon/>}
-              >
+                startIcon={<DeleteIcon/>}>
                 Remove
               </Button>
               <Button
                 style={{margin: 12, float: 'right'}}
                 variant="contained"
-                color="default"
                 startIcon={<AddIcon/>}
-                onClick={handleAddField(idx)}
-              >
+                onClick={handleAddField(idx)}>
                 And
               </Button>
             </Grid>
@@ -215,12 +211,10 @@ export default function EligibilityCondition({value: originalValue, formValChang
       <Button
         style={{margin: 12}}
         variant="contained"
-        color="default"
         onClick={handleAddCondition}
-        startIcon={<AddIcon/>}
-      >
+        startIcon={<AddIcon/>}>
         OR
       </Button>
     </div>
-  )
+  );
 }

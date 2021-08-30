@@ -19,8 +19,7 @@ import FieldGroup from '../shared/FieldGroup';
 import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
 import LocationFieldGroup from '../shared/LocationFieldGroup';
 
-// styles
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { generateProviderFields } from "../../constants/default_fields";
 import { FormStepper, Loading, FieldsWrapper, OtherLocationsFields } from "../shared";
 import { Container } from "@material-ui/core";

@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Stepper, Step, StepButton, Button, Typography } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   buttons: {

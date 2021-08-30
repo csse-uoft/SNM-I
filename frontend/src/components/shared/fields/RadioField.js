@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { RadioGroup, Radio, FormControlLabel, FormControl, FormLabel, FormHelperText } from '@material-ui/core'
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { UN_SET } from '../../../constants';
 
 const useStyles = makeStyles(theme => ({

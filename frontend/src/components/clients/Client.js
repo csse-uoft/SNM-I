@@ -6,7 +6,7 @@ import { Container } from "@material-ui/core";
 import Button from '@material-ui/core/Button'
 import { Edit, Print } from '@material-ui/icons';
 import { Link } from '../shared'
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/core/Alert';
 
 import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';

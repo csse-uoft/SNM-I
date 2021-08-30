@@ -11,7 +11,7 @@ import { fetchQuestions } from '../../api/questionApi';
 import RadioField from '../shared/fields/RadioField';
 import { Button, Container, Grid, TextField, Typography, Divider, IconButton } from "@material-ui/core";
 import SelectField from "../shared/fields/SelectField";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Close as Delete } from "@material-ui/icons";
 import { fetchClientFields, updateClientFields, fetchProviderFields, updateProviderFields } from "../../api/settingApi";
@@ -52,14 +52,16 @@ function StepFields({stepFields, fields, stepName, handleRadioChange, handleDele
               options={radioButtonOptions}
               value={required}
             />
-            <IconButton onClick={() => !snapshot.isDragging && handleDeleteField(index, stepName)}>
+            <IconButton
+              onClick={() => !snapshot.isDragging && handleDeleteField(index, stepName)}
+              size="large">
               <Delete/>
             </IconButton>
           </div>
         )}
       </Draggable>
-    )
-  })
+    );
+  });
 }
 
 export default function ManageFields() {
@@ -340,7 +342,7 @@ export default function ManageFields() {
         <div key={index} className={classes.root}>
           <Typography variant="h6" color="textSecondary">
             {stepName}
-            <IconButton onClick={handleRemoveStep(index, stepName)}>
+            <IconButton onClick={handleRemoveStep(index, stepName)} size="large">
               <Delete/>
             </IconButton>
           </Typography>
@@ -360,7 +362,7 @@ export default function ManageFields() {
           </Droppable>
           <Divider/>
         </div>
-      )
+      );
     });
   }, [state.fields, state.category, classes.root, classes.droppable,
     handleRadioChange, handleDeleteField, handleRemoveStep]);

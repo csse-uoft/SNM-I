@@ -16,7 +16,7 @@ import LocationFieldGroup from '../shared/LocationFieldGroup';
 import FamilyFields from './client_form/FamilyFields';
 import FieldGroup from '../shared/FieldGroup';
 
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Container } from '@material-ui/core';
 import { Loading, FormStepper } from "../shared";
 import { client_verify_form } from '../../helpers/client_verify_form.js';

@@ -5,7 +5,7 @@ import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
 import { DeleteModal, Loading } from "../shared";
 import GeneralField from "../shared/fields/GeneralField";
@@ -60,12 +60,12 @@ function AddEditDialog({open, title, value, handleConfirm, handleClose}) {
           color="primary">
           Confirm
         </Button>
-        <Button onClick={handleClose} color="default">
+        <Button onClick={handleClose}>
           Cancel
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export default function Eligibilities() {
@@ -168,14 +168,20 @@ export default function Eligibilities() {
         customBodyRender: (id, {rowData}) => {
           return (
             <span>
-              <IconButton onClick={shoeEditDialog(...rowData)} className={classes.button}>
+              <IconButton
+                onClick={shoeEditDialog(...rowData)}
+                className={classes.button}
+                size="large">
                 <EditIcon fontSize="small" color="primary"/>
               </IconButton>
-              <IconButton onClick={showDeleteDialog(id, rowData[0])} className={classes.button}>
+              <IconButton
+                onClick={showDeleteDialog(id, rowData[0])}
+                className={classes.button}
+                size="large">
                 <DeleteIcon fontSize="small" color="secondary"/>
               </IconButton>
             </span>
-          )
+          );
         }
       }
     }

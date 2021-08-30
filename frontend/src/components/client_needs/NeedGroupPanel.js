@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import { useDispatch } from "react-redux";
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box';
 import { Link } from '../shared'
@@ -10,9 +10,9 @@ import { updateClientNeedGroup } from "../../store/actions/needActions";
 import { Edit, PriorityHigh, Delete, Alarm, ExpandMoreOutlined} from '@material-ui/icons';
 
 //Expansion Panel
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { Grid } from "@material-ui/core";
@@ -105,8 +105,8 @@ export default function NeedGroupPanel(props) {
 
   return (
     <div>
-      <ExpansionPanel className={classes.panel}>
-        <ExpansionPanelSummary
+      <Accordion className={classes.panel}>
+        <AccordionSummary
           expandIcon={<ExpandMoreOutlined />}
           aria-controls={needGroupCategory+"-content"}
           id={needGroupCategory+"-header"}
@@ -118,13 +118,13 @@ export default function NeedGroupPanel(props) {
           <div className={classes.column}>
             <Typography className={classes.secondaryHeading}>{needs.length} need(s) inside </Typography>
           </div>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.panelDetail}>
+        </AccordionSummary>
+        <AccordionDetails className={classes.panelDetail}>
           <Box className={classes.outerBox}>
             {needsUnderCat}
           </Box>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     </div>
   )
 }

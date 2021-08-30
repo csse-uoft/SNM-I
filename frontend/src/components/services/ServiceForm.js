@@ -20,9 +20,9 @@ import { createService, updateService } from '../../store/actions/serviceActions
 import { fetchProviders } from '../../store/actions/providerActions.js';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 
-import { Alert } from "@material-ui/lab";
+import { Alert } from '@material-ui/core';
 import { Container, Divider, Typography, Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import withStyles from '@material-ui/styles/withStyles';
 import LocationFieldGroup from "../shared/LocationFieldGroup";
 import EligibilityCondition from './EligibilityCondition'
 import { transformToBackendType, transformToFrontendType } from '../../helpers/formulaHelpers';

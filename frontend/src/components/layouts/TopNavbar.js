@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { AppBar, Toolbar, Typography, Button, Tabs, Tab } from '@material-ui/core';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
+import withStyles from '@material-ui/styles/withStyles';
 import { Link } from "../shared";
 
 // redux
