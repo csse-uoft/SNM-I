@@ -10,7 +10,8 @@ import { fetchService } from '../../store/actions/serviceActions.js'
 import { formatLocation } from '../../helpers/location_helpers'
 import { formatEligibilityConditions } from '../../helpers/eligibility_condition_helpers'
 
-import { Table, Glyphicon, Button } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
+import { Print } from "@material-ui/icons";
 
 class Service extends Component {
   componentWillMount() {
@@ -32,7 +33,7 @@ class Service extends Component {
           </Button>
         </Link>{' '}
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-          <Glyphicon glyph="print" />
+          <Print fontSize="small"/>
         </Button>
 
         { service && service.servicesLoaded &&

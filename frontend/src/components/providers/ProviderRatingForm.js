@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Button, FormGroup, FormControl, ControlLabel, Col } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, FormLabel, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { rateProvider } from '../../store/actions/providerActions.js';
 import StarRatingComponent from 'react-star-rating-component';
@@ -45,7 +45,7 @@ class ProviderRatingForm extends Component {
         </Col>
 
         <FormGroup controlId="rating">
-          <Col componentClass={ControlLabel} sm={5}>
+          <Col componentClass={FormLabel} sm={5}>
             Rate this provider (0-5)
           </Col>
           <Col sm={9}>
@@ -68,7 +68,7 @@ class ProviderRatingForm extends Component {
         <Col sm={9}>
           <hr/>
           <FormGroup controlId="comments">
-            <ControlLabel>Comments</ControlLabel>
+            <FormLabel>Comments</FormLabel>
             <FormControl
               componentClass="textarea"
               placeholder="Comments about this provider..."

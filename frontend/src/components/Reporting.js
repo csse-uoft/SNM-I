@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Bar as BarChart, Pie as PieChart } from 'react-chartjs';
-import { Table, Glyphicon, Button } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
+import { Print } from "@material-ui/icons";
 import { serverHost } from '../store/defaults.js';
 import SelectField from './shared/fields/SelectField';
 // styles
@@ -181,7 +182,7 @@ export default class Report extends Component {
     return (
       <div className="content client">
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-          <Glyphicon glyph="print" />
+          <Print fontSize="small"/>
         </Button>
         <SelectField
           id='selectedCategory'

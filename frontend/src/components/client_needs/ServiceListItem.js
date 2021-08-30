@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { formatLocation } from '../../helpers/location_helpers'
 
 import { connect } from 'react-redux'
-import { ListGroupItem, Label, Row, Col, Button } from 'react-bootstrap';
+import { ListGroupItem, Row, Col, Button } from 'react-bootstrap';
 import { matchClientNeed } from '../../store/actions/needActions.js'
+import { Typography } from "@material-ui/core";
 
 class ServiceListItem extends Component {
   constructor(props) {
@@ -35,15 +36,15 @@ class ServiceListItem extends Component {
             <Link to={`/service/${service.id}`}>
               <h5>{service.name}</h5>
             </Link>
-            <Label>{service.category}</Label>
+            <Typography>{service.category}</Typography>
             {' '}
-            <Label>{Math.round(service.distance * 100) / 100} km</Label>
+            <Typography>{Math.round(service.distance * 100) / 100} km</Typography>
             <p>{service.desc}</p>
             <p>{formatLocation(service.location)}</p>
           </Col>
           <Col sm={4}>
             <h5>Provider</h5>
-            <Label bsStyle="primary">{service.provider.type}</Label>
+            <Typography color="primary">{service.provider.type}</Typography>
             <Link to={`/provider/${service.provider.id}`}>
               { (service.provider.type === "Individual") ? (
                   <p>{`${service.provider.profile.first_name} ${service.provider.profile.last_name}`}</p>

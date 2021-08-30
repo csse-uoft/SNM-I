@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClientNeed, updateClientNeed } from '../../store/actions/needActions.js'
 
-import { Button, Form, FormGroup, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormLabel, Col, Row } from 'react-bootstrap';
 
 class NeedForm extends Component {
   constructor(props) {
@@ -100,7 +100,7 @@ class NeedForm extends Component {
           <Col sm={12}>
             <Form horizontal>
               <FormGroup controlId="type">
-                <Col componentClass={ControlLabel} sm={3}>
+                <Col componentClass={FormLabel} sm={3}>
                   Type
                 </Col>
                 <Col sm={9}>
@@ -110,28 +110,30 @@ class NeedForm extends Component {
                 </Col>
               </FormGroup>
               <FormGroup controlId="is_urgent">
-                <Col componentClass={ControlLabel} sm={3}>
+                <Col componentClass={FormLabel} sm={3}>
                   Urgent?
                 </Col>
                 <Col sm={9}>
-                  <Radio
+                  <Form.Check
                     name="radioGroup"
                     value="1"
                     onChange={e => this.formValChange(e, 'is_urgent')}
                     defaultChecked={this.state.form.is_urgent === true}
+                    type="radio"
                     inline
                   >
                     Yes
-                  </Radio>{' '}
-                  <Radio
+                  </Form.Check>{' '}
+                  <Form.Check
                     name="radioGroup"
                     value="0"
                     onChange={e => this.formValChange(e, 'is_urgent')}
                     defaultChecked={this.state.form.is_urgent === false}
+                    type="radio"
                     inline
                   >
                     No{this.state.form.is_urgent === false}
-                  </Radio>{' '}
+                  </Form.Check>{' '}
                 </Col>
               </FormGroup>
               <SelectField

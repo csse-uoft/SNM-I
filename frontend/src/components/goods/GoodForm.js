@@ -15,7 +15,7 @@ import RadioField from '../shared/fields/RadioField'
 import { formatLocation } from '../../helpers/location_helpers.js';
 
 
-import { Button, Form, FormGroup, FormControl, ControlLabel, Col, Row, Radio } from 'react-bootstrap';
+import { Button, Form, FormGroup, FormControl, FormLabel, Col, Row } from 'react-bootstrap';
 
 class GoodForm extends Component {
   constructor(props) {
@@ -199,7 +199,7 @@ class GoodForm extends Component {
             />
 
             <FormGroup controlId="desc">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Description
               </Col>
               <Col sm={9}>
@@ -208,7 +208,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="category">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Category *
               </Col>
               <Col sm={9}>
@@ -230,7 +230,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="transportation">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Transportation
               </Col>
               <Col sm={9}>
@@ -239,7 +239,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="available_from">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Available from
               </Col>
               <Col sm={9}>
@@ -252,7 +252,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="available_to">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Available until
               </Col>
               <Col sm={9}>
@@ -265,7 +265,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="condition">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Condition
               </Col>
               <Col sm={9}>
@@ -274,7 +274,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="material">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Material
               </Col>
               <Col sm={9}>
@@ -283,7 +283,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="quantity">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Quantity
               </Col>
               <Col sm={9}>
@@ -297,7 +297,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="length">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Length
               </Col>
               <Col sm={9}>
@@ -311,7 +311,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="width">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Width
               </Col>
               <Col sm={9}>
@@ -325,7 +325,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="height">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Height
               </Col>
               <Col sm={9}>
@@ -339,7 +339,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="diameter">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Diameter
               </Col>
               <Col sm={9}>
@@ -387,26 +387,28 @@ class GoodForm extends Component {
             {this.state.is_provider_location && this.state.form.provider_id &&
               <div>
                 <FormGroup controlId="location">
-                  <Col className="required" componentClass={ControlLabel} sm={3}>
+                  <Col className="required" componentClass={FormLabel} sm={3}>
                     Select the location this good is provided at
                   </Col>
                   <Col sm={9}>
-                    <Radio
+                    <Form.Check
                       name="provider_address"
                       value={JSON.stringify(provider.main_address)}
                       onChange={(e) => this.formValChange(e, 'location')}
+                      type="radio"
                     >
                       {formatLocation(provider.main_address)}
-                    </Radio>{' '}
+                    </Form.Check>{' '}
                     { provider.other_addresses.map((address, index) =>
-                    <Radio
+                    <Form.Check
                       name="provider_address"
                       value={JSON.stringify(address)}
                       onChange={(e) => this.formValChange(e, 'location')}
                       key={index}
+                      type="radio"
                       >
                       {formatLocation(address)}
-                    </Radio>
+                    </Form.Check>
                     )}
                   </Col>
                 </FormGroup>
@@ -454,7 +456,7 @@ class GoodForm extends Component {
             }
 
             <FormGroup controlId="share_with">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Share with
               </Col>
               <Col sm={9}>
@@ -497,7 +499,7 @@ class GoodForm extends Component {
             </FormGroup>
 
             <FormGroup controlId="notes">
-              <Col componentClass={ControlLabel} sm={3}>
+              <Col componentClass={FormLabel} sm={3}>
                 Notes
               </Col>
               <Col sm={9}>

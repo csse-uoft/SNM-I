@@ -11,7 +11,7 @@ import ServiceSearchBar from './ServiceSearchBar';
 import { connect } from 'react-redux'
 import { fetchNeed } from '../../store/actions/needActions.js'
 
-import { Grid, Row, Col, Table, Label, Tabs, Tab } from 'react-bootstrap';
+import { Container, Row, Col, Table, Tabs, Tab } from 'react-bootstrap';
 // import { Grid, Table, Tabs, Tab } from "@material-ui/core";
 // import { Col, Label, Row} from 'react-bootstrap';
 // import SearchTabs from './NeedSearchTabs'
@@ -19,7 +19,7 @@ import { Grid, Row, Col, Table, Label, Tabs, Tab } from 'react-bootstrap';
 // import PropTypes from 'prop-types';
 // import { makeStyles } from '@material-ui/core/styles';
 // import AppBar from '@material-ui/core/AppBar';
-// import Typography from '@material-ui/core/Typography';
+// import { Typography } from '@material-ui/core';
 // import Box from '@material-ui/core/Box';
 
 
@@ -85,7 +85,7 @@ class Need extends Component {
       if (is_deleted) {
         return (
           <h4>
-            <Label bsStyle="danger">Deleted</Label>
+            <div style={{color: 'rgb(213,87,79)'}}>Deleted</div>
           </h4>
         );
       } else {
@@ -97,7 +97,7 @@ class Need extends Component {
       if (is_urgent) {
         return (
           <h4>
-            <Label bsStyle="danger">Urgent</Label>
+            <div style={{color: 'rgb(213,87,79)'}}>Urgent</div>
           </h4>
         );
       } else {
@@ -229,7 +229,7 @@ class Need extends Component {
     // )
 
     return (
-      <Grid className="content">
+      <Container className="content">
         { need && need.loaded &&
           <Row>
             <Col sm={12}>
@@ -311,7 +311,7 @@ class Need extends Component {
             </Col>
           </Row>
         }
-      </Grid>
+      </Container>
     );
   }
 }

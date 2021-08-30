@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 // styles
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { PriorityHigh, Edit } from "@material-ui/icons";
 
 import { connect } from 'react-redux'
 import { fetchClients } from '../../store/actions/clientActions.js'
@@ -22,7 +23,7 @@ class NeedRow extends Component {
         <td>
           {need.is_urgent && (
             <span className='need-urgent'>
-              <Glyphicon glyph="exclamation-sign" />
+              <PriorityHigh fontSize="small" />
               {' '}
             </span>)
           }
@@ -40,7 +41,7 @@ class NeedRow extends Component {
         <td>
           <Link to={`/needs/${need.id}/edit`}>
             <Button bsStyle="primary">
-              <Glyphicon glyph="edit" />
+              <Edit fontSize="small"/>
             </Button>
           </Link>
         </td>

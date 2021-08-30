@@ -7,7 +7,8 @@ import { fetchGood } from '../../store/actions/goodActions.js'
 
 import { formatLocation } from '../../helpers/location_helpers'
 
-import { Table, Glyphicon, Button } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
+import { Print } from "@material-ui/icons";
 
 class Good extends Component {
   componentWillMount() {
@@ -29,7 +30,7 @@ class Good extends Component {
           </Button>
         </Link>{' '}
         <Button bsStyle="primary" onClick={() => window.print()} className="print-button">
-          <Glyphicon glyph="print" />
+          <Print fontSize="small"/>
         </Button>
 
         { good && good.goodsLoaded &&

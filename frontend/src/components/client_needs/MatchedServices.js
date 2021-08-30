@@ -8,8 +8,8 @@ import AppointmentModal from '../appointments/AppointmentModal';
 import { matchStatusOptions } from '../../store/defaults.js';
 import { updateMatchStatus, createMatchNote } from '../../store/actions/needActions.js'
 
-import { Col, Label, Panel, PanelGroup, Form, FormGroup, ControlLabel,
-  FormControl, Button, Well } from 'react-bootstrap';
+import { Col, Accordion, Card, Form, FormGroup, FormLabel,
+  FormControl, Button } from 'react-bootstrap';
 
 class MatchedServices extends Component {
   constructor(props) {
@@ -82,105 +82,105 @@ class MatchedServices extends Component {
           <h3>Matched Services</h3>
         </Col>
         <Col sm={12}>
-          <PanelGroup
-            accordion
+          <Accordion
             id="accordion"
             activeKey={this.state.activeKey}
-            onSelect={this.handleSelect}
           >
             {
               _.map(matches, (match, index) => {
                 return (
-                  <Panel key={match.id} eventKey={match.id} bsStyle="info">
-                    <Panel.Heading>
+                  <Card key={match.id} eventKey={match.id} bsStyle="info">
+                    <Card.Header onClick={() => this.handleSelect(index)}>
                       <Col sm={11}>
-                        <Panel.Title toggle>
+                        <Card.Title toggle>
                           {index+1}. {match.service.name}
                           {' '}
-                        </Panel.Title>
+                        </Card.Title>
                       </Col>
-                      <Label bsStyle="primary">
+                      <Form.Label bsStyle="primary">
                         {match.status}
-                      </Label>
-                    </Panel.Heading>
-                    <Panel.Body collapsible>
-                      <Col sm={8}>
-                        <FormGroup controlId="match_status">
-                          <Col componentClass={ControlLabel} sm={3}>
-                            Status
-                          </Col>
-                          <Col sm={6}>
-                            <FormControl
-                              componentClass="select"
-                              placeholder="select"
-                              defaultValue={match.status}
-                              onChange={e => this.matchStatusChange(e, match.id)}
-                            >
-                              <option value="select">--- Not Set ---</option>
-                              {matchStatusOptions.map(status =>
-                                <option key={status} value={status}>{status}</option>
-                              )}
-                            </FormControl>
-                          </Col>
-                          <Col sm={3}>
-                            <Button
-                              disabled={this.state.activeKey !== match.id || !this.state.matchStatusForm[match.id]}
-                              onClick={e => this.submitMatchStatus(match.id)}
-                            >
-                              Update Status
-                            </Button>
-                          </Col>
-                        </FormGroup>
-                        <Form className='note-form'>
-                          <FormGroup controlId="notes">
-                            <Col componentClass={ControlLabel} sm={3}>
-                              Notes
+                      </Form.Label>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey={index}>
+                      <Card.Body collapsible>
+                        <Col sm={8}>
+                          <FormGroup controlId="match_status">
+                            <Col componentClass={FormLabel} sm={3}>
+                              Status
                             </Col>
-                            <Col sm={9}>
-                              {
-                                _.map(match.notes, (note, index) => {
-                                  return (
-                                    <Well key={index} bsSize="small">
-                                      {note}
-                                    </Well>
-                                  )
-                                })
-                              }
+                            <Col sm={6}>
                               <FormControl
-                                componentClass="textarea"
-                                onChange={e => this.textAreaChange(e, match.id)}
-                              />
-                            </Col>
-                          </FormGroup>
-                          <FormGroup>
-                            <Col smOffset={3} sm={9}>
-                              <Button
-                                disabled={this.state.activeKey !== match.id || !this.state.noteForm[match.id]}
-                                onClick={e => this.submitNote(match.id)}
+                                componentClass="select"
+                                placeholder="select"
+                                defaultValue={match.status}
+                                onChange={e => this.matchStatusChange(e, match.id)}
                               >
-                                Add Note
+                                <option value="select">--- Not Set ---</option>
+                                {matchStatusOptions.map(status =>
+                                  <option key={status} value={status}>{status}</option>
+                                )}
+                              </FormControl>
+                            </Col>
+                            <Col sm={3}>
+                              <Button
+                                disabled={this.state.activeKey !== match.id || !this.state.matchStatusForm[match.id]}
+                                onClick={e => this.submitMatchStatus(match.id)}
+                              >
+                                Update Status
                               </Button>
                             </Col>
                           </FormGroup>
-                        </Form>
-                        <Button bsStyle="default"  onClick={e => this.handleModalShow(match.service.id)}>
-                          Add appointment
-                        </Button>
-                      </Col>
-                      <Col sm={4}>
-                        <Link to={`/service/${match.service.id}`} target="_blank">
-                          <h5>View Service Detail</h5>
-                        </Link>
-                        <Link to={`/provider/${match.service.provider.id}`} target="_blank">
-                          <h5>View Provider Detail</h5>
-                        </Link>
-                      </Col>
-                    </Panel.Body>
-                  </Panel>
+                          <Form.Label className='note-form'>
+                            <FormGroup controlId="notes">
+                              <Col componentClass={FormLabel} sm={3}>
+                                Notes
+                              </Col>
+                              <Col sm={9}>
+                                {
+                                  _.map(match.notes, (note, index) => {
+                                    return (
+                                      <div key={index}>
+                                        {note}
+                                      </div>
+                                    )
+                                  })
+                                }
+                                <FormControl
+                                  componentClass="textarea"
+                                  onChange={e => this.textAreaChange(e, match.id)}
+                                />
+                              </Col>
+                            </FormGroup>
+                            <FormGroup>
+                              <Col smOffset={3} sm={9}>
+                                <Button
+                                  disabled={this.state.activeKey !== match.id || !this.state.noteForm[match.id]}
+                                  onClick={e => this.submitNote(match.id)}
+                                >
+                                  Add Note
+                                </Button>
+                              </Col>
+                            </FormGroup>
+                          </Form.Label>
+                          <Button bsStyle="default"  onClick={e => this.handleModalShow(match.service.id)}>
+                            Add appointment
+                          </Button>
+                        </Col>
+                        <Col sm={4}>
+                          <Link to={`/service/${match.service.id}`} target="_blank">
+                            <h5>View Service Detail</h5>
+                          </Link>
+                          <Link to={`/provider/${match.service.provider.id}`} target="_blank">
+                            <h5>View Provider Detail</h5>
+                          </Link>
+                        </Col>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
                 )
               })
             }
-          </PanelGroup>
+          </Accordion>
         </Col>
         <AppointmentModal
           clientId={this.props.clientId}
