@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
+import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import { format, parse } from 'date-fns';
 import { TextField } from '@material-ui/core'
 import makeStyles from '@material-ui/styles/makeStyles';
-import DateFnsUtils from '@date-io/date-fns';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+  LocalizationProvider,
+  TimePicker,
+  DatePicker,
+} from '@material-ui/lab';
 
 export const dateFormat = 'yyyy-MM-dd';
 
@@ -52,35 +52,36 @@ export default function GeneralField({type, onChange, ...props}) {
   if (type === 'date')
     return (
       <div>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            className={classes.textField}
-            variant="inline"
-            margin="normal"
-            format="yyyy-MM-dd"
-            placeholder={dateFormat}
-            autoOk
-            {...props}
-            onChange={onChangeDate}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
             value={value}
+            inputFormat="yyyy-MM-dd"
+            onChange={onChangeDate}
+            renderInput={(params) =>
+              <TextField {...params}
+                         className={classes.textField}
+                         margin="normal"/>
+            }
+            {...props}
           />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </div>
     );
   else if (type === 'time')
     return (
       <div>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardTimePicker
-            className={classes.textField}
-            variant="inline"
-            margin="normal"
-            autoOk
-            {...props}
-            onChange={time => handleChange({target: {value: time}})}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <TimePicker
             value={value}
+            onChange={time => handleChange({target: {value: time}})}
+            renderInput={(params) =>
+              <TextField {...params}
+                         className={classes.textField}
+                         margin="normal"/>
+            }
+            {...props}
           />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </div>);
   else
     return (
