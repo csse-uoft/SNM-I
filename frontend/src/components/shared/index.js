@@ -122,3 +122,4 @@ export {
   GoogleMap, CSVUploadModal, DeleteModal, DropdownMenu, GenericPage, FormStepper, FieldsWrapper,
   OtherLocationsFields
 }
+export {EnhancedTable as DataTable} from './Table';
