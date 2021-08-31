@@ -44,7 +44,7 @@ export function Link({className = '', color, ...props}) {
 }
 
 /**
- * Used by mui-datatables. Add "add button" and "upload by CSV button"
+ * Used by DataTable. Add "add button" and "upload by CSV button"
  * @param onClick
  * @returns {*}
  * @constructor
