@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { fetchQuestions, updateQuestion, deleteQuestion, createQuestion } from '../../api/questionApi';
-import MUIDataTable from "mui-datatables";
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button
 } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
-import { DeleteModal, Loading } from "../shared";
+import { DeleteModal, Loading, DataTable } from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 
@@ -215,7 +214,7 @@ export default function Questions() {
 
   return (
     <Container>
-      <MUIDataTable
+      <DataTable
         title={"Questions"}
         data={state.data}
         columns={columns}

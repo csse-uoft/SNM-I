@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 // redux
 import { fetchAdminLogs } from '../api/adminLogApi';
-
-import MUIDataTable from "mui-datatables";
 import { Container } from "@material-ui/core";
-import { Link, Loading } from "./shared";
+import { Link, Loading, DataTable } from "./shared";
 
 function object_url(contentType, objectId) {
   if (contentType === 'Person') {
@@ -111,7 +109,7 @@ export default function AdminLogs() {
 
   return (
     <Container>
-      <MUIDataTable
+      <DataTable
         title={"Admin Logs"}
         data={data}
         columns={columns}

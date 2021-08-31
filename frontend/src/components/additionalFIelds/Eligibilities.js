@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEligibilities, deleteEligibility, createEligibility, updateEligibility } from '../../api/eligibilityApi';
-import MUIDataTable from "mui-datatables";
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button
 } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
-import { DeleteModal, Loading } from "../shared";
+import { DeleteModal, Loading, DataTable } from "../shared";
 import GeneralField from "../shared/fields/GeneralField";
 
 const useStyles = makeStyles(() => ({
@@ -192,7 +191,7 @@ export default function Eligibilities() {
 
   return (
     <Container>
-      <MUIDataTable
+      <DataTable
         title={"Eligibility Criteria"}
         data={state.data}
         columns={columns}

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import MUIDataTable from "mui-datatables";
 import { Chip, Container } from "@material-ui/core";
 import { Add as AddIcon, Check as YesIcon} from "@material-ui/icons";
-import { DeleteModal, DropdownMenu, Link, Loading } from "./shared";
+import { DeleteModal, DropdownMenu, Link, Loading, DataTable } from "./shared";
 import { deleteUser, fetchUsers } from "../api/userApi";
 import { useHistory } from "react-router";
 
@@ -111,7 +110,7 @@ export default function Users() {
 
   return (
     <Container>
-      <MUIDataTable
+      <DataTable
         title={"Users"}
         data={state.data}
         columns={columns}
