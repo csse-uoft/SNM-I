@@ -70,6 +70,7 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
     extraData = {},
     rowStyle,
     onDelete,
+    onChangePage, onChangeRowsPerPage
   } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -114,11 +115,19 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+
+    // Invoke listeners
+    onChangePage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const rowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(rowsPerPage);
     setPage(0);
+
+    // Invoke listeners
+    onChangePage(0);
+    onChangeRowsPerPage(rowsPerPage)
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
