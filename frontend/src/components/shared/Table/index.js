@@ -70,7 +70,8 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
     extraData = {},
     rowStyle,
     onDelete,
-    onChangePage, onChangeRowsPerPage
+    onChangePage, onChangeRowsPerPage,
+    customToolbar
   } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -149,7 +150,8 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
 
   return (
     <Paper elevation={5} className={classes.paper}>
-      <EnhancedTableToolbar title={title} numSelected={selected.length} onDelete={handleDelete}/>
+      <EnhancedTableToolbar title={title} numSelected={selected.length} onDelete={handleDelete}
+                            customToolbar={customToolbar}/>
       <TableContainer style={{maxHeight: height || 'calc(100vh - 228px)'}}>
         <Table
           stickyHeader
@@ -190,7 +192,8 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
                         checked={isItemSelected}
                       />
                     </TableCell>
-                    {columns.map((cell, idx) => <TableCell style={cell.style} key={idx + 1}>{cell.body(row, extraData)}</TableCell>)}
+                    {columns.map((cell, idx) => <TableCell style={cell.style}
+                                                           key={idx + 1}>{cell.body(row, extraData)}</TableCell>)}
                   </TableRow>
                 );
               })}
