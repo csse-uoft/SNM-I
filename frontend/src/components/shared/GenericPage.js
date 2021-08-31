@@ -2,9 +2,8 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ACTION_ERROR } from "../../store/defaults";
-import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading } from "./index";
+import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
 import { Container, Fade } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
 
 /**
  * Generate markers on google map.
@@ -87,37 +86,28 @@ export default function GenericPage(props) {
     return [
       ...columnsWithoutOptions,
       {
-        name: 'id',
         label: ' ',
-        options: {
-          sort: false,
-          filter: false,
-          viewColumns: false,
-          searchable: false,
-          customBodyRender: (id, {rowIndex}) => (
-            <DropdownMenu urlPrefix={type} objectId={id} rowIndex={rowIndex} handleDelete={showDeleteDialog}/>
-          )
-        }
+        body: ({id}) => (
+          <DropdownMenu urlPrefix={type} objectId={id} handleDelete={showDeleteDialog}/>
+        )
       },
     ]
   }, [showDeleteDialog, columnsWithoutOptions, type]);
 
   const tableOptions = {
-    selectableRows: 'none',
-    responsive: 'standard',
-    rowsPerPageOptions: [10, 20, 100, 1e5],
-    download: false,
-    customToolbar: () =>
+    customToolbar:
       <CustomToolbar
         type={type}
         handleAdd={() => history.push(`/${type}/new`)}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
       />,
-    onRowsDelete: (rowsDeleted) => {
-      const idx = rowsDeleted.data[0].index;
-      showDeleteDialog(idx);
+    onDelete: async (ids) => {
+      // TODO: Lester 8/30/2021
+      showDeleteDialog(ids);
       return false;
     },
+
+    // These listeners are required for displaying pin on Google Map
     onChangePage: pageNumber => setState(state => ({...state, pageNumber})),
     onChangeRowsPerPage: rowsPerPage => setState(state => ({...state, rowsPerPage})),
     ...props.tableOptions,
@@ -133,11 +123,11 @@ export default function GenericPage(props) {
   return (
     <Fade in>
       <Container>
-        <MUIDataTable
+        <DataTable
           columns={columns}
           data={state.data}
           title={title}
-          options={tableOptions}
+          {...tableOptions}
         />
 
         <CSVUploadModal

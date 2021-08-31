@@ -5,7 +5,7 @@ import { MoreVert as MoreVertIcon, Edit, Delete, OpenInBrowser } from '@material
 
 const ITEM_HEIGHT = 48;
 
-export default function DropdownMenu({urlPrefix, objectId, handleDelete, rowIndex, hideViewOption}) {
+export default function DropdownMenu({urlPrefix, objectId, handleDelete, hideViewOption}) {
   const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -62,7 +62,7 @@ export default function DropdownMenu({urlPrefix, objectId, handleDelete, rowInde
 
         <MenuItem onClick={() => {
           handleClose();
-          handleDelete(rowIndex !== undefined ? rowIndex : objectId)
+          handleDelete(objectId);
         }}>
           <ListItemIcon>
             <Delete fontSize="small" color="secondary"/>
