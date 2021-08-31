@@ -14,58 +14,39 @@ const TYPE = 'clients';
 // TODO: Add custom print function for address
 const columnsWithoutOptions = [
   {
-    name: 'id',
-    options: {
-      sort: false,
-      viewColumns: false,
-      display: 'excluded',
-      searchable: false,
-      filter: false,
-    }
-  },
-  {
-    name: 'profile.first_name',
     label: 'First Name',
-    options: {
-      sort: true,
-      customBodyRender: (data, {rowData}) => {
-        return <Link color to={`/${TYPE}/${rowData[0]}`}>{data}</Link>
-      }
+    body: ({id, profile}) => {
+      return <Link color to={`/${TYPE}/${id}`}>{profile.first_name}</Link>
     }
   },
   {
-    name: 'profile.last_name',
     label: 'Last Name',
-    options: {
-      sort: true,
+    body: ({profile}) => {
+      return profile.last_name;
     }
   },
   {
     name: 'profile.primary_phone_number',
     label: 'Phone Number',
-    options: {
-      customBodyRender: data => {
-        if (data)
-          return formatPhoneNumber(data);
-        return 'Not Provided';
-      },
+    body: ({profile}) => {
+      if (profile.primary_phone_number)
+        return formatPhoneNumber(profile.primary_phone_number);
+      return 'Not Provided';
     },
   },
   {
-    name: 'profile.email',
     label: 'Email',
+    body: ({profile}) => {
+      return profile.email;
+    }
   },
   {
-    name: 'address',
     label: 'Address',
-    options: {
-      sort: false,
-      customBodyRender: data => {
-        if (data)
-          return formatLocation(data);
-        return 'Not Provided';
-      },
-    },
+    body: ({profile}) => {
+      if (profile.address)
+        return formatLocation(profile.address);
+      return 'Not Provided';
+    }
   },
 ];
 
@@ -94,6 +75,9 @@ export default function Clients() {
       deleteItem={deleteClient}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      tableOptions={{
+        idField: 'id'
+      }}
     />
   )
 }
