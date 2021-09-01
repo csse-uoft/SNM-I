@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import { format, parse } from 'date-fns';
 import { TextField } from '@material-ui/core'
-import makeStyles from '@material-ui/styles/makeStyles';
 import {
   LocalizationProvider,
   TimePicker,
@@ -11,40 +10,33 @@ import {
 
 export const dateFormat = 'yyyy-MM-dd';
 
-const useStyles = makeStyles(theme => ({
-  textField: {
-    // margin: theme.spacing(1),
-    minWidth: 350,
-  },
-  formControl: {
-    position: 'relative',
-    top: 16,
-  }
-}));
-
-export default function GeneralField({type, onChange, ...props}) {
-  const classes = useStyles();
+export default function GeneralField({type, onChange, value: defaultValue, ...props}) {
   // duplicate the state, the drawback is much smaller than re-render all the form.
   const [value, setValue] = useState(() => {
     if (type === 'date') {
-      if (props.value)
-        return parse(props.value, dateFormat, new Date());
+      if (defaultValue)
+        return parse(defaultValue, dateFormat, new Date());
       else
         return null;
     }
-    return props.value || '';
+    return defaultValue|| '';
   });
 
   const handleChange = useCallback(e => {
     const val = e.target.value;
     setValue(val);
-    onChange({target: {value: type === 'date' ? format(val, dateFormat) : val}});
+    onChange({target: {value: val}});
   }, [onChange, type]);
 
   const onChangeDate = date => {
     setValue(date);
+  }
+
+  const onAcceptDate = date => {
+    setValue(date);
+    const formattedDate = format(date, dateFormat);
     try {
-      onChange({target: {value: format(date, dateFormat)}})
+      onChange({target: {value: formattedDate}});
     } catch (e) {
     }
   };
@@ -55,11 +47,11 @@ export default function GeneralField({type, onChange, ...props}) {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             value={value}
-            inputFormat="yyyy-MM-dd"
+            onAccept={onAcceptDate}
             onChange={onChangeDate}
             renderInput={(params) =>
               <TextField {...params}
-                         className={classes.textField}
+                         sx={{minWidth: 350}}
                          margin="normal"/>
             }
             {...props}
@@ -73,10 +65,11 @@ export default function GeneralField({type, onChange, ...props}) {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <TimePicker
             value={value}
-            onChange={time => handleChange({target: {value: time}})}
+            onAccept={onAcceptDate}
+            onChange={onChangeDate}
             renderInput={(params) =>
               <TextField {...params}
-                         className={classes.textField}
+                         sx={{minWidth: 350}}
                          margin="normal"/>
             }
             {...props}
@@ -87,9 +80,7 @@ export default function GeneralField({type, onChange, ...props}) {
     return (
       <div>
         <TextField
-          InputLabelProps={{classes: {formControl: classes.formControl}}}
-          className={classes.textField}
-          // margin="dense"
+          sx={{mt: '16px', minWidth: 350}}
           type={type}
           {...props}
           onChange={handleChange}
