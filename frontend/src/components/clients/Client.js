@@ -13,7 +13,7 @@ import ClientInfoTable from './client_table/ClientInfoTable';
 import AppointmentRow from '../appointments/AppointmentRow';
 
 import { fetchClient } from '../../store/actions/clientActions.js'
-import { fetchClientFields } from "../../api/settingApi";
+import { fetchClientFields } from "../../api/mockedApi/clientFields";
 import { clientFields } from '../../constants/client_fields.js'
 
 //Table

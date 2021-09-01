@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { createClient, updateClient, fetchClient } from '../../store/actions/clientActions.js';
 import { fetchEligibilities } from '../../api/eligibilityApi';
-import { fetchClientFields } from '../../api/settingApi';
+import { fetchClientFields } from '../../api/mockedApi/clientFields';
 
 // components
 import LocationFieldGroup from '../shared/LocationFieldGroup';
