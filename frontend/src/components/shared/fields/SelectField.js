@@ -53,6 +53,7 @@ export default function SelectField({
         {label && <InputLabel {...InputLabelProps}>{label}</InputLabel>}
         <Select
           margin="none"
+          label={label}
           {...props}
           value={controlled ? props.value : value}
           onChange={controlled ? onChange : handleChange}
