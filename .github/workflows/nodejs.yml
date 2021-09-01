@@ -1,23 +1,35 @@
 name: Node.js CI
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - name: Use Node.js 14
+      uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: CI=false npm run build
-      env:
-        CI: true
+        node-version: 14
+        cache-dependency-path: frontend/yarn.lock
+        cache: 'yarn'
+
+    - name: Install Dependencies
+      working-directory: frontend
+      run: yarn install --frozen-lockfile
+
+    - name: Build Frontend
+      working-directory: frontend
+      run: CI=false yarn build; cp build/index.html build/404.html
+      
+    - name: Deploy Frontend to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./frontend/build
