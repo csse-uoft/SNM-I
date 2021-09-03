@@ -6,29 +6,20 @@ import { useSelector } from 'react-redux';
 
 import { Container, Button } from "@material-ui/core";
 import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@material-ui/icons";
-import makeStyles from '@material-ui/styles/makeStyles';
-
-const useStyles = makeStyles(() => ({
-  container: {
-    paddingTop: 80,
-    textAlign: 'center',
-    maxWidth: 600,
-  },
-  button: {
-    width: 400,
-    height: 50,
-    textTransform: 'none',
-    margin: 5,
-  }
-}));
 
 function NavButton({to, text, icon}) {
-  const classes = useStyles();
   return (
     <Link to={to}>
       <Button
+        sx={{
+          width: 300,
+          height: 100,
+          textTransform: 'none',
+          margin: 1,
+          color: '#535353'
+        }}
+        color="inherit"
         variant="outlined"
-        className={classes.button}
         startIcon={icon}
         size="large">
         {text}
@@ -38,21 +29,23 @@ function NavButton({to, text, icon}) {
 }
 
 function Dashboard() {
-  const classes = useStyles();
   const {isLoggedin, currentUser, organization} = useSelector(state => state.auth);
   if (!isLoggedin || !currentUser.is_admin)
     return <span>"You don't have the permission to view this page."</span>;
 
   return (
-    <Container className={classes.container}>
+    <Container maxWidth="md" sx={{
+      paddingTop: 8,
+      textAlign: 'center',
+    }}>
 
       {!organization.id &&
       <NavButton to={{pathname: '/providers/organization/new', state: {status: 'Home Agency'}}}
-                 text="Create organization profile for home agency" icon={<Create/>}/>}
+                 text="Create Organization Profile for Home Agency" icon={<Create/>}/>}
 
       {organization.id &&
       <NavButton to={`/provider/${organization.id}/edit/organization`} icon={<Edit/>}
-                 text="Edit organization profile for home agency"/>}
+                 text="Edit Organization Profile for Home Agency"/>}
 
       <NavButton to={`/users`} icon={<People/>}
                  text="Manage Users"/>
@@ -61,7 +54,7 @@ function Dashboard() {
                  text="Admin Logs"/>
 
       <NavButton to={`/eligibility-criteria`} icon={<Criteria/>}
-                 text="Manage Eligibility criteria"/>
+                 text="Manage Eligibility Criteria"/>
 
       <NavButton to={'/settings/manage-fields'} icon={<Edit/>}
                  text="Manage Client/Provider Fields"/>
