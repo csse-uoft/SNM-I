@@ -15,80 +15,40 @@ function object_url(contentType, objectId) {
 
 const columns = [
   {
-    name: 'action_time',
     label: 'Time',
-    options: {
-      customBodyRender: time => {
-        return new Date(time).toLocaleString();
-      }
-    }
+    body: ({action_time}) => new Date(action_time).toLocaleString()
   },
   {
-    name: 'user',
     label: 'Username',
-    options: {
-      customBodyRender: user => {
-        return (
-          <Link color to={`/users/${user.id}`}>
-            {user.username}
-          </Link>
-        )
-      }
-    }
+    body: ({user}) =>  <Link color to={`/users/${user.id}`}>
+      {user.username}
+    </Link>
   },
   {
-    name: 'object_id',
-    options: {
-      sort: false,
-      viewColumns: false,
-      display: 'excluded',
-      searchable: false,
-      filter: false,
-    }
-  },
-  {
-    name: 'object_repr',
-    options: {
-      sort: false,
-      viewColumns: false,
-      display: 'excluded',
-      searchable: false,
-      filter: false,
-    }
-  },
-  {
-    name: 'action',
     label: 'Action',
-    options: {
-      customBodyRender: (action, {rowData}) => {
-        const objectId = rowData[2];
-        const objectRepr = rowData[3];
-        return (
-          <span>
+    body: ({action, object_id, object_repr}) => {
+      return (
+        <span>
             {action + ' '}
-            <Link color to={object_url(objectRepr, objectId)}>
-              {objectId}
+          <Link color to={object_url(object_repr, object_id)}>
+              {object_id}
             </Link>
           </span>
-        )
-      }
+      )
     }
   },
   {
-    name: 'change_message',
     label: 'Message',
-    options: {
-      customBodyRender: msg => {
-        if (msg) {
-          try {
-            msg = JSON.parse(msg);
-            if (msg.reason != null)
-              return 'Reason: ' + msg.reason;
-          } catch (e) {
-          }
+    body: ({change_message: msg}) => {
+      if (msg) {
+        try {
+          msg = JSON.parse(msg);
+          if (msg.reason != null)
+            return 'Reason: ' + msg.reason;
+        } catch (e) {
         }
-        return 'N/A';
       }
+      return 'N/A';
     }
   }
 ];
@@ -113,10 +73,7 @@ export default function AdminLogs() {
         title={"Admin Logs"}
         data={data}
         columns={columns}
-        options={{
-          selectableRows: 'none',
-          responsive: 'scrollMaxHeight',
-        }}
+        idField="id"
       />
     </Container>
   );
