@@ -118,7 +118,8 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
     setPage(newPage);
 
     // Invoke listeners
-    onChangePage(newPage);
+    if (onChangePage)
+      onChangePage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -127,8 +128,10 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
     setPage(0);
 
     // Invoke listeners
-    onChangePage(0);
-    onChangeRowsPerPage(rowsPerPage)
+    if (onChangePage)
+      onChangePage(0);
+    if (onChangeRowsPerPage)
+      onChangeRowsPerPage(rowsPerPage)
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
