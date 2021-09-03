@@ -14,24 +14,6 @@
   margin: auto;
 }
 
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: #222;
-  color: #aaa;
-  text-align: center;
-  border-radius: 2px 2px 0 0;
-  z-index: 100;
-  align-content: center;
-  padding: 1px;
-
-  @media print {
-    display: none;
-  }
-}
-
 .landing {
   background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../assets/landing.jpg) no-repeat center center;
   background-size: cover;
