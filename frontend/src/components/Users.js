@@ -103,6 +103,7 @@ export default function Users() {
         title={"Users"}
         data={state.data}
         columns={columns}
+        idField="id"
         customToolbar={<Chip
           onClick={() => history.push('/users/new')}
           color="primary"
