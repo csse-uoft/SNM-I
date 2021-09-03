@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Chip, Container } from "@material-ui/core";
-import { Add as AddIcon, Check as YesIcon} from "@material-ui/icons";
+import { Add as AddIcon, Check as YesIcon } from "@material-ui/icons";
 import { DeleteModal, DropdownMenu, Link, Loading, DataTable } from "./shared";
 import { deleteUser, fetchUsers } from "../api/userApi";
 import { useHistory } from "react-router";
+import { formatPhoneNumber } from "../helpers/phone_number_helpers";
 
 export default function Users() {
   const history = useHistory();
@@ -43,65 +44,53 @@ export default function Users() {
 
   const columns = [
     {
-      name: 'username',
       label: 'Username',
-      options: {
-        customBodyRender: (username, {rowData}) => (
-          <Link color to={`/users/${rowData[rowData.length - 1]}`}>
-            {username}
-          </Link>
-        )
+      body: ({id, username}) => {
+        return <Link color to={`/users/${id}`}>
+          {username}
+        </Link>
       }
     },
     {
-      name: 'email',
-      label: 'Email'
+      label: 'Email',
+      body: ({email}) => email
     },
     {
-      name: 'first_name',
-      label: 'First name'
+      label: 'First name',
+      body: ({first_name}) => first_name
     },
     {
-      name: 'last_name',
-      label: 'Last name'
+      label: 'Last name',
+      body: ({last_name}) => last_name
     },
     {
-      name: 'primary_phone_number',
       label: 'Primary phone',
-      options: {
-        display: false,
-      }
+      body: ({primary_phone_number}) => {
+        if (primary_phone_number)
+          return formatPhoneNumber(primary_phone_number);
+        return 'Not Provided';
+      },
     },
     {
-      name: 'secondary_phone_number',
-      label: 'Secondary phone',
-      options: {
-        display: false,
-      }
+      label: 'Primary phone',
+      body: ({secondary_phone_number}) => {
+        if (secondary_phone_number)
+          return formatPhoneNumber(secondary_phone_number);
+        return 'Not Provided';
+      },
     },
     {
-      name: 'is_superuser',
       label: 'Admin',
-      options: {
-        customBodyRender: (is_admin) => {
-          if (is_admin)
-            return <YesIcon color="primary"/>
-        }
+      body: ({is_superuser}) => {
+        if (is_superuser)
+          return <YesIcon color="primary"/>
       }
     },
     {
-      name: 'id',
       label: ' ',
-      options: {
-        sort: false,
-        filter: false,
-        viewColumns: false,
-        searchable: false,
-        download: false,
-        customBodyRender: (id, {rowData, rowIndex}) =>
-          <DropdownMenu urlPrefix={'users'} objectId={id}
-                        handleDelete={() => showDeleteDialog(id, rowData[0])}/>
-      }
+      body: ({username, id}) =>
+        <DropdownMenu urlPrefix={'users'} objectId={id}
+                      handleDelete={() => showDeleteDialog(id, username)}/>
     }
   ];
 
@@ -114,18 +103,12 @@ export default function Users() {
         title={"Users"}
         data={state.data}
         columns={columns}
-        options={{
-          filter: false,
-          selectableRows: 'none',
-          responsive: 'scrollMaxHeight',
-          customToolbar: () =>
-            <Chip
-              onClick={() => history.push('/users/new')}
-              color="primary"
-              icon={<AddIcon/>}
-              label="Add"
-              variant="outlined"/>
-        }}
+        customToolbar={<Chip
+          onClick={() => history.push('/users/new')}
+          color="primary"
+          icon={<AddIcon/>}
+          label="Add"
+          variant="outlined"/>}
       />
       <DeleteModal
         objectId={state.selectedId}
