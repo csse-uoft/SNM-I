@@ -21,77 +21,39 @@ const formatProviderName = provider => {
 // TODO: Add custom print function for address
 const columnsWithoutOptions = [
   {
-    name: 'id',
-    options: {
-      sort: false,
-      viewColumns: false,
-      display: 'excluded',
-      searchable: false,
-      filter: false,
-    }
-  },
-  {
-    name: 'company',
-    options: {
-      sort: false,
-      viewColumns: false,
-      display: 'excluded',
-      searchable: false,
-      filter: false,
-    }
-  },
-  {
-    name: 'profile',
     label: 'Name',
-    options: {
-      sort: true,
-      customBodyRender: (profile, {rowData}) => {
-        return (
-          <Link color to={`/${TYPE}/${rowData[0]}`}>
-            {formatProviderName({
-              company: rowData[1],
-              type: rowData[3],
-              profile,
-            })}
-          </Link>
-        );
-      }
-    }
-  },
-  {
-    name: 'type',
-    label: 'Type',
-    options: {
-      sort: true,
-    }
-  },
-  {
-    name: 'profile.email',
-    label: 'Email',
-  },
-  {
-    name: 'profile.primary_phone_number',
-    label: 'Phone Number',
-    options: {
-      customBodyRender: data => {
-        if (data)
-          return formatPhoneNumber(data);
-        return 'Not Provided';
-      },
+    body: ({id, profile, company, type}) => {
+      return <Link color to={`/${TYPE}/${id}`}>
+        {formatProviderName({
+          company, type, profile,
+        })}
+      </Link>
     },
   },
-
+  {
+    label: 'Type',
+    body: ({type}) => type,
+  },
+  {
+    label: 'Email',
+    body: ({profile}) => profile.email,
+  },
+  {
+    label: 'Phone Number',
+    body: ({profile}) => {
+      if (profile.primary_phone_number)
+        return formatPhoneNumber(profile.primary_phone_number);
+      return 'Not Provided';
+    }
+  },
   {
     name: 'main_address',
     label: 'Address',
-    options: {
-      sort: false,
-      customBodyRender: data => {
-        if (data)
-          return formatLocation(data);
-        return 'Not Provided';
-      },
-    },
+    body: ({main_address}) => {
+      if (main_address)
+        return formatLocation(main_address);
+      return 'Not Provided';
+    }
   },
 ];
 
@@ -116,6 +78,9 @@ export default function Providers() {
       deleteItem={deleteProvider}
       generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
+      tableOptions={{
+        idField: 'id'
+      }}
     />
   )
 }
