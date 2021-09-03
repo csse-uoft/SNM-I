@@ -12,46 +12,26 @@ const formatProvider = ({provider}) => {
 
 const columnsWithoutOptions = [
   {
-    name: 'id',
-    options: {
-      sort: false,
-      viewColumns: false,
-      display: 'excluded',
-      searchable: false,
-      filter: false,
-    }
-  },
-  {
-    name: 'name',
     label: 'Name',
-    options: {
-      sort: true,
-      customBodyRender: (data, {rowData}) => {
-        return <Link color to={`/${TYPE}/` + rowData[0]}>{data}</Link>
-      }
+    body: ({id, name}) => {
+      return <Link color to={`/${TYPE}/${id}`}>{name}</Link>
     }
   },
   {
-    name: 'provider',
     label: 'Provider',
-    options: {
-      sort: true,
-      customBodyRender: provider => {
-        return (
-          <Link color to={`/${TYPE}/${provider.id}`}>
-            {formatProvider({provider})}
-          </Link>
-        );
-      }
+    body: ({provider}) => {
+      return  <Link color to={`/providers/${provider.id}`}>
+        {formatProvider({provider})}
+      </Link>
     }
   },
   {
-    name: 'desc',
     label: 'Description',
+    body: ({desc}) => desc
   },
   {
-    name: 'category',
-    label: 'Category'
+    label: 'Category',
+    body: ({category}) => category
   }
 ];
 
@@ -78,6 +58,9 @@ export default function Services() {
       deleteItem={deleteService}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      tableOptions={{
+        idField: 'id'
+      }}
     />
   )
 }
