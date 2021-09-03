@@ -28,8 +28,14 @@ const StyledTab = styled(Tab)(({theme}) => ({
   '&.Mui-selected': {
     color: '#fff',
     fontWeight: 500,
+    backgroundColor: '#cccccc26',
   },
 }));
+
+function NavTab(props) {
+  const history = useHistory();
+  return <StyledTab {...props} onClick={() => history.push(props.value)}/>
+}
 
 function TopNavBar() {
   const history = useHistory();
@@ -52,28 +58,31 @@ function TopNavBar() {
   return (
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
       <Toolbar variant="dense">
-        <Box sx={{
-          paddingRight: '20px',
-          whiteSpace: 'pre',
-          textDecorationLine: 'none',
-        }}>
-          <Link to={isLoggedin ? "/dashboard" : "/"}>
-            <Typography variant="h6">
-              Dashboard
-            </Typography>
-          </Link>
-        </Box>
-
-
         {isLoggedin ? (
-          <StyledTabs value={value} onChange={tabOnChange} variant="scrollable" indicatorColor='secondary'>
-            <StyledTab label="Clients" value="/clients"/>
-            <StyledTab label="Services" value="/services"/>
-            <StyledTab label="Goods" value="/goods"/>
-            <StyledTab label="Providers" value="/providers"/>
-            <StyledTab label="Reporting" value="/reporting"/>
+          <StyledTabs sx={{flexGrow: 2}} value={value} onChange={tabOnChange} variant="scrollable"
+                      indicatorColor='secondary'>
+            <NavTab label="Clients" value="/clients"/>
+            <NavTab label="Services" value="/services"/>
+            <NavTab label="Goods" value="/goods"/>
+            <NavTab label="Providers" value="/providers"/>
+            <NavTab label="Reporting" value="/reporting"/>
+            <Tab sx={{display: 'none'}} label="" value="none"/>
           </StyledTabs>
         ) : null}
+
+        {isLoggedin && (
+          <Box sx={{
+            paddingRight: '20px',
+            whiteSpace: 'pre',
+            textDecorationLine: 'none',
+          }}>
+            <Link to={"/dashboard"} onClick={() => setValue('none')}>
+              <Typography>
+                Dashboard
+              </Typography>
+            </Link>
+          </Box>
+        )}
 
         <Button color="inherit" onClick={() => isLoggedin ? dispatch(logout()) : history.push('/login')}
                 sx={{
