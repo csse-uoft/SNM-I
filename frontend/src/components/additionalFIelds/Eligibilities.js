@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchEligibilities, deleteEligibility, createEligibility, updateEligibility } from '../../api/eligibilityApi';
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
-  Button
+  Button, Box
 } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
@@ -149,39 +149,28 @@ export default function Eligibilities() {
 
   const columns = [
     {
-      name: 'title',
       label: 'Title',
-      options: {
-        setCellHeaderProps: () => ({style: {width: '80%'}})
-      }
+      body: ({title}) => <Box sx={{width: '80%'}}>{title}</Box>
     },
     {
-      name: 'id',
       label: ' ',
-      options: {
-        sort: false,
-        filter: false,
-        viewColumns: false,
-        searchable: false,
-        download: false,
-        customBodyRender: (id, {rowData}) => {
-          return (
-            <span>
+      body: ({id, title}) => {
+        return (
+          <span>
               <IconButton
-                onClick={shoeEditDialog(...rowData)}
+                onClick={shoeEditDialog(title, id)}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
               </IconButton>
               <IconButton
-                onClick={showDeleteDialog(id, rowData[0])}
+                onClick={showDeleteDialog(id, title)}
                 className={classes.button}
                 size="large">
                 <DeleteIcon fontSize="small" color="secondary"/>
               </IconButton>
             </span>
-          );
-        }
+        );
       }
     }
   ];
@@ -195,18 +184,12 @@ export default function Eligibilities() {
         title={"Eligibility Criteria"}
         data={state.data}
         columns={columns}
-        options={{
-          filter: false,
-          selectableRows: 'none',
-          responsive: 'scrollMaxHeight',
-          customToolbar: () =>
-            <Chip
-              onClick={showAddDialog}
-              color="primary"
-              icon={<AddIcon/>}
-              label="Add"
-              variant="outlined"/>
-        }}
+        customToolbar={<Chip
+          onClick={showAddDialog}
+          color="primary"
+          icon={<AddIcon/>}
+          label="Add"
+          variant="outlined"/>}
       />
       <DeleteModal
         objectId={state.selectedId}
