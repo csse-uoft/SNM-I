@@ -12,7 +12,7 @@ export default function DeleteModal({show, onHide, title, objectId, ...props}) {
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <TextField variant="standard" value={form.reason} label="Reason"
+        <TextField value={form.reason} label="Reason" sx={{mt: 2}}
                    onChange={e => setForm({reason: e.target.value})} fullWidth/>
       </DialogContent>
       <DialogActions>
