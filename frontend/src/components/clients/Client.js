@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import _ from 'lodash';
 import { useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { Container } from "@material-ui/core";
+import { Container, Typography } from "@material-ui/core";
 import Button from '@material-ui/core/Button'
 import { Edit, Print } from '@material-ui/icons';
 import { Link } from '../shared'
@@ -72,7 +72,7 @@ export default function Client() {
 
     return (
       <Container>
-        <h3>Client Profile</h3>
+        <Typography variant="h3" paddingY={2}>Client Profile</Typography>
         <div>
           <Link to={`/clients/${id}/edit/`}>
             <Button
@@ -139,7 +139,7 @@ export default function Client() {
           </div>
 
           {/*TODO： client needs*/}
-          <h3>Needs</h3>
+          <Typography variant="h4" paddingY={2}>Needs</Typography>
           <Link to={`/clients/${client.id}/needs/new`}>
             <Button variant="contained">
               Add need
@@ -152,7 +152,7 @@ export default function Client() {
           />
           }
 
-          <h3>Appointments</h3>
+          <Typography variant="h4" paddingY={2}>Appointments</Typography>
           { client && client.appointments.length > 0 &&
           <TableContainer>
             <Table>
