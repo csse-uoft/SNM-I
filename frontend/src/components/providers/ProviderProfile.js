@@ -16,7 +16,7 @@ import ProviderInfoTable from './provider_table/ProviderInfoTable';
 
 
 import { fetchProvider } from '../../store/actions/providerActions.js'
-import { fetchProviderFields } from '../../api/settingApi';
+import { fetchProviderFields } from '../../api/mockedApi/providerFields';
 
 export default function ProviderProfile() {
   //redux hooks

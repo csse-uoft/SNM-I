@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux'
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { fetchProviderFields } from '../../api/settingApi';
+import { fetchProviderFields } from '../../api/mockedApi/providerFields';
 
 // components
 import FieldGroup from '../shared/FieldGroup';
@@ -83,6 +83,7 @@ export default function ProviderForm() {
       .then(data => setState(state => ({...state, languageOptions: data}))));
     promises.push(fetchProviderFields()
       .then(data => {
+        console.log('provider form', data)
         // no fields is available
         if (data[category] == null || data[category].steps_order.length === 0
           || Object.values(data[category].form_structure).length === 0) {

@@ -14,7 +14,7 @@ import SelectField from "../shared/fields/SelectField";
 import makeStyles from '@material-ui/styles/makeStyles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Close as Delete } from "@material-ui/icons";
-import { fetchProviderFields, updateProviderFields } from "../../api/settingApi";
+import { fetchProviderFields, updateProviderFields } from "../../api/mockedApi/providerFields";
 
 import { fetchClientFields, updateClientFields } from '../../api/mockedApi/clientFields';
 
