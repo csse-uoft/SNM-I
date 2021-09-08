@@ -1,3 +1,6 @@
+import { BrowserStore } from './browserStore';
+import { sleep } from "../index";
+
 const defaultClientFields = {
   "steps_order": [
     "info"
@@ -17,14 +20,14 @@ const defaultClientFields = {
   }
 };
 
-const rawClientFieldFromStorage = localStorage.getItem('client-fields');
-let clientFields = rawClientFieldFromStorage && JSON.parse(rawClientFieldFromStorage) || defaultClientFields;
-
+const clientFieldsStore = new BrowserStore('client-fields', defaultClientFields);
 export async function fetchClientFields() {
-  return clientFields;
+  await sleep(200);
+  // ugly deep copy
+  return JSON.parse(JSON.stringify(clientFieldsStore.value));
 }
 
 export async function updateClientFields(updatedClientFields) {
-  clientFields = updatedClientFields;
-  localStorage.setItem('client-fields', JSON.stringify(clientFields));
+  await sleep(200);
+  clientFieldsStore.value = updatedClientFields;
 }
