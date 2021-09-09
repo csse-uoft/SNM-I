@@ -43,8 +43,8 @@ export default function GenericPage(props) {
 
   // useEffect with empty dependencies is something like componentWillMount
   useEffect(() => {
-    dispatch(fetchData()).then(data => setState(state => ({...state, data, loading: false})))
-  }, [dispatch, fetchData]);
+    fetchData().then(data => setState(state => ({...state, data, loading: false})));
+  }, [fetchData]);
 
   const hideDialog = () => {
     setState(state => ({
@@ -55,8 +55,8 @@ export default function GenericPage(props) {
   };
 
   const handleDelete = useCallback(async (id, form) => {
-    const status = await dispatch(deleteItem(id, form));
-    if (status === ACTION_ERROR) {
+    const res = await deleteItem(id, form);
+    if (!res.success) {
       // do something
     } else {
       hideDialog();
