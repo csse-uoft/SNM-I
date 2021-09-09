@@ -15,7 +15,7 @@ import { providerFields } from '../../constants/provider_fields.js'
 import ProviderInfoTable from './provider_table/ProviderInfoTable';
 
 
-import { fetchProvider } from '../../store/actions/providerActions.js'
+import { fetchProvider } from '../../api/mockedApi/providers';
 import { fetchProviderFields } from '../../api/mockedApi/providerFields';
 
 export default function ProviderProfile() {
@@ -30,13 +30,13 @@ export default function ProviderProfile() {
 
 
   useEffect(() => {
-      dispatch(fetchProvider(id)).then(data => {
+      fetchProvider(id).then(data => {
         setState(state => ({
           ...state,
           data
         }))
       })
-    }, [dispatch, id]
+    }, [id]
   );
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function ProviderProfile() {
     }, [dispatch, state.formSetting]
   );
   if (state.data && state.formSetting) {
-    const {provider} = state.data;
+    const provider = state.data;
     const {formSetting} = state;
 
     let formType;
@@ -106,7 +106,7 @@ export default function ProviderProfile() {
 
           <h3> Reviews </h3>
           <Box component="fieldset" mb={3} borderColor="transparent">
-            <Rating size="large" name = "provider-rating" value={reviewValue}/>
+            <Rating size="large" name="provider-rating" value={reviewValue}/>
           </Box>
 
           <h3>Services</h3>

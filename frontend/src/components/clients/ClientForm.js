@@ -7,7 +7,7 @@ import { defaultProfileFields, generateClientField } from '../../constants/defau
 // redux
 import { useDispatch } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { createClient, updateClient, fetchClient } from '../../store/actions/clientActions.js';
+import { createClient, updateClient, fetchClient } from '../../api/mockedApi/clients';
 import { fetchEligibilities } from '../../api/eligibilityApi';
 import { fetchClientFields } from '../../api/mockedApi/clientFields';
 
@@ -73,12 +73,12 @@ export default function ClientForm() {
           }));
         }
       }));
-    id && promises.push(dispatch(fetchClient(id))
+    id && promises.push(fetchClient(id)
       .then(data => setState(state => ({...state, client: data}))));
     Promise.all(promises).then(() => setState(state => ({...state, loading: false})));
   }, [dispatch, id]);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     // TODO: pretty error message
     const fieldErrorMsg = client_verify_form(form, state.steps);
     if (Object.keys(fieldErrorMsg).length !== 0) {
@@ -86,25 +86,19 @@ export default function ClientForm() {
       return;
     }
     if (mode === 'edit') {
-      dispatch(
-        updateClient(id, form, (status, err, clientId) => {
-          if (status === ACTION_SUCCESS) {
-            history.push(`/clients/${clientId}`)
-          } else {
-            setState(state => ({...state, dispatchErrorMsg: [err.toString()]}));
-          }
-        })
-      );
+      const res = await updateClient(id, form);
+      if (res.success) {
+        history.push(`/clients/${res.clientId}`);
+      } else {
+        setState(state => ({...state, dispatchErrorMsg: [res.error]}));
+      }
     } else {
-      dispatch(
-        createClient(form, (status, err, clientId) => {
-          if (status === ACTION_SUCCESS) {
-            history.push('/clients/' + clientId)
-          } else {
-            setState(state => ({...state, dispatchErrorMsg: [err.toString()]}));
-          }
-        }));
-
+      const res = await createClient(form);
+      if (res.success) {
+        history.push(`/clients/${res.clientId}`);
+      } else {
+        setState(state => ({...state, dispatchErrorMsg: [res.error]}));
+      }
     }
   };
 

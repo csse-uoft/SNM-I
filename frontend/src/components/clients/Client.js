@@ -12,7 +12,7 @@ import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';
 import AppointmentRow from '../appointments/AppointmentRow';
 
-import { fetchClient } from '../../store/actions/clientActions.js'
+import { fetchClient } from '../../api/mockedApi/clients';
 import { fetchClientFields } from "../../api/mockedApi/clientFields";
 import { clientFields } from '../../constants/client_fields.js'
 
@@ -37,7 +37,7 @@ export default function Client() {
 
 
   useEffect(() => {
-      dispatch(fetchClient(id)).then(data => {
+      fetchClient(id).then(data => {
         setState(state => ({
           ...state,
           data

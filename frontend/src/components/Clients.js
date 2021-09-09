@@ -1,7 +1,7 @@
 import React from 'react';
 
 // TODO: createClients  (CSV Upload)
-import { fetchClients, deleteClient } from '../store/actions/clientActions.js'
+import { fetchClients, deleteClient } from '../api/mockedApi/clients'
 
 import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'

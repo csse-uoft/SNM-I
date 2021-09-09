@@ -1,6 +1,6 @@
 import React from 'react';
 // TODO: createProviderWithCSV  (CSV Upload)
-import { fetchProviders, deleteProvider } from '../store/actions/providerActions.js'
+import { fetchProviders, deleteProvider } from '../api/mockedApi/providers';
 
 import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'

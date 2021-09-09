@@ -10,7 +10,7 @@ import { provider_verify_form } from "../../helpers/provider_verify_form";
 import { useHistory, useParams } from 'react-router';
 import { useDispatch } from 'react-redux'
 import { ACTION_SUCCESS } from '../../store/defaults.js';
-import { createProvider, updateProvider } from '../../store/actions/providerActions.js'
+import { createProvider, updateProvider, fetchProvider } from '../../api/mockedApi/providers';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
 import { fetchProviderFields } from '../../api/mockedApi/providerFields';
 
@@ -23,7 +23,6 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import { generateProviderFields } from "../../constants/default_fields";
 import { FormStepper, Loading, FieldsWrapper, OtherLocationsFields } from "../shared";
 import { Container } from "@material-ui/core";
-import { fetchProvider } from "../../store/actions/providerActions";
 import GeneralField from "../shared/fields/GeneralField";
 
 const useStyles = makeStyles(theme => ({
@@ -102,8 +101,9 @@ export default function ProviderForm() {
   useEffect(() => {
     // load provider first if editing
     if (id) {
-      dispatch(fetchProvider(id))
-        .then(({provider}) => {
+      fetchProvider(id)
+        .then((provider) => {
+          console.log(provider)
           const cat = provider.type === 'Organization' ? 'organization' : providerCategoryValue2Key[provider.category];
           setState(state => ({...state, provider: provider, category: cat}));
           load(cat);
@@ -113,7 +113,7 @@ export default function ProviderForm() {
     }
   }, [dispatch, id, category, load]);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     const newForm = {...form};
     newForm['operation_hours'] = operationHourObjectToList(newForm['operation_hours']);
     if (newForm.status === '') newForm.status = undefined;
@@ -125,25 +125,19 @@ export default function ProviderForm() {
       return;
     }
     if (mode === 'edit') {
-      dispatch(
-        updateProvider(id, newForm, (status, err, id) => {
-          if (status === ACTION_SUCCESS) {
-            history.push(`/providers/${id}`)
-          } else {
-            setState(state => ({...state, errorMessage: [err.toString()]}));
-          }
-        })
-      );
+      const res = await updateProvider(id, newForm);
+      if (res.success) {
+        history.push(`/providers/${res.providerId}`);
+      } else {
+        setState(state => ({...state, errorMessage: [res.error]}));
+      }
     } else {
-      dispatch(
-        createProvider(newForm, (status, err, id) => {
-          if (status === ACTION_SUCCESS) {
-            history.push('/providers/' + id)
-          } else {
-            setState(state => ({...state, errorMessage: [err.toString()]}));
-          }
-        }));
-
+      const res = await createProvider(newForm);
+      if (res.success) {
+        history.push(`/providers/${res.providerId}`);
+      } else {
+        setState(state => ({...state, errorMessage: [res.error]}));
+      }
     }
   };
 
@@ -211,8 +205,8 @@ export default function ProviderForm() {
                     component={providerFields[contactField]['component']}
                     value={form[field]['profile'][contactField]}
                     onChange={handleChange(field + '.' + contactField)}
-                    error={errMsg == null? false : errMsg[contactField] != null}
-                    helperText={!!errMsg? errMsg[contactField] : null}
+                    error={errMsg == null ? false : errMsg[contactField] != null}
+                    helperText={!!errMsg ? errMsg[contactField] : null}
                   />
                 )
               })}
