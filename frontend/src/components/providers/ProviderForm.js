@@ -19,10 +19,10 @@ import FieldGroup from '../shared/FieldGroup';
 import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
 import LocationFieldGroup from '../shared/LocationFieldGroup';
 
-import makeStyles from '@material-ui/styles/makeStyles';
 import { generateProviderFields } from "../../constants/default_fields";
 import { FormStepper, Loading, FieldsWrapper, OtherLocationsFields } from "../shared";
-import { Container } from "@material-ui/core";
+import { Container } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import GeneralField from "../shared/fields/GeneralField";
 
 const useStyles = makeStyles(theme => ({

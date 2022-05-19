@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useHistory } from "react-router";
 
-import { TextField, Container, Paper, Typography, Button, Divider } from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
+import { TextField, Container, Paper, Typography, Button, Divider } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { Link } from './shared';
 
 import { login, LOGIN_SUCCESS } from '../store/actions/authAction';

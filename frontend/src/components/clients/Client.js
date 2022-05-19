@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import _ from 'lodash';
 import { useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { Container, Typography } from "@material-ui/core";
-import Button from '@material-ui/core/Button'
-import { Edit, Print } from '@material-ui/icons';
+import { Container, Typography, Alert , Button} from "@mui/material";
+import { Edit, Print } from '@mui/icons-material';
 import { Link } from '../shared'
-import Alert from '@material-ui/core/Alert';
 
 import ClientNeeds from '../ClientNeeds';
 import ClientInfoTable from './client_table/ClientInfoTable';
@@ -17,12 +15,7 @@ import { fetchClientFields } from "../../api/mockedApi/clientFields";
 import { clientFields } from '../../constants/client_fields.js'
 
 //Table
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 
 export default function Client() {
   //redux hooks

@@ -6,7 +6,7 @@ import { formatLocation } from '../../helpers/location_helpers'
 import { connect } from 'react-redux'
 import { ListGroupItem, Row, Col, Button } from 'react-bootstrap';
 import { matchClientNeed } from '../../store/actions/needActions.js'
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
 class ServiceListItem extends Component {
   constructor(props) {

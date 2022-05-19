@@ -11,7 +11,7 @@ import { formatLocation } from '../../helpers/location_helpers'
 import { formatEligibilityConditions } from '../../helpers/eligibility_condition_helpers'
 
 import { Table, Button } from 'react-bootstrap';
-import { Print } from "@material-ui/icons";
+import { Print } from "@mui/icons-material";
 
 class Service extends Component {
   componentWillMount() {

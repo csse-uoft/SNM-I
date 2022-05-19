@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from "@material-ui/core";
-import { MoreVert as MoreVertIcon, Edit, Delete, OpenInBrowser } from '@material-ui/icons';
+import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
+import { MoreVert as MoreVertIcon, Edit, Delete, OpenInBrowser } from '@mui/icons-material';
 
 const ITEM_HEIGHT = 48;
 

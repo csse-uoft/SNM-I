@@ -12,7 +12,7 @@ import SelectField from '../shared/fields/SelectField'
 import RadioField from '../shared/fields/RadioField'
 import MultiSelectField from '../shared/fields/MultiSelectField';
 import { formatLocation } from '../../helpers/location_helpers.js';
-import { Validator } from "../../helpers/index.js";
+import { Validator } from "../../helpers";
 
 // redux
 import { connect } from 'react-redux'
@@ -20,9 +20,8 @@ import { createService, updateService } from '../../store/actions/serviceActions
 import { fetchProviders } from '../../store/actions/providerActions.js';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 
-import { Alert } from '@material-ui/core';
-import { Container, Divider, Typography, Button } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+import { Container, Divider, Typography, Button, Alert } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import LocationFieldGroup from "../shared/LocationFieldGroup";
 import EligibilityCondition from './EligibilityCondition'
 import { transformToBackendType, transformToFrontendType } from '../../helpers/formulaHelpers';

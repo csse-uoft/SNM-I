@@ -8,7 +8,7 @@ import { fetchGood } from '../../store/actions/goodActions.js'
 import { formatLocation } from '../../helpers/location_helpers'
 
 import { Table, Button } from 'react-bootstrap';
-import { Print } from "@material-ui/icons";
+import { Print } from "@mui/icons-material";
 
 class Good extends Component {
   componentWillMount() {

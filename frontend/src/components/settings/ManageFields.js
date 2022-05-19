@@ -9,11 +9,11 @@ import { providerFields, allForms, providerFormTypes } from '../../constants/pro
 import { clientFields } from "../../constants/client_fields";
 import { fetchQuestions } from '../../api/questionApi';
 import RadioField from '../shared/fields/RadioField';
-import { Button, Container, Grid, TextField, Typography, Divider, IconButton } from "@material-ui/core";
+import { Button, Container, Grid, TextField, Typography, Divider, IconButton } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import SelectField from "../shared/fields/SelectField";
-import makeStyles from '@material-ui/styles/makeStyles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Close as Delete } from "@material-ui/icons";
+import { Close as Delete } from "@mui/icons-material";
 import { fetchProviderFields, updateProviderFields } from "../../api/mockedApi/providerFields";
 
 import { fetchClientFields, updateClientFields } from '../../api/mockedApi/clientFields';

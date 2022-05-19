@@ -3,9 +3,8 @@ import React from 'react';
 // components
 import TopNavbar from './components/layouts/TopNavbar'
 import Footer from './components/layouts/Footer'
-import { createTheme } from '@material-ui/core/styles';
-import { blue, pink } from '@material-ui/core/colors'
-import { ThemeProvider, StyledEngineProvider } from '@material-ui/core';
+import { createTheme, ThemeProvider, StyledEngineProvider } from '@mui/material';
+import { blue, pink } from '@mui/material/colors'
 
 import routes from "./routes";
 

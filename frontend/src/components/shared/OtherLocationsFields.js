@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Button, FormLabel } from '@material-ui/core';
+import { Button, FormLabel, Alert } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { FieldsWrapper } from "./index";
 import LocationFieldGroup from "./LocationFieldGroup";
 import { defaultLocationFields } from "../../constants/default_fields";
-import makeStyles from '@material-ui/styles/makeStyles';
-import { Alert } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -78,7 +77,7 @@ export default function OtherLocationsFields({otherLocations, clientId, required
             handleRemove={handleRemove}
             required={required}
             size={otherLocations.length}
-            errMsg = {errMsg[index]}
+            errMsg={errMsg[index]}
           />
         )
       })}

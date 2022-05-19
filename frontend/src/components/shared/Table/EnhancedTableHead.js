@@ -1,4 +1,4 @@
-import { Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from "@material-ui/core";
+import { Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 import PropTypes from "prop-types";
 import React from "react";
 

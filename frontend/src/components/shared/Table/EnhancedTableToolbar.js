@@ -1,8 +1,8 @@
-import { IconButton, lighten, Toolbar, Tooltip, Typography } from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
+import { IconButton, lighten, Toolbar, Tooltip, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
-import DeleteIcon from "@material-ui/icons/Delete";
-import SearchIcon from "@material-ui/icons/Search";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SearchIcon from "@mui/icons-material/Search";
 import PropTypes from "prop-types";
 import React from "react";
 

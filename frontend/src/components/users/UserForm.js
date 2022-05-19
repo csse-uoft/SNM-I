@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from "react-router";
 
 import { defaultUserFields } from "../../constants/default_fields";
-import { Button, Container, Typography } from "@material-ui/core";
+import { Button, Container, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { userFormFields } from "../../constants/userFields";
 import { fetchUser, updateUser, createUser } from "../../api/userApi";
 import { Loading } from "../shared"
-import makeStyles from '@material-ui/styles/makeStyles';
 import { isFieldEmpty } from "../../helpers";
 import { REQUIRED_HELPER_TEXT } from "../../constants";
 

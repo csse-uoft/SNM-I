@@ -6,14 +6,8 @@ import TR from '../../shared/TR';
 import { formatLocation } from '../../../helpers/location_helpers';
 import { formatPhoneNumber } from '../../../helpers/phone_number_helpers';
 
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import useProfileTableStyles from '../../../stylesheets/profile-table'
 
 export default function ClientInfoTable({ step, client, infoFields, clientFields }) {

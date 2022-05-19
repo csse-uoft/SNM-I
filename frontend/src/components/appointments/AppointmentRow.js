@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import { TableCell, TableRow } from "@mui/material";
 
 
 export default class AppointmentRow extends Component {
   render() {
     const appointment = this.props.appointment;
 
-    return(
+    return (
       <TableRow>
         {/*<td>*/}
         {/*  <Label>{appointment.type}</Label>{' '}*/}

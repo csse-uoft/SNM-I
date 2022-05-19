@@ -8,10 +8,10 @@ import {
   TableCell,
   TableContainer,
   TablePagination,
-  TableRow,
-} from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
-import { visuallyHidden } from "@material-ui/utils";
+  TableRow
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { visuallyHidden } from "@mui/utils";
 import { EnhancedTableHead } from "./EnhancedTableHead";
 import { EnhancedTableToolbar } from "./EnhancedTableToolbar";
 

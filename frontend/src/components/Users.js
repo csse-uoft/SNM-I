@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Chip, Container } from "@material-ui/core";
-import { Add as AddIcon, Check as YesIcon } from "@material-ui/icons";
+import { Chip, Container } from "@mui/material";
+import { Add as AddIcon, Check as YesIcon } from "@mui/icons-material";
 import { DeleteModal, DropdownMenu, Link, Loading, DataTable } from "./shared";
 import { deleteUser, fetchUsers } from "../api/userApi";
 import { useHistory } from "react-router";

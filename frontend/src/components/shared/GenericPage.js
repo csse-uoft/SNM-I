@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ACTION_ERROR } from "../../store/defaults";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
-import { Container, Fade } from "@material-ui/core";
+import { Container, Fade } from "@mui/material";
 
 /**
  * Generate markers on google map.

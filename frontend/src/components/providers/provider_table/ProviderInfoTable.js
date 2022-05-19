@@ -8,21 +8,15 @@ import { formatPhoneNumber } from '../../../helpers/phone_number_helpers';
 import { operationHourListToObject, OperationHourTable }
   from '../../../helpers/operation_hour_helpers';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
 import useProfileTableStyles from '../../../stylesheets/profile-table'
 
-export default function ProviderInfoTable({ step, provider, infoFields, providerFields }) {
+export default function ProviderInfoTable({step, provider, infoFields, providerFields}) {
   let rowTitle, rowValue;
   const infoRows = _.map(infoFields, (data, fieldId) => {
     if (data.type === 'field') {
       rowTitle = providerFields[fieldId].label;
-      switch(fieldId) {
+      switch (fieldId) {
         case 'first_name':
         case 'middle_name':
         case 'last_name':
@@ -51,8 +45,7 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
           if (provider[fieldId]) {
             rowValue = _.map(provider[fieldId], (address, index) =>
               <p key={index}>{formatLocation(address)}</p>)
-          }
-          else {
+          } else {
             rowValue = null;
           }
           break;
@@ -61,7 +54,7 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
           break;
         case "availability":
           const operation_hours = operationHourListToObject(provider.operation_hours)
-          rowValue = <OperationHourTable operationHourObj={operation_hours} />
+          rowValue = <OperationHourTable operationHourObj={operation_hours}/>
           break;
         case 'primary_contact':
         case 'secondary_contact':
@@ -75,8 +68,7 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
                 )
               }
             })
-          }
-          else {
+          } else {
             rowValue = null;
           }
           break;
@@ -84,16 +76,14 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
         default:
           rowValue = provider[fieldId];
       }
-    }
-    else if (data.type === 'question') {
+    } else if (data.type === 'question') {
       rowTitle = fieldId;
       const response = _.find(provider.responses, response => {
         return response.question_id === data.id.toString()
       })
       if (response) {
         rowValue = response.text
-      }
-      else {
+      } else {
         rowValue = null;
       }
     }
@@ -111,7 +101,7 @@ export default function ProviderInfoTable({ step, provider, infoFields, provider
     <TableContainer className={classes.table} component={Paper}>
       <Table aria-label="Profile table">
         <TableHead>
-          <TableRow >
+          <TableRow>
             <TableCell className={classes.title}>{step}</TableCell>
             <TableCell className={classes.title2}></TableCell>
           </TableRow>

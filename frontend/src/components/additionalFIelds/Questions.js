@@ -3,9 +3,9 @@ import { fetchQuestions, updateQuestion, deleteQuestion, createQuestion } from '
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button, Box
-} from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { DeleteModal, Loading, DataTable } from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";

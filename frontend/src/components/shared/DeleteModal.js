@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@material-ui/core";
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 
 export default function DeleteModal({show, onHide, title, objectId, ...props}) { // cannot use keyword "delete"
   const [form, setForm] = useState({reason: ''});

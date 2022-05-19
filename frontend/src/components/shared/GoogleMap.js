@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Paper, Typography, Link } from "@material-ui/core";
+import { Paper, Typography, Link } from "@mui/material";
 import { render } from 'react-dom';
 import { useHistory } from "react-router-dom";
 

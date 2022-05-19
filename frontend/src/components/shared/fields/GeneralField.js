@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format, parse } from 'date-fns';
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/material'
 import {
   LocalizationProvider,
   TimePicker,
   DatePicker,
-} from '@material-ui/lab';
+} from '@mui/x-date-pickers';
 
 export const dateFormat = 'yyyy-MM-dd';
 

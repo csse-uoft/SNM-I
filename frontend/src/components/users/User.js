@@ -3,7 +3,7 @@ import TR from '../shared/TR'
 import { fetchUser } from '../../api/userApi'
 import { useParams } from "react-router";
 import { Link, Loading } from "../shared";
-import { Container, Paper, Table, Typography, TableBody, Button } from "@material-ui/core";
+import { Container, Paper, Table, Typography, TableBody, Button } from "@mui/material";
 
 export default function User() {
   const [loading, setLoading] = useState(true);

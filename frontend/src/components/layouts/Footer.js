@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Link, Box } from "@material-ui/core";
+import { Typography, Link, Box } from "@mui/material";
 
 export default function () {
   return (

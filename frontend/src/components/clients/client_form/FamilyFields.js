@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import GeneralField from '../../shared/fields/GeneralField'
 import SelectField from '../../shared/fields/SelectField'
 import { genderOptions, familyRelationshipOptions } from '../../../store/defaults.js';
-import { Paper, Button, FormLabel } from '@material-ui/core';
-import makeStyles from '@material-ui/styles/makeStyles';
-import { Alert } from '@material-ui/core';
+import { Paper, Button, FormLabel, Alert } from '@mui/material';
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(theme => ({
   root: {},

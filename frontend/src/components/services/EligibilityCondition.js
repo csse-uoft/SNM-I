@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Paper, TextField, Grid, Button, IconButton } from "@material-ui/core";
+import { Paper, TextField, Grid, Button, IconButton } from "@mui/material";
 import SelectField from "../shared/fields/SelectField";
-import { Add as AddIcon, Delete as DeleteIcon } from '@material-ui/icons'
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 
 import { fetchFormulaFields } from "../../api/formulaApi";
 import { escapeList, escapeString, titleCase, unescapeList, unescapeString } from "../../helpers/formulaHelpers";

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Bar as BarChart, Pie as PieChart } from 'react-chartjs';
 import { Table, Button } from 'react-bootstrap';
-import { Print } from "@material-ui/icons";
+import { Print } from "@mui/icons-material";
 import { serverHost } from '../store/defaults.js';
 import SelectField from './shared/fields/SelectField';
 // styles

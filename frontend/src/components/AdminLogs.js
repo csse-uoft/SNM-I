@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // redux
 import { fetchAdminLogs } from '../api/adminLogApi';
-import { Container } from "@material-ui/core";
+import { Container } from "@mui/material";
 import { Link, Loading, DataTable } from "./shared";
 
 function object_url(contentType, objectId) {

@@ -1,7 +1,7 @@
 import React from 'react'
-import { Typography, Button, Container, Grid } from "@material-ui/core";
+import { Typography, Button, Container, Grid } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { Link } from './shared';
-import makeStyles from '@material-ui/styles/makeStyles';
 
 const useStyles = makeStyles(() => ({
   container: {

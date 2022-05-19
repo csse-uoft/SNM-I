@@ -4,8 +4,8 @@ import { Link } from './shared'
 // redux
 import { useSelector } from 'react-redux';
 
-import { Container, Button } from "@material-ui/core";
-import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@material-ui/icons";
+import { Container, Button } from "@mui/material";
+import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@mui/icons-material";
 
 function NavButton({to, text, icon}) {
   return (

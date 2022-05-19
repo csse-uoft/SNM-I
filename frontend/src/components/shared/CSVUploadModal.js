@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputBase, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@material-ui/core";
+import { InputBase, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 
 export default function CSVUploadModal({show, onHide, submit}) {
   return (

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { AppBar, Toolbar, Typography, Button, Tabs, Tab, Box } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, Tabs, Tab, Box } from '@mui/material';
 import { Link } from "../shared";
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/actions/authAction.js';
-import { styled } from "@material-ui/styles";
+import styled from "@emotion/styled";
 
 const StyledTabs = styled(Tabs)({
   '& .MuiTabs-indicator': {

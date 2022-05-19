@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import makeStyles from '@material-ui/styles/makeStyles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {AppBar, Tabs, Tab, Typography, Box } from "@mui/material"
+import { makeStyles } from "@mui/styles";
 
 import MatchedServices from './MatchedServices';
 import ServiceList from './ServiceList';

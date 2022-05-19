@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { operationHourMapping, defaultTimeSlot } from '../../helpers/operation_hour_helpers'
 
-import { IconButton, Typography, Grid } from '@material-ui/core';
-import { Delete, Add, ArrowRightAltOutlined as Arrow } from '@material-ui/icons';
+import { IconButton, Typography, Grid, Alert } from '@mui/material';
+import { makeStyles } from "@mui/styles";
+import { Delete, Add, ArrowRightAltOutlined as Arrow } from '@mui/icons-material';
 import { FieldsWrapper } from "./index";
 import SelectField from "./fields/SelectField";
-import makeStyles from '@material-ui/styles/makeStyles';
-import { Alert } from '@material-ui/core';
 
 import { format } from 'date-fns';
 import GeneralField, {dateFormat} from './fields/GeneralField.js'

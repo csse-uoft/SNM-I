@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import _ from 'lodash';
 import { useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { Container } from "@material-ui/core";
-import Button from '@material-ui/core/Button'
-import { Edit, RateReview, Print } from '@material-ui/icons';
+import { Container, Button, Rating, Box } from "@mui/material";
+import { Edit, RateReview, Print } from '@mui/icons-material';
 import { Link } from '../shared'
-import Rating from '@material-ui/core/Rating';
-import Box from '@material-ui/core/Box';
 
 import { providerFields } from '../../constants/provider_fields.js'
 
