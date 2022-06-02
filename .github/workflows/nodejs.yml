@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,9 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 14
-        cache-dependency-path: frontend/yarn.lock
+        cache-dependency-path: |
+           frontend/yarn.lock
+           backend/yarn.lock
         cache: 'yarn'
 
     - name: Install Frontend Dependencies
@@ -30,7 +32,7 @@ jobs:
     
     - name: Install Backend Dependencies
       working-directory: backend
-      run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile && npm install -g typescript typedoc
     
     - name: Build GraphDB Utils Docs
       run:  npx typedoc --entryPoints ./backend/utils/graphdb/index.d.ts --out ./frontend/build/docs/gdb-utils/
