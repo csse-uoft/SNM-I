@@ -27,9 +27,13 @@ jobs:
     - name: Build Frontend
       working-directory: frontend
       run: CI=false yarn build; cp build/index.html build/404.html
+    
+    - name: gdb-utils-docs
+      run:  npx typedoc --entryPoints ./backend/utils/graphdb/index.d.ts --out ./frontend/build/docs/gdb-utils/
       
     - name: Deploy Frontend to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./frontend/build
+
