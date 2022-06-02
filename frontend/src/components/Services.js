@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from './shared';
-import { fetchServices, deleteService } from '../store/actions/serviceActions.js'
+import { fetchServices, deleteService } from '../api/mockedApi/services'
 import { GenericPage } from "./shared";
 
 const TYPE = 'services';

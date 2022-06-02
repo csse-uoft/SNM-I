@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from '../shared';
-import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import {
   statusInCanadaOptions, educationLevelOptions,
   serviceSharedWithOptions, serviceTypeOptions
@@ -16,8 +16,8 @@ import { Validator } from "../../helpers";
 
 // redux
 import { connect } from 'react-redux'
-import { createService, updateService } from '../../store/actions/serviceActions.js'
-import { fetchProviders } from '../../store/actions/providerActions.js';
+import { createService, updateService } from '../../api/mockedApi/services'
+import { fetchProviders } from '../../api/mockedApi/providers';
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 
 import { Container, Divider, Typography, Button, Alert } from "@mui/material";

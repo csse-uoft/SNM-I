@@ -1,4 +1,4 @@
-import { sleep } from './';
+import { sleep } from '../index';
 
 export async function login(params) {
   await sleep(300);
