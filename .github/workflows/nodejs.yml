@@ -29,7 +29,7 @@ jobs:
       run: CI=false yarn build; cp build/index.html build/404.html
     
     - name: Install Backend Dependencies
-      working-directory: frontend
+      working-directory: backend
       run: yarn install --frozen-lockfile
     
     - name: Build GraphDB Utils Docs
