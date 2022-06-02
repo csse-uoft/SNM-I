@@ -20,7 +20,7 @@ jobs:
         cache-dependency-path: frontend/yarn.lock
         cache: 'yarn'
 
-    - name: Install Dependencies
+    - name: Install Frontend Dependencies
       working-directory: frontend
       run: yarn install --frozen-lockfile
 
@@ -28,7 +28,11 @@ jobs:
       working-directory: frontend
       run: CI=false yarn build; cp build/index.html build/404.html
     
-    - name: gdb-utils-docs
+    - name: Install Backend Dependencies
+      working-directory: frontend
+      run: yarn install --frozen-lockfile
+    
+    - name: Build GraphDB Utils Docs
       run:  npx typedoc --entryPoints ./backend/utils/graphdb/index.d.ts --out ./frontend/build/docs/gdb-utils/
       
     - name: Deploy Frontend to GitHub Pages
