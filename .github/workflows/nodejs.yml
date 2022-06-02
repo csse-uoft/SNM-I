@@ -35,6 +35,7 @@ jobs:
       run: yarn install --frozen-lockfile && npm install -g typescript typedoc
     
     - name: Build GraphDB Utils Docs
+      working-directory: .
       run:  npx typedoc --entryPoints ./backend/utils/graphdb/index.d.ts --out ./frontend/build/docs/gdb-utils/
       
     - name: Deploy Frontend to GitHub Pages
