@@ -1,7 +1,7 @@
 declare namespace GDBUtils {
 
-    declare type GraphDBModelConstructor = GraphDBModel | ((data: object) => GraphDBDocument);
-    declare type GDBType = StringConstructor | NumberConstructor | DateConstructor | BooleanConstructor
+    type GraphDBModelConstructor = GraphDBModel | ((data: object) => GraphDBDocument);
+    type GDBType = StringConstructor | NumberConstructor | DateConstructor | BooleanConstructor
         | 'owl:NamedIndividual' | 'GraphDB.Self!' | GraphDBModelConstructor;
 
     enum DeleteType {
@@ -9,7 +9,7 @@ declare namespace GDBUtils {
         NON_CASCADE
     }
 
-    export const Types = {
+    export interface Types {
         NamedIndividual: 'owl:NamedIndividual',
         String,
         Number,
@@ -17,9 +17,11 @@ declare namespace GDBUtils {
         Boolean,
         // Refers to the model itself
         Self: 'GraphDB.Self!' // `GraphDB.Self` is some special value that is not used anywhere.
-    };
+    }
 
-    export const Comparison = { $ne: "", $ge: ">=", $le: "<=", $gt: ">", $lt: "<" };
+    export interface Comparison {
+        $ne: "", $ge: ">=", $le: "<=", $gt: ">", $lt: "<"
+    }
 
     export function regexBuilder(pattern: string, flags?: string): string;
 
@@ -68,7 +70,7 @@ declare namespace GDBUtils {
     }
 
     // GraphDB Document represent an owl:NamedIndividual
-    declare class GraphDBDocument {
+    class GraphDBDocument {
         // document
         [key: string]: any;
 
@@ -92,36 +94,38 @@ declare namespace GDBUtils {
         set(path: string, obj: object, isPopulate?: boolean);
 
         // Calls MongoDB to generate an incremented ID for this document
-        async generateId(): number;
+        generateId(): Promise<number>;
 
         // Get SPARQL query
-        async getQueries(): { queryBody: string, instanceName: string, query: string }
+        getQueries(): Promise<{ queryBody: string, instanceName: string, query: string }>
 
         // Mark one or more fields as modified fields
         // It will force update the marked fields when saving.
         markModified(key: string | string[]);
 
         // Populate a field by path, and return this GraphDBDocument.
-        async populate(path: string): GraphDBDocument
+        populate(path: string): Promise<GraphDBDocument>
 
         // Populate multiple fields by path, and return this GraphDBDocument.
-        async populateMultiple(paths: string[]): GraphDBDocument
+        populateMultiple(paths: string[]): Promise<GraphDBDocument>
 
         // Create or update this document
-        async save();
+        save(): Promise<void>;
     }
 
 
-    declare class GraphDBDocumentArray extends Array {
+    class GraphDBDocumentArray<T> extends Array<T> {
         // Populate a field by path, and return this GraphDBDocumentArray.
-        async populate(path: string): GraphDBDocumentArray
+        populate(path: string): Promise<GraphDBDocumentArray<T>>
 
         // Populate multiple fields by path, and return this GraphDBDocumentArray.
-        async populateMultiple(paths: string[]): GraphDBDocumentArray
+        populateMultiple(paths: string[]): Promise<GraphDBDocumentArray<T>>
     }
 
     // GraphDB Model, can be instantiated into an instance of GraphDBDocument
-    declare class GraphDBModel {
+    class GraphDBModel {
+
+        // @ts-ignore
         constructor(data): GraphDBDocument;
 
         /**
@@ -143,18 +147,19 @@ declare namespace GDBUtils {
         /**
          * Generate creation query.
          */
-        private async generateCreationQuery(id: number | string, data: object)
-            : { footer: string, instanceName: string, innerQueryBodies: string[], header: string, queryBody: string }
+        private generateCreationQuery(id: number | string, data: object)
+            : Promise<{ footer: string, instanceName: string, innerQueryBodies: string[], header: string, queryBody: string }>
 
         /**
          * Generate find query.
          */
-        private generateFindQuery(filter, config): { query: string, where: array, construct: array }
+        private generateFindQuery(filter, config): { query: string, where: string[], construct: string[] }
 
         /**
          * Generate deletion query.
+         * cnt default to 0.
          */
-        private generateDeleteQuery(doc: GraphDBDocument, cnt: number = 0): { query: string, where: string[] }
+        private generateDeleteQuery(doc: GraphDBDocument, cnt?: number): { query: string, where: string[] }
 
         /**
          * Find documents from the model.
@@ -189,7 +194,7 @@ declare namespace GDBUtils {
          * });
          * ```
          */
-        async find(filter: GDBFilter, options: GDBFindOptions): GraphDBDocumentArray<GraphDBDocument>;
+        find(filter: GDBFilter, options: GDBFindOptions): Promise<GraphDBDocumentArray<GraphDBDocument>>;
 
 
         /**
@@ -207,7 +212,7 @@ declare namespace GDBUtils {
          * Model.findById(1, {populates: ['primary_contact']});
          * ```
          */
-        async findById(id: string | number, options?: GDBFindOptions): GraphDBDocument;
+        findById(id: string | number, options?: GDBFindOptions): Promise<GraphDBDocument>;
 
         /**
          * Find one document in the model.
@@ -224,7 +229,7 @@ declare namespace GDBUtils {
          * Model.findOne({age: 50}, {populates: ['primary_contact']});
          * ```
          */
-        async findOne(filter: GDBFilter, options?: GDBFindOptions): GraphDBDocument;
+        findOne(filter: GDBFilter, options?: GDBFindOptions): Promise<GraphDBDocument>;
 
         /**
          * Find one document and update.
@@ -237,7 +242,7 @@ declare namespace GDBUtils {
          * const doc = await Model.findOneAndUpdate({_id: 1}, {primary_contact: {first_name: 'Lester'}});
          * ```
          */
-        async findOneAndUpdate(filter: GDBFilter, update: object): GraphDBDocument;
+        findOneAndUpdate(filter: GDBFilter, update: object): Promise<GraphDBDocument>;
 
         /**
          * Find one document by ID and update
@@ -250,7 +255,7 @@ declare namespace GDBUtils {
          * const doc = await Model.findByIdAndUpdate(1, {primary_contact: {first_name: 'Lester'}});
          * ```
          */
-        async findByIdAndUpdate(id: string | number, update: object): GraphDBDocument
+        findByIdAndUpdate(id: string | number, update: object): Promise<GraphDBDocument>
 
         /**
          * Find all documents matched to the filter and delete.
@@ -261,7 +266,7 @@ declare namespace GDBUtils {
          * const doc = await Model.findAndDelete({primary_contact: {first_name: 'Lester'}});
          * ```
          */
-        async findAndDelete(filter: GDBFilter): GraphDBDocumentArray
+        findAndDelete(filter: GDBFilter): Promise<GraphDBDocumentArray<GraphDBDocument>>
 
         /**
          * Find one document matched to the filter and delete.
@@ -274,7 +279,7 @@ declare namespace GDBUtils {
          * const doc = await Model.findOneAndDelete({primary_contact: {first_name: 'Lester'}});
          * ```
          */
-        async findOneAndDelete(filter: GDBFilter): GraphDBDocument | undefined
+        findOneAndDelete(filter: GDBFilter): Promise<GraphDBDocument | undefined>
 
         /**
          * Find one document by ID and delete it.
@@ -286,7 +291,7 @@ declare namespace GDBUtils {
          *  const doc = await Model.findByIdAndDelete(1);
          * ```
          */
-        async findByIdAndDelete(id: string | number): GraphDBDocument
+        findByIdAndDelete(id: string | number): Promise<GraphDBDocument>
 
     }
 
@@ -297,7 +302,7 @@ declare namespace GDBUtils {
     // Get created GraphDBModel.
     export function getGraphDBModel(name: string): GraphDBModelConstructor | undefined;
 
-    declare type onDataCallback = ((subject, predicate, object) => void);
+    type onDataCallback = ((subject, predicate, object) => void);
 
     export namespace GraphDB {
         /**
@@ -305,15 +310,15 @@ declare namespace GDBUtils {
          * @param query - the query
          * @param onData - on data callback
          */
-        export async function sendSelectQuery(query: string, onData: onDataCallback);
+        export function sendSelectQuery(query: string, onData: onDataCallback): Promise<void>;
 
-        export async function sendUpdateQuery(query: string);
+        export function sendUpdateQuery(query: string): Promise<void>;
 
-        export async function sendConstructQuery(query: string, onData: onDataCallback);
+        export function sendConstructQuery(query: string, onData: onDataCallback): Promise<void>;
 
-        export async function getAllInstancesWithLabel(type: string): { [key: string]: string };
+        export function getAllInstancesWithLabel(type: string): Promise<{ [key: string]: string }>;
 
-        export async function getAllInstancesWithLabelComment(type: string): { [key: string]: { label: string, comment: string } };
+        export function getAllInstancesWithLabelComment(type: string): Promise<{ [key: string]: { label: string, comment: string } }>;
 
 
     }
