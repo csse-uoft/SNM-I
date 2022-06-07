@@ -1,5 +1,5 @@
 const express = require('express');
-const {login} = require('../services/login');
+const {login, logout} = require('../services/auth');
 
 
 const router = express.Router();
@@ -10,6 +10,6 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/login', login);
-
+router.post('/logout', logout);
 
 module.exports = router;

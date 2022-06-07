@@ -20,4 +20,9 @@ const login = async (req, res, next) => {
   }
 }
 
-module.exports = {login}
+const logout = async (req, res) => {
+  req.session.username = '';
+  return res.json({success: true})
+}
+
+module.exports = {login, logout}
