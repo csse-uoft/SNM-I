@@ -12,6 +12,7 @@ const login = async (req, res, next) => {
     if (!result) {
       return res.json({success: false, message: 'Username or password is incorrect.'});
     } else {
+      req.session.email = email;
       return res.json({success: true});
     }
   } catch (e) {
