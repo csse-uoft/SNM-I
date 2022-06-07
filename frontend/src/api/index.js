@@ -1,37 +1,18 @@
 import fetch from 'isomorphic-fetch';
 import { serverHost } from '../store/defaults.js';
-import { resolve } from "chart.js/helpers";
 
 export const ACTION_SUCCESS = 'ACTION_SUCCESS';
 export const ACTION_ERROR = 'ACTION_ERROR';
-
-export const headers = {
-  Authorization: `JWT ${localStorage.getItem('jwt_token')}`
-};
-
-const normalizeError = (err) => {
-  for (const [key, value] of Object.entries(err)) {
-    if (value != null && typeof value === 'object' && !Array.isArray(value)) {
-      err[key] = normalizeError(value);
-    } else {
-      err[key] = value[0];
-    }
-  }
-  return err;
-};
 
 export async function getJson(url) {
   url = serverHost + url;
   const response = await fetch(url, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-    },
+    credentials: 'include'
   });
   if (response.status >= 400 && response.status < 600) {
     const e = new Error("Bad response from server: " + response.status);
-    e.json = normalizeError(await response.json());
+    e.json = await response.json();
     throw e;
   }
   return response.json();
@@ -42,14 +23,14 @@ async function sendJson(url, body, method, rawResponse = false) {
   const response = await fetch(url, {
     method,
     body: JSON.stringify(body),
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
     },
   });
   if (response.status >= 400 && response.status < 600) {
     const e = new Error("Bad response from server: " + response.status);
-    e.json = normalizeError(await response.json());
+    e.json = await response.json();
     throw e;
   }
   if (rawResponse)

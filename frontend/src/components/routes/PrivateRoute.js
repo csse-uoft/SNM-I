@@ -1,24 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { UserContext } from "../../context";
 
-const PrivateRoute = ({ component: Component, isLoggedin, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      isLoggedin === true ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to="/login-pane" />
-      )
-    }
-  />
-);
-
-const mapStateToProps = (state) => {
-  return {
-    isLoggedin: state.auth.isLoggedin
-  }
+export default function PrivateRoute({component: Component, ...rest}) {
+  const userContext = useContext(UserContext);
+  return (
+    <Route
+      {...rest}
+      render={props => userContext.email ? <Component {...props} /> : <Redirect to="/login-pane"/>}
+    />
+  )
 }
-
-export default connect(mapStateToProps)(PrivateRoute);
