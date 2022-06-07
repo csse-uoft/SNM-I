@@ -8,12 +8,18 @@ const login = async (req, res, next) => {
   }
 
   try {
-    const result = await validateCredentials(email, password);
-    if (!result) {
+    const {validated, userAccount} = await validateCredentials(email, password);
+    if (!validated) {
       return res.json({success: false, message: 'Username or password is incorrect.'});
     } else {
       req.session.email = email;
-      return res.json({success: true});
+      const data = userAccount.toJSON();
+      delete data.salt;
+      delete data.hash;
+
+      return res.json({
+        success: true, data
+      });
     }
   } catch (e) {
     next(e);

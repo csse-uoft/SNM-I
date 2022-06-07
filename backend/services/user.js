@@ -56,7 +56,7 @@ async function findUserAccountByEmail(email) {
 async function validateCredentials(email, password) {
   const userAccount = await GDBUserAccountModel.findOne({email});
   const validated = await Hashing.validatePassword(password, userAccount.hash, userAccount.salt);
-  return validated;
+  return {validated, userAccount};
 }
 
 /**
@@ -74,6 +74,8 @@ async function initUserAccounts() {
     const userAccount = GDBUserAccountModel({
       primaryEmail: 'admin@snmi.ca',
       secondaryEmail: 'admin2@snmi.ca',
+      role: 'admin',
+      displayName: 'Admin',
       hash,
       salt,
     });
