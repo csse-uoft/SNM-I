@@ -7,7 +7,7 @@ import { useHistory } from "react-router";
 import { useDispatch } from 'react-redux';
 import { providerFields, allForms, providerFormTypes } from '../../constants/provider_fields.js'
 import { clientFields } from "../../constants/client_fields";
-import { fetchQuestions } from '../../api/questionApi';
+import { fetchQuestions } from '../../api/mockedApi/question';
 import RadioField from '../shared/fields/RadioField';
 import { Button, Container, Grid, TextField, Typography, Divider, IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";

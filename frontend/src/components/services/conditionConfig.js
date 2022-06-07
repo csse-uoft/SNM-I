@@ -2,7 +2,7 @@ import { statusInCanadaOptions, genderOptions, educationLevelOptions, countryOpt
 import React, { useEffect, useState, useMemo, useCallback, Comopnent } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
-import { fetchEligibilities } from '../../api/eligibilityApi';
+import { fetchEligibilities } from '../../api/mockedApi/eligibility';
 import { serverHost } from '../../store/defaults';
 
 

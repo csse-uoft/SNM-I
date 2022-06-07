@@ -6,9 +6,9 @@ import { defaultProfileFields, generateClientField } from '../../constants/defau
 
 // redux
 import { useDispatch } from 'react-redux';
-import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import { createClient, updateClient, fetchClient } from '../../api/mockedApi/clients';
-import { fetchEligibilities } from '../../api/eligibilityApi';
+import { fetchEligibilities } from '../../api/mockedApi/eligibility';
 import { fetchClientFields } from '../../api/mockedApi/clientFields';
 
 // components
@@ -54,7 +54,7 @@ export default function ClientForm() {
 
   useEffect(() => {
     const promises = [];
-    promises.push(dispatch(fetchOntologyCategories('languages'))
+    promises.push(fetchOntologyCategories('languages')
       .then(data => setState(state => ({...state, languageOptions: data}))));
     promises.push(fetchEligibilities()
       .then(data => {
