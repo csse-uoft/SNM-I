@@ -383,7 +383,7 @@ class GraphDBModel {
     const resultInArray = new GraphDBDocumentArray();
     await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
       subject = getGraphDBAttribute(subject.value);
-      predicate = SPARQL.getPrefixedURI(subject.value);
+      predicate = SPARQL.getPrefixedURI(predicate.value);
       object = object.termType === 'NamedNode' ? getGraphDBAttribute(object.value) : object.value;
 
       // The top instance

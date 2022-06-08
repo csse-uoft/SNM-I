@@ -1,25 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { UserContext } from "../../context";
 
-const AdminRoute = ({ component: Component, isLoggedin, isAdmin, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      (isLoggedin === true && isAdmin === true) ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to="/login-pane" />
-      )
-    }
-  />
-);
 
-const mapStateToProps = (state) => {
-  return {
-    isAdmin: state.auth.currentUser && state.auth.currentUser.is_admin,
-    isLoggedin: state.auth.isLoggedin
-  }
+export default function AdminRoute({component: Component, ...rest}) {
+  const userContext = useContext(UserContext);
+  return (
+    <Route
+      {...rest}
+      render={props => userContext.isAdmin ? <Component {...props} /> : <Redirect to="/login-pane"/>}
+    />
+  )
 }
-
-export default connect(mapStateToProps) (AdminRoute);

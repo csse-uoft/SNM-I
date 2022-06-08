@@ -25,6 +25,7 @@ async function createUserAccount(data) {
   await userAccount.save();
   return userAccount;
 }
+
 // Example:
 // createUserAccount({
 //   primaryEmail: '1@test.com',
@@ -55,8 +56,36 @@ async function findUserAccountByEmail(email) {
 async function validateCredentials(email, password) {
   const userAccount = await GDBUserAccountModel.findOne({email});
   const validated = await Hashing.validatePassword(password, userAccount.hash, userAccount.salt);
-  return validated;
+  return {validated, userAccount};
+}
+
+/**
+ * Check if the database contains at least one user account.
+ * If not, create a default user account.
+ * @return {Promise<void>}
+ */
+async function initUserAccounts() {
+  const account = await GDBUserAccountModel.findOne({});
+
+  // No account in the database
+  if (!account) {
+    const {hash, salt} = await Hashing.hashPassword('admin');
+
+    const userAccount = GDBUserAccountModel({
+      primaryEmail: 'admin@snmi.ca',
+      secondaryEmail: 'admin2@snmi.ca',
+      role: 'admin',
+      displayName: 'Admin',
+      hash,
+      salt,
+    });
+
+    await userAccount.save();
+  }
+
 }
 
 
-module.exports = {createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials};
+module.exports = {
+  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts
+};

@@ -17,7 +17,5 @@ export async function fetchOntologyCategories(category) {
     return []
   }
 
-  return {
-    categories: categories[category]
-  }
+  return categories[category];
 }

@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { AppBar, Toolbar, Typography, Button, Tabs, Tab, Box } from '@mui/material';
 import { Link } from "../shared";
 
-// redux
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../store/actions/authAction.js';
+import { logout } from '../../api/auth';
 import styled from "@emotion/styled";
+import { UserContext } from "../../context";
 
 const StyledTabs = styled(Tabs)({
   '& .MuiTabs-indicator': {
@@ -39,8 +38,8 @@ function NavTab(props) {
 
 function TopNavBar() {
   const history = useHistory();
-  const dispatch = useDispatch();
-  const {isLoggedin} = useSelector(state => state.auth);
+  const userContext = useContext(UserContext);
+  const isLoggedin = !!userContext.email;
   const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
   const [value, setValue] = useState(
     tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
@@ -84,7 +83,7 @@ function TopNavBar() {
           </Box>
         )}
 
-        <Button color="inherit" onClick={() => isLoggedin ? dispatch(logout()) : history.push('/login')}
+        <Button color="inherit" onClick={() => isLoggedin ? logout() : history.push('/login')}
                 sx={{
                   marginLeft: 'auto',
                   textDecorationLine: 'none',

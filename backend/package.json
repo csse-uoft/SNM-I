@@ -8,6 +8,7 @@
     "node": ">=14.16"
   },
   "scripts": {
+    "start": "node bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

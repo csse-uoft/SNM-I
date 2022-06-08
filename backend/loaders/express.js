@@ -26,6 +26,8 @@ app.use(cookieSession(config.cookieSession));
 app.use('/api', baseRoute);
 app.use('/api', authMiddleware('Authentication Required'));
 
+require('../services/user').initUserAccounts();
+
 app.use(errorHandler);
 
 process.env.TZ = 'America/Toronto'

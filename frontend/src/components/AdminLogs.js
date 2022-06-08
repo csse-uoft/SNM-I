@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // redux
-import { fetchAdminLogs } from '../api/adminLogApi';
+import { fetchAdminLogs } from '../api/mockedApi/adminLog';
 import { Container } from "@mui/material";
 import { Link, Loading, DataTable } from "./shared";
 

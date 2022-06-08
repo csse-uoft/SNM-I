@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useHistory } from "react-router";
 
 import { TextField, Container, Paper, Typography, Button, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link } from './shared';
 
-import { login, LOGIN_SUCCESS } from '../store/actions/authAction';
-import { useDispatch } from "react-redux";
+import { login } from '../api/auth';
+import { UserContext } from "../context";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -32,8 +32,8 @@ const useStyles = makeStyles(() => ({
 function LoginPane() {
   const classes = useStyles();
   const history = useHistory();
-  const dispatch = useDispatch();
-  const [form, setForm] = useState({username: '', password: '', alert: ''});
+  const userContext = useContext(UserContext);
+  const [form, setForm] = useState({email: '', password: '', alert: ''});
 
   const onChange = name => e => {
     const value = e.target.value;
@@ -41,11 +41,18 @@ function LoginPane() {
   };
 
   const submit = async () => {
-    const {status, message} = await dispatch(login(form));
-    if (status === LOGIN_SUCCESS) {
-      history.push('/dashboard');
-    } else {
-      setForm(prev => ({...prev, alert: message}));
+    try {
+      const {success, data} = await login(form.email, form.password);
+      if (success) {
+        userContext.updateUser({
+          isAdmin: data.role === 'admin',
+          email: data.primaryEmail,
+          displayName: data.displayName
+        });
+        history.push('/dashboard');
+      }
+    } catch (e) {
+      setForm(prev => ({...prev, alert: e.json.message}));
     }
   };
 
@@ -64,10 +71,10 @@ function LoginPane() {
         <TextField
           fullWidth
           variant="outlined"
-          label="Username"
-          type="text"
-          value={form.username}
-          onChange={onChange('username')}
+          label="Email"
+          type="email"
+          value={form.email}
+          onChange={onChange('email')}
           className={classes.item}
         />
         <br/>

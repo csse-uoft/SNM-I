@@ -83,7 +83,7 @@ class GraphDBDocumentArray extends Array {
 
       await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
         subject = getGraphDBAttribute(subject.value);
-        predicate = SPARQL.getPrefixedURI(subject.value);
+        predicate = SPARQL.getPrefixedURI(predicate.value);
         object = object.termType === 'NamedNode' ? getGraphDBAttribute(object.value) : object.value;
 
         const key = subject.slice(0, subject.lastIndexOf('_'));

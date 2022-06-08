@@ -43,6 +43,7 @@ const port = normalizePort(process.env.PORT || '5000');
       ? 'pipe ' + addr
       : 'port ' + addr.port;
     debug('Listening on ' + bind);
+    console.log('Listening on ' + bind);
   });
 
 })();

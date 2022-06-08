@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from './shared'
 
 // redux
 import { useSelector } from 'react-redux';
 
 import { Container, Button } from "@mui/material";
-import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@mui/icons-material";
+import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria } from "@mui/icons-material";
+import { UserContext } from "../context";
 
 function NavButton({to, text, icon}) {
   return (
@@ -29,8 +30,9 @@ function NavButton({to, text, icon}) {
 }
 
 function Dashboard() {
-  const {isLoggedin, currentUser, organization} = useSelector(state => state.auth);
-  if (!isLoggedin || !currentUser.is_admin)
+  const userContext = useContext(UserContext);
+
+  if (!userContext.isAdmin)
     return <span>"You don't have the permission to view this page."</span>;
 
   return (
@@ -39,13 +41,13 @@ function Dashboard() {
       textAlign: 'center',
     }}>
 
-      {!organization.id &&
-      <NavButton to={{pathname: '/providers/organization/new', state: {status: 'Home Agency'}}}
-                 text="Create Organization Profile for Home Agency" icon={<Create/>}/>}
+      {/*{!organization.id &&*/}
+      {/*  <NavButton to={{pathname: '/providers/organization/new', state: {status: 'Home Agency'}}}*/}
+      {/*             text="Create Organization Profile for Home Agency" icon={<Create/>}/>}*/}
 
-      {organization.id &&
-      <NavButton to={`/provider/${organization.id}/edit/organization`} icon={<Edit/>}
-                 text="Edit Organization Profile for Home Agency"/>}
+      {/*{organization.id &&*/}
+      {/*  <NavButton to={`/provider/${organization.id}/edit/organization`} icon={<Edit/>}*/}
+      {/*             text="Edit Organization Profile for Home Agency"/>}*/}
 
       <NavButton to={`/users`} icon={<People/>}
                  text="Manage Users"/>
