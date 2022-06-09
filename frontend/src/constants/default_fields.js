@@ -33,11 +33,9 @@ export const defaultLocationFields = {
 export const defaultUserFields = {
   first_name: '',
   last_name: '',
-  username: '',
   email: '',
   is_superuser: false,
   primary_phone_number: '',
-  alt_phone_number: '',
   password: ''
 };
 

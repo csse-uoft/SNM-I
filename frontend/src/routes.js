@@ -1,6 +1,6 @@
 import React from 'react';
-import { Switch } from 'react-router';
-import { Route } from 'react-router-dom';
+import {Switch} from 'react-router';
+import {Route} from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
@@ -13,6 +13,7 @@ import ClientForm from './components/clients/ClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
+import UserInvite from './components/users/UserInvite'
 import NeedForm from './components/client_needs/NeedForm'
 import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
@@ -36,50 +37,52 @@ import Questions from './components/additionalFIelds/Questions';
 
 const routes = (
   <Switch>
-    <Route exact path='/' component={Landing} />
-    <Route path='/login' component={Login} />
-    <Route path='/login-pane' component={LoginPane} />
-    <PrivateRoute path='/dashboard' component={Dashboard} />
+    <Route exact path='/' component={Landing}/>
+    <Route path='/login' component={Login}/>
+    <Route path='/login-pane' component={LoginPane}/>
+    <PrivateRoute path='/dashboard' component={Dashboard}/>
 
-    <PrivateRoute path='/clients/:id/edit' component={ClientForm} />
-    <PrivateRoute path='/clients/:id/needs/new' component={NeedForm} />
-    <PrivateRoute path='/clients/new' component={ClientForm} />
-    <PrivateRoute path='/clients/:id' component={Client} />
-    <PrivateRoute path='/clients' component={Clients} />
+    <PrivateRoute path='/clients/:id/edit' component={ClientForm}/>
+    <PrivateRoute path='/clients/:id/needs/new' component={NeedForm}/>
+    <PrivateRoute path='/clients/new' component={ClientForm}/>
+    <PrivateRoute path='/clients/:id' component={Client}/>
+    <PrivateRoute path='/clients' component={Clients}/>
 
-    <AdminRoute path='/users/:id/edit' component={UserForm} />
-    <AdminRoute path='/users/new' component={UserForm} />
-    <AdminRoute path='/users/:id' component={User} />
-    <AdminRoute path='/users' component={Users} />
-    <AdminRoute path='/admin-logs' component={AdminLogs} />
+    <AdminRoute path='/users/:id/edit' component={UserForm}/>
+    <AdminRoute path='/users/new' component={UserForm}/>
+    <AdminRoute path='/users/invite' component={UserInvite}/>
+    <AdminRoute path='/users/:id' component={User}/>
+    <AdminRoute path='/users' component={Users}/>
+    <AdminRoute path='/admin-logs' component={AdminLogs}/>
 
-    <PrivateRoute path='/needs/:need_id/edit' component={NeedForm} />
-    <PrivateRoute path='/needs/:need_id' component={Need} />
 
-    <PrivateRoute path='/providers/:id/rate' component={ProviderRatingForm} />
-    <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt} />
-    <PrivateRoute path='/providers/:formType/new' component={ProviderForm} />
-    <PrivateRoute path='/providers/:id/edit/' component={ProviderForm} />
-    <PrivateRoute path='/providers/:id' component={ProviderProfile} />
-    <PrivateRoute path='/providers' component={Providers} />
+    <PrivateRoute path='/needs/:need_id/edit' component={NeedForm}/>
+    <PrivateRoute path='/needs/:need_id' component={Need}/>
 
-    <PrivateRoute path='/services/:id/edit' component={ServiceForm} />
-    <PrivateRoute path='/services/new' component={ServiceForm} />
-    <PrivateRoute path='/services/:id' component={Service} />
-    <PrivateRoute path='/services' component={Services} />
+    <PrivateRoute path='/providers/:id/rate' component={ProviderRatingForm}/>
+    <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt}/>
+    <PrivateRoute path='/providers/:formType/new' component={ProviderForm}/>
+    <PrivateRoute path='/providers/:id/edit/' component={ProviderForm}/>
+    <PrivateRoute path='/providers/:id' component={ProviderProfile}/>
+    <PrivateRoute path='/providers' component={Providers}/>
 
-    <PrivateRoute path='/goods/:id/edit' component={GoodForm} />
-    <PrivateRoute path='/goods/new' component={GoodForm} />
-    <PrivateRoute path='/goods/:id' component={Good} />
-    <PrivateRoute path='/goods' component={Goods} />
+    <PrivateRoute path='/services/:id/edit' component={ServiceForm}/>
+    <PrivateRoute path='/services/new' component={ServiceForm}/>
+    <PrivateRoute path='/services/:id' component={Service}/>
+    <PrivateRoute path='/services' component={Services}/>
 
-    <PrivateRoute path='/reporting' component={Reporting} />
+    <PrivateRoute path='/goods/:id/edit' component={GoodForm}/>
+    <PrivateRoute path='/goods/new' component={GoodForm}/>
+    <PrivateRoute path='/goods/:id' component={Good}/>
+    <PrivateRoute path='/goods' component={Goods}/>
 
-    <PrivateRoute path='/eligibility-criteria' component={Eligibilities} />
+    <PrivateRoute path='/reporting' component={Reporting}/>
 
-    <PrivateRoute path='/questions' component={Questions} />
+    <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
 
-    <AdminRoute path='/settings/manage-fields' component={ManageFields} />
+    <PrivateRoute path='/questions' component={Questions}/>
+
+    <AdminRoute path='/settings/manage-fields' component={ManageFields}/>
   </Switch>
 );
 

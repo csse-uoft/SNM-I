@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router";
 import { defaultUserFields } from "../../constants/default_fields";
 import { Button, Container, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { userFormFields } from "../../constants/userFields";
+import { userInvitationFields } from "../../constants/userFields";
 import { fetchUser, updateUser, createUser } from "../../api/userApi";
 import { Loading } from "../shared"
 import { isFieldEmpty } from "../../helpers";

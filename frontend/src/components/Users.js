@@ -94,8 +94,8 @@ export default function Users() {
     }
   ];
 
-  if (state.loading)
-    return <Loading message={`Loading users...`}/>;
+  // if (state.loading)
+  //   return <Loading message={`Loading users...`}/>;
 
   return (
     <Container>
@@ -104,12 +104,16 @@ export default function Users() {
         data={state.data}
         columns={columns}
         idField="id"
-        customToolbar={<Chip
-          onClick={() => history.push('/users/new')}
-          color="primary"
-          icon={<AddIcon/>}
-          label="Invite new users"
-          variant="outlined"/>}
+        customToolbar={
+          <Chip
+            onClick={() => history.push('/users/new')}
+            color="primary"
+            icon={<AddIcon/>}
+            label="Invite User"
+            variant="outlined"/>
+          }
+
+
       />
       <DeleteModal
         objectId={state.selectedId}
