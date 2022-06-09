@@ -11,7 +11,7 @@ import { useHistory, useParams } from 'react-router';
 import { useDispatch } from 'react-redux'
 import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { createProvider, updateProvider, fetchProvider } from '../../api/mockedApi/providers';
-import { fetchOntologyCategories } from '../../store/actions/ontologyActions.js';
+import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import { fetchProviderFields } from '../../api/mockedApi/providerFields';
 
 // components
@@ -78,7 +78,7 @@ export default function ProviderForm() {
   const load = useCallback((category) => {
     console.log(category);
     const promises = [];
-    promises.push(dispatch(fetchOntologyCategories('languages'))
+    promises.push(fetchOntologyCategories('languages')
       .then(data => setState(state => ({...state, languageOptions: data}))));
     promises.push(fetchProviderFields()
       .then(data => {
