@@ -108,7 +108,7 @@ export default function Users() {
           onClick={() => history.push('/users/new')}
           color="primary"
           icon={<AddIcon/>}
-          label="Add"
+          label="Invite new users"
           variant="outlined"/>}
       />
       <DeleteModal
