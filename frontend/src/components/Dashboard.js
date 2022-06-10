@@ -67,6 +67,9 @@ function Dashboard() {
       <NavButton to={'/users/profile'} icon={<Edit/>}
                    text="User Profile"/>
 
+      <NavButton to={'/users/profile'} icon={<Edit/>}
+                   text="Change Password"/>
+
     </Container>
   )
 }
