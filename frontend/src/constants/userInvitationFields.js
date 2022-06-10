@@ -17,13 +17,13 @@ export const userInvitationFields = {
     type: 'email',
     validator: Validator.email,
   },
-  password: {
-    ...defaultField,
-    label: 'Password',
-    type: 'password',
-    required: true,
-    validator: Validator.password
-  },
+  // password: {
+  //   ...defaultField,
+  //   label: 'Password',
+  //   type: 'password',
+  //   required: true,
+  //   validator: Validator.password
+  // },
   first_name: {
     ...defaultField,
     label: 'First name',
