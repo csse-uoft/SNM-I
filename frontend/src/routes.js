@@ -14,6 +14,7 @@ import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
 import UserInvite from './components/users/UserInvite'
+import UserProfile from "./components/users/UserProfile";
 import NeedForm from './components/client_needs/NeedForm'
 import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
@@ -51,6 +52,7 @@ const routes = (
     <AdminRoute path='/users/:id/edit' component={UserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
     <AdminRoute path='/users/invite' component={UserInvite}/>
+    <AdminRoute path='/users/profile' component={UserProfile}/>
     <AdminRoute path='/users/:id' component={User}/>
     <AdminRoute path='/users' component={Users}/>
     <AdminRoute path='/admin-logs' component={AdminLogs}/>
