@@ -64,6 +64,9 @@ function Dashboard() {
       <NavButton to={'/questions'} icon={<Edit/>}
                  text="Manage Questions"/>
 
+      <NavButton to={'/questions'} icon={<Edit/>}
+                   text="Update Profile"/>
+
     </Container>
   )
 }
