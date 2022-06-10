@@ -2,7 +2,7 @@ import RadioField from "../components/shared/fields/RadioField";
 import { Validator } from "../helpers";
 import { defaultField } from "./index";
 
-export const userFormFields = {
+export const userInvitationFields = {
   is_superuser: {
     ...defaultField,
     label: 'Admin?',
@@ -10,18 +10,20 @@ export const userFormFields = {
     options: {Yes: true, No: false},
     required: true,
   },
-  username: {
+  email: {
     ...defaultField,
-    label: 'Username',
     required: true,
+    label: 'Email',
+    type: 'email',
+    validator: Validator.email,
   },
-  password: {
-    ...defaultField,
-    label: 'Password',
-    type: 'password',
-    required: true,
-    validator: Validator.password
-  },
+  // password: {
+  //   ...defaultField,
+  //   label: 'Password',
+  //   type: 'password',
+  //   required: true,
+  //   validator: Validator.password
+  // },
   first_name: {
     ...defaultField,
     label: 'First name',
@@ -29,12 +31,6 @@ export const userFormFields = {
   last_name: {
     ...defaultField,
     label: 'Last name',
-  },
-  email: {
-    ...defaultField,
-    label: 'Email',
-    type: 'email',
-    validator: Validator.email,
   },
   primary_phone_number: {
     ...defaultField,
