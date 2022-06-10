@@ -89,6 +89,15 @@ export default function UserInvite() {
     }
   };
 
+  const handleOnBlur = (e, field, option) => {
+    if (option.validator && !!option.validator(state.form[field]))
+      // state.errors.field = option.validator(e.target.value)
+      setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
+      //console.log(state.errors)
+    else
+      setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
+  };
+
 
   return (
     <Container className={classes.root}>
@@ -97,7 +106,11 @@ export default function UserInvite() {
         {'Create new user'}
       </Typography>
       {Object.entries(userInvitationFields).map(([field, option]) => {
+        // if (option.validator && !!option.validator(state.form[field]))
+          // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
+          // state.errors[field] = option.validator(state.form[field])
         return (
+
           <option.component
             key={field}
             label={option.label}
@@ -106,6 +119,7 @@ export default function UserInvite() {
             value={state.form[field]}
             required={option.required}
             onChange={e => state.form[field] = e.target.value}
+            onBlur={e => handleOnBlur(e, field, option)}
             error={!!state.errors[field]}
             helperText={state.errors[field]}
           />

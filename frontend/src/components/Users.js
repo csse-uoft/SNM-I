@@ -113,7 +113,6 @@ export default function Users() {
             variant="outlined"/>
           }
 
-
       />
       <DeleteModal
         objectId={state.selectedId}
