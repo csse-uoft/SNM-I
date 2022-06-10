@@ -73,6 +73,7 @@ export default function UserInvite() {
 
   const handleSubmit = async () => {
     if (validate()) {
+      console.log('valid')
       try {
         // if (mode === 'new') {
         await createUser(state.form);
@@ -81,6 +82,7 @@ export default function UserInvite() {
         //   await updateUser(id, state.form);
         //   history.push('/users/' + id);
         // }
+
       } catch (e) {
         if (e.json) {
           setState(state => ({...state, errors: e.json}));
@@ -90,7 +92,7 @@ export default function UserInvite() {
   };
 
   const handleOnBlur = (e, field, option) => {
-    if (option.validator && !!option.validator(state.form[field]))
+    if (!isFieldEmpty(state.form[field]) && option.validator && !!option.validator(state.form[field]))
       // state.errors.field = option.validator(e.target.value)
       setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
       //console.log(state.errors)
