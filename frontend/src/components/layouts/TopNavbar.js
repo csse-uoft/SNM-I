@@ -2,11 +2,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { AppBar, Toolbar, Typography, Button, Tabs, Tab, Box } from '@mui/material';
+import {IconButton} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from "../shared";
 
 import { logout } from '../../api/auth';
 import styled from "@emotion/styled";
 import { UserContext } from "../../context";
+
 
 const StyledTabs = styled(Tabs)({
   '& .MuiTabs-indicator': {
@@ -57,6 +60,7 @@ function TopNavBar() {
   return (
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
       <Toolbar variant="dense">
+
         {isLoggedin ? (
           <StyledTabs sx={{flexGrow: 2}} value={value} onChange={tabOnChange} variant="scrollable"
                       indicatorColor='secondary'>
@@ -67,7 +71,9 @@ function TopNavBar() {
             <NavTab label="Reporting" value="/reporting"/>
             <Tab sx={{display: 'none'}} label="" value="none"/>
           </StyledTabs>
+
         ) : null}
+
 
         {isLoggedin && (
           <Box sx={{
@@ -83,6 +89,20 @@ function TopNavBar() {
           </Box>
         )}
 
+        {isLoggedin && (
+          <Box sx={{
+            paddingRight: '20px',
+            whiteSpace: 'pre',
+            textDecorationLine: 'none',
+          }}>
+            <Link to={"/profile"} onClick={() => setValue('none')}>
+              <Typography>
+                Profile
+              </Typography>
+            </Link>
+          </Box>
+      )}
+
         <Button color="inherit" onClick={() => isLoggedin ? logout() : history.push('/login')}
                 sx={{
                   marginLeft: 'auto',
@@ -91,6 +111,7 @@ function TopNavBar() {
                 }}>
           {isLoggedin ? 'Log out' : 'Login'}
         </Button>
+
 
       </Toolbar>
     </AppBar>
