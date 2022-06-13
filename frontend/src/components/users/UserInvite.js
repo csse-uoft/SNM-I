@@ -7,6 +7,7 @@ import {makeStyles} from "@mui/styles";
 import {userInvitationFields} from "../../constants/userInvitationFields";
 import {fetchUser, updateUser, createUser} from "../../api/userApi";
 import {Loading} from "../shared"
+import {AlertDialog} from "../shared/Dialogs"
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
 
@@ -30,6 +31,7 @@ export default function UserInvite() {
       ...defaultUserFields
     },
     errors: {},
+    dialog: false
     // loading: true,
   });
 
@@ -71,8 +73,19 @@ export default function UserInvite() {
     return true;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (validate()) {
+      setState(state => ({...state, dialog:true}))
+    }
+  }
+
+  const handleCancel = () => {
+    setState(state => ({...state, dialog:false}))
+    console.log("cancel")
+  }
+
+  const handleConfirm = async () => {
+    if (true) {
       console.log('valid')
       try {
         // if (mode === 'new') {
@@ -130,6 +143,10 @@ export default function UserInvite() {
       <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
         Submit
       </Button>
+      {state.dialog ?
+        <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
+                     dialogTitle={'Are you sure to submit?'} handleConfirm={handleConfirm} handleCancel={handleCancel}></AlertDialog>:
+      <> </>}
     </Container>
   )
 }
