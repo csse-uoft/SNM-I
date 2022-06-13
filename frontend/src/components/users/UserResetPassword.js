@@ -37,14 +37,15 @@ export default function UserResetPassword() {
     return (
         <Container className={classes.root}>
             <Typography variant="h5">
-                {'Reset Password'}
+                {'Please enter your old password below:'}
             </Typography>
+
 
             {Object.entries(updatePasswordFields).map(([field, option]) => {
                 return (
                     <option.component
                         key={field}
-                        label={option.label}
+                        //label={option.label}
                         type={option.type}
                         options={option.options}
                         value={state.form[field]}

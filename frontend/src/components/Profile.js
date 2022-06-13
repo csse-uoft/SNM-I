@@ -102,7 +102,7 @@ export default function Profile() {
             {Object.entries(userProfileFields).map(([field, option]) => {
                 return (
                     <option.component
-                        disabled={true}
+                        //disabled={true}
                         key={field}
                         label={option.label}
                         type={option.type}
@@ -116,12 +116,12 @@ export default function Profile() {
                 )
             })}
 
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>
-                Edit
-            </Button>
-            &nbsp;&nbsp;&nbsp;
+            {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>*/}
+            {/*    Edit*/}
+            {/*</Button>*/}
+            {/*&nbsp;&nbsp;&nbsp;*/}
             <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-                Submit
+                Submit Changes
             </Button>
 
         </Container>
