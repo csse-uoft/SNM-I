@@ -75,12 +75,12 @@ export default function UserInvite() {
 
   const handleSubmit = () => {
     if (validate()) {
-      setState(state => ({...state, dialog:true}))
+      setState(state => ({...state, dialog: true}))
     }
   }
 
   const handleCancel = () => {
-    setState(state => ({...state, dialog:false}))
+    setState(state => ({...state, dialog: false}))
     console.log("cancel")
   }
 
@@ -108,7 +108,7 @@ export default function UserInvite() {
     if (!isFieldEmpty(state.form[field]) && option.validator && !!option.validator(state.form[field]))
       // state.errors.field = option.validator(e.target.value)
       setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
-      //console.log(state.errors)
+    //console.log(state.errors)
     else
       setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
   };
@@ -122,8 +122,8 @@ export default function UserInvite() {
       </Typography>
       {Object.entries(userInvitationFields).map(([field, option]) => {
         // if (option.validator && !!option.validator(state.form[field]))
-          // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
-          // state.errors[field] = option.validator(state.form[field])
+        // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
+        // state.errors[field] = option.validator(state.form[field])
         return (
 
           <option.component
@@ -143,10 +143,12 @@ export default function UserInvite() {
       <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
         Submit
       </Button>
-      {state.dialog ?
-        <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure to submit?'} handleConfirm={handleConfirm} handleCancel={handleCancel}></AlertDialog>:
-      <> </>}
+      <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
+                   dialogTitle={'Are you sure to submit?'}
+                   buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
+                     <Button onClick={handleConfirm} key={'confirm'}autoFocus> {'confirm'}</Button>]}
+                   // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
+                   open={state.dialog}/>
     </Container>
   )
 }

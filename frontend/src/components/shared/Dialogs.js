@@ -5,33 +5,41 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import {userInvitationFields} from "../../constants/userInvitationFields";
 
-export function AlertDialog({cancelButtonText='Cancel', confirmButtonText='Confirm', ...restProps}) {
+export function AlertDialog(props) {
 
   return (
-    <div>
 
       <Dialog
-        open={true}
-        onClose={restProps.handleCancel}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        open={props.open}
       >
-        <DialogTitle id="alert-dialog-title">
-          {restProps.dialogTitle}
+        <DialogTitle>
+          {props.dialogTitle}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {restProps.dialogContentText}
+          <DialogContentText>
+            {props.dialogContentText}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={restProps.handleCancel}>{cancelButtonText}</Button>
-          <Button onClick={restProps.handleConfirm} autoFocus>
-            {confirmButtonText}
-          </Button>
+          {props.buttons}
+          {/*{Object.entries(props.buttons).map(([buttonText, handleClicking]) => {*/}
+
+          {/*  return (*/}
+
+          {/*    <Button*/}
+          {/*      key={buttonText}*/}
+          {/*      onClick={handleClicking}>*/}
+          {/*      {buttonText}*/}
+          {/*    </Button>*/}
+          {/*  )*/}
+          {/*})}*/}
+          {/*<Button onClick={props.handleCancel}>{cancelButtonText}</Button>*/}
+          {/*<Button onClick={props.handleConfirm} autoFocus>*/}
+          {/*  {confirmButtonText}*/}
+          {/*</Button>*/}
         </DialogActions>
       </Dialog>
-    </div>
   );
 }
