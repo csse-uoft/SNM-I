@@ -144,7 +144,7 @@ function TopNavBar() {
         ) : null}
 
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          SNM-I
+          Welcome to SNM-I
         </Typography>
 
 
