@@ -7,6 +7,7 @@ import {fetchUser, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
 import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
+import useProfileTableStyles from "../stylesheets/profile-table";
 
 
 export default function Profile() {
@@ -95,24 +96,41 @@ export default function Profile() {
     };
 
     return (
-        <Container className={classes.root}>
+        <Container className={classes.root}
+                   //style={useProfileTableStyles}
+        >
             <Typography variant="h5">
                 {'User Profile'}
             </Typography>
             {Object.entries(userProfileFields).map(([field, option]) => {
                 return (
-                    <option.component
-                        //disabled={true}
-                        key={field}
-                        label={option.label}
-                        type={option.type}
-                        options={option.options}
-                        value={state.form[field]}
-                        required={option.required}
-                        onChange={e => state.form[field] = e.target.value}
-                        error={!!state.errors[field]}
-                        helperText={state.errors[field]}
-                    />
+                    <div>
+                        <Table style={{display:'inline'}}>
+                            <option.component
+                                //disabled={true}
+                                key={field}
+                                label={option.label}
+                                type={option.type}
+                                options={option.options}
+                                value={state.form[field]}
+                                required={option.required}
+                                onChange={e => state.form[field] = e.target.value}
+                                error={!!state.errors[field]}
+                                helperText={state.errors[field]}
+                                //style={{display:'inline-block'}}
+                            />
+                        </Table>
+                        &nbsp;
+                        <div style={{display:'inline'}}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                onClick={handleSubmit}>
+                                Submit Changes
+                            </Button>
+                        </div>
+                    </div>
                 )
             })}
 
@@ -120,9 +138,9 @@ export default function Profile() {
             {/*    Edit*/}
             {/*</Button>*/}
             {/*&nbsp;&nbsp;&nbsp;*/}
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-                Submit Changes
-            </Button>
+            {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
+            {/*    Submit Changes*/}
+            {/*</Button>*/}
 
         </Container>
     )

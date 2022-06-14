@@ -1,15 +1,7 @@
 import { Validator } from "../helpers";
 import { defaultField } from "./index";
 
-export const userProfileFields = {
-    first_name: {
-        ...defaultField,
-        label: 'First name',
-    },
-    last_name: {
-        ...defaultField,
-        label: 'Last name',
-    },
+export const userProfileFieldsEmail = {
     primary_email: {
         ...defaultField,
         required: true,
@@ -22,6 +14,17 @@ export const userProfileFields = {
         label: 'Secondary Email',
         type: 'secondary email',
         validator: Validator.email,
+    }
+};
+
+export const userProfileFields = {
+    first_name: {
+        ...defaultField,
+        label: 'First name',
+    },
+    last_name: {
+        ...defaultField,
+        label: 'Last name',
     },
     primary_phone_number: {
         ...defaultField,
