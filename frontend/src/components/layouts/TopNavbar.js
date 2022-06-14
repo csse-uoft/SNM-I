@@ -2,12 +2,20 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
-
 import { logout } from '../../api/auth';
 import { UserContext } from "../../context";
-import {OpenInBrowser} from "@mui/icons-material";
+
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import ReportIcon from '@mui/icons-material/Report';
+import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
+import GroupsIcon from '@mui/icons-material/Groups';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon';
 
 const ITEM_HEIGHT = 48;
 
@@ -71,8 +79,8 @@ function TopNavBar() {
   const handleLink = link => () => {history.push(link);};
 
   return (
-    <AppBar position="fixed" sx={{flexGrow: 1, backgroundColor: 'rgb(39, 44, 52)'}}>
-      <Toolbar variant="dense" sx={{ flexGrow: 1 }}>
+    <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
+      <Toolbar variant="dense">
         {isLoggedin ? (
           // <StyledTabs sx={{flexGrow: 2}} value={value} onChange={tabOnChange} variant="scrollable"
           //             indicatorColor='secondary'>
@@ -83,7 +91,7 @@ function TopNavBar() {
           //   <NavTab label="Reporting" value="/reporting"/>
           //   <Tab sx={{display: 'none'}} label="" value="none"/>
           // </StyledTabs>
-            <div>
+            <div style={{flexGrow: 1}}>
               <IconButton
                   onClick={handleClick1}
                   size="small"
@@ -106,35 +114,35 @@ function TopNavBar() {
               >
                 <MenuItem onClick={handleLink(`/clients`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <FamilyRestroomIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Clients</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/services`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <LocationCityIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Services</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/goods`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <BusinessCenterIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Goods</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/providers`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <GroupsIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Providers</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/reporting`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <ReportIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Reporting</Typography>
                 </MenuItem>
@@ -172,21 +180,21 @@ function TopNavBar() {
               >
                 <MenuItem onClick={handleLink(`/dashboard`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <DashboardIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Dashboard</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/profile`)}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <ManageAccountsIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Profile</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLogout}>
                   <ListItemIcon>
-                    <OpenInBrowser fontSize="small" color="primary"/>
+                    <LogoutIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">
                     {isLoggedin ? 'Log out' : 'Login'}
