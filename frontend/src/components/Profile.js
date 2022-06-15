@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Grid, Paper, Stack, Table, TableBody, Typography} from "@mui/material";
-import {userProfileFields} from "../constants/userProfileFields";
+import {userPrimaryEmail, userProfileFields, userSecondaryEmail} from "../constants/userProfileFields";
 import {fetchUser, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
 import {isFieldEmpty} from "../helpers";
@@ -104,9 +104,7 @@ export default function Profile() {
             </Typography>
             {Object.entries(userProfileFields).map(([field, option]) => {
                 return (
-                    <div>
-                        <Table style={{display:'inline'}}>
-                            <option.component
+                    <option.component
                                 //disabled={true}
                                 key={field}
                                 label={option.label}
@@ -117,30 +115,55 @@ export default function Profile() {
                                 onChange={e => state.form[field] = e.target.value}
                                 error={!!state.errors[field]}
                                 helperText={state.errors[field]}
-                                //style={{display:'inline-block'}}
-                            />
-                        </Table>
-                        &nbsp;
-                        <div style={{display:'inline'}}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.button}
-                                onClick={handleSubmit}>
-                                Submit Changes
-                            </Button>
-                        </div>
-                    </div>
-                )
-            })}
+                                style={{display:'inline-block'}}
+                    />
+                )})}
 
-            {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>*/}
-            {/*    Edit*/}
-            {/*</Button>*/}
-            {/*&nbsp;&nbsp;&nbsp;*/}
-            {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
-            {/*    Submit Changes*/}
-            {/*</Button>*/}
+            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+                Submit Changes
+            </Button>
+
+            {Object.entries(userPrimaryEmail).map(([field, option]) => {
+                return (
+                    <option.component
+                        //disabled={true}
+                        key={field}
+                        label={option.label}
+                        type={option.type}
+                        options={option.options}
+                        value={state.form[field]}
+                        required={option.required}
+                        onChange={e => state.form[field] = e.target.value}
+                        error={!!state.errors[field]}
+                        helperText={state.errors[field]}
+                        //style={{display:'inline-block'}}
+                    />
+                )})}
+
+            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+                Submit Changes
+            </Button>
+
+            {Object.entries(userSecondaryEmail).map(([field, option]) => {
+                return (
+                    <option.component
+                        //disabled={true}
+                        key={field}
+                        label={option.label}
+                        type={option.type}
+                        options={option.options}
+                        value={state.form[field]}
+                        required={option.required}
+                        onChange={e => state.form[field] = e.target.value}
+                        error={!!state.errors[field]}
+                        helperText={state.errors[field]}
+                        //style={{display:'inline-block'}}
+                    />
+                )})}
+
+            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+                Submit Changes
+            </Button>
 
         </Container>
     )
