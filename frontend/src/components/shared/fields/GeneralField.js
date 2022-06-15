@@ -7,6 +7,7 @@ import {
   TimePicker,
   DatePicker,
 } from '@mui/x-date-pickers';
+import MuiPhoneNumber from "material-ui-phone-number";
 
 export const dateFormat = 'yyyy-MM-dd';
 
@@ -76,6 +77,21 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
           />
         </LocalizationProvider>
       </div>);
+  else if (type === 'phoneNumber')
+    return (
+      <div>
+        <MuiPhoneNumber
+          defaultCountry={'ca'}
+          {...props}
+          onChange={val => {onChange(val)
+            setValue(val)
+          }}
+          disableAreaCodes
+          sx={{mt: '16px', minWidth: 350}}
+          variant="outlined"
+        />
+      </div>
+    );
   else
     return (
       <div>

@@ -36,7 +36,7 @@ export const defaultUserFields = {
   email: '',
   is_superuser: false,
   primary_phone_number: '',
-  password: ''
+  alt_phone_number: ''
 };
 
 /**

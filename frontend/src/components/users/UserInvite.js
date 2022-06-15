@@ -10,6 +10,7 @@ import {Loading} from "../shared"
 import {AlertDialog} from "../shared/Dialogs"
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
+import MuiPhoneNumber from 'material-ui-phone-number';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -74,6 +75,7 @@ export default function UserInvite() {
   };
 
   const handleSubmit = () => {
+    console.log(state.form)
     if (validate()) {
       setState(state => ({...state, dialog: true}))
     }
@@ -124,7 +126,19 @@ export default function UserInvite() {
         // if (option.validator && !!option.validator(state.form[field]))
         // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
         // state.errors[field] = option.validator(state.form[field])
-        return (
+        if (option.type ==='phoneNumber')
+          return(
+            <option.component
+              key={field}
+              label={option.label}
+              type={option.type}
+              options={option.options}
+              required={option.required}
+              onChange={value => state.form[field] = value}
+              onBlur={e => handleOnBlur(e, field, option)}
+            />
+          )
+        else return (
 
           <option.component
             key={field}
@@ -140,6 +154,9 @@ export default function UserInvite() {
           />
         )
       })}
+      {/*<MuiPhoneNumber defaultCountry={'ca'} onChange={value => state.form.phone = value} sx={{mt: '16px', minWidth: 350}}*/}
+      {/*                variant="outlined" label="Phone number"*/}
+      {/*/>*/}
       <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
         Submit
       </Button>
