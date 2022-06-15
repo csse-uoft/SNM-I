@@ -136,6 +136,8 @@ export default function UserInvite() {
               required={option.required}
               onChange={value => state.form[field] = value}
               onBlur={e => handleOnBlur(e, field, option)}
+              error={!!state.errors[field]}
+              helperText={state.errors[field]}
             />
           )
         else return (
