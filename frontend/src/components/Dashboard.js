@@ -64,6 +64,9 @@ function Dashboard() {
       <NavButton to={'/questions'} icon={<Edit/>}
                  text="Manage Questions"/>
 
+      <NavButton to={'/users/reset-password'} icon={<Edit/>}
+                 text="Reset Password"/>
+
     </Container>
   )
 }

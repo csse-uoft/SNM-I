@@ -17,8 +17,8 @@ export default function User() {
     });
   }, [id]);
 
-  if (loading)
-    return <Loading message={`Loading user...`}/>;
+//  if (loading)
+//    return <Loading message={`Loading user...`}/>;
 
   return (
     <Container>
