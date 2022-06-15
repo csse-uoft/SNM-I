@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Grid, Paper, Stack, Table, TableBody, Typography} from "@mui/material";
-import {userPrimaryEmail, userProfileFields, userSecondaryEmail} from "../constants/userProfileFields";
+import {userPhoneFields, userPrimaryEmail, userProfileFields, userSecondaryEmail} from "../constants/userProfileFields";
 import {fetchUser, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
 import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
 import useProfileTableStyles from "../stylesheets/profile-table";
+import {userInvitationFields} from "../constants/userInvitationFields";
 
 
 export default function Profile() {
@@ -91,9 +92,6 @@ export default function Profile() {
         }
     };
 
-    const handleEdit = async () => {
-
-    };
 
     return (
         <Container className={classes.root}
@@ -122,6 +120,28 @@ export default function Profile() {
             <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
                 Submit Changes
             </Button>
+
+            {Object.entries(userPhoneFields).map(([field, option]) => {
+                return (
+                    <option.component
+                        //disabled={true}
+                        key={field}
+                        label={option.label}
+                        type={option.type}
+                        options={option.options}
+                        value={state.form[field]}
+                        required={option.required}
+                        onChange={e => state.form[field] = e.target.value}
+                        error={!!state.errors[field]}
+                        helperText={state.errors[field]}
+                        style={{display:'inline-block'}}
+                    />
+                )})}
+
+            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+                Submit Changes
+            </Button>
+
 
             {Object.entries(userPrimaryEmail).map(([field, option]) => {
                 return (

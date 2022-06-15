@@ -28,8 +28,11 @@ export const userProfileFields = {
     last_name: {
         ...defaultField,
         label: 'Last name',
-    },
-    primary_phone_number: {
+    }
+};
+
+export const userPhoneFields = {
+primary_phone_number: {
         ...defaultField,
         label: 'Telephone',
         validator: Validator.phone,
