@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "material-ui-phone-number": "^3.0.0",
-    "react-phone-input-2": "^2.15.0"
-  }
-}
