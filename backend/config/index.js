@@ -40,13 +40,14 @@ module.exports = {
   mailConfig: {
     from: process.env.MAIL_SENDER || 'no-reply@example.com',
     mailServer: {
-      host:  process.env.MAIL_HOST || 'example.com',
-      port: process.env.MAIL_PORT || 25,
+      host:  process.env.MAIL_SERVER || 'example.com',
+      port: Number(process.env.MAIL_PORT) || 25,
       auth: {
         user: process.env.MAIL_USERNAME || 'username@example.com',
         pass: process.env.MAIL_PASSWORD || 'password'
       },
-      forceTLS: true,
+      secure: true,  // STARTTLS
+      // forceTLS: true,
     },
   },
 
