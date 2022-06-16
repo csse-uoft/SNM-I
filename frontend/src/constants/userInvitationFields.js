@@ -34,11 +34,13 @@ export const userInvitationFields = {
   },
   primary_phone_number: {
     ...defaultField,
+    type: 'phoneNumber',
     label: 'Telephone',
     validator: Validator.phone
   },
   alt_phone_number: {
     ...defaultField,
+    type: 'phoneNumber',
     label: 'Alternate phone number',
     validator: Validator.phone
   }
