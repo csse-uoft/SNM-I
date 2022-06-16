@@ -83,6 +83,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
         <MuiPhoneNumber
           defaultCountry={'ca'}
           {...props}
+          value={value}
           onChange={val => {onChange(val)
             setValue(val)
           }}
