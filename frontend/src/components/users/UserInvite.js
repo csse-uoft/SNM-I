@@ -165,7 +165,7 @@ export default function UserInvite() {
       <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                    dialogTitle={'Are you sure to submit?'}
                    buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
-                     <Button onClick={handleConfirm} key={'confirm'}autoFocus> {'confirm'}</Button>]}
+                     <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
                    // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
                    open={state.dialog}/>
     </Container>
