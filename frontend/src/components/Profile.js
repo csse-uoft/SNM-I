@@ -9,7 +9,21 @@ import {isFieldEmpty} from "../helpers";
 import {DUPLICATE_HELPER_TEXT, REQUIRED_HELPER_TEXT} from "../constants";
 import {AlertDialog} from "./shared/Dialogs";
 import {value} from "lodash/seq";
+import {Edit} from "@mui/icons-material";
+import {Link} from "./shared";
 
+function NavButton({to, text}) {
+    return (
+        <Link to={to}>
+            <Button
+                variant="contained"
+                color="primary"
+                style={{display: 'block', width: 'inherit', marginTop: '10px', marginBottom: '20px'}}>
+                {text}
+            </Button>
+        </Link>
+    );
+}
 
 export default function Profile() {
     const useStyles = makeStyles(() => ({
@@ -243,6 +257,14 @@ export default function Profile() {
                     style={{display: 'inline-block'}}>
                 Submit Changes
             </Button>
+
+            <Typography variant="h6"
+                        style={{marginTop: '10px'}}>
+                {'Want to change your password? Click below:'}
+            </Typography>
+
+            <NavButton to={'/users/reset-password'}
+                       text={'Reset Password'}/>
 
             <AlertDialog
                 dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}

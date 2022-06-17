@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {defaultUserFields} from "../../constants/default_fields";
 import {Button, Container, TextField, Typography} from "@mui/material";
-import {updatePasswordFields} from "../../constants/updatePasswordFields";
+import {NewPasswordFields, updatePasswordFields} from "../../constants/updatePasswordFields";
 
 
 const useStyles = makeStyles(() => ({
@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-export default function UserResetPassword() {
+export default function UserNewPassword() {
     const classes = useStyles();
     const [state, setState] = useState({
         form: {
@@ -28,13 +28,6 @@ export default function UserResetPassword() {
 
 
     const validate = () => {
-        // const errors = {};
-        // for (const [field, option] of Object.entries(updatePasswordFields)) {
-        //     if (field ==='12345' ) {
-        //         errors[field] = 'Not Match!';
-        //         setState(state => ({...state, errors}));
-        //         return false
-        //     }}
         return true;
     };
 
@@ -42,20 +35,19 @@ export default function UserResetPassword() {
         console.log(state.form)
         if (validate()) {
             setState(state => ({...state, dialog: true}))
-            this.props.history.push('/users/new-password')
         }
     }
 
-
-
     return (
         <Container className={classes.root}>
-            <Typography variant="h5">
-                {'Please enter your old password below:'}
+            <Typography
+                variant="h5"
+                style={{marginTop: '10px'}}>
+                {'Please enter your new password:'}
             </Typography>
 
 
-            {Object.entries(updatePasswordFields).map(([field, option]) => {
+            {Object.entries(NewPasswordFields).map(([field, option]) => {
                 return (
                     <option.component
                         key={field}
@@ -67,11 +59,41 @@ export default function UserResetPassword() {
                         onChange={e => state.form[field] = e.target.value}
                         error={!!state.errors[field]}
                         helperText={state.errors[field]}
+                        style={{marginTop: '10px'}}
                     />
                 )
             })}
 
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+
+            <Typography variant="h5"
+                        style={{marginTop: '20px'}}>
+                {'Please repeat your new password:'}
+            </Typography>
+
+
+            {Object.entries(NewPasswordFields).map(([field, option]) => {
+                return (
+                    <option.component
+                        key={field}
+                        //label={option.label}
+                        type={option.type}
+                        options={option.options}
+                        value={state.form[field]}
+                        required={option.required}
+                        onChange={e => state.form[field] = e.target.value}
+                        error={!!state.errors[field]}
+                        helperText={state.errors[field]}
+                        style={{marginTop: '10px'}}
+                    />
+                )
+            })}
+
+            <Button
+                variant="contained"
+                color="primary"
+                style={{marginTop: '20px'}}
+                className={classes.button}
+                onClick={handleSubmit}>
                 Submit
             </Button>
         </Container>
