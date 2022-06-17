@@ -22,11 +22,11 @@
     "react-router-dom": "^5.2.0",
     "react-star-rating-component": "^1.4.1",
     "react-window": "^1.8.5",
-    "redux": "^4.0.5",
-    "source-map-explorer": "^2.5.2"
+    "redux": "^4.0.5"
   },
   "devDependencies": {
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "source-map-explorer": "^2.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
