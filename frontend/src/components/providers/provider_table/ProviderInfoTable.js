@@ -9,7 +9,7 @@ import { operationHourListToObject, OperationHourTable }
   from '../../../helpers/operation_hour_helpers';
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
-import useProfileTableStyles from '../../../stylesheets/profile-table'
+import useProfileTableStyles from '../../../styles/profileTable'
 
 export default function ProviderInfoTable({step, provider, infoFields, providerFields}) {
   let rowTitle, rowValue;

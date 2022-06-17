@@ -4,7 +4,6 @@
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from "react-router";
-import { useDispatch } from 'react-redux';
 import { providerFields, allForms, providerFormTypes } from '../../constants/provider_fields.js'
 import { clientFields } from "../../constants/client_fields";
 import { fetchQuestions } from '../../api/mockedApi/question';
@@ -69,7 +68,6 @@ function StepFields({stepFields, fields, stepName, handleRadioChange, handleDele
 export default function ManageFields() {
   const classes = useStyles();
   const history = useHistory();
-  const dispatch = useDispatch();
   const [state, setState] = useState({
     category: '',
     stepToAdd: '',
@@ -120,7 +118,7 @@ export default function ManageFields() {
       setState(state => ({...state, fields: {...state.fields, client: clientFields}}));
     })
 
-  }, [dispatch]);
+  }, []);
 
   const submit = async () => {
     let form = {};

@@ -1,7 +1,5 @@
-import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ACTION_ERROR } from "../../store/defaults";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
 import { Container, Fade } from "@mui/material";
 
@@ -24,9 +22,6 @@ export default function GenericPage(props) {
     nameFormatter, columnsWithoutOptions
   } = props;
   const title = type.charAt(0).toUpperCase() + type.slice(1);
-
-  // redux hooks
-  const dispatch = useDispatch();
 
   // react hooks
   const history = useHistory();
@@ -65,7 +60,7 @@ export default function GenericPage(props) {
         data: state.data.filter(item => item.id !== state.deleteId)
       }));
     }
-  }, [dispatch, deleteItem]);
+  }, [deleteItem]);
 
   const showDeleteDialog = useCallback((idx) => {
     const item = state.data[idx];

@@ -45,3 +45,8 @@ export async function deleteProvider(updatedProvider) {
   providersStore.save();
   return {success: true}
 }
+
+
+export async function rateProvider(id, rating){
+
+}

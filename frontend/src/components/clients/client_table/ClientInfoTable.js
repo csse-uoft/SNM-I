@@ -8,7 +8,7 @@ import { formatPhoneNumber } from '../../../helpers/phone_number_helpers';
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
 
-import useProfileTableStyles from '../../../stylesheets/profile-table'
+import useProfileTableStyles from '../../../styles/profileTable'
 
 export default function ClientInfoTable({ step, client, infoFields, clientFields }) {
 

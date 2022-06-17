@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import _ from 'lodash';
 import { useParams } from "react-router";
-import { useDispatch } from "react-redux";
 import { Container, Typography, Alert , Button} from "@mui/material";
 import { Edit, Print } from '@mui/icons-material';
 import { Link } from '../shared'
@@ -18,8 +17,6 @@ import { clientFields } from '../../constants/client_fields.js'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 
 export default function Client() {
-  //redux hooks
-  const dispatch = useDispatch();
   const {id} = useParams();
 
   const [state, setState] = useState({
@@ -36,7 +33,7 @@ export default function Client() {
           data
         }))
       })
-  }, [dispatch, id]);
+  }, [id]);
 
   useEffect(() => {
       if (state.CF == null) {
@@ -47,7 +44,7 @@ export default function Client() {
           }))
         })
       }
-    }, [dispatch, state.CF]
+    }, [state.CF]
   );
 
 

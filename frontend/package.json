@@ -10,29 +10,20 @@
     "@mui/material": "^5.8.0",
     "@mui/styles": "^5.8.0",
     "@mui/x-date-pickers": "^5.0.0-alpha.3",
-    "chart.js": "^3.5.1",
     "date-fns": "^2.23.0",
-    "isomorphic-fetch": "^3.0.0",
-    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.20",
-    "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
     "react-bootstrap": "^1.6.1",
-    "react-chartjs": "^1.2.0",
     "react-dom": "^17.0.2",
     "react-google-maps": "^9.4.5",
     "react-redux": "^7.2.1",
     "react-router": "^5.2.0",
-    "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
-    "react-select": "4.3.1",
-    "react-star-rating": "^1.4.2",
     "react-star-rating-component": "^1.4.1",
     "react-window": "^1.8.5",
     "redux": "^4.0.5",
-    "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.3.0"
+    "source-map-explorer": "^2.5.2"
   },
   "devDependencies": {
     "react-scripts": "5.0.1"
@@ -42,7 +33,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "aws s3 sync build/ s3://jias-snmi-ca"
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browserslist": [
     ">0.2%",
