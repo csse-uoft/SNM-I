@@ -2,6 +2,8 @@ import GeneralField from "../components/shared/fields/GeneralField";
 
 export const UN_SET = 'UN_SET';
 export const REQUIRED_HELPER_TEXT = 'This field is required';
+export const DUPLICATE_HELPER_TEXT =
+    'Your secondary email must be different from the primary email.';
 
 export const defaultField = {
   label: '',

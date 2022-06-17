@@ -6,8 +6,9 @@ import {userProfileFields} from "../constants/userProfileFields";
 import {fetchUser, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
 import {isFieldEmpty} from "../helpers";
-import {REQUIRED_HELPER_TEXT} from "../constants";
+import {DUPLICATE_HELPER_TEXT, REQUIRED_HELPER_TEXT} from "../constants";
 import {AlertDialog} from "./shared/Dialogs";
+import {value} from "lodash/seq";
 
 
 export default function Profile() {
@@ -60,6 +61,14 @@ export default function Profile() {
     const validate = () => {
         const errors = {};
         for (const [field, option] of Object.entries(userProfileFields)) {
+            // if (option.label ==='Primary Email') {
+            //     const Email1 = option.value;
+            //     console.log();
+            // }
+            // if (option.label ==='Secondary Email') {
+            //     const Email2 = field[value];
+            // }
+
             const isEmpty = isFieldEmpty(state.form[field]);
             if (option.required && isEmpty) {
                 errors[field] = REQUIRED_HELPER_TEXT;
@@ -71,13 +80,6 @@ export default function Profile() {
         }
 
         if (Object.keys(errors).length !== 0) {
-            setState(state => ({...state, errors}));
-            return false
-        }
-
-        const Email1 = userProfileFields.primary_email.valueOf();
-        const Email2 = userProfileFields.secondary_email.valueOf();
-        if (Email1 === Email2) {
             setState(state => ({...state, errors}));
             return false
         }
