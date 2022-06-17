@@ -106,6 +106,21 @@ export default function Profile() {
             setState(state => ({...state, dialog: true}))
         }
     }
+
+    const handleSubmitPrimaryEmail = () => {
+        console.log(state.form)
+        if (validate()) {
+            setState(state => ({...state, dialog: true}))
+        }
+    }
+
+    const handleSubmitSecondaryEmail = () => {
+        console.log(state.form)
+        if (validate()) {
+            setState(state => ({...state, dialog: true}))
+        }
+    }
+
     const handleCancel = () => {
         setState(state => ({...state, dialog: false}))
         console.log("cancel")
@@ -177,7 +192,6 @@ export default function Profile() {
                 Submit Changes
             </Button>
 
-
             {Object.entries(userProfileFields).map(([field, option]) => {
                 if (option.label ==='Primary Email')
                 return (
@@ -199,7 +213,7 @@ export default function Profile() {
             <Button variant="contained"
                     color="primary"
                     className={classes.button}
-                    onClick={handleSubmit}
+                    onClick={handleSubmitPrimaryEmail}
                     style={{display: 'inline-block'}}>
                 Submit Changes
             </Button>
@@ -225,7 +239,7 @@ export default function Profile() {
             <Button variant="contained"
                     color="primary"
                     className={classes.button}
-                    onClick={handleSubmit}
+                    onClick={handleSubmitSecondaryEmail}
                     style={{display: 'inline-block'}}>
                 Submit Changes
             </Button>
