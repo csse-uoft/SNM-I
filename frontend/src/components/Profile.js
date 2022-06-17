@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import {Box, Button, Container, Grid, Paper, Stack, Table, TableBody, Typography} from "@mui/material";
-import {userPhoneFields, userPrimaryEmail, userProfileFields, userSecondaryEmail} from "../constants/userProfileFields";
+import {Button, Container, Typography} from "@mui/material";
+import {userProfileFields} from "../constants/userProfileFields";
 import {fetchUser, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
 import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
-import useProfileTableStyles from "../stylesheets/profile-table";
-import {userInvitationFields} from "../constants/userInvitationFields";
+import {AlertDialog} from "./shared/Dialogs";
 
 
 export default function Profile() {
@@ -25,8 +24,6 @@ export default function Profile() {
     const history = useHistory();
     const {id} = useParams();
     const mode = id == null ? 'new' : 'edit';
-    const [edit, setIsEdit] = useState(false);
-    const userEdit = () => setIsEdit(true);
     const [state, setState] = useState({
         form: {
             ...defaultUserFields,
@@ -34,14 +31,14 @@ export default function Profile() {
             last_name: 'Cheng',
             primary_email: 'primaryEmail@gmail.com',
             secondary_email: 'secondaryEmail@gmail.com',
-            primary_phone_number: '6470000000',
-            alt_phone_number: '6471111111',
+            telephone: "+1 (444) 444-4445",
+            altTelephone: '+1 (623) 434-4444',
         },
         errors: {},
+        dialog: false
         //loading: true,
     });
 
-    /* hardcode preset*/
 
     /* deleted loading state*/
     useEffect(() => {
@@ -72,35 +69,77 @@ export default function Profile() {
                 errors[field] = msg;
             }
         }
+
         if (Object.keys(errors).length !== 0) {
             setState(state => ({...state, errors}));
             return false
         }
+
+        const Email1 = userProfileFields.primary_email.valueOf();
+        const Email2 = userProfileFields.secondary_email.valueOf();
+        if (Email1 === Email2) {
+            setState(state => ({...state, errors}));
+            return false
+        }
+
         return true;
     };
 
-    const handleSubmit = async () => {
+    // const handleSubmit = async () => {
+    //     if (validate()) {
+    //         try {
+    //             await updateUser(id, state.form);
+    //             history.push('/users/' + id);
+    //         } catch (e) {
+    //             if (e.json) {
+    //                 setState(state => ({...state, errors: e.json}));
+    //             }
+    //         }
+    //     }
+    // };
+
+    const handleSubmit = () => {
+        console.log(state.form)
         if (validate()) {
-            try {
-                await updateUser(id, state.form);
-                history.push('/users/' + id);
-            } catch (e) {
-                if (e.json) {
-                    setState(state => ({...state, errors: e.json}));
-                }
+            setState(state => ({...state, dialog: true}))
+        }
+    }
+    const handleCancel = () => {
+        setState(state => ({...state, dialog: false}))
+        console.log("cancel")
+    }
+
+    const handleConfirm = async () => {
+        console.log('valid')
+        try {
+            await updateUser(id, state.form);
+            history.push('/users/' + id);
+        } catch (e) {
+            if (e.json) {
+                setState(state => ({...state, errors: e.json}));
             }
         }
     };
 
+    const handleOnBlur = (e, field, option) => {
+        if (!isFieldEmpty(state.form[field])
+            && option.validator && !!option.validator(state.form[field]))
+            // state.errors.field = option.validator(e.target.value)
+            setState(state => ({...state,
+                errors: {...state.errors, [field]: option.validator(state.form[field])}}))
+        //console.log(state.errors)
+        else
+            setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
+    };
+
 
     return (
-        <Container className={classes.root}
-                   //style={useProfileTableStyles}
-        >
+        <Container className={classes.root}>
             <Typography variant="h5">
                 {'User Profile'}
             </Typography>
             {Object.entries(userProfileFields).map(([field, option]) => {
+                if (option.type ==='phoneNumber')
                 return (
                     <option.component
                                 //disabled={true}
@@ -110,21 +149,15 @@ export default function Profile() {
                                 options={option.options}
                                 value={state.form[field]}
                                 required={option.required}
-                                onChange={e => state.form[field] = e.target.value}
+                                onChange={value => state.form[field] = value}
+                                onBlur={e => handleOnBlur(e, field, option)}
                                 error={!!state.errors[field]}
                                 helperText={state.errors[field]}
-                                style={{display:'inline-block'}}
                     />
-                )})}
-
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-                Submit Changes
-            </Button>
-
-            {Object.entries(userPhoneFields).map(([field, option]) => {
-                return (
+                )
+                if (option.type ==='info')
+                    return (
                     <option.component
-                        //disabled={true}
                         key={field}
                         label={option.label}
                         type={option.type}
@@ -132,9 +165,9 @@ export default function Profile() {
                         value={state.form[field]}
                         required={option.required}
                         onChange={e => state.form[field] = e.target.value}
+                        onBlur={e => handleOnBlur(e, field, option)}
                         error={!!state.errors[field]}
                         helperText={state.errors[field]}
-                        style={{display:'inline-block'}}
                     />
                 )})}
 
@@ -143,47 +176,65 @@ export default function Profile() {
             </Button>
 
 
-            {Object.entries(userPrimaryEmail).map(([field, option]) => {
+            {Object.entries(userProfileFields).map(([field, option]) => {
+                if (option.label ==='Primary Email')
                 return (
-                    <option.component
-                        //disabled={true}
-                        key={field}
-                        label={option.label}
-                        type={option.type}
-                        options={option.options}
-                        value={state.form[field]}
-                        required={option.required}
-                        onChange={e => state.form[field] = e.target.value}
-                        error={!!state.errors[field]}
-                        helperText={state.errors[field]}
-                        //style={{display:'inline-block'}}
-                    />
-                )})}
+                        <option.component
+                            //disabled={true}
+                            key={field}
+                            label={option.label}
+                            type={option.type}
+                            options={option.options}
+                            value={state.form[field]}
+                            required={option.required}
+                            onChange={e => state.form[field] = e.target.value}
+                            onBlur={e => handleOnBlur(e, field, option)}
+                            error={!!state.errors[field]}
+                            helperText={state.errors[field]}
+                        />
+                    )})}
 
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+            <Button variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={handleSubmit}
+                    style={{display: 'inline-block'}}>
                 Submit Changes
             </Button>
 
-            {Object.entries(userSecondaryEmail).map(([field, option]) => {
+            {Object.entries(userProfileFields).map(([field, option]) => {
+                if (option.label ==='Secondary Email')
                 return (
-                    <option.component
-                        //disabled={true}
-                        key={field}
-                        label={option.label}
-                        type={option.type}
-                        options={option.options}
-                        value={state.form[field]}
-                        required={option.required}
-                        onChange={e => state.form[field] = e.target.value}
-                        error={!!state.errors[field]}
-                        helperText={state.errors[field]}
-                        //style={{display:'inline-block'}}
-                    />
-                )})}
+                        <option.component
+                            //disabled={true}
+                            key={field}
+                            label={option.label}
+                            type={option.type}
+                            options={option.options}
+                            value={state.form[field]}
+                            required={option.required}
+                            onChange={e => state.form[field] = e.target.value}
+                            onBlur={e => handleOnBlur(e, field, option)}
+                            error={!!state.errors[field]}
+                            helperText={state.errors[field]}
+                        />
+                    )})}
 
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+            <Button variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={handleSubmit}
+                    style={{display: 'inline-block'}}>
                 Submit Changes
             </Button>
+
+            <AlertDialog
+                dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
+                dialogTitle={'Are you sure to submit?'}
+                buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
+                    <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
+                         open={state.dialog}/>
 
         </Container>
     )
