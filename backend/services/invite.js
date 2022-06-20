@@ -17,6 +17,7 @@ const inviteNewUser = async (req, res, next) => {
 
     } else {
       // the user is a new user, store its data inside the database
+
       // createUserAccount({primary})
       // GDBUserAccountModel({primaryEmail: email, })
 

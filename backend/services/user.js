@@ -37,6 +37,23 @@ async function createUserAccount(data) {
 //   },
 // })
 
+async function createTemporaryUserAccount(data) {
+  const {
+    email, is_superuser, expirationDate
+  } = data;
+
+
+  const userAccount = GDBUserAccountModel({
+    primaryEmail: email,
+    role: is_superuser? 'admin': 'regular',
+    expirationDate
+
+  });
+
+  await userAccount.save();
+  return userAccount;
+}
+
 
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});

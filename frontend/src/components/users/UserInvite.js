@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory, useParams} from "react-router";
 
-import {defaultUserFields} from "../../constants/default_fields";
+import {defaultInvitationFields} from "../../constants/default_fields";
 import {Button, Container, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {userInvitationFields} from "../../constants/userInvitationFields";
@@ -28,7 +28,7 @@ export default function UserInvite() {
   // const mode = id == null ? 'new' : 'edit';
   const [state, setState] = useState({
     form: {
-      ...defaultUserFields
+      ...defaultInvitationFields
     },
     errors: {},
     dialog: false
@@ -105,13 +105,16 @@ export default function UserInvite() {
     }
   };
 
-  const handleOnBlur = (e, field, option) => {
+  const handleOnBlur = (field, option) => {
+
     if (!isFieldEmpty(state.form[field]) && option.validator && !!option.validator(state.form[field]))
       // state.errors.field = option.validator(e.target.value)
       setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
     //console.log(state.errors)
-    else
+    else{
       setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
+    }
+
   };
 
 
@@ -125,21 +128,22 @@ export default function UserInvite() {
         // if (option.validator && !!option.validator(state.form[field]))
         // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
         // state.errors[field] = option.validator(state.form[field])
-        if (option.type ==='phoneNumber')
-          return(
-            <option.component
-              key={field}
-              label={option.label}
-              type={option.type}
-              options={option.options}
-              required={option.required}
-              onChange={value => state.form[field] = value}
-              onBlur={e => handleOnBlur(e, field, option)}
-              error={!!state.errors[field]}
-              helperText={state.errors[field]}
-            />
-          )
-        else return (
+        // if (option.type ==='phoneNumber')
+        //   return(
+        //     <option.component
+        //       key={field}
+        //       label={option.label}
+        //       type={option.type}
+        //       options={option.options}
+        //       required={option.required}
+        //       onChange={value => state.form[field] = value}
+        //       onBlur={e => handleOnBlur(e, field, option)}
+        //       error={!!state.errors[field]}
+        //       helperText={state.errors[field]}
+        //     />
+        //   )
+        // else
+        return (
 
           <option.component
             key={field}
@@ -149,7 +153,7 @@ export default function UserInvite() {
             value={state.form[field]}
             required={option.required}
             onChange={e => state.form[field] = e.target.value}
-            onBlur={e => handleOnBlur(e, field, option)}
+            onBlur={() => handleOnBlur(field, option)}
             error={!!state.errors[field]}
             helperText={state.errors[field]}
           />

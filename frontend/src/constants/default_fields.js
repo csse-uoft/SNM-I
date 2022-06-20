@@ -24,6 +24,12 @@ export const defaultFirstEntryFields = {
   securityQuestionAnswer3: '',
 }
 
+export const defaultInvitationFields = {
+  is_superuser: false,
+  email: '',
+  expirationDate: ''
+}
+
 export const defaultContactFields = {
   first_name: '',
   last_name: '',

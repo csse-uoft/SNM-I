@@ -40,6 +40,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
       onChange({target: {value: formattedDate}});
     } catch (e) {
     }
+    props.onBlur()
   };
 
   if (type === 'date')
@@ -53,9 +54,15 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
             renderInput={(params) =>
               <TextField {...params}
                          sx={{minWidth: 350}}
-                         margin="normal"/>
+                         margin="normal"
+                         required={props.required}
+                         onBlur={props.onBlur}
+                         error={props.error}
+                         helperText={props.helperText}
+              />
             }
             {...props}
+
           />
         </LocalizationProvider>
       </div>
