@@ -117,7 +117,7 @@ export default function GenericPage(props) {
 
   return (
     <Fade in>
-      <Container>
+      <Container maxWidth="xl">
         <DataTable
           columns={columns}
           data={state.data}
