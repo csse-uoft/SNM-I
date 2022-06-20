@@ -1,3 +1,9 @@
+/* Page for User Profile, functionalities including:
+*   - Display and Edit account information
+*   - Display and Edit primary/secondary email
+*   - Reset password
+* */
+
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
@@ -46,6 +52,7 @@ export default function Profile() {
     const {id} = useParams();
     const mode = id == null ? 'new' : 'edit';
     const [state, setState] = useState({
+        // hardcoded value for testing purpose
         form: {
             ...defaultUserFields,
             first_name: 'Emolee',
@@ -77,7 +84,7 @@ export default function Profile() {
             setState(state => ({...state}));
     }, [mode, id]);
 
-
+    // Helper function for checking the validity of information in the fields. (frontend check)
     const validate = () => {
         const errors = {};
         for (const [field, option] of Object.entries(userProfileFields)) {
@@ -107,6 +114,8 @@ export default function Profile() {
         return true;
     };
 
+    // Helper function for checking if the phone number and alternative
+    // phone number are the same. (frontend check)
     const validate_duplicate_phone = () => {
         const errors = {};
         const telephone = state.form.telephone;
@@ -135,6 +144,8 @@ export default function Profile() {
         return true;
     }
 
+    // Helper function for checking if the primary and secondary
+    // emails are the same. (frontend check)
     const validate_duplicate = () => {
         const errors = {};
         const primaryEmail = state.form.primary_email;
@@ -162,6 +173,7 @@ export default function Profile() {
         return true;
     }
 
+    // Profile information submit button handler
     const handleSubmit = () => {
         console.log(state.form)
         if (validate() && validate_duplicate_phone()) {
@@ -169,6 +181,7 @@ export default function Profile() {
         }
     }
 
+    // Primary email submit button handler
     const handleSubmitPrimaryEmail = () => {
         console.log(state.form)
         if (validate()) {
@@ -176,6 +189,7 @@ export default function Profile() {
         }
     }
 
+    // Secondary Email submit button handler
     const handleSubmitSecondaryEmail = () => {
         console.log(state.form)
         if (validate() && validate_duplicate()) {
@@ -183,6 +197,7 @@ export default function Profile() {
         }
     }
 
+    // Alert prompt button handlers
     const handleCancel = () => {
         setState(state => ({...state, dialog: false}))
         console.log("cancel")
@@ -200,6 +215,7 @@ export default function Profile() {
         }
     };
 
+    // OnBlur handler, called when user's focus moves from a field.
     const handleOnBlur = (e, field, option) => {
         if (!isFieldEmpty(state.form[field])
             && option.validator && !!option.validator(state.form[field]))
@@ -217,6 +233,8 @@ export default function Profile() {
             <Typography variant="h5">
                 {'User Profile'}
             </Typography>
+
+            {/* Fields for account information */}
             {Object.entries(userProfileFields).map(([field, option]) => {
                 if (option.type ==='phoneNumber')
                 return (
@@ -250,10 +268,12 @@ export default function Profile() {
                     />
                 )})}
 
+            {/* Button for account info changes */}
             <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
                 Submit Changes
             </Button>
 
+            {/* Field for primary email */}
             {Object.entries(userProfileFields).map(([field, option]) => {
                 if (option.label ==='Primary Email')
                 return (
@@ -272,6 +292,7 @@ export default function Profile() {
                         />
                     )})}
 
+            {/* Button for primary email changes */}
             <Button variant="contained"
                     color="primary"
                     className={classes.button}
@@ -280,6 +301,7 @@ export default function Profile() {
                 Submit Changes
             </Button>
 
+            {/* Field for secondary email */}
             {Object.entries(userProfileFields).map(([field, option]) => {
                 if (option.label ==='Secondary Email')
                 return (
@@ -298,6 +320,7 @@ export default function Profile() {
                         />
                     )})}
 
+            {/* Button for secondary email changes */}
             <Button variant="contained"
                     color="primary"
                     className={classes.button}
@@ -311,9 +334,11 @@ export default function Profile() {
                 {'Want to change your password? Click below:'}
             </Typography>
 
+            {/* Button for password reset */}
             <NavButton to={'/users/reset-password'}
                        text={'Reset Password'}/>
 
+            {/* Alert prompt for confirming changes */}
             <AlertDialog
                 dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                 dialogTitle={'Are you sure to submit?'}
