@@ -39,6 +39,11 @@ export const defaultUserFields = {
   alt_phone_number: ''
 };
 
+export const defaultResetPassword = {
+  new_password: '',
+  repeat_password: ''
+};
+
 /**
  * @typedef SNMClient {{address: {street_address, province, city, apt_number, postal_code},
  * num_of_dependants: string, has_children: boolean, immigration_doc_number: string,

@@ -7,7 +7,7 @@ export const updatePasswordFields = {
         required: true,
         label: 'Password',
         type: 'password',
-        validator: Validator.password,
+        validator: Validator.oldPassword,
     }
 
 };
@@ -30,6 +30,18 @@ export const RepeatPasswordFields = {
         label: 'Password',
         type: 'password',
         validator: Validator.password,
+    }
+
+};
+
+
+export const confirmEmailFields = {
+    confirm_email: {
+        ...defaultField,
+        required: true,
+        label: 'email',
+        type: 'email',
+        validator: Validator.confirmEmail,
     }
 
 };

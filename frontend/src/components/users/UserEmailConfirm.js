@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {defaultUserFields} from "../../constants/default_fields";
 import {Button, Container, TextField, Typography} from "@mui/material";
-import {updatePasswordFields} from "../../constants/updatePasswordFields";
+import {confirmEmailFields, updatePasswordFields} from "../../constants/updatePasswordFields";
 import {Link} from "../shared";
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-export default function UserResetPassword() {
+export default function UserEmailConfirm() {
     const classes = useStyles();
     const [state, setState] = useState({
         form: {
@@ -43,7 +43,7 @@ export default function UserResetPassword() {
         // return true;
 
         const errors = {};
-        for (const [field, option] of Object.entries(updatePasswordFields)) {
+        for (const [field, option] of Object.entries(confirmEmailFields)) {
             const isEmpty = isFieldEmpty(state.form[field]);
             if (option.required && isEmpty) {
                 errors[field] = REQUIRED_HELPER_TEXT;
@@ -78,11 +78,11 @@ export default function UserResetPassword() {
     return (
         <Container className={classes.root}>
             <Typography variant="h5">
-                {'Please enter your old password below:'}
+                {'Please enter your email below:'}
             </Typography>
 
 
-            {Object.entries(updatePasswordFields).map(([field, option]) => {
+            {Object.entries(confirmEmailFields).map(([field, option]) => {
                 return (
                     <option.component
                         key={field}
@@ -102,18 +102,6 @@ export default function UserResetPassword() {
             <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
                 Submit
             </Button>
-
-            <Typography
-                variant="h5"
-                style={{marginTop: '20px'}}>
-                {'Forget your password? Click below:'}
-            </Typography>
-
-            <Link to={'/users/email-confirm'}>
-                <Button variant="contained" color="primary" className={classes.button}>
-                    Reset Password
-                </Button>
-            </Link>
 
         </Container>
     )
