@@ -42,6 +42,8 @@ export default function UserNewPassword() {
                 errors[field] = REQUIRED_HELPER_TEXT;
             }
             let msg;
+
+            console.log(state.form[field]);
             if (!isEmpty && option.validator && (msg = option.validator(state.form[field]))) {
                 errors[field] = msg;
             }
@@ -63,9 +65,6 @@ export default function UserNewPassword() {
             const isEmpty = isFieldEmpty(state.form[field]);
             if (option.required && isEmpty) {
                 errors[field] = REQUIRED_HELPER_TEXT;
-            }
-            if (!_.isEqual(NewPasswordFields, RepeatPasswordFields)) {
-                errors[field] = PASSWORD_NOT_MATCH_TEXT;
             }
 
             let msg;
@@ -132,7 +131,7 @@ export default function UserNewPassword() {
 
     const handleSubmit = () => {
         console.log(state.form);
-        if (validate1()) {
+        if (validate1() && validate2() && validate3()) {
             setState(state => ({...state, dialog: true}))
         }
     };
@@ -164,9 +163,9 @@ export default function UserNewPassword() {
                         options={option.options}
                         value={state.form[field]}
                         required={option.required}
-                        //onChange={e => state.form[field] = e.target.value}
-                        onChange={value => state.form[field] = value}
-                        onBlur={e => handleOnBlur(e, field, option)}
+                        onChange={e => state.form[field] = e.target.value}
+                        //onChange={value => state.form[field] = value}
+                        //onBlur={e => handleOnBlur(e, field, option)}
                         error={!!state.errors[field]}
                         helperText={state.errors[field]}
                         style={{marginTop: '10px'}}
@@ -190,9 +189,9 @@ export default function UserNewPassword() {
                         options={option.options}
                         value={state.form[field]}
                         required={option.required}
-                        //onChange={e => state.form[field] = e.target.value}
-                        onChange={value => state.form[field] = value}
-                        onBlur={e => handleOnBlur(e, field, option)}
+                        onChange={e => state.form[field] = e.target.value}
+                        //onChange={value => state.form[field] = value}
+                        //onBlur={e => handleOnBlur(e, field, option)}
                         error={!!state.errors[field]}
                         helperText={state.errors[field]}
                         style={{marginTop: '10px'}}
