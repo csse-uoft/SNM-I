@@ -14,6 +14,16 @@ export const defaultProfileFields = {
   alt_phone_number: '',
 };
 
+export const defaultFirstEntryFields = {
+  password: '',
+  securityQuestion1: '',
+  securityQuestionAnswer1: '',
+  securityQuestion2: '',
+  securityQuestionAnswer2: '',
+  securityQuestion3: '',
+  securityQuestionAnswer3: '',
+}
+
 export const defaultContactFields = {
   first_name: '',
   last_name: '',

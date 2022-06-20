@@ -10,7 +10,6 @@ import {Loading} from "../shared"
 import {AlertDialog} from "../shared/Dialogs"
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
-import MuiPhoneNumber from 'material-ui-phone-number';
 
 const useStyles = makeStyles(() => ({
   root: {

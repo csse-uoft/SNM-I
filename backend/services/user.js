@@ -53,6 +53,13 @@ async function findUserAccountByEmail(email) {
   return userAccount;
 }
 
+async function isEmailExists(email) {
+  const userAccount = await findUserAccountByEmail(email);
+  return !!userAccount
+}
+
+
+
 async function validateCredentials(email, password) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const validated = await Hashing.validatePassword(password, userAccount.hash, userAccount.salt);
@@ -87,5 +94,5 @@ async function initUserAccounts() {
 
 
 module.exports = {
-  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts
+  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists
 };
