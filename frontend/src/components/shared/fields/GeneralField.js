@@ -4,7 +4,6 @@ import { format, parse } from 'date-fns';
 import { TextField } from '@mui/material'
 import {
   LocalizationProvider,
-  TimePicker,
   DatePicker,
 } from '@mui/x-date-pickers';
 import MuiPhoneNumber from "material-ui-phone-number";
@@ -20,7 +19,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
       else
         return null;
     }
-    return defaultValue|| '';
+    return defaultValue || '';
   });
 
   const handleChange = useCallback(e => {
@@ -29,16 +28,15 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
     onChange({target: {value: val}});
   }, [onChange, type]);
 
+
   const onChangeDate = date => {
     setValue(date);
-  }
-
-  const onAcceptDate = date => {
-    setValue(date);
-    const formattedDate = format(date, dateFormat);
     try {
+      const formattedDate = format(date, dateFormat);
       onChange({target: {value: formattedDate}});
     } catch (e) {
+      // Clear the date if the input is malformed
+      onChange({target: {value: undefined}});
     }
   };
 
@@ -48,35 +46,23 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             value={value}
-            onAccept={onAcceptDate}
             onChange={onChangeDate}
+            onAccept={() => props.onBlur()}
             renderInput={(params) =>
               <TextField {...params}
                          sx={{minWidth: 350}}
-                         margin="normal"/>
+                         margin="normal"
+                         required={props.required}
+                         error={params.error || props.error}
+                         helperText={params.helperText || props.helperText}
+                         onBlur={props.onBlur}
+              />
             }
             {...props}
           />
         </LocalizationProvider>
       </div>
     );
-  else if (type === 'time')
-    return (
-      <div>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <TimePicker
-            value={value}
-            onAccept={onAcceptDate}
-            onChange={onChangeDate}
-            renderInput={(params) =>
-              <TextField {...params}
-                         sx={{minWidth: 350}}
-                         margin="normal"/>
-            }
-            {...props}
-          />
-        </LocalizationProvider>
-      </div>);
   else if (type === 'phoneNumber')
     return (
       <div>
@@ -84,7 +70,8 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
           defaultCountry={'ca'}
           {...props}
           value={value}
-          onChange={val => {onChange(val)
+          onChange={val => {
+            onChange(val)
             setValue(val)
           }}
           // disableAreaCodes

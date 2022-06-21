@@ -187,6 +187,7 @@ const OLD_PASSWORD_ERR_MSG = "Your input doesn't match the old password, please 
 const CONFIRM_EMAIL_ERR_MSG = "Your input doesn't match the your registered email, please try again.";
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
   "where A is a letter and 1 is a digit";
+const EXPIRATION_DATE_MSG = "Dates in the past are not valid"
 
 export const Validator = {
   /**
@@ -225,6 +226,11 @@ export const Validator = {
 
   postalCode: postalCode => {
     if (!postalCodeRegex.test(postalCode))
-    return POSTAL_CODE_ERR_MSG;
+      return POSTAL_CODE_ERR_MSG;
+  },
+
+  expirationDate: expirationDate => {
+    if(new Date(expirationDate) < new Date())
+      return EXPIRATION_DATE_MSG
   }
 };

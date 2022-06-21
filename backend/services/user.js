@@ -3,14 +3,14 @@ const {GDBOrganizationModel, GDBUserAccountModel} = require('../models');
 
 async function createUserAccount(data) {
   const {
-    email, notificationEmail, password, displayName, organizationId, primaryContact
+    primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact
   } = data;
 
   const {hash, salt} = await Hashing.hashPassword(password);
 
   const userAccount = GDBUserAccountModel({
-    email,
-    notificationEmail,
+    primaryEmail,
+    secondaryEmail,
     hash,
     salt,
   });
@@ -37,9 +37,26 @@ async function createUserAccount(data) {
 //   },
 // })
 
+async function createTemporaryUserAccount(data) {
+  const {
+    email, is_superuser, expirationDate
+  } = data;
+
+
+  const userAccount = GDBUserAccountModel({
+    primaryEmail: email,
+    role: is_superuser? 'admin': 'regular',
+    expirationDate
+
+  });
+
+  await userAccount.save();
+  return userAccount;
+}
+
 
 async function updateUserAccount(email, updatedData) {
-  const userAccount = await GDBUserAccountModel.findOne({email});
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   Object.assign(userAccount, updatedData);
   await updatedData.save();
   return userAccount;
@@ -47,14 +64,21 @@ async function updateUserAccount(email, updatedData) {
 
 async function findUserAccountByEmail(email) {
   const userAccount = await GDBUserAccountModel.findOne(
-    {email},
+    {primaryEmail: email},
     {populates: ['primaryContact', 'organization']}
   );
   return userAccount;
 }
 
+async function isEmailExists(email) {
+  const userAccount = await findUserAccountByEmail(email);
+  return !!userAccount
+}
+
+
+
 async function validateCredentials(email, password) {
-  const userAccount = await GDBUserAccountModel.findOne({email});
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const validated = await Hashing.validatePassword(password, userAccount.hash, userAccount.salt);
   return {validated, userAccount};
 }
@@ -87,5 +111,5 @@ async function initUserAccounts() {
 
 
 module.exports = {
-  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts
+  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists
 };

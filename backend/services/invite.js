@@ -1,5 +1,31 @@
 const {JsonWebTokenError} = require("jsonwebtoken");
-const {User} = require('../models/user');
+const {GDBUserAccountModel} = require('../models/userAccount');
+const {isEmailExists, createUserAccount} = require('./user');
+
+
+const inviteNewUser = async (req, res, next) => {
+  const {email, first_name, last_name, is_superuser, primary_phone_number, alt_phone_number} = req.body;
+  if (!email) {
+    return res.status(400).json({success: false, message: 'Email is required to invite new user.'})
+  }
+
+  try {
+
+    if (await isEmailExists(email)){
+      // the user already exists
+      return res.status(400).json({success: false, message: 'The email is occupied by an account.'})
+
+    } else {
+      // the user is a new user, store its data inside the database
+
+      // createUserAccount({primary})
+      // GDBUserAccountModel({primaryEmail: email, })
+
+    }
+  }catch (e) {
+    return next(e)
+  }
+}
 
 const register = async (req, res, next) => {
   try {
@@ -36,4 +62,4 @@ const validateNewUser = async (req, res, next) => {
 };
 
 
-module.exports = {register, validateNewUser}
+module.exports = {register, validateNewUser, inviteNewUser}

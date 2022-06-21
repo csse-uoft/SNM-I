@@ -17,31 +17,11 @@ export const userInvitationFields = {
     type: 'email',
     validator: Validator.email,
   },
-  // password: {
-  //   ...defaultField,
-  //   label: 'Password',
-  //   type: 'password',
-  //   required: true,
-  //   validator: Validator.password
-  // },
-  first_name: {
+  expirationDate: {
     ...defaultField,
-    label: 'First name',
-  },
-  last_name: {
-    ...defaultField,
-    label: 'Last name',
-  },
-  primary_phone_number: {
-    ...defaultField,
-    type: 'phoneNumber',
-    label: 'Telephone',
-    validator: Validator.phone
-  },
-  alt_phone_number: {
-    ...defaultField,
-    type: 'phoneNumber',
-    label: 'Alternate phone number',
-    validator: Validator.phone
+    required: true,
+    label: 'Expiration date',
+    type: 'date',
+    validator: Validator.expirationDate
   }
 };
