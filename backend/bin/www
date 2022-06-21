@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 
+require('dotenv').config()
 const loadApp = require('../app');
 const debug = require('debug')('snm-i:server');
 const http = require('http');

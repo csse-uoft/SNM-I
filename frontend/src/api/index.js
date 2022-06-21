@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch';
 import { serverHost } from '../store/defaults.js';
 
 export const ACTION_SUCCESS = 'ACTION_SUCCESS';

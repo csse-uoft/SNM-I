@@ -1,9 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from './shared'
 
-// redux
-import { useSelector } from 'react-redux';
-
 import { Container, Button } from "@mui/material";
 import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria } from "@mui/icons-material";
 import { UserContext } from "../context";
