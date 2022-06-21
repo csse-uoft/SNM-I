@@ -8,6 +8,7 @@ Please confirm that ${userEmail} is your e-mail address by clicking on this link
 
 ${frontend.addr}/verify/${token}`
 
+
   const html = `
    <html>
      ${text.replaceAll('\n', '<br/>')}
