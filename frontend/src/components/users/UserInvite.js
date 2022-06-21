@@ -31,8 +31,8 @@ export default function UserInvite() {
       ...defaultInvitationFields
     },
     errors: {},
-    dialog: false
-    // loading: true,
+    dialog: false,
+    loading: false,
   });
 
   // useEffect(() => {
@@ -81,7 +81,6 @@ export default function UserInvite() {
 
   const handleCancel = () => {
     setState(state => ({...state, dialog: false}))
-    console.log("cancel")
   }
 
   const handleConfirm = async () => {
