@@ -74,7 +74,6 @@ export default function UserInvite() {
   };
 
   const handleSubmit = () => {
-    console.log(state.form)
     if (validate()) {
       setState(state => ({...state, dialog: true}))
     }
@@ -90,7 +89,8 @@ export default function UserInvite() {
       console.log('valid')
       try {
         // if (mode === 'new') {
-        await createUser(state.form);
+        const respond = await createUser(state.form);
+        console.log(respond)
         history.push('/users/');
         // } else {
         //   await updateUser(id, state.form);

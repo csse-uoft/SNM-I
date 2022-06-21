@@ -1,7 +1,7 @@
 const express = require('express');
 
 // const {login, logout} = require("../services/auth");
-const {invite, inviteNewUser} = require("../services/invite")
+const {inviteNewUser} = require("../services/invite")
 
 const router = express.Router();
 

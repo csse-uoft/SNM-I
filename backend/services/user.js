@@ -46,8 +46,8 @@ async function createTemporaryUserAccount(data) {
   const userAccount = GDBUserAccountModel({
     primaryEmail: email,
     role: is_superuser? 'admin': 'regular',
-    expirationDate
-
+    expirationDate: expirationDate,
+    status: "temporary"
   });
 
   await userAccount.save();
@@ -111,5 +111,6 @@ async function initUserAccounts() {
 
 
 module.exports = {
-  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists
+  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
+  createTemporaryUserAccount
 };

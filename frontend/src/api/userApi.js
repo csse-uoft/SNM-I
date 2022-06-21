@@ -1,7 +1,7 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
 export function createUser(params) {
-  return postJson('/users/invite', params);
+  return postJson('/api/users/invite', params);
 }
 
 export function createUsers(params) {
