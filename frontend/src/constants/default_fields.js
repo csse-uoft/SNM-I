@@ -135,3 +135,7 @@ export const generateProviderFields = (providerType, providerCategory, provider)
   }
   return fields;
 };
+
+const generateServiceFields = (service) => {
+
+}
