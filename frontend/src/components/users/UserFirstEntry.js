@@ -63,7 +63,8 @@ export default function UserFirstEntry() {
   };
 
 
-
+  if(!state.verified)
+    return <Loading message={`Loading user information...`}/>;
 
 
 
