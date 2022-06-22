@@ -20,7 +20,7 @@ const inviteNewUser = async (req, res, next) => {
 
     } else {
       // the user is a new user, store its data inside the database
-      await createTemporaryUserAccount({email, is_superuser, expirationDate: new Date(expirationDate)})
+      const userAccount = await createTemporaryUserAccount({email, is_superuser, expirationDate: new Date(expirationDate)})
       // send email
       const token = sign({
         email

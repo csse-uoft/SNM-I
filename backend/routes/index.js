@@ -1,4 +1,5 @@
 module.exports = {
   baseRoute: require('./base'),
-  registerRoute: require('./invite')
+  registerRoute: require('./invite'),
+  firstEntryRoute: require('./firstEntry'),
 }

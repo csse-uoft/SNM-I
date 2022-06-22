@@ -4,6 +4,10 @@ export function createUser(params) {
   return postJson('/api/users/invite', params);
 }
 
+export function verifyUser(token) {
+  return postJson('/api/users/firstEntry/verify', token)
+}
+
 export function createUsers(params) {
   // TODO: implement backend?
   return postJson('/users/', {csv: params});

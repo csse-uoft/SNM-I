@@ -2,7 +2,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import React, {useEffect, useState} from 'react';
 import {defaultFirstEntryFields} from "../../constants/default_fields";
-import {fetchUser, updateUser, createUser} from "../../api/userApi";
+import {verifyUser} from "../../api/userApi";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
@@ -23,7 +23,7 @@ export default function UserFirstEntry() {
   const classes = useStyles();
   const history = useHistory();
   const {token} = useParams();
-  const {email} = decoder(token)
+
 
 
   const [state, setState] = useState({
@@ -33,14 +33,19 @@ export default function UserFirstEntry() {
     errors: {},
     dialog: false,
     verified: false,
-    email: email,
+    email: '',
   });
 
-  // async function verifyToken(token) {
-  //   const {email} = decoder(token)
-  //
-  //
-  // }
+  if(!state.verified){
+    verifyToken({token})
+  }
+
+
+  async function verifyToken(token) {
+    const respond = await verifyUser(token);
+
+    setState(state => ({...state, verified:true, email:respond.email}))
+  }
 
   const handleOnBlur = (field, option) => {
 
@@ -66,7 +71,7 @@ export default function UserFirstEntry() {
     <Container className={classes.root}>
       <TextField
         sx={{mt: '16px', minWidth: 350}}
-        value={email}
+        value={state.email}
         label={'Email'}
         disabled
       />
