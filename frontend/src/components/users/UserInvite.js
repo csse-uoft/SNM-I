@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useHistory, useParams} from "react-router";
 
 import {defaultInvitationFields} from "../../constants/default_fields";
-import {Button, Container, Typography} from "@mui/material";
+import {Alert, AlertTitle, Button, Container, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {userInvitationFields} from "../../constants/userInvitationFields";
 import {fetchUser, updateUser, createUser} from "../../api/userApi";
@@ -10,6 +10,7 @@ import {Loading} from "../shared"
 import {AlertDialog} from "../shared/Dialogs"
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
+
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -32,7 +33,6 @@ export default function UserInvite() {
     },
     errors: {},
     dialog: false,
-    loading: false,
   });
 
   // useEffect(() => {
@@ -88,9 +88,9 @@ export default function UserInvite() {
       console.log('valid')
       try {
         // if (mode === 'new') {
-        const respond = await createUser(state.form);
-        console.log(respond)
-        history.push('/users/');
+        const {message} = await createUser(state.form);
+        setState(state => ({...state, success: true}))
+        history.push('/success-trans');
         // } else {
         //   await updateUser(id, state.form);
         //   history.push('/users/' + id);
@@ -170,6 +170,10 @@ export default function UserInvite() {
                      <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
                    // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
                    open={state.dialog}/>
+
+
+
+
     </Container>
   )
 }

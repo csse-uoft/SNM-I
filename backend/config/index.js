@@ -33,7 +33,7 @@ module.exports = {
 
   // For generating registration email verification token
   jwtConfig: {
-    secret: 'secret keys',
+    secret: 'secr',
     options: {expiresIn: 60 * 60 * 24} // 24 hour
   },
 

@@ -20,13 +20,13 @@ const inviteNewUser = async (req, res, next) => {
 
     } else {
       // the user is a new user, store its data inside the database
-      await createTemporaryUserAccount({email, is_superuser, expirationDate: new Date(expirationDate)})
+      const userAccount = await createTemporaryUserAccount({email, is_superuser, expirationDate: new Date(expirationDate)})
       // send email
       const token = sign({
         email
       }, jwtConfig.secret, jwtConfig.options)
       await sendVerificationMail(email, token)
-      return res.status(201).json({success: true, message: 'Success'})
+      return res.status(201).json({success: true, message: 'Successfully invited user.'})
 
 
     }
