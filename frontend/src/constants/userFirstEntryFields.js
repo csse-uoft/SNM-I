@@ -5,6 +5,7 @@ export const userFirstEntryFields = {
 
   password: {
     ...defaultField,
+    type: 'password',
     label: 'Password',
     validator: Validator.password,
     required: true,
@@ -12,8 +13,10 @@ export const userFirstEntryFields = {
 
   confirmPassword: {
     ...defaultField,
+    type: 'password',
     label: 'Confirm you password',
     required: true,
+    validator: Validator.confirmPassword
   },
 
   securityQuestion1: {

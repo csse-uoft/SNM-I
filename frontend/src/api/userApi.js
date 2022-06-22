@@ -18,6 +18,10 @@ export function fetchUser(id) {
   return getJson('/user/' + id + '/');
 }
 
+// export function fetchUserByEmail(email) {
+//   return getJson('/api/user/' + email + '/')
+// }
+
 export function fetchUsers() {
   return getJson('/users/');
 }

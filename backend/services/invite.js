@@ -26,7 +26,7 @@ const inviteNewUser = async (req, res, next) => {
         email
       }, jwtConfig.secret, jwtConfig.options)
       await sendVerificationMail(email, token)
-      return res.status(201).json({success: true, message: 'Success'})
+      return res.status(201).json({success: true, message: 'Successfully invited user.'})
 
 
     }

@@ -184,6 +184,7 @@ const PASSWORD_ERR_MSG = "Please enter a secure and strong password";
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
   "where A is a letter and 1 is a digit";
 const EXPIRATION_DATE_MSG = "Dates in the past are not valid"
+const CONFIRM_PASSWORD_ERR_MSG = 'This field must be same with your password'
 
 export const Validator = {
   /**
@@ -204,6 +205,11 @@ export const Validator = {
   password: password => {
     if (!passwordRegex.test(password))
       return PASSWORD_ERR_MSG;
+  },
+
+  confirmPassword: (confirmPassword, password) => {
+    if (confirmPassword !== password)
+      return CONFIRM_PASSWORD_ERR_MSG
   },
 
   postalCode: postalCode => {

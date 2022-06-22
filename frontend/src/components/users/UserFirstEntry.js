@@ -1,11 +1,13 @@
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import React, {useState} from "@types/react";
+import React, {useEffect, useState} from 'react';
 import {defaultFirstEntryFields} from "../../constants/default_fields";
 import {fetchUser, updateUser, createUser} from "../../api/userApi";
 import {Loading} from "../shared";
-import {Button, Container} from "@mui/material";
-import {userInvitationFields} from "../../constants/userInvitationFields";
+import {Button, Container, TextField} from "@mui/material";
+import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
+import decoder from 'jwt-decode';
+import {isFieldEmpty} from "../../helpers";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,17 +19,43 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export default function UserInvite() {
+export default function UserFirstEntry() {
   const classes = useStyles();
   const history = useHistory();
-  const {id} = useParams();
+  const {token} = useParams();
+  const {email} = decoder(token)
+
+
   const [state, setState] = useState({
     form: {
       ...defaultFirstEntryFields
     },
     errors: {},
     dialog: false,
+    verified: false,
+    email: email,
   });
+
+  // async function verifyToken(token) {
+  //   const {email} = decoder(token)
+  //
+  //
+  // }
+
+  const handleOnBlur = (field, option) => {
+
+    if (!isFieldEmpty(state.form[field]) && field === "confirmPassword" && !!option.validator(state.form[field], state.form["password"])){
+      setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field], state.form["password"])}}))
+
+    }else if(!isFieldEmpty(state.form[field]) && field !=="confirmPassword" && option.validator && !!option.validator(state.form[field])){
+
+      setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
+    }
+    else{
+      setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
+    }
+
+  };
 
 
 
@@ -36,7 +64,13 @@ export default function UserInvite() {
 
   return (
     <Container className={classes.root}>
-      {Object.entries(userInvitationFields).map(([field, option]) => {
+      <TextField
+        sx={{mt: '16px', minWidth: 350}}
+        value={email}
+        label={'Email'}
+        disabled
+      />
+      {Object.entries(userFirstEntryFields).map(([field, option]) => {
         // if (option.validator && !!option.validator(state.form[field]))
         // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
         // state.errors[field] = option.validator(state.form[field])
@@ -50,7 +84,7 @@ export default function UserInvite() {
             value={state.form[field]}
             required={option.required}
             onChange={e => state.form[field] = e.target.value}
-            onBlur={e => handleOnBlur(e, field, option)}
+            onBlur={() => handleOnBlur(field, option)}
             error={!!state.errors[field]}
             helperText={state.errors[field]}
           />
