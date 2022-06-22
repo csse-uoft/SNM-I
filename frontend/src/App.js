@@ -9,9 +9,6 @@ import { blue, pink } from '@mui/material/colors'
 import routes from "./routes";
 import { UserContext, getUserContext } from './context';
 
-// style
-import './stylesheets/App.scss';
-
 const theme = createTheme({
   palette: {
     primary: {main: blue[700]},

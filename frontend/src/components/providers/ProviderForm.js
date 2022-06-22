@@ -6,10 +6,7 @@ import {
 } from '../../helpers/operation_hour_helpers';
 import { provider_verify_form } from "../../helpers/provider_verify_form";
 
-// redux
 import { useHistory, useParams } from 'react-router';
-import { useDispatch } from 'react-redux'
-import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { createProvider, updateProvider, fetchProvider } from '../../api/mockedApi/providers';
 import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import { fetchProviderFields } from '../../api/mockedApi/providerFields';
@@ -42,7 +39,6 @@ const useStyles = makeStyles(theme => ({
 export default function ProviderForm() {
   const classes = useStyles();
   const history = useHistory();
-  const dispatch = useDispatch();
   const {id, formType: category} = useParams();
   const mode = id ? 'edit' : 'new';
   const [state, setState] = useState({
@@ -96,7 +92,7 @@ export default function ProviderForm() {
         }
       }));
     Promise.all(promises).then(() => setState(state => ({...state, loading: false})));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     // load provider first if editing
@@ -111,7 +107,7 @@ export default function ProviderForm() {
     } else {
       load(category);
     }
-  }, [dispatch, id, category, load]);
+  }, [id, category, load]);
 
   const handleFinish = async () => {
     const newForm = {...form};

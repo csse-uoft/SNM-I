@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Button, FormGroup, FormControl, FormLabel, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { rateProvider } from '../../store/actions/providerActions.js';
+import { rateProvider } from '../../api/mockedApi/providers';
 import StarRatingComponent from 'react-star-rating-component';
 
 class ProviderRatingForm extends Component {
@@ -32,7 +32,7 @@ class ProviderRatingForm extends Component {
   }
   handleSubmit(e) {
     const id = this.props.match.params.id
-    this.props.dispatch(rateProvider(id, this.state));
+    rateProvider(id, this.state);
     this.props.history.push('/provider/' + id);
   }
 

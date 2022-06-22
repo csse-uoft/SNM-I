@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch';
 import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
 import { receiveClientNeeds } from './needActions'

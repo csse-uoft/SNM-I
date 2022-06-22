@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router';
-import { ACTION_SUCCESS } from '../../store/defaults.js';
 import { clientFields } from '../../constants/client_fields.js'
 import { defaultProfileFields, generateClientField } from '../../constants/default_fields.js'
 
-// redux
-import { useDispatch } from 'react-redux';
 import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import { createClient, updateClient, fetchClient } from '../../api/mockedApi/clients';
 import { fetchEligibilities } from '../../api/mockedApi/eligibility';
@@ -32,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 export default function ClientForm() {
   const classes = useStyles();
   const history = useHistory();
-  const dispatch = useDispatch();
   const {id} = useParams();
   const mode = id ? 'edit' : 'new';
   const [state, setState] = useState({
@@ -76,7 +72,7 @@ export default function ClientForm() {
     id && promises.push(fetchClient(id)
       .then(data => setState(state => ({...state, client: data}))));
     Promise.all(promises).then(() => setState(state => ({...state, loading: false})));
-  }, [dispatch, id]);
+  }, [id]);
 
   const handleFinish = async () => {
     // TODO: pretty error message

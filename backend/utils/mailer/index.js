@@ -6,10 +6,10 @@ const transporter = nodemailer.createTransport(mailConfig.mailServer);
 
 const sendVerificationMail = async (email, token) => {
   const mailOptions = {
-    ...mailConfig,
+    from: mailConfig.from,
     to: email,
     subject: 'Account Verification',
-    html: getVerificationTemplate(email, token)
+    ...getVerificationTemplate(email, token)
   };
   await new Promise((resole, reject) => {
     console.log("http://localhost:5000/register/" + token)

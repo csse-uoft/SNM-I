@@ -1,10 +1,13 @@
-const {JsonWebTokenError} = require("jsonwebtoken");
+const {JsonWebTokenError, sign} = require("jsonwebtoken");
 const {GDBUserAccountModel} = require('../models/userAccount');
-const {isEmailExists, createUserAccount} = require('./user');
+const {isEmailExists, createTemporaryUserAccount} = require('./user');
+const {jwtConfig} = require("../config");
+const {sendVerificationMail} = require("../utils");
+
 
 
 const inviteNewUser = async (req, res, next) => {
-  const {email, first_name, last_name, is_superuser, primary_phone_number, alt_phone_number} = req.body;
+  const {email, is_superuser, expirationDate} = req.body;
   if (!email) {
     return res.status(400).json({success: false, message: 'Email is required to invite new user.'})
   }
@@ -17,9 +20,14 @@ const inviteNewUser = async (req, res, next) => {
 
     } else {
       // the user is a new user, store its data inside the database
+      await createTemporaryUserAccount({email, is_superuser, expirationDate: new Date(expirationDate)})
+      // send email
+      const token = sign({
+        email
+      }, jwtConfig.secret, jwtConfig.options)
+      await sendVerificationMail(email, token)
+      return res.status(201).json({success: true, message: 'Success'})
 
-      // createUserAccount({primary})
-      // GDBUserAccountModel({primaryEmail: email, })
 
     }
   }catch (e) {

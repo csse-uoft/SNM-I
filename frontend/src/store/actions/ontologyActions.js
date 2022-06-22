@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch';
 import { serverHost } from '../defaults.js';
 
 export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES'
