@@ -7,6 +7,8 @@ import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
 import {isFieldEmpty} from "../../helpers";
+import {userInvitationFields} from "../../constants/userInvitationFields";
+import {REQUIRED_HELPER_TEXT} from "../../constants";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -61,6 +63,27 @@ export default function UserFirstEntry() {
 
   };
 
+  const validate = () => {
+    const errors = {};
+    for (const [field, option] of Object.entries(userFirstEntryFields)) {
+      const isEmpty = isFieldEmpty(state.form[field]);
+      if (option.required && isEmpty) {
+        errors[field] = REQUIRED_HELPER_TEXT;
+      }
+      let msg;
+      if (!isEmpty && field === "confirmPassword" && (msg = option.validator(state.form[field], state.form["password"]))) {
+        errors[field] = msg
+      }else if (!isEmpty && field !== "confirmPassword"&& option.validator && (msg = option.validator(state.form[field]))) {
+      errors[field] = msg;
+      }
+    }
+    if (Object.keys(errors).length !== 0) {
+      setState(state => ({...state, errors}));
+      return false
+    }
+    return true;
+  };
+
 
   if(!state.verified)
     return <Loading message={`Loading user information...`}/>;
@@ -95,6 +118,10 @@ export default function UserFirstEntry() {
           />
         )
       })}
+
+      <Button variant="contained" color="primary" className={classes.button} onClick={validate}>
+        Submit
+      </Button>
     </Container>
 
   )

@@ -17,7 +17,7 @@ const verifyUser = async (req, res, next) => {
     if (userAccount.status !== "temporary"){
       return res.status(400).json({success: false, message: "The user is verified already"})
     }
-    return res.status(201).json({success: true, message:'success', email: userAccount.primaryEmail})
+    return res.status(200).json({success: true, message:'success', email: userAccount.primaryEmail})
   }catch (e){
     return next(e)
   }
