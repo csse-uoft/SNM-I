@@ -15,6 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import LoginIcon from '@mui/icons-material/Login';
 import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon';
 
 const ITEM_HEIGHT = 48;
@@ -65,15 +66,15 @@ function TopNavBar() {
   //   history.push(newValue);
   // };
 
-  const [anchorEl1, setAnchorEl1] = useState(null);
-  const [anchorEl2, setAnchorEl2] = useState(null);
-  const open1 = Boolean(anchorEl1);
-  const open2 = Boolean(anchorEl2);
+  const [anchorElLeft, setAnchorElLeft] = useState(null);
+  const [anchorElRight, setAnchorElRight] = useState(null);
+  const openLeft = Boolean(anchorElLeft);
+  const openRight = Boolean(anchorElRight);
 
-  const handleClick1 = event => {setAnchorEl1(event.currentTarget);};
-  const handleClose1 = () => {setAnchorEl1(null);};
-  const handleClick2 = event => {setAnchorEl2(event.currentTarget);};
-  const handleClose2 = () => {setAnchorEl2(null);};
+  const handleClickLeft = event => {setAnchorElLeft(event.currentTarget);};
+  const handleCloseLeft = () => {setAnchorElLeft(null);};
+  const handleClickRight = event => {setAnchorElRight(event.currentTarget);};
+  const handleCloseRight = () => {setAnchorElRight(null);};
 
   const handleLogout = () => {isLoggedin ? logout() : history.push('/login')};
   const handleLink = link => () => {history.push(link);};
@@ -93,7 +94,7 @@ function TopNavBar() {
           // </StyledTabs>
             <div style={{flexGrow: 1}}>
               <IconButton
-                  onClick={handleClick1}
+                  onClick={handleClickLeft}
                   size="small"
                   style={{color: 'white'}}
               >
@@ -101,10 +102,10 @@ function TopNavBar() {
               </IconButton>
               <Menu
                   id="function-menu"
-                  anchorEl={anchorEl1}
+                  anchorEl={anchorElLeft}
                   keepMounted
-                  open={open1}
-                  onClose={handleClose1}
+                  open={openLeft}
+                  onClose={handleCloseLeft}
                   PaperProps={{
                     style: {
                       maxHeight: ITEM_HEIGHT * 4.5,
@@ -156,10 +157,10 @@ function TopNavBar() {
         </Typography>
 
 
-        {isLoggedin && (
+        {isLoggedin ? (
             <div>
               <IconButton
-                  onClick={handleClick2}
+                  onClick={handleClickRight}
                   size="small"
                   style={{color: 'white'}}
               >
@@ -167,10 +168,10 @@ function TopNavBar() {
               </IconButton>
               <Menu
                   id="user-menu"
-                  anchorEl={anchorEl2}
+                  anchorEl={anchorElRight}
                   keepMounted
-                  open={open2}
-                  onClose={handleClose2}
+                  open={openRight}
+                  onClose={handleCloseRight}
                   PaperProps={{
                     style: {
                       maxHeight: ITEM_HEIGHT * 4.5,
@@ -201,6 +202,17 @@ function TopNavBar() {
                   </Typography>
                 </MenuItem>
               </Menu>
+            </div>
+        ) : (
+            <div>
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LoginIcon fontSize="medium" sx={{ color:'white' }}/>
+                  </ListItemIcon>
+                  <Typography variant="inherit">
+                    {isLoggedin ? 'Log out' : 'Login'}
+                  </Typography>
+                </MenuItem>
             </div>
         )}
 
