@@ -6,7 +6,6 @@ import {verifyUser} from "../../api/userApi";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
-import decoder from 'jwt-decode';
 import {isFieldEmpty} from "../../helpers";
 
 const useStyles = makeStyles(() => ({
