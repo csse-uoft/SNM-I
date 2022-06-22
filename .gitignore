@@ -1,2 +1,3 @@
 .idea/
-frontend/yarn.lock
+.DS_Store
+backend/.env

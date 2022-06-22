@@ -7,7 +7,7 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import {Button, Container, Typography} from "@mui/material";
+import {Box, Button, Container, Grid, Typography} from "@mui/material";
 import {userProfileFields} from "../constants/userProfileFields";
 import {fetchUser, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
@@ -37,6 +37,7 @@ function NavButton({to, text}) {
     );
 }
 
+
 export default function Profile() {
     const useStyles = makeStyles(() => ({
         root: {
@@ -47,10 +48,12 @@ export default function Profile() {
             marginBottom: 12,
         }
     }));
+
     const classes = useStyles();
     const history = useHistory();
     const {id} = useParams();
     const mode = id == null ? 'new' : 'edit';
+    const [isEdit, setIsEdit] = useState(false);
     const [state, setState] = useState({
         // hardcoded value for testing purpose
         form: {
@@ -87,22 +90,37 @@ export default function Profile() {
     // Helper function for checking the validity of information in the fields. (frontend check)
     const validate = () => {
         const errors = {};
+        const telephone = state.form.telephone;
+        const altTelephone = state.form.altTelephone;
+        const primaryEmail = state.form.primary_email;
+        const secondaryEmail = state.form.secondary_email;
         for (const [field, option] of Object.entries(userProfileFields)) {
-            // if (option.label ==='Primary Email') {
-            //     const Email1 = option.value;
-            //     console.log();
-            // }
-            // if (option.label ==='Secondary Email') {
-            //     const Email2 = field[value];
-            // }
-
             const isEmpty = isFieldEmpty(state.form[field]);
+
             if (option.required && isEmpty) {
                 errors[field] = REQUIRED_HELPER_TEXT;
             }
             let msg;
             if (!isEmpty && option.validator && (msg = option.validator(state.form[field]))) {
                 errors[field] = msg;
+            }
+
+            if (option.label === 'AltTelephone') {
+                console.log('reach correct label.')
+                if (telephone === altTelephone) {
+                    errors[field] = DUPLICATE_PHONE_HELPER_TEXT;
+                } else {
+                    console.log('different');
+                }
+            }
+
+            if (option.label ==='Secondary Email') {
+                if (primaryEmail === secondaryEmail) {
+                    console.log("same");
+                    errors[field] = DUPLICATE_HELPER_TEXT;
+                } else {
+                    console.log('different');
+                }
             }
         }
 
@@ -176,25 +194,21 @@ export default function Profile() {
     // Profile information submit button handler
     const handleSubmit = () => {
         console.log(state.form)
-        if (validate() && validate_duplicate_phone()) {
-            setState(state => ({...state, dialog: true}))
-        }
-    }
-
-    // Primary email submit button handler
-    const handleSubmitPrimaryEmail = () => {
-        console.log(state.form)
         if (validate()) {
             setState(state => ({...state, dialog: true}))
         }
     }
 
-    // Secondary Email submit button handler
-    const handleSubmitSecondaryEmail = () => {
+    const handleSubmitEdit = () => {
         console.log(state.form)
-        if (validate() && validate_duplicate()) {
+        if (validate() && validate_duplicate_phone() && validate_duplicate()) {
             setState(state => ({...state, dialog: true}))
         }
+    }
+
+    const handleEdit = () => {
+        alert('You are about to edit the profile!');
+        setIsEdit(true);
     }
 
     // Alert prompt button handlers
@@ -208,6 +222,7 @@ export default function Profile() {
         try {
             await updateUser(id, state.form);
             history.push('/users/' + id);
+            setIsEdit(false)
         } catch (e) {
             if (e.json) {
                 setState(state => ({...state, errors: e.json}));
@@ -230,122 +245,104 @@ export default function Profile() {
 
     return (
         <Container className={classes.root}>
-            <Typography variant="h5">
+            <Typography variant="h4">
                 {'User Profile'}
             </Typography>
 
-            {/* Fields for account information */}
-            {Object.entries(userProfileFields).map(([field, option]) => {
-                if (option.type ==='phoneNumber')
-                return (
-                    <option.component
-                                //disabled={true}
-                                key={field}
-                                label={option.label}
-                                type={option.type}
-                                options={option.options}
-                                value={state.form[field]}
-                                required={option.required}
-                                onChange={value => state.form[field] = value}
-                                onBlur={e => handleOnBlur(e, field, option)}
-                                error={!!state.errors[field]}
-                                helperText={state.errors[field]}
-                    />
-                )
-                if (option.type ==='info')
-                    return (
-                    <option.component
-                        key={field}
-                        label={option.label}
-                        type={option.type}
-                        options={option.options}
-                        value={state.form[field]}
-                        required={option.required}
-                        onChange={e => state.form[field] = e.target.value}
-                        onBlur={e => handleOnBlur(e, field, option)}
-                        error={!!state.errors[field]}
-                        helperText={state.errors[field]}
-                    />
-                )})}
+            {isEdit ? (
+                <div>
+                    {/* Fields for account information */}
+                    {Object.entries(userProfileFields).map(([field, option]) => {
+                        if (option.type === 'email') {
+                            return (
+                                <option.component
+                                    key={field}
+                                    label={option.label}
+                                    type={option.type}
+                                    options={option.options}
+                                    value={state.form[field]}
+                                    required={option.required}
+                                    //onChange={value => state.form[field] = value}
+                                    onChange={e => state.form[field] = e.target.value}
+                                    onBlur={e => handleOnBlur(e, field, option)}
+                                    error={!!state.errors[field]}
+                                    helperText={state.errors[field]}
+                                />)
+                        } else {
+                            return (
+                                <option.component
+                                    key={field}
+                                    label={option.label}
+                                    type={option.type}
+                                    options={option.options}
+                                    value={state.form[field]}
+                                    required={option.required}
+                                    onChange={value => state.form[field] = value}
+                                    //onChange={e => state.form[field] = e.target.value}
+                                    onBlur={e => handleOnBlur(e, field, option)}
+                                    error={!!state.errors[field]}
+                                    helperText={state.errors[field]}
+                                />)
+                        }
+                            })}
 
-            {/* Button for account info changes */}
-            <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-                Submit Changes
-            </Button>
+                    {/* Button for account info changes */}
+                    <Button variant="contained" color="primary" className={classes.button}
+                            onClick={handleSubmitEdit}>
+                        Submit Changes
+                    </Button>
 
-            {/* Field for primary email */}
-            {Object.entries(userProfileFields).map(([field, option]) => {
-                if (option.label ==='Primary Email')
-                return (
-                        <option.component
-                            //disabled={true}
-                            key={field}
-                            label={option.label}
-                            type={option.type}
-                            options={option.options}
-                            value={state.form[field]}
-                            required={option.required}
-                            onChange={e => state.form[field] = e.target.value}
-                            onBlur={e => handleOnBlur(e, field, option)}
-                            error={!!state.errors[field]}
-                            helperText={state.errors[field]}
-                        />
-                    )})}
 
-            {/* Button for primary email changes */}
-            <Button variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={handleSubmitPrimaryEmail}
-                    style={{display: 'inline-block'}}>
-                Submit Changes
-            </Button>
+                    {/* Alert prompt for confirming changes */}
+                    <AlertDialog
+                        dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
+                        dialogTitle={'Are you sure to submit?'}
+                        buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
+                            <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                        // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
+                        open={state.dialog}/>
+                </div>
+            ) : (
+                <div>
+                    <Box sx={{
+                        backgroundColor: 'transparent',
+                        width: 'max-content',
+                        paddingTop: 3,
+                        borderBlockColor: 'grey',
+                        borderRadius: 2
+                    }}>
+                    {Object.entries(userProfileFields).map(([field, option]) => {
+                            return (
+                                <div>
+                                    <Typography
+                                        style={{padding: 10, fontSize: 'large'}}>
+                                        {option.label} : {state.form[field]}
+                                    </Typography>
+                                </div>
+                            )})}
+                    </Box>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>
+                        Edit Profile
+                    </Button>
 
-            {/* Field for secondary email */}
-            {Object.entries(userProfileFields).map(([field, option]) => {
-                if (option.label ==='Secondary Email')
-                return (
-                        <option.component
-                            //disabled={true}
-                            key={field}
-                            label={option.label}
-                            type={option.type}
-                            options={option.options}
-                            value={state.form[field]}
-                            required={option.required}
-                            onChange={e => state.form[field] = e.target.value}
-                            onBlur={e => handleOnBlur(e, field, option)}
-                            error={!!state.errors[field]}
-                            helperText={state.errors[field]}
-                        />
-                    )})}
+                    <Box sx={{
+                        backgroundColor: 'transparent',
+                        width: 'max-content',
+                        paddingTop: 3,
+                        borderBlockColor: 'grey',
+                        borderRadius: 2
+                    }}>
+                        <Typography variant="h6"
+                                    style={{marginTop: '10px'}}>
+                            {'Want to change your password? Click below:'}
+                        </Typography>
 
-            {/* Button for secondary email changes */}
-            <Button variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={handleSubmitSecondaryEmail}
-                    style={{display: 'inline-block'}}>
-                Submit Changes
-            </Button>
-
-            <Typography variant="h6"
-                        style={{marginTop: '10px'}}>
-                {'Want to change your password? Click below:'}
-            </Typography>
-
-            {/* Button for password reset */}
-            <NavButton to={'/users/reset-password'}
-                       text={'Reset Password'}/>
-
-            {/* Alert prompt for confirming changes */}
-            <AlertDialog
-                dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
-                dialogTitle={'Are you sure to submit?'}
-                buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
-                    <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
-                // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
-                         open={state.dialog}/>
+                        {/* Button for password reset */}
+                        <NavButton to={'/users/reset-password'}
+                                   text={'Reset Password'}/>
+                    </Box>
+                </div>
+            )}
 
         </Container>
     )

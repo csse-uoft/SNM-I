@@ -52,13 +52,15 @@ export const defaultUserFields = {
   email: '',
   is_superuser: false,
   primary_phone_number: '',
-  alt_phone_number: ''
-};
-
-export const defaultResetPassword = {
+  alt_phone_number: '',
   new_password: '',
   repeat_password: ''
 };
+
+// export const defaultResetPassword = {
+//   new_password: '',
+//   repeat_password: ''
+// };
 
 /**
  * @typedef SNMClient {{address: {street_address, province, city, apt_number, postal_code},

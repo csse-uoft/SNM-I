@@ -182,7 +182,8 @@ const sameEmail = /admin@sample.com/
 const EMAIL_ERR_MSG = "Invalid email! They are in the format of jsmith@example.com";
 const PHONE_ERR_MSH = "Invalid phone number!" //+ "They are in the format of NPA-NXX-XXXX " +
 // // "where NPA is the three digit area code and NXX-XXXX is the seven digit subscriber number";
-const PASSWORD_ERR_MSG = "Please enter a secure and strong password";
+const PASSWORD_ERR_MSG = "Please make sure your new password contains both uppercase and ' +\n" +
+    "                            'lowercase letter, numbers, and a punctuation mark.";
 const OLD_PASSWORD_ERR_MSG = "Your input doesn't match the old password, please try again.";
 const CONFIRM_EMAIL_ERR_MSG = "Your input doesn't match the your registered email, please try again.";
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
