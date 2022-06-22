@@ -106,7 +106,7 @@ export default function Users() {
         idField="id"
         customToolbar={
           <Chip
-            onClick={() => history.push('/users/new')}
+            onClick={() => history.push('/users/invite')}
             color="primary"
             icon={<AddIcon/>}
             label="Invite User"
