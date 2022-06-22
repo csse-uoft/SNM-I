@@ -2,36 +2,30 @@ import { Validator } from "../helpers";
 import { defaultField } from "./index";
 
 export const updatePasswordFields = {
-    old_password: {
+    password: {
         ...defaultField,
         required: true,
-        label: 'Password',
+        label: 'Old Password',
         type: 'password',
         validator: Validator.oldPassword,
     }
-
 };
 
-export const NewPasswordFields = {
-    new_password: {
+export const newPasswordFields = {
+     new_password: {
         ...defaultField,
         required: true,
-        label: 'Password',
+        label: 'New Password',
         type: 'password',
         validator: Validator.password,
-    }
-
-};
-
-export const RepeatPasswordFields = {
+    },
     repeat_password: {
         ...defaultField,
         required: true,
-        label: 'Password',
+        label: 'Repeat New Password',
         type: 'password',
         validator: Validator.password,
     }
-
 };
 
 

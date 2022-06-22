@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
-import {defaultUserFields} from "../../constants/default_fields";
+import {defaultUserFields} from "../constants/default_fields";
 import {Button, Container, TextField, Typography} from "@mui/material";
-import {confirmEmailFields, updatePasswordFields} from "../../constants/updatePasswordFields";
-import {Link} from "../shared";
-import {isFieldEmpty} from "../../helpers";
-import {REQUIRED_HELPER_TEXT} from "../../constants";
+import {confirmEmailFields, updatePasswordFields} from "../constants/updatePasswordFields";
+import {Link} from "./shared";
+import {isFieldEmpty} from "../helpers";
+import {REQUIRED_HELPER_TEXT} from "../constants";
 import { useHistory } from "react-router-dom";
 
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-export default function UserEmailConfirm() {
+export default function EmailConfirm() {
     const classes = useStyles();
     const [state, setState] = useState({
         form: {
@@ -33,14 +33,6 @@ export default function UserEmailConfirm() {
     let history = useHistory();
 
     const validate = () => {
-        // const errors = {};
-        // for (const [field, option] of Object.entries(updatePasswordFields)) {
-        //     if (field ==='12345' ) {
-        //         errors[field] = 'Not Match!';
-        //         setState(state => ({...state, errors}));
-        //         return false
-        //     }}
-        // return true;
 
         const errors = {};
         for (const [field, option] of Object.entries(confirmEmailFields)) {
@@ -62,11 +54,6 @@ export default function UserEmailConfirm() {
 
     const handleSubmit = () => {
         console.log(state.form)
-        // if (validate()) {
-        //     setState(state => ({...state}));
-        //     this.props.history.push('/users/new-password');
-        // }
-
         if (validate()) {
             setState(state => ({...state}));
             history.push('/users/new-password');
