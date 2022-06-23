@@ -13,6 +13,9 @@ export function createUsers(params) {
   return postJson('/users/', {csv: params});
 }
 
+export function firstEntryUpdate(params) {
+  return putJson('/api/user/firstEntry', params);
+}
 
 export function updateUser(id, params) {
   return putJson('/user/' + id + '/', params);

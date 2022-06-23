@@ -16,6 +16,7 @@ export const defaultProfileFields = {
 
 export const defaultFirstEntryFields = {
   password: '',
+  confirmPassword: '',
   securityQuestion1: '',
   securityQuestionAnswer1: '',
   securityQuestion2: '',

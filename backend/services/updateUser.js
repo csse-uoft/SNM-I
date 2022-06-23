@@ -1,0 +1,17 @@
+const {updateUserAccount, updateUserPassword} = require("./user");
+
+
+const firstEntryUpdate = async (req, res, next) => {
+
+  const {email, newPassword, securityQuestions, userId} = req.body
+
+  try{
+    await updateUserPassword(email, newPassword)
+    return res.status(200).json({message: 'success'})
+  }catch (e){
+    next(e)
+  }
+}
+
+
+module.exports = {firstEntryUpdate}

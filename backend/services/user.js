@@ -54,11 +54,25 @@ async function createTemporaryUserAccount(data) {
   return userAccount;
 }
 
+async function updateUserPassword(email, newPassword) {
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
+  console.log(userAccount)
+  const {hash, salt} = await Hashing.hashPassword(newPassword);
+  userAccount.hash = hash
+  userAccount.salt = salt
+  await userAccount.save()
+  return userAccount
+}
+
+
 
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
-  Object.assign(userAccount, updatedData);
-  await updatedData.save();
+  const {securityQuestions} = updatedData
+  if (securityQuestions)
+    userAccount.securityQuestions = securityQuestions
+  // add more if needed TODO
+  await userAccount.save();
   return userAccount;
 }
 
@@ -112,5 +126,5 @@ async function initUserAccounts() {
 
 module.exports = {
   createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
-  createTemporaryUserAccount
+  createTemporaryUserAccount, updateUserPassword
 };

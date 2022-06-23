@@ -88,9 +88,12 @@ export default function UserInvite() {
       console.log('valid')
       try {
         // if (mode === 'new') {
-        const {message} = await createUser(state.form);
-        setState(state => ({...state, success: true}))
-        history.push('/success-trans');
+        const {success, message} = await createUser(state.form);
+        if(success){
+          setState(state => ({...state, success: true}))
+          history.push('/success-trans');
+        }
+
         // } else {
         //   await updateUser(id, state.form);
         //   history.push('/users/' + id);
