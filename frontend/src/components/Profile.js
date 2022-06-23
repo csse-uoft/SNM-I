@@ -65,8 +65,18 @@ export default function Profile() {
             telephone: "+1 (444) 444-4445",
             altTelephone: '+1 (623) 434-4444',
         },
+        form_backup: {
+            ...defaultUserFields,
+            first_name: 'Emolee',
+            last_name: 'Cheng',
+            primary_email: 'primaryEmail@gmail.com',
+            secondary_email: 'secondaryEmail@gmail.com',
+            telephone: "+1 (444) 444-4445",
+            altTelephone: '+1 (623) 434-4444',
+        },
         errors: {},
-        dialog: false
+        dialog_submit_changes: false,
+        dialog_cancel_changes: false
         //loading: true,
     });
 
@@ -195,15 +205,20 @@ export default function Profile() {
     const handleSubmit = () => {
         console.log(state.form)
         if (validate()) {
-            setState(state => ({...state, dialog: true}))
+            setState(state => ({...state, dialog_submit_changes: true}))
         }
     }
 
     const handleSubmitEdit = () => {
         console.log(state.form)
         if (validate() && validate_duplicate_phone() && validate_duplicate()) {
-            setState(state => ({...state, dialog: true}))
+            setState(state => ({...state, dialog_submit_changes: true}))
         }
+    }
+
+    const handleCancelEdit = () => {
+        console.log(state.form)
+        setState(state => ({...state, dialog_cancel_changes: true}))
     }
 
     const handleEdit = () => {
@@ -211,13 +226,13 @@ export default function Profile() {
         setIsEdit(true);
     }
 
-    // Alert prompt button handlers
-    const handleCancel = () => {
-        setState(state => ({...state, dialog: false}))
+    // Submit Alert prompt button handlers
+    const handleCancelSubmitAlert = () => {
+        setState(state => ({...state, dialog_submit_changes: false}))
         console.log("cancel")
     }
 
-    const handleConfirm = async () => {
+    const handleConfirmSubmitAlert = async () => {
         console.log('valid')
         try {
             await updateUser(id, state.form);
@@ -228,6 +243,19 @@ export default function Profile() {
                 setState(state => ({...state, errors: e.json}));
             }
         }
+    };
+
+    // Cancel Alert prompt2 button handlers
+    const handleCancelCancelAlert = () => {
+        setState(state => ({...state, dialog_cancel_changes: false}))
+        console.log("cancel")
+    }
+
+    const handleConfirmCancelAlert = async () => {
+        console.log('valid')
+        setIsEdit(false);
+        setState(state => ({...state, form: state.form_backup}))
+        setState(state => ({...state, dialog_cancel_changes: false}))
     };
 
     // OnBlur handler, called when user's focus moves from a field.
@@ -286,6 +314,13 @@ export default function Profile() {
                         }
                             })}
 
+                    <Button variant="contained" color="primary" className={classes.button}
+                            onClick={handleCancelEdit}>
+                        Cancel Changes
+                    </Button>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
                     {/* Button for account info changes */}
                     <Button variant="contained" color="primary" className={classes.button}
                             onClick={handleSubmitEdit}>
@@ -293,14 +328,22 @@ export default function Profile() {
                     </Button>
 
 
-                    {/* Alert prompt for confirming changes */}
+                    {/* Alert prompt for submit changes */}
                     <AlertDialog
                         dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                         dialogTitle={'Are you sure to submit?'}
-                        buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
-                            <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                        buttons={[<Button onClick={handleCancelSubmitAlert} key={'cancel'}>{'cancel'}</Button>,
+                            <Button onClick={handleConfirmSubmitAlert} key={'confirm'} autoFocus> {'confirm'}</Button>]}
                         // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
-                        open={state.dialog}/>
+                        open={state.dialog_submit_changes}/>
+
+                    <AlertDialog
+                        dialogContentText={"Note that all changes will be discarded after clicking CONFIRM."}
+                        dialogTitle={'Are you sure to cancel all the changes?'}
+                        buttons={[<Button onClick={handleCancelCancelAlert} key={'cancel'}>{'cancel'}</Button>,
+                            <Button onClick={handleConfirmCancelAlert} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                        // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
+                        open={state.dialog_cancel_changes}/>
                 </div>
             ) : (
                 <div>
