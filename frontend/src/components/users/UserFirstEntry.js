@@ -51,7 +51,7 @@ export default function UserFirstEntry() {
       setState(state => ({...state, verified: true, email: respond.email, id: respond.userId, loading: false}))
     } catch (e) {
       // when the token is invalid TODO
-      setState(state => ({...state, verified: flase, loading: false}))
+      setState(state => ({...state, verified: false, loading: false}))
     }
 
   }

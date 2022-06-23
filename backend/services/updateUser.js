@@ -7,6 +7,7 @@ const firstEntryUpdate = async (req, res, next) => {
 
   try{
     await updateUserPassword(email, newPassword)
+    await updateUserAccount(email, {securityQuestions})
     return res.status(200).json({message: 'success'})
   }catch (e){
     next(e)

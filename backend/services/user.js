@@ -1,5 +1,5 @@
 const Hashing = require("../utils/hashing");
-const {GDBOrganizationModel, GDBUserAccountModel} = require('../models');
+const {GDBOrganizationModel, GDBUserAccountModel, GDBSecurityQuestion} = require('../models');
 
 async function createUserAccount(data) {
   const {
@@ -69,10 +69,26 @@ async function updateUserPassword(email, newPassword) {
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const {securityQuestions} = updatedData
-  if (securityQuestions)
-    userAccount.securityQuestions = securityQuestions
+  if (securityQuestions){
+    const securityQuestion1 = {
+      question: securityQuestions[0],
+      answer: securityQuestions[3]
+    }
+    const securityQuestion2 = {
+      question: securityQuestions[1],
+      answer: securityQuestions[4]
+    }
+    const securityQuestion3 = {
+      question: securityQuestions[2],
+      answer: securityQuestions[5]
+    }
+    userAccount.securityQuestions = [securityQuestion1, securityQuestion2, securityQuestion3]
+
+  }
   // add more if needed TODO
+
   await userAccount.save();
+  console.log(userAccount)
   return userAccount;
 }
 

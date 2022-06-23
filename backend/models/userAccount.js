@@ -36,4 +36,4 @@ const GDBUserAccountModel = createGraphDBModel({
   rdfTypes: [':UserAccount'], name: 'userAccount'
 });
 
-module.exports = {GDBUserAccountModel};
+module.exports = {GDBUserAccountModel, GDBSecurityQuestion};
