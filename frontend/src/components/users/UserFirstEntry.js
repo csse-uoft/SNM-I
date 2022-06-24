@@ -105,12 +105,13 @@ export default function UserFirstEntry() {
   }
 
   const handleConfirm = async () => {
-    console.log('valid')
-    try { //todo
+    try {
       const securityQuestions = [state.form.securityQuestion1, state.form.securityQuestion2, state.form.securityQuestion3,
         state.form.securityQuestionAnswer1, state.form.securityQuestionAnswer2, state.form.securityQuestionAnswer3]
+      setState(state => ({...state, loading: true}))
       await firstEntryUpdate({email: state.email, userId: state.id, newPassword: state.form.password,
         securityQuestions: securityQuestions})
+      // todo
 
     } catch (e) {
       if (e.json) {
@@ -122,7 +123,7 @@ export default function UserFirstEntry() {
 
 
   if (state.loading)
-    return <Loading message={`Loading user information...`}/>;
+    return <Loading message={`Loading`}/>;
 
 
   if (state.verified) {
@@ -169,8 +170,8 @@ export default function UserFirstEntry() {
 
     )
   } else {
-
     // when the token is invalid TODO
+    history.push('/dashboard')
   }
 
 
