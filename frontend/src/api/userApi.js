@@ -12,7 +12,9 @@ export function createUsers(params) {
   // TODO: implement backend?
   return postJson('/users/', {csv: params});
 }
-
+export function getProfile() {
+  return getJson('/api/my-profile')
+}
 
 export function updateUser(id, params) {
   return putJson('/user/' + id + '/', params);

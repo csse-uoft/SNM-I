@@ -61,7 +61,6 @@ export default function EmailConfirm() {
     }
 
 
-
     return (
         <Container className={classes.root}>
             <Typography variant="h5">

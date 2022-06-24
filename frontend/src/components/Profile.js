@@ -1,29 +1,24 @@
-/* Page for User Profile, functionalities including:
-*   - Display and Edit account information
-*   - Display and Edit primary/secondary email
-*   - Reset password
-* */
-
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Grid, Typography} from "@mui/material";
 import {userProfileFields} from "../constants/userProfileFields";
-import {fetchUser, updateUser} from "../api/userApi";
+import {fetchUser, getProfile, updateUser} from "../api/userApi";
 import {defaultUserFields} from "../constants/default_fields";
 import {isFieldEmpty} from "../helpers";
 import {
     DUPLICATE_HELPER_TEXT,
     DUPLICATE_PHONE_HELPER_TEXT,
-    PASSWORD_NOT_MATCH_TEXT,
     REQUIRED_HELPER_TEXT
 } from "../constants";
 import {AlertDialog} from "./shared/Dialogs";
-import {value} from "lodash/seq";
-import {Edit} from "@mui/icons-material";
 import {Link} from "./shared";
-import {RepeatPasswordFields} from "../constants/updatePasswordFields";
 
+/* Page for User Profile, functionalities including:
+*   - Display and Edit account information
+*   - Display and Edit primary/secondary email
+*   - Reset password
+* */
 function NavButton({to, text}) {
     return (
         <Link to={to}>
@@ -58,12 +53,12 @@ export default function Profile() {
         // hardcoded value for testing purpose
         form: {
             ...defaultUserFields,
-            first_name: 'Emolee',
-            last_name: 'Cheng',
-            primary_email: 'primaryEmail@gmail.com',
-            secondary_email: 'secondaryEmail@gmail.com',
-            telephone: "+1 (444) 444-4445",
-            altTelephone: '+1 (623) 434-4444',
+            // first_name: 'Emolee',
+            // last_name: 'Cheng',
+            // primary_email: 'primaryEmail@gmail.com',
+            // secondary_email: 'secondaryEmail@gmail.com',
+            // telephone: "+1 (444) 444-4445",
+            // altTelephone: '+1 (623) 434-4444',
         },
         errors: {},
         dialog: false
@@ -73,8 +68,8 @@ export default function Profile() {
 
     /* deleted loading state*/
     useEffect(() => {
-        if (mode === 'edit') {
-            fetchUser(id).then(user => {
+        if (true) {
+            getProfile().then(user => {
                 setState(state => ({
                     ...state,
                     form: {
@@ -106,7 +101,7 @@ export default function Profile() {
             }
 
             if (option.label === 'AltTelephone') {
-                console.log('reach correct label.')
+                //console.log('reach correct label.')
                 if (telephone === altTelephone) {
                     errors[field] = DUPLICATE_PHONE_HELPER_TEXT;
                 } else {
@@ -132,76 +127,9 @@ export default function Profile() {
         return true;
     };
 
-    // Helper function for checking if the phone number and alternative
-    // phone number are the same. (frontend check)
-    const validate_duplicate_phone = () => {
-        const errors = {};
-        const telephone = state.form.telephone;
-        const altTelephone = state.form.altTelephone;
-
-        console.log(state.form.telephone);
-        console.log(state.form.altTelephone);
-        console.log('reach dup phone check. congrats!');
-        for (const [field, option] of Object.entries(userProfileFields)) {
-            if (option.label === 'AltTelephone') {
-                console.log('reach correct label.')
-                if (telephone === altTelephone) {
-                    console.log("same");
-                    errors[field] = DUPLICATE_PHONE_HELPER_TEXT;
-                } else {
-                    console.log('different');
-                }
-            }
-        }
-
-        if (Object.keys(errors).length !== 0) {
-            setState(state => ({...state, errors}));
-            return false
-        }
-
-        return true;
-    }
-
-    // Helper function for checking if the primary and secondary
-    // emails are the same. (frontend check)
-    const validate_duplicate = () => {
-        const errors = {};
-        const primaryEmail = state.form.primary_email;
-        const secondaryEmail = state.form.secondary_email;
-
-        console.log(state.form.primary_email);
-        console.log(state.form.secondary_email);
-        console.log('reach here. congrats!');
-        for (const [field, option] of Object.entries(userProfileFields)) {
-            if (option.label ==='Secondary Email') {
-                if (primaryEmail === secondaryEmail) {
-                    console.log("same");
-                    errors[field] = DUPLICATE_HELPER_TEXT;
-                } else {
-                    console.log('different');
-                }
-            }
-        }
-
-        if (Object.keys(errors).length !== 0) {
-            setState(state => ({...state, errors}));
-            return false
-        }
-
-        return true;
-    }
-
-    // Profile information submit button handler
-    const handleSubmit = () => {
-        console.log(state.form)
-        if (validate()) {
-            setState(state => ({...state, dialog: true}))
-        }
-    }
-
     const handleSubmitEdit = () => {
-        console.log(state.form)
-        if (validate() && validate_duplicate_phone() && validate_duplicate()) {
+        //console.log(state.form)
+        if (validate()) {
             setState(state => ({...state, dialog: true}))
         }
     }

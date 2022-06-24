@@ -62,6 +62,7 @@ async function updateUserAccount(email, updatedData) {
   return userAccount;
 }
 
+
 async function findUserAccountByEmail(email) {
   const userAccount = await GDBUserAccountModel.findOne(
     {primaryEmail: email},
