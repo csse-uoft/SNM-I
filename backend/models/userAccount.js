@@ -6,7 +6,9 @@ const {GDBPersonModel} = require('./person');
 const GDBSecurityQuestion = createGraphDBModel({
   question: {type: String, internalKey: ':hasSecurityQuestion'},
   // The answer should be case-insensitive.
-  answer: {type: String, internalKey: ':hasSecurityQuestionAnswer'},
+  // The answer should be hashed
+  hash: {type: String, internalKey: ':hasHash'},
+  salt: {type: String, internalKey: ':hasSalt'},
 }, {rdfTypes: [':SecurityQuestion'], name: 'securityQuestion'});
 
 

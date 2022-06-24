@@ -56,7 +56,6 @@ async function createTemporaryUserAccount(data) {
 
 async function updateUserPassword(email, newPassword) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
-  console.log(userAccount)
   const {hash, salt} = await Hashing.hashPassword(newPassword);
   userAccount.hash = hash
   userAccount.salt = salt
@@ -70,17 +69,23 @@ async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const {securityQuestions} = updatedData
   if (securityQuestions){
+    const answer1 = await Hashing.hashPassword(securityQuestions[3]);
     const securityQuestion1 = {
       question: securityQuestions[0],
-      answer: securityQuestions[3]
+      hash: answer1.hash,
+      salt: answer1.salt
     }
+    const answer2 = await Hashing.hashPassword(securityQuestions[4]);
     const securityQuestion2 = {
       question: securityQuestions[1],
-      answer: securityQuestions[4]
+      hash: answer2.hash,
+      salt: answer2.salt
     }
+    const answer3 = await Hashing.hashPassword(securityQuestions[5]);
     const securityQuestion3 = {
       question: securityQuestions[2],
-      answer: securityQuestions[5]
+      hash: answer3.hash,
+      salt: answer3.salt
     }
     userAccount.securityQuestions = [securityQuestion1, securityQuestion2, securityQuestion3]
 
