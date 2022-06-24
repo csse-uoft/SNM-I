@@ -65,6 +65,7 @@ export default function Profile() {
             telephone: "+1 (444) 444-4445",
             altTelephone: '+1 (623) 434-4444',
         },
+        // form for restoring account info after cancelling changes
         form_backup: {
             ...defaultUserFields,
             first_name: 'Emolee',
@@ -75,8 +76,8 @@ export default function Profile() {
             altTelephone: '+1 (623) 434-4444',
         },
         errors: {},
-        dialog_submit_changes: false,
-        dialog_cancel_changes: false
+        dialog_submit_changes: false, // submit changes alert dialog
+        dialog_cancel_changes: false  // cancel changes alert dialog
         //loading: true,
     });
 
@@ -209,6 +210,7 @@ export default function Profile() {
         }
     }
 
+    // submit change button handler
     const handleSubmitEdit = () => {
         console.log(state.form)
         if (validate() && validate_duplicate_phone() && validate_duplicate()) {
@@ -216,11 +218,13 @@ export default function Profile() {
         }
     }
 
+    // cancel change button handler
     const handleCancelEdit = () => {
         console.log(state.form)
         setState(state => ({...state, dialog_cancel_changes: true}))
     }
 
+    // Edit button handler
     const handleEdit = () => {
         alert('You are about to edit the profile!');
         setIsEdit(true);
@@ -245,7 +249,7 @@ export default function Profile() {
         }
     };
 
-    // Cancel Alert prompt2 button handlers
+    // Cancel Alert prompt button handlers
     const handleCancelCancelAlert = () => {
         setState(state => ({...state, dialog_cancel_changes: false}))
         console.log("cancel")
@@ -314,6 +318,7 @@ export default function Profile() {
                         }
                             })}
 
+                    {/* Button for cancelling account info changes */}
                     <Button variant="contained" color="primary" className={classes.button}
                             onClick={handleCancelEdit}>
                         Cancel Changes
@@ -321,14 +326,14 @@ export default function Profile() {
 
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                    {/* Button for account info changes */}
+                    {/* Button for submitting account info changes */}
                     <Button variant="contained" color="primary" className={classes.button}
                             onClick={handleSubmitEdit}>
                         Submit Changes
                     </Button>
 
 
-                    {/* Alert prompt for submit changes */}
+                    {/* Alert prompt for submitting changes */}
                     <AlertDialog
                         dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                         dialogTitle={'Are you sure to submit?'}
@@ -337,6 +342,7 @@ export default function Profile() {
                         // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
                         open={state.dialog_submit_changes}/>
 
+                    {/* Alert prompt for cancelling changes */}
                     <AlertDialog
                         dialogContentText={"Note that all changes will be discarded after clicking CONFIRM."}
                         dialogTitle={'Are you sure to cancel all the changes?'}
