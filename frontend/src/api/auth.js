@@ -14,6 +14,6 @@ export async function login(email, password) {
  * @param sessionExpired
  * @return {Promise<{success: boolean}>}
  */
-export async function logout(sessionExpired) {
+export async function logout() {
   return await postJson('/api/logout');
 }
