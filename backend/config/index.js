@@ -28,7 +28,10 @@ module.exports = {
 
   cookieSession: {
     keys: ['secret', 'keys'],
-    maxAge: 24 * 60 * 60 * 1000 // expires in 24 hours
+    maxAge: 24 * 60 * 60 * 1000, // expires in 24 hours
+    sameSite: 'none',
+    secure: true,
+    // httpOnly: true,
   },
 
   // For generating registration email verification token

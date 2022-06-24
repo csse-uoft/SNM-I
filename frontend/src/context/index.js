@@ -4,8 +4,6 @@ export const defaultUserContext = {
   email: '',
   isAdmin: '',
   displayName: '',
-  updateUser: () => {
-  }
 }
 
 export const getUserContext = () => {

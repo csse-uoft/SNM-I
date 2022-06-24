@@ -3,7 +3,8 @@ import { useHistory } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
 import { logout } from '../../api/auth';
-import { UserContext } from "../../context";
+import styled from "@emotion/styled";
+import { UserContext, defaultUserContext } from "../../context";
 
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
@@ -76,8 +77,14 @@ function TopNavBar() {
   const handleClickRight = event => {setAnchorElRight(event.currentTarget);};
   const handleCloseRight = () => {setAnchorElRight(null);};
 
-  const handleLogout = () => {isLoggedin ? logout() : history.push('/login')};
   const handleLink = link => () => {history.push(link);};
+
+  const handleLogout = async () => {
+    if (isLoggedin)
+      await logout();
+    userContext.updateUser(defaultUserContext);
+    history.push('/login');
+  }
 
   return (
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
