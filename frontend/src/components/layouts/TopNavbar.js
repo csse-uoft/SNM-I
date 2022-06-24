@@ -6,7 +6,7 @@ import { Link } from "../shared";
 
 import { logout } from '../../api/auth';
 import styled from "@emotion/styled";
-import { UserContext } from "../../context";
+import { UserContext, defaultUserContext } from "../../context";
 
 const StyledTabs = styled(Tabs)({
   '& .MuiTabs-indicator': {
@@ -54,6 +54,13 @@ function TopNavBar() {
     history.push(newValue);
   };
 
+  const handleLogout = async () => {
+    if (isLoggedin)
+      await logout();
+    userContext.updateUser(defaultUserContext);
+    history.push('/login');
+  }
+
   return (
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
       <Toolbar variant="dense">
@@ -83,7 +90,7 @@ function TopNavBar() {
           </Box>
         )}
 
-        <Button color="inherit" onClick={() => isLoggedin ? logout() : history.push('/login')}
+        <Button color="inherit" onClick={handleLogout}
                 sx={{
                   marginLeft: 'auto',
                   textDecorationLine: 'none',

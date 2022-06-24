@@ -6,14 +6,14 @@ import {
 const frequencyOptions = ['Weekly', 'Biweekly', 'Monthly', 'Non-repeated'];
 
 export const serviceFields = {
-  name: {label: 'Service Name'},
+  name: {label: 'Service Name', component: 'GeneralField'},
   type: {label: 'Service Type', component: 'SelectField', options: serviceTypeOptions},
-  description: {label: 'Description'},
+  description: {label: 'Description', component: 'GeneralField'},
   category: {label: 'Category', component: 'SelectField', options: undefined},
-  availableFrom: {label: 'Available From', type: 'date'},
-  availableTo: {label: 'Available Until', type: 'date'},
+  availableFrom: {label: 'Available From', component: 'GeneralField', type: 'date'},
+  availableTo: {label: 'Available Until', component: 'GeneralField', type: 'date'},
 
-  languages: {component: 'MultiSelectField', label: 'Languages'},
+  languages: {label: 'Languages', component: 'MultiSelectField'},
 
 
   maxCapacity: {label: 'Max Capacity', type: 'number'},
