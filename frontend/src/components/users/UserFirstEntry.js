@@ -32,7 +32,9 @@ export default function UserFirstEntry() {
       ...defaultFirstEntryFields
     },
     errors: {},
-    dialog: false,
+    submitDialog: false,
+    successDialog: false,
+    failDialog: false,
     verified: false,
     loading: true,
     email: '',
@@ -96,12 +98,12 @@ export default function UserFirstEntry() {
 
   const handleSubmit = () => {
     if (validate()) {
-      setState(state => ({...state, dialog: true}))
+      setState(state => ({...state, submitDialog: true}))
     }
   }
 
   const handleCancel = () => {
-    setState(state => ({...state, dialog: false}))
+    setState(state => ({...state, submitDialog: false}))
   }
 
   const handleConfirm = async () => {
@@ -111,11 +113,13 @@ export default function UserFirstEntry() {
       setState(state => ({...state, loading: true}))
       await firstEntryUpdate({email: state.email, userId: state.id, newPassword: state.form.password,
         securityQuestions: securityQuestions})
-      // todo
+      setState(state => ({...state, successDialog: true}))
 
     } catch (e) {
       if (e.json) {
+        // todo
         setState(state => ({...state, errors: e.json}));
+        setState(state => ({failDialog: true}))
       }
     }
 
@@ -164,13 +168,22 @@ export default function UserFirstEntry() {
                      dialogTitle={'Are you sure to submit?'}
                      buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
                        <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
-          // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
-                     open={state.dialog}/>
+                     open={state.submitDialog}/>
+        <AlertDialog dialogContentText={"You will be redirect to the main page."}
+                     dialogTitle={'Success'}
+                     buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'2'} autoFocus> {'ok'}</Button>]}
+                     open={state.successDialog}/>
+        <AlertDialog dialogContentText={}
+                     dialogTitle={'Fail'}
+                     buttons={[<Button onClick={() => {}} key={'1'}>{'cancel'}</Button>,
+                       <Button onClick={() => {}} key={'2'} autoFocus> {'confirm'}</Button>]}
+                     open={state.failDialog}/>
       </Container>
 
     )
   } else {
     // when the token is invalid TODO
+
     history.push('/dashboard')
   }
 
