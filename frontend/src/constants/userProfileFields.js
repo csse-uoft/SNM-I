@@ -38,22 +38,3 @@ export const userProfileFields = {
         validator: Validator.email,
     }
 };
-
-// export const userPrimaryEmail = {
-// primary_email: {
-//         ...defaultField,
-//         required: true,
-//         label: 'Primary Email',
-//         type: 'email',
-//         validator: Validator.email,
-//     }
-// };
-//
-// export const userSecondaryEmail = {
-//     secondary_email: {
-//         ...defaultField,
-//         label: 'Secondary Email',
-//         type: 'email',
-//         validator: Validator.email,
-//     }
-// };

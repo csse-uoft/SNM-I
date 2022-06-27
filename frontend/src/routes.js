@@ -56,7 +56,7 @@ const routes = (
     <AdminRoute path='/users/:id/edit' component={UserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
     <AdminRoute path='/users/invite' component={UserInvite}/>
-    <AdminRoute path='/Profile' component={UserProfile}/>
+    <AdminRoute path='/Profile/:id' component={UserProfile}/>
     <AdminRoute path='/users/reset-password' component={ResetPassword}/>
     <AdminRoute path='/users/:id' component={User}/>
     <AdminRoute path='/users' component={Users}/>

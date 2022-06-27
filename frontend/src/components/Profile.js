@@ -68,8 +68,8 @@ export default function Profile() {
 
     /* deleted loading state*/
     useEffect(() => {
-        if (true) {
-            getProfile().then(user => {
+        if (mode === 'edit') {
+            getProfile(id).then(user => {
                 setState(state => ({
                     ...state,
                     form: {
@@ -146,13 +146,17 @@ export default function Profile() {
     }
 
     const handleConfirm = async () => {
-        console.log('valid')
+        //console.log('valid')
         try {
             await updateUser(id, state.form);
-            history.push('/users/' + id);
+            history.push('/profile/' + id + '/');
             setIsEdit(false)
+            console.log('pushed data')
         } catch (e) {
+            console.log('catched e');
             if (e.json) {
+                console.log('data not pushed');
+                //history.push('/api/profile/' + id + '/');
                 setState(state => ({...state, errors: e.json}));
             }
         }
@@ -196,7 +200,22 @@ export default function Profile() {
                                     error={!!state.errors[field]}
                                     helperText={state.errors[field]}
                                 />)
-                        } else {
+                        } if (option.type === 'info') {
+                            return (
+                                <option.component
+                                    key={field}
+                                    label={option.label}
+                                    type={option.type}
+                                    options={option.options}
+                                    value={state.form[field]}
+                                    required={option.required}
+                                    //onChange={value => state.form[field] = value}
+                                    onChange={e => state.form[field] = e.target.value}
+                                    onBlur={e => handleOnBlur(e, field, option)}
+                                    error={!!state.errors[field]}
+                                    helperText={state.errors[field]}
+                                />)
+                        }else {
                             return (
                                 <option.component
                                     key={field}

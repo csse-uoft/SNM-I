@@ -52,6 +52,7 @@ const ITEM_HEIGHT = 48;
 function TopNavBar() {
   const history = useHistory();
   const userContext = useContext(UserContext);
+  const id = userContext.id;
   const isLoggedin = !!userContext.email;
   const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
   const [value, setValue] = useState(
@@ -160,7 +161,7 @@ function TopNavBar() {
         ) : null}
 
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          SNM-I
+          SNM-I, {userContext.id}
         </Typography>
 
 
@@ -193,7 +194,7 @@ function TopNavBar() {
                   <Typography variant="inherit">Dashboard</Typography>
                 </MenuItem>
 
-                <MenuItem onClick={handleLink(`/profile`)}>
+                <MenuItem onClick={handleLink('/profile/' + id + '/')}>
                   <ListItemIcon>
                     <ManageAccountsIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>

@@ -45,6 +45,7 @@ function LoginPane() {
       const {success, data} = await login(form.email, form.password);
       if (success) {
         userContext.updateUser({
+          id: data._id,
           isAdmin: data.role === 'admin',
           email: data.primaryEmail,
           displayName: data.displayName
