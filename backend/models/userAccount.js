@@ -21,7 +21,9 @@ const GDBUserAccountModel = createGraphDBModel({
   organization: {type: GDBOrganizationModel, internalKey: 'cp:hasOrganization'},
 
   // Person information
-  primaryContact: {type: GDBPersonModel, internalKey: ':hasPrimaryContact'},
+  // firstName: givenName
+  // lastName: familyName
+  primaryContact: {type: GDBPersonModel, internalKey: ':hasPrimaryContact', },
 
   role: {type: String, internalKey: ':hasAccountRole'},
   positionInOrganization: {type: String, internalKey: ':hasPositionInOrganization'},

@@ -27,7 +27,7 @@ const login = async (req, res, next) => {
 }
 
 const logout = async (req, res) => {
-  req.session.username = '';
+  req.session.email = '';
   return res.json({success: true})
 }
 

@@ -48,6 +48,7 @@ function LoginPane() {
           id: data._id,
           isAdmin: data.role === 'admin',
           email: data.primaryEmail,
+          altEmail: data.secondaryEmail,
           displayName: data.displayName
         });
         history.push('/dashboard');

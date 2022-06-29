@@ -3,15 +3,15 @@ import { recursiveAssign } from "../helpers";
 import { providerFormTypes } from "./provider_fields";
 
 export const defaultProfileFields = {
-  first_name: '',
-  middle_name: '',
-  last_name: '',
-  preferred_name: '',
+  givenName: '',
+  middleName: '',
+  familyName: '',
+  preferredName: '',
   gender: '',
-  birth_date: null,
+  birthDate: null,
   email: '',
-  primary_phone_number: '',
-  alt_phone_number: '',
+  altEmail:'',
+  telephone: '',
 };
 
 export const defaultFirstEntryFields = {
@@ -25,37 +25,36 @@ export const defaultFirstEntryFields = {
 }
 
 export const defaultInvitationFields = {
-  is_superuser: false,
+  isSuperuser: false,
   email: '',
   expirationDate: ''
 }
 
 export const defaultContactFields = {
-  first_name: '',
-  last_name: '',
+  givenName: '',
+  familyName: '',
   email: '',
-  primary_phone_number: '',
-  alt_phone_number: '',
+  altEmail:'',
+  telephone: '',
 };
 
 export const defaultLocationFields = {
-  street_address: '',
-  apt_number: '',
+  streetAddress: '',
+  aptNumber: '',
   city: '',
   province: '',
-  postal_code: ''
+  postalCode: ''
 };
 
 export const defaultUserFields = {
-  first_name: '',
-  last_name: '',
-  primary_email: '',
-  secondary_email:'',
-  is_superuser: false,
-  primary_phone_number: '',
-  alt_phone_number: '',
-  new_password: '',
-  repeat_password: ''
+  givenName: '',
+  familyName: '',
+  email: '',
+  altEmail:'',
+  isSuperuser: false,
+  telephone: '',
+  newPassword: '',
+  repeatPassword: ''
 };
 
 // export const defaultResetPassword = {

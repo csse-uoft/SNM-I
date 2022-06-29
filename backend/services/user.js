@@ -58,7 +58,7 @@ async function createTemporaryUserAccount(data) {
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   Object.assign(userAccount, updatedData);
-  await updatedData.save();
+  await userAccount.save();
   return userAccount;
 }
 
