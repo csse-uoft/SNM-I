@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 if (isProduction)
   console.log('In production mode.')
 
-module.exports = {
+const config = {
   graphdb: {
     addr: isProduction ? 'http://localhost:7200' : `http://${isDocker ? 'host.docker.internal' : 'localhost'}:7200`,
   },
@@ -55,3 +55,11 @@ module.exports = {
   },
 
 };
+
+// Environment Variables Override
+if (process.env.GRAPHDB_ADDRESS)
+  config.graphdb.addr = process.env.GRAPHDB_ADDRESS;
+if (process.env.MONGODB_ADDRESS)
+  config.mongodb.addr = process.env.MONGODB_ADDRESS;
+
+module.exports = config
