@@ -4,7 +4,6 @@ import {Route} from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
-import InformSuccessPage from "./components/InformSuccessPage";
 import Login from './components/Login';
 import LoginPane from './components/LoginPane';
 import Dashboard from './components/Dashboard';
@@ -40,7 +39,6 @@ import UserFirstEntry from "./components/users/UserFirstEntry";
 const routes = (
   <Switch>
     <Route exact path='/' component={Landing}/>
-    <Route path='/success-trans' component={InformSuccessPage}/>
     <Route path='/login' component={Login}/>
     <Route path='/email-confirm' component={EmailConfirm}/>
     <Route path='/login-pane' component={LoginPane}/>
