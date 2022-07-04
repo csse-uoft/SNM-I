@@ -8,18 +8,17 @@ const getCurrentUserProfile = async (req, res, next) => {
 }
 
 const updateProfile = async (req, res, next) => {
-    console.log('reach backend update Profile.');
-    const {givenName, familyName, primaryEmail, secondaryEmail, telephone} = req.body;
+    const {givenName, familyName, email, altEmail, telephone} = req.body;
     const updateData = {
         givenName,
         familyName,
-        primaryEmail,
-        secondaryEmail,
+        email,
+        altEmail,
         telephone,
     }
 
     try {
-        if (!primaryEmail) {
+        if (!email) {
             return res.status(400).json({success: false, message: 'Primary Email cannot be blank.'})
         }
 
