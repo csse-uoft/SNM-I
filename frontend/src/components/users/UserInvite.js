@@ -35,7 +35,8 @@ export default function UserInvite() {
     dialog: false,
     success: false,
     fail: false,
-    failMessage: ''
+    failMessage: '',
+    loading: false
   });
 
   // useEffect(() => {
@@ -91,19 +92,13 @@ export default function UserInvite() {
     console.log('valid')
     try {
 
+      setState(state => ({...state, dialog: false, loading: true}))
       const {success, message} = await createUser(state.form);
-      setState(state => ({...state, dialog: false}))
-      if (success) {
-        setState(state => ({...state, success: true}))
-      } else {
-        setState(state => ({...state, failMessage: message}))
-      }
-
+      setState(state => ({...state, loading: false, success: true}))
 
     } catch (e) {
       if (e.json) {
-        setState(state => ({...state, errors: e.json}))
-        setState(state => ({...state, fail: true}))
+        setState(state => ({...state, errors: e.json, fail: true, loading: false}))
       }
     }
 
@@ -120,6 +115,9 @@ export default function UserInvite() {
     }
 
   };
+
+  if (state.loading)
+    return <Loading message={`Loading`}/>;
 
 
   return (
@@ -158,7 +156,7 @@ export default function UserInvite() {
                    dialogTitle={'Success'}
                    buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
                    open={state.success}/>
-      <AlertDialog dialogContentText={state.failMessage||"Error occur"}
+      <AlertDialog dialogContentText={state.errors.message||"Error occur"}
                    dialogTitle={'Fail'}
                    buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
                    open={state.fail}/>

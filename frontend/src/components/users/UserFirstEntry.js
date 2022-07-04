@@ -53,8 +53,7 @@ export default function UserFirstEntry() {
       const respond = await verifyUser(token);
       setState(state => ({...state, verified: true, email: respond.email, id: respond.userId, loading: false}))
     } catch (e) {
-      // when the token is invalid TODO
-      setState(state => ({...state, verified: false, loading: false}))
+      setState(state => ({...state, verified: false, loading: false, errors: e.json}))
     }
 
   }
@@ -116,14 +115,12 @@ export default function UserFirstEntry() {
         securityQuestions: securityQuestions})
       if(success){
         setState(state => ({...state, loading: false, successDialog: true}))
-      }else{
-        setState(state => ({...state, failDialog: true, failMessage: message}))
       }
 
 
     } catch (e) {
       if (e.json) {
-        setState(state => ({...state, errors: e.json, failDialog: true}));
+        setState(state => ({...state, loading: false, errors: e.json, failDialog: true}));
       }
     }
 
@@ -177,7 +174,7 @@ export default function UserFirstEntry() {
                      dialogTitle={'Success'}
                      buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
-        <AlertDialog dialogContentText={state.failMessage || "Fail to update"}
+        <AlertDialog dialogContentText={state.errors.message || "Fail to update"}
                      dialogTitle={'Fail'}
                      buttons={[<Button onClick={() => {history.push('/login')}} key={'fail'}>{'ok'}</Button>]}
                      open={state.failDialog}/>
@@ -185,7 +182,7 @@ export default function UserFirstEntry() {
 
     )
   } else {
-    return (<AlertDialog dialogContentText={"The token is invalid"}
+    return (<AlertDialog dialogContentText={state.errors.message || "The token is invalid"}
                          dialogTitle={'Invalid token'}
                          buttons={[<Button onClick={() => {history.push('/login')}} key={'invalidToken'}>{'ok'}</Button>]}
                          open={!state.verified}
