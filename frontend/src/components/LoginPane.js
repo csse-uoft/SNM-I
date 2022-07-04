@@ -49,7 +49,10 @@ function LoginPane() {
           isAdmin: data.role === 'admin',
           email: data.primaryEmail,
           altEmail: data.secondaryEmail,
-          displayName: data.displayName
+          displayName: data.displayName,
+          givenName: data.primaryContact.givenName,
+          familyName: data.primaryContact.familyName,
+          telephone: data.primaryContact.telephone,
         });
         history.push('/dashboard');
       }

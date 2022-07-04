@@ -5,6 +5,9 @@ export const defaultUserContext = {
   email: '',
   isAdmin: '',
   displayName: '',
+  givenName:'',
+  familyName:'',
+  telephone:'',
 }
 
 export const getUserContext = () => {

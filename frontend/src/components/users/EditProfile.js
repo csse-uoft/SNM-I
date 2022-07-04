@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Grid, Typography} from "@mui/material";
@@ -13,6 +13,7 @@ import {
 } from "../../constants";
 import {AlertDialog} from "../shared/Dialogs";
 import {Loading} from "../shared";
+import {UserContext} from "../../context";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -28,7 +29,7 @@ export default function EditProfile() {
   const classes = useStyles();
   const history = useHistory();
   const {id} = useParams();
-  //const [form, setForm] = useState({...defaultUserFields});
+  const userContext = useContext(UserContext);
   const [form, setForm] = useState({...userProfileFields});
   const [errors, setErrors] = useState({});
   const [dialogSubmit, setDialogSubmit] = useState(false);
@@ -37,16 +38,15 @@ export default function EditProfile() {
 
   useEffect(() => {
     getProfile(id).then(user => {
-      setForm(user);
+      setForm(userContext);
       setLoading(false);
-      console.log(user)
     });
   }, [id]);
 
   // Helper function for checking the validity of information in the fields. (frontend check)
   const validate = () => {
     const newErrors = {};
-    const {telephone, altTelephone, primaryEmail, secondaryEmail} = form;
+    console.log(form)
 
     for (const [field, option] of Object.entries(userProfileFields)) {
       const isEmpty = isFieldEmpty(form[field]);
@@ -59,17 +59,9 @@ export default function EditProfile() {
         newErrors[field] = msg;
       }
 
-      if (option.label === 'AltTelephone') {
-        //console.log('reach correct label.')
-        if (telephone === altTelephone) {
-          newErrors[field] = DUPLICATE_PHONE_HELPER_TEXT;
-        } else {
-          console.log('different');
-        }
-      }
-
       if (option.label === 'Secondary Email') {
-        if (primaryEmail === secondaryEmail) {
+        console.log(form.email, form.altEmail)
+        if (form.email === form.altEmail) {
           console.log("same");
           newErrors[field] = DUPLICATE_HELPER_TEXT;
         } else {
@@ -94,14 +86,20 @@ export default function EditProfile() {
 
 
   const handleDialogConfirm = async () => {
-    console.log('valid')
     try {
-      await updateUser(id, form);
-      history.push('/profile/' + id + '/');
-      console.log('pushed data')
-
-      // TODO: Update userContext
-
+      const {success, data} = await updateUser(id, form);
+      if (success) {
+        console.log(userContext)
+        userContext.updateUser({
+          email: form.email,
+          altEmail: form.altEmail,
+          givenName: form.givenName,
+          familyName: form.familyName,
+          telephone: form.telephone,
+        });
+        console.log(userContext)
+        history.push('/profile/' + id + '/');
+      }
     } catch (e) {
       console.log( e.json);
     }

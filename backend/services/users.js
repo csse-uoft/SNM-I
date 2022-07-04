@@ -9,14 +9,13 @@ const getCurrentUserProfile = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
     console.log('reach backend update Profile.');
-    const {firstName, lastName, primaryEmail, secondaryEmail, telephone, altTelephone} = req.body;
+    const {givenName, familyName, primaryEmail, secondaryEmail, telephone} = req.body;
     const updateData = {
-        firstName,
-        lastName,
+        givenName,
+        familyName,
         primaryEmail,
         secondaryEmail,
         telephone,
-        altTelephone
     }
 
     try {
