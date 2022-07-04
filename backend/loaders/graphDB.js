@@ -112,11 +112,13 @@ async function load() {
   await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
 
   // Namespaces, this could be used within the query without specifying it in the prefixes
+  const tasks = []
   for (const [prefix, uri] of Object.entries(namespaces)) {
     if (prefix === '') continue;
     // console.log(prefix, uri)
-    await repository.saveNamespace(prefix, uri);
+    tasks.push(repository.saveNamespace(prefix, uri));
   }
+  await Promise.all(tasks)
 
   console.log('GraphDB loaded.');
 }
