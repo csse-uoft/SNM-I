@@ -23,3 +23,9 @@ docker run --name mongo -p 27017:27017 -d mongo:latest
 ```shell
 yarn start
 ```
+
+#### Allow Self-Signed Localhost certificate
+Enable
+[chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
+
+Then reboot chrome.

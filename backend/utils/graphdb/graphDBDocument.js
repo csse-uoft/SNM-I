@@ -228,8 +228,9 @@ class GraphDBDocument {
     const id = await this.generateId();
     const data = this.cleanData(this.data);
     const {header, footer, queryBody, innerQueryBodies, instanceName} = await this.model.generateCreationQuery(id, data);
-    const joinedQuery = header + innerQueryBodies.join('') + queryBody + footer;
-    return {queryBody, instanceName, query: joinedQuery};
+    const joinedQueryBody = innerQueryBodies.join('') + queryBody;
+    const joinedQuery = header + joinedQueryBody + footer;
+    return {queryBody: joinedQueryBody, instanceName, query: joinedQuery};
   }
 
   /**
