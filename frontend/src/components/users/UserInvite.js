@@ -33,6 +33,9 @@ export default function UserInvite() {
     },
     errors: {},
     dialog: false,
+    success: false,
+    fail: false,
+    failMessage: ''
   });
 
   // useEffect(() => {
@@ -84,27 +87,26 @@ export default function UserInvite() {
   }
 
   const handleConfirm = async () => {
-    if (true) {
-      console.log('valid')
-      try {
-        // if (mode === 'new') {
-        const {success, message} = await createUser(state.form);
-        if(success){
-          setState(state => ({...state, success: true}))
-          history.push('/success-trans');
-        }
 
-        // } else {
-        //   await updateUser(id, state.form);
-        //   history.push('/users/' + id);
-        // }
+    console.log('valid')
+    try {
 
-      } catch (e) {
-        if (e.json) {
-          setState(state => ({...state, errors: e.json}));
-        }
+      const {success, message} = await createUser(state.form);
+      setState(state => ({...state, dialog: false}))
+      if (success) {
+        setState(state => ({...state, success: true}))
+      } else {
+        setState(state => ({...state, failMessage: message}))
+      }
+
+
+    } catch (e) {
+      if (e.json) {
+        setState(state => ({...state, errors: e.json}))
+        setState(state => ({...state, fail: true}))
       }
     }
+
   };
 
   const handleOnBlur = (field, option) => {
@@ -113,7 +115,7 @@ export default function UserInvite() {
       // state.errors.field = option.validator(e.target.value)
       setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
     //console.log(state.errors)
-    else{
+    else {
       setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
     }
 
@@ -127,24 +129,7 @@ export default function UserInvite() {
         {'Create new user'}
       </Typography>
       {Object.entries(userInvitationFields).map(([field, option]) => {
-        // if (option.validator && !!option.validator(state.form[field]))
-        // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
-        // state.errors[field] = option.validator(state.form[field])
-        // if (option.type ==='phoneNumber')
-        //   return(
-        //     <option.component
-        //       key={field}
-        //       label={option.label}
-        //       type={option.type}
-        //       options={option.options}
-        //       required={option.required}
-        //       onChange={value => state.form[field] = value}
-        //       onBlur={e => handleOnBlur(e, field, option)}
-        //       error={!!state.errors[field]}
-        //       helperText={state.errors[field]}
-        //     />
-        //   )
-        // else
+
         return (
 
           <option.component
@@ -161,9 +146,6 @@ export default function UserInvite() {
           />
         )
       })}
-      {/*<MuiPhoneNumber defaultCountry={'ca'} onChange={value => state.form.phone = value} sx={{mt: '16px', minWidth: 350}}*/}
-      {/*                variant="outlined" label="Phone number"*/}
-      {/*/>*/}
       <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
         Submit
       </Button>
@@ -171,9 +153,15 @@ export default function UserInvite() {
                    dialogTitle={'Are you sure to submit?'}
                    buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
                      <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
-                   // buttons={{'cancel': handleCancel, 'confirm': handleConfirm}}
                    open={state.dialog}/>
-
+      <AlertDialog dialogContentText={"The user is invited successfully."}
+                   dialogTitle={'Success'}
+                   buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                   open={state.success}/>
+      <AlertDialog dialogContentText={state.failMessage||"Error occur"}
+                   dialogTitle={'Fail'}
+                   buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                   open={state.fail}/>
 
 
 
