@@ -67,7 +67,7 @@ async function updateUserPassword(email, newPassword) {
 
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
-  const {securityQuestions} = updatedData
+  const {securityQuestions, status} = updatedData
   if (securityQuestions){
     const answer1 = await Hashing.hashPassword(securityQuestions[3]);
     const securityQuestion1 = {
@@ -89,6 +89,9 @@ async function updateUserAccount(email, updatedData) {
     }
     userAccount.securityQuestions = [securityQuestion1, securityQuestion2, securityQuestion3]
 
+  }
+  if(status){
+    userAccount.status = status
   }
   // add more if needed TODO
 
