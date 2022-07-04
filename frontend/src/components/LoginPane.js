@@ -51,14 +51,15 @@ function LoginPane() {
           email: data.primaryEmail,
           altEmail: data.secondaryEmail,
           displayName: data.displayName,
-          givenName: data.primaryContact.givenName,
-          familyName: data.primaryContact.familyName,
-          telephone: data.primaryContact.telephone.phoneNumber,
+          givenName: data.primaryContact?.givenName,
+          familyName: data.primaryContact?.familyName,
+          telephone: data.primaryContact?.telephone?.phoneNumber,
         });
         console.log(userContext);
         history.push('/dashboard');
       }
     } catch (e) {
+      console.error(e)
       setForm(prev => ({...prev, alert: e.json.message}));
     }
   };
