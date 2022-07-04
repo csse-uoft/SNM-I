@@ -53,8 +53,9 @@ function LoginPane() {
           displayName: data.displayName,
           givenName: data.primaryContact.givenName,
           familyName: data.primaryContact.familyName,
-          telephone: data.primaryContact.telephone,
+          telephone: data.primaryContact.telephone.phoneNumber,
         });
+        console.log(userContext);
         history.push('/dashboard');
       }
     } catch (e) {

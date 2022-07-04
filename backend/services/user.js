@@ -20,11 +20,7 @@ async function createUserAccount(data) {
     userAccount.primaryContact = {
       familyName: primaryContact.familyName,
       givenName: primaryContact.givenName,
-      telephone: primaryContact.telephone,
     }
-    // userAccount.primaryContact.telephone = {
-    //   phoneNumber: primaryContact.telephone.phoneNumber,
-    // }
   }
 
   await userAccount.save();
@@ -61,17 +57,16 @@ async function createTemporaryUserAccount(data) {
 
 
 async function updateUserAccount(email, updatedData) {
-  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
+  const userAccount = await GDBUserAccountModel.findOne({email});
   Object.assign(userAccount, updatedData);
   await userAccount.save();
   return userAccount;
 }
 
-
 async function findUserAccountByEmail(email) {
   const userAccount = await GDBUserAccountModel.findOne(
-    {primaryEmail: email},
-    {populates: ['primaryContact', 'organization']}
+    {email},
+    {populates: ['primaryContact.telephone', 'organization']}
   );
   return userAccount;
 }

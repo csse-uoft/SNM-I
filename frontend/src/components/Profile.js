@@ -47,6 +47,8 @@ export default function Profile() {
   const [form, setForm] = useState({...userProfileFields});
 
 
+  console.log(userContext);
+
   useEffect(() => {
     getProfile(id).then(user => {
       setForm(userContext);

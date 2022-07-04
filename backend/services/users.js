@@ -6,9 +6,9 @@ const {jwtConfig} = require("../config");
 
 const getCurrentUserProfile = async (req, res, next) => {
     const user = await findUserAccountByEmail(req.session.email);
-    console.log('reach backend users.');
     return res.json(user)
-}
+};
+
 
 const updateProfile = async (req, res, next) => {
     const {id, givenName, familyName, email, altEmail, telephone} = req.body;
@@ -36,7 +36,7 @@ const updateProfile = async (req, res, next) => {
 
         else {
             // store updated data in const updateData
-            await updateUserAccount(id, email, updateData)
+            await updateUserAccount(email, updateData)
 
             return res.status(202).json({success: true, message: 'Successfully update profile.'})
 

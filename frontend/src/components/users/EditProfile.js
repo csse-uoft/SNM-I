@@ -35,7 +35,7 @@ export default function EditProfile() {
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
+  console.log(userContext)
   useEffect(() => {
     getProfile(id).then(user => {
       setForm(userContext);
@@ -43,10 +43,11 @@ export default function EditProfile() {
     });
   }, [id]);
 
+  console.log(form)
+
   // Helper function for checking the validity of information in the fields. (frontend check)
   const validate = () => {
     const newErrors = {};
-    console.log(form)
 
     for (const [field, option] of Object.entries(userProfileFields)) {
       const isEmpty = isFieldEmpty(form[field]);
