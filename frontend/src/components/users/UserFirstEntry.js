@@ -38,7 +38,8 @@ export default function UserFirstEntry() {
     verified: false,
     loading: true,
     email: '',
-    id:''
+    id:'',
+    failMessage:''
   });
 
   if (state.loading) {
@@ -111,13 +112,18 @@ export default function UserFirstEntry() {
       const securityQuestions = [state.form.securityQuestion1, state.form.securityQuestion2, state.form.securityQuestion3,
         state.form.securityQuestionAnswer1, state.form.securityQuestionAnswer2, state.form.securityQuestionAnswer3]
       setState(state => ({...state, loading: true, submitDialog: false}))
-      await firstEntryUpdate({email: state.email, userId: state.id, newPassword: state.form.password,
+      const {success, message} = await firstEntryUpdate({email: state.email, userId: state.id, newPassword: state.form.password,
         securityQuestions: securityQuestions})
-      setState(state => ({...state, loading: false, successDialog: true}))
+      if(success){
+        setState(state => ({...state, loading: false, successDialog: true}))
+      }else{
+        setState(state => ({...state, failDialog: true, failMessage: message}))
+      }
+
 
     } catch (e) {
       if (e.json) {
-        setState(state => ({...state, errors: e.json, failDialog: true, submitDialog: false}));
+        setState(state => ({...state, errors: e.json, failDialog: true}));
       }
     }
 
@@ -169,11 +175,11 @@ export default function UserFirstEntry() {
                      open={state.submitDialog}/>
         <AlertDialog dialogContentText={"You are successfully registered"}
                      dialogTitle={'Success'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'success'} autoFocus> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
-        <AlertDialog dialogContentText={"Fail to update"}
+        <AlertDialog dialogContentText={state.failMessage || "Fail to update"}
                      dialogTitle={'Fail'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'fail'} autoFocus>{'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'fail'}>{'ok'}</Button>]}
                      open={state.failDialog}/>
       </Container>
 
@@ -181,7 +187,8 @@ export default function UserFirstEntry() {
   } else {
     return (<AlertDialog dialogContentText={"The token is invalid"}
                          dialogTitle={'Invalid token'}
-                         buttons={[<Button onClick={() => {history.push('/login')}} key={'invalidToken'} autoFocus>{'ok'}</Button>]}
+                         buttons={[<Button onClick={() => {history.push('/login')}} key={'invalidToken'}>{'ok'}</Button>]}
+                         open={!state.verified}
     />)
 
 
