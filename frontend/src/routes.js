@@ -15,6 +15,10 @@ import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
 import UserInvite from './components/users/UserInvite'
+import ResetPassword from './components/users/UserResetPassword'
+import EmailConfirm from './components/emailConfirm'
+import UserProfile from './components/Profile'
+import UpdateUserProfile from './components/users/EditProfile'
 import NeedForm from './components/client_needs/NeedForm'
 import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
@@ -38,6 +42,7 @@ const routes = (
     <Route exact path='/' component={Landing}/>
     <Route path='/success-trans' component={InformSuccessPage}/>
     <Route path='/login' component={Login}/>
+    <Route path='/email-confirm' component={EmailConfirm}/>
     <Route path='/login-pane' component={LoginPane}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
@@ -52,6 +57,10 @@ const routes = (
     <AdminRoute path='/users/:id/edit' component={UserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
     <AdminRoute path='/users/invite' component={UserInvite}/>
+    <AdminRoute path='/profile/:id/edit' component={UpdateUserProfile}/>
+    <AdminRoute path='/profile/:id' component={UserProfile}/>
+
+    <AdminRoute path='/users/reset-password/:id' component={ResetPassword}/>
     <AdminRoute path='/users/:id' component={User}/>
     <AdminRoute path='/users' component={Users}/>
     <AdminRoute path='/admin-logs' component={AdminLogs}/>

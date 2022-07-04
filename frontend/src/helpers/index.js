@@ -176,11 +176,16 @@ const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
 const phoneNumberRegex = /^\+1\s\(\d{3}\)\s\d{3}-\d{4}$/
 const inNorthAmericaRegex = /^\+1/
 const emptyPhoneNumber = /^\+1$/
+const samePassword = /admin/
+const sameEmail = /admin@sample.com/
 
 const EMAIL_ERR_MSG = "Invalid email! They are in the format of jsmith@example.com";
 const PHONE_ERR_MSH = "Invalid phone number!" //+ "They are in the format of NPA-NXX-XXXX " +
 // // "where NPA is the three digit area code and NXX-XXXX is the seven digit subscriber number";
-const PASSWORD_ERR_MSG = "Please enter a secure and strong password";
+const PASSWORD_ERR_MSG = "Please make sure your new password contains both uppercase and ' +\n" +
+    "                            'lowercase letter, numbers, and a punctuation mark.";
+const OLD_PASSWORD_ERR_MSG = "Your input doesn't match the old password, please try again.";
+const CONFIRM_EMAIL_ERR_MSG = "Your input doesn't match the your registered email, please try again.";
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
   "where A is a letter and 1 is a digit";
 const EXPIRATION_DATE_MSG = "Dates in the past are not valid"
@@ -197,9 +202,23 @@ export const Validator = {
     }
   },
 
+  confirmEmail: email => {
+    if (!emailRegex.test(email)) {
+      return EMAIL_ERR_MSG;
+    }
+    if (!sameEmail.test(email)) {
+      return CONFIRM_EMAIL_ERR_MSG;
+    }
+  },
+
   phone: phone => {
     if (!emptyPhoneNumber.test(phone) && inNorthAmericaRegex.test(phone) && !phoneNumberRegex.test(phone))
       return PHONE_ERR_MSH;
+  },
+
+  oldPassword: oldPassword => {
+    if (!samePassword.test(oldPassword))
+      return OLD_PASSWORD_ERR_MSG;
   },
 
   password: password => {

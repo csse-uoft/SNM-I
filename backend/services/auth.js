@@ -13,6 +13,7 @@ const login = async (req, res, next) => {
       return res.json({success: false, message: 'Username or password is incorrect.'});
     } else {
       req.session.email = email;
+      await userAccount.populate('primaryContact.telephone');
       const data = userAccount.toJSON();
       delete data.salt;
       delete data.hash;
@@ -27,7 +28,7 @@ const login = async (req, res, next) => {
 }
 
 const logout = async (req, res) => {
-  req.session.username = '';
+  req.session.email = '';
   return res.json({success: true})
 }
 

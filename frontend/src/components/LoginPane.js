@@ -43,12 +43,19 @@ function LoginPane() {
   const submit = async () => {
     try {
       const {success, data} = await login(form.email, form.password);
+      console.log(form.email, form.password, success, data)
       if (success) {
         userContext.updateUser({
+          id: data._id,
           isAdmin: data.role === 'admin',
           email: data.primaryEmail,
-          displayName: data.displayName
+          altEmail: data.secondaryEmail,
+          displayName: data.displayName,
+          givenName: data.primaryContact.givenName,
+          familyName: data.primaryContact.familyName,
+          telephone: data.primaryContact.telephone.phoneNumber,
         });
+        console.log(userContext);
         history.push('/dashboard');
       }
     } catch (e) {
@@ -100,7 +107,7 @@ function LoginPane() {
           </Typography>
         </Link>
 
-        <Link to={'/login-pane'}>
+        <Link to={'/email-confirm'}>
           <Typography variant="body2" className={classes.link}>
             Forget password?
           </Typography>

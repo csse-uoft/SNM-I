@@ -71,7 +71,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
           {...props}
           value={value}
           onChange={val => {
-            onChange(val)
+            onChange({target: {value: val}})
             setValue(val)
           }}
           // disableAreaCodes

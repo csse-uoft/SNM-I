@@ -17,8 +17,16 @@ export function firstEntryUpdate(params) {
   return putJson('/api/user/firstEntry', params);
 }
 
+export function getProfile(id) {
+  return getJson('/api/profile/' + id + '/')
+}
+
 export function updateUser(id, params) {
-  return putJson('/user/' + id + '/', params);
+  return postJson('/api/profile/' + id + '/', params);
+}
+
+export function updateProfile(id, params) {
+  return postJson('/api/profile/' + id + '/', params);
 }
 
 export function fetchUser(id) {
