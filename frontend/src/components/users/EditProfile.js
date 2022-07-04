@@ -35,15 +35,12 @@ export default function EditProfile() {
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  console.log(userContext)
   useEffect(() => {
     getProfile(id).then(user => {
       setForm(userContext);
       setLoading(false);
     });
   }, [id]);
-
-  console.log(form)
 
   // Helper function for checking the validity of information in the fields. (frontend check)
   const validate = () => {
@@ -90,7 +87,6 @@ export default function EditProfile() {
     try {
       const {success} = await updateProfile(id, form);
       if (success) {
-        console.log(userContext)
         userContext.updateUser({
           email: form.email,
           altEmail: form.altEmail,
@@ -98,7 +94,7 @@ export default function EditProfile() {
           familyName: form.familyName,
           telephone: form.telephone,
         });
-        console.log(userContext)
+        console.log(userContext);
         history.push('/profile/' + id + '/');
       }
     } catch (e) {
