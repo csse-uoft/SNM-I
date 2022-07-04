@@ -51,9 +51,6 @@ export default function Profile() {
     getProfile(id).then(user => {
       setForm(userContext);
       setLoading(false);
-      console.log(userContext)
-      console.log(user)
-      console.log(userProfileFields)
     });
   }, [id]);
 

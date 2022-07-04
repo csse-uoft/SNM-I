@@ -3,7 +3,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Grid, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
-import {fetchUser, getProfile, updateUser} from "../../api/userApi";
+import {fetchUser, getProfile, updateProfile, updateUser} from "../../api/userApi";
 import {defaultUserFields} from "../../constants/default_fields";
 import {isFieldEmpty} from "../../helpers";
 import {
@@ -87,7 +87,7 @@ export default function EditProfile() {
 
   const handleDialogConfirm = async () => {
     try {
-      const {success, data} = await updateUser(id, form);
+      const {success} = await updateProfile(id, form);
       if (success) {
         console.log(userContext)
         userContext.updateUser({
@@ -154,7 +154,8 @@ export default function EditProfile() {
 
         {/* Alert prompt for submitting changes */}
         <AlertDialog
-          dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
+          dialogContentText={"Note that if you want to change your primary email, you will receive a " +
+            "confirmation link in your input email."}
           dialogTitle={'Are you sure to submit?'}
           buttons={[
             <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,

@@ -20,6 +20,10 @@ export function updateUser(id, params) {
   return postJson('/api/profile/' + id + '/', params);
 }
 
+export function updateProfile(id, params) {
+  return postJson('/api/profile/' + id + '/', params);
+}
+
 export function fetchUser(id) {
   return getJson('/user/' + id + '/');
 }

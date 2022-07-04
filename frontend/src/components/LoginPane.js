@@ -43,6 +43,7 @@ function LoginPane() {
   const submit = async () => {
     try {
       const {success, data} = await login(form.email, form.password);
+      console.log(form.email, form.password, success, data)
       if (success) {
         userContext.updateUser({
           id: data._id,

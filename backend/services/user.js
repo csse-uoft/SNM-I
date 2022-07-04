@@ -1,9 +1,9 @@
 const Hashing = require("../utils/hashing");
-const {GDBOrganizationModel, GDBUserAccountModel} = require('../models');
+const {GDBOrganizationModel, GDBUserAccountModel, GDBPersonModel} = require('../models');
 
 async function createUserAccount(data) {
   const {
-    primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact
+    primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact,
   } = data;
 
   const {hash, salt} = await Hashing.hashPassword(password);
@@ -11,6 +11,7 @@ async function createUserAccount(data) {
   const userAccount = GDBUserAccountModel({
     primaryEmail,
     secondaryEmail,
+    primaryContact,
     hash,
     salt,
   });
@@ -19,7 +20,11 @@ async function createUserAccount(data) {
     userAccount.primaryContact = {
       familyName: primaryContact.familyName,
       givenName: primaryContact.givenName,
+      telephone: primaryContact.telephone,
     }
+    // userAccount.primaryContact.telephone = {
+    //   phoneNumber: primaryContact.telephone.phoneNumber,
+    // }
   }
 
   await userAccount.save();
@@ -101,6 +106,11 @@ async function initUserAccounts() {
       secondaryEmail: 'admin2@snmi.ca',
       role: 'admin',
       displayName: 'Admin',
+      primaryContact: {
+        givenName: 'Christina',
+        familyName: 'Aquafina',
+        telephone: {phoneNumber: 16475726356},
+      },
       hash,
       salt,
     });
