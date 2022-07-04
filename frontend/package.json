@@ -12,6 +12,7 @@
     "@mui/x-date-pickers": "^5.0.0-alpha.3",
     "date-fns": "^2.23.0",
     "lodash": "^4.17.20",
+    "material-ui-phone-number": "^3.0.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
     "react-bootstrap": "^1.6.1",

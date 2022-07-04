@@ -6,7 +6,9 @@ const {GDBPersonModel} = require('./person');
 const GDBSecurityQuestion = createGraphDBModel({
   question: {type: String, internalKey: ':hasSecurityQuestion'},
   // The answer should be case-insensitive.
-  answer: {type: String, internalKey: ':hasSecurityQuestionAnswer'},
+  // The answer should be hashed
+  hash: {type: String, internalKey: ':hasHash'},
+  salt: {type: String, internalKey: ':hasSalt'},
 }, {rdfTypes: [':SecurityQuestion'], name: 'securityQuestion'});
 
 
@@ -30,10 +32,10 @@ const GDBUserAccountModel = createGraphDBModel({
   status: {type: String, internalKey: ':hasAccountStatus'},
 
   // Exact 3 questions, the answer should be case-insensitive.
-  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion'}
+  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', externalKey: 'securityQuestions'}
 
 }, {
   rdfTypes: [':UserAccount'], name: 'userAccount'
 });
 
-module.exports = {GDBUserAccountModel};
+module.exports = {GDBUserAccountModel, GDBSecurityQuestion};

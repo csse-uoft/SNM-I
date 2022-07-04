@@ -170,16 +170,21 @@ export function verifyFamilyFields(families, result) {
 }
 
 const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const phoneNumberRegex = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+// const phoneNumberRegex = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 const passwordRegex = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+const phoneNumberRegex = /^\+1\s\(\d{3}\)\s\d{3}-\d{4}$/
+const inNorthAmericaRegex = /^\+1/
+const emptyPhoneNumber = /^\+1$/
 
 const EMAIL_ERR_MSG = "Invalid email! They are in the format of jsmith@example.com";
-const PHONE_ERR_MSH = "Invalid phone number! They are in the format of NPA-NXX-XXXX " +
-  "where NPA is the three digit area code and NXX-XXXX is the seven digit subscriber number";
+const PHONE_ERR_MSH = "Invalid phone number!" //+ "They are in the format of NPA-NXX-XXXX " +
+// // "where NPA is the three digit area code and NXX-XXXX is the seven digit subscriber number";
 const PASSWORD_ERR_MSG = "Please enter a secure and strong password";
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
   "where A is a letter and 1 is a digit";
+const EXPIRATION_DATE_MSG = "Dates in the past are not valid"
+const CONFIRM_PASSWORD_ERR_MSG = 'This field must be same with your password'
 
 export const Validator = {
   /**
@@ -193,7 +198,7 @@ export const Validator = {
   },
 
   phone: phone => {
-    if (!phoneNumberRegex.test(phone))
+    if (!emptyPhoneNumber.test(phone) && inNorthAmericaRegex.test(phone) && !phoneNumberRegex.test(phone))
       return PHONE_ERR_MSH;
   },
 
@@ -202,8 +207,18 @@ export const Validator = {
       return PASSWORD_ERR_MSG;
   },
 
+  confirmPassword: (confirmPassword, password) => {
+    if (confirmPassword !== password)
+      return CONFIRM_PASSWORD_ERR_MSG
+  },
+
   postalCode: postalCode => {
     if (!postalCodeRegex.test(postalCode))
-    return POSTAL_CODE_ERR_MSG;
+      return POSTAL_CODE_ERR_MSG;
+  },
+
+  expirationDate: expirationDate => {
+    if(new Date(expirationDate) < new Date())
+      return EXPIRATION_DATE_MSG
   }
 };

@@ -1,16 +1,16 @@
 const Hashing = require("../utils/hashing");
-const {GDBOrganizationModel, GDBUserAccountModel} = require('../models');
+const {GDBOrganizationModel, GDBUserAccountModel, GDBSecurityQuestion} = require('../models');
 
 async function createUserAccount(data) {
   const {
-    email, notificationEmail, password, displayName, organizationId, primaryContact
+    primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact
   } = data;
 
   const {hash, salt} = await Hashing.hashPassword(password);
 
   const userAccount = GDBUserAccountModel({
-    email,
-    notificationEmail,
+    primaryEmail,
+    secondaryEmail,
     hash,
     salt,
   });
@@ -37,24 +37,86 @@ async function createUserAccount(data) {
 //   },
 // })
 
+async function createTemporaryUserAccount(data) {
+  const {
+    email, is_superuser, expirationDate
+  } = data;
+
+
+  const userAccount = GDBUserAccountModel({
+    primaryEmail: email,
+    role: is_superuser? 'admin': 'regular',
+    expirationDate: expirationDate,
+    status: "temporary"
+  });
+
+  await userAccount.save();
+  return userAccount;
+}
+
+async function updateUserPassword(email, newPassword) {
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
+  const {hash, salt} = await Hashing.hashPassword(newPassword);
+  userAccount.hash = hash
+  userAccount.salt = salt
+  await userAccount.save()
+  return userAccount
+}
+
+
 
 async function updateUserAccount(email, updatedData) {
-  const userAccount = await GDBUserAccountModel.findOne({email});
-  Object.assign(userAccount, updatedData);
-  await updatedData.save();
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
+  const {securityQuestions, status} = updatedData
+  if (securityQuestions){
+    const answer1 = await Hashing.hashPassword(securityQuestions[3]);
+    const securityQuestion1 = {
+      question: securityQuestions[0],
+      hash: answer1.hash,
+      salt: answer1.salt
+    }
+    const answer2 = await Hashing.hashPassword(securityQuestions[4]);
+    const securityQuestion2 = {
+      question: securityQuestions[1],
+      hash: answer2.hash,
+      salt: answer2.salt
+    }
+    const answer3 = await Hashing.hashPassword(securityQuestions[5]);
+    const securityQuestion3 = {
+      question: securityQuestions[2],
+      hash: answer3.hash,
+      salt: answer3.salt
+    }
+    userAccount.securityQuestions = [securityQuestion1, securityQuestion2, securityQuestion3]
+
+  }
+  if(status){
+    userAccount.status = status
+  }
+  // add more if needed TODO
+
+  await userAccount.save();
+  console.log(userAccount)
   return userAccount;
 }
 
 async function findUserAccountByEmail(email) {
   const userAccount = await GDBUserAccountModel.findOne(
-    {email},
+    {primaryEmail: email},
     {populates: ['primaryContact', 'organization']}
   );
   return userAccount;
 }
 
+async function isEmailExists(email) {
+  const userAccount = await findUserAccountByEmail(email);
+  return !!userAccount
+}
+
+
+
 async function validateCredentials(email, password) {
-  const userAccount = await GDBUserAccountModel.findOne({email});
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const validated = await Hashing.validatePassword(password, userAccount.hash, userAccount.salt);
   return {validated, userAccount};
 }
@@ -87,5 +149,6 @@ async function initUserAccounts() {
 
 
 module.exports = {
-  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts
+  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
+  createTemporaryUserAccount, updateUserPassword
 };

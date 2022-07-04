@@ -14,6 +14,23 @@ export const defaultProfileFields = {
   alt_phone_number: '',
 };
 
+export const defaultFirstEntryFields = {
+  password: '',
+  confirmPassword: '',
+  securityQuestion1: '',
+  securityQuestionAnswer1: '',
+  securityQuestion2: '',
+  securityQuestionAnswer2: '',
+  securityQuestion3: '',
+  securityQuestionAnswer3: '',
+}
+
+export const defaultInvitationFields = {
+  is_superuser: false,
+  email: '',
+  expirationDate: ''
+}
+
 export const defaultContactFields = {
   first_name: '',
   last_name: '',
@@ -33,12 +50,10 @@ export const defaultLocationFields = {
 export const defaultUserFields = {
   first_name: '',
   last_name: '',
-  username: '',
   email: '',
   is_superuser: false,
   primary_phone_number: '',
-  alt_phone_number: '',
-  password: ''
+  alt_phone_number: ''
 };
 
 /**
