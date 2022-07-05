@@ -15,6 +15,11 @@ import {AlertDialog} from "../shared/Dialogs";
 import {Loading} from "../shared";
 import {UserContext} from "../../context";
 
+/* Page for editing User Profile, functionalities including:
+*   - edit account information
+*   - edit primary/secondary email
+* */
+
 const useStyles = makeStyles(() => ({
   root: {
     width: '80%'
@@ -76,13 +81,14 @@ export default function EditProfile() {
     return true;
   };
 
+  // submit button handler
   const handleSubmitChanges = () => {
     if (validate()) {
       setDialogSubmit(true);
     }
   }
 
-
+  // confirmation dialog confirm button handler
   const handleDialogConfirm = async () => {
     try {
       const {success} = await updateProfile(id, form);

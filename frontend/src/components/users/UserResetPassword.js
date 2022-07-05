@@ -14,6 +14,9 @@ import {PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
 import { useHistory } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
 
+/* Page for password reset, functionalities including:
+*   - reset password
+* */
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -41,6 +44,7 @@ export default function UserResetPassword() {
 
     let history = useHistory();
 
+    // helper function for validating the text field for old password
     const validateOld = () => {
         const errors = {};
         for (const [field, option] of Object.entries(updatePasswordFields)) {
@@ -62,6 +66,8 @@ export default function UserResetPassword() {
         return true;
     };
 
+
+    // helper function for validating the text field for new password
     const validateNew = () => {
         const errors = {};
 
@@ -93,6 +99,7 @@ export default function UserResetPassword() {
         return true;
     };
 
+    // handler for submit button for old password
     const handleSubmitOld = () => {
         console.log(state.form)
         if (validateOld()) {
@@ -101,6 +108,7 @@ export default function UserResetPassword() {
         }
     }
 
+    // handler for submit button for new password
     const handleSubmitNew = () => {
         console.log(state.form)
         if (validateNew()) {
@@ -108,11 +116,13 @@ export default function UserResetPassword() {
         }
     }
 
+    // handler for cancel button in confirmation dialog
     const handleCancel = () => {
         setState(state => ({...state, dialog: false}))
         console.log("cancel")
     }
 
+    // handler for submit button in confirmation dialog
     const handleConfirm = async () => {
         if (true) {
             console.log('valid')
@@ -126,6 +136,7 @@ export default function UserResetPassword() {
         }
     };
 
+    // OnBlur handler
     const handleOnBlur = (e, field, option) => {
         if (!isFieldEmpty(state.form[field]) && option.validator && !!option.validator(state.form[field]))
             // state.errors.field = option.validator(e.target.value)
@@ -147,7 +158,7 @@ export default function UserResetPassword() {
                     {'Please enter your new password:'}
                 </Typography>
 
-
+                {/* text field for new password */}
                 {Object.entries(newPasswordFields).map(([field, option]) => {
                     if (option.label === 'New Password'){
                         return (
@@ -174,6 +185,7 @@ export default function UserResetPassword() {
                     {'Please repeat your new password:'}
                 </Typography>
 
+                    {/* text field for repeat new password */}
                     {Object.entries(newPasswordFields).map(([field, option]) => {
                         if (option.label === 'Repeat New Password'){
                             return (
@@ -194,6 +206,7 @@ export default function UserResetPassword() {
                             )
                         }})}
 
+                {/* new password submit button */}
                 <Button
                     variant="contained"
                     color="primary"
@@ -203,6 +216,7 @@ export default function UserResetPassword() {
                     Submit
                 </Button>
 
+                {/* confirmation dialog */}
                 <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                              dialogTitle={'Are you sure to submit?'}
                              buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
@@ -214,6 +228,7 @@ export default function UserResetPassword() {
                         {'Please enter your old password below:'}
                     </Typography>
 
+                    {/* text field for old password */}
                     {Object.entries(updatePasswordFields).map(([field, option]) => {
                         return (
                                 <option.component
@@ -233,6 +248,7 @@ export default function UserResetPassword() {
                             )
                         })}
 
+                    {/* old password submit button */}
                     <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmitOld}>
                         Submit
                     </Button>
