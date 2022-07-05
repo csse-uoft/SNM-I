@@ -53,7 +53,9 @@ function LoginPane() {
           displayName: data.displayName,
           givenName: data.primaryContact?.givenName,
           familyName: data.primaryContact?.familyName,
-          telephone: data.primaryContact?.telephone?.phoneNumber,
+          countryCode: data.primaryContact?.telephone?.countryCode,
+          areaCode: data.primaryContact?.telephone?.areaCode,
+          phoneNumber: data.primaryContact?.telephone?.phoneNumber,
         });
         console.log(userContext);
         history.push('/dashboard');

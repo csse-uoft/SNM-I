@@ -26,7 +26,7 @@ export function updateUser(id, params) {
 }
 
 export function updateProfile(id, params) {
-  return postJson('/api/profile/' + id + '/', params);
+  return postJson('/api/profile/' + id + '/edit', params);
 }
 
 export function fetchUser(id) {

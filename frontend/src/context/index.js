@@ -3,11 +3,14 @@ import React from 'react';
 export const defaultUserContext = {
   id:'',
   email: '',
+  altEmail:'',
   isAdmin: '',
   displayName: '',
   givenName:'',
   familyName:'',
-  telephone:'',
+  countryCode:null,
+  areaCode:null,
+  phoneNumber:null,
 }
 
 export const getUserContext = () => {

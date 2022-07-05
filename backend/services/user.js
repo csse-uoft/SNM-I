@@ -68,7 +68,8 @@ async function updateUserPassword(email, newPassword) {
 
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email}, {populates: ['primaryContact.telephone']});
-  const {securityQuestions, status, givenName, familyName, telephone, primaryEmail, secondaryEmail} = updatedData
+  const {securityQuestions, status, givenName, familyName, countryCode,
+    areaCode, phoneNumber, primaryEmail, secondaryEmail} = updatedData
   if (securityQuestions){
     const answer1 = await Hashing.hashPassword(securityQuestions[3]);
     const securityQuestion1 = {
@@ -103,9 +104,17 @@ async function updateUserAccount(email, updatedData) {
     userAccount.primaryContact.familyName = familyName;
   }
 
-  // if(telephone) {
-  //   userAccount.primaryContact.telephone.phoneNumber = telephone;
-  // }
+  if(countryCode) {
+    userAccount.primaryContact.telephone.countryCode = countryCode;
+  }
+
+  if(areaCode) {
+    userAccount.primaryContact.telephone.areaCode = areaCode;
+  }
+
+  if(phoneNumber) {
+    userAccount.primaryContact.telephone.phoneNumber = phoneNumber;
+  }
 
   if(secondaryEmail) {
     userAccount.secondaryEmail = secondaryEmail;
@@ -157,7 +166,10 @@ async function initUserAccounts() {
       primaryContact: {
         givenName: 'Christina',
         familyName: 'Aquafina',
-        telephone: {phoneNumber: '+1 (647) 572-6356'},
+        telephone: {
+          countryCode: 1,
+          areaCode: 647,
+          phoneNumber: 5726356,},
       },
       hash,
       salt,

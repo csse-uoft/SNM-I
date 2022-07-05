@@ -47,11 +47,18 @@ export default function Profile() {
   const [form, setForm] = useState({...userProfileFields});
 
 
-  console.log(userContext);
+  const profileForm = {
+    givenName: userContext.givenName,
+    familyName: userContext.familyName,
+    telephone: '+' + userContext.countryCode.toString() + ' (' +
+      userContext.areaCode.toString() + ') ' + userContext.phoneNumber.toString(),
+    email: userContext.email,
+    altEmail: userContext.altEmail,
+  }
 
   useEffect(() => {
     getProfile(id).then(user => {
-      setForm(userContext);
+      setForm(profileForm);
       setLoading(false);
     });
   }, [id]);

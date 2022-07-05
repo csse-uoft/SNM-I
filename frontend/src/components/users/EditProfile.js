@@ -35,9 +35,18 @@ export default function EditProfile() {
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const profileForm = {
+    givenName: userContext.givenName,
+    familyName: userContext.familyName,
+    telephone: userContext.countryCode.toString() +
+      userContext.areaCode.toString() + userContext.phoneNumber.toString(),
+    email: userContext.email,
+    altEmail: userContext.altEmail,
+  }
+
   useEffect(() => {
     getProfile(id).then(user => {
-      setForm(userContext);
+      setForm(profileForm);
       setLoading(false);
     });
   }, [id]);
@@ -85,16 +94,48 @@ export default function EditProfile() {
 
   const handleDialogConfirm = async () => {
     try {
-      const {success} = await updateProfile(id, form);
+      console.log(form)
+      const phone = form.telephone.split(' ');
+      console.log(phone)
+      const countryCodeParse = parseInt(phone[0]);
+      console.log(countryCodeParse)
+      const areaCodeParse = parseInt(phone[1].slice(1,4));
+      console.log(areaCodeParse)
+      const phoneNumberParse = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
+      console.log(phoneNumberParse)
+
+      const updateForm = {
+        givenName: form.givenName,
+        familyName: form.familyName,
+        countryCode: countryCodeParse,
+        areaCode: areaCodeParse,
+        phoneNumber: phoneNumberParse,
+        email: form.email,
+        altEmail: form.altEmail,
+      }
+      console.log('reach before update profile')
+      const {success} = await updateProfile(id, updateForm);
+      console.log('reach after update profile')
       if (success) {
+
+        userContext.email =updateForm.email;
+        userContext.altEmail = updateForm.altEmail;
+        userContext.givenName = updateForm.givenName;
+        userContext.familyName = updateForm.familyName;
+        userContext.countryCode = updateForm.countryCode;
+        userContext.areaCode = updateForm.areaCode;
+        userContext.phoneNumber = updateForm.phoneNumber;
+
         userContext.updateUser({
-          email: form.email,
-          altEmail: form.altEmail,
-          givenName: form.givenName,
-          familyName: form.familyName,
-          telephone: form.telephone,
+          email: userContext.email,
+          altEmail: userContext.altEmail,
+          givenName: userContext.givenName,
+          familyName: userContext.familyName,
+          countryCode: userContext.countryCode,
+          areaCode: userContext.areaCode,
+          phoneNumber: userContext.phoneNumber,
         });
-        console.log(userContext);
+
         history.push('/profile/' + id + '/');
       }
     } catch (e) {
