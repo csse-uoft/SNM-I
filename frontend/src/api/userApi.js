@@ -41,6 +41,10 @@ export function fetchUsers() {
   return getJson('/users/');
 }
 
+export function fetchSecurityQuestionsByEmail(email) {
+  return getJson('/api/securityQuestions/email/', {email})
+}
+
 export function deleteUser(id, params, callback) {
   const response = deleteJson('/user/' + id + '/');
   if (response.status !== 204)

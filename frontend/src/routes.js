@@ -35,6 +35,7 @@ import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
 import Questions from './components/additionalFIelds/Questions';
 import UserFirstEntry from "./components/users/UserFirstEntry";
+import ForgotPassword from "./components/ForgotPassword";
 
 const routes = (
   <Switch>
@@ -42,6 +43,7 @@ const routes = (
     <Route path='/login' component={Login}/>
     <Route path='/email-confirm' component={EmailConfirm}/>
     <Route path='/login-pane' component={LoginPane}/>
+    <Route path='/forgot-password' component={ForgotPassword}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
     <Route path='/verify/:token' component={UserFirstEntry}/>

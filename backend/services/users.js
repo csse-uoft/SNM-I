@@ -47,4 +47,23 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
-module.exports = {getCurrentUserProfile, updateProfile};
+const fetchSecurityQuestionsByEmail = async (req, res, next) => {
+    const {email} = req.body
+
+    try{
+        const userAccount = await findUserAccountByEmail(email)
+        if (!userAccount){
+            return res.status(400).json({success: false, message: "No such user"})
+        }
+        if (userAccount.status === "temporary"){
+            return res.status(400).json({success: false, message: "You need to verify your email first"})
+        }
+        const securityQuestions = userAccount.securityQuestions
+        return res.status(200).json({success: true, message: 'Success', securityQuestions})
+
+    }catch (e){
+        next(e)
+    }
+}
+
+module.exports = {getCurrentUserProfile, updateProfile, fetchSecurityQuestionsByEmail};
