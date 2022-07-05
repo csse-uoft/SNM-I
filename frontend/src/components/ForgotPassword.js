@@ -8,7 +8,8 @@ import {userInvitationFields} from "../constants/userInvitationFields";
 import {forgotPasswordFields} from "../constants/forgot_password_fields";
 import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
-import {fetchSecurityQuestionsByEmail} from "../api/userApi";
+import {checkSecurityQuestion, fetchSecurityQuestionsByEmail, sendVerificationEmail} from "../api/userApi";
+import {AlertDialog} from "./shared/Dialogs";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -35,80 +36,114 @@ export default function ForgotPassword() {
       group4: {},
     },
     loading: false,
-    group:1
+    group:1,
+    errorDialog: false
   });
 
   const handleSubmit = async () => {
-    if(validate()){
-      if(state.group === 1){
-        // get the user security questions
-        await fetchSecurityQuestionsByEmail(state.form.group1.email)
-      }else{
+    if (validate()) {
+      try {
+        if (state.group === 1) {
+          // get the user security questions
+          const {success, message, securityQuestions} = await fetchSecurityQuestionsByEmail(state.form.group1.email)
+          state.form.group2.securityQuestion1 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
+          state.form.group3.securityQuestion2 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
+          state.form.group4.securityQuestion3 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
+          setState(state => ({...state, group: state.group + 1}))
+
+        } else {
+          const group = 'group' + state.group
+          const securityQuestionAnswer = 'securityQuestionAnswer' + (state.group - 1)
+          const answer = state.form[group][securityQuestionAnswer]
+          const securityQuestion = 'securityQuestion' + (state.group - 1)
+
+          const {success, message, matched} = await checkSecurityQuestion({email: state.form.group1.email,
+            question: state.form[group][securityQuestion], answer})
+
+          if(matched){
+            const {success, message} = await sendVerificationEmail({email: state.form.group1.email})
+            console.log(message)
+          }else{
+            setState(state => ({...state, group: state.group + 1}))
+          }
+
+
+
+        }
+      } catch (e) {
+        if (e.json) {
+          setState(state => ({...state, errors: e.json, errorDialog: true}))
+        }
+
 
       }
-
     }
   }
 
-  const validate = () => {
+    const validate = () => {
+      const group = 'group' + state.group
+      const errors = {
+        group1: {},
+        group2: {},
+        group3: {},
+        group4: {},
+      }
+
+      for (const [field, option] of Object.entries(forgotPasswordFields[group])) {
+        const isEmpty = isFieldEmpty(state.form[group][field]);
+        if (option.required && isEmpty) {
+          errors[group][field] = REQUIRED_HELPER_TEXT;
+        }
+        let msg;
+        if (!isEmpty && option.validator && (msg = option.validator(state.form[group][field]))) {
+          errors[group][field] = msg;
+        }
+      }
+      setState(state => ({...state, errors}));
+      if (Object.keys(errors[group]).length > 0) {
+        return false
+      }
+      return true
+
+    }
+
+    if (state.loading)
+      return <Loading message={`Loading`}/>;
+
     const group = 'group' + state.group
-    const errors = {
-      group1: {},
-      group2: {},
-      group3: {},
-      group4: {},
-    }
 
-    for (const [field, option] of Object.entries(forgotPasswordFields[group])) {
-      const isEmpty = isFieldEmpty(state.form[group][field]);
-      if (option.required && isEmpty) {
-        errors[group][field] = REQUIRED_HELPER_TEXT;
-      }
-      let msg;
-      if (!isEmpty && option.validator && (msg = option.validator(state.form[group][field]))) {
-        errors[group][field] = msg;
-      }
-    }
-    setState(state => ({...state, errors}));
-    if (Object.keys(errors[group]).length > 0){
-      return false
-    }
-    return true
+    return (
+      <Container className={classes.root}>
+        <Typography variant="h5">
+          {'Forgot your password?'}
+        </Typography>
 
+        {Object.entries(forgotPasswordFields[group]).map(([field, option]) => {
 
-  }
+          return (
 
-  if (state.loading)
-    return <Loading message={`Loading`}/>;
+            <option.component
+              key={field}
+              label={option.label}
+              type={option.type}
+              options={option.options}
+              value={state.form[group][field]}
+              required={option.required}
+              onChange={e => state.form[group][field] = e.target.value}
+              // onBlur={() => handleOnBlur(field, option)}
+              disabled={option.disabled}
+              error={!!state.errors[group][field]}
+              helperText={state.errors[group][field]}
+            />
+          )
+        })}
+        <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+          Submit
+        </Button>
+        <AlertDialog dialogContentText={state.errors.message||"Error occur"}
+                     dialogTitle={'Error'}
+                     buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                     open={state.errorDialog}/>
+      </Container>)
 
-  const group = 'group' + state.group
-
-  return (
-    <Container className={classes.root}>
-      <Typography variant="h5">
-        {'Forgot your password?'}
-      </Typography>
-
-      {Object.entries(forgotPasswordFields[group]).map(([field, option]) => {
-
-        return (
-
-          <option.component
-            key={field}
-            label={option.label}
-            type={option.type}
-            options={option.options}
-            value={state.form[group][field]}
-            required={option.required}
-            onChange={e => state.form[group][field] = e.target.value}
-            // onBlur={() => handleOnBlur(field, option)}
-            error={!!state.errors[group][field]}
-            helperText={state.errors[group][field]}
-          />
-        )
-      })}
-      <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-        Submit
-      </Button>
-    </Container>)
 }

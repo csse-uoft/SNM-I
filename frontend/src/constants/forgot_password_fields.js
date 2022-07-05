@@ -16,8 +16,8 @@ export const forgotPasswordFields = {
   group2: {
     securityQuestion1: {
       ...defaultField,
+      disabled: true,
       label: 'Security Question',
-      required: true,
     },
 
     securityQuestionAnswer1: {
@@ -31,7 +31,7 @@ export const forgotPasswordFields = {
     securityQuestion2: {
       ...defaultField,
       label: 'Security Question',
-      required: true,
+      disabled: true,
     },
 
     securityQuestionAnswer2: {
@@ -45,7 +45,7 @@ export const forgotPasswordFields = {
     securityQuestion3: {
       ...defaultField,
       label: 'Security Question',
-      required: true,
+      disabled: true,
     },
 
     securityQuestionAnswer3: {

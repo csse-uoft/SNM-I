@@ -42,7 +42,15 @@ export function fetchUsers() {
 }
 
 export function fetchSecurityQuestionsByEmail(email) {
-  return getJson('/api/securityQuestions/email/', {email})
+  return putJson('/api/securityQuestions/email/', {email})
+}
+
+export function checkSecurityQuestion(params) {
+  return postJson('/api/checkSecurityQuestion/', params)
+}
+
+export function sendVerificationEmail(params) {
+  return postJson('/api/sendVerificationEmail/', params)
 }
 
 export function deleteUser(id, params, callback) {
