@@ -11,13 +11,15 @@ const getCurrentUserProfile = async (req, res, next) => {
 
 
 const updateProfile = async (req, res, next) => {
-    const {id, givenName, familyName, email, altEmail, telephone} = req.body;
+    const {id, givenName, familyName, email, altEmail, countryCode, areaCode, phoneNumber} = req.body;
     const updateData = {
         givenName,
         familyName,
         email,
         altEmail,
-        telephone,
+        countryCode,
+        areaCode,
+        phoneNumber,
     }
 
     try {
