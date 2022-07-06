@@ -61,7 +61,8 @@ async function updateUserPassword(email, newPassword) {
   userAccount.hash = hash
   userAccount.salt = salt
   await userAccount.save()
-  return userAccount
+  const saved = true
+  return {saved, userAccount}
 }
 
 
@@ -137,8 +138,6 @@ async function isEmailExists(email) {
   const userAccount = await findUserAccountByEmail(email);
   return !!userAccount
 }
-
-
 
 async function validateCredentials(email, password) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
