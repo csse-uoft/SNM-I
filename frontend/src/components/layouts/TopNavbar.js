@@ -165,7 +165,7 @@ function TopNavBar() {
         ) : null}
 
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          SNM-I, {userContext.id}
+          SNM-I
         </Typography>
 
 
