@@ -33,8 +33,8 @@ export function updateProfile(id, params) {
   return postJson('/api/profile/' + id + '/edit', params);
 }
 
-export function checkCurrentPassword(id, params) {
-  return postJson('/api/users/reset-password/' + id + '/', params);
+export async function checkCurrentPassword(id, password) {
+  return postJson('/api/users/reset-password/' + id + '/', {password});
 }
 
 export function fetchUser(id) {
