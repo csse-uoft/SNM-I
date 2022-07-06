@@ -7,5 +7,6 @@ const router = express.Router();
 router.put('/securityQuestions/email', fetchSecurityQuestionsByEmail)
 router.post('/checkSecurityQuestion', checkSecurityQuestion)
 router.post('/sendVerificationEmail', sendVerificationEmail)
+router.post('/resetPassword/verify', )
 
 module.exports = router;
