@@ -1,4 +1,4 @@
-const {findUserAccountByEmail, updateUserAccount} = require("./user");
+const {findUserAccountByEmail, updateUserAccount, validateCredentials} = require("./user");
 const {sendVerificationMail} = require("../utils");
 const {sign} = require("jsonwebtoken");
 const {jwtConfig} = require("../config");
@@ -11,13 +11,15 @@ const getCurrentUserProfile = async (req, res, next) => {
 
 
 const updateProfile = async (req, res, next) => {
-    const {id, givenName, familyName, email, altEmail, telephone} = req.body;
+    const {id, givenName, familyName, email, altEmail, countryCode, areaCode, phoneNumber} = req.body;
     const updateData = {
         givenName,
         familyName,
         email,
         altEmail,
-        telephone,
+        countryCode,
+        areaCode,
+        phoneNumber,
     }
 
     try {
@@ -48,11 +50,29 @@ const updateProfile = async (req, res, next) => {
 }
 
 
+const checkCurrentPassword = async (req, res, next) => {
+    const {password} = req.body;
+    if (!password) {
+        return res.status(400).json({success: false, message: 'Current password is required.'});
+    }
 
+    try {
+        const {validated, userAccount} = await validateCredentials(req.session.email, password);
+        if (!validated) {
+            return res.json({success: false, message: 'Password is incorrect.'});
+        } else {
+            const data = userAccount.toJSON();
+            delete data.salt;
+            delete data.hash;
 
+            return res.json({
+                success: true
+            });
+        }
+    } catch (e) {
+        next(e);
+    }
+};
 
-// const checkSecurityQuestionAnswer = async (req, res, next) => {
-//     const {email, }
-// }
+module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword};
 
-module.exports = {getCurrentUserProfile, updateProfile};

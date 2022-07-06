@@ -26,7 +26,11 @@ export function updateUser(id, params) {
 }
 
 export function updateProfile(id, params) {
-  return postJson('/api/profile/' + id + '/', params);
+  return postJson('/api/profile/' + id + '/edit', params);
+}
+
+export function checkCurrentPassword(id, params) {
+  return postJson('/api/users/reset-password/' + id + '/', params);
 }
 
 export function fetchUser(id) {
