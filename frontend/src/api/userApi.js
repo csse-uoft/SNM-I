@@ -41,6 +41,10 @@ export async function saveNewPassword(id, password) {
   return postJson('/api/users/reset-password/' + id + '/update', {password});
 }
 
+export async function forgotPasswordSaveNewPassword(params) {
+  return postJson('/api/forgotPassword/saveNewPassword/', params)
+}
+
 export function fetchUser(id) {
   return getJson('/user/' + id + '/');
 }

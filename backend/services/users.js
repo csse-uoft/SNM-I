@@ -71,13 +71,13 @@ const checkCurrentPassword = async (req, res, next) => {
 };
 
 const saveNewPassword = async (req, res, next) => {
-    const {password} = req.body;
+    const {password, email} = req.body;
     if (!password) {
         return res.status(400).json({success: false, message: 'Current password is required.'});
     }
 
     try {
-        const {saved, userAccount} = await updateUserPassword(req.session.email, password);
+        const {saved, userAccount} = await updateUserPassword(email || req.session.email, password);
 
         if (!saved) {
             return res.status(400).json({success: false, message: 'Password is not successfully saved.'});
