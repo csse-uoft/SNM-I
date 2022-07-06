@@ -133,7 +133,7 @@ export default function UserResetPassword() {
             console.log('valid')
             setDialogSubmit(false);
             history.push('/dashboard');
-            //alert('You have successfully changed your password.');
+            alert('You have successfully changed your password.');
             try {
             } catch (e) {
                 if (e.json) {
