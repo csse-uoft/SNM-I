@@ -80,10 +80,11 @@ const saveNewPassword = async (req, res, next) => {
         const {saved, userAccount} = await updateUserPassword(req.session.email, password);
 
         if (!saved) {
-            return res.json({success: false, message: 'Password is not saved.'});
+            return res.status(400).json({success: false, message: 'Password is not successfully saved.'});
         } else {
-            return res.json({
-                success: true
+            return res.status(200).json({
+                success: true,
+                message: 'Password saved'
             });
         }
     } catch (e) {
