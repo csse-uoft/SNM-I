@@ -15,6 +15,11 @@ import {AlertDialog} from "../shared/Dialogs";
 import {Loading} from "../shared";
 import {UserContext} from "../../context";
 
+/* Page for editing User Profile, functionalities including:
+*   - edit account information
+*   - edit primary/secondary email
+* */
+
 const useStyles = makeStyles(() => ({
   root: {
     width: '80%'
@@ -35,20 +40,25 @@ export default function EditProfile() {
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  console.log(userContext)
+  const profileForm = {
+    givenName: userContext.givenName,
+    familyName: userContext.familyName,
+    telephone: userContext.countryCode.toString() +
+      userContext.areaCode.toString() + userContext.phoneNumber.toString(),
+    email: userContext.email,
+    altEmail: userContext.altEmail,
+  }
+
   useEffect(() => {
     getProfile(id).then(user => {
-      setForm(userContext);
+      setForm(profileForm);
       setLoading(false);
     });
   }, [id]);
 
-  console.log(form)
-
   // Helper function for checking the validity of information in the fields. (frontend check)
   const validate = () => {
     const newErrors = {};
-
     for (const [field, option] of Object.entries(userProfileFields)) {
       const isEmpty = isFieldEmpty(form[field]);
 
@@ -61,12 +71,9 @@ export default function EditProfile() {
       }
 
       if (option.label === 'Secondary Email') {
-        console.log(form.email, form.altEmail)
         if (form.email === form.altEmail) {
-          console.log("same");
           newErrors[field] = DUPLICATE_HELPER_TEXT;
         } else {
-          console.log('different');
         }
       }
     }
@@ -79,29 +86,85 @@ export default function EditProfile() {
     return true;
   };
 
+  // submit button handler
   const handleSubmitChanges = () => {
     if (validate()) {
       setDialogSubmit(true);
     }
   }
 
-
+  // confirmation dialog confirm button handler
   const handleDialogConfirm = async () => {
     try {
-      const {success} = await updateProfile(id, form);
-      if (success) {
-        console.log(userContext)
-        userContext.updateUser({
-          email: form.email,
-          altEmail: form.altEmail,
+      const phoneUnchanged = userContext.countryCode.toString() +
+        userContext.areaCode.toString() + userContext.phoneNumber.toString()
+
+      if (form.telephone === phoneUnchanged) {
+        const countryCodeParse = parseInt(form.telephone.slice(0,1));
+        const areaCodeParse = parseInt(form.telephone.slice(1,4));
+        const phoneNumberParse = parseInt(form.telephone.slice(4,11));
+
+        const updateForm = {
           givenName: form.givenName,
           familyName: form.familyName,
-          telephone: form.telephone,
-        });
-        console.log(userContext)
-        history.push('/profile/' + id + '/');
+          countryCode: countryCodeParse,
+          areaCode: areaCodeParse,
+          phoneNumber: phoneNumberParse,
+          email: form.email,
+          altEmail: form.altEmail,}
+
+        const {success} = await updateProfile(id, updateForm);
+        if (success) {
+          for (const [key, value] of Object.entries(updateForm)) {
+            userContext[key] = value;
+          }
+
+          userContext.updateUser({
+            email: userContext.email,
+            altEmail: userContext.altEmail,
+            givenName: userContext.givenName,
+            familyName: userContext.familyName,
+            countryCode: userContext.countryCode,
+            areaCode: userContext.areaCode,
+            phoneNumber: userContext.phoneNumber,
+          });
+
+          history.push('/profile/' + id + '/');
+        }
+      } else {
+        const phone = form.telephone.split(' ');
+        const countryCodeParse = parseInt(phone[0]);
+        const areaCodeParse = parseInt(phone[1].slice(1,4));
+        const phoneNumberParse = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
+        const updateForm = {
+          givenName: form.givenName,
+          familyName: form.familyName,
+          countryCode: countryCodeParse,
+          areaCode: areaCodeParse,
+          phoneNumber: phoneNumberParse,
+          email: form.email,
+          altEmail: form.altEmail,}
+
+        const {success} = await updateProfile(id, updateForm);
+        if (success) {
+          for (const [key, value] of Object.entries(updateForm)){
+            userContext[key] = value;}
+
+          userContext.updateUser({
+            email: userContext.email,
+            altEmail: userContext.altEmail,
+            givenName: userContext.givenName,
+            familyName: userContext.familyName,
+            countryCode: userContext.countryCode,
+            areaCode: userContext.areaCode,
+            phoneNumber: userContext.phoneNumber,
+          });
+
+          history.push('/profile/' + id + '/');
+        }
       }
     } catch (e) {
+      console.log('catch e')
       console.log( e.json);
     }
   };

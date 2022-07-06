@@ -9,9 +9,9 @@ import {Link, Loading} from "./shared";
 import {UserContext} from "../context";
 
 /* Page for User Profile, functionalities including:
-*   - Display and account information
-*   - Display and primary/secondary email
-*   - Reset password
+*   - Display account information
+*   - Display primary/secondary email
+*   - Enter reset password page
 * */
 
 function NavButton({to, text}) {
@@ -47,11 +47,19 @@ export default function Profile() {
   const [form, setForm] = useState({...userProfileFields});
 
 
-  console.log(userContext);
+  const profileForm = {
+    givenName: userContext.givenName,
+    familyName: userContext.familyName,
+    telephone: '+' + userContext.countryCode.toString() + ' (' +
+      userContext.areaCode.toString() + ') ' + userContext.phoneNumber.toString(),
+    email: userContext.email,
+    altEmail: userContext.altEmail,
+  }
+  console.log(profileForm)
 
   useEffect(() => {
     getProfile(id).then(user => {
-      setForm(userContext);
+      setForm(profileForm);
       setLoading(false);
     });
   }, [id]);
@@ -79,6 +87,7 @@ export default function Profile() {
           borderBlockColor: 'grey',
           borderRadius: 2
         }}>
+          {/* account information display */}
           {Object.entries(userProfileFields).map(([field, option]) => {
             return (
               <div>
@@ -90,6 +99,8 @@ export default function Profile() {
             )
           })}
         </Box>
+
+        {/* Button for password reset */}
         <Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>
           Edit Profile
         </Button>
