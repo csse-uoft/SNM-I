@@ -75,3 +75,4 @@ const checkCurrentPassword = async (req, res, next) => {
 };
 
 module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword};
+

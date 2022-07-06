@@ -4,7 +4,6 @@ import {Route} from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
-import InformSuccessPage from "./components/InformSuccessPage";
 import Login from './components/Login';
 import LoginPane from './components/LoginPane';
 import Dashboard from './components/Dashboard';
@@ -36,14 +35,15 @@ import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
 import Questions from './components/additionalFIelds/Questions';
 import UserFirstEntry from "./components/users/UserFirstEntry";
+import ForgotPassword from "./components/ForgotPassword";
 
 const routes = (
   <Switch>
     <Route exact path='/' component={Landing}/>
-    <Route path='/success-trans' component={InformSuccessPage}/>
     <Route path='/login' component={Login}/>
     <Route path='/email-confirm' component={EmailConfirm}/>
     <Route path='/login-pane' component={LoginPane}/>
+    <Route path='/forgot-password' component={ForgotPassword}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
     <Route path='/verify/:token' component={UserFirstEntry}/>

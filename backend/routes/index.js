@@ -4,4 +4,5 @@ module.exports = {
   firstEntryRoute: require('./firstEntry'),
   updateUserRoute: require('./updateUser'),
   usersRoute: require('./users'),
+  forgotPasswordRoute: require('./forgotPassword')
 }
