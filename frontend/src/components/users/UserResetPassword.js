@@ -128,9 +128,11 @@ export default function UserResetPassword() {
         const {success} = await saveNewPassword(id, form.newPassword);
         console.log(success);
         if (success) {
+            //TODO: add an alert after success.
+            //TODO: clear UserContext.
             console.log('valid')
             setDialogSubmit(false);
-            history.push('/Dashboard');
+            history.push('/dashboard');
             //alert('You have successfully changed your password.');
             try {
             } catch (e) {
@@ -138,6 +140,8 @@ export default function UserResetPassword() {
                     console.log(e.json);
                 }
             }
+        } else {
+            alert('save new password failed, please try later.')
         }
     };
 

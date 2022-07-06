@@ -6,6 +6,6 @@ const router = express.Router();
 router.get('/profile/:id', getCurrentUserProfile);
 router.post('/profile/:id/edit', updateProfile);
 router.post('/users/reset-password/:id', checkCurrentPassword);
-router.post('/users/reset-password/:id', saveNewPassword);
+router.post('/users/reset-password/:id/update', saveNewPassword);
 
 module.exports = router;
