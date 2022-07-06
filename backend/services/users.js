@@ -61,10 +61,6 @@ const checkCurrentPassword = async (req, res, next) => {
         if (!validated) {
             return res.json({success: false, message: 'Password is incorrect.'});
         } else {
-            const data = userAccount.toJSON();
-            delete data.salt;
-            delete data.hash;
-
             return res.json({
                 success: true
             });

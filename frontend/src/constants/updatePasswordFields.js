@@ -7,7 +7,7 @@ export const updatePasswordFields = {
         required: true,
         label: 'Old Password',
         type: 'password',
-        validator: Validator.oldPassword,
+        //validator: Validator.oldPassword,
     }
 };
 
