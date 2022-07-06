@@ -1,21 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
 import {defaultUserFields} from "../../constants/default_fields";
 import {Button, Container, TextField, Typography} from "@mui/material";
 import {
     newPasswordFields,
-    NewPasswordFields,
-    RepeatPasswordFields,
     updatePasswordFields
 } from "../../constants/updatePasswordFields";
 import {Link} from "../shared";
 import {isFieldEmpty} from "../../helpers";
-import {PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
+import {DUPLICATE_HELPER_TEXT, PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
 import { useHistory } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
 import {useParams} from "react-router";
-import {useContext} from "@types/react";
 import {UserContext} from "../../context";
+import {login} from "../../api/auth";
+import {checkCurrentPassword} from "../../api/userApi";
 import {userProfileFields} from "../../constants/userProfileFields";
 
 /* Page for password reset, functionalities including:
@@ -37,72 +36,67 @@ export default function UserResetPassword() {
     const classes = useStyles();
     const {id} = useParams();
     const userContext = useContext(UserContext);
-    const [form, setForm] = useState({...userProfileFields});
     const [errors, setErrors] = useState({});
+    const [dialogSubmit, setDialogSubmit] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [state, setState] = useState({
-        form: {
-            ...defaultUserFields
-        },
-        errors: {},
-        dialog: false,
-        //loading: true,
-    });
+    const currentPasswordForm = {currentPassword: ''}
+    const [form, setForm] = useState(currentPasswordForm);
+    const [editNew, setEditNew] = useState(false);
+    const newPasswordForm = {
+        newPassword:'',
+        repeatNewPassword:'',
+    };
 
-    const [editNew, setEditNew] = useState(false)
+    // const [state, setState] = useState({
+    //     form: {
+    //         ...defaultUserFields
+    //     }
+    //     //loading: true,
+    // });
 
     let history = useHistory();
 
     // helper function for validating the text field for old password
     const validateOld = () => {
-        const errors = {};
+        const newErrors = {};
         for (const [field, option] of Object.entries(updatePasswordFields)) {
-            console.log(state.form.password.valueOf());
-            const isEmpty = isFieldEmpty(state.form[field]);
+            const isEmpty = isFieldEmpty(form[field]);
             if (option.required && isEmpty) {
-                errors[field] = REQUIRED_HELPER_TEXT;
-            }
+                newErrors[field] = REQUIRED_HELPER_TEXT;}}
+        if (Object.keys(newErrors).length !== 0) {
+            setErrors(newErrors);
+            return false;}
 
-            let msg;
-            if (!isEmpty && option.validator && (msg = option.validator(state.form[field]))) {
-                errors[field] = msg;
-            }
-        }
-        if (Object.keys(errors).length !== 0) {
-            setState(state => ({...state, errors}));
-            return false
-        }
         return true;
     };
 
 
     // helper function for validating the text field for new password
     const validateNew = () => {
-        const errors = {};
-
+        const newErrors = {};
         for (const [field, option] of Object.entries(newPasswordFields)) {
-            const isEmpty = isFieldEmpty(state.form[field]);
+            const isEmpty = isFieldEmpty(form[field]);
             if (option.required && isEmpty) {
-                errors[field] = REQUIRED_HELPER_TEXT;
+                newErrors[field] = REQUIRED_HELPER_TEXT;
             }
 
             let msg;
-            if (!isEmpty && option.validator && (msg = option.validator(state.form[field]))) {
-                errors[field] = msg;
+            if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
+                newErrors[field] = msg;
             }
 
             if (option.label === 'Repeat New Password') {
-                if (state.form.new_password.valueOf() === state.form.repeat_password.valueOf()) {
+                if (form.newPassword === form.repeatNewPassword) {
                     console.log("same");
                 } else {
                     console.log('different');
-                    errors[field] = PASSWORD_NOT_MATCH_TEXT;
+                    newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
                 }
             }
         }
 
-        if (Object.keys(errors).length !== 0) {
-            setState(state => ({...state, errors}));
+        if (Object.keys(newErrors).length !== 0) {
+            setErrors(newErrors);
             return false
         }
         return true;
@@ -110,25 +104,29 @@ export default function UserResetPassword() {
 
     // handler for submit button for old password
     const handleSubmitOld = () => {
-        console.log(state.form)
+        console.log(form)
+        console.log(form.currentPassword);
         if (validateOld()) {
-            setState(state => ({...state}));
-            setEditNew(true);
+            console.log('frontend validate passed')
+            //const {success} = checkCurrentPassword(id, form.currentPassword);
+            //console.log(success)
+            if (true) {
+                setForm(newPasswordForm);
+                setEditNew(true);
+            } else {
+                console.log('reached error');
+            }
+        } else {
+            console.log('validateOld() not passed.')
         }
     }
 
     // handler for submit button for new password
     const handleSubmitNew = () => {
-        console.log(state.form)
+        console.log(form)
         if (validateNew()) {
-            setState(state => ({...state, dialog: true}));
+            setDialogSubmit(true);
         }
-    }
-
-    // handler for cancel button in confirmation dialog
-    const handleCancel = () => {
-        setState(state => ({...state, dialog: false}))
-        console.log("cancel")
     }
 
     // handler for submit button in confirmation dialog
@@ -139,7 +137,7 @@ export default function UserResetPassword() {
             try {
             } catch (e) {
                 if (e.json) {
-                    setState(state => ({...state, errors: e.json}));
+                    console.log(e.json);
                 }
             }
         }
@@ -147,12 +145,12 @@ export default function UserResetPassword() {
 
     // OnBlur handler
     const handleOnBlur = (e, field, option) => {
-        if (!isFieldEmpty(state.form[field]) && option.validator && !!option.validator(state.form[field]))
+        if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field]))
             // state.errors.field = option.validator(e.target.value)
-            setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
+            setErrors({...errors, [field]: option.validator(form[field])});
         //console.log(state.errors)
         else
-            setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
+            setErrors({...errors, [field]: undefined});
     };
 
 
@@ -176,13 +174,12 @@ export default function UserResetPassword() {
                                 label={option.label}
                                 type={option.type}
                                 options={option.options}
-                                value={state.form[field]}
+                                value={form[field]}
                                 required={option.required}
-                                onChange={e => state.form[field] = e.target.value}
-                                //onChange={value => state.form[field] = value}
+                                onChange={value => form[field] = value.target.value}
                                 onBlur={e => handleOnBlur(e, field, option)}
-                                error={!!state.errors[field]}
-                                helperText={state.errors[field]}
+                                error={!!errors[field]}
+                                helperText={errors[field]}
                                 style={{marginTop: '10px'}}
                             />
                         )
@@ -199,18 +196,17 @@ export default function UserResetPassword() {
                         if (option.label === 'Repeat New Password'){
                             return (
                                 <option.component
-                                    key={field}
-                                    label={option.label}
-                                    type={option.type}
-                                    options={option.options}
-                                    value={state.form[field]}
-                                    required={option.required}
-                                    onChange={e => state.form[field] = e.target.value}
-                                    //onChange={value => state.form[field] = value}
-                                    onBlur={e => handleOnBlur(e, field, option)}
-                                    error={!!state.errors[field]}
-                                    helperText={state.errors[field]}
-                                    style={{marginTop: '10px'}}
+                                  key={field}
+                                  label={option.label}
+                                  type={option.type}
+                                  options={option.options}
+                                  value={form[field]}
+                                  required={option.required}
+                                  onChange={value => form[field] = value.target.value}
+                                  onBlur={e => handleOnBlur(e, field, option)}
+                                  error={!!errors[field]}
+                                  helperText={errors[field]}
+                                  style={{marginTop: '10px'}}
                                 />
                             )
                         }})}
@@ -228,9 +224,9 @@ export default function UserResetPassword() {
                 {/* confirmation dialog */}
                 <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                              dialogTitle={'Are you sure to submit?'}
-                             buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
+                             buttons={[<Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
                                  <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
-                             open={state.dialog}/>
+                             open={dialogSubmit}/>
             </Container>) : (
                 <Container className={classes.root}>
                     <Typography variant="h5">
@@ -241,18 +237,17 @@ export default function UserResetPassword() {
                     {Object.entries(updatePasswordFields).map(([field, option]) => {
                         return (
                                 <option.component
-                                    key={field}
-                                    label={option.label}
-                                    type={option.type}
-                                    options={option.options}
-                                    value={state.form[field]}
-                                    required={option.required}
-                                    onChange={e => state.form[field] = e.target.value}
-                                    //onChange={value => state.form[field] = value}
-                                    //onBlur={e => handleOnBlur(e, field, option)}
-                                    error={!!state.errors[field]}
-                                    helperText={state.errors[field]}
-                                    style={{marginTop: '10px'}}
+                                  key={field}
+                                  label={option.label}
+                                  type={option.type}
+                                  options={option.options}
+                                  value={form[field]}
+                                  required={option.required}
+                                  onChange={value => form[field] = value.target.value}
+                                  onBlur={e => handleOnBlur(e, field, option)}
+                                  error={!!errors[field]}
+                                  helperText={errors[field]}
+                                  style={{marginTop: '10px'}}
                                 />
                             )
                         })}

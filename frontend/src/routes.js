@@ -53,6 +53,7 @@ const routes = (
     <PrivateRoute path='/clients/new' component={ClientForm}/>
     <PrivateRoute path='/clients/:id' component={Client}/>
     <PrivateRoute path='/clients' component={Clients}/>
+    <PrivateRoute path='/users/reset-password/:id' component={ResetPassword}/>
 
     <AdminRoute path='/users/:id/edit' component={UserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
@@ -60,7 +61,7 @@ const routes = (
     <AdminRoute path='/profile/:id/edit' component={UpdateUserProfile}/>
     <AdminRoute path='/profile/:id' component={UserProfile}/>
 
-    <AdminRoute path='/users/reset-password/:id' component={ResetPassword}/>
+
     <AdminRoute path='/users/:id' component={User}/>
     <AdminRoute path='/users' component={Users}/>
     <AdminRoute path='/admin-logs' component={AdminLogs}/>
