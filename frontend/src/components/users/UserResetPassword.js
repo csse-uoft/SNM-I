@@ -1,6 +1,10 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
-import {defaultUserFields} from "../../constants/default_fields";
+import {
+    defaultCurrentPasswordFields,
+    defaultNewPasswordFields,
+    defaultUserFields
+} from "../../constants/default_fields";
 import {Button, Container, TextField, Typography} from "@mui/material";
 import {
     newPasswordFields,
@@ -39,21 +43,8 @@ export default function UserResetPassword() {
     const [errors, setErrors] = useState({});
     const [dialogSubmit, setDialogSubmit] = useState(false);
     const [loading, setLoading] = useState(true);
-    const currentPasswordForm = {currentPassword: ''}
-    const [form, setForm] = useState(currentPasswordForm);
+    const [form, setForm] = useState({...defaultCurrentPasswordFields});
     const [editNew, setEditNew] = useState(false);
-    const newPasswordForm = {
-        newPassword:'',
-        repeatNewPassword:'',
-    };
-
-    // const [state, setState] = useState({
-    //     form: {
-    //         ...defaultUserFields
-    //     }
-    //     //loading: true,
-    // });
-
     let history = useHistory();
 
     // helper function for validating the text field for old password
@@ -108,10 +99,10 @@ export default function UserResetPassword() {
         console.log(form.currentPassword);
         if (validateOld()) {
             console.log('frontend validate passed')
-            //const {success} = checkCurrentPassword(id, form.currentPassword);
+            const {success} = checkCurrentPassword(id, form.currentPassword);
             //console.log(success)
-            if (true) {
-                setForm(newPasswordForm);
+            if (success) {
+                setForm(...{defaultNewPasswordFields});
                 setEditNew(true);
             } else {
                 console.log('reached error');
