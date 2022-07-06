@@ -2,7 +2,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import React, {useEffect, useState} from 'react';
 import {defaultFirstEntryFields} from "../../constants/default_fields";
-import {createUser, firstEntryUpdate, updateUser, verifyUser} from "../../api/userApi";
+import {createUser, firstEntryUpdate, updateUser, verifyFirstEntryUser, verifyUser} from "../../api/userApi";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
@@ -44,13 +44,12 @@ export default function UserFirstEntry() {
 
   if (state.loading) {
     verifyToken({token})
-    // setState(state => ({...state, loading: false}))
   }
 
 
   async function verifyToken(token) {
     try {
-      const respond = await verifyUser(token);
+      const respond = await verifyFirstEntryUser(token);
       setState(state => ({...state, verified: true, email: respond.email, id: respond.userId, loading: false}))
     } catch (e) {
       setState(state => ({...state, verified: false, loading: false, errors: e.json}))

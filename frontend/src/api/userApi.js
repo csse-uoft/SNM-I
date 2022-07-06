@@ -4,8 +4,12 @@ export function createUser(params) {
   return postJson('/api/users/invite', params);
 }
 
-export function verifyUser(token) {
+export function verifyFirstEntryUser(token) {
   return postJson('/api/users/firstEntry/verify', token)
+}
+
+export function verifyForgotPasswordUser(token) {
+  return postJson('/api/resetPassword/verify', {token})
 }
 
 export function createUsers(params) {
