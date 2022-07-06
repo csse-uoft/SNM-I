@@ -111,7 +111,7 @@ function LoginPane() {
           </Typography>
         </Link>
 
-        <Link to={'/email-confirm'}>
+        <Link to={'/forgot-password'}>
           <Typography variant="body2" className={classes.link}>
             Forget password?
           </Typography>

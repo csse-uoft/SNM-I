@@ -8,6 +8,7 @@ import {Button, Container, TextField} from "@mui/material";
 import {userFirstEntryFields} from "../constants/userFirstEntryFields";
 import {AlertDialog} from "./shared/Dialogs";
 import {newPasswordFields} from "../constants/updatePasswordFields";
+import {isFieldEmpty} from "../helpers";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -57,6 +58,23 @@ export default function ForgotPasswordResetPassword(){
   if (state.loading)
     return <Loading message={`Loading`}/>;
 
+  const handleOnBlur = (field, option) => {
+
+    if (!isFieldEmpty(state.form[field]) && field === "repeatNewPassword" && !!option.validator(state.form[field], state.form["newPassword"])) {
+      setState(state => ({
+        ...state,
+        errors: {...state.errors, [field]: option.validator(state.form[field], state.form["newPassword"])}
+      }))
+
+    } else if (!isFieldEmpty(state.form[field]) && field !== "repeatNewPassword" && option.validator && !!option.validator(state.form[field])) {
+
+      setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
+    } else {
+      setState(state => ({...state, errors: {...state.errors, [field]: undefined}}))
+    }
+
+  };
+
   if(state.verified === 1){
     return (
       <Container className={classes.root}>
@@ -80,7 +98,7 @@ export default function ForgotPasswordResetPassword(){
               value={state.form[field]}
               required={option.required}
               onChange={e => state.form[field] = e.target.value}
-              // onBlur={() => handleOnBlur(field, option)}
+              onBlur={() => handleOnBlur(field, option)}
               error={!!state.errors[field]}
               helperText={state.errors[field]}
             />
