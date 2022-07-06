@@ -162,6 +162,11 @@ export default function ForgotPasswordResetPassword(){
                        <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
                      open={state.submitDialog}/>
 
+        <AlertDialog dialogContentText={"You have successfully reset your password, please login"}
+                     dialogTitle={'Success'}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}
+                     open={state.successDialog}/>
+
       </Container>
 
     )
