@@ -47,6 +47,7 @@ const routes = (
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
     <Route path='/verify/:token' component={UserFirstEntry}/>
+    <Route path='/resetPassword/:token' component={ResetPassword}/>
 
     <PrivateRoute path='/clients/:id/edit' component={ClientForm}/>
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm}/>
