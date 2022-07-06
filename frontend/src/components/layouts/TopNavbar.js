@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
@@ -78,16 +78,18 @@ function TopNavBar() {
   const handleClickRight = event => {setAnchorElRight(event.currentTarget);};
   const handleCloseRight = () => {setAnchorElRight(null);};
 
-  const handleLink = link => () => {
+  const handleLink = useCallback(link => () => {
     setAnchorElLeft(null);
     setAnchorElRight(null);
     history.push(link);
-  };
+  }, []);
 
   const handleLogout = async () => {
     if (isLoggedin)
       await logout();
     userContext.updateUser(defaultUserContext);
+    setAnchorElLeft(null);
+    setAnchorElRight(null);
     history.push('/login');
   }
 
