@@ -50,8 +50,8 @@ export default function Profile() {
   const profileForm = {
     givenName: userContext.givenName,
     familyName: userContext.familyName,
-    telephone: '+' + userContext.countryCode.toString() + ' (' +
-      userContext.areaCode.toString() + ') ' + userContext.phoneNumber.toString(),
+    telephone: userContext.countryCode && ('+' + userContext.countryCode.toString() + ' (' +
+      userContext.areaCode.toString() + ') ' + userContext.phoneNumber.toString()),
     email: userContext.email,
     altEmail: userContext.altEmail,
   }
