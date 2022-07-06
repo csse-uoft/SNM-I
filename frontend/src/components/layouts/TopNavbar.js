@@ -78,7 +78,11 @@ function TopNavBar() {
   const handleClickRight = event => {setAnchorElRight(event.currentTarget);};
   const handleCloseRight = () => {setAnchorElRight(null);};
 
-  const handleLink = link => () => {history.push(link);};
+  const handleLink = link => () => {
+    setAnchorElLeft(null);
+    setAnchorElRight(null);
+    history.push(link);
+  };
 
   const handleLogout = async () => {
     if (isLoggedin)
