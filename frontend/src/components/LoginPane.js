@@ -45,6 +45,7 @@ function LoginPane() {
       const {success, data} = await login(form.email, form.password);
       console.log(form.email, form.password, success, data)
       if (success) {
+        console.log('reach here')
         userContext.updateUser({
           id: data._id,
           isAdmin: data.role === 'admin',
@@ -57,7 +58,7 @@ function LoginPane() {
           areaCode: data.primaryContact?.telephone?.areaCode,
           phoneNumber: data.primaryContact?.telephone?.phoneNumber,
         });
-        console.log(userContext);
+        console.log('successfully logged in:', userContext);
         history.push('/dashboard');
       }
     } catch (e) {

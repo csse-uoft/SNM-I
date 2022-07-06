@@ -55,6 +55,7 @@ export default function Profile() {
     email: userContext.email,
     altEmail: userContext.altEmail,
   }
+  console.log(profileForm)
 
   useEffect(() => {
     getProfile(id).then(user => {

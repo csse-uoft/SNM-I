@@ -13,6 +13,10 @@ import {isFieldEmpty} from "../../helpers";
 import {PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
 import { useHistory } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
+import {useParams} from "react-router";
+import {useContext} from "@types/react";
+import {UserContext} from "../../context";
+import {userProfileFields} from "../../constants/userProfileFields";
 
 /* Page for password reset, functionalities including:
 *   - reset password
@@ -31,6 +35,11 @@ const useStyles = makeStyles(() => ({
 
 export default function UserResetPassword() {
     const classes = useStyles();
+    const {id} = useParams();
+    const userContext = useContext(UserContext);
+    const [form, setForm] = useState({...userProfileFields});
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(true);
     const [state, setState] = useState({
         form: {
             ...defaultUserFields
