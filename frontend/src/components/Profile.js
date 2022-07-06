@@ -118,7 +118,7 @@ export default function Profile() {
           </Typography>
 
           {/* Button for password reset */}
-          <NavButton to={'/users/reset-password/:id'}
+          <NavButton to={'/users/reset-password/' + id}
                      text={'Reset Password'}/>
         </Box>
       </div>

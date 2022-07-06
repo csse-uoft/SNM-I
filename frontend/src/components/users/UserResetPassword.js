@@ -94,18 +94,19 @@ export default function UserResetPassword() {
     };
 
     // handler for submit button for old password
-    const handleSubmitOld = () => {
+    const handleSubmitOld = async () => {
         console.log(form)
         console.log(form.currentPassword);
+        console.log(id)
         if (validateOld()) {
             console.log('frontend validate passed')
-            const {success} = checkCurrentPassword(id, form.currentPassword);
-            //console.log(success)
+            const {success} = await checkCurrentPassword(id, form.currentPassword);
+            console.log(success)
             if (success) {
-                setForm(...{defaultNewPasswordFields});
+                setForm({...defaultNewPasswordFields});
                 setEditNew(true);
             } else {
-                console.log('reached error');
+                console.log('wrong current password.');
             }
         } else {
             console.log('validateOld() not passed.')
