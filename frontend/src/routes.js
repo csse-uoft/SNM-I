@@ -36,6 +36,7 @@ import ManageFields from './components/settings/ManageFields';
 import Questions from './components/additionalFIelds/Questions';
 import UserFirstEntry from "./components/users/UserFirstEntry";
 import ForgotPassword from "./components/ForgotPassword";
+import ForgotPasswordResetPassword from "./components/ResetPassword";
 
 const routes = (
   <Switch>
@@ -47,7 +48,7 @@ const routes = (
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
     <Route path='/verify/:token' component={UserFirstEntry}/>
-    <Route path='/resetPassword/:token' component={ResetPassword}/>
+    <Route path='/resetPassword/:token' component={ForgotPasswordResetPassword}/>
 
     <PrivateRoute path='/clients/:id/edit' component={ClientForm}/>
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm}/>
