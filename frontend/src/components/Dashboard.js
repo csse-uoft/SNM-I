@@ -29,8 +29,8 @@ function NavButton({to, text, icon}) {
 function Dashboard() {
   const userContext = useContext(UserContext);
 
-  if (!userContext.isAdmin)
-    return <span>"You don't have the permission to view this page."</span>;
+  // if (!userContext.isAdmin)
+  //   return <span>"You don't have the permission to view this page."</span>;
 
   return (
     <Container maxWidth="md" sx={{
