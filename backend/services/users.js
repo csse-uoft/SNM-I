@@ -1,4 +1,4 @@
-const {findUserAccountByEmail, updateUserAccount, validateCredentials} = require("./user");
+const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword} = require("./user");
 const {sendVerificationMail} = require("../utils");
 const {sign} = require("jsonwebtoken");
 const {jwtConfig} = require("../config");
@@ -70,5 +70,27 @@ const checkCurrentPassword = async (req, res, next) => {
     }
 };
 
-module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword};
+const saveNewPassword = async (req, res, next) => {
+    const {password} = req.body;
+    if (!password) {
+        return res.status(400).json({success: false, message: 'Current password is required.'});
+    }
+
+    try {
+        const {saved, userAccount} = await updateUserPassword(req.session.email, password);
+
+        if (!saved) {
+            return res.json({success: false, message: 'Password is not saved.'});
+        } else {
+            return res.json({
+                success: true
+            });
+        }
+    } catch (e) {
+        next(e);
+    }
+
+};
+
+module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword};
 

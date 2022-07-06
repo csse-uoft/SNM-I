@@ -33,6 +33,10 @@ export async function checkCurrentPassword(id, password) {
   return postJson('/api/users/reset-password/' + id + '/', {password});
 }
 
+export async function saveNewPassword(id, password) {
+  return postJson('/api/users/reset-password/' + id + '/', {password});
+}
+
 export function fetchUser(id) {
   return getJson('/user/' + id + '/');
 }

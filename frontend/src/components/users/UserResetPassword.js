@@ -12,14 +12,13 @@ import {
 } from "../../constants/updatePasswordFields";
 import {Link} from "../shared";
 import {isFieldEmpty} from "../../helpers";
-import {DUPLICATE_HELPER_TEXT, PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
+import {DUPLICATE_HELPER_TEXT, PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT, OLD_PASSWORD_ERR_MSG} from "../../constants";
 import { useHistory } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
 import {useParams} from "react-router";
 import {UserContext} from "../../context";
 import {login} from "../../api/auth";
-import {checkCurrentPassword} from "../../api/userApi";
-import {userProfileFields} from "../../constants/userProfileFields";
+import {checkCurrentPassword, saveNewPassword} from "../../api/userApi";
 
 /* Page for password reset, functionalities including:
 *   - reset password
@@ -106,10 +105,11 @@ export default function UserResetPassword() {
                 setForm({...defaultNewPasswordFields});
                 setEditNew(true);
             } else {
+                alert('Your input password does not match your current password.');
                 console.log('wrong current password.');
             }
         } else {
-            console.log('validateOld() not passed.')
+            console.log('validateOld() not passed.');
         }
     }
 
@@ -117,15 +117,21 @@ export default function UserResetPassword() {
     const handleSubmitNew = () => {
         console.log(form)
         if (validateNew()) {
+            console.log('frontend of new password validation passed')
             setDialogSubmit(true);
         }
     }
 
     // handler for submit button in confirmation dialog
     const handleConfirm = async () => {
-        if (true) {
+        console.log(form.newPassword)
+        const {success} = await saveNewPassword(id, form.newPassword);
+        console.log(success);
+        if (success) {
             console.log('valid')
+            setDialogSubmit(false);
             history.push('/Dashboard');
+            //alert('You have successfully changed your password.');
             try {
             } catch (e) {
                 if (e.json) {
