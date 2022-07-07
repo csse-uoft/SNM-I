@@ -70,19 +70,19 @@ export default function UserResetPassword() {
                 newErrors[field] = REQUIRED_HELPER_TEXT;
             }
 
-            let msg;
-            if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
-                newErrors[field] = msg;
-            }
+            // let msg;
+            // if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
+            //     newErrors[field] = msg;
+            // }
 
-            if (option.label === 'Repeat New Password') {
-                if (form.newPassword === form.repeatNewPassword) {
-                    console.log("same");
-                } else {
-                    console.log('different');
-                    newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
-                }
-            }
+            // if (option.label === 'Repeat New Password') {
+            //     if (form.newPassword === form.repeatNewPassword) {
+            //         console.log("same");
+            //     } else {
+            //         console.log('different');
+            //         newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
+            //     }
+            // }
         }
 
         if (Object.keys(newErrors).length !== 0) {
@@ -94,9 +94,6 @@ export default function UserResetPassword() {
 
     // handler for submit button for old password
     const handleSubmitOld = async () => {
-        console.log(form)
-        console.log(form.currentPassword);
-        console.log(id)
         if (validateOld()) {
             console.log('frontend validate passed')
             const {success} = await checkCurrentPassword(id, form.currentPassword);
@@ -128,7 +125,6 @@ export default function UserResetPassword() {
         const {success} = await saveNewPassword(id, form.newPassword);
         console.log(success);
         if (success) {
-            //TODO: add an alert after success.
             //TODO: clear UserContext.
             console.log('valid')
             setDialogSubmit(false);
@@ -147,12 +143,20 @@ export default function UserResetPassword() {
 
     // OnBlur handler
     const handleOnBlur = (e, field, option) => {
-        if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field]))
-            // state.errors.field = option.validator(e.target.value)
+        // if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field]))
+        //     setErrors({...errors, [field]: option.validator(form[field])});
+        // else
+        //     setErrors({...errors, [field]: undefined});
+
+        if (!isFieldEmpty(form["repeatNewPassword"]) && field === "repeatNewPassword"
+          && !!option.validator(form.repeatNewPassword, form.newPassword)) {
+            setErrors({...errors, [field]: option.validator(form[field], form.newPassword)});
+        } else if (!isFieldEmpty(form[field]) && field !== "repeatNewPassword" && option.validator
+          && !!option.validator(form[field])) {
             setErrors({...errors, [field]: option.validator(form[field])});
-        //console.log(state.errors)
-        else
+        } else {
             setErrors({...errors, [field]: undefined});
+        }
     };
 
 
