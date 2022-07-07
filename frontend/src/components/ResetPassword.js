@@ -5,7 +5,6 @@ import {defaultNewPasswordFields} from "../constants/default_fields";
 import {Loading} from "./shared";
 import {forgotPasswordSaveNewPassword, verifyForgotPasswordUser} from "../api/userApi";
 import {Button, Container, TextField} from "@mui/material";
-import {userFirstEntryFields} from "../constants/userFirstEntryFields";
 import {AlertDialog} from "./shared/Dialogs";
 import {newPasswordFields} from "../constants/updatePasswordFields";
 import {isFieldEmpty} from "../helpers";
@@ -48,7 +47,7 @@ export default function ForgotPasswordResetPassword(){
       const {email, message, success, userId} = await verifyForgotPasswordUser(token)
       setState(state => ({...state, verified: 1, email: email, id: userId, loading: false}))
     }catch (e){
-      setState(state => ({...state, verified: 2, loading: false, errors: e.json}))
+      setState(state => ({...state, verified: 2, loading: false, errors: e.json, failDialog: true,}))
     }
   }
 
@@ -104,11 +103,12 @@ export default function ForgotPasswordResetPassword(){
 
   const handleConfirm = async () => {
     try {
-      setState(state => ({...state, loading: true, submitDialog: false}))
+      setState(state => ({...state,loading: false, submitDialog: false}))
       const {success, message} = await forgotPasswordSaveNewPassword({email: state.email, password: state.form.newPassword})
       if(success){
         setState(state => ({...state, loading: false, successDialog: true}))
       }
+      // since the backend will definitely return 400 as status code if forgotPasswordSaveNewPassword failed
 
     } catch (e) {
       if (e.json) {
@@ -164,11 +164,25 @@ export default function ForgotPasswordResetPassword(){
 
         <AlertDialog dialogContentText={"You have successfully reset your password, please login"}
                      dialogTitle={'Success'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
+
+        <AlertDialog dialogContentText={state.errors.message || "Error occurs"}
+                     dialogTitle={'Error'}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                     open={state.failDialog}/>
 
       </Container>
 
+    )
+  }
+
+  if(state.verified === 2){
+    return(
+      <AlertDialog dialogContentText={state.errors.message || "Token invalid"}
+                   dialogTitle={'Error'}
+                   buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                   open={state.failDialog}/>
     )
   }
 
