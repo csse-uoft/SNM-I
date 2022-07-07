@@ -37,7 +37,8 @@ export default function ForgotPassword() {
     },
     loading: false,
     group:1,
-    errorDialog: false
+    errorDialog: false,
+    successDialog: false
   });
 
   const handleSubmit = async () => {
@@ -61,13 +62,13 @@ export default function ForgotPassword() {
             question: state.form[group][securityQuestion], answer})
 
           if(matched){
+            setState(state => ({...state, loading: true}))
             const {success, message} = await sendVerificationEmail({email: state.form.group1.email})
-            console.log(message)
+            setState(state => ({...state, loading: false, successDialog: true}))
+
           }else{
             setState(state => ({...state, group: state.group + 1}))
           }
-
-
 
         }
       } catch (e) {
@@ -112,38 +113,59 @@ export default function ForgotPassword() {
 
     const group = 'group' + state.group
 
+    if(state.group <= 4){
+      return (
+        <Container className={classes.root}>
+          <Typography variant="h5">
+            {'Forgot your password?'}
+          </Typography>
+
+          {Object.entries(forgotPasswordFields[group]).map(([field, option]) => {
+
+            return (
+
+              <option.component
+                key={field}
+                label={option.label}
+                type={option.type}
+                options={option.options}
+                value={state.form[group][field]}
+                required={option.required}
+                onChange={e => state.form[group][field] = e.target.value}
+                // onBlur={() => handleOnBlur(field, option)}
+                disabled={option.disabled}
+                error={!!state.errors[group][field]}
+                helperText={state.errors[group][field]}
+              />
+            )
+          })}
+          <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+            Submit
+          </Button>
+          <AlertDialog dialogContentText={state.errors.message||"Error occur"}
+                       dialogTitle={'Error'}
+                       buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                       open={state.errorDialog}/>
+          <AlertDialog dialogContentText={'A link is sent to your email address. Please follow it to reset your password'}
+                       dialogTitle={'Success'}
+                       buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
+                       open={state.successDialog}/>
+        </Container>)
+
+
+
+    }
+  if(state.group > 4){
+    // TODO: what should we do after user wasting all 3 chances?
     return (
-      <Container className={classes.root}>
-        <Typography variant="h5">
-          {'Forgot your password?'}
-        </Typography>
+      <AlertDialog dialogContentText={'You have missed all 3 chances'}
+                   dialogTitle={'Sorry'}
+                   buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
+                   open={state.group > 4}/>
+    )
+  }
 
-        {Object.entries(forgotPasswordFields[group]).map(([field, option]) => {
 
-          return (
 
-            <option.component
-              key={field}
-              label={option.label}
-              type={option.type}
-              options={option.options}
-              value={state.form[group][field]}
-              required={option.required}
-              onChange={e => state.form[group][field] = e.target.value}
-              // onBlur={() => handleOnBlur(field, option)}
-              disabled={option.disabled}
-              error={!!state.errors[group][field]}
-              helperText={state.errors[group][field]}
-            />
-          )
-        })}
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-          Submit
-        </Button>
-        <AlertDialog dialogContentText={state.errors.message||"Error occur"}
-                     dialogTitle={'Error'}
-                     buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
-                     open={state.errorDialog}/>
-      </Container>)
 
 }
