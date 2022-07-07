@@ -5,11 +5,11 @@ import {defaultNewPasswordFields} from "../constants/default_fields";
 import {Loading} from "./shared";
 import {forgotPasswordSaveNewPassword, verifyForgotPasswordUser} from "../api/userApi";
 import {Button, Container, TextField} from "@mui/material";
-import {userFirstEntryFields} from "../constants/userFirstEntryFields";
 import {AlertDialog} from "./shared/Dialogs";
 import {newPasswordFields} from "../constants/updatePasswordFields";
 import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
+import LoadingButton from "./shared/LoadingButton";
 
 
 const useStyles = makeStyles(() => ({
@@ -39,6 +39,7 @@ export default function ForgotPasswordResetPassword(){
     loading: true,
     email: '',
     id:'',
+    loadingButton: false
   });
 
 
@@ -48,7 +49,7 @@ export default function ForgotPasswordResetPassword(){
       const {email, message, success, userId} = await verifyForgotPasswordUser(token)
       setState(state => ({...state, verified: 1, email: email, id: userId, loading: false}))
     }catch (e){
-      setState(state => ({...state, verified: 2, loading: false, errors: e.json}))
+      setState(state => ({...state, verified: 2, loading: false, errors: e.json, failDialog: true,}))
     }
   }
 
@@ -106,15 +107,16 @@ export default function ForgotPasswordResetPassword(){
 
   const handleConfirm = async () => {
     try {
-      setState(state => ({...state, loading: true, submitDialog: false}))
+      setState(state => ({...state, loadingButton: true}))
       const {success, message} = await forgotPasswordSaveNewPassword({email: state.email, password: state.form.newPassword})
       if(success){
-        setState(state => ({...state, loading: false, successDialog: true}))
+        setState(state => ({...state, successDialog: true, loadingButton: false, submitDialog: false,}))
       }
+      // since the backend will definitely return 400 as status code if forgotPasswordSaveNewPassword failed
 
     } catch (e) {
       if (e.json) {
-        setState(state => ({...state, loading: false, errors: e.json, failDialog: true}));
+        setState(state => ({...state, loadingButton: false, errors: e.json, failDialog: true,submitDialog: false,}));
       }
     }
 
@@ -161,16 +163,32 @@ export default function ForgotPasswordResetPassword(){
         <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={'Are you sure to submit?'}
                      buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
-                       <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                       // <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                                      onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog}/>
 
         <AlertDialog dialogContentText={"You have successfully reset your password, please login"}
                      dialogTitle={'Success'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
+
+        <AlertDialog dialogContentText={state.errors.message || "Error occurs"}
+                     dialogTitle={'Error'}
+                     buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                     open={state.failDialog}/>
 
       </Container>
 
+    )
+  }
+
+  if(state.verified === 2){
+    return(
+      <AlertDialog dialogContentText={state.errors.message || "Token invalid"}
+                   dialogTitle={'Error'}
+                   buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                   open={state.failDialog}/>
     )
   }
 

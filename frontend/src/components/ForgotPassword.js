@@ -10,6 +10,7 @@ import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
 import {checkSecurityQuestion, fetchSecurityQuestionsByEmail, sendVerificationEmail} from "../api/userApi";
 import {AlertDialog} from "./shared/Dialogs";
+import LoadingButton from "./shared/LoadingButton";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -35,22 +36,24 @@ export default function ForgotPassword() {
       group3: {},
       group4: {},
     },
-    loading: false,
+    // loading: false,
     group:1,
     errorDialog: false,
-    successDialog: false
+    successDialog: false,
+    loadingButton: false,
   });
 
   const handleSubmit = async () => {
     if (validate()) {
       try {
+        setState(state => ({...state, loadingButton: true}))
         if (state.group === 1) {
           // get the user security questions
           const {success, message, securityQuestions} = await fetchSecurityQuestionsByEmail(state.form.group1.email)
           state.form.group2.securityQuestion1 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
           state.form.group3.securityQuestion2 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
           state.form.group4.securityQuestion3 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
-          setState(state => ({...state, group: state.group + 1}))
+          setState(state => ({...state, group: state.group + 1, loadingButton: false}))
 
         } else {
           const group = 'group' + state.group
@@ -62,18 +65,18 @@ export default function ForgotPassword() {
             question: state.form[group][securityQuestion], answer})
 
           if(matched){
-            setState(state => ({...state, loading: true}))
+            setState(state => ({...state,}))
             const {success, message} = await sendVerificationEmail({email: state.form.group1.email})
-            setState(state => ({...state, loading: false, successDialog: true}))
+            setState(state => ({...state, loadingButton: false, successDialog: true}))
 
           }else{
-            setState(state => ({...state, group: state.group + 1}))
+            setState(state => ({...state, group: state.group + 1, loadingButton: false}))
           }
 
         }
       } catch (e) {
         if (e.json) {
-          setState(state => ({...state, errors: e.json, errorDialog: true}))
+          setState(state => ({...state, errors: e.json, errorDialog: true, loadingButton: false}))
         }
 
 
@@ -108,8 +111,8 @@ export default function ForgotPassword() {
 
     }
 
-    if (state.loading)
-      return <Loading message={`Loading`}/>;
+    // if (state.loading)
+    //   return <Loading message={`Loading`}/>;
 
     const group = 'group' + state.group
 
@@ -139,9 +142,11 @@ export default function ForgotPassword() {
               />
             )
           })}
-          <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-            Submit
-          </Button>
+          {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
+          {/*  Submit*/}
+          {/*</Button>*/}
+          <LoadingButton noDefaultStyle variant="contained" color="primary" loading ={state.loadingButton} className={classes.button}
+                         onClick={handleSubmit}/>
           <AlertDialog dialogContentText={state.errors.message||"Error occur"}
                        dialogTitle={'Error'}
                        buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
