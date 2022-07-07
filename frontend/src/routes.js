@@ -7,6 +7,7 @@ import Landing from './components/Landing';
 import Login from './components/Login';
 import LoginPane from './components/LoginPane';
 import Dashboard from './components/Dashboard';
+import changePrimaryEmail from './components/changePrimaryEmail';
 import Clients from './components/Clients';
 import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm'
@@ -45,6 +46,7 @@ const routes = (
     <Route path='/email-confirm' component={EmailConfirm}/>
     <Route path='/login-pane' component={LoginPane}/>
     <Route path='/forgot-password' component={ForgotPassword}/>
+    <Route path='/update-primary-email/:token' component={changePrimaryEmail}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
     <Route path='/verify/:token' component={UserFirstEntry}/>

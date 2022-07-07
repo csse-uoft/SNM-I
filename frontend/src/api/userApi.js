@@ -12,6 +12,10 @@ export function verifyForgotPasswordUser(token) {
   return postJson('/api/resetPassword/verify', {token})
 }
 
+export async function verifyChangePrimaryEmail(token) {
+  return postJson('/api/update-primary-email', {token})
+}
+
 export function createUsers(params) {
   // TODO: implement backend?
   return postJson('/users/', {csv: params});
@@ -29,8 +33,12 @@ export function updateUser(id, params) {
   return postJson('/api/profile/' + id + '/', params);
 }
 
+export async function updatePrimaryEmail(id, email) {
+  return postJson('/api/profile/' + id + '/edit/updatePrimaryEmail', {email})
+}
+
 export function updateProfile(id, params) {
-  return postJson('/api/profile/' + id + '/edit', params);
+  return postJson('/api/profile/' + id + '/edit/', params);
 }
 
 export async function checkCurrentPassword(id, password) {

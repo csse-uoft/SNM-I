@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const {getVerificationTemplate, getResetPasswordTemplate} = require("./template");
+const {getVerificationTemplate, getResetPasswordTemplate, getUpdateEmailTemplate} = require("./template");
 const {mailConfig} = require('../../config');
 
 const transporter = nodemailer.createTransport(mailConfig.mailServer);
@@ -44,4 +44,24 @@ const sendResetPasswordEmail = async (email, token) => {
   });
 };
 
-module.exports = {sendVerificationMail, sendResetPasswordEmail};
+const sendUpdatePrimaryEmail = async (id, email, token) => {
+  const mailOptions = {
+    from: mailConfig.from,
+    to: email,
+    subject: 'Verification of changing primary email address.',
+    ...getUpdateEmailTemplate(id, email, token)
+  };
+  await new Promise((resole, reject) => {
+
+    transporter.sendMail(mailOptions, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log("email sent");
+        resole();
+      }
+    });
+  });
+};
+
+module.exports = {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail};
