@@ -189,7 +189,7 @@ const CONFIRM_EMAIL_ERR_MSG = "Your input doesn't match the your registered emai
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
   "where A is a letter and 1 is a digit";
 const EXPIRATION_DATE_MSG = "Dates in the past are not valid"
-const CONFIRM_PASSWORD_ERR_MSG = 'This field must be same with your password'
+const CONFIRM_PASSWORD_ERR_MSG = 'This field must be same with your new password'
 
 export const Validator = {
   /**

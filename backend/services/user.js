@@ -58,10 +58,10 @@ async function createTemporaryUserAccount(data) {
 async function updateUserPassword(email, newPassword) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const {hash, salt} = await Hashing.hashPassword(newPassword);
-  userAccount.hash = hash
-  userAccount.salt = salt
-  await userAccount.save()
-  const saved = true
+  userAccount.hash = hash;
+  userAccount.salt = salt;
+  await userAccount.save();
+  const saved = await Hashing.validatePassword(newPassword, userAccount.hash, userAccount.salt);
   return {saved, userAccount}
 }
 

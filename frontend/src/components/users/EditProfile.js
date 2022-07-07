@@ -3,8 +3,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Grid, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
-import {fetchUser, getProfile, updateProfile, updateUser} from "../../api/userApi";
-import {defaultUserFields} from "../../constants/default_fields";
+import {getProfile, updateProfile, updateUser} from "../../api/userApi";
 import {isFieldEmpty} from "../../helpers";
 import {
   DUPLICATE_HELPER_TEXT,
@@ -73,7 +72,6 @@ export default function EditProfile() {
       if (option.label === 'Secondary Email') {
         if (form.email === form.altEmail) {
           newErrors[field] = DUPLICATE_HELPER_TEXT;
-        } else {
         }
       }
     }
@@ -201,7 +199,6 @@ export default function EditProfile() {
               value={form[field]}
               required={option.required}
               onChange={value => form[field] = value.target.value}
-              //onChange={e => state.form[field] = e.target.value}
               onBlur={e => handleOnBlur(e, field, option)}
               error={!!errors[field]}
               helperText={errors[field]}
@@ -219,7 +216,8 @@ export default function EditProfile() {
         {/* Alert prompt for submitting changes */}
         <AlertDialog
           dialogContentText={"Note that if you want to change your primary email, you will receive a " +
-            "confirmation link in your input email."}
+            "confirmation link in your input email. Changes will only be made after you click the confirm link in" +
+            "in the email."}
           dialogTitle={'Are you sure to submit?'}
           buttons={[
             <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,

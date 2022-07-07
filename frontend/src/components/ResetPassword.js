@@ -61,13 +61,15 @@ export default function ForgotPasswordResetPassword(){
 
   const handleOnBlur = (field, option) => {
 
-    if (!isFieldEmpty(state.form[field]) && field === "repeatNewPassword" && !!option.validator(state.form[field], state.form["newPassword"])) {
+    if (!isFieldEmpty(state.form[field]) && field === "repeatNewPassword"
+      && !!option.validator(state.form[field], state.form["newPassword"])) {
       setState(state => ({
         ...state,
         errors: {...state.errors, [field]: option.validator(state.form[field], state.form["newPassword"])}
       }))
 
-    } else if (!isFieldEmpty(state.form[field]) && field !== "repeatNewPassword" && option.validator && !!option.validator(state.form[field])) {
+    } else if (!isFieldEmpty(state.form[field]) && field !== "repeatNewPassword" && option.validator
+      && !!option.validator(state.form[field])) {
 
       setState(state => ({...state, errors: {...state.errors, [field]: option.validator(state.form[field])}}))
     } else {
