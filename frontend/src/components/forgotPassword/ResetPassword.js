@@ -1,15 +1,15 @@
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import React, {useState} from 'react';
-import {defaultNewPasswordFields} from "../constants/default_fields";
-import {Loading} from "./shared";
-import {forgotPasswordSaveNewPassword, verifyForgotPasswordUser} from "../api/userApi";
+import {defaultNewPasswordFields} from "../../constants/default_fields";
+import {Loading} from "../shared";
+import {forgotPasswordSaveNewPassword, verifyForgotPasswordUser} from "../../api/userApi";
 import {Button, Container, TextField} from "@mui/material";
-import {AlertDialog} from "./shared/Dialogs";
-import {newPasswordFields} from "../constants/updatePasswordFields";
-import {isFieldEmpty} from "../helpers";
-import {REQUIRED_HELPER_TEXT} from "../constants";
-import LoadingButton from "./shared/LoadingButton";
+import {AlertDialog} from "../shared/Dialogs";
+import {newPasswordFields} from "../../constants/updatePasswordFields";
+import {isFieldEmpty} from "../../helpers";
+import {REQUIRED_HELPER_TEXT} from "../../constants";
+import LoadingButton from "../shared/LoadingButton";
 
 
 const useStyles = makeStyles(() => ({

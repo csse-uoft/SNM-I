@@ -1,16 +1,16 @@
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router";
 import React, {useState} from "react";
-import {defaultForgotPasswordFields} from "../constants/default_fields";
-import {Loading} from "./shared";
+import {defaultForgotPasswordFields} from "../../constants/default_fields";
+import {Loading} from "../shared";
 import {Button, Typography, Container} from "@mui/material";
-import {userInvitationFields} from "../constants/userInvitationFields";
-import {forgotPasswordFields} from "../constants/forgot_password_fields";
-import {isFieldEmpty} from "../helpers";
-import {REQUIRED_HELPER_TEXT} from "../constants";
-import {checkSecurityQuestion, fetchSecurityQuestionsByEmail, sendVerificationEmail} from "../api/userApi";
-import {AlertDialog} from "./shared/Dialogs";
-import LoadingButton from "./shared/LoadingButton";
+import {userInvitationFields} from "../../constants/userInvitationFields";
+import {forgotPasswordFields} from "../../constants/forgot_password_fields";
+import {isFieldEmpty} from "../../helpers";
+import {REQUIRED_HELPER_TEXT} from "../../constants";
+import {checkSecurityQuestion, fetchSecurityQuestionsByEmail, sendVerificationEmail} from "../../api/userApi";
+import {AlertDialog} from "../shared/Dialogs";
+import LoadingButton from "../shared/LoadingButton";
 
 const useStyles = makeStyles(() => ({
   root: {
