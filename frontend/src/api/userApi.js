@@ -37,39 +37,75 @@ export function verifyForgotPasswordUser(token) {
   return postJson('/api/resetPassword/verify', {token})
 }
 
+/**
+ * This will verify in the backend whether the token contains correct
+ * information of current primary email and new primary email for this user.
+ * @param token
+ * @returns {Promise<Response|any>}
+ */
 export async function verifyChangePrimaryEmail(token) {
-  return postJson('/api/update-primary-email', {token})
+  return postJson('/api/users/updatePrimaryEmail', {token})
 }
 
+//have not been used so far.
 export function createUsers(params) {
   // TODO: implement backend?
   return postJson('/users/', {csv: params});
 }
 
 
-
+/**
+ * this will get user information from backend.
+ * @param id
+ * @returns {Promise<Response|any>}
+ */
 export function getProfile(id) {
-  return getJson('/api/profile/' + id + '/')
+  return getJson('/api//users/profile/getCurrentUserProfile/' + id + '/')
 }
 
+//have not been used so far.
 export function updateUser(id, params) {
   return postJson('/api/profile/' + id + '/', params);
 }
 
+/**
+ * this will send the new primary email user intends to change to the backend.
+ * @param id
+ * @param email
+ * @returns {Promise<Response|any>}
+ */
 export async function updatePrimaryEmail(id, email) {
-  return postJson('/api/profile/' + id + '/edit/updatePrimaryEmail', {email})
+  return postJson('/api/users/editProfile/updatePrimaryEmail/' + id + '/', {email})
 }
 
+/**
+ * This will send new profile information for this user to the backend and database.
+ * @param id
+ * @param params
+ * @returns {Promise<*>}
+ */
 export function updateProfile(id, params) {
-  return postJson('/api/profile/' + id + '/edit/', params);
+  return postJson('/api//users/editProfile/' + id + '/', params);
 }
 
+/**
+ * This will send current user password to backend to verify correctness.
+ * @param id
+ * @param password
+ * @returns {Promise<*>}
+ */
 export async function checkCurrentPassword(id, password) {
-  return postJson('/api/users/reset-password/' + id + '/', {password});
+  return postJson('/api/users/resetPassword/checkCurrentPassword/' + id + '/', {password});
 }
 
+/**
+ * THis will send new password to backend and database.
+ * @param id
+ * @param password
+ * @returns {Promise<*>}
+ */
 export async function saveNewPassword(id, password) {
-  return postJson('/api/users/reset-password/' + id + '/update', {password});
+  return postJson('/api/users/resetPassword/saveNewPassword/' + id + '/', {password});
 }
 
 // this will save new password during forgot and reset password process
@@ -80,10 +116,6 @@ export async function forgotPasswordSaveNewPassword(params) {
 export function fetchUser(id) {
   return getJson('/user/' + id + '/');
 }
-
-// export function fetchUserByEmail(email) {
-//   return getJson('/api/user/' + email + '/')
-// }
 
 export function fetchUsers() {
   return getJson('/users/');
