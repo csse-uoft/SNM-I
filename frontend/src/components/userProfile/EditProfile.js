@@ -1,13 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import {Box, Button, Container, Grid, Typography} from "@mui/material";
+import {Box, Button, Container, Grid, Stack, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
-import {getProfile, updateProfile, updateUser} from "../../api/userApi";
+import {getProfile, updatePrimaryEmail, updateProfile, updateUser} from "../../api/userApi";
 import {isFieldEmpty} from "../../helpers";
 import {
   DUPLICATE_HELPER_TEXT,
-  DUPLICATE_PHONE_HELPER_TEXT,
   REQUIRED_HELPER_TEXT
 } from "../../constants";
 import {AlertDialog} from "../shared/Dialogs";
@@ -84,6 +83,11 @@ export default function EditProfile() {
     return true;
   };
 
+  const handleCancel = () => {
+    alert('All the changes you made will not be saved.');
+    history.push('/profile/' + id);
+  }
+
   // submit button handler
   const handleSubmitChanges = () => {
     if (validate()) {
@@ -97,6 +101,17 @@ export default function EditProfile() {
       const phoneUnchanged = userContext.countryCode.toString() +
         userContext.areaCode.toString() + userContext.phoneNumber.toString()
 
+      if (form.email !== userContext.email) {
+        console.log('reach before send verification')
+        const {sentEmailConfirm} = await updatePrimaryEmail(id, form.email);
+        console.log(sentEmailConfirm)
+        if (sentEmailConfirm) {
+          console.log('email verification link sent');
+        } else {
+          console.log('email verification is not sent.');
+        }
+      }
+
       if (form.telephone === phoneUnchanged) {
         const countryCodeParse = parseInt(form.telephone.slice(0,1));
         const areaCodeParse = parseInt(form.telephone.slice(1,4));
@@ -108,7 +123,7 @@ export default function EditProfile() {
           countryCode: countryCodeParse,
           areaCode: areaCodeParse,
           phoneNumber: phoneNumberParse,
-          email: form.email,
+          //email: form.email,
           altEmail: form.altEmail,}
 
         const {success} = await updateProfile(id, updateForm);
@@ -118,7 +133,7 @@ export default function EditProfile() {
           }
 
           userContext.updateUser({
-            email: userContext.email,
+            //email: userContext.email,
             altEmail: userContext.altEmail,
             givenName: userContext.givenName,
             familyName: userContext.familyName,
@@ -140,7 +155,7 @@ export default function EditProfile() {
           countryCode: countryCodeParse,
           areaCode: areaCodeParse,
           phoneNumber: phoneNumberParse,
-          email: form.email,
+          //email: form.email,
           altEmail: form.altEmail,}
 
         const {success} = await updateProfile(id, updateForm);
@@ -149,7 +164,7 @@ export default function EditProfile() {
             userContext[key] = value;}
 
           userContext.updateUser({
-            email: userContext.email,
+            //email: userContext.email,
             altEmail: userContext.altEmail,
             givenName: userContext.givenName,
             familyName: userContext.familyName,
@@ -207,17 +222,23 @@ export default function EditProfile() {
         })}
 
         {/* Button for submitting account info changes */}
+
         <Button variant="contained" color="primary" className={classes.button}
                 onClick={handleSubmitChanges}>
           Submit Changes
+        </Button>
+
+        <Button variant="contained" color="primary" className={classes.button}
+                onClick={handleCancel}>
+          Cancel Changes
         </Button>
 
 
         {/* Alert prompt for submitting changes */}
         <AlertDialog
           dialogContentText={"Note that if you want to change your primary email, you will receive a " +
-            "confirmation link in your input email. Changes will only be made after you click the confirm link in" +
-            "in the email."}
+            "confirmation link in your input email. Changes of primary Email will only be made" +
+            " after you click the confirm link in the email."}
           dialogTitle={'Are you sure to submit?'}
           buttons={[
             <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,

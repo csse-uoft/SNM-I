@@ -34,4 +34,23 @@ ${frontend.addr}/resetPassword/${token}`
   `
   return {html, text}
 }
-module.exports = {getVerificationTemplate, getResetPasswordTemplate};
+
+const getUpdateEmailTemplate = (id, userEmail, token) => {
+  const text = `Please confirm your e-mail.
+
+Verify your e-mail to finish updating your primary Email for SNM-I.
+Please confirm that ${userEmail} is your new e-mail address by clicking on this link within 24 hours.
+
+${frontend.addr}/update-primary-email/${token}`
+
+
+  const html = `
+   <html>
+     ${text.replaceAll('\n', '<br/>')}
+  </html>
+  `
+  return {html, text}
+}
+
+
+module.exports = {getVerificationTemplate, getResetPasswordTemplate, getUpdateEmailTemplate};

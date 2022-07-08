@@ -1,5 +1,5 @@
 const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword} = require("./user");
-const {sendVerificationMail} = require("../utils");
+const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail} = require("../utils");
 const {sign} = require("jsonwebtoken");
 const {jwtConfig} = require("../config");
 
@@ -23,9 +23,9 @@ const updateProfile = async (req, res, next) => {
     }
 
     try {
-        if (!email) {
-            return res.status(400).json({success: false, message: 'Primary Email cannot be blank.'})
-        }
+        // if (!email) {
+        //     return res.status(400).json({success: false, message: 'Primary Email cannot be blank.'})
+        // }
 
         // if (email !== req.session.email) {
         //     const token = sign({
@@ -35,14 +35,8 @@ const updateProfile = async (req, res, next) => {
         //     await sendVerificationMail(email, token);
         //     return res.status(202).json({success: true, message: 'Successfully update profile.'})
         // }
-
-        else {
-            // store updated data in const updateData
-            await updateUserAccount(email, updateData)
-
-            return res.status(202).json({success: true, message: 'Successfully update profile.'})
-
-        }
+        await updateUserAccount(req.session.email, updateData)
+        return res.status(202).json({success: true, message: 'Successfully update profile.'})
 
     }catch (e) {
         return next(e)
@@ -89,9 +83,21 @@ const saveNewPassword = async (req, res, next) => {
         }
     } catch (e) {
         next(e);
-    }
+    }};
 
+const updatePrimaryEmail = async (req, res, next) => {
+    const {id, email} = req.body;
+    const currentEmail = req.session.email;
+    try {
+        const token = sign({
+            currentEmail, email
+        }, jwtConfig.secret, jwtConfig.options)
+        await sendUpdatePrimaryEmail(id, email, token)
+        return res.status(200).json({sentEmailConfirm: true, message: 'Successfully sent link'})
+    }catch (e){
+        next(e)
+    }
 };
 
-module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword};
+module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword, updatePrimaryEmail};
 
