@@ -248,12 +248,12 @@ export default function EditProfile() {
 
         {/* Button for submitting account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
-                onClick={handleCancel}>
+                onClick={handleCancel} key={'Cancel Changes'}>
           Cancel Changes
         </Button>
 
         <Button variant="contained" color="primary" className={classes.button}
-                onClick={handleSubmitChanges}>
+                onClick={handleSubmitChanges} key={'Submit Changes'}>
           Submit Changes
         </Button>
 
