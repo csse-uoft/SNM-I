@@ -1,5 +1,4 @@
 const {JsonWebTokenError, sign} = require("jsonwebtoken");
-const {GDBUserAccountModel} = require('../models/userAccount');
 const {isEmailExists, createTemporaryUserAccount} = require('./user');
 const {jwtConfig} = require("../config");
 const {sendVerificationMail} = require("../utils");

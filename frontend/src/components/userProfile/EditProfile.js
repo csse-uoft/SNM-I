@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import {Box, Button, Container, Grid, Stack, Typography} from "@mui/material";
+import {Button, Container, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
-import {getProfile, updatePrimaryEmail, updateProfile, updateUser} from "../../api/userApi";
+import {getProfile, updatePrimaryEmail, updateProfile} from "../../api/userApi";
 import {isFieldEmpty} from "../../helpers";
 import {
   DUPLICATE_HELPER_TEXT,
@@ -11,13 +11,14 @@ import {
 } from "../../constants";
 import {AlertDialog} from "../shared/Dialogs";
 import {Loading} from "../shared";
+import LoadingButton from "../shared/LoadingButton";
 import {UserContext} from "../../context";
+
 
 /* Page for editing User Profile, functionalities including:
 *   - edit account information
 *   - edit primary/secondary email
 * */
-
 const useStyles = makeStyles(() => ({
   root: {
     width: '80%'
@@ -25,6 +26,7 @@ const useStyles = makeStyles(() => ({
   button: {
     marginTop: 12,
     marginBottom: 12,
+    marginRight: 12,
   }
 }));
 
@@ -37,6 +39,7 @@ export default function EditProfile() {
   const [errors, setErrors] = useState({});
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const profileForm = {
     givenName: userContext.givenName,
@@ -126,12 +129,12 @@ export default function EditProfile() {
           //email: form.email,
           altEmail: form.altEmail,}
 
+        setLoadingButton(true);
         const {success} = await updateProfile(id, updateForm);
         if (success) {
           for (const [key, value] of Object.entries(updateForm)) {
             userContext[key] = value;
           }
-
           userContext.updateUser({
             //email: userContext.email,
             altEmail: userContext.altEmail,
@@ -141,7 +144,7 @@ export default function EditProfile() {
             areaCode: userContext.areaCode,
             phoneNumber: userContext.phoneNumber,
           });
-
+          setLoadingButton(false);
           history.push('/profile/' + id + '/');
         }
       } else {
@@ -158,6 +161,7 @@ export default function EditProfile() {
           //email: form.email,
           altEmail: form.altEmail,}
 
+        setLoadingButton(true);
         const {success} = await updateProfile(id, updateForm);
         if (success) {
           for (const [key, value] of Object.entries(updateForm)){
@@ -172,11 +176,12 @@ export default function EditProfile() {
             areaCode: userContext.areaCode,
             phoneNumber: userContext.phoneNumber,
           });
-
+          setLoadingButton(false);
           history.push('/profile/' + id + '/');
         }
       }
     } catch (e) {
+      setLoadingButton(false);
       console.log('catch e')
       console.log( e.json);
     }
@@ -185,11 +190,13 @@ export default function EditProfile() {
 
   // OnBlur handler, called when user's focus moves from a field.
   const handleOnBlur = (e, field, option) => {
-    if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field]))
+    if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])){
       // state.errors.field = option.validator(e.target.value)
       setErrors({...errors, [field]: option.validator(form[field])});
-    else
+
+    } else {
       setErrors({...errors, [field]: undefined});
+    }
   };
 
   if (loading)
@@ -222,15 +229,14 @@ export default function EditProfile() {
         })}
 
         {/* Button for submitting account info changes */}
+        <Button variant="contained" color="primary" className={classes.button}
+                onClick={handleCancel}>
+          Cancel Changes
+        </Button>
 
         <Button variant="contained" color="primary" className={classes.button}
                 onClick={handleSubmitChanges}>
           Submit Changes
-        </Button>
-
-        <Button variant="contained" color="primary" className={classes.button}
-                onClick={handleCancel}>
-          Cancel Changes
         </Button>
 
 
@@ -242,7 +248,9 @@ export default function EditProfile() {
           dialogTitle={'Are you sure to submit?'}
           buttons={[
             <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
-            <Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+            //<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
+            <LoadingButton noDefaultStyle variant="text" color="primary" loading ={loadingButton} key={'confirm'}
+                           onClick={handleDialogConfirm} children='confirm' autoFocus/>]}
           open={dialogSubmit}/>
 
       </div>
