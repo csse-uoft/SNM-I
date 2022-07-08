@@ -7,18 +7,18 @@ import Landing from './components/Landing';
 import Login from './components/Login';
 import LoginPane from './components/LoginPane';
 import Dashboard from './components/Dashboard';
-import changePrimaryEmail from './components/changePrimaryEmail';
+import changePrimaryEmail from './components/userProfile/changePrimaryEmail';
 import Clients from './components/Clients';
 import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
-import UserInvite from './components/register/UserInvite'
-import ResetPassword from './components/users/UserResetPassword'
+import UserInvite from './components/users/UserInvite'
+import ResetPassword from './components/userProfile/UserResetPassword'
 import EmailConfirm from './components/emailConfirm'
-import UserProfile from './components/Profile'
-import UpdateUserProfile from './components/users/EditProfile'
+import UserProfile from './components/userProfile/Profile'
+import UpdateUserProfile from './components/userProfile/EditProfile'
 import NeedForm from './components/client_needs/NeedForm'
 import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
@@ -35,9 +35,9 @@ import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
 import Questions from './components/additionalFIelds/Questions';
-import UserFirstEntry from "./components/register/UserFirstEntry";
-import ForgotPassword from "./components/forgotPassword/ForgotPassword";
-import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
+import UserFirstEntry from "./components/users/UserFirstEntry";
+import ForgotPassword from "./components/ForgotPassword";
+import ForgotPasswordResetPassword from "./components/ResetPassword";
 
 const routes = (
   <Switch>

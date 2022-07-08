@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {Button, Container, Typography} from "@mui/material";
 import {useParams} from "react-router";
-import {verifyChangePrimaryEmail} from "../api/userApi";
+import {verifyChangePrimaryEmail} from "../../api/userApi";
 
 
 const useStyles = makeStyles(() => ({
