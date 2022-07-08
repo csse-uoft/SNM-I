@@ -29,12 +29,49 @@ export function firstEntryUpdate(params) {
 }
 
 /**
+ * this will fetch the security questions of user during forgot password process
+ * @param email
+ * @returns {Promise<Response|any>}
+ */
+export function fetchSecurityQuestionsByEmail(email) {
+  return putJson('/api/forgotPassword/securityQuestions/fetch', {email})
+}
+
+/**
+ * this will check the answer of the security function during forgot password process
+ * @param params:{email, question, answer}
+ * @returns {Promise<Response|any>}
+ */
+
+export function checkSecurityQuestion(params) {
+  return postJson('/api/forgotPassword/securityQuestions/check', params)
+}
+
+/**
+ * this will send the verification email during forgot password process
+ * @param params: {email}
+ * @returns {Promise<Response|any>}
+ */
+export function sendVerificationEmail(params) {
+  return postJson('/api/forgotPassword/sendVerificationEmail', params)
+}
+
+/**
  * this will verify user's token during forgot password process
  * @param token
  * @returns {Promise<Response|any>}
  */
 export function verifyForgotPasswordUser(token) {
-  return postJson('/api/resetPassword/verify', {token})
+  return postJson('/api/forgotPassword/resetPassword/verify', {token})
+}
+
+/**
+ * this will save new password during forgot and reset password process
+ * @param params: {password, email}
+ * @returns {Promise<Response|any>}
+ */
+export async function forgotPasswordSaveNewPassword(params) {
+  return postJson('/api/forgotPassword/resetPassword/saveNewPassword/', params)
 }
 
 /**
@@ -108,10 +145,6 @@ export async function saveNewPassword(id, password) {
   return postJson('/api/users/resetPassword/saveNewPassword/' + id + '/', {password});
 }
 
-// this will save new password during forgot and reset password process
-export async function forgotPasswordSaveNewPassword(params) {
-  return postJson('/api/forgotPassword/saveNewPassword/', params)
-}
 
 export function fetchUser(id) {
   return getJson('/user/' + id + '/');
@@ -121,21 +154,6 @@ export function fetchUsers() {
   return getJson('/users/');
 }
 
-// this will fetch the security questions of user during forgot password process
-export function fetchSecurityQuestionsByEmail(email) {
-  return putJson('/api/securityQuestions/email/', {email})
-}
-
-// this will check the answer of the security function during forgot password process
-// params: {email, question, answer}
-export function checkSecurityQuestion(params) {
-  return postJson('/api/checkSecurityQuestion/', params)
-}
-//  this will send the verification email during forgot password process
-// params: {email}
-export function sendVerificationEmail(params) {
-  return postJson('/api/sendVerificationEmail/', params)
-}
 
 export function deleteUser(id, params, callback) {
   const response = deleteJson('/user/' + id + '/');
