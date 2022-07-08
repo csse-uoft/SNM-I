@@ -2,11 +2,10 @@ import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {Box, Button, Container, Typography} from "@mui/material";
-import {userProfileFields} from "../constants/userProfileFields";
-import {getProfile} from "../api/userApi";
-import {defaultUserFields} from "../constants/default_fields";
-import {Link, Loading} from "./shared";
-import {UserContext} from "../context";
+import {userProfileFields} from "../../constants/userProfileFields";
+import {getProfile} from "../../api/userApi";
+import {Link, Loading} from "../shared";
+import {UserContext} from "../../context";
 
 /* Page for User Profile, functionalities including:
 *   - Display account information
