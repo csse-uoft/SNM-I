@@ -15,10 +15,7 @@ import LoadingButton from "../shared/LoadingButton";
 import {UserContext} from "../../context";
 
 
-/* Page for editing User Profile, functionalities including:
-*   - edit account information
-*   - edit primary/secondary email
-* */
+
 const useStyles = makeStyles(() => ({
   root: {
     width: '80%'
@@ -30,6 +27,11 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * This function allows user edit their profile information.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function EditProfile() {
   const classes = useStyles();
   const history = useHistory();
@@ -59,7 +61,10 @@ export default function EditProfile() {
     });
   }, [id]);
 
-  // Helper function for checking the validity of information in the fields. (frontend check)
+  /**
+   * This is frontend validation for any new input information.
+   * @returns {boolean}
+   */
   const validate = () => {
     const newErrors = {};
     for (const [field, option] of Object.entries(userProfileFields)) {
@@ -134,7 +139,6 @@ export default function EditProfile() {
           countryCode: countryCodeParse,
           areaCode: areaCodeParse,
           phoneNumber: phoneNumberParse,
-          //email: form.email,
           altEmail: form.altEmail,}
 
         setLoadingButton(true);
@@ -144,7 +148,6 @@ export default function EditProfile() {
             userContext[key] = value;
           }
           userContext.updateUser({
-            //email: userContext.email,
             altEmail: userContext.altEmail,
             givenName: userContext.givenName,
             familyName: userContext.familyName,
@@ -152,8 +155,6 @@ export default function EditProfile() {
             areaCode: userContext.areaCode,
             phoneNumber: userContext.phoneNumber,
           });
-          // setLoadingButton(false);
-          // history.push('/profile/' + id + '/');
         }
       } else {
         const phone = form.telephone.split(' ');
@@ -166,7 +167,6 @@ export default function EditProfile() {
           countryCode: countryCodeParse,
           areaCode: areaCodeParse,
           phoneNumber: phoneNumberParse,
-          //email: form.email,
           altEmail: form.altEmail,}
 
         setLoadingButton(true);
@@ -176,7 +176,6 @@ export default function EditProfile() {
             userContext[key] = value;}
 
           userContext.updateUser({
-            //email: userContext.email,
             altEmail: userContext.altEmail,
             givenName: userContext.givenName,
             familyName: userContext.familyName,
@@ -184,9 +183,6 @@ export default function EditProfile() {
             areaCode: userContext.areaCode,
             phoneNumber: userContext.phoneNumber,
           });
-          // setLoadingButton(false);
-          // setDialogSubmit(false);
-          // history.push('/profile/' + id + '/');
         }
       }
       setLoadingButton(false);
@@ -196,17 +192,20 @@ export default function EditProfile() {
       } else {
         history.push('/profile/' + id + '/');
       }
-
-
     } catch (e) {
       setLoadingButton(false);
-      console.log('catch e')
+      console.log('catch e');
       console.log( e.json);
     }
   };
 
 
-  // OnBlur handler, called when user's focus moves from a field.
+  /**
+   * handler of onBlur.
+   * @param e
+   * @param field
+   * @param option
+   */
   const handleOnBlur = (e, field, option) => {
     if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])){
       // state.errors.field = option.validator(e.target.value)

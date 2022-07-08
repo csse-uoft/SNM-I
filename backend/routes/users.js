@@ -5,7 +5,7 @@ const {updateProfile, getCurrentUserProfile, checkCurrentPassword,
 const {verifyChangePrimaryEmail} = require("../services/verifyUser");
 const router = express.Router();
 
-router.get('/users/profile/getCurrentUserProfile/:id', getCurrentUserProfile);
+router.get('/users/profile/getCurrentUserProfile/:id/', getCurrentUserProfile);
 router.post('/users/editProfile/:id', updateProfile);
 router.post('/users/editProfile/updatePrimaryEmail/:id', updatePrimaryEmail);
 router.post('/users/resetPassword/checkCurrentPassword/:id', checkCurrentPassword);

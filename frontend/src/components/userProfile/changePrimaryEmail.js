@@ -16,20 +16,21 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-
+/**
+ * This function is for user confirm primary Email change (accessed from link in email)
+ * @returns {JSX.Element}
+ */
 export default function changePrimaryEmail() {
   const classes = useStyles();
   const {token} = useParams();
-  const history = useHistory();
   const [dialogConfirmed, setDialogConfirmed] = useState(false);
+  let history = useHistory();
 
   const handleCheck = async () => {
     try {
-      console.log("reach before change email.")
       const {success} = await verifyChangePrimaryEmail(token);
       if (success) {
         setDialogConfirmed(true);
-        console.log("change primary email success.")
       } else {
         console.log('change primary email failed.')
       }

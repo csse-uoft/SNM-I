@@ -97,7 +97,7 @@ export function createUsers(params) {
  * @returns {Promise<Response|any>}
  */
 export function getProfile(id) {
-  return getJson('/api//users/profile/getCurrentUserProfile/' + id + '/')
+  return getJson('/api/users/profile/getCurrentUserProfile/' + id + '/')
 }
 
 //have not been used so far.

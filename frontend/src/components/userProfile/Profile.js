@@ -6,12 +6,8 @@ import {userProfileFields} from "../../constants/userProfileFields";
 import {getProfile} from "../../api/userApi";
 import {Link, Loading} from "../shared";
 import {UserContext} from "../../context";
+import {AlertDialog} from "../shared/Dialogs";
 
-/* Page for User Profile, functionalities including:
-*   - Display account information
-*   - Display primary/secondary email
-*   - Enter reset password page
-* */
 
 function NavButton({to, text}) {
   return (
@@ -36,6 +32,11 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * This page is for displaying user profile, with option of resetting password.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Profile() {
 
   const classes = useStyles();
@@ -44,8 +45,7 @@ export default function Profile() {
   const userContext = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({...userProfileFields});
-
-
+  const [dialogConfirm, setDialogConfirm] = useState(false);
   const profileForm = {
     givenName: userContext.givenName,
     familyName: userContext.familyName,
@@ -54,7 +54,6 @@ export default function Profile() {
     email: userContext.email,
     altEmail: userContext.altEmail,
   }
-  console.log(profileForm)
 
   useEffect(() => {
     getProfile(id).then(user => {
@@ -63,9 +62,12 @@ export default function Profile() {
     });
   }, [id]);
 
-  // Edit Profile button handler
   const handleEdit = () => {
-    alert('You are about to edit the profile!');
+    setDialogConfirm(true);
+  }
+
+  const handleDialogConfirm =() => {
+    setDialogConfirm(false);
     history.push('/profile/' + id + '/edit');
   }
 
@@ -124,6 +126,13 @@ export default function Profile() {
                      key={'Reset Password'}/>
         </Box>
       </div>
+
+      <AlertDialog
+        dialogContentText={"Click the confirm button below will lead you to the editing profile page."}
+        dialogTitle={'Notice of leaving current page'}
+        buttons={<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>}
+        open={dialogConfirm}/>
+
     </Container>
   )
 }

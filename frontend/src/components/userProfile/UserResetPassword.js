@@ -3,26 +3,20 @@ import {makeStyles} from "@mui/styles";
 import {
     defaultCurrentPasswordFields,
     defaultNewPasswordFields,
-    defaultUserFields
 } from "../../constants/default_fields";
-import {Button, Container, TextField, Typography} from "@mui/material";
+import {Button, Container, Typography} from "@mui/material";
 import {
     newPasswordFields,
     updatePasswordFields
 } from "../../constants/updatePasswordFields";
-import {Link} from "../shared";
 import {isFieldEmpty} from "../../helpers";
-import {DUPLICATE_HELPER_TEXT, PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT, OLD_PASSWORD_ERR_MSG} from "../../constants";
+import {REQUIRED_HELPER_TEXT} from "../../constants";
 import { useHistory } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
 import {useParams} from "react-router";
-import {UserContext} from "../../context";
-import {login} from "../../api/auth";
 import {checkCurrentPassword, saveNewPassword} from "../../api/userApi";
+import LoadingButton from "../shared/LoadingButton";
 
-/* Page for password reset, functionalities including:
-*   - reset password
-* */
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -34,19 +28,27 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-
+/**
+ * This function is for reset password in user profile page.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function UserResetPassword() {
     const classes = useStyles();
     const {id} = useParams();
-    const userContext = useContext(UserContext);
     const [errors, setErrors] = useState({});
     const [dialogSubmit, setDialogSubmit] = useState(false);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({...defaultCurrentPasswordFields});
     const [editNew, setEditNew] = useState(false);
+    const [dialogConfirmed, setDialogConfirmed] = useState(false);
+    const [loadingButton, setLoadingButton] = useState(false);
     let history = useHistory();
 
-    // helper function for validating the text field for old password
+    /**
+     * This validates the correctness of current password.
+     * @returns {boolean}
+     */
     const validateOld = () => {
         const newErrors = {};
         for (const [field, option] of Object.entries(updatePasswordFields)) {
@@ -61,7 +63,10 @@ export default function UserResetPassword() {
     };
 
 
-    // helper function for validating the text field for new password
+    /**
+     * This validates the correctness of new password.
+     * @returns {boolean}
+     */
     const validateNew = () => {
         const newErrors = {};
         for (const [field, option] of Object.entries(newPasswordFields)) {
@@ -69,20 +74,6 @@ export default function UserResetPassword() {
             if (option.required && isEmpty) {
                 newErrors[field] = REQUIRED_HELPER_TEXT;
             }
-
-            // let msg;
-            // if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
-            //     newErrors[field] = msg;
-            // }
-
-            // if (option.label === 'Repeat New Password') {
-            //     if (form.newPassword === form.repeatNewPassword) {
-            //         console.log("same");
-            //     } else {
-            //         console.log('different');
-            //         newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
-            //     }
-            // }
         }
 
         if (Object.keys(newErrors).length !== 0) {
@@ -92,16 +83,22 @@ export default function UserResetPassword() {
         return true;
     };
 
-    // handler for submit button for old password
+    /**
+     * handler for submit current password.
+     * @returns {Promise<void>}
+     */
     const handleSubmitOld = async () => {
         if (validateOld()) {
-            console.log('frontend validate passed')
+            setLoadingButton(true);
             const {success} = await checkCurrentPassword(id, form.currentPassword);
             console.log(success)
             if (success) {
+                setLoadingButton(false);
                 setForm({...defaultNewPasswordFields});
                 setEditNew(true);
             } else {
+                setLoadingButton(false);
+                //TODO: change this alert to dialog.
                 alert('Your input password does not match your current password.');
                 console.log('wrong current password.');
             }
@@ -110,26 +107,35 @@ export default function UserResetPassword() {
         }
     }
 
-    // handler for submit button for new password
+    /**
+     * handler for submit new password.
+     */
     const handleSubmitNew = () => {
         console.log(form)
         if (validateNew()) {
-            console.log('frontend of new password validation passed')
             setDialogSubmit(true);
         }
     }
 
-    // handler for submit button in confirmation dialog
+    /**
+     * handler for the button in dialog notify user changed password successfully.
+     */
+    const handleDialogConfirmed = () => {
+        setDialogConfirmed(false);
+        history.push('/dashboard');
+    }
+
+    /**
+     * handler for the confirm button in the dialog pops after click submit new password.
+     * @returns {Promise<void>}
+     */
     const handleConfirm = async () => {
-        console.log(form.newPassword)
+        setLoadingButton(true);
         const {success} = await saveNewPassword(id, form.newPassword);
-        console.log(success);
         if (success) {
-            //TODO: clear UserContext.
-            console.log('valid')
+            setLoadingButton(false);
             setDialogSubmit(false);
-            history.push('/dashboard');
-            alert('You have successfully changed your password.');
+            setDialogConfirmed(true);
             try {
             } catch (e) {
                 if (e.json) {
@@ -137,17 +143,13 @@ export default function UserResetPassword() {
                 }
             }
         } else {
-            alert('save new password failed, please try later.')
+            setLoadingButton(false);
+            alert('save new password failed, please try again.')
         }
     };
 
     // OnBlur handler
     const handleOnBlur = (e, field, option) => {
-        // if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field]))
-        //     setErrors({...errors, [field]: option.validator(form[field])});
-        // else
-        //     setErrors({...errors, [field]: undefined});
-
         if (!isFieldEmpty(form["repeatNewPassword"]) && field === "repeatNewPassword"
           && !!option.validator(form.repeatNewPassword, form.newPassword)) {
             setErrors({...errors, [field]: option.validator(form[field], form.newPassword)});
@@ -247,12 +249,20 @@ export default function UserResetPassword() {
                     Submit
                 </Button>
 
-                {/* confirmation dialog */}
                 <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                              dialogTitle={'Are you sure to submit?'}
                              buttons={[<Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
-                                 <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                                 //<Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>
+                                 <LoadingButton noDefaultStyle variant="text" color="primary"
+                                                loading={loadingButton} key={'Confirm New'}
+                                                onClick={handleConfirm}>{'confirm'}</LoadingButton>]}
                              open={dialogSubmit}/>
+                    <AlertDialog
+                      dialogContentText={"You have successfully changed your password. Click the " +
+                        "button below to be redirected to the Dashboard."}
+                      dialogTitle={'Congratulation!'}
+                      buttons={<Button onClick={handleDialogConfirmed} key={'redirect'} autoFocus> {'redirect'}</Button>}
+                      open={dialogConfirmed}/>
             </Container>) : (
                 <Container className={classes.root}>
                     <Typography variant="h5">
@@ -278,10 +288,9 @@ export default function UserResetPassword() {
                             )
                         })}
 
-                    {/* old password submit button */}
-                    <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmitOld}>
-                        Submit
-                    </Button>
+                    <LoadingButton noDefaultStyle variant="contained" color="primary"
+                                   loading ={loadingButton} key={'check old'} style={{marginTop: '10px'}}
+                                   onClick={handleSubmitOld}/>
 
                 </Container>
             )}
