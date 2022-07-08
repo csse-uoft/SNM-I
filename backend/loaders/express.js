@@ -26,7 +26,6 @@ app.use(cookieSession(config.cookieSession));
 
 app.use('/api', baseRoute);
 app.use('/api', registerRoute);
-app.use('/api', updateUserRoute);
 app.use('/api', forgotPasswordRoute);
 app.use('/api', authMiddleware('Authentication Required'));
 

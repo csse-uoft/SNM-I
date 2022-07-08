@@ -1,16 +1,38 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
-// this will create a temporary account during user invite process
+/**
+ * this will create a temporary account during user invite process
+ * @param params：{email, is_superuser, expirationDate}
+ * @returns {Promise<Response|any>}
+ */
 export function createUser(params) {
   return postJson('/api/register/invite', params);
 }
 
-// this will verify user's token during first entry process
+/**
+ * this will verify user's token during first entry process
+ * @param token
+ * @returns {Promise<Response|any>}
+ */
 export function verifyFirstEntryUser(token) {
   return postJson('/api/register/firstEntry/verify', token)
 }
 
-// this will verify user's token during forgot password process
+/**
+ * this will update user's security questions and password during first
+ * entry process
+ * @param params：{email, newPassword, securityQuestions}
+ * @returns {Promise<Response|any>}
+ */
+export function firstEntryUpdate(params) {
+  return putJson('/api/register/firstEntry/update', params);
+}
+
+/**
+ * this will verify user's token during forgot password process
+ * @param token
+ * @returns {Promise<Response|any>}
+ */
 export function verifyForgotPasswordUser(token) {
   return postJson('/api/resetPassword/verify', {token})
 }
@@ -24,10 +46,7 @@ export function createUsers(params) {
   return postJson('/users/', {csv: params});
 }
 
-// this will update user's security questions and password during first entry process
-export function firstEntryUpdate(params) {
-  return putJson('/api/user/firstEntry', params);
-}
+
 
 export function getProfile(id) {
   return getJson('/api/profile/' + id + '/')
