@@ -164,12 +164,32 @@ export default function UserResetPassword() {
         <Container className={classes.root}>
             {editNew ? (
                 <Container className={classes.root}>
+                    <Typography
+                      variant="h6" color={'navy'}
+                      style={{marginTop: '10px'}}>
+                        {'Note that a strong and valid password should satisfy:'}
+                    </Typography>
+                    <Typography
+                      variant="body1" color={'primary'}
+                      style={{marginBottom: '5px'}}>
+                        {'- Contain at least 8 characters.'}
+                    </Typography>
+                    <Typography
+                      variant="body1" color={'primary'}
+                      style={{marginBottom: '5px'}}>
+                        {'- Contain upper case AND lower case letters.'}
+                    </Typography>
 
-                <Typography
-                    variant="h5"
-                    style={{marginTop: '10px'}}>
-                    {'Please enter your new password:'}
-                </Typography>
+                    <Typography
+                      variant="body1" color={'primary'}
+                      style={{marginBottom: '5px'}}>
+                        {'- Contain at least 1 number and at least 1 punctuation mark.'}
+                    </Typography>
+
+                    <Typography variant="h5"
+                                style={{marginTop: '20px'}}>
+                        {'Please enter your new password:'}
+                    </Typography>
 
                 {/* text field for new password */}
                 {Object.entries(newPasswordFields).map(([field, option]) => {

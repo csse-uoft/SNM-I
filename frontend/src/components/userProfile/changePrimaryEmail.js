@@ -40,9 +40,15 @@ export default function changePrimaryEmail() {
   return (
     <Container className={classes.root}>
       {!confirmed ? (
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleCheck}>
-          Confirm Changes
-        </Button>
+          <Container>
+            <Typography variant="h4">
+              {'Please click the button below to confirm your changes of email.'}
+            </Typography>
+
+            <Button variant="contained" color="primary" className={classes.button} onClick={handleCheck}>
+              Confirm Changes
+            </Button>
+          </Container>
       ) : (
         <Typography variant="h4">
           {'Congratulations! You have successfully changed your primary Email. ' +
