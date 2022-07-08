@@ -36,8 +36,8 @@ import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
 import Questions from './components/additionalFIelds/Questions';
 import UserFirstEntry from "./components/register/UserFirstEntry";
-import ForgotPassword from "./components/ForgotPassword";
-import ForgotPasswordResetPassword from "./components/ResetPassword";
+import ForgotPassword from "./components/forgotPassword/ForgotPassword";
+import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 
 const routes = (
   <Switch>
