@@ -40,6 +40,8 @@ export default function EditProfile() {
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
+  const [dialogEmail, setDialogEmail] = useState(false);
+  let emailSent = false;
 
   const profileForm = {
     givenName: userContext.givenName,
@@ -91,6 +93,11 @@ export default function EditProfile() {
     history.push('/profile/' + id);
   }
 
+  const handleDialogEmail =() => {
+    setDialogEmail(false);
+    history.push('/profile/' + id + '/');
+  }
+
   // submit button handler
   const handleSubmitChanges = () => {
     if (validate()) {
@@ -109,6 +116,7 @@ export default function EditProfile() {
         const {sentEmailConfirm} = await updatePrimaryEmail(id, form.email);
         console.log(sentEmailConfirm)
         if (sentEmailConfirm) {
+          emailSent = true;
           console.log('email verification link sent');
         } else {
           console.log('email verification is not sent.');
@@ -144,8 +152,8 @@ export default function EditProfile() {
             areaCode: userContext.areaCode,
             phoneNumber: userContext.phoneNumber,
           });
-          setLoadingButton(false);
-          history.push('/profile/' + id + '/');
+          // setLoadingButton(false);
+          // history.push('/profile/' + id + '/');
         }
       } else {
         const phone = form.telephone.split(' ');
@@ -176,10 +184,20 @@ export default function EditProfile() {
             areaCode: userContext.areaCode,
             phoneNumber: userContext.phoneNumber,
           });
-          setLoadingButton(false);
-          history.push('/profile/' + id + '/');
+          // setLoadingButton(false);
+          // setDialogSubmit(false);
+          // history.push('/profile/' + id + '/');
         }
       }
+      setLoadingButton(false);
+      setDialogSubmit(false);
+      if (emailSent) {
+        setDialogEmail(true);
+      } else {
+        history.push('/profile/' + id + '/');
+      }
+
+
     } catch (e) {
       setLoadingButton(false);
       console.log('catch e')
@@ -252,6 +270,12 @@ export default function EditProfile() {
             <LoadingButton noDefaultStyle variant="text" color="primary" loading ={loadingButton} key={'confirm'}
                            onClick={handleDialogConfirm} children='confirm' autoFocus/>]}
           open={dialogSubmit}/>
+
+        <AlertDialog
+          dialogContentText={"The Link to confirm changes of primary Email has been sent."}
+          dialogTitle={'Congratulation!'}
+          buttons={<Button onClick={handleDialogEmail} key={'confirm'} autoFocus> {'confirm'}</Button>}
+          open={dialogEmail}/>
 
       </div>
 

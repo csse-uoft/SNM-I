@@ -41,7 +41,7 @@ export default function changePrimaryEmail() {
     <Container className={classes.root}>
       {!confirmed ? (
           <Container>
-            <Typography variant="h4">
+            <Typography variant="h5" >
               {'Please click the button below to confirm your changes of email.'}
             </Typography>
 
