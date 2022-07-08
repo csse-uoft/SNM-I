@@ -74,7 +74,7 @@ export default function Profile() {
 
   return (
     <Container className={classes.root}>
-      <Typography variant="h4">
+      <Typography variant="h4" key={'Profile Title'}>
         {'User Profile'}
       </Typography>
 
@@ -91,7 +91,7 @@ export default function Profile() {
             return (
               <div>
                 <Typography
-                  style={{padding: 10, fontSize: 'large'}}>
+                  style={{padding: 10, fontSize: 'large'}} key={'Profile Field'}>
                   {option.label} : {form[field]}
                 </Typography>
               </div>
@@ -100,7 +100,8 @@ export default function Profile() {
         </Box>
 
         {/* Button for password reset */}
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleEdit}>
+        <Button variant="contained" color="primary" className={classes.button}
+                onClick={handleEdit} key={'Edit Profile'}>
           Edit Profile
         </Button>
 
@@ -112,13 +113,15 @@ export default function Profile() {
           borderRadius: 2
         }}>
           <Typography variant="h6"
-                      style={{marginTop: '10px'}}>
+                      style={{marginTop: '10px'}}
+                      key={'Reset Password Text'}>
             {'Want to change your password? Click below:'}
           </Typography>
 
           {/* Button for password reset */}
           <NavButton to={'/users/reset-password/' + id}
-                     text={'Reset Password'}/>
+                     text={'Reset Password'}
+                     key={'Reset Password'}/>
         </Box>
       </div>
     </Container>
