@@ -6,10 +6,10 @@ const {verifyUserForgotPassword} = require("../services/verifyUser");
 const {saveNewPassword} = require("../services/users");
 const router = express.Router();
 
-router.put('/securityQuestions/email', fetchSecurityQuestionsByEmail)
-router.post('/checkSecurityQuestion', checkSecurityQuestion)
-router.post('/sendVerificationEmail', sendVerificationEmail)
-router.post('/resetPassword/verify', verifyUserForgotPassword)
-router.post('/forgotPassword/saveNewPassword', saveNewPassword)
+router.put('/forgotPassword/securityQuestions/fetch', fetchSecurityQuestionsByEmail)
+router.post('/forgotPassword/securityQuestions/check', checkSecurityQuestion)
+router.post('/forgotPassword/sendVerificationEmail', sendVerificationEmail)
+router.post('/forgotPassword/resetPassword/verify', verifyUserForgotPassword)
+router.post('/forgotPassword/resetPassword/saveNewPassword/', saveNewPassword)
 
 module.exports = router;
