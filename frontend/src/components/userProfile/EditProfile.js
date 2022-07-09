@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 /**
- * This function allows user edit their profile information.
+ * This page allows user edit their profile information.
  * @returns {JSX.Element}
  * @constructor
  */
@@ -93,11 +93,13 @@ export default function EditProfile() {
     return true;
   };
 
+  // cancel change button handler
   const handleCancel = () => {
     alert('All the changes you made will not be saved.');
     history.push('/profile/' + id);
   }
 
+  // email-sent dialog confirm button handler
   const handleDialogEmail =() => {
     setDialogEmail(false);
     history.push('/profile/' + id + '/');
@@ -113,7 +115,7 @@ export default function EditProfile() {
   // confirmation dialog confirm button handler
   const handleDialogConfirm = async () => {
     try {
-      const phoneUnchanged = userContext.countryCode.toString() +
+        const phoneUnchanged = userContext.countryCode.toString() +
         userContext.areaCode.toString() + userContext.phoneNumber.toString()
 
       if (form.email !== userContext.email) {
@@ -196,6 +198,7 @@ export default function EditProfile() {
       setLoadingButton(false);
       console.log('catch e');
       console.log( e.json);
+      console.log( e);
     }
   };
 
@@ -245,12 +248,13 @@ export default function EditProfile() {
 
         })}
 
-        {/* Button for submitting account info changes */}
+        {/* Button for cancelling account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
                 onClick={handleCancel} key={'Cancel Changes'}>
           Cancel Changes
         </Button>
 
+        {/* Button for submitting account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
                 onClick={handleSubmitChanges} key={'Submit Changes'}>
           Submit Changes
@@ -270,6 +274,7 @@ export default function EditProfile() {
                            onClick={handleDialogConfirm} children='confirm' autoFocus/>]}
           open={dialogSubmit}/>
 
+        {/* Alert prompt after email was sent */}
         <AlertDialog
           dialogContentText={"The Link to confirm changes of primary Email has been sent."}
           dialogTitle={'Congratulation!'}
