@@ -3,4 +3,5 @@ module.exports = {
   registerRoute: require('./register'),
   userRoute: require('./user'),
   forgotPasswordRoute: require('./forgotPassword'),
+  usersRoute: require('./users')
 }
