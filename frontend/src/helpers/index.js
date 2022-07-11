@@ -176,6 +176,7 @@ const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
 const phoneNumberRegex = /^\+1\s\(\d{3}\)\s\d{3}-\d{4}$/
 const inNorthAmericaRegex = /^\+1/
 const emptyPhoneNumber = /^\+1$/
+const emptyTelephone = /^\+$/
 const samePassword = /admin/
 const sameEmail = /admin@sample.com/
 
@@ -214,6 +215,12 @@ export const Validator = {
   phone: phone => {
     if (!emptyPhoneNumber.test(phone) && inNorthAmericaRegex.test(phone) && !phoneNumberRegex.test(phone))
       return PHONE_ERR_MSH;
+    if (emptyPhoneNumber.test(phone)) {
+      return PHONE_ERR_MSH;
+    }
+    if (emptyTelephone.test(phone)) {
+      return PHONE_ERR_MSH;
+    }
   },
 
   oldPassword: oldPassword => {
