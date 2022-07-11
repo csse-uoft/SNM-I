@@ -429,7 +429,12 @@ class GraphDBDocument {
       if (insertClause.length === 0 && deleteClause.length === 0)
         return;
 
-      const query = `${SPARQL.getSPARQLPrefixes()}\nDELETE WHERE {\n\t${deleteClause.join('\n\t')}\n};\nINSERT DATA {\n\t${insertClause.join('\n\t')}\n}`
+      let deleteStatement = ''
+      for (const deleteTriple of deleteClause) {
+        deleteStatement += `DELETE where {\n\t${deleteTriple}\n};\n`;
+      }
+
+      const query = `${SPARQL.getSPARQLPrefixes()}\n${deleteStatement}INSERT DATA {\n\t${insertClause.join('\n\t')}\n}`
       // console.log(query)
       await GraphDB.sendUpdateQuery(query);
       this.modified = [];
