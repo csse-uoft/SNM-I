@@ -10,7 +10,7 @@ import {
     updatePasswordFields
 } from "../../constants/updatePasswordFields";
 import {isFieldEmpty} from "../../helpers";
-import {REQUIRED_HELPER_TEXT} from "../../constants";
+import {PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
 import { useHistory } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
 import {useParams} from "react-router";
@@ -74,11 +74,23 @@ export default function UserResetPassword() {
             if (option.required && isEmpty) {
                 newErrors[field] = REQUIRED_HELPER_TEXT;
             }
+
             let msg;
             if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
                 newErrors[field] = msg;
             }
+
+            if (field === "repeatNewPassword" && form.newPassword !== form.repeatNewPassword) {
+                newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
+            }
         }
+
+        // if (form.newPassword !== form.repeatNewPassword) {
+        //     console.log('reach password not same')
+        //     newErrors["repeatNewPassword"] = PASSWORD_NOT_MATCH_TEXT;
+        //     setErrors(newErrors);
+        //     return false
+        // }
 
         if (Object.keys(newErrors).length !== 0) {
             setErrors(newErrors);
