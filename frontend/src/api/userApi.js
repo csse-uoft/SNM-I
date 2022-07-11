@@ -151,7 +151,7 @@ export function fetchUser(id) {
 }
 
 export function fetchUsers() {
-  return getJson('/users/');
+  return getJson('/api/users/');
 }
 
 

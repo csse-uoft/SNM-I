@@ -18,7 +18,9 @@ export default function Users() {
 
   useEffect(() => {
     fetchUsers().then(data => {
-      setState(state => ({...state, loading: false, data}));
+      // console.log(data)
+      setState(state => ({...state, loading: false, data: data.data}));
+
     });
   }, []);
 
@@ -47,7 +49,7 @@ export default function Users() {
       label: 'Username',
       body: ({id, username}) => {
         return <Link color to={`/users/${id}`}>
-          {username}
+          {id}
         </Link>
       }
     },
@@ -94,8 +96,8 @@ export default function Users() {
     }
   ];
 
-  // if (state.loading)
-  //   return <Loading message={`Loading users...`}/>;
+  if (state.loading)
+    return <Loading message={`Loading users...`}/>;
 
   return (
     <Container>
