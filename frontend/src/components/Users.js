@@ -57,32 +57,32 @@ export default function Users() {
     },
     {
       label: 'First name',
-      body: ({first_name}) => first_name
+      body: ({firstName}) => firstName
     },
     {
       label: 'Last name',
-      body: ({last_name}) => last_name
+      body: ({lastName}) => lastName
     },
     {
       label: 'Primary phone',
-      body: ({primary_phone_number}) => {
-        if (primary_phone_number)
-          return formatPhoneNumber(primary_phone_number);
+      body: ({primaryPhoneNumber}) => {
+        if (primaryPhoneNumber)
+          return formatPhoneNumber(primaryPhoneNumber);
         return 'Not Provided';
       },
     },
     {
       label: 'Primary phone',
-      body: ({secondary_phone_number}) => {
-        if (secondary_phone_number)
-          return formatPhoneNumber(secondary_phone_number);
+      body: ({secondaryPhoneNumber}) => {
+        if (secondaryPhoneNumber)
+          return formatPhoneNumber(secondaryPhoneNumber);
         return 'Not Provided';
       },
     },
     {
       label: 'Admin',
-      body: ({is_superuser}) => {
-        if (is_superuser)
+      body: ({isSuperuser}) => {
+        if (isSuperuser)
           return <YesIcon color="primary"/>
       }
     },

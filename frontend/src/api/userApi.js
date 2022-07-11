@@ -81,7 +81,7 @@ export async function forgotPasswordSaveNewPassword(params) {
  * @returns {Promise<Response|any>}
  */
 export async function verifyChangePrimaryEmail(token) {
-  return postJson('/api/users/updatePrimaryEmail', {token})
+  return postJson('/api/user/updatePrimaryEmail', {token})
 }
 
 //have not been used so far.
@@ -97,7 +97,7 @@ export function createUsers(params) {
  * @returns {Promise<Response|any>}
  */
 export function getProfile(id) {
-  return getJson('/api/users/profile/getCurrentUserProfile/' + id + '/')
+  return getJson('/api/user/profile/getCurrentUserProfile/' + id + '/')
 }
 
 //have not been used so far.
@@ -112,7 +112,7 @@ export function updateUser(id, params) {
  * @returns {Promise<Response|any>}
  */
 export async function updatePrimaryEmail(id, email) {
-  return postJson('/api/users/editProfile/updatePrimaryEmail/' + id + '/', {email})
+  return postJson('/api/user/editProfile/updatePrimaryEmail/' + id + '/', {email})
 }
 
 /**
@@ -122,7 +122,7 @@ export async function updatePrimaryEmail(id, email) {
  * @returns {Promise<*>}
  */
 export function updateProfile(id, params) {
-  return postJson('/api//users/editProfile/' + id + '/', params);
+  return postJson('/api//user/editProfile/' + id + '/', params);
 }
 
 /**
@@ -132,7 +132,7 @@ export function updateProfile(id, params) {
  * @returns {Promise<*>}
  */
 export async function checkCurrentPassword(id, password) {
-  return postJson('/api/users/resetPassword/checkCurrentPassword/' + id + '/', {password});
+  return postJson('/api/user/resetPassword/checkCurrentPassword/' + id + '/', {password});
 }
 
 /**
@@ -142,7 +142,7 @@ export async function checkCurrentPassword(id, password) {
  * @returns {Promise<*>}
  */
 export async function saveNewPassword(id, password) {
-  return postJson('/api/users/resetPassword/saveNewPassword/' + id + '/', {password});
+  return postJson('/api/user/resetPassword/saveNewPassword/' + id + '/', {password});
 }
 
 
