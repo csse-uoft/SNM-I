@@ -129,9 +129,18 @@ export default function EditProfile() {
         }
       }
 
-      const phoneUnchanged = userContext.countryCode.toString() +
-        userContext.areaCode.toString() + userContext.phoneNumber.toString()
+      let phoneUnchanged;
+      console.log(userContext.countryCode)
+      console.log(userContext.areaCode)
+      console.log(userContext.phoneNumber)
+      if (!userContext.phoneNumber) {
+        phoneUnchanged = null;
+      } else {
+        phoneUnchanged = userContext.countryCode.toString() +
+          userContext.areaCode.toString() + userContext.phoneNumber.toString()
+      }
 
+      console.log("phone not changed:", phoneUnchanged)
       const updateForm = {
         givenName: form.givenName,
         familyName: form.familyName,
@@ -192,17 +201,9 @@ export default function EditProfile() {
    * @param option
    */
   const handleOnBlur = (e, field, option) => {
-    console.log('reach handle on blur')
-    console.log(form[field])
-    console.log(isFieldEmpty(form[field]))
-    console.log(option.validator)
     if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])){
-      // state.errors.field = option.validator(e.target.value)
-      console.log('reach if')
       setErrors({...errors, [field]: option.validator(form[field])});
-
     } else {
-      console.log('reach else')
       setErrors({...errors, [field]: undefined});
     }
   };

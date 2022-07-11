@@ -24,18 +24,6 @@ const updateProfile = async (req, res, next) => {
     }
 
     try {
-        // if (!email) {
-        //     return res.status(400).json({success: false, message: 'Primary Email cannot be blank.'})
-        // }
-
-        // if (email !== req.session.email) {
-        //     const token = sign({
-        //         email
-        //     }, jwtConfig.secret, jwtConfig.options)
-        //
-        //     await sendVerificationMail(email, token);
-        //     return res.status(202).json({success: true, message: 'Successfully update profile.'})
-        // }
         await updateUserAccount(req.session.email, updateData)
         return res.status(202).json({success: true, message: 'Successfully update profile.'})
 
