@@ -68,7 +68,18 @@ async function updateUserPassword(email, newPassword) {
 
 
 async function updateUserAccount(email, updatedData) {
-  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email}, {populates: ['primaryContact.telephone']});
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
+  await userAccount.populate('primaryContact.telephone');
+  if (!userAccount.primaryContact) {
+    userAccount.primaryContact = {
+      givenName: '',
+      familyName: '',
+      telephone: {
+        countryCode: null,
+        areaCode: null,
+        phoneNumber: null}
+  }}
+
   const {securityQuestions, status, givenName, familyName, countryCode,
     areaCode, phoneNumber, altEmail} = updatedData
   if (securityQuestions){
