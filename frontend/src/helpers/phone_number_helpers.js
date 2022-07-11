@@ -1,8 +1,7 @@
-export function formatPhoneNumber(number) {
+export function formatPhoneNumber(phoneNumber) {
   try {
-    const codes = number.match(/^(\d{3})(\d{3})(\d{4})$/);
-    return "(" + codes[1] + ") " + codes[2] + "-" + codes[3];
+    return "(+" + phoneNumber.countryCode + ") " + phoneNumber.areaCode + "-" + phoneNumber.phoneNumber;
   } catch (e) {
-    return number;
+    return phoneNumber;
   }
 }

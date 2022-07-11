@@ -55,36 +55,29 @@ export default function Users() {
     },
     {
       label: 'First name',
-      body: ({firstName}) => {
-        if(firstName)
-          return firstName
+      body: ({primaryContact}) => {
+        if(primaryContact && primaryContact.givenName)
+          return primaryContact.givenName
         return 'Not Provided'
       }
     },
     {
       label: 'Last name',
-      body: ({lastName}) => {
-        if(lastName)
-          return lastName
+      body: ({primaryContact}) => {
+        if(primaryContact && primaryContact.familyName)
+          return primaryContact.familyName
         return 'Not Provided'
       }
     },
     {
-      label: 'Primary phone',
-      body: ({primaryPhoneNumber}) => {
-        if (primaryPhoneNumber)
-          return formatPhoneNumber(primaryPhoneNumber);
+      label: 'Phone Number',
+      body: ({primaryContact}) => {
+        if (primaryContact && primaryContact.telephone)
+          return formatPhoneNumber(primaryContact.telephone);
         return 'Not Provided';
       },
     },
-    {
-      label: 'Secondary phone',
-      body: ({secondaryPhoneNumber}) => {
-        if (secondaryPhoneNumber)
-          return formatPhoneNumber(secondaryPhoneNumber);
-        return 'Not Provided';
-      },
-    },
+
     {
       label: 'Admin',
       body: ({isSuperuser}) => {
