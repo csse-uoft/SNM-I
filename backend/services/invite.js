@@ -4,7 +4,13 @@ const {jwtConfig} = require("../config");
 const {sendVerificationMail} = require("../utils");
 
 
-
+/**
+ * this function create a new temporary user account and send a verification email to him
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
 const inviteNewUser = async (req, res, next) => {
   const {email, is_superuser, expirationDate} = req.body;
   if (!email) {
