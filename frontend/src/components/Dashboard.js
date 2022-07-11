@@ -52,8 +52,8 @@ function Dashboard() {
       <NavButton to={`/admin-logs`} icon={<Log/>}
                  text="Admin Logs"/>
 
-      <NavButton to={`/eligibility-criteria`} icon={<Criteria/>}
-                 text="Manage Eligibility Criteria"/>
+      {/*<NavButton to={`/eligibility-criteria`} icon={<Criteria/>}*/}
+      {/*           text="Manage Eligibility Criteria"/>*/}
 
       <NavButton to={'/settings/manage-fields'} icon={<Edit/>}
                  text="Manage Client/Provider Fields"/>
