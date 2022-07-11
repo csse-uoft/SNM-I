@@ -76,13 +76,13 @@ export default function UserResetPassword() {
             }
 
             let msg;
-            if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
+            if (!isEmpty && option.validator && (msg = option.validator(form[field], form.newPassword))) {
                 newErrors[field] = msg;
             }
 
-            // if (field === "repeatNewPassword" && form.newPassword !== form.repeatNewPassword) {
-            //     newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
-            // }
+            if (field === "repeatNewPassword" && form.newPassword !== form.repeatNewPassword) {
+                newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
+            }
         }
 
         console.log(newErrors)
