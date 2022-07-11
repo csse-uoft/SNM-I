@@ -83,6 +83,12 @@ export default function EditProfile() {
           newErrors[field] = DUPLICATE_HELPER_TEXT;
         }
       }
+
+      if (option.label === 'Secondary Email') {
+        if (form.email === form.altEmail) {
+          newErrors[field] = DUPLICATE_HELPER_TEXT;
+        }
+      }
     }
 
     if (Object.keys(newErrors).length !== 0) {
@@ -115,8 +121,6 @@ export default function EditProfile() {
   // confirmation dialog confirm button handler
   const handleDialogConfirm = async () => {
     try {
-        const phoneUnchanged = userContext.countryCode.toString() +
-        userContext.areaCode.toString() + userContext.phoneNumber.toString()
 
       if (form.email !== userContext.email) {
         console.log('reach before send verification')
@@ -130,21 +134,32 @@ export default function EditProfile() {
         }
       }
 
+      const phoneUnchanged = userContext.countryCode.toString() +
+        userContext.areaCode.toString() + userContext.phoneNumber.toString()
+
+      const updateForm = {
+        givenName: form.givenName,
+        familyName: form.familyName,
+        countryCode: null,
+        areaCode: null,
+        phoneNumber: null,
+        altEmail: form.altEmail,
+      }
+      console.log(form.telephone, phoneUnchanged)
       if (form.telephone === phoneUnchanged) {
-        const countryCodeParse = parseInt(form.telephone.slice(0,1));
-        const areaCodeParse = parseInt(form.telephone.slice(1,4));
-        const phoneNumberParse = parseInt(form.telephone.slice(4,11));
+        updateForm.countryCode = parseInt(form.telephone.slice(0,1));
+        console.log(updateForm.countryCode)
+        updateForm.areaCode = parseInt(form.telephone.slice(1,4));
+        updateForm.phoneNumber = parseInt(form.telephone.slice(4,11));
+      } else {
+        const phone = form.telephone.split(' ');
+        updateForm.countryCode = parseInt(phone[0]);
+        updateForm.areaCode = parseInt(phone[1].slice(1,4));
+        updateForm.phoneNumber = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
+      }
 
-        const updateForm = {
-          givenName: form.givenName,
-          familyName: form.familyName,
-          countryCode: countryCodeParse,
-          areaCode: areaCodeParse,
-          phoneNumber: phoneNumberParse,
-          altEmail: form.altEmail,}
-
-        setLoadingButton(true);
-        const {success} = await updateProfile(id, updateForm);
+      setLoadingButton(true);
+      const {success} = await updateProfile(id, updateForm);
         if (success) {
           for (const [key, value] of Object.entries(updateForm)) {
             userContext[key] = value;
@@ -158,35 +173,7 @@ export default function EditProfile() {
             phoneNumber: userContext.phoneNumber,
           });
         }
-      } else {
-        const phone = form.telephone.split(' ');
-        const countryCodeParse = parseInt(phone[0]);
-        const areaCodeParse = parseInt(phone[1].slice(1,4));
-        const phoneNumberParse = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
-        const updateForm = {
-          givenName: form.givenName,
-          familyName: form.familyName,
-          countryCode: countryCodeParse,
-          areaCode: areaCodeParse,
-          phoneNumber: phoneNumberParse,
-          altEmail: form.altEmail,}
-
-        setLoadingButton(true);
-        const {success} = await updateProfile(id, updateForm);
-        if (success) {
-          for (const [key, value] of Object.entries(updateForm)){
-            userContext[key] = value;}
-
-          userContext.updateUser({
-            altEmail: userContext.altEmail,
-            givenName: userContext.givenName,
-            familyName: userContext.familyName,
-            countryCode: userContext.countryCode,
-            areaCode: userContext.areaCode,
-            phoneNumber: userContext.phoneNumber,
-          });
-        }
-      }
+        
       setLoadingButton(false);
       setDialogSubmit(false);
       if (emailSent) {
@@ -210,11 +197,17 @@ export default function EditProfile() {
    * @param option
    */
   const handleOnBlur = (e, field, option) => {
+    console.log('reach handle on blur')
+    console.log(form)
+    console.log(!isFieldEmpty(form[field]))
+    console.log(option.validator)
     if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])){
       // state.errors.field = option.validator(e.target.value)
+      console.log('reach if')
       setErrors({...errors, [field]: option.validator(form[field])});
 
     } else {
+      console.log('reach else')
       setErrors({...errors, [field]: undefined});
     }
   };
