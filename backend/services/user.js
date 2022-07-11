@@ -70,15 +70,6 @@ async function updateUserPassword(email, newPassword) {
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   await userAccount.populate('primaryContact.telephone');
-  if (!userAccount.primaryContact) {
-    userAccount.primaryContact = {
-      givenName: '',
-      familyName: '',
-      telephone: {
-        countryCode: null,
-        areaCode: null,
-        phoneNumber: null}
-  }}
 
   const {securityQuestions, status, givenName, familyName, countryCode,
     areaCode, phoneNumber, altEmail} = updatedData
@@ -109,6 +100,9 @@ async function updateUserAccount(email, updatedData) {
   }
   // add more if needed TODO
   if(givenName) {
+    if (!userAccount.primaryContact) {
+      userAccount.primaryContact = {};
+    }
     userAccount.primaryContact.givenName = givenName;
   }
 
@@ -117,6 +111,9 @@ async function updateUserAccount(email, updatedData) {
   }
 
   if(countryCode) {
+    if (!userAccount.primaryContact.telephone) {
+      userAccount.primaryContact.telephone={};
+    }
     userAccount.primaryContact.telephone.countryCode = countryCode;
   }
 
