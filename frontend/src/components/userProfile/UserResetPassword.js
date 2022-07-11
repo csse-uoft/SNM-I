@@ -80,18 +80,12 @@ export default function UserResetPassword() {
                 newErrors[field] = msg;
             }
 
-            if (field === "repeatNewPassword" && form.newPassword !== form.repeatNewPassword) {
-                newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
-            }
+            // if (field === "repeatNewPassword" && form.newPassword !== form.repeatNewPassword) {
+            //     newErrors[field] = PASSWORD_NOT_MATCH_TEXT;
+            // }
         }
 
-        // if (form.newPassword !== form.repeatNewPassword) {
-        //     console.log('reach password not same')
-        //     newErrors["repeatNewPassword"] = PASSWORD_NOT_MATCH_TEXT;
-        //     setErrors(newErrors);
-        //     return false
-        // }
-
+        console.log(newErrors)
         if (Object.keys(newErrors).length !== 0) {
             setErrors(newErrors);
             return false
@@ -127,7 +121,7 @@ export default function UserResetPassword() {
      * handler for submit new password.
      */
     const handleSubmitNew = () => {
-        console.log(form)
+        // console.log(form)
         if (validateNew()) {
             setDialogSubmit(true);
         }
@@ -167,17 +161,17 @@ export default function UserResetPassword() {
     // OnBlur handler
     const handleOnBlur = (e, field, option) => {
         console.log('reach check handleonblur')
-        console.log(form.repeatNewPassword, form.newPassword)
+        // console.log(form.repeatNewPassword, form.newPassword)
         if (!isFieldEmpty(form["repeatNewPassword"]) && field === "repeatNewPassword"
           && !!option.validator(form.repeatNewPassword, form.newPassword)) {
-            console.log('reach first if')
+            // console.log('reach first if')
             setErrors({...errors, [field]: option.validator(form[field], form.newPassword)});
         } else if (!isFieldEmpty(form[field]) && field !== "repeatNewPassword" && option.validator
           && !!option.validator(form[field])) {
-            console.log('reach second if')
+            // console.log('reach second if')
             setErrors({...errors, [field]: option.validator(form[field])});
         } else {
-            console.log('reach else')
+            // console.log('reach else')
             setErrors({...errors, [field]: undefined});
         }
     };
