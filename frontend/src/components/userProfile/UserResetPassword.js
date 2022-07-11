@@ -258,6 +258,7 @@ export default function UserResetPassword() {
                     Submit
                 </Button>
 
+                {/* dialog for confirming new password */}
                 <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                              dialogTitle={'Are you sure to submit?'}
                              buttons={[<Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
@@ -266,12 +267,15 @@ export default function UserResetPassword() {
                                                 loading={loadingButton} key={'Confirm New'}
                                                 onClick={handleConfirm}>{'confirm'}</LoadingButton>]}
                              open={dialogSubmit}/>
-                    <AlertDialog
-                      dialogContentText={"You have successfully changed your password. Click the " +
-                        "button below to be redirected to the Dashboard."}
-                      dialogTitle={'Congratulation!'}
-                      buttons={<Button onClick={handleDialogConfirmed} key={'redirect'} autoFocus> {'redirect'}</Button>}
-                      open={dialogConfirmed}/>
+
+                {/* dialog for informing changes has been made */}
+                <AlertDialog
+                  dialogContentText={"You have successfully changed your password. Click the " +
+                    "button below to be redirected to the Dashboard."}
+                  dialogTitle={'Congratulation!'}
+                  buttons={<Button onClick={handleDialogConfirmed} key={'redirect'} autoFocus> {'redirect'}</Button>}
+                  open={dialogConfirmed}/>
+
             </Container>) : (
                 <Container className={classes.root}>
                     <Typography variant="h5">
@@ -297,6 +301,7 @@ export default function UserResetPassword() {
                             )
                         })}
 
+                    {/* button for submitting old password */}
                     <LoadingButton noDefaultStyle variant="contained" color="primary"
                                    loading ={loadingButton} key={'check old'} style={{marginTop: '10px'}}
                                    onClick={handleSubmitOld}/>

@@ -62,10 +62,12 @@ export default function Profile() {
     });
   }, [id]);
 
+  // handler for Edit profile button
   const handleEdit = () => {
     setDialogConfirm(true);
   }
 
+  // handler for dialog confirm
   const handleDialogConfirm =() => {
     setDialogConfirm(false);
     history.push('/profile/' + id + '/edit');
@@ -101,7 +103,7 @@ export default function Profile() {
           })}
         </Box>
 
-        {/* Button for password reset */}
+        {/* Button for Edit Profile */}
         <Button variant="contained" color="primary" className={classes.button}
                 onClick={handleEdit} key={'Edit Profile'}>
           Edit Profile
