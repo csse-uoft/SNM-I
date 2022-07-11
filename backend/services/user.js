@@ -170,6 +170,7 @@ async function initUserAccounts() {
       secondaryEmail: 'admin2@snmi.ca',
       role: 'admin',
       displayName: 'Admin',
+      status: "permanent",
       primaryContact: {
         givenName: 'Christina',
         familyName: 'Aquafina',

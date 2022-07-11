@@ -70,6 +70,10 @@ export default function Users() {
       }
     },
     {
+      label: 'status',
+      body: ({status}) => status
+    },
+    {
       label: 'Phone Number',
       body: ({primaryContact}) => {
         if (primaryContact && primaryContact.telephone)
