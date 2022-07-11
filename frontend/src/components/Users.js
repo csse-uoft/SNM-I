@@ -46,24 +46,28 @@ export default function Users() {
 
   const columns = [
     {
-      label: 'Username',
-      body: ({id, username}) => {
+      label: 'Username/Email',
+      body: ({id, email}) => {
         return <Link color to={`/users/${id}`}>
-          {id}
+          {email}
         </Link>
       }
     },
     {
-      label: 'Email',
-      body: ({email}) => email
-    },
-    {
       label: 'First name',
-      body: ({firstName}) => firstName
+      body: ({firstName}) => {
+        if(firstName)
+          return firstName
+        return 'Not Provided'
+      }
     },
     {
       label: 'Last name',
-      body: ({lastName}) => lastName
+      body: ({lastName}) => {
+        if(lastName)
+          return lastName
+        return 'Not Provided'
+      }
     },
     {
       label: 'Primary phone',
@@ -74,7 +78,7 @@ export default function Users() {
       },
     },
     {
-      label: 'Primary phone',
+      label: 'Secondary phone',
       body: ({secondaryPhoneNumber}) => {
         if (secondaryPhoneNumber)
           return formatPhoneNumber(secondaryPhoneNumber);
