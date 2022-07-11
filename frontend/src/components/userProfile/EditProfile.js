@@ -84,11 +84,6 @@ export default function EditProfile() {
         }
       }
 
-      if (option.label === 'Secondary Email') {
-        if (form.email === form.altEmail) {
-          newErrors[field] = DUPLICATE_HELPER_TEXT;
-        }
-      }
     }
 
     if (Object.keys(newErrors).length !== 0) {
@@ -173,7 +168,7 @@ export default function EditProfile() {
             phoneNumber: userContext.phoneNumber,
           });
         }
-        
+
       setLoadingButton(false);
       setDialogSubmit(false);
       if (emailSent) {
@@ -198,8 +193,8 @@ export default function EditProfile() {
    */
   const handleOnBlur = (e, field, option) => {
     console.log('reach handle on blur')
-    console.log(form)
-    console.log(!isFieldEmpty(form[field]))
+    console.log(form[field])
+    console.log(isFieldEmpty(form[field]))
     console.log(option.validator)
     if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])){
       // state.errors.field = option.validator(e.target.value)
