@@ -24,7 +24,7 @@ export const newPasswordFields = {
         required: true,
         label: 'Repeat New Password',
         type: 'password',
-        validator: Validator.confirmPassword,
+        validator: Validator.password,
     }
 };
 

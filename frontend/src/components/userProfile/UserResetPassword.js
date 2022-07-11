@@ -74,6 +74,10 @@ export default function UserResetPassword() {
             if (option.required && isEmpty) {
                 newErrors[field] = REQUIRED_HELPER_TEXT;
             }
+            let msg;
+            if (!isEmpty && option.validator && (msg = option.validator(form[field]))) {
+                newErrors[field] = msg;
+            }
         }
 
         if (Object.keys(newErrors).length !== 0) {
@@ -150,13 +154,18 @@ export default function UserResetPassword() {
 
     // OnBlur handler
     const handleOnBlur = (e, field, option) => {
+        console.log('reach check handleonblur')
+        console.log(form.repeatNewPassword, form.newPassword)
         if (!isFieldEmpty(form["repeatNewPassword"]) && field === "repeatNewPassword"
           && !!option.validator(form.repeatNewPassword, form.newPassword)) {
+            console.log('reach first if')
             setErrors({...errors, [field]: option.validator(form[field], form.newPassword)});
         } else if (!isFieldEmpty(form[field]) && field !== "repeatNewPassword" && option.validator
           && !!option.validator(form[field])) {
+            console.log('reach second if')
             setErrors({...errors, [field]: option.validator(form[field])});
         } else {
+            console.log('reach else')
             setErrors({...errors, [field]: undefined});
         }
     };

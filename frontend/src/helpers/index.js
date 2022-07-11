@@ -176,8 +176,8 @@ const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
 const phoneNumberRegex = /^\+1\s\(\d{3}\)\s\d{3}-\d{4}$/
 const inNorthAmericaRegex = /^\+1/
 const emptyPhoneNumber = /^\+1$/
-const samePassword = /admin/
-const sameEmail = /admin@sample.com/
+
+
 
 const EMAIL_ERR_MSG = "Invalid email! They are in the format of jsmith@example.com";
 const PHONE_ERR_MSH = "Invalid phone number!" //+ "They are in the format of NPA-NXX-XXXX " +
@@ -226,10 +226,6 @@ export const Validator = {
       return PASSWORD_ERR_MSG;
   },
 
-  confirmPassword: (confirmPassword, password) => {
-    if (confirmPassword !== password)
-      return CONFIRM_PASSWORD_ERR_MSG
-  },
 
   postalCode: postalCode => {
     if (!postalCodeRegex.test(postalCode))
