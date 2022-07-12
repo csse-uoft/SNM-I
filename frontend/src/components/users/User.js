@@ -4,6 +4,7 @@ import {fetchUser, getProfile, getUserProfileById} from '../../api/userApi'
 import { useParams } from "react-router";
 import { Link, Loading } from "../shared";
 import { Container, Paper, Table, Typography, TableBody } from "@mui/material";
+import {formatPhoneNumber} from "../../helpers/phone_number_helpers";
 
 export default function User() {
   const [loading, setLoading] = useState(true);
@@ -62,7 +63,7 @@ export default function User() {
             />
             <TR
               title="Phone Number"
-              value={'Not Provided'}
+              value={(user.primaryContact && user.primaryContact.telephone) ? formatPhoneNumber(user.primaryContact.telephone) : 'Not Provided'}
             />
           </TableBody>
         </Table>
