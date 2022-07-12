@@ -3,7 +3,9 @@
 # This script is meant to run on the ec2 directly.
 # Invoked when someone pushes commits.
 
+git reset --hard
 git pull origin master
+cp ./scripts/docker-compose.yml ./
 
-sudo docker compose -f ./scripts/docker-compose.yml stop server
-sudo docker compose -f ./scripts/docker-compose.yml up --build -d server
+sudo docker compose stop server
+sudo docker compose up --build -d server
