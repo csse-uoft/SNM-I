@@ -14,6 +14,9 @@ const {getCurrentUserProfile} = require("../services/users");
 
 const app = express();
 
+// Trust our reverse proxy
+app.set('trust proxy', ['::ffff:172.31.12.233', '172.31.12.233']);
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
