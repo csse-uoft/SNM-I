@@ -30,7 +30,9 @@ function Dashboard() {
   const userContext = useContext(UserContext);
 
   if (!userContext.isAdmin)
-    return <span>"Welcome!"</span>;
+    return (
+      <span>"Welcome!"</span>
+      );
 
   return (
     <Container maxWidth="md" sx={{
