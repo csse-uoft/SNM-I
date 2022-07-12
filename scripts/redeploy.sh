@@ -5,5 +5,5 @@
 
 git pull origin master
 
-docker compose -f ./scripts/docker-compose.yml stop server
-docker compose -f ./scripts/docker-compose.yml up --build -d server
+sudo docker compose -f ./scripts/docker-compose.yml stop server
+sudo docker compose -f ./scripts/docker-compose.yml up --build -d server
