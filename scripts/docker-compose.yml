@@ -11,7 +11,7 @@ services:
       - server_node_modules:/code/node_modules
     environment:
       - TZ=America/New_York
-    command: yarn install && yarn start
+    command: bash -c "yarn install && yarn start"
     logging:
       options:
         max-size: "5m"
