@@ -180,8 +180,8 @@ async function initUserAccounts() {
       displayName: 'Admin',
       status: "permanent",
       primaryContact: {
-        givenName: 'Christina',
-        familyName: 'Aquafina',
+        givenName: 'Super',
+        familyName: 'Admin',
         telephone: {
           countryCode: 1,
           areaCode: 647,
