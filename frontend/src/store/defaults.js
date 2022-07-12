@@ -1,15 +1,11 @@
 const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
-if (hostname === 'jias.snmi.ca') {
-  // serverHost = 'https://3.97.37.175:8000';
-  // Obsolete
-  serverHost = 'https://jias-server.snmi.ca';
+if (hostname === 'www.socialneedsmarketplace.ca') {
+  serverHost = 'https://api.socialneedsmarketplace.ca/'
 }
 else {
   serverHost = 'https://127.0.0.1:5000';
-  // serverHost = 'https://3.97.37.175:8000';
-  // serverHost = 'https://jias-server.snmi.ca';
 }
 
 

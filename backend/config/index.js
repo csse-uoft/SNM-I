@@ -12,7 +12,7 @@ const config = {
     addr: isProduction ? 'mongodb://localhost:27017/snmi' : `mongodb://localhost:27017/${process.env.test ? "snmiTest" : "snmi"}`
   },
 
-  allowedOrigins: ['http://localhost:3000', 'http://localhost:3002'],
+  allowedOrigins: ['http://localhost:3000', 'http://localhost:3002', 'https://www.socialneedsmarketplace.ca', 'https://www.snmi.ca'],
 
   frontend: {
     addr: isProduction ? 'https://www.mixedusebydesign.com' : 'http://localhost:3000'
