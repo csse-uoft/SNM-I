@@ -1,66 +1,69 @@
 import React, { useEffect, useState } from 'react';
 import TR from '../shared/TR'
-import { fetchUser } from '../../api/userApi'
+import {fetchUser, getProfile, getUserProfileById} from '../../api/userApi'
 import { useParams } from "react-router";
 import { Link, Loading } from "../shared";
-import { Container, Paper, Table, Typography, TableBody, Button } from "@mui/material";
+import { Container, Paper, Table, Typography, TableBody } from "@mui/material";
+import {formatPhoneNumber} from "../../helpers/phone_number_helpers";
 
 export default function User() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
-
   const {id} = useParams();
+
   useEffect(() => {
-    fetchUser(id).then(user => {
+    getUserProfileById(id).then(user => {
       setUser(user);
       setLoading(false);
     });
   }, [id]);
 
-//  if (loading)
-//    return <Loading message={`Loading user...`}/>;
 
+  if (loading)
+   return <Loading message={`Loading user...`}/>;
+
+  console.log(user)
   return (
     <Container>
       <Typography variant="h5" gutterBottom>
         User profile
       </Typography>
-      <Link to={`/users/${id}/edit`}>
-        <Button color="primary" variant="contained" style={{marginBottom: 12}}>
-          Edit
-        </Button>
-      </Link>
+      {/*<Link to={`/users/${id}/edit`}>*/}
+      {/*  <Button color="primary" variant="contained" style={{marginBottom: 12}}>*/}
+      {/*    Edit*/}
+      {/*  </Button>*/}
+      {/*</Link>*/}
 
       <Paper elevation={4}>
         <Table>
           <TableBody>
-            <TR
-              title="First Name"
-              value={user.first_name}
-            />
-            <TR
-              title="Last Name"
-              value={user.last_name}
-            />
-            <TR
-              title="Username"
-              value={user.username}
-            />
-            <TR
-              title="Email"
-              value={user.email}
-            />
+            {/*<TR*/}
+            {/*  title="Display Name"*/}
+            {/*  value={user.displayName}*/}
+            {/*/>*/}
             <TR
               title="Role"
-              value={user.is_superuser ? 'Admin' : 'User'}
+              value={user.role}
+            />
+            <TR
+              title="Given Name"
+              value = {(user.primaryContact && user.primaryContact.givenName) ? user.primaryContact.givenName : 'Not Provided'}
+            />
+            <TR
+              title="Family Name"
+              value = {(user.primaryContact && user.primaryContact.familyName) ? user.primaryContact.familyName : 'Not Provided'}
+            />
+            <TR
+              title="Username/Primary Email"
+              value={user.primaryEmail}
+            />
+            <TR
+              title="Secondary Email"
+              value={!user.secondaryEmail ? 'Not Provided' : user.secondaryEmail}
             />
             <TR
               title="Phone Number"
-              value={user.primary_phone_number}
-            />
-            <TR
-              title="Alternative Phone Number"
-              value={user.alt_phone_number}
+              value={(user.primaryContact && user.primaryContact.telephone) ? formatPhoneNumber(user.primaryContact.telephone) : 'Not Provided'}
             />
           </TableBody>
         </Table>

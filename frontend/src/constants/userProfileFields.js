@@ -13,9 +13,10 @@ export const userProfileFields = {
   },
   telephone: {
     ...defaultField,
+    required: true,
     label: 'Telephone',
     validator: Validator.phone,
-    type: 'phoneNumber'
+    type: 'phoneNumber',
   },
   email: {
     ...defaultField,

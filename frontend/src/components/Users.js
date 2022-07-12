@@ -18,7 +18,9 @@ export default function Users() {
 
   useEffect(() => {
     fetchUsers().then(data => {
-      setState(state => ({...state, loading: false, data}));
+      // console.log(data)
+      setState(state => ({...state, loading: false, data: data.data}));
+
     });
   }, []);
 
@@ -44,45 +46,46 @@ export default function Users() {
 
   const columns = [
     {
-      label: 'Username',
-      body: ({id, username}) => {
+      label: 'Username/Email',
+      body: ({id, email}) => {
         return <Link color to={`/users/${id}`}>
-          {username}
+          {email}
         </Link>
       }
     },
     {
-      label: 'Email',
-      body: ({email}) => email
-    },
-    {
       label: 'First name',
-      body: ({first_name}) => first_name
+      body: ({primaryContact}) => {
+        if(primaryContact && primaryContact.givenName)
+          return primaryContact.givenName
+        return 'Not Provided'
+      }
     },
     {
       label: 'Last name',
-      body: ({last_name}) => last_name
+      body: ({primaryContact}) => {
+        if(primaryContact && primaryContact.familyName)
+          return primaryContact.familyName
+        return 'Not Provided'
+      }
     },
     {
-      label: 'Primary phone',
-      body: ({primary_phone_number}) => {
-        if (primary_phone_number)
-          return formatPhoneNumber(primary_phone_number);
+      label: 'status',
+      body: ({status}) => status
+    },
+    {
+      label: 'Phone Number',
+      body: ({primaryContact}) => {
+        if (primaryContact && primaryContact.telephone)
+          return formatPhoneNumber(primaryContact.telephone);
         return 'Not Provided';
       },
     },
-    {
-      label: 'Primary phone',
-      body: ({secondary_phone_number}) => {
-        if (secondary_phone_number)
-          return formatPhoneNumber(secondary_phone_number);
-        return 'Not Provided';
-      },
-    },
+
     {
       label: 'Admin',
-      body: ({is_superuser}) => {
-        if (is_superuser)
+      body: ({isSuperuser}) => {
+        if (isSuperuser)
           return <YesIcon color="primary"/>
       }
     },
@@ -94,8 +97,8 @@ export default function Users() {
     }
   ];
 
-  // if (state.loading)
-  //   return <Loading message={`Loading users...`}/>;
+  if (state.loading)
+    return <Loading message={`Loading users...`}/>;
 
   return (
     <Container>

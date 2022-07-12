@@ -58,17 +58,21 @@ async function createTemporaryUserAccount(data) {
 async function updateUserPassword(email, newPassword) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   const {hash, salt} = await Hashing.hashPassword(newPassword);
-  userAccount.hash = hash
-  userAccount.salt = salt
-  await userAccount.save()
-  return userAccount
+  userAccount.hash = hash;
+  userAccount.salt = salt;
+  await userAccount.save();
+  const saved = await Hashing.validatePassword(newPassword, userAccount.hash, userAccount.salt);
+  return {saved, userAccount}
 }
 
 
 
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
-  const {securityQuestions, status} = updatedData
+  await userAccount.populate('primaryContact.telephone');
+
+  const {securityQuestions, status, givenName, familyName, countryCode,
+    areaCode, phoneNumber, altEmail} = updatedData
   if (securityQuestions){
     const answer1 = await Hashing.hashPassword(securityQuestions[3]);
     const securityQuestion1 = {
@@ -95,6 +99,35 @@ async function updateUserAccount(email, updatedData) {
     userAccount.status = status
   }
   // add more if needed TODO
+  if(givenName) {
+    if (!userAccount.primaryContact) {
+      userAccount.primaryContact = {};
+    }
+    userAccount.primaryContact.givenName = givenName;
+  }
+
+  if(familyName) {
+    userAccount.primaryContact.familyName = familyName;
+  }
+
+  if(countryCode) {
+    if (!userAccount.primaryContact.telephone) {
+      userAccount.primaryContact.telephone={};
+    }
+    userAccount.primaryContact.telephone.countryCode = countryCode;
+  }
+
+  if(areaCode) {
+    userAccount.primaryContact.telephone.areaCode = areaCode;
+  }
+
+  if(phoneNumber) {
+    userAccount.primaryContact.telephone.phoneNumber = phoneNumber;
+  }
+
+  if(altEmail) {
+    userAccount.secondaryEmail = altEmail;
+  }
 
   await userAccount.save();
   console.log(userAccount)
@@ -109,12 +142,18 @@ async function findUserAccountByEmail(email) {
   return userAccount;
 }
 
+async function findUserAccountById(id) {
+  const userAccount = await GDBUserAccountModel.findOne(
+    {_id: id},
+    {populates: ['primaryContact.telephone', 'organization']}
+  );
+  return userAccount;
+}
+
 async function isEmailExists(email) {
   const userAccount = await findUserAccountByEmail(email);
   return !!userAccount
 }
-
-
 
 async function validateCredentials(email, password) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
@@ -139,10 +178,14 @@ async function initUserAccounts() {
       secondaryEmail: 'admin2@snmi.ca',
       role: 'admin',
       displayName: 'Admin',
+      status: "permanent",
       primaryContact: {
-        givenName: 'Christina',
-        familyName: 'Aquafina',
-        telephone: {phoneNumber: 16475726356},
+        givenName: 'Super',
+        familyName: 'Admin',
+        telephone: {
+          countryCode: 1,
+          areaCode: 647,
+          phoneNumber: 5726356,},
       },
       hash,
       salt,
@@ -156,5 +199,5 @@ async function initUserAccounts() {
 
 module.exports = {
   createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
-  createTemporaryUserAccount, updateUserPassword
+  createTemporaryUserAccount, updateUserPassword, findUserAccountById
 };

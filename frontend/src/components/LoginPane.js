@@ -45,6 +45,7 @@ function LoginPane() {
       const {success, data} = await login(form.email, form.password);
       console.log(form.email, form.password, success, data)
       if (success) {
+        console.log('reach here')
         userContext.updateUser({
           id: data._id,
           isAdmin: data.role === 'admin',
@@ -53,9 +54,11 @@ function LoginPane() {
           displayName: data.displayName,
           givenName: data.primaryContact?.givenName,
           familyName: data.primaryContact?.familyName,
-          telephone: data.primaryContact?.telephone?.phoneNumber,
+          countryCode: data.primaryContact?.telephone?.countryCode,
+          areaCode: data.primaryContact?.telephone?.areaCode,
+          phoneNumber: data.primaryContact?.telephone?.phoneNumber,
         });
-        console.log(userContext);
+        console.log('successfully logged in:', userContext);
         history.push('/dashboard');
       }
     } catch (e) {
@@ -102,13 +105,13 @@ function LoginPane() {
         <br/>
         <Button variant="outlined" color="primary" className={classes.button} onClick={submit}> Log in</Button>
         <Divider/>
-        <Link to={'/login-pane'}>
-          <Typography variant="body2" className={classes.link}>
-            Don't have an account?
-          </Typography>
-        </Link>
+        {/*<Link to={'/login-pane'}>*/}
+        {/*  <Typography variant="body2" className={classes.link}>*/}
+        {/*    Don't have an account?*/}
+        {/*  </Typography>*/}
+        {/*</Link>*/}
 
-        <Link to={'/email-confirm'}>
+        <Link to={'/forgot-password'}>
           <Typography variant="body2" className={classes.link}>
             Forget password?
           </Typography>

@@ -3,7 +3,7 @@ const {updateUserAccount, updateUserPassword} = require("./user");
 
 const firstEntryUpdate = async (req, res, next) => {
 
-  const {email, newPassword, securityQuestions, userId} = req.body
+  const {email, newPassword, securityQuestions} = req.body
 
   try{
     await updateUserPassword(email, newPassword)

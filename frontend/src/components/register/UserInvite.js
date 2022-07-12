@@ -10,6 +10,7 @@ import {Loading} from "../shared"
 import {AlertDialog} from "../shared/Dialogs"
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
+import LoadingButton from "../shared/LoadingButton";
 
 
 const useStyles = makeStyles(() => ({
@@ -36,7 +37,8 @@ export default function UserInvite() {
     success: false,
     fail: false,
     failMessage: '',
-    loading: false
+    // loading: false,
+    loadingButton: false
   });
 
   // useEffect(() => {
@@ -91,14 +93,13 @@ export default function UserInvite() {
 
     console.log('valid')
     try {
-
-      setState(state => ({...state, dialog: false, loading: true}))
+      setState(state => ({...state, loadingButton: true }))
       const {success, message} = await createUser(state.form);
-      setState(state => ({...state, loading: false, success: true}))
+      setState(state => ({...state, loadingButton: false, success: true, dialog: false}))
 
     } catch (e) {
       if (e.json) {
-        setState(state => ({...state, errors: e.json, fail: true, loading: false}))
+        setState(state => ({...state, errors: e.json, fail: true, loadingButton: false}))
       }
     }
 
@@ -116,8 +117,8 @@ export default function UserInvite() {
 
   };
 
-  if (state.loading)
-    return <Loading message={`Loading`}/>;
+  // if (state.loading)
+  //   return <Loading message={`Loading`}/>;
 
 
   return (
@@ -150,7 +151,9 @@ export default function UserInvite() {
       <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                    dialogTitle={'Are you sure to submit?'}
                    buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
-                     <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                     // <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
+                     <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                                    onClick={handleConfirm} children='confirm' autoFocus/>]}
                    open={state.dialog}/>
       <AlertDialog dialogContentText={"The user is invited successfully."}
                    dialogTitle={'Success'}

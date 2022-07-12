@@ -31,6 +31,22 @@ export const defaultInvitationFields = {
   expirationDate: ''
 }
 
+export const defaultCurrentPasswordFields = {
+  currentPassword: '',
+}
+
+export const defaultNewPasswordFields = {
+  newPassword:'',
+  repeatNewPassword:'',
+}
+
+export const defaultForgotPasswordFields = {
+  group1: {email: ''},
+  group2: {securityQuestion1: '', securityQuestionAnswer1: ''},
+  group3: {securityQuestion2: '', securityQuestionAnswer2: ''},
+  group4: {securityQuestion3: '', securityQuestionAnswer3: ''},
+}
+
 export const defaultContactFields = {
   givenName: '',
   familyName: '',

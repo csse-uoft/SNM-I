@@ -4,21 +4,21 @@ import {Route} from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
-import InformSuccessPage from "./components/InformSuccessPage";
 import Login from './components/Login';
 import LoginPane from './components/LoginPane';
 import Dashboard from './components/Dashboard';
+import changePrimaryEmail from './components/userProfile/changePrimaryEmail';
 import Clients from './components/Clients';
 import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
-import UserInvite from './components/users/UserInvite'
-import ResetPassword from './components/users/UserResetPassword'
+import UserInvite from './components/register/UserInvite'
+import ResetPassword from './components/userProfile/UserResetPassword'
 import EmailConfirm from './components/emailConfirm'
-import UserProfile from './components/Profile'
-import UpdateUserProfile from './components/users/EditProfile'
+import UserProfile from './components/userProfile/Profile'
+import UpdateUserProfile from './components/userProfile/EditProfile'
 import NeedForm from './components/client_needs/NeedForm'
 import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
@@ -35,32 +35,37 @@ import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
 import Questions from './components/additionalFIelds/Questions';
-import UserFirstEntry from "./components/users/UserFirstEntry";
+import UserFirstEntry from "./components/register/UserFirstEntry";
+import ForgotPassword from "./components/forgotPassword/ForgotPassword";
+import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 
 const routes = (
   <Switch>
     <Route exact path='/' component={Landing}/>
-    <Route path='/success-trans' component={InformSuccessPage}/>
-    <Route path='/login' component={Login}/>
+    {/*<Route path='/login' component={Login}/>*/}
     <Route path='/email-confirm' component={EmailConfirm}/>
-    <Route path='/login-pane' component={LoginPane}/>
+    <Route path='/login' component={LoginPane}/>
+    <Route path='/forgot-password' component={ForgotPassword}/>
+    <Route path='/update-primary-email/:token' component={changePrimaryEmail}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>
 
     <Route path='/verify/:token' component={UserFirstEntry}/>
+    <Route path='/resetPassword/:token' component={ForgotPasswordResetPassword}/>
 
     <PrivateRoute path='/clients/:id/edit' component={ClientForm}/>
     <PrivateRoute path='/clients/:id/needs/new' component={NeedForm}/>
     <PrivateRoute path='/clients/new' component={ClientForm}/>
     <PrivateRoute path='/clients/:id' component={Client}/>
     <PrivateRoute path='/clients' component={Clients}/>
+    <PrivateRoute path='/profile/:id/edit' component={UpdateUserProfile}/>
+    <PrivateRoute path='/profile/:id' component={UserProfile}/>
+    <PrivateRoute path='/users/reset-password/:id' component={ResetPassword}/>
 
     <AdminRoute path='/users/:id/edit' component={UserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
     <AdminRoute path='/users/invite' component={UserInvite}/>
-    <AdminRoute path='/profile/:id/edit' component={UpdateUserProfile}/>
-    <AdminRoute path='/profile/:id' component={UserProfile}/>
 
-    <AdminRoute path='/users/reset-password/:id' component={ResetPassword}/>
+
     <AdminRoute path='/users/:id' component={User}/>
     <AdminRoute path='/users' component={Users}/>
     <AdminRoute path='/admin-logs' component={AdminLogs}/>

@@ -1,9 +1,9 @@
 const express = require('express');
-
-const {updateProfile, getCurrentUserProfile} = require("../services/users")
+const {fetchUsers, getUserProfileById} = require("../services/users");
 const router = express.Router();
 
-router.get('/profile/:id', getCurrentUserProfile);
-router.post('/profile/:id', updateProfile);
+
+router.get('/users', fetchUsers);
+router.get('/users/getUserProfileById/:id', getUserProfileById)
 
 module.exports = router;

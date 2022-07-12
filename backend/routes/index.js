@@ -1,7 +1,7 @@
 module.exports = {
   baseRoute: require('./base'),
-  registerRoute: require('./invite'),
-  firstEntryRoute: require('./firstEntry'),
-  updateUserRoute: require('./updateUser'),
-  usersRoute: require('./users'),
+  registerRoute: require('./register'),
+  userRoute: require('./user'),
+  forgotPasswordRoute: require('./forgotPassword'),
+  usersRoute: require('./users')
 }

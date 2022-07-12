@@ -2,7 +2,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import React, {useEffect, useState} from 'react';
 import {defaultFirstEntryFields} from "../../constants/default_fields";
-import {createUser, firstEntryUpdate, updateUser, verifyUser} from "../../api/userApi";
+import {createUser, firstEntryUpdate, updateUser, verifyFirstEntryUser, verifyUser} from "../../api/userApi";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
@@ -10,6 +10,8 @@ import {isFieldEmpty} from "../../helpers";
 import {userInvitationFields} from "../../constants/userInvitationFields";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
 import {AlertDialog} from "../shared/Dialogs";
+import LoadingButton from "../shared/LoadingButton";
+import PasswordHint from "../shared/PasswordHint";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -39,18 +41,18 @@ export default function UserFirstEntry() {
     loading: true,
     email: '',
     id:'',
-    failMessage:''
+    failMessage:'',
+    loadingButton: false
   });
 
   if (state.loading) {
     verifyToken({token})
-    // setState(state => ({...state, loading: false}))
   }
 
 
   async function verifyToken(token) {
     try {
-      const respond = await verifyUser(token);
+      const respond = await verifyFirstEntryUser(token);
       setState(state => ({...state, verified: true, email: respond.email, id: respond.userId, loading: false}))
     } catch (e) {
       setState(state => ({...state, verified: false, loading: false, errors: e.json}))
@@ -110,17 +112,17 @@ export default function UserFirstEntry() {
     try {
       const securityQuestions = [state.form.securityQuestion1, state.form.securityQuestion2, state.form.securityQuestion3,
         state.form.securityQuestionAnswer1, state.form.securityQuestionAnswer2, state.form.securityQuestionAnswer3]
-      setState(state => ({...state, loading: true, submitDialog: false}))
+      setState(state => ({...state, loadingButton: true, }))
       const {success, message} = await firstEntryUpdate({email: state.email, userId: state.id, newPassword: state.form.password,
         securityQuestions: securityQuestions})
       if(success){
-        setState(state => ({...state, loading: false, successDialog: true}))
+        setState(state => ({...state, loadingButton: false, successDialog: true, submitDialog: false}))
       }
 
 
     } catch (e) {
       if (e.json) {
-        setState(state => ({...state, loading: false, errors: e.json, failDialog: true}));
+        setState(state => ({...state, loadingButton: false, errors: e.json, submitDialog: false, failDialog: true}));
       }
     }
 
@@ -133,11 +135,13 @@ export default function UserFirstEntry() {
 
   if (state.verified) {
     return (
+
       <Container className={classes.root}>
+        <PasswordHint/>
         <TextField
           sx={{mt: '16px', minWidth: 350}}
           value={state.email}
-          label={'Email'}
+          label={'Username'}
           disabled
         />
         {Object.entries(userFirstEntryFields).map(([field, option]) => {
@@ -168,7 +172,9 @@ export default function UserFirstEntry() {
         <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={'Are you sure to submit?'}
                      buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
-                       <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>]}
+                       // <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                                      onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog}/>
         <AlertDialog dialogContentText={"You are successfully registered"}
                      dialogTitle={'Success'}

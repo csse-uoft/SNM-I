@@ -176,6 +176,7 @@ const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
 const phoneNumberRegex = /^\+1\s\(\d{3}\)\s\d{3}-\d{4}$/
 const inNorthAmericaRegex = /^\+1/
 const emptyPhoneNumber = /^\+1$/
+const emptyTelephone = /^\+$/
 const samePassword = /admin/
 const sameEmail = /admin@sample.com/
 
@@ -189,7 +190,7 @@ const CONFIRM_EMAIL_ERR_MSG = "Your input doesn't match the your registered emai
 const POSTAL_CODE_ERR_MSG = "Invalid postal code! They are in the format A1A 1A1, " +
   "where A is a letter and 1 is a digit";
 const EXPIRATION_DATE_MSG = "Dates in the past are not valid"
-const CONFIRM_PASSWORD_ERR_MSG = 'This field must be same with your password'
+const CONFIRM_PASSWORD_ERR_MSG = 'This field must be same with your new password'
 
 export const Validator = {
   /**
@@ -214,6 +215,12 @@ export const Validator = {
   phone: phone => {
     if (!emptyPhoneNumber.test(phone) && inNorthAmericaRegex.test(phone) && !phoneNumberRegex.test(phone))
       return PHONE_ERR_MSH;
+    if (emptyPhoneNumber.test(phone)) {
+      return PHONE_ERR_MSH;
+    }
+    if (emptyTelephone.test(phone)) {
+      return PHONE_ERR_MSH;
+    }
   },
 
   oldPassword: oldPassword => {
