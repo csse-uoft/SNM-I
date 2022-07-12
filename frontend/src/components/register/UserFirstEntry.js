@@ -11,6 +11,7 @@ import {userInvitationFields} from "../../constants/userInvitationFields";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
+import PasswordHint from "../shared/PasswordHint";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -134,7 +135,9 @@ export default function UserFirstEntry() {
 
   if (state.verified) {
     return (
+
       <Container className={classes.root}>
+        <PasswordHint/>
         <TextField
           sx={{mt: '16px', minWidth: 350}}
           value={state.email}
