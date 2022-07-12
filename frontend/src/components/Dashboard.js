@@ -44,6 +44,24 @@ function Dashboard() {
           {'Welcome to Social Needs Market Place!'}
         </Typography>
 
+        {/*<div style={*/}
+        {/*  {*/}
+        {/*    background: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/landing.jpg) no-repeat center center',*/}
+        {/*    backgroundSize: 'cover'*/}
+        {/*  }*/}
+        {/*  */}
+        {/*}>*/}
+        {/*  <div style={{height: 700}}>*/}
+        {/*    <Typography*/}
+        {/*      color={'white'}*/}
+        {/*      variant="h2"*/}
+        {/*      marginLeft={'5%'}*/}
+        {/*      marginTop={'30%'}>*/}
+        {/*      {'Welcome to Social Needs Market Place!'}*/}
+        {/*    </Typography>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+
       </Container>)
 
   return (
