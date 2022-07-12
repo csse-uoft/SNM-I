@@ -46,11 +46,11 @@ export default function User() {
             />
             <TR
               title="Given Name"
-              value={!user.primaryContact ? 'Not Provided' : user.primaryContact.givenName}
+              value = {(user.primaryContact && user.primaryContact.givenName) ? user.primaryContact.givenName : 'Not Provided'}
             />
             <TR
               title="Family Name"
-              value={!user.primaryContact ? 'Not Provided' : user.primaryContact.familyName}
+              value = {(user.primaryContact && user.primaryContact.familyName) ? user.primaryContact.familyName : 'Not Provided'}
             />
             <TR
               title="Username/Primary Email"
