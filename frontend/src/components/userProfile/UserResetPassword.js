@@ -16,6 +16,7 @@ import {AlertDialog} from "../shared/Dialogs";
 import {useParams} from "react-router";
 import {checkCurrentPassword, saveNewPassword} from "../../api/userApi";
 import LoadingButton from "../shared/LoadingButton";
+import PasswordHint from "../shared/PasswordHint";
 
 
 const useStyles = makeStyles(() => ({
@@ -181,28 +182,7 @@ export default function UserResetPassword() {
         <Container className={classes.root}>
             {editNew ? (
                 <Container className={classes.root}>
-                    <Typography
-                      variant="h6" color={'navy'}
-                      style={{marginTop: '10px'}}>
-                        {'Note that a strong and valid password should satisfy:'}
-                    </Typography>
-                    <Typography
-                      variant="body1" color={'primary'}
-                      style={{marginBottom: '5px'}}>
-                        {'- Contain at least 8 characters.'}
-                    </Typography>
-                    <Typography
-                      variant="body1" color={'primary'}
-                      style={{marginBottom: '5px'}}>
-                        {'- Contain upper case AND lower case letters.'}
-                    </Typography>
-
-                    <Typography
-                      variant="body1" color={'primary'}
-                      style={{marginBottom: '5px'}}>
-                        {'- Contain at least 1 number and at least 1 punctuation mark.'}
-                    </Typography>
-
+                    <PasswordHint/>
                     <Typography variant="h5"
                                 style={{marginTop: '20px'}}>
                         {'Please enter your new password:'}
