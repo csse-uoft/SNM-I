@@ -32,13 +32,18 @@ function Dashboard() {
   if (!userContext.isAdmin)
     return (
       <Container>
-        <Typography color={'primary'} variant="h4">
-          {(userContext.givenName && userContext.familyName) ? ('Dear ' + userContext.givenName + '' + userContext.familyName + ":") :
-            ('Dear ' + userContext.email + ':')}
+        {/*<Typography color={'primary'} variant="h4">*/}
+        {/*  {(userContext.givenName && userContext.familyName) ? ('Dear ' + userContext.givenName + '' + userContext.familyName + ":") :*/}
+        {/*    ('Dear ' + userContext.email + ':')}*/}
+        {/*</Typography>*/}
+        <Typography
+          color={'black'}
+          variant="h2"
+          marginLeft={'5%'}
+          marginTop={'20%'}>
+          {'Welcome to Social Needs Market Place!'}
         </Typography>
-        <Typography color={'primary'} variant="h2" marginLeft={'5%'}>
-          {'Welcome!'}
-        </Typography>
+
       </Container>)
 
   return (
