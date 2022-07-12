@@ -9,4 +9,4 @@ cp ./scripts/docker-compose.yml ./
 cp /home/ubuntu/.env ./backend/
 
 sudo docker compose stop server
-sudo docker compose up --build -d server
+sudo docker compose up --build -d
