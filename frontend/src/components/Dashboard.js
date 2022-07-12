@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import { Link } from './shared'
+import React, {useContext} from 'react';
+import {Link} from './shared'
 
-import { Container, Button } from "@mui/material";
-import { Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria } from "@mui/icons-material";
-import { UserContext } from "../context";
+import {Container, Button, Typography} from "@mui/material";
+import {Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@mui/icons-material";
+import {UserContext} from "../context";
 
 function NavButton({to, text, icon}) {
   return (
@@ -30,7 +30,16 @@ function Dashboard() {
   const userContext = useContext(UserContext);
 
   if (!userContext.isAdmin)
-    return <span >"Welcome!"</span>;
+    return (
+      <Container>
+        <Typography color={'primary'} variant="h4">
+          {(userContext.givenName && userContext.familyName) ? ('Dear ' + userContext.givenName + '' + userContext.familyName + ":") :
+            ('Dear ' + userContext.email + ':')}
+        </Typography>
+        <Typography color={'primary'} variant="h2" marginLeft={'5%'}>
+          {'Welcome!'}
+        </Typography>
+      </Container>)
 
   return (
     <Container maxWidth="md" sx={{

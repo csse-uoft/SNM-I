@@ -7,7 +7,7 @@ export default function PasswordHint() {
   return (
     <Container>
       <Typography
-        variant="h6" color={'navy'}
+        variant="body1" color={'navy'}
         style={{marginTop: '10px'}}>
         {'Note that a strong and valid password should satisfy:'}
       </Typography>
