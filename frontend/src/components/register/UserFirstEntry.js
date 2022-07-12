@@ -141,7 +141,7 @@ export default function UserFirstEntry() {
         <TextField
           sx={{mt: '16px', minWidth: 350}}
           value={state.email}
-          label={'Email'}
+          label={'Username'}
           disabled
         />
         {Object.entries(userFirstEntryFields).map(([field, option]) => {

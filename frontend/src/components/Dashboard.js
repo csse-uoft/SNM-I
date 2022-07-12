@@ -5,7 +5,7 @@ import {Container, Button, Typography} from "@mui/material";
 import {Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@mui/icons-material";
 import {UserContext} from "../context";
 
-function NavButton({to, text, icon}) {
+function NavButton({to, text, icon, disabled}) {
   return (
     <Link to={to}>
       <Button
@@ -16,6 +16,7 @@ function NavButton({to, text, icon}) {
           margin: 1,
           color: '#535353'
         }}
+        disabled={disabled}
         color="inherit"
         variant="outlined"
         startIcon={icon}
@@ -63,16 +64,16 @@ function Dashboard() {
       <NavButton to={`/users`} icon={<People/>}
                  text="Manage Users"/>
 
-      <NavButton to={`/admin-logs`} icon={<Log/>}
+      <NavButton to={`/admin-logs`} icon={<Log/>} disabled
                  text="Admin Logs"/>
 
       {/*<NavButton to={`/eligibility-criteria`} icon={<Criteria/>}*/}
       {/*           text="Manage Eligibility Criteria"/>*/}
 
-      <NavButton to={'/settings/manage-fields'} icon={<Edit/>}
-                 text="Manage Client/Provider Fields"/>
+      <NavButton to={'/settings/manage-fields'} icon={<Edit/>} disabled
+                 text="Manage forms"/>
 
-      <NavButton to={'/questions'} icon={<Edit/>}
+      <NavButton to={'/questions'} icon={<Edit/>} disabled
                  text="Manage Questions"/>
 
 
