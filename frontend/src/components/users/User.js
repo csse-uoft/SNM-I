@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import TR from '../shared/TR'
-import { fetchUser } from '../../api/userApi'
+import {fetchUser, getProfile, getUserProfileById} from '../../api/userApi'
 import { useParams } from "react-router";
 import { Link, Loading } from "../shared";
 import { Container, Paper, Table, Typography, TableBody, Button } from "@mui/material";
+import {userProfileFields} from "../../constants/userProfileFields";
 
 export default function User() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({});
-
   const {id} = useParams();
+  const [form, setForm] = useState({});
+  const profileForm = {
+    givenName: '',
+    familyName: '',
+    telephone: null,
+    email: '',
+    altEmail: '',
+  }
   useEffect(() => {
-    fetchUser(id).then(user => {
-      setUser(user);
+    getUserProfileById(id).then(user => {
+      setForm(user);
       setLoading(false);
     });
   }, [id]);
 
-//  if (loading)
-//    return <Loading message={`Loading user...`}/>;
+ if (loading)
+   return <Loading message={`Loading user...`}/>;
 
+  console.log(user)
   return (
     <Container>
       <Typography variant="h5" gutterBottom>
@@ -36,31 +45,27 @@ export default function User() {
           <TableBody>
             <TR
               title="First Name"
-              value={user.first_name}
+              value={user.givenName}
             />
             <TR
               title="Last Name"
-              value={user.last_name}
+              value={user.familyName}
             />
             <TR
               title="Username"
-              value={user.username}
-            />
-            <TR
-              title="Email"
               value={user.email}
             />
             <TR
+              title="altEmail"
+              value={user.altEmail}
+            />
+            <TR
               title="Role"
-              value={user.is_superuser ? 'Admin' : 'User'}
+              value={user.isSuperuser ? 'Admin' : 'User'}
             />
             <TR
               title="Phone Number"
               value={user.primary_phone_number}
-            />
-            <TR
-              title="Alternative Phone Number"
-              value={user.alt_phone_number}
             />
           </TableBody>
         </Table>

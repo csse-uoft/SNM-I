@@ -154,6 +154,10 @@ export function fetchUsers() {
   return getJson('/api/users/');
 }
 
+export function getUserProfileById(id, params) {
+  return getJson('/api/users/getUserProfileById/' + id + '/', {params})
+}
+
 
 export function deleteUser(id, params, callback) {
   const response = deleteJson('/user/' + id + '/');

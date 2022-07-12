@@ -1,4 +1,5 @@
-const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword} = require("./user");
+const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword,
+    findUserAccountById} = require("./user");
 const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail} = require("../utils");
 const {sign} = require("jsonwebtoken");
 const {jwtConfig} = require("../config");
@@ -7,6 +8,12 @@ const {GDBUserAccountModel} = require("../models");
 
 const getCurrentUserProfile = async (req, res, next) => {
     const user = await findUserAccountByEmail(req.session.email);
+    return res.json(user)
+};
+
+const getUserProfileById = async (req, res, next) => {
+    const id = req.params.id;
+    const user = await findUserAccountById(id);
     return res.json(user)
 };
 
@@ -107,5 +114,5 @@ const fetchUsers = async (req, res, next) => {
 }
 
 module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword, updatePrimaryEmail,
-fetchUsers};
+fetchUsers, getUserProfileById};
 

@@ -142,6 +142,14 @@ async function findUserAccountByEmail(email) {
   return userAccount;
 }
 
+async function findUserAccountById(id) {
+  const userAccount = await GDBUserAccountModel.findOne(
+    {_id: id},
+    {populates: ['primaryContact.telephone', 'organization']}
+  );
+  return userAccount;
+}
+
 async function isEmailExists(email) {
   const userAccount = await findUserAccountByEmail(email);
   return !!userAccount
@@ -191,5 +199,5 @@ async function initUserAccounts() {
 
 module.exports = {
   createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
-  createTemporaryUserAccount, updateUserPassword
+  createTemporaryUserAccount, updateUserPassword, findUserAccountById
 };
