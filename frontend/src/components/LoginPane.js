@@ -105,11 +105,11 @@ function LoginPane() {
         <br/>
         <Button variant="outlined" color="primary" className={classes.button} onClick={submit}> Log in</Button>
         <Divider/>
-        <Link to={'/login-pane'}>
-          <Typography variant="body2" className={classes.link}>
-            Don't have an account?
-          </Typography>
-        </Link>
+        {/*<Link to={'/login-pane'}>*/}
+        {/*  <Typography variant="body2" className={classes.link}>*/}
+        {/*    Don't have an account?*/}
+        {/*  </Typography>*/}
+        {/*</Link>*/}
 
         <Link to={'/forgot-password'}>
           <Typography variant="body2" className={classes.link}>
