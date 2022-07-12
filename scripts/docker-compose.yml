@@ -15,6 +15,7 @@ services:
       options:
         max-size: "5m"
         max-file: "3"
+    network_mode: "host"
     restart: always
 
   mongodb:
