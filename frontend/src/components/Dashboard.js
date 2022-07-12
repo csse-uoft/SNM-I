@@ -5,6 +5,7 @@ import {Container, Button, Typography} from "@mui/material";
 import {Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@mui/icons-material";
 import {UserContext} from "../context";
 
+
 function NavButton({to, text, icon}) {
   return (
     <Link to={to}>
@@ -36,6 +37,7 @@ function Dashboard() {
         {/*  {(userContext.givenName && userContext.familyName) ? ('Dear ' + userContext.givenName + '' + userContext.familyName + ":") :*/}
         {/*    ('Dear ' + userContext.email + ':')}*/}
         {/*</Typography>*/}
+
         <Typography
           color={'black'}
           variant="h2"
@@ -43,7 +45,6 @@ function Dashboard() {
           marginTop={'20%'}>
           {'Welcome to Social Needs Market Place!'}
         </Typography>
-
       </Container>)
 
   return (
