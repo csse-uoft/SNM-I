@@ -98,6 +98,11 @@ async function load() {
     })
     .setReadTimeout(readTimeout)
     .setWriteTimeout(writeTimeout);
+
+  if (graphdb.username) {
+    config.useGdbTokenAuthentication(graphdb.username, graphdb.password);
+  }
+
   repository = new RDFRepositoryClient(config);
 
   // using https://github.com/rubensworks/sparqljson-parse.js

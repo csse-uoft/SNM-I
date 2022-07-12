@@ -59,6 +59,10 @@ const config = {
 // Environment Variables Override
 if (process.env.GRAPHDB_ADDRESS)
   config.graphdb.addr = process.env.GRAPHDB_ADDRESS;
+if (process.env.GRAPHDB_USERNAME)
+  config.graphdb.username = process.env.GRAPHDB_USERNAME;
+if (process.env.GRAPHDB_PASSWORD)
+  config.graphdb.password = process.env.GRAPHDB_PASSWORD;
 if (process.env.MONGODB_ADDRESS)
   config.mongodb.addr = process.env.MONGODB_ADDRESS;
 
