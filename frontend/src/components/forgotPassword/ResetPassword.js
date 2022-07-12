@@ -10,6 +10,7 @@ import {newPasswordFields} from "../../constants/updatePasswordFields";
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
 import LoadingButton from "../shared/LoadingButton";
+import PasswordHint from "../shared/PasswordHint";
 
 
 const useStyles = makeStyles(() => ({
@@ -131,6 +132,7 @@ export default function ForgotPasswordResetPassword(){
   if(state.verified === 1){
     return (
       <Container className={classes.root}>
+        <PasswordHint/>
         <TextField
           sx={{mt: '16px', minWidth: 350}}
           value={state.email}
