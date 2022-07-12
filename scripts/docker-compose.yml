@@ -3,6 +3,7 @@ services:
   server:
     image: node:16-slim
     container_name: server
+    working_dir: /code
     ports:
       - "5000:5000"
     volumes:
@@ -10,6 +11,7 @@ services:
       - server_node_modules:/root/server/node_modules
     environment:
       - TZ=America/New_York
+    command: yarn install && node bin/www
     logging:
       options:
         max-size: "5m"
