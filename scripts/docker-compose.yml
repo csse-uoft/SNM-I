@@ -1,7 +1,7 @@
 version: "2"
 services:
   server:
-    build: node:16-slim
+    image: node:16-slim
     container_name: server
     ports:
       - "5000:5000"
