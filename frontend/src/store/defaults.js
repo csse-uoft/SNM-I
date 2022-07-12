@@ -2,9 +2,8 @@ const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
 if (hostname === 'www.socialneedsmarketplace.ca') {
-  serverHost = 'https://api.socialneedsmarketplace.ca/'
-}
-else {
+  serverHost = 'https://api.socialneedsmarketplace.ca'
+} else {
   serverHost = 'https://127.0.0.1:5000';
 }
 
@@ -12,7 +11,7 @@ else {
 const ACTION_SUCCESS = 'ACTION_SUCCESS';
 const ACTION_ERROR = 'ACTION_ERROR';
 
-const torontoCoordinates = { lat: 43.6497, lng: -79.3763 };
+const torontoCoordinates = {lat: 43.6497, lng: -79.3763};
 
 const countryOptions = ['Afghanistan', 'Åland Islands', 'Albania', 'Algeria', 'American Samoa', 'Andorra',
   'Angola', 'Anguilla', 'Antarctica', 'Antigua & Barbuda', 'Argentina', 'Armenia', 'Aruba', 'Ascension Island',
@@ -58,7 +57,7 @@ const languageOptions = ['Abkhazian (ab)', 'Achinese (ace)', 'Acoli (ach)', 'Ada
   'Bambara (bm)', 'Bamun (bax)', 'Banjar (bjn)', 'Basaa (bas)', 'Bashkir (ba)', 'Basque (eu)', 'Batak Toba (bbc)',
   'Bavarian (bar)', 'Beja (bej)', 'Belarusian (be)', 'Bemba (bem)', 'Bena (bez)', 'Bengali (bn)', 'Betawi (bew)',
   'Bhojpuri (bho)', 'Bikol (bik)', 'Bini (bin)', 'Bishnupriya (bpy)', 'Bislama (bi)', 'Blin (byn)', 'Blissymbols (zbl)',
-  'Bodo (brx)', 'Bosnian (bs)', 'Brahui (brh)', 'Braj (bra)', 'Brazilian Portuguese (pt_BR)', 'Breton (br)', 
+  'Bodo (brx)', 'Bosnian (bs)', 'Brahui (brh)', 'Braj (bra)', 'Brazilian Portuguese (pt_BR)', 'Breton (br)',
   'British English (en_GB)', 'Buginese (bug)', 'Bulgarian (bg)', 'Bulu (bum)', 'Buriat (bua)', 'Burmese (my)',
   'Caddo (cad)', 'Cajun French (frc)', 'Canadian English (en_CA)', 'Canadian French (fr_CA)', 'Cantonese (yue)',
   'Capiznon (cps)', 'Carib (car)', 'Catalan (ca)', 'Cayuga (cay)', 'Cebuano (ceb)', 'Central Atlas Tamazight (tzm)',
@@ -81,7 +80,7 @@ const languageOptions = ['Abkhazian (ab)', 'Achinese (ace)', 'Acoli (ach)', 'Ada
   'Haitian (ht)', 'Hakka Chinese (hak)', 'Hausa (ha)', 'Hawaiian (haw)', 'Hebrew (he)', 'Herero (hz)',
   'Hiligaynon (hil)', 'Hindi (hi)', 'Hiri Motu (ho)', 'Hittite (hit)', 'Hmong (hmn)', 'Hungarian (hu)',
   'Hupa (hup)', 'Iban (iba)', 'Ibibio (ibb)', 'Icelandic (is)', 'Ido (io)', 'Igbo (ig)', 'Iloko (ilo)',
-  'Inari Sami (smn)', 'Indonesian (id)', 'Ingrian (izh)', 'Ingush (inh)', 'Interlingua (ia)', 
+  'Inari Sami (smn)', 'Indonesian (id)', 'Ingrian (izh)', 'Ingush (inh)', 'Interlingua (ia)',
   'Interlingue (ie)', 'Inuktitut (iu)', 'Inupiaq (ik)', 'Irish (ga)', 'Italian (it)', 'Jamaican Creole English (jam)',
   'Japanese (ja)', 'Javanese (jv)', 'Jju (kaj)', 'Jola-Fonyi (dyo)', 'Judeo-Arabic (jrb)', 'Judeo-Persian (jpr)',
   'Jutish (jut)', 'Kabardian (kbd)', 'Kabuverdianu (kea)', 'Kabyle (kab)', 'Kachin (kac)', 'Kaingang (kgp)', 'Kako (kkj)',
@@ -131,7 +130,7 @@ const languageOptions = ['Abkhazian (ab)', 'Achinese (ace)', 'Acoli (ach)', 'Ada
   'Spanish (es)', 'Sranan Tongo (srn)', 'Standard Moroccan Tamazight (zgh)', 'Sukuma (suk)', 'Sumerian (sux)',
   'Sundanese (su)', 'Susu (sus)', 'Swahili (sw)', 'Swati (ss)', 'Swedish (sv)', 'Swiss French (fr_CH)', 'Swiss German (gsw)',
   'Swiss High German (de_CH)', 'Syriac (syr)', 'Tachelhit (shi)', 'Tagalog (tl)', 'Tahitian (ty)', 'Taita (dav)',
-  'Tajik (tg)', 'Talysh (tly)', 'Tamashek (tmh)', 'Tamil (ta)', 'Taroko (trv)', 'Tasawaq (twq)', 'Tatar (tt)', 
+  'Tajik (tg)', 'Talysh (tly)', 'Tamashek (tmh)', 'Tamil (ta)', 'Taroko (trv)', 'Tasawaq (twq)', 'Tatar (tt)',
   'Telugu (te)', 'Tereno (ter)', 'Teso (teo)', 'Tetum (tet)', 'Thai (th)', 'Tibetan (bo)', 'Tigre (tig)', 'Tigrinya (ti)',
   'Timne (tem)', 'Tiv (tiv)', 'Tlingit (tli)', 'Tok Pisin (tpi)', 'Tokelau (tkl)', 'Tongan (to)', 'Tornedalen Finnish (fit)',
   'Traditional Chinese (zh_Hant)', 'Tsakhur (tkr)', 'Tsakonian (tsd)', 'Tsimshian (tsi)', 'Tsonga (ts)', 'Tswana (tn)',
@@ -142,7 +141,7 @@ const languageOptions = ['Abkhazian (ab)', 'Achinese (ace)', 'Acoli (ach)', 'Ada
   'Walloon (wa)', 'Walser (wae)', 'Waray (war)', 'Warlpiri (wbp)', 'Washo (was)', 'Wayuu (guc)', 'Welsh (cy)',
   'West Flemish (vls)', 'Western Frisian (fy)', 'Western Mari (mrj)', 'Wolaytta (wal)', 'Wolof (wo)', 'Wu Chinese (wuu)',
   'Xhosa (xh)', 'Xiang Chinese (hsn)', 'Yangben (yav)', 'Yao (yao)', 'Yapese (yap)', 'Yemba (ybb)', 'Yiddish (yi)',
-  'Yoruba (yo)', 'Zapotec (zap)', 'Zarma (dje)', 'Zaza (zza)', 'Zeelandic (zea)', 'Zenaga (zen)', 'Zhuang (za)', 
+  'Yoruba (yo)', 'Zapotec (zap)', 'Zarma (dje)', 'Zaza (zza)', 'Zeelandic (zea)', 'Zenaga (zen)', 'Zhuang (za)',
   'Zoroastrian Dari (gbz)', 'Zulu (zu)', 'Zuni (zun)']
 
 const genderOptions = [
@@ -191,18 +190,18 @@ const educationLevelOptions = [
 ]
 
 const incomeSourceOptions = [
- 'Crowd Ward',
- 'Dependent of OW/ODSP',
- 'Employment',
- 'Employment Insurance',
- 'Family Members Income',
- 'None',
- 'Ontario Disability Support Program',
- 'Ontario Works',
- 'Other',
- 'Pension',
- 'Unknown',
- 'Workers Safety and Insurance'
+  'Crowd Ward',
+  'Dependent of OW/ODSP',
+  'Employment',
+  'Employment Insurance',
+  'Family Members Income',
+  'None',
+  'Ontario Disability Support Program',
+  'Ontario Works',
+  'Other',
+  'Pension',
+  'Unknown',
+  'Workers Safety and Insurance'
 ]
 
 const matchStatusOptions = [
