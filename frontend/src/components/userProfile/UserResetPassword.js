@@ -183,6 +183,11 @@ export default function UserResetPassword() {
             {editNew ? (
                 <Container className={classes.root}>
                     <PasswordHint/>
+                    <Typography variant="h5"
+                                style={{marginTop: '20px'}}>
+                        {'Please enter your new password:'}
+                    </Typography>
+
                 {/* text field for new password */}
                 {Object.entries(newPasswordFields).map(([field, option]) => {
                     if (option.label === 'New Password'){

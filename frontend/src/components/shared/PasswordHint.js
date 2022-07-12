@@ -1,24 +1,11 @@
 import {Container, Typography} from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import React from "react";
 
 
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '80%'
-  },
-  button: {
-    marginTop: 12,
-    marginBottom: 12,
-  }
-}));
-
-
 export default function PasswordHint() {
-  const classes = useStyles();
 
   return (
-    <Container className={classes.root}>
+    <Container>
       <Typography
         variant="h6" color={'navy'}
         style={{marginTop: '10px'}}>
