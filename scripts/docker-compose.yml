@@ -8,7 +8,7 @@ services:
       - "5000:5000"
     volumes:
       - ./backend:/code
-      - server_node_modules:/root/server/node_modules
+      - server_node_modules:/code/node_modules
     environment:
       - TZ=America/New_York
     command: yarn install && yarn start
