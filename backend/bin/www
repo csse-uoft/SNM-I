@@ -8,6 +8,7 @@ require('dotenv').config()
 const loadApp = require('../app');
 const debug = require('debug')('snm-i:server');
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 
 /**
@@ -23,13 +24,18 @@ const port = normalizePort(process.env.PORT || '5000');
   /**
    * Create HTTP server.
    */
+  let server;
+  if (process.env.NODE_ENV === 'production') {
+    server = http.createServer(app);
+  } else {
 
-  const options = {
-    key: fs.readFileSync('config/key.pem'),
-    cert: fs.readFileSync('config/cert.pem')
-  };
+    const options = {
+      key: fs.readFileSync('config/key.pem'),
+      cert: fs.readFileSync('config/cert.pem')
+    };
 
-  const server = https.createServer(options, app);
+    server = https.createServer(options, app);
+  }
 
   /**
    * Listen on provided port, on all network interfaces.

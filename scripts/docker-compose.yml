@@ -3,14 +3,12 @@ services:
     image: node:16-slim
     container_name: server
     working_dir: /code
-    ports:
-      - "5000:5000"
     volumes:
       - ./backend:/code
       - server_node_modules:/code/node_modules
     environment:
       - TZ=America/New_York
-    command: bash -c "yarn install && yarn start"
+    command: bash -c "yarn install && NODE_ENV=production yarn start"
     logging:
       options:
         max-size: "5m"
