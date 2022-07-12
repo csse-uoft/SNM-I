@@ -11,7 +11,7 @@ services:
       - server_node_modules:/root/server/node_modules
     environment:
       - TZ=America/New_York
-    command: pwd && yarn install && node bin/www
+    command: pwd && yarn install && yarn start
     logging:
       options:
         max-size: "5m"
