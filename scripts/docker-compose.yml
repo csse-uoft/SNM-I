@@ -1,0 +1,20 @@
+version: "2"
+services:
+  server:
+    build: node:16-slim
+    container_name: server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/code
+      - server_node_modules:/root/server/node_modules
+    environment:
+      - TZ=America/New_York
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "3"
+    restart: always
+
+volumes:
+  server_node_modules:
