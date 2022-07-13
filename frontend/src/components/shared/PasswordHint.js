@@ -9,23 +9,23 @@ export default function PasswordHint() {
       <Typography
         variant="body1" color={'navy'}
         style={{marginTop: '10px'}}>
-        {'Note that a strong and valid password should satisfy:'}
+        {'Your password must satisfy the following:'}
       </Typography>
       <Typography
         variant="body1" color={'primary'}
         style={{marginBottom: '5px'}}>
-        {'- Contain at least 8 characters.'}
+        {'- Contains at least 8 characters'}
       </Typography>
       <Typography
         variant="body1" color={'primary'}
         style={{marginBottom: '5px'}}>
-        {'- Contain upper case AND lower case letters.'}
+        {'- Contains uppercase AND lowercase letters'}
       </Typography>
 
       <Typography
         variant="body1" color={'primary'}
         style={{marginBottom: '5px'}}>
-        {'- Contain at least 1 number and at least 1 punctuation mark.'}
+        {'- Contains at least 1 number AND 1 special character'}
       </Typography>
     </Container>
   )
