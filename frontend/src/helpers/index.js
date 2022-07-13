@@ -186,7 +186,7 @@ const PHONE_ERR_MSH = "Invalid phone number!" //+ "They are in the format of NPA
 const PASSWORD_ERR_MSG = "Your password doesn't satisfy the minimum requirements.";
 const OLD_PASSWORD_ERR_MSG = "Your input doesn't match the old password!  Please try again.";
 const CONFIRM_EMAIL_ERR_MSG = "Your input doesn't match your registered email!  Please try again.";
-const POSTAL_CODE_ERR_MSG = "Invalid postal code format! Postal code must be in the format of e.g. A1A 1A1" +
+const POSTAL_CODE_ERR_MSG = "Invalid postal code format! Postal code must be in the format of e.g. A1A 1A1 " +
   "where A is a letter and 1 is a digit.";
 const EXPIRATION_DATE_MSG = "This date is in the past.  Please enter a valid date."
 const CONFIRM_PASSWORD_ERR_MSG = 'Your passwords do not match!  Please try again.'
