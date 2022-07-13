@@ -15,7 +15,7 @@ const config = {
   allowedOrigins: ['http://localhost:3000', 'http://localhost:3002', 'https://www.socialneedsmarketplace.ca', 'https://www.snmi.ca'],
 
   frontend: {
-    addr: isProduction ? 'https://www.mixedusebydesign.com' : 'http://localhost:3000'
+    addr: isProduction ? 'https://www.socialneedsmarketplace.ca' : 'http://localhost:3000'
   },
 
   // pbkdf2 configuration, ~70ms with this config
