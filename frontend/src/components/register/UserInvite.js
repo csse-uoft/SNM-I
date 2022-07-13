@@ -148,14 +148,14 @@ export default function UserInvite() {
       <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
         Submit
       </Button>
-      <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
-                   dialogTitle={'Are you sure to submit?'}
+      <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
+                   dialogTitle={'Are you sure you want to submit?'}
                    buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
                      // <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
                                     onClick={handleConfirm} children='confirm' autoFocus/>]}
                    open={state.dialog}/>
-      <AlertDialog dialogContentText={"The user is invited successfully."}
+      <AlertDialog dialogContentText={"A registration link has been sent to the user."}
                    dialogTitle={'Success'}
                    buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
                    open={state.success}/>

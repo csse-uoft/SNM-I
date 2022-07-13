@@ -162,8 +162,8 @@ export default function ForgotPasswordResetPassword(){
           Submit
         </Button>
 
-        <AlertDialog dialogContentText={"Note that you won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure to submit?'}
+        <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
+                     dialogTitle={'Are you sure you want to submit?'}
                      buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,
                        // <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}

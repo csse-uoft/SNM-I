@@ -151,7 +151,7 @@ export default function ForgotPassword() {
                        dialogTitle={'Error'}
                        buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
                        open={state.errorDialog}/>
-          <AlertDialog dialogContentText={'A link is sent to your email address. Please follow it to reset your password'}
+          <AlertDialog dialogContentText={'A link has been sent to your email address. Please follow it to reset your password'}
                        dialogTitle={'Success'}
                        buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
                        open={state.successDialog}/>
