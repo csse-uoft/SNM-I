@@ -1,27 +1,24 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+// import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import GoogleMap from '../shared/GoogleMap'
 import ServiceListItem from './ServiceListItem';
 
 import { Row, Col } from 'react-bootstrap';
 
 
-const GMap = withGoogleMap(props => (
-  <GoogleMap
+function GMap(props) {
+  return <GoogleMap
     zoom={10}
-    center={props.latlng}>
-    {_.map(props.services, (service, index) => {
-      return (
-        <Marker
-          key={service.id}
-          label={(index+1).toString()}
-          position={{ lat: parseFloat(service.location.lat), lng: parseFloat(service.location.lng)}}
-        />
-      )
-    })}
-  </GoogleMap>
-));
+    center={props.latlng}
+    markers={props.services.map((service, idx) => {
+      return {
+        title: (idx + 1) + '',
+        position: { lat: parseFloat(service.location.lat), lng: parseFloat(service.location.lng)}
+      }
+  })}/>
+}
 
 export default function ServiceList({ need, services, latlng }) {
   return (
