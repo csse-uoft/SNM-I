@@ -40,7 +40,7 @@ export default function changePrimaryEmail() {
   };
 
   const handleDialogConfirmed = () => {
-    history.push('/login-pane');
+    history.push('/login');
   }
 
   return (
