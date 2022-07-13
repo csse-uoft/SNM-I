@@ -253,9 +253,9 @@ export default function EditProfile() {
         {/* Alert prompt for submitting changes */}
         <AlertDialog
           dialogContentText={"Note that if you want to change your primary email, you will receive a " +
-            "confirmation link in your input email. Changes of primary Email will only be made" +
+            "confirmation link in your input email. Changes of primary email will only be made" +
             " after you click the confirm link in the email."}
-          dialogTitle={'Are you sure to submit?'}
+          dialogTitle={'Are you sure you want to submit?'}
           buttons={[
             <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
             //<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
@@ -265,8 +265,8 @@ export default function EditProfile() {
 
         {/* Alert prompt after email was sent */}
         <AlertDialog
-          dialogContentText={"The Link to confirm changes of primary Email has been sent."}
-          dialogTitle={'Congratulation!'}
+          dialogContentText={"A confirmation link has been sent to the new primary email address."}
+          dialogTitle={'Congratulations!'}
           buttons={<Button onClick={handleDialogEmail} key={'confirm'} autoFocus> {'confirm'}</Button>}
           open={dialogEmail}/>
 

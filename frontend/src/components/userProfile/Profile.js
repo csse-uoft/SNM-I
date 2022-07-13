@@ -130,8 +130,8 @@ export default function Profile() {
       </div>
 
       <AlertDialog
-        dialogContentText={"Click the confirm button below will lead you to the editing profile page."}
-        dialogTitle={'Notice of leaving current page'}
+        dialogContentText={"Click confirm to redirect to the edit profile page."}
+        dialogTitle={'Leaving the current page'}
         buttons={<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>}
         open={dialogConfirm}/>
 
