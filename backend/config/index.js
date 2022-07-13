@@ -12,7 +12,7 @@ const config = {
     addr: isProduction ? 'mongodb://localhost:27017/snmi' : `mongodb://localhost:27017/${process.env.test ? "snmiTest" : "snmi"}`
   },
 
-  allowedOrigins: ['http://localhost:3000', 'http://localhost:3002'],
+  allowedOrigins: ['http://localhost:3000', 'http://localhost:3002', 'https://www.socialneedsmarketplace.ca', 'https://www.snmi.ca'],
 
   frontend: {
     addr: isProduction ? 'https://www.mixedusebydesign.com' : 'http://localhost:3000'
@@ -59,6 +59,10 @@ const config = {
 // Environment Variables Override
 if (process.env.GRAPHDB_ADDRESS)
   config.graphdb.addr = process.env.GRAPHDB_ADDRESS;
+if (process.env.GRAPHDB_USERNAME)
+  config.graphdb.username = process.env.GRAPHDB_USERNAME;
+if (process.env.GRAPHDB_PASSWORD)
+  config.graphdb.password = process.env.GRAPHDB_PASSWORD;
 if (process.env.MONGODB_ADDRESS)
   config.mongodb.addr = process.env.MONGODB_ADDRESS;
 

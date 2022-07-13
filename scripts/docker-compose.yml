@@ -1,0 +1,31 @@
+services:
+  server:
+    image: node:16-slim
+    container_name: server
+    working_dir: /code
+    volumes:
+      - ./backend:/code
+      - server_node_modules:/code/node_modules
+    environment:
+      - TZ=America/New_York
+    command: bash -c "yarn install && NODE_ENV=production yarn start"
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "3"
+    network_mode: "host"
+    restart: always
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "127.0.0.1:27017:27017"  # Do not expose to the public
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - TZ=America/New_York
+    restart: always
+volumes:
+  server_node_modules:
+  mongodb_data:

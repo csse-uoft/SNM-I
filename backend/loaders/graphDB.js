@@ -1,5 +1,5 @@
-const {ServerClient, ServerClientConfig} = require('graphdb').server;
-const {RepositoryClientConfig, RDFRepositoryClient} = require('graphdb').repository;
+const {GraphDBServerClient, ServerClientConfig} = require('graphdb').server;
+const {RepositoryClientConfig, RDFRepositoryClient, RepositoryConfig, RepositoryType} = require('graphdb').repository;
 const {UpdateQueryPayload} = require('graphdb').query;
 const {SparqlJsonResultParser, JsonLDParser} = require('graphdb').parser;
 const {RDFMimeType, QueryContentType} = require('graphdb').http;
@@ -20,21 +20,11 @@ async function getRepository() {
   return repository;
 }
 
-async function createRepository() {
-  const form = new FormData();
-  if (process.env.test)
-    form.append('config', fs.createReadStream(__dirname + '/configTest.ttl'));
-  else
-    form.append('config', fs.createReadStream(__dirname + '/config.ttl'));
-  form.append('location', '');
-  const res = await fetch(graphdb.addr + '/rest/repositories', {
-    method: 'POST',
-    body: form,
-    headers: form.getHeaders()
-  });
-  if (res.status === 500) {
-    throw Error('Fails to create repository: ' + (await res.json()).message);
-  }
+async function createRepository(dbClient, dbName) {
+  // Create repository configuration
+  const config = new RepositoryConfig(dbName, '', new Map(), '',  'SNM-I', RepositoryType.FREE);
+  // Use the configuration to create new repository
+  await dbClient.createRepository(config);
 }
 
 async function loadInitialData(file, overwrite = !!process.env.test) {
@@ -82,10 +72,15 @@ async function load() {
   const serverConfig = new ServerClientConfig(graphdb.addr, 0, {
     'Accept': RDFMimeType.SPARQL_RESULTS_JSON
   });
-  dbClient = new ServerClient(serverConfig);
+
+  if (graphdb.username) {
+    serverConfig.useGdbTokenAuthentication(graphdb.username, graphdb.password);
+  }
+
+  dbClient = new GraphDBServerClient(serverConfig);
   const ids = await dbClient.getRepositoryIDs();
   if (!ids.includes(DBName)) {
-    await createRepository();
+    await createRepository(dbClient, DBName);
     console.log(`Repository \`${DBName}\` created.`)
   }
   const readTimeout = 30000;
@@ -98,6 +93,11 @@ async function load() {
     })
     .setReadTimeout(readTimeout)
     .setWriteTimeout(writeTimeout);
+
+  if (graphdb.username) {
+    config.useGdbTokenAuthentication(graphdb.username, graphdb.password);
+  }
+
   repository = new RDFRepositoryClient(config);
 
   // using https://github.com/rubensworks/sparqljson-parse.js
