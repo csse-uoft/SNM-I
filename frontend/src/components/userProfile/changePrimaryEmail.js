@@ -54,10 +54,10 @@ export default function changePrimaryEmail() {
             </Button>
 
             <AlertDialog
-              dialogContentText={"You have successfully changed your primary Email. Click the redirect " +
+              dialogContentText={"You have successfully changed your primary Email. Click the confirm " +
                 "button below to be redirected to the login page."}
               dialogTitle={'Congratulation!'}
-              buttons={<Button onClick={handleDialogConfirmed} key={'redirect'} autoFocus> {'redirect'}</Button>}
+              buttons={<Button onClick={handleDialogConfirmed} key={'redirect'} autoFocus> {'confirm'}</Button>}
               open={dialogConfirmed}/>
 
           </Container>
