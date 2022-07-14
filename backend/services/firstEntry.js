@@ -12,7 +12,7 @@ const verifyUser = async (req, res, next) => {
     if (!userAccount){
       return res.status(400).json({success: false, message: "No such user"})
     }
-    if (userAccount.status !== "temporary"){
+    if (userAccount.status !== "pending"){
       return res.status(400).json({success: false, message: "The user is verified already"})
     }
     return res.status(200).json({success: true, message:'success', email: userAccount.primaryEmail, userId: userAccount._id})
