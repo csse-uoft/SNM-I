@@ -48,7 +48,7 @@ async function createTemporaryUserAccount(data) {
     primaryEmail: email,
     role: is_superuser? 'admin': 'regular',
     expirationDate: expirationDate,
-    status: "temporary"
+    status: "pending"
   });
 
   await userAccount.save();
@@ -150,9 +150,25 @@ async function findUserAccountById(id) {
   return userAccount;
 }
 
+/**
+ * Check if this email belongs to a user
+ * @param email
+ * @returns {Promise<number>}
+ * return 0 if the email not belongs to anyone
+ * return 1 if the email belongs to a permanent user
+ * return 2 if the email belongs to a temporary user
+ */
 async function isEmailExists(email) {
   const userAccount = await findUserAccountByEmail(email);
-  return !!userAccount
+  if(!!userAccount){
+    if(userAccount.status === 'pending'){
+      return 2
+    }else{
+      return 1
+    }
+  }else{
+    return 0
+  }
 }
 
 async function validateCredentials(email, password) {

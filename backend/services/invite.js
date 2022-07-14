@@ -19,11 +19,12 @@ const inviteNewUser = async (req, res, next) => {
 
   try {
 
-    if (await isEmailExists(email)){
+    const exist = await isEmailExists(email)
+    if ( exist === 1){
       // the user already exists
       return res.status(400).json({success: false, message: 'The email is occupied by an account.'})
 
-    } else {
+    } else if (!exist){
       // the user is a new user, store its data inside the database
       const userAccount = await createTemporaryUserAccount({email, is_superuser, expirationDate: new Date(expirationDate)})
       // send email
@@ -32,7 +33,13 @@ const inviteNewUser = async (req, res, next) => {
       }, jwtConfig.secret, jwtConfig.options)
       await sendVerificationMail(email, token)
       return res.status(201).json({success: true, message: 'Successfully invited user.'})
-
+    } else {
+      // the user is already a temporary user
+      const token = sign({
+        email
+      }, jwtConfig.secret, jwtConfig.options)
+      await sendVerificationMail(email, token)
+      return res.status(201).json({success: true, message: 'Successfully invited user.'})
 
     }
   }catch (e) {
