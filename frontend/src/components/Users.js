@@ -90,6 +90,15 @@ export default function Users() {
       }
     },
     {
+      label: 'Expiration Date',
+      body: ({expirationDate}) => {
+        if(expirationDate)
+          return (new Date(expirationDate)).toString()
+      }
+
+
+    },
+    {
       label: ' ',
       body: ({username, id}) =>
         <DropdownMenu urlPrefix={'users'} objectId={id}
