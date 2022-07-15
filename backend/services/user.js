@@ -170,6 +170,10 @@ async function isEmailExists(email) {
     return 0
   }
 }
+async function userExpired(email){
+  const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
+  return userAccount.expirationDate < new Date()
+}
 
 async function validateCredentials(email, password) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
@@ -195,6 +199,7 @@ async function initUserAccounts() {
       role: 'admin',
       displayName: 'Admin',
       status: "permanent",
+      expirationDate:new Date('2999-1-1'),
       primaryContact: {
         givenName: 'Super',
         familyName: 'Admin',
@@ -215,5 +220,5 @@ async function initUserAccounts() {
 
 module.exports = {
   createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
-  createTemporaryUserAccount, updateUserPassword, findUserAccountById
+  createTemporaryUserAccount, updateUserPassword, findUserAccountById, userExpired
 };
