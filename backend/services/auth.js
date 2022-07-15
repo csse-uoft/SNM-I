@@ -9,11 +9,11 @@ const login = async (req, res, next) => {
 
   try {
     if(await userExpired(email)){
-      return res.json({success: false, message: 'User is expired'})
+      return res.status(400).json({success: false, message: 'User is expired'})
     }
     const {validated, userAccount} = await validateCredentials(email, password);
     if (!validated) {
-      return res.json({success: false, message: 'Username or password is incorrect.'});
+      return res.status(400).json({success: false, message: 'Username or password is incorrect.'});
     } else {
       req.session.email = email;
       await userAccount.populate('primaryContact.telephone');
