@@ -130,6 +130,7 @@ export default function EditUserForm() {
       console.log('This is form.telephone:', form.telephone)
       console.log("phone not changed:", phoneUnchanged)
       const updateForm = {
+        id: id,
         givenName: form.givenName,
         familyName: form.familyName,
         countryCode: null,
@@ -152,9 +153,7 @@ export default function EditUserForm() {
         updateForm.areaCode = parseInt(phone[1].slice(1,4));
         updateForm.phoneNumber = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
       }
-
-      console.log(updateForm)
-
+      console.log(id)
       const {success} = await updateUserForm(id, updateForm);
       if (success) {
         setLoadingButton(false);
