@@ -4,8 +4,8 @@ import {Route} from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
-import Login from './components/Login';
-import LoginPane from './components/LoginPane';
+import Login from './components/login/Login';
+import LoginPane from './components/login/LoginPane';
 import Dashboard from './components/Dashboard';
 import changePrimaryEmail from './components/userProfile/changePrimaryEmail';
 import Clients from './components/Clients';

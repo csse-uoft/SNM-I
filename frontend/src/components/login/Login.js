@@ -1,7 +1,7 @@
 import React from 'react'
 import {Typography, Button, Container, Grid, Box} from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link } from './shared';
+import { Link } from '../shared';
 
 const useStyles = makeStyles(() => ({
   container: {

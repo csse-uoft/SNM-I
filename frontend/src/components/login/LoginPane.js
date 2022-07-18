@@ -3,10 +3,10 @@ import { useHistory } from "react-router";
 
 import { TextField, Container, Paper, Typography, Button, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link } from './shared';
+import { Link } from '../shared';
 
-import { login } from '../api/auth';
-import { UserContext } from "../context";
+import { login } from '../../api/auth';
+import { UserContext } from "../../context";
 
 const useStyles = makeStyles(() => ({
   container: {
