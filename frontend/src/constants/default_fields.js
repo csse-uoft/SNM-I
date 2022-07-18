@@ -47,6 +47,8 @@ export const defaultForgotPasswordFields = {
   group4: {securityQuestion3: '', securityQuestionAnswer3: ''},
 }
 
+export const defaultSecurityQuestionsFields = defaultForgotPasswordFields
+
 export const defaultContactFields = {
   givenName: '',
   familyName: '',
