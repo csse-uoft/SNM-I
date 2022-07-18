@@ -26,10 +26,16 @@ export default function User() {
   return (
     <Container>
       <Typography variant="h5" gutterBottom>
-        User profile
+        {'Profile for user : ' + user.primaryEmail}
       </Typography>
+
+      <Link to={`/users/`}>
+        <Button color="primary" variant="contained" style={{marginBottom: 12, marginRight: 12}}>
+          Back to User Form
+        </Button>
+      </Link>
       <Link to={`/users/${id}/edit`}>
-        <Button color="primary" variant="contained" style={{marginBottom: 12}}>
+        <Button color="primary" variant="contained" style={{marginBottom: 12, marginRight: 12}}>
           Edit
         </Button>
       </Link>

@@ -39,6 +39,50 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
+const updateUserForm = async (req, res, next) => {
+    const {id, givenName, familyName, email, altEmail, countryCode, areaCode, phoneNumber} = req.body;
+
+    try {
+        const userAccount = await findUserAccountById(id);
+        if(givenName) {
+            if (!userAccount.primaryContact) {
+                userAccount.primaryContact = {};
+            }
+            userAccount.primaryContact.givenName = givenName;
+        }
+
+        if(familyName) {
+            userAccount.primaryContact.familyName = familyName;
+        }
+
+        if(countryCode) {
+            if (!userAccount.primaryContact.telephone) {
+                userAccount.primaryContact.telephone={};
+            }
+            userAccount.primaryContact.telephone.countryCode = countryCode;
+        }
+
+        if(areaCode) {
+            userAccount.primaryContact.telephone.areaCode = areaCode;
+        }
+
+        if(phoneNumber) {
+            userAccount.primaryContact.telephone.phoneNumber = phoneNumber;
+        }
+
+        if(altEmail) {
+            userAccount.secondaryEmail = altEmail;
+        }
+
+        await userAccount.save();
+        console.log(userAccount)
+        return res.status(202).json({success: true, message: 'Successfully update user form.'})
+
+    }catch (e) {
+        return next(e)
+    }
+}
+
 
 const checkCurrentPassword = async (req, res, next) => {
     const {password} = req.body;
@@ -115,5 +159,5 @@ const fetchUsers = async (req, res, next) => {
 }
 
 module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword, updatePrimaryEmail,
-fetchUsers, getUserProfileById};
+fetchUsers, getUserProfileById, updateUserForm};
 

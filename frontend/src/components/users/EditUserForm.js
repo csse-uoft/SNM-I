@@ -9,7 +9,7 @@ import {
   getProfile,
   getUserProfileById,
   updatePrimaryEmail,
-  updateProfile
+  updateProfile, updateUserForm
 } from "../../api/userApi";
 import { Loading } from "../shared"
 import { isFieldEmpty } from "../../helpers";
@@ -40,8 +40,6 @@ export default function EditUserForm() {
   const [form, setForm] = useState({...userProfileFields});
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
-  const [dialogEmail, setDialogEmail] = useState(false);
-  let emailSent = false;
 
   useEffect(() => {
     getUserProfileById(id).then(user => {
@@ -59,9 +57,6 @@ export default function EditUserForm() {
       setLoading(false);
     });
   }, [id]);
-
-  console.log(user)
-
 
   /**
    * @returns {boolean} true if valid.
@@ -86,12 +81,10 @@ export default function EditUserForm() {
       }
 
     }
-
     if (Object.keys(newErrors).length !== 0) {
       setErrors(newErrors);
       return false
     }
-
     return true;
   };
 
@@ -111,13 +104,7 @@ export default function EditUserForm() {
 
   const handleCancel = () => {
     alert('All the changes you made will not be saved.');
-    history.push('/profile/' + id);
-  }
-
-  // email-sent dialog confirm button handler
-  const handleDialogEmail =() => {
-    setDialogEmail(false);
-    history.push('/profile/' + id + '/');
+    history.push('/users/' + id);
   }
 
   // submit button handler
@@ -129,7 +116,60 @@ export default function EditUserForm() {
 
   // confirmation dialog confirm button handler
   const handleDialogConfirm = async () => {
-  
+    try{
+      setLoadingButton(true);
+
+      // Phone number parse.
+      let phoneUnchanged;
+      if (!form.telephone) {
+        phoneUnchanged = null;
+      } else {
+        phoneUnchanged = user.primaryContact.telephone.countryCode.toString() +
+          user.primaryContact.telephone.areaCode.toString() + user.primaryContact.telephone.phoneNumber.toString()
+      }
+      console.log('This is form.telephone:', form.telephone)
+      console.log("phone not changed:", phoneUnchanged)
+      const updateForm = {
+        givenName: form.givenName,
+        familyName: form.familyName,
+        countryCode: null,
+        areaCode: null,
+        phoneNumber: null,
+        altEmail: form.altEmail,
+      }
+
+      console.log(updateForm)
+      if (form.telephone === phoneUnchanged) {
+        console.log('reach if')
+        updateForm.countryCode = parseInt(form.telephone.slice(0,1));
+        updateForm.areaCode = parseInt(form.telephone.slice(1,4));
+        updateForm.phoneNumber = parseInt(form.telephone.slice(4,11));
+      } else {
+        console.log('reach here')
+        const phone = form.telephone.split(' ');
+        console.log(phone)
+        updateForm.countryCode = parseInt(phone[0]);
+        updateForm.areaCode = parseInt(phone[1].slice(1,4));
+        updateForm.phoneNumber = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
+      }
+
+      console.log(updateForm)
+
+      const {success} = await updateUserForm(id, updateForm);
+      if (success) {
+        setLoadingButton(false);
+        setDialogSubmit(false);
+        history.push('/users/' + id);
+      } else {
+        setLoadingButton(false);
+        setDialogSubmit(false);
+        console.log('backend update not success.')
+      }
+    } catch (e){
+      setLoadingButton(false);
+      console.log('catch e');
+      console.log(e.json);
+    }
   };
 
   if (loading)
@@ -138,22 +178,40 @@ export default function EditUserForm() {
   return (
     <Container className={classes.root}>
       <Typography variant="h5">
-        {'Edit user'}
+        {'Edit user: ' + user.primaryEmail}
       </Typography>
       {Object.entries(userProfileFields).map(([field, option]) => {
-        return (
-          <option.component
-            key={field}
-            label={option.label}
-            type={option.type}
-            options={option.options}
-            value={form[field]}
-            required={option.required}
-            onChange={value => form[field] = value.target.value}
-            onBlur={e => handleOnBlur(e, field, option)}
-            error={!!errors[field]}
-            helperText={errors[field]}
-          />)})}
+        if (option.label === 'Primary Email') {
+          return (
+            <option.component
+              key={field}
+              label={option.label}
+              type={option.type}
+              options={option.options}
+              value={form[field]}
+              disabled={true}
+              required={option.required}
+              onChange={value => form[field] = value.target.value}
+              onBlur={e => handleOnBlur(e, field, option)}
+              error={!!errors[field]}
+              helperText={errors[field]}
+            />)
+        } else {
+          return (
+            <option.component
+              key={field}
+              label={option.label}
+              type={option.type}
+              options={option.options}
+              value={form[field]}
+              required={option.required}
+              onChange={value => form[field] = value.target.value}
+              onBlur={e => handleOnBlur(e, field, option)}
+              error={!!errors[field]}
+              helperText={errors[field]}
+            />)
+        }
+        })}
 
       {/* Button for cancelling account info changes */}
       <Button variant="contained" color="primary" className={classes.button}
@@ -170,9 +228,7 @@ export default function EditUserForm() {
 
       {/* Alert prompt for submitting changes */}
       <AlertDialog
-        dialogContentText={"Note that if you want to change your primary email, you will receive a " +
-          "confirmation link in your input email. Changes of primary email will only be made" +
-          " after you click the confirm link in the email."}
+        dialogContentText={"Note that if you are changing the profile information for user:" + user.primaryEmail}
         dialogTitle={'Are you sure you want to submit?'}
         buttons={[
           <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
@@ -181,12 +237,6 @@ export default function EditUserForm() {
                          onClick={handleDialogConfirm} children='confirm' autoFocus/>]}
         open={dialogSubmit}/>
 
-      {/* Alert prompt after email was sent */}
-      <AlertDialog
-        dialogContentText={"A confirmation link has been sent to the new primary email address."}
-        dialogTitle={'Congratulations!'}
-        buttons={<Button onClick={handleDialogEmail} key={'confirm'} autoFocus> {'confirm'}</Button>}
-        open={dialogEmail}/>
     </Container>
   )
 }

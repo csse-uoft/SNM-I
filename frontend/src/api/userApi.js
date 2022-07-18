@@ -122,7 +122,17 @@ export async function updatePrimaryEmail(id, email) {
  * @returns {Promise<*>}
  */
 export function updateProfile(id, params) {
-  return postJson('/api//user/editProfile/' + id + '/', params);
+  return postJson('/api/user/editProfile/' + id + '/', params);
+}
+
+/**
+ * This allows admin to update user form.
+ * @param id
+ * @param params
+ * @returns {Promise<*>}
+ */
+export function updateUserForm(id, params) {
+  return postJson('/api/user/updateUserForm/' + id + '/', params);
 }
 
 /**
