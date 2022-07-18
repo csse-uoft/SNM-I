@@ -90,7 +90,6 @@ export default function EditProfile() {
       setErrors(newErrors);
       return false
     }
-
     return true;
   };
 
@@ -233,9 +232,7 @@ export default function EditProfile() {
               onBlur={e => handleOnBlur(e, field, option)}
               error={!!errors[field]}
               helperText={errors[field]}
-            />)
-
-        })}
+            />)})}
 
         {/* Button for cancelling account info changes */}
         <Button variant="contained" color="primary" className={classes.button}

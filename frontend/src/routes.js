@@ -38,6 +38,7 @@ import Questions from './components/additionalFIelds/Questions';
 import UserFirstEntry from "./components/register/UserFirstEntry";
 import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
+import EditUserForm from "./components/users/EditUserForm";
 
 const routes = (
   <Switch>
@@ -61,7 +62,7 @@ const routes = (
     <PrivateRoute path='/profile/:id' component={UserProfile}/>
     <PrivateRoute path='/users/reset-password/:id' component={ResetPassword}/>
 
-    <AdminRoute path='/users/:id/edit' component={UserForm}/>
+    <AdminRoute path='/users/:id/edit' component={EditUserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
     <AdminRoute path='/users/invite' component={UserInvite}/>
 
