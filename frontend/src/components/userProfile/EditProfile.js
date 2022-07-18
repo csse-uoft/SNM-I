@@ -138,7 +138,7 @@ export default function EditProfile() {
         phoneUnchanged = userContext.countryCode.toString() +
           userContext.areaCode.toString() + userContext.phoneNumber.toString()
       }
-
+      console.log("form.telephone", form.telephone)
       console.log("phone not changed:", phoneUnchanged)
       const updateForm = {
         givenName: form.givenName,

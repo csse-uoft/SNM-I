@@ -121,6 +121,7 @@ export default function EditUserForm() {
 
       // Phone number parse.
       let phoneUnchanged;
+      console.log(form.telephone)
       if (!form.telephone) {
         phoneUnchanged = null;
       } else {

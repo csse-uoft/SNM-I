@@ -212,8 +212,10 @@ export const Validator = {
   },
 
   phone: phone => {
-    if (!emptyPhoneNumber.test(phone) && inNorthAmericaRegex.test(phone) && !phoneNumberRegex.test(phone))
+    console.log(phone)
+    if (!emptyPhoneNumber.test(phone) && inNorthAmericaRegex.test(phone) && !phoneNumberRegex.test(phone)) {
       return PHONE_ERR_MSH;
+    }
     if (emptyPhoneNumber.test(phone)) {
       return PHONE_ERR_MSH;
     }
