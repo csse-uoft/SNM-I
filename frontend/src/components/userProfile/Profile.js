@@ -45,7 +45,7 @@ export default function Profile() {
   const userContext = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({...userProfileFields});
-  const [dialogConfirm, setDialogConfirm] = useState(false);
+  //const [dialogConfirm, setDialogConfirm] = useState(false);
   const profileForm = {
     givenName: userContext.givenName,
     familyName: userContext.familyName,
@@ -62,16 +62,11 @@ export default function Profile() {
     });
   }, [id]);
 
-  // handler for Edit profile button
+  // goes to edit page
   const handleEdit = () => {
-    setDialogConfirm(true);
-  }
-
-  // handler for dialog confirm
-  const handleDialogConfirm =() => {
-    setDialogConfirm(false);
     history.push('/profile/' + id + '/edit');
   }
+
 
   if (loading)
     return <Loading message={`Loading...`}/>;
@@ -128,13 +123,6 @@ export default function Profile() {
                      key={'Reset Password'}/>
         </Box>
       </div>
-
-      <AlertDialog
-        dialogContentText={"Click confirm to redirect to the edit profile page."}
-        dialogTitle={'Leaving the current page'}
-        buttons={<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>}
-        open={dialogConfirm}/>
-
     </Container>
   )
 }

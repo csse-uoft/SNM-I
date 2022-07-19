@@ -107,16 +107,8 @@ export default function EditProfile() {
   }
 
   // submit button handler
-  const handleSubmitChanges = () => {
+  const handleSubmitChanges = async () => {
     if (validate()) {
-      setDialogSubmit(true);
-    }
-  }
-
-  // confirmation dialog confirm button handler
-  const handleDialogConfirm = async () => {
-    try {
-
       if (form.email !== userContext.email) {
         console.log('reach before send verification')
         const {sentEmailConfirm} = await updatePrimaryEmail(id, form.email);
@@ -131,6 +123,13 @@ export default function EditProfile() {
         }
       }
 
+      setDialogSubmit(true);
+    }
+  }
+
+  // confirmation dialog confirm button handler
+  const handleDialogConfirm = async () => {
+    try {
       let phoneUnchanged;
       if (!userContext.phoneNumber) {
         phoneUnchanged = null;
