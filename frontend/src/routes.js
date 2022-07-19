@@ -46,8 +46,8 @@ const routes = (
     <Route exact path='/' component={Landing}/>
     {/*<Route path='/login' component={Login}/>*/}
     <Route path='/email-confirm' component={EmailConfirm}/>
-    <Route path='/login' component={LoginPane}/>
     <Route path='/login/doubleAuth' component={DoubleAuth}/>
+    <Route path='/login' component={LoginPane}/>
     <Route path='/forgot-password' component={ForgotPassword}/>
     <Route path='/update-primary-email/:token' component={changePrimaryEmail}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>
