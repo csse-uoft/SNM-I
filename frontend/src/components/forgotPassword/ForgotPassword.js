@@ -65,7 +65,6 @@ export default function ForgotPassword() {
             question: state.form[group][securityQuestion], answer})
 
           if(matched){
-            setState(state => ({...state,}))
             const {success, message} = await sendVerificationEmail({email: state.form.group1.email})
             setState(state => ({...state, loadingButton: false, successDialog: true}))
 
