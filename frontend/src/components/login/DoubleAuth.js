@@ -151,6 +151,11 @@ export default function DoubleAuth() {
       </Container>)
   }else{
     // the user wasted all 3 chances, the user should remove id from req but haven't implemented TODO
-    history.push('/')
+    return (
+      <AlertDialog dialogContentText={'You have missed all 3 chances'}
+                   dialogTitle={'Sorry'}
+                   buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
+                   open={state.group > 3}/>
+    )
   }
 }
