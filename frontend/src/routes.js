@@ -64,11 +64,9 @@ const routes = (
     <PrivateRoute path='/profile/:id' component={UserProfile}/>
     <PrivateRoute path='/users/reset-password/:id' component={ResetPassword}/>
 
-    <AdminRoute path='/users/:id/edit' component={UserForm}/>
+    <AdminRoute path='/users/:id/edit' component={EditUserForm}/>
     <AdminRoute path='/users/new' component={UserForm}/>
     <AdminRoute path='/users/invite' component={UserInvite}/>
-
-
     <AdminRoute path='/users/:id' component={User}/>
     <AdminRoute path='/users' component={Users}/>
     <AdminRoute path='/admin-logs' component={AdminLogs}/>

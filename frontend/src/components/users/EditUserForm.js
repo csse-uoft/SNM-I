@@ -121,7 +121,6 @@ export default function EditUserForm() {
 
       // Phone number parse.
       let phoneUnchanged;
-      console.log(form.telephone)
       if (!form.telephone) {
         phoneUnchanged = null;
       } else {
@@ -142,19 +141,15 @@ export default function EditUserForm() {
 
       console.log(updateForm)
       if (form.telephone === phoneUnchanged) {
-        console.log('reach if')
         updateForm.countryCode = parseInt(form.telephone.slice(0,1));
         updateForm.areaCode = parseInt(form.telephone.slice(1,4));
         updateForm.phoneNumber = parseInt(form.telephone.slice(4,11));
       } else {
-        console.log('reach here')
         const phone = form.telephone.split(' ');
-        console.log(phone)
         updateForm.countryCode = parseInt(phone[0]);
         updateForm.areaCode = parseInt(phone[1].slice(1,4));
         updateForm.phoneNumber = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
       }
-      console.log(id)
       const {success} = await updateUserForm(id, updateForm);
       if (success) {
         setLoadingButton(false);

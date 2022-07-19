@@ -22,7 +22,6 @@ export default function User() {
   if (loading)
    return <Loading message={`Loading user...`}/>;
 
-  console.log(user)
   return (
     <Container>
       <Typography variant="h5" gutterBottom>

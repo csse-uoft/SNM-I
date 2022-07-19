@@ -4,6 +4,6 @@ const router = express.Router();
 
 
 router.get('/users', fetchUsers);
-router.get('/users/getUserProfileById/:id', getUserProfileById)
+router.get('/users/getUserProfileById/:id/', getUserProfileById)
 
 module.exports = router;
