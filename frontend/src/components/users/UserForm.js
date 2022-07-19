@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from "react-router";
-
 import { defaultUserFields } from "../../constants/default_fields";
 import { Button, Container, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";

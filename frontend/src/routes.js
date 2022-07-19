@@ -39,14 +39,15 @@ import UserFirstEntry from "./components/register/UserFirstEntry";
 import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 import DoubleAuth from "./components/login/DoubleAuth";
+import EditUserForm from "./components/users/EditUserForm";
 
 const routes = (
   <Switch>
     <Route exact path='/' component={Landing}/>
-    <Route path='/login/doubleAuth' component={DoubleAuth}/>
     {/*<Route path='/login' component={Login}/>*/}
     <Route path='/email-confirm' component={EmailConfirm}/>
     <Route path='/login' component={LoginPane}/>
+    <Route path='/login/doubleAuth' component={DoubleAuth}/>
     <Route path='/forgot-password' component={ForgotPassword}/>
     <Route path='/update-primary-email/:token' component={changePrimaryEmail}/>
     <PrivateRoute path='/dashboard' component={Dashboard}/>

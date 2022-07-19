@@ -90,7 +90,6 @@ export default function EditProfile() {
       setErrors(newErrors);
       return false
     }
-
     return true;
   };
 
@@ -139,7 +138,7 @@ export default function EditProfile() {
         phoneUnchanged = userContext.countryCode.toString() +
           userContext.areaCode.toString() + userContext.phoneNumber.toString()
       }
-
+      console.log("form.telephone", form.telephone)
       console.log("phone not changed:", phoneUnchanged)
       const updateForm = {
         givenName: form.givenName,
@@ -233,9 +232,7 @@ export default function EditProfile() {
               onBlur={e => handleOnBlur(e, field, option)}
               error={!!errors[field]}
               helperText={errors[field]}
-            />)
-
-        })}
+            />)})}
 
         {/* Button for cancelling account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
