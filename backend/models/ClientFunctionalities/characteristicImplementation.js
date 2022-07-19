@@ -11,9 +11,9 @@ const GDBCIModel = createGraphDBModel({
   fieldType:{type: GDBFieldTypeModel, internalKey: ':hasFieldType'},
   options:{type: [Types.NamedIndividual], internalKey: ':hasOption'},
   required:{type: Boolean, internalKey: ':isRequired'},
-  optionsFromClass:{type: Types.NamedIndividual, internalKey: ''},
+  optionsFromClass:{type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
 }, {
-  rdfTypes: ['snmi:CharacteristicImplementation'], name: 'ci'
+  rdfTypes: [':CharacteristicImplementation'], name: 'ci'
 });
 
 module.exports = {
