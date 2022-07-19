@@ -13,7 +13,7 @@ const GDBCIModel = createGraphDBModel({
   required:{type: Boolean, internalKey: ':isRequired'},
   optionsFromClass:{type: Types.NamedIndividual, internalKey: ''},
 }, {
-  rdfTypes: ['snmi:CharacteristicImplementation'], name: 'characteristicImplementation'
+  rdfTypes: ['snmi:CharacteristicImplementation'], name: 'ci'
 });
 
 module.exports = {
