@@ -2,16 +2,12 @@ import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router";
 import React, { useEffect, useState, useContext } from 'react';
 import {
-  checkSecurityQuestion,
-  fetchSecurityQuestionsByEmail,
-  fetchUsers,
-  LoginCheckSecurityQuestion
+  LoginCheckSecurityQuestion,
 } from "../../api/userApi";
 import {getUserSecurityQuestionsLogin} from "../../api/auth";
 import {defaultSecurityQuestionsFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
 import {Button, Container, Typography} from "@mui/material";
-import {forgotPasswordFields} from "../../constants/forgot_password_fields";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {loginDoubleAuthFields} from "../../constants/login_double_auth_fields";
