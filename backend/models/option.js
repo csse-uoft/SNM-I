@@ -1,6 +1,6 @@
 const {createGraphDBModel, Types} = require("../utils/graphdb");
 
-const GDBOption = createGraphDBModel({
+const GDBOptionModel = createGraphDBModel({
   label: {type: String, internalKey: ':hasLabel'},
   dataValue: {type: String, internalKey: ':hasDataValue'},
   objectValue: {type: Types.NamedIndividual, internalKey: ':hasObjectValue'}
@@ -8,5 +8,5 @@ const GDBOption = createGraphDBModel({
 },{rdfTypes: [':Option'], name:'option'})
 
 module.exports = {
-  GDBOption
+  GDBOptionModel
 }
