@@ -43,6 +43,7 @@ export default function EditProfile() {
   const [loading, setLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
   const [dialogEmail, setDialogEmail] = useState(false);
+  const [dialogQuitEdit, setDialogQuitEdit] = useState(false);
   let emailSent = false;
 
   const profileForm = {
@@ -94,8 +95,8 @@ export default function EditProfile() {
   };
 
   // cancel change button handler
-  const handleCancel = () => {
-    alert('All the changes you made will not be saved.');
+  const handleDialogCancel = () => {
+    setDialogQuitEdit(false);
     history.push('/profile/' + id);
   }
 
@@ -124,22 +125,19 @@ export default function EditProfile() {
           emailSent = true;
           console.log('email verification link sent');
         } else {
+          //TODO: change alert to a dialog.
+          alert('Email already exists with a temporary or permanent account.');
           console.log('email verification is not sent.');
         }
       }
 
       let phoneUnchanged;
-      console.log(userContext.countryCode)
-      console.log(userContext.areaCode)
-      console.log(userContext.phoneNumber)
       if (!userContext.phoneNumber) {
         phoneUnchanged = null;
       } else {
         phoneUnchanged = userContext.countryCode.toString() +
           userContext.areaCode.toString() + userContext.phoneNumber.toString()
       }
-      console.log("form.telephone", form.telephone)
-      console.log("phone not changed:", phoneUnchanged)
       const updateForm = {
         givenName: form.givenName,
         familyName: form.familyName,
@@ -236,7 +234,7 @@ export default function EditProfile() {
 
         {/* Button for cancelling account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
-                onClick={handleCancel} key={'Cancel Changes'}>
+                onClick={() => setDialogQuitEdit(true)} key={'Cancel Changes'}>
           Cancel Changes
         </Button>
 
@@ -266,6 +264,12 @@ export default function EditProfile() {
           dialogTitle={'Congratulations!'}
           buttons={<Button onClick={handleDialogEmail} key={'confirm'} autoFocus> {'confirm'}</Button>}
           open={dialogEmail}/>
+
+        <AlertDialog
+          dialogContentText={"All the changes you made will not be saved."}
+          dialogTitle={'Notice!'}
+          buttons={<Button onClick={handleDialogCancel} key={'confirm'} autoFocus> {'confirm'}</Button>}
+          open={dialogQuitEdit}/>
 
       </div>
 

@@ -1,6 +1,6 @@
-const {GraphDB, Types, createGraphDBModel, DeleteType} = require('../../utils/graphdb');
+const {GraphDB, Types, createGraphDBModel, DeleteType} = require('../utils/graphdb');
 
-const {GDBOrganizationModel} = require('../organization');
+const {GDBOrganizationModel} = require('./organization');
 const {GDBPersonModel} = require('./person');
 
 const GDBSecurityQuestion = createGraphDBModel({

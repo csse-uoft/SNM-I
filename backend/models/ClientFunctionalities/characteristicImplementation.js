@@ -1,4 +1,5 @@
 const {createGraphDBModel, Types} = require("../../utils/graphdb");
+const {GDBFieldTypeModel} = require("./fieldType");
 
 /**
  * GDBCIModel stands for GDB - Characteristic Implementation - Model

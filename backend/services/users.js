@@ -1,5 +1,6 @@
 const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword,
-    findUserAccountById} = require("./user");
+    findUserAccountById, isEmailExists
+} = require("./user");
 const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail} = require("../utils");
 const {sign} = require("jsonwebtoken");
 const {jwtConfig} = require("../config");
@@ -128,6 +129,18 @@ const saveNewPassword = async (req, res, next) => {
 const updatePrimaryEmail = async (req, res, next) => {
     const {id, email} = req.body;
     const currentEmail = req.session.email;
+    const emailStatus = await isEmailExists(email);
+    if (emailStatus === 1) {
+        return res.status(200).json({sentEmailConfirm: false,
+            message: 'Your input primaryEmail already exists as a permanent account.'});
+    }
+
+    if (emailStatus === 2) {
+        return res.status(200).json({sentEmailConfirm: false,
+            message: 'Your input primaryEmail already exists as a temporary account.'});
+    }
+
+
     try {
         const token = sign({
             currentEmail, email

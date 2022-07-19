@@ -1,9 +1,9 @@
 module.exports = {
   ...require('./address'),
-  ...require('./UserFunctionalities/phoneNumber'),
-  ...require('./UserFunctionalities/person'),
+  ...require('./phoneNumber'),
+  ...require('./person'),
   ...require('./organization'),
-  ...require('./UserFunctionalities/userAccount'),
+  ...require('./userAccount'),
   ...require('./ClientFunctionalities/characteristic'),
   ...require('./ClientFunctionalities/characteristicImplementation')
 }

@@ -40,6 +40,7 @@ export default function EditUserForm() {
   const [form, setForm] = useState({...userProfileFields});
   const [dialogSubmit, setDialogSubmit] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
+  const [dialogQuitEdit, setDialogQuitEdit] = useState(false);
 
   useEffect(() => {
     getUserProfileById(id).then(user => {
@@ -102,8 +103,8 @@ export default function EditUserForm() {
     }
   };
 
-  const handleCancel = () => {
-    alert('All the changes you made will not be saved.');
+  const handleDialogCancel = () => {
+    setDialogQuitEdit(false);
     history.push('/users/' + id);
   }
 
@@ -210,7 +211,7 @@ export default function EditUserForm() {
 
       {/* Button for cancelling account info changes */}
       <Button variant="contained" color="primary" className={classes.button}
-              onClick={handleCancel} key={'Cancel Changes'}>
+              onClick={() => setDialogQuitEdit(true)} key={'Cancel Changes'}>
         Cancel Changes
       </Button>
 
@@ -231,6 +232,12 @@ export default function EditUserForm() {
           <LoadingButton noDefaultStyle variant="text" color="primary" loading ={loadingButton} key={'confirm'}
                          onClick={handleDialogConfirm} children='confirm' autoFocus/>]}
         open={dialogSubmit}/>
+
+      <AlertDialog
+        dialogContentText={"All the changes you made will not be saved."}
+        dialogTitle={'Notice!'}
+        buttons={<Button onClick={handleDialogCancel} key={'confirm'} autoFocus> {'confirm'}</Button>}
+        open={dialogQuitEdit}/>
 
     </Container>
   )
