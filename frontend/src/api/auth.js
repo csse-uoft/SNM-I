@@ -1,4 +1,4 @@
-import { postJson, sleep } from './index';
+import {getJson, postJson, sleep} from './index';
 
 /**
  * @param email
@@ -7,6 +7,10 @@ import { postJson, sleep } from './index';
  */
 export async function login(email, password) {
   return await postJson('/api/login', {email, password});
+}
+
+export function getUserSecurityQuestionsLogin(){
+  return getJson('/api/login/securityQuestions/fetch')
 }
 
 /**

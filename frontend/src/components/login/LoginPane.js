@@ -45,21 +45,9 @@ function LoginPane() {
       const {success, data} = await login(form.email, form.password);
       console.log(form.email, form.password, success, data)
       if (success) {
-        console.log('reach here')
-        userContext.updateUser({
-          id: data._id,
-          isAdmin: data.role === 'admin',
-          email: data.primaryEmail,
-          altEmail: data.secondaryEmail,
-          displayName: data.displayName,
-          givenName: data.primaryContact?.givenName,
-          familyName: data.primaryContact?.familyName,
-          countryCode: data.primaryContact?.telephone?.countryCode,
-          areaCode: data.primaryContact?.telephone?.areaCode,
-          phoneNumber: data.primaryContact?.telephone?.phoneNumber,
-        });
-        console.log('successfully logged in:', userContext);
-        history.push('/dashboard');
+        console.log('User email and password are correct')
+        console.log('successfully logged in:');
+        history.push('/login/doubleAuth');
       }
     } catch (e) {
       console.error(e)

@@ -47,6 +47,10 @@ export function checkSecurityQuestion(params) {
   return postJson('/api/forgotPassword/securityQuestions/check', params)
 }
 
+export function LoginCheckSecurityQuestion(params) {
+  return postJson('/api/login/securityQuestions/check', params)
+}
+
 /**
  * this will send the verification email during forgot password process
  * @param params: {email}
@@ -157,6 +161,8 @@ export function fetchUsers() {
 export function getUserProfileById(id, params) {
   return getJson('/api/users/getUserProfileById/' + id + '/', {params})
 }
+
+
 
 
 export function deleteUser(id, params, callback) {

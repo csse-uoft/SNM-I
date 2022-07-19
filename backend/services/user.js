@@ -193,6 +193,27 @@ async function initUserAccounts() {
   if (!account) {
     const {hash, salt} = await Hashing.hashPassword('admin');
 
+    const answer1 = await Hashing.hashPassword('Toronto');
+    const securityQuestion1 = {
+      question: 'Where is the University',
+      hash: answer1.hash,
+      salt: answer1.salt
+    }
+    const answer2 = await Hashing.hashPassword('Mark');
+    const securityQuestion2 = {
+      question: 'The first name of our boss',
+      hash: answer2.hash,
+      salt: answer2.salt
+    }
+    const answer3 = await Hashing.hashPassword('Fox');
+    const securityQuestion3 = {
+      question: 'The last name of our boss',
+      hash: answer3.hash,
+      salt: answer3.salt
+    }
+
+
+
     const userAccount = GDBUserAccountModel({
       primaryEmail: 'admin@snmi.ca',
       secondaryEmail: 'admin2@snmi.ca',
@@ -208,9 +229,14 @@ async function initUserAccounts() {
           areaCode: 647,
           phoneNumber: 5726356,},
       },
+      securityQuestions: [
+        securityQuestion1, securityQuestion2, securityQuestion3
+      ],
       hash,
       salt,
     });
+
+
 
     await userAccount.save();
   }
