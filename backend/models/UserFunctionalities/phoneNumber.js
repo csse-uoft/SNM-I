@@ -1,4 +1,4 @@
-const {createGraphDBModel, Types} = require("../utils/graphdb");
+const {createGraphDBModel, Types} = require("../../utils/graphdb");
 const GDBPhoneNumberModel = createGraphDBModel({
   areaCode: {type: Number, internalKey: 'ic:hasAreaCode'},
   countryCode: {type: Number, internalKey: 'ic:hasCountryCode'},

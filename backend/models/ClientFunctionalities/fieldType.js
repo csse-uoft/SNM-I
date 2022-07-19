@@ -1,4 +1,4 @@
-const {createGraphDBModel} = require("../utils/graphdb");
+const {createGraphDBModel} = require("../../utils/graphdb");
 
 const GDBFieldTypeModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},

@@ -1,4 +1,4 @@
-const {createGraphDBModel, Types} = require("../utils/graphdb");
+const {createGraphDBModel, Types} = require("../../utils/graphdb");
 
 /**
  * GDBCIModel stands for GDB - Characteristic Implementation - Model
