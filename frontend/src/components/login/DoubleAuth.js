@@ -58,6 +58,10 @@ export default function DoubleAuth() {
         setState(state => ({...state, loading: false, email: response.data.email}));
       }
 
+    }).catch(e =>{
+      if(e.json){
+        setState(state => ({...state, errors: e.json, errorDialog: true, loading: false}))
+      }
     });
   }, []);
 
@@ -138,7 +142,7 @@ export default function DoubleAuth() {
                        onClick={handleSubmit}/>
         <AlertDialog dialogContentText={state.errors.message||"Error occur"}
                      dialogTitle={'Error'}
-                     buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                     buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
                      open={state.errorDialog}/>
         {/*<AlertDialog dialogContentText={'A link has been sent to your email address. Please follow it to reset your password'}*/}
         {/*             dialogTitle={'Success'}*/}
