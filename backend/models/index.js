@@ -4,4 +4,6 @@ module.exports = {
   ...require('./person'),
   ...require('./organization'),
   ...require('./userAccount'),
+  ...require('./characteristic'),
+  ...require('./characteristicImplementation')
 }
