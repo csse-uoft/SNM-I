@@ -1,5 +1,5 @@
-const Hashing = require("../utils/hashing");
-const {GDBOrganizationModel, GDBUserAccountModel, GDBSecurityQuestion, GDBPersonModel} = require('../models');
+const Hashing = require("../../utils/hashing");
+const {GDBOrganizationModel, GDBUserAccountModel, GDBSecurityQuestion, GDBPersonModel} = require('../../models');
 
 async function createUserAccount(data) {
   const {

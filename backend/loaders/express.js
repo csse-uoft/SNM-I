@@ -10,7 +10,7 @@ const {authMiddleware, errorHandler} = require('../services/middleware');
 
 
 const config = require('../config');
-const {getCurrentUserProfile} = require("../services/users");
+const {getCurrentUserProfile} = require("../services/userAccount/users");
 
 const app = express();
 
@@ -37,7 +37,7 @@ app.use('/api', usersRoute);
 app.use('/api', clientRoute);
 
 
-require('../services/user').initUserAccounts();
+require('../services/userAccount/user').initUserAccounts();
 
 app.use(errorHandler);
 

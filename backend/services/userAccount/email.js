@@ -1,6 +1,6 @@
-const {sendResetPasswordEmail} = require("../utils");
+const {sendResetPasswordEmail} = require("../../utils");
 const {sign} = require("jsonwebtoken");
-const {jwtConfig} = require("../config");
+const {jwtConfig} = require("../../config");
 
 
 const sendVerificationEmail = async (req, res, next) => {

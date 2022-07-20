@@ -1,5 +1,5 @@
 const express = require('express');
-const {login, logout, getUserSecurityQuestions, checkUserSecurityQuestion} = require('../services/auth');
+const {login, logout, getUserSecurityQuestions, checkUserSecurityQuestion} = require('../services/userAccount/auth');
 
 
 const router = express.Router();

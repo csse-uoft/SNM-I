@@ -1,10 +1,10 @@
 const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword,
     findUserAccountById, isEmailExists
 } = require("./user");
-const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail} = require("../utils");
+const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail} = require("../../utils");
 const {sign} = require("jsonwebtoken");
-const {jwtConfig} = require("../config");
-const {GDBUserAccountModel} = require("../models");
+const {jwtConfig} = require("../../config");
+const {GDBUserAccountModel} = require("../../models");
 
 
 const getCurrentUserProfile = async (req, res, next) => {

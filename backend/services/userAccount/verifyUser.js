@@ -1,5 +1,5 @@
 const {verify, JsonWebTokenError} = require("jsonwebtoken");
-const {jwtConfig} = require("../config");
+const {jwtConfig} = require("../../config");
 const {findUserAccountByEmail} = require("./user");
 
 

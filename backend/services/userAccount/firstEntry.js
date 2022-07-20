@@ -1,6 +1,6 @@
 const {findUserAccountByEmail} = require("./user");
 const {verify, JsonWebTokenError} = require("jsonwebtoken");
-const {jwtConfig} = require("../config");
+const {jwtConfig} = require("../../config");
 
 
 const verifyUser = async (req, res, next) => {

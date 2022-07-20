@@ -1,5 +1,5 @@
 const express = require('express');
-const {fetchUsers, getUserProfileById} = require("../services/users");
+const {fetchUsers, getUserProfileById} = require("../services/userAccount/users");
 const router = express.Router();
 
 

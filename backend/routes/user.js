@@ -1,8 +1,8 @@
 const express = require('express');
 
 const {updateProfile, getCurrentUserProfile, checkCurrentPassword,
-  updatePrimaryEmail, saveNewPassword, updateUserForm} = require("../services/users");
-const {verifyChangePrimaryEmail} = require("../services/verifyUser");
+  updatePrimaryEmail, saveNewPassword, updateUserForm} = require("../services/userAccount/users");
+const {verifyChangePrimaryEmail} = require("../services/userAccount/verifyUser");
 const router = express.Router();
 
 router.get('/user/profile/getCurrentUserProfile/:id/', getCurrentUserProfile);

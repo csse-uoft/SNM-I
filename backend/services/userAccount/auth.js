@@ -1,5 +1,5 @@
 const {validateCredentials, userExpired, findUserAccountById, findUserAccountByEmail} = require('./user');
-const Hashing = require("../utils/hashing");
+const Hashing = require("../../utils/hashing");
 
 const login = async (req, res, next) => {
   const {email, password} = req.body;

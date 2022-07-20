@@ -1,5 +1,5 @@
 const {findUserAccountByEmail} = require("./user");
-const Hashing = require("../utils/hashing");
+const Hashing = require("../../utils/hashing");
 
 const fetchSecurityQuestionsByEmail = async (req, res, next) => {
   const {email} = req.body

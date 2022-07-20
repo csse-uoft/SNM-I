@@ -1,7 +1,7 @@
 const {JsonWebTokenError, sign} = require("jsonwebtoken");
 const {isEmailExists, createTemporaryUserAccount} = require('./user');
-const {jwtConfig} = require("../config");
-const {sendVerificationMail} = require("../utils");
+const {jwtConfig} = require("../../config");
+const {sendVerificationMail} = require("../../utils");
 
 
 /**
