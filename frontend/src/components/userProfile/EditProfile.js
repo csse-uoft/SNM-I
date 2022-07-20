@@ -44,7 +44,7 @@ export default function EditProfile() {
   const [loadingButton, setLoadingButton] = useState(false);
   const [dialogEmail, setDialogEmail] = useState(false);
   const [dialogQuitEdit, setDialogQuitEdit] = useState(false);
-  let emailSent = false;
+  const [dialogExistEmail, setDialogExistEmail] = useState(false);
 
   const profileForm = {
     givenName: userContext.givenName,
@@ -103,7 +103,7 @@ export default function EditProfile() {
   // email-sent dialog confirm button handler
   const handleDialogEmail =() => {
     setDialogEmail(false);
-    history.push('/profile/' + id + '/');
+    setDialogSubmit(true);
   }
 
   // submit button handler
@@ -114,16 +114,15 @@ export default function EditProfile() {
         const {sentEmailConfirm} = await updatePrimaryEmail(id, form.email);
         console.log(sentEmailConfirm)
         if (sentEmailConfirm) {
-          emailSent = true;
+          setDialogEmail(true);
           console.log('email verification link sent');
         } else {
-          //TODO: change alert to a dialog.
-          alert('Email already exists with a temporary or permanent account.');
+          setDialogExistEmail(true);
           console.log('email verification is not sent.');
         }
+      } else {
+        setDialogSubmit(true);
       }
-
-      setDialogSubmit(true);
     }
   }
 
@@ -176,16 +175,11 @@ export default function EditProfile() {
 
       setLoadingButton(false);
       setDialogSubmit(false);
-      if (emailSent) {
-        setDialogEmail(true);
-      } else {
-        history.push('/profile/' + id + '/');
-      }
+      history.push('/profile/' + id + '/');
     } catch (e) {
       setLoadingButton(false);
       console.log('catch e');
-      console.log( e.json);
-      console.log( e);
+      console.log(e);
     }
   };
 
@@ -269,6 +263,13 @@ export default function EditProfile() {
           dialogTitle={'Notice!'}
           buttons={<Button onClick={handleDialogCancel} key={'confirm'} autoFocus> {'confirm'}</Button>}
           open={dialogQuitEdit}/>
+
+        <AlertDialog
+          dialogContentText={"Your input new primary email already registered as the primary email for another account."}
+          dialogTitle={'Notice!'}
+          buttons={<Button onClick={() => setDialogExistEmail(false)}
+                           key={'Got it'} autoFocus> {'Got it'}</Button>}
+          open={dialogExistEmail}/>
 
       </div>
 
