@@ -10,7 +10,6 @@ const FormData = require('form-data');
 const {sleep} = require('../utils');
 const {namespaces} = require('./namespaces');
 
-
 let dbClient, repository;
 
 async function getRepository() {
@@ -22,7 +21,7 @@ async function getRepository() {
 
 async function createRepository(dbClient, dbName) {
   // Create repository configuration
-  const config = new RepositoryConfig(dbName, '', new Map(), '',  'SNM-I', RepositoryType.FREE);
+  const config = new RepositoryConfig(dbName, '', new Map(), '', 'SNM-I', RepositoryType.FREE);
   // Use the configuration to create new repository
   await dbClient.createRepository(config);
 }
@@ -35,6 +34,16 @@ async function loadInitialData(file, overwrite = !!process.env.test) {
         .then(() => resolve())
         .catch(reason => reject(reason));
     });
+  });
+}
+
+async function importRepositorySnapshot(url) {
+  const response = await fetch(url);
+
+  return new Promise((resolve, reject) => {
+    repository.upload(response.body, RDFMimeType.BINARY_RDF, null, null)
+      .then(resolve)
+      .catch(reason => reject(reason));
   });
 }
 
@@ -109,7 +118,8 @@ async function load() {
   await cleanup(['project_type', 'partnership_role', 'organization_type', 'project_stage']);
 
   // await loadInitialData(__dirname + '/../ontologies/icontact.ttl');
-  await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
+  // await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
+  await importRepositorySnapshot('https://github.com/csse-uoft/compass-ontology/releases/download/latest/repository-export.brf');
 
   // Namespaces, this could be used within the query without specifying it in the prefixes
   const tasks = []
