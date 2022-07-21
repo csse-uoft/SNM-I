@@ -5,7 +5,6 @@ import {fetchUsers} from "../../api/userApi";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
-import PasswordHint from "../shared/PasswordHint";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
@@ -25,7 +24,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-export default function AddEditQuestion(){
+export default function AddEditCharacteristic(){
 
   const classes = useStyles();
   const history = useHistory();
@@ -36,6 +35,7 @@ export default function AddEditQuestion(){
     form:{
       ...defaultAddEditQuestionFields
     },
+    errors: {}
   })
 
   useEffect(() => {
@@ -56,27 +56,26 @@ export default function AddEditQuestion(){
   return (
 
     <Container className={classes.root}>
-
-      {Object.entries(addEditQuestionFields).map(([field, option]) => {
-        // if (option.validator && !!option.validator(state.form[field]))
-        // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
-        // state.errors[field] = option.validator(state.form[field])
-        return (
-
-          <option.component
-            key={field}
-            label={option.label}
-            type={option.type}
-            options={option.options}
-            value={state.form[field]}
-            required={option.required}
-            onChange={e => state.form[field] = e.target.value}
-            onBlur={() => handleOnBlur(field, option)}
-            error={!!state.errors[field]}
-            helperText={state.errors[field]}
-          />
-        )
-      })}
+      <TextField
+        key={'label'}
+        label={'label'}
+        value={state.form.label}
+        required
+        onChange={e => state.form.label = e.target.value}
+        // onBlur={() => handleOnBlur(field, option)}
+        error={!!state.errors.label}
+        helperText={state.errors.label}
+      />
+      <TextField
+        key={"dataType"}
+        label={'dataType'}
+        value={state.form.dataType}
+        required
+        onChange={e => state.form.dataType = e.target.value}
+        // onBlur={() => handleOnBlur(field, option)}
+        error={!!state.errors.label}
+        helperText={state.errors.label}
+      />
 
       {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
       {/*  Submit*/}

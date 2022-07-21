@@ -16,6 +16,7 @@ export const addEditQuestionFields = {
     ...defaultField,
     label: 'Data Type',
     required: true,
+    type: '', // drop down
   },
 
   fieldType: {
@@ -41,7 +42,7 @@ export const addEditQuestionFields = {
     required: true,
   },
 
-  class: {
+  optionsFormClass: {
     ...defaultField,
     type:'dropDown',
     label: 'Class',
