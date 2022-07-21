@@ -17,14 +17,14 @@ function getGraphDBAttribute(uri) {
 
 
 const GraphDB = {
-  sendSelectQuery: async (query, onData) => {
+  sendSelectQuery: async (query, inference=false, onData) => {
     const repository = await getRepository();
 
     const payload = new GetQueryPayload()
       .setQuery(query)
       .setQueryType(QueryType.SELECT)
       .setResponseType(RDFMimeType.SPARQL_RESULTS_JSON)
-      // .setInference(true);
+      .setInference(inference);
 
     try {
       const stream = await repository.query(payload);
@@ -128,7 +128,7 @@ const GraphDB = {
       }`;
 
     const result = {};
-    await GraphDB.sendSelectQuery(query, ({s, label, comment}) => {
+    await GraphDB.sendSelectQuery(query, false,({s, label, comment}) => {
       result[s.value.match(/#([^#]*)/)[1]] = {
         label: label.value, comment: comment.value,
       };
