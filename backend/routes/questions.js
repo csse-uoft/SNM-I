@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/questions/fetchQuestion/:id', fetchQuestion);
 router.get('/questions/fetchQuestions', fetchQuestions);
 router.post('/questions/createQuestion', createQuestion);
-router.post('/questions/updateQuestion/:id', updateQuestion);
+router.put('/questions/updateQuestion/:id', updateQuestion);
 router.delete('questions/deleteQuestions/:id', deleteQuestion)
 
 module.exports = router;

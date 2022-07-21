@@ -5,7 +5,7 @@ export async function createQuestion({content_type, text}) {
 }
 
 export async function updateQuestion(id, {content_type, text}) {
-  return postJson('/api/questions/updateQuestion/' + id + '/', {content_type, text});
+  return putJson('/api/questions/updateQuestion/' + id + '/', {content_type, text});
 }
 
 export async function fetchQuestion(id) {
