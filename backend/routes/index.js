@@ -4,5 +4,6 @@ module.exports = {
   userRoute: require('./user'),
   forgotPasswordRoute: require('./forgotPassword'),
   usersRoute: require('./users'),
-  clientRoute: require('./client'),
+  clientsRoute: require('./clients'),
+  questionsRoute: require('./questions'),
 }
