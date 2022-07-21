@@ -7,4 +7,5 @@ async function findCharacteristicById(id) {
   );
 }
 
+
 module.exports = {findCharacteristicById}

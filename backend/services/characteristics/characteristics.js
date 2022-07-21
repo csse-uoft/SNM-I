@@ -32,14 +32,20 @@ const fetchCharacteristics = async (req, res, next) => {
         implementation: characteristic.implementation,
       }
     })
-    return res.status(200).json({data, success:true})
+    return res.status(200).json({data, success:true});
   }catch (e){
     next(e)
   }
 }
 
 const deleteCharacteristic = async (req, res, next) => {
-
+  try{
+    const id = req.params.id;
+    await GDBCharacteristicModel.findByIdAndDelete(id);
+    return res.status(200).json({success:true});
+  }catch (e){
+    next(e)
+  }
 }
 
 
