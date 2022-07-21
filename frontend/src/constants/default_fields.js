@@ -25,6 +25,15 @@ export const defaultFirstEntryFields = {
   securityQuestionAnswer3: '',
 }
 
+export const defaultAddEditQuestionFields = {
+  label: '', // Ex. address
+  dataType: '', // Ex. string
+  fieldType: '', // Ex. address
+  option: [], // Ex.
+  required: false, // Ex. true
+  class: '', // Ex. provider
+  description: '' // Ex. the address of the user's home
+}
 export const defaultInvitationFields = {
   isSuperuser: false,
   email: '',

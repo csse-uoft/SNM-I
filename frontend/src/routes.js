@@ -34,12 +34,13 @@ import ServiceForm from './components/services/ServiceForm'
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
-import Questions from './components/additionalFIelds/Questions';
+import Questions from './components/formManagement/Questions';
 import UserFirstEntry from "./components/register/UserFirstEntry";
 import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 import DoubleAuth from "./components/login/DoubleAuth";
 import EditUserForm from "./components/users/EditUserForm";
+import AddEditQuestion from './components/formManagement/AddEditQuestion';
 
 const routes = (
   <Switch>
@@ -89,7 +90,9 @@ const routes = (
 
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
 
-    <PrivateRoute path='/questions' component={Questions}/>
+    <AdminRoute path='/questions' component={Questions}/>
+    <AdminRoute path={'/questions/:id/:option'} component={AddEditQuestion}/>
+
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>
   </Switch>
