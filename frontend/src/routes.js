@@ -4,7 +4,7 @@ import {Route} from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
-import Login from './components/login/Login';
+// import Login from './components/login/Login';
 import LoginPane from './components/login/LoginPane';
 import Dashboard from './components/Dashboard';
 import changePrimaryEmail from './components/userProfile/changePrimaryEmail';
@@ -34,6 +34,8 @@ import ServiceForm from './components/services/ServiceForm'
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
+import ManageForms from './components/settings/ManageForms';
+import ManageFormFields from './components/settings/ManageFormFields';
 import Questions from './components/formManagement/Questions';
 import UserFirstEntry from "./components/register/UserFirstEntry";
 import ForgotPassword from "./components/forgotPassword/ForgotPassword";
@@ -95,6 +97,13 @@ const routes = (
 
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>
+    <AdminRoute path='/settings/manage-forms' component={ManageForms}/>
+
+    {/*:formType could be `client`, 'organization', ...*/}
+    {/*:method could be `edit` or `new`*/}
+    <AdminRoute exact path='/settings/forms/' component={ManageFormFields}/>
+    <AdminRoute exact path='/settings/forms/:formType/:method' component={ManageFormFields}/>
+    <AdminRoute exact path='/settings/forms/:formType/:method/:formId' component={ManageFormFields}/>
   </Switch>
 );
 

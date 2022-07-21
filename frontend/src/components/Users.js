@@ -51,7 +51,7 @@ export default function Users() {
         return <Link color to={`/users/${id}`}>
           {email}
         </Link>
-      }
+      },
     },
     {
       label: 'First name',

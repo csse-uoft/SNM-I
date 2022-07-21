@@ -70,13 +70,13 @@ export function CustomToolbar({handleAdd, handleUpload, type}) {
 
   return (
     <>
-      <Chip onClick={handleUpload}
+      {handleUpload && <Chip onClick={handleUpload}
             color="default"
             icon={<UploadIcon/>}
             label="Upload"
             variant="outlined"
             className={classes.chipButton}
-      />
+      />}
       <Chip onClick={type === 'providers' ? handleClick : handleAdd}
             color="primary"
             icon={<AddIcon/>}
