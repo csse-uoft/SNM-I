@@ -4,7 +4,7 @@ export async function createCharacteristic({content_type, text}) {
   return postJson('/api/characteristic', {content_type, text});
 }
 
-export async function updateCharacterisric(id, {content_type, text}) {
+export async function updateCharacteristic(id, {content_type, text}) {
   return putJson('/api/characteristic/' + id + '/', {content_type, text});
 }
 
