@@ -1,6 +1,6 @@
 import { getJson } from "./index";
 
-export function fetchFormulaFields() {
+export async function fetchFormulaFields() {
   return {
     "fields": [
       "age",
