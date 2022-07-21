@@ -52,6 +52,8 @@ export const addEditQuestionFields = {
     ...defaultField,
     label: 'Description',
     required: true,
+    multiline: true,
+    maxRows: 50,
   },
 
 

@@ -9,6 +9,7 @@ import PasswordHint from "../shared/PasswordHint";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
+import {addEditQuestionFields} from "../../constants/addEditQuestionFields";
 
 
 
@@ -56,7 +57,7 @@ export default function AddEditQuestion(){
 
     <Container className={classes.root}>
 
-      {Object.entries(userFirstEntryFields).map(([field, option]) => {
+      {Object.entries(addEditQuestionFields).map(([field, option]) => {
         // if (option.validator && !!option.validator(state.form[field]))
         // setState(state => ({...state, errors: {...state.errors, field: option.validator(state.form[field])}}));
         // state.errors[field] = option.validator(state.form[field])
