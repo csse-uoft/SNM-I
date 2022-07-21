@@ -41,6 +41,7 @@ app.use('/api', clientsRoute);
 
 
 require('../services/userAccount/user').initUserAccounts();
+require('../services/questions').initFieldTypes();
 
 app.use(errorHandler);
 
