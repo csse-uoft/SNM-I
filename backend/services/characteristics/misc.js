@@ -71,11 +71,18 @@ async function getAllClasses(req, res) {
   const classes = {};
 
   const query = `
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX : <http://snmi#>
-    select * where { 
-        ?s a rdfs:Class.
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX cids: <http://ontology.eil.utoronto.ca/cids/cids#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select * 
+    from <http://ontology.eil.utoronto.ca/cids/cids>
+    from <http://snmi>
+    from <http://helpseeker.co/compass>
+    where { 
+        ?s a owl:Class.
         OPTIONAL {?s rdfs:label ?label .}
+        FILTER (isIRI(?s))
     }`;
 
   await GraphDB.sendSelectQuery(query, false, (subject, label) => {

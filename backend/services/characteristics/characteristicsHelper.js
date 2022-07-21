@@ -1,4 +1,4 @@
-import {GDBCharacteristicModel} from "../../models";
+const {GDBCharacteristicModel} = require("../../models");
 
 
 async function findCharacteristicById(id) {

@@ -1,6 +1,6 @@
 const express = require('express');
 const {fetchCharacteristic, fetchCharacteristics, createCharacteristic, updateCharacteristic, deleteCharacteristic} = require("../services/characteristics/characteristics");
-const {getFieldTypes, getDataTypes, getAllClasses} = require("../services/questions");
+const {getFieldTypes, getDataTypes, getAllClasses} = require("../services/characteristics");
 const router = express.Router();
 //TODO: implement backend functions from ../services/characteristics/characteristic.js
 
