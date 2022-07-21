@@ -5,7 +5,7 @@ const logger = require('morgan');
 const cookieSession = require('cookie-session');
 const cors = require('cors');
 
-const {baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientRoute} = require('../routes');
+const {baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, questionsRoute, clientsRoute} = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
 
@@ -34,7 +34,8 @@ app.use('/api', authMiddleware('Authentication Required'));
 
 app.use('/api', userRoute);
 app.use('/api', usersRoute);
-app.use('/api', clientRoute);
+app.use('/api', questionsRoute)
+app.use('/api', clientsRoute);
 
 
 require('../services/userAccount/user').initUserAccounts();
