@@ -2,8 +2,8 @@ import React, { useCallback} from "react";
 import { Autocomplete, TextField } from "@mui/material";
 
 export default function Dropdown(props) {
-  // options is [value1, value2, ...]
-  const {options, label, value, onChange, helperText} = props;
+  // options is {labelValue1: label1, labelValue2: label2, ...}
+  const {options, label, value, onChange, helperText, required} = props;
 
   const handleChange = useCallback((e, value) => {
     onChange({target: {value}});
@@ -13,13 +13,14 @@ export default function Dropdown(props) {
     <Autocomplete
       sx={{mt: '16px'}}
       multiple
-      options={options}
+      options={Object.keys(options)}
       onChange={handleChange}
-      getOptionLabel={option => option}
+      getOptionLabel={ labelValue=> options[labelValue]}
       defaultValue={value}
       renderInput={(params) => (
         <TextField
           {...params}
+          required={required}
           label={label}
           sx={{minWidth: 350}}
           fullWidth={false}

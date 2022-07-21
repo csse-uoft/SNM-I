@@ -91,7 +91,7 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
 
     <AdminRoute path='/questions' component={Questions}/>
-    <AdminRoute path={'/questions/:id/:option'} component={AddEditCharacteristic}/>
+    <AdminRoute path={'/characteristic/:id/:option'} component={AddEditCharacteristic}/>
 
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>

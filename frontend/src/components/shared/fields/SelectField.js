@@ -61,7 +61,7 @@ export default function SelectField({
           {!noEmpty && <MenuItem key="key0" value={UN_SET}>{defaultOptionTitle}</MenuItem>}
           {Array.isArray(options)
             ? options.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)
-            : Object.entries(options).map(([key, value]) => <MenuItem key={key} value={key}>{value}</MenuItem>)}
+            : Object.entries(options).map(([key, label]) => <MenuItem key={label} value={key}>{label}</MenuItem>)}
         </Select>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>

@@ -5,10 +5,12 @@ import {fetchUsers} from "../../api/userApi";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
+import SelectField from '../shared/fields/SelectField.js'
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
 import {addEditQuestionFields} from "../../constants/addEditQuestionFields";
+import Dropdown from "../shared/fields/MultiSelectField";
 
 
 
@@ -38,20 +40,20 @@ export default function AddEditCharacteristic(){
     errors: {}
   })
 
-  useEffect(() => {
-    fetchUsers().then(data => {
-      if(option === 'edit'){
-        setState(state => ({...state, loading: false, form: data.form}));
-      }else{
-        setState(state => ({...state, loading: false}))
-      }
-    }); //Todo add error handler here
-  }, []);
-
-
-  if(state.loading){
-    return <Loading message={'Loading'}/>
-  }
+  // useEffect(() => {
+  //   fetchUsers().then(data => {
+  //     if(option === 'edit'){
+  //       setState(state => ({...state, loading: false, form: data.form}));
+  //     }else{
+  //       setState(state => ({...state, loading: false}))
+  //     }
+  //   }); //Todo add error handler here
+  // }, []);
+  //
+  //
+  // if(state.loading){
+  //   return <Loading message={'Loading'}/>
+  // }
 
   return (
 
@@ -65,17 +67,56 @@ export default function AddEditCharacteristic(){
         // onBlur={() => handleOnBlur(field, option)}
         error={!!state.errors.label}
         helperText={state.errors.label}
+        sx={{mt: '16px'}}
       />
-      <TextField
+      <SelectField
         key={"dataType"}
-        label={'dataType'}
+        label={'Data Type'}
+        InputLabelProps={{id:'dataType', }}
+        options={{DataType_1: 'String', DataType_2: 'Date'}}
         value={state.form.dataType}
+        noEmpty={true}
         required
         onChange={e => state.form.dataType = e.target.value}
         // onBlur={() => handleOnBlur(field, option)}
-        error={!!state.errors.label}
-        helperText={state.errors.label}
+        error={!!state.errors.dataType}
+        helperText={state.errors.dataType}
       />
+      <SelectField
+        key={"fieldType"}
+        label={'Field Type'}
+        InputLabelProps={{id:'FieldType', }}
+        options={{InputField_1: 'TextField', InputField_2: 'Select'}}
+        value={state.form.fieldType}
+        noEmpty={true}
+        required
+        onChange={e => state.form.fieldType = e.target.value}
+        // onBlur={() => handleOnBlur(field, option)}
+        error={!!state.errors.fieldType}
+        helperText={state.errors.fieldType}
+      />
+      <Dropdown
+        options={{class_1: 'Provider', class_2: 'Organization'}}
+        label={'Options From Class'}
+        value={state.form.optionsFromClass}
+        onChange={e => state.form.optionsFromClass = e.target.value}
+        error={!!state.errors.optionsFromClass}
+        helperText={state.errors.optionsFromClass}
+        required
+      />
+      <TextField
+        key={'description'}
+        label={'Description'}
+        value={state.form.description}
+        required
+        onChange={e => state.form.description = e.target.value}
+        // onBlur={() => handleOnBlur(field, option)}
+        error={!!state.errors.description}
+        helperText={state.errors.description}
+        sx={{mt: '16px'}}
+      />
+
+
 
       {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
       {/*  Submit*/}
