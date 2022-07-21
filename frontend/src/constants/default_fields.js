@@ -29,7 +29,7 @@ export const defaultAddEditQuestionFields = {
   label: '', // Ex. address
   dataType: '', // Ex. string
   fieldType: '', // Ex. address
-  option: [], // Ex.
+  options: [], // Ex.
   required: false, // Ex. true
   optionsFromClass: '', // Ex. provider
   description: '' // Ex. the address of the user's home

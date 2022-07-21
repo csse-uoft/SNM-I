@@ -6,6 +6,7 @@ import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
 import {Button, Container, TextField} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
+import AddableTextField from "../shared/fields/AddableTextField";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
@@ -127,6 +128,10 @@ export default function AddEditCharacteristic(){
         // onBlur={() => handleOnBlur(field, option)}
         error={!!state.errors.description}
         helperText={state.errors.description}
+      />
+
+      <AddableTextField
+        initOptions={state.form.options}
       />
 
 
