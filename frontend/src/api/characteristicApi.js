@@ -1,11 +1,11 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
-export async function createCharacteristic({content_type, text}) {
-  return postJson('/api/characteristic', {content_type, text});
+export async function createCharacteristic(params) {
+  return postJson('/api/characteristic', params);
 }
 
-export async function updateCharacteristic(id, {content_type, text}) {
-  return putJson('/api/characteristic/' + id + '/', {content_type, text});
+export async function updateCharacteristic(id, params) {
+  return putJson('/api/characteristic/' + id + '/', params);
 }
 
 export async function fetchCharacteristic(id) {
