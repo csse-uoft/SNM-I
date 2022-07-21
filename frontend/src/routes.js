@@ -42,7 +42,7 @@ import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 import DoubleAuth from "./components/login/DoubleAuth";
 import EditUserForm from "./components/users/EditUserForm";
-import AddEditQuestion from './components/formManagement/AddEditQuestion';
+import AddEditCharacteristic from "./components/formManagement/AddEditCharacteristic";
 
 const routes = (
   <Switch>
@@ -93,7 +93,7 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
 
     <AdminRoute path='/questions' component={Questions}/>
-    <AdminRoute path={'/questions/:id/:option'} component={AddEditQuestion}/>
+    <AdminRoute path={'/characteristic/:id/:option'} component={AddEditCharacteristic}/>
 
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>

@@ -5,5 +5,7 @@ module.exports = {
   ...require('./organization'),
   ...require('./userAccount'),
   ...require('./ClientFunctionalities/characteristic'),
-  ...require('./ClientFunctionalities/characteristicImplementation')
+  ...require('./ClientFunctionalities/characteristicImplementation'),
+  ...require('./ClientFunctionalities/fieldType'),
+  ...require('./ClientFunctionalities/option'),
 }

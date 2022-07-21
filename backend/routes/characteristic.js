@@ -1,0 +1,13 @@
+const express = require('express');
+const {fetchCharacteristic, fetchCharacteristics, createCharacteristic, updateCharacteristic, deleteCharacteristic} = require("../services/characteristics/characteristics");
+const router = express.Router();
+//TODO: implement backend functions from ../services/characteristics/characteristic.js
+
+router.get('/characteristic/:id', fetchCharacteristic);
+router.get('/characteristics', fetchCharacteristics);
+router.post('/characteristic', createCharacteristic);
+router.put('/characteristic', updateCharacteristic);
+router.delete('characteristic/:id', deleteCharacteristic);
+
+
+module.exports = router;
