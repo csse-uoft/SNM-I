@@ -31,7 +31,7 @@ export const defaultAddEditQuestionFields = {
   fieldType: '', // Ex. address
   option: [], // Ex.
   required: false, // Ex. true
-  optionsFromClass: [], // Ex. provider
+  optionsFromClass: '', // Ex. provider
   description: '' // Ex. the address of the user's home
 }
 export const defaultInvitationFields = {

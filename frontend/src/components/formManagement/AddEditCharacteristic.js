@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
   button: {
     marginTop: 12,
     marginBottom: 12,
-  }
+  },
 }));
 
 
@@ -67,7 +67,7 @@ export default function AddEditCharacteristic(){
         // onBlur={() => handleOnBlur(field, option)}
         error={!!state.errors.label}
         helperText={state.errors.label}
-        sx={{mt: '16px'}}
+        sx={{mt: '16px', minWidth: 350}}
       />
       <SelectField
         key={"dataType"}
@@ -95,25 +95,38 @@ export default function AddEditCharacteristic(){
         error={!!state.errors.fieldType}
         helperText={state.errors.fieldType}
       />
-      <Dropdown
-        options={{class_1: 'Provider', class_2: 'Organization'}}
+      <SelectField
+        key={"optionsFromClass"}
         label={'Options From Class'}
+        InputLabelProps={{id:'optionsFromClass', }}
+        options={{class_1: 'Provider', class_2: 'Organization'}}
         value={state.form.optionsFromClass}
+        noEmpty={true}
+        required
         onChange={e => state.form.optionsFromClass = e.target.value}
+        // onBlur={() => handleOnBlur(field, option)}
         error={!!state.errors.optionsFromClass}
         helperText={state.errors.optionsFromClass}
-        required
       />
+      {/*<Dropdown*/}
+      {/*  options={}*/}
+      {/*  label={'Options From Class'}*/}
+      {/*  value={state.form.optionsFromClass}*/}
+      {/*  onChange={e => state.form.optionsFromClass = e.target.value}*/}
+      {/*  error={!!state.errors.optionsFromClass}*/}
+      {/*  helperText={state.errors.optionsFromClass}*/}
+      {/*  required*/}
+      {/*/>*/}
       <TextField
         key={'description'}
         label={'Description'}
         value={state.form.description}
         required
+        sx={{mt: '16px', minWidth: 350}}
         onChange={e => state.form.description = e.target.value}
         // onBlur={() => handleOnBlur(field, option)}
         error={!!state.errors.description}
         helperText={state.errors.description}
-        sx={{mt: '16px'}}
       />
 
 
