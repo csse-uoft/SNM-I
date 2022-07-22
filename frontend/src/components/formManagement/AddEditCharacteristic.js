@@ -72,7 +72,7 @@ export default function AddEditCharacteristic(){
 
     <Container maxWidth='sm'>
       <Paper sx={{p:2}} variant={'outlined'}>
-        <Typography variant={'h4'}> Title </Typography>
+        <Typography variant={'h4'}> Please customize the characteristic </Typography>
         <GeneralField
           key={'label'}
           label={'label'}
