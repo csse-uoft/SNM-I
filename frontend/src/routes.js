@@ -14,7 +14,7 @@ import ClientForm from './components/clients/ClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
-import UserInvite from './components/register/UserInvite'
+import UserInvite from './components/registration/UserInvite'
 import ResetPassword from './components/userProfile/UserResetPassword'
 import EmailConfirm from './components/emailConfirm'
 import UserProfile from './components/userProfile/Profile'
@@ -37,7 +37,7 @@ import ManageFields from './components/settings/ManageFields';
 import ManageForms from './components/settings/ManageForms';
 import ManageFormFields from './components/settings/ManageFormFields';
 import Questions from './components/formManagement/Questions';
-import UserFirstEntry from "./components/register/UserFirstEntry";
+import UserFirstEntry from "./components/registration/UserFirstEntry";
 import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 import DoubleAuth from "./components/login/DoubleAuth";

@@ -13,6 +13,7 @@ import LoadingButton from "../shared/LoadingButton";
 import {addEditQuestionFields} from "../../constants/addEditQuestionFields";
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
+import RadioField from "../shared/fields/RadioField";
 
 
 
@@ -53,6 +54,10 @@ export default function AddEditCharacteristic(){
     setForm(form => ({...form, options: form.options.splice(0, form.options.length - 1)}))
   }
 
+  const validate = () => {
+
+  }
+
   // useEffect(() => {
   //   fetchUsers().then(data => {
   //     if(option === 'edit'){
@@ -70,9 +75,25 @@ export default function AddEditCharacteristic(){
 
   return (
 
-    <Container maxWidth='sm'>
+
+
+    <Container maxWidth='md'>
       <Paper sx={{p:2}} variant={'outlined'}>
         <Typography variant={'h4'}> Please customize the characteristic </Typography>
+        <RadioField
+          label={'Required?'}
+          onChange={e => form.required = e.target.value}
+          required
+          value = {form.required}
+          options={{Yes:true, No:false}}
+        />
+        <RadioField
+          label={'Choosing options from class or input manually'}
+          onChange={e => setForm(form => ({...form, classOrManually: e.target.value}))}
+          required
+          value = {form.classOrManually}
+          options={{Class:'class', Manually:'manually'}}
+        />
         <GeneralField
           key={'label'}
           label={'label'}
@@ -110,7 +131,8 @@ export default function AddEditCharacteristic(){
           error={!!state.errors.fieldType}
           helperText={state.errors.fieldType}
         />
-        <SelectField
+
+        {form.classOrManually === 'class'? <SelectField
           key={"optionsFromClass"}
           label={'Options From Class'}
           InputLabelProps={{id:'optionsFromClass', }}
@@ -122,7 +144,8 @@ export default function AddEditCharacteristic(){
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.optionsFromClass}
           helperText={state.errors.optionsFromClass}
-        />
+        />: <div/>}
+
         {/*<Dropdown*/}
         {/*  options={}*/}
         {/*  label={'Options From Class'}*/}
@@ -145,12 +168,14 @@ export default function AddEditCharacteristic(){
           multiline
         />
 
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
-          Add
-        </Button>
 
-        {form.options.map((option, index) =>
-          <div>
+        {form.classOrManually === 'manually'? <div>
+          <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
+            Add
+          </Button>
+
+          {form.options.map((option, index) =>
+            <div>
               <GeneralField
                 key={index}
                 label={'Option Label ' + (index + 1)}
@@ -168,16 +193,19 @@ export default function AddEditCharacteristic(){
               {/*        }}>*/}
               {/*  Remove*/}
               {/*</Button>*/}
-          </div>
+            </div>
 
 
 
-        )}
+          )}
 
-        <Button variant="contained" color="primary" className={classes.button}
-                onClick={handleRemove}>
-          Remove
-        </Button>
+          <Button variant="contained" color="primary" className={classes.button}
+                  onClick={handleRemove}>
+            Remove
+          </Button>
+        </div>: <div/>}
+
+
 
 
 

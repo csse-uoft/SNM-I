@@ -25,6 +25,7 @@ export const defaultFirstEntryFields = {
   securityQuestionAnswer3: '',
 }
 
+let classOrManually;
 export const defaultAddEditQuestionFields = {
   label: '', // Ex. address
   dataType: '', // Ex. string
@@ -32,7 +33,8 @@ export const defaultAddEditQuestionFields = {
   options: [], // Ex.
   required: false, // Ex. true
   optionsFromClass: '', // Ex. provider
-  description: '' // Ex. the address of the user's home
+  description: '', // Ex. the address of the user's home
+  classOrManually: 'class'
 }
 export const defaultInvitationFields = {
   isSuperuser: false,
