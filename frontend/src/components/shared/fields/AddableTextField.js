@@ -1,6 +1,7 @@
-import {useState} from "react";
+import {useState, useCallback} from "react";
 import {Button, TextField} from "@mui/material";
 import {makeStyles} from "@mui/styles";
+import GeneralField from "./GeneralField";
 
 
 const useStyles = makeStyles(() => ({
@@ -25,14 +26,13 @@ export default function AddableTextField({initOptions,onChange, ...props}){
   }
 
 
-
   return(
     <div>
       <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
         Add
       </Button>
       {options.map((option, index) =>
-       <TextField
+       <GeneralField
         key={index}
         label={'Option Label ' + (index + 1)}
         value={options[index].label}
