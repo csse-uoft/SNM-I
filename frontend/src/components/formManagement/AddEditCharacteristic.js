@@ -159,19 +159,25 @@ export default function AddEditCharacteristic(){
                 onChange={e => form.options[index].label = e.target.value}
                 sx={{mt: '16px', minWidth: 350}}
               />
-              <Button variant="contained" color="primary" className={classes.button}
-                      onClick={() => {
-                        const temp = [...form.options]
-                        temp.splice(index, 1)
-                        console.log(temp)
-                        setForm(form => ({...form, options: [...temp]}))
-                      }}>
-                Remove
-              </Button>
+              {/*<Button variant="contained" color="primary" className={classes.button}*/}
+              {/*        onClick={() => {*/}
+              {/*          const temp = [...form.options]*/}
+              {/*          temp.splice(index, 1)*/}
+              {/*          console.log(temp)*/}
+              {/*          setForm(form => ({...form, options: [...temp]}))*/}
+              {/*        }}>*/}
+              {/*  Remove*/}
+              {/*</Button>*/}
           </div>
 
 
+
         )}
+
+        <Button variant="contained" color="primary" className={classes.button}
+                onClick={handleRemove}>
+          Remove
+        </Button>
 
 
 
