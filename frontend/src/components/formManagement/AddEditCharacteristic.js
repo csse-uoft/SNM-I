@@ -23,7 +23,8 @@ const useStyles = makeStyles(() => ({
   },
   button: {
     marginTop: 12,
-    marginBottom: 12,
+    marginBottom: 0,
+    length: 100
   },
 }));
 
@@ -46,6 +47,10 @@ export default function AddEditCharacteristic(){
 
   const handleAdd = () => {
     setForm(form => ({...form, options: form.options.concat({label: ''})}))
+  }
+
+  const handleRemove = () => {
+    setForm(form => ({...form, options: form.options.splice(0, form.options.length - 1)}))
   }
 
   // useEffect(() => {
@@ -143,15 +148,32 @@ export default function AddEditCharacteristic(){
         <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
           Add
         </Button>
+
         {form.options.map((option, index) =>
-          <GeneralField
-            key={index}
-            label={'Option Label ' + (index + 1)}
-            value={form.options[index].label}
-            required
-            onChange={e => form.options[index].label = e.target.value}
-            sx={{mt: '16px', minWidth: 350}}
-          />)}
+          <div>
+              <GeneralField
+                key={index}
+                label={'Option Label ' + (index + 1)}
+                value={form.options[index].label}
+                required
+                onChange={e => form.options[index].label = e.target.value}
+                sx={{mt: '16px', minWidth: 350}}
+              />
+              <Button variant="contained" color="primary" className={classes.button}
+                      onClick={() => {
+                        const temp = [...form.options]
+                        temp.splice(index, 1)
+                        console.log(temp)
+                        setForm(form => ({...form, options: [...temp]}))
+                      }}>
+                Remove
+              </Button>
+          </div>
+
+
+        )}
+
+
 
 
 
