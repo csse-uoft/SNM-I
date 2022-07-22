@@ -21,3 +21,15 @@ export async function deleteCharacteristic(id) {
   if (response.status !== 204)
     throw Error('Server does not return correct code.');
 }
+
+export async function fetchCharacteristicFieldTypes() {
+  return getJson('/api/characteristic/fieldTypes');
+}
+
+export async function fetchCharacteristicsDataTypes() {
+  return getJson('/api/characteristic/dataTypes');
+}
+
+export async function fetchCharacteristicsOptionsFromClass() {
+  return getJson('/api/characteristic/optionsFromClass');
+}

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {fetchUsers} from "../../api/userApi";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
-import {Button, Container, Paper, TextField, Typography} from "@mui/material";
+import {Button, Container, Paper, TextField, Typography, Divider} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
 import AddableTextField from "../shared/fields/AddableTextField";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
@@ -14,8 +14,11 @@ import {addEditQuestionFields} from "../../constants/addEditQuestionFields";
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import RadioField from "../shared/fields/RadioField";
-
-
+import {
+  fetchCharacteristicFieldTypes,
+  fetchCharacteristicsDataTypes,
+  fetchCharacteristicsOptionsFromClass
+} from "../../api/characteristicApi";
 
 
 const useStyles = makeStyles(() => ({
@@ -30,7 +33,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-export default function AddEditCharacteristic(){
+export default function AddEditCharacteristic() {
 
   const classes = useStyles();
   const history = useHistory();
@@ -43,8 +46,23 @@ export default function AddEditCharacteristic(){
   })
 
   const [form, setForm] = useState({
-  ...defaultAddEditQuestionFields
+    ...defaultAddEditQuestionFields
   })
+
+  const [types, setTypes] = useState({fieldTypes: {}, dataTypes: {}, optionsFromLabel: {}});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const newTypes = {};
+    Promise.all([
+      fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
+      fetchCharacteristicsDataTypes().then(dataTypes => newTypes.dataTypes = dataTypes),
+      fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
+    ]).then(() => {
+      setTypes(newTypes);
+      setLoading(false);
+    });
+  }, [])
 
   const handleAdd = () => {
     setForm(form => ({...form, options: form.options.concat({label: ''})}))
@@ -72,27 +90,78 @@ export default function AddEditCharacteristic(){
   // if(state.loading){
   //   return <Loading message={'Loading'}/>
   // }
+  if (loading)
+    return <Loading/>
 
   return (
 
 
-
     <Container maxWidth='md'>
-      <Paper sx={{p:2}} variant={'outlined'}>
-        <Typography variant={'h4'}> Please customize the characteristic </Typography>
-        <RadioField
-          label={'Required?'}
-          onChange={e => form.required = e.target.value}
+      <Paper sx={{p: 2}} variant={'outlined'}>
+        <Typography variant={'h4'}> Characteristic</Typography>
+        <GeneralField
+          label={'Name'}
+          value={form.description}
           required
-          value = {form.required}
-          options={{Yes:true, No:false}}
+          sx={{mt: '16px', minWidth: 350}}
+          onChange={e => form.description = e.target.value}
+          // onBlur={() => handleOnBlur(field, option)}
+          error={!!state.errors.description}
+          helperText={state.errors.description}
+          multiline
         />
+        <GeneralField
+          key={'description'}
+          label={'Description'}
+          value={form.description}
+          required
+          sx={{mt: '16px', minWidth: 350}}
+          onChange={e => form.description = e.target.value}
+          // onBlur={() => handleOnBlur(field, option)}
+          error={!!state.errors.description}
+          helperText={state.errors.description}
+          multiline
+        />
+        <Dropdown
+          options={[]}
+          label={'Codes'}
+          value={''}
+          onChange={e => state.form.optionsFromClass = e.target.value}
+          error={!!state.errors.optionsFromClass}
+          helperText={state.errors.optionsFromClass}
+          required
+        />
+
+        <Divider sx={{pt: 2}}/>
+        <Typography sx={{pt: 3}} variant={'h4'}> Implementation</Typography>
+
+
+        <SelectField
+          key={"fieldType"}
+          label={'Field Type'}
+          InputLabelProps={{id:'FieldType', }}
+          options={types.fieldTypes}
+          value={form.fieldType}
+          noEmpty={true}
+          required
+          onChange={e => form.fieldType = e.target.value}
+          // onBlur={() => handleOnBlur(field, option)}
+          error={!!state.errors.fieldType}
+          helperText={state.errors.fieldType}
+        />
+        {/*<RadioField*/}
+        {/*  label={'Required?'}*/}
+        {/*  onChange={e => form.required = e.target.value}*/}
+        {/*  required*/}
+        {/*  value={form.required}*/}
+        {/*  options={{Yes: true, No: false}}*/}
+        {/*/>*/}
         <RadioField
           label={'Choosing options from class or input manually'}
           onChange={e => setForm(form => ({...form, classOrManually: e.target.value}))}
           required
-          value = {form.classOrManually}
-          options={{Class:'class', Manually:'manually'}}
+          value={form.classOrManually}
+          options={{Class: 'class', Manually: 'manually'}}
         />
         <GeneralField
           key={'label'}
@@ -108,8 +177,8 @@ export default function AddEditCharacteristic(){
         <SelectField
           key={"dataType"}
           label={'Data Type'}
-          InputLabelProps={{id:'dataType', }}
-          options={{DataType_1: 'String', DataType_2: 'Date'}}
+          InputLabelProps={{id: 'dataType',}}
+          options={types.dataTypes}
           value={form.dataType}
           noEmpty={true}
           required
@@ -118,25 +187,13 @@ export default function AddEditCharacteristic(){
           error={!!state.errors.dataType}
           helperText={state.errors.dataType}
         />
-        <SelectField
-          key={"fieldType"}
-          label={'Field Type'}
-          InputLabelProps={{id:'FieldType', }}
-          options={{InputField_1: 'TextField', InputField_2: 'Select'}}
-          value={form.fieldType}
-          noEmpty={true}
-          required
-          onChange={e => form.fieldType = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
-          error={!!state.errors.fieldType}
-          helperText={state.errors.fieldType}
-        />
 
-        {form.classOrManually === 'class'? <SelectField
+
+        {form.classOrManually === 'class' ? <SelectField
           key={"optionsFromClass"}
           label={'Options From Class'}
           InputLabelProps={{id:'optionsFromClass', }}
-          options={{class_1: 'Provider', class_2: 'Organization'}}
+          options={types.optionsFromClass}
           value={form.optionsFromClass}
           noEmpty={true}
           required
@@ -144,7 +201,7 @@ export default function AddEditCharacteristic(){
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.optionsFromClass}
           helperText={state.errors.optionsFromClass}
-        />: <div/>}
+        /> : <div/>}
 
         {/*<Dropdown*/}
         {/*  options={}*/}
@@ -155,21 +212,10 @@ export default function AddEditCharacteristic(){
         {/*  helperText={state.errors.optionsFromClass}*/}
         {/*  required*/}
         {/*/>*/}
-        <GeneralField
-          key={'description'}
-          label={'Description'}
-          value={form.description}
-          required
-          sx={{mt: '16px', minWidth: 350}}
-          onChange={e => form.description = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
-          error={!!state.errors.description}
-          helperText={state.errors.description}
-          multiline
-        />
 
 
-        {form.classOrManually === 'manually'? <div>
+
+        {form.classOrManually === 'manually' ? <div>
           <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
             Add
           </Button>
@@ -194,21 +240,13 @@ export default function AddEditCharacteristic(){
               {/*  Remove*/}
               {/*</Button>*/}
             </div>
-
-
-
           )}
 
           <Button variant="contained" color="primary" className={classes.button}
                   onClick={handleRemove}>
             Remove
           </Button>
-        </div>: <div/>}
-
-
-
-
-
+        </div> : <div/>}
 
 
         {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
