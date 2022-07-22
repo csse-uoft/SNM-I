@@ -85,8 +85,8 @@ async function getAllClasses(req, res) {
         FILTER (isIRI(?s))
     }`;
 
-  await GraphDB.sendSelectQuery(query, false, (subject, label) => {
-    classes[subject.id] = label?.value || subject.id;
+  await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
+    classes[s.id] = label?.value || s.id;
   });
   res.json(classes);
 }
