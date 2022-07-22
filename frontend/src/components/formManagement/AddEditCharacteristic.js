@@ -36,11 +36,17 @@ export default function AddEditCharacteristic(){
 
   const [state, setState] = useState({
     loading: true,
-    form:{
-      ...defaultAddEditQuestionFields
-    },
+
     errors: {}
   })
+
+  const [form, setForm] = useState({
+  ...defaultAddEditQuestionFields
+  })
+
+  const handleAdd = () => {
+    setForm(form => ({...form, options: form.options.concat({label: ''})}))
+  }
 
   // useEffect(() => {
   //   fetchUsers().then(data => {
@@ -65,9 +71,9 @@ export default function AddEditCharacteristic(){
         <GeneralField
           key={'label'}
           label={'label'}
-          value={state.form.label}
+          value={form.label}
           required
-          onChange={e => state.form.label = e.target.value}
+          onChange={e => form.label = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.label}
           helperText={state.errors.label}
@@ -78,10 +84,10 @@ export default function AddEditCharacteristic(){
           label={'Data Type'}
           InputLabelProps={{id:'dataType', }}
           options={{DataType_1: 'String', DataType_2: 'Date'}}
-          value={state.form.dataType}
+          value={form.dataType}
           noEmpty={true}
           required
-          onChange={e => state.form.dataType = e.target.value}
+          onChange={e => form.dataType = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.dataType}
           helperText={state.errors.dataType}
@@ -91,10 +97,10 @@ export default function AddEditCharacteristic(){
           label={'Field Type'}
           InputLabelProps={{id:'FieldType', }}
           options={{InputField_1: 'TextField', InputField_2: 'Select'}}
-          value={state.form.fieldType}
+          value={form.fieldType}
           noEmpty={true}
           required
-          onChange={e => state.form.fieldType = e.target.value}
+          onChange={e => form.fieldType = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.fieldType}
           helperText={state.errors.fieldType}
@@ -104,10 +110,10 @@ export default function AddEditCharacteristic(){
           label={'Options From Class'}
           InputLabelProps={{id:'optionsFromClass', }}
           options={{class_1: 'Provider', class_2: 'Organization'}}
-          value={state.form.optionsFromClass}
+          value={form.optionsFromClass}
           noEmpty={true}
           required
-          onChange={e => state.form.optionsFromClass = e.target.value}
+          onChange={e => form.optionsFromClass = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.optionsFromClass}
           helperText={state.errors.optionsFromClass}
@@ -124,18 +130,28 @@ export default function AddEditCharacteristic(){
         <GeneralField
           key={'description'}
           label={'Description'}
-          value={state.form.description}
+          value={form.description}
           required
           sx={{mt: '16px', minWidth: 350}}
-          onChange={e => state.form.description = e.target.value}
+          onChange={e => form.description = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.description}
           helperText={state.errors.description}
+          multiline
         />
 
-        <AddableTextField
-          initOptions={state.form.options}
-        />
+        <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
+          Add
+        </Button>
+        {form.options.map((option, index) =>
+          <GeneralField
+            key={index}
+            label={'Option Label ' + (index + 1)}
+            value={form.options[index].label}
+            required
+            onChange={e => form.options[index].label = e.target.value}
+            sx={{mt: '16px', minWidth: 350}}
+          />)}
 
 
 
