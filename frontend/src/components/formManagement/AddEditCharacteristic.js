@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback,useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {fetchUsers} from "../../api/userApi";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
-import {Button, Container, Paper, TextField, Typography, Divider} from "@mui/material";
+import {Box, Button, Container, Paper, TextField, Typography, Divider} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
 import AddableTextField from "../shared/fields/AddableTextField";
 import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
@@ -19,6 +19,11 @@ import {
   fetchCharacteristicsDataTypes,
   fetchCharacteristicsOptionsFromClass
 } from "../../api/characteristicApi";
+import {userInvitationFields} from "../../constants/userInvitationFields";
+import {isFieldEmpty} from "../../helpers";
+import {REQUIRED_HELPER_TEXT} from "../../constants";
+
+
 
 
 const useStyles = makeStyles(() => ({
@@ -45,6 +50,7 @@ export default function AddEditCharacteristic() {
     errors: {}
   })
 
+
   const [form, setForm] = useState({
     ...defaultAddEditQuestionFields
   })
@@ -64,8 +70,9 @@ export default function AddEditCharacteristic() {
     });
   }, [])
 
+
   const handleAdd = () => {
-    setForm(form => ({...form, options: form.options.concat({label: ''})}))
+    setForm(form => ({...form, options: form.options.concat({label: '', key: Math.random()})}))
   }
 
   const handleRemove = () => {
@@ -73,6 +80,7 @@ export default function AddEditCharacteristic() {
   }
 
   const validate = () => {
+    const errors = {};
 
   }
 
@@ -223,22 +231,22 @@ export default function AddEditCharacteristic() {
           {form.options.map((option, index) =>
             <div>
               <GeneralField
-                key={index}
+                key={option.key}
                 label={'Option Label ' + (index + 1)}
                 value={form.options[index].label}
                 required
                 onChange={e => form.options[index].label = e.target.value}
                 sx={{mt: '16px', minWidth: 350}}
               />
-              {/*<Button variant="contained" color="primary" className={classes.button}*/}
-              {/*        onClick={() => {*/}
-              {/*          const temp = [...form.options]*/}
-              {/*          temp.splice(index, 1)*/}
-              {/*          console.log(temp)*/}
-              {/*          setForm(form => ({...form, options: [...temp]}))*/}
-              {/*        }}>*/}
-              {/*  Remove*/}
-              {/*</Button>*/}
+              <Button variant="contained" color="primary" className={classes.button}
+                      onClick={() => {
+                        const temp = [...form.options]
+                        temp.splice(index, 1)
+                        console.log(temp)
+                        setForm(form => ({...form, options: [...temp]}))
+                      }}>
+                Remove
+              </Button>
             </div>
           )}
 

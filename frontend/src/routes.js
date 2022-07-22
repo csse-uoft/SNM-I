@@ -92,7 +92,7 @@ const routes = (
 
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
 
-    <AdminRoute path='/questions' component={Questions}/>
+    <AdminRoute path='/characteristics' component={Questions}/>
     <AdminRoute path={'/characteristic/:id/:option'} component={AddEditCharacteristic}/>
 
 
