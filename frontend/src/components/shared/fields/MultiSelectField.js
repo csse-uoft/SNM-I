@@ -3,7 +3,7 @@ import { Autocomplete, TextField } from "@mui/material";
 
 export default function Dropdown(props) {
   // options is {labelValue1: label1, labelValue2: label2, ...}
-  const {options, label, value, onChange, helperText, required} = props;
+  const {options, label, value, onChange, helperText, required, error} = props;
 
   const handleChange = useCallback((e, value) => {
     onChange({target: {value}});
@@ -25,6 +25,7 @@ export default function Dropdown(props) {
           sx={{minWidth: 350}}
           fullWidth={false}
           helperText={helperText}
+          error={error}
         />
       )}
     />

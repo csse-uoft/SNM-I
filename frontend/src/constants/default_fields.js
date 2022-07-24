@@ -27,10 +27,12 @@ export const defaultFirstEntryFields = {
 
 let classOrManually;
 export const defaultAddEditQuestionFields = {
+  name:'',
   label: '', // Ex. address
+  codes: [],
   dataType: '', // Ex. string
   fieldType: '', // Ex. address
-  options: [], // Ex.
+  options: [{key: 0, label: ''}], // Ex.
   optionsFromClass: '', // Ex. provider
   description: '', // Ex. the address of the user's home
   classOrManually: 'class'
