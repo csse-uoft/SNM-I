@@ -31,7 +31,6 @@ export const defaultAddEditQuestionFields = {
   dataType: '', // Ex. string
   fieldType: '', // Ex. address
   options: [], // Ex.
-  required: false, // Ex. true
   optionsFromClass: '', // Ex. provider
   description: '', // Ex. the address of the user's home
   classOrManually: 'class'

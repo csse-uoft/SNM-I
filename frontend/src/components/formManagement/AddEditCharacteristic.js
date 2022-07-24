@@ -45,7 +45,6 @@ export default function AddEditCharacteristic() {
   const {id, option} = useParams();
 
   const [state, setState] = useState({
-    loading: true,
 
     errors: {}
   })
@@ -77,6 +76,26 @@ export default function AddEditCharacteristic() {
 
   const handleRemove = () => {
     setForm(form => ({...form, options: form.options.splice(0, form.options.length - 1)}))
+  }
+
+  const displayDataTypeValue = () => {
+    if(form.fieldType === 'TextField'){
+      return 'xsd:string'
+    }else if(form.fieldType === "NumberField"){
+      return 'xsd:number'
+    }else if(form.fieldType === 'BooleanRadioField'){
+      return 'xsd:boolean'
+    }else if(form.fieldType === 'DateField' || form.fieldType === 'DateTimeField' || form.fieldType === 'TimeField'){
+      return 'xsd:datetimes'
+    }else if(form.fieldType === 'MultiSelectField' || form.fieldType === 'SingleSelectField' || form.fieldType === 'RadioSelectField'){
+      if(form.classOrManually === 'class'){
+        return 'owl:NamedIndividual'
+      }else{
+        return 'xsd:string'
+      }
+    }else if(form.fieldType === 'PhoneNumberField' || form.fieldType === 'AddressField'){
+      return 'owl:NamedIndividual'
+    }
   }
 
   const validate = () => {
@@ -133,7 +152,7 @@ export default function AddEditCharacteristic() {
         <Dropdown
           options={[]}
           label={'Codes'}
-          value={''}
+          value={[]}
           onChange={e => state.form.optionsFromClass = e.target.value}
           error={!!state.errors.optionsFromClass}
           helperText={state.errors.optionsFromClass}
@@ -144,6 +163,7 @@ export default function AddEditCharacteristic() {
         <Typography sx={{pt: 3}} variant={'h4'}> Implementation</Typography>
 
 
+
         <SelectField
           key={"fieldType"}
           label={'Field Type'}
@@ -152,18 +172,12 @@ export default function AddEditCharacteristic() {
           value={form.fieldType}
           noEmpty={true}
           required
-          onChange={e => form.fieldType = e.target.value}
+          onChange={e => setForm(form => ({...form, fieldType: e.target.value}))}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!state.errors.fieldType}
           helperText={state.errors.fieldType}
         />
-        {/*<RadioField*/}
-        {/*  label={'Required?'}*/}
-        {/*  onChange={e => form.required = e.target.value}*/}
-        {/*  required*/}
-        {/*  value={form.required}*/}
-        {/*  options={{Yes: true, No: false}}*/}
-        {/*/>*/}
+
         <RadioField
           label={'Choosing options from class or input manually'}
           onChange={e => setForm(form => ({...form, classOrManually: e.target.value}))}
@@ -171,6 +185,24 @@ export default function AddEditCharacteristic() {
           value={form.classOrManually}
           options={{Class: 'class', Manually: 'manually'}}
         />
+
+        <SelectField
+          key={"dataType"}
+          label={'Data Type'}
+          InputLabelProps={{id: 'dataType',}}
+          options={types.dataTypes}
+          value={displayDataTypeValue()}
+          noEmpty={true}
+          required
+          onChange={e => form.dataType = e.target.value}
+          // onBlur={() => handleOnBlur(field, option)}
+          error={!!state.errors.dataType}
+          helperText={state.errors.dataType}
+          disabled
+        />
+
+
+
         <GeneralField
           key={'label'}
           label={'label'}
@@ -182,19 +214,8 @@ export default function AddEditCharacteristic() {
           helperText={state.errors.label}
           sx={{mt: '16px', minWidth: 350}}
         />
-        <SelectField
-          key={"dataType"}
-          label={'Data Type'}
-          InputLabelProps={{id: 'dataType',}}
-          options={types.dataTypes}
-          value={form.dataType}
-          noEmpty={true}
-          required
-          onChange={e => form.dataType = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
-          error={!!state.errors.dataType}
-          helperText={state.errors.dataType}
-        />
+
+
 
 
         {form.classOrManually === 'class' ? <SelectField
@@ -249,11 +270,6 @@ export default function AddEditCharacteristic() {
               </Button>
             </div>
           )}
-
-          <Button variant="contained" color="primary" className={classes.button}
-                  onClick={handleRemove}>
-            Remove
-          </Button>
         </div> : <div/>}
 
 
