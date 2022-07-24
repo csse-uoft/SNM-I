@@ -6,11 +6,6 @@ import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
 import {Box, Button, Container, Paper, TextField, Typography, Divider} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
-import AddableTextField from "../shared/fields/AddableTextField";
-import {userFirstEntryFields} from "../../constants/userFirstEntryFields";
-import {AlertDialog} from "../shared/Dialogs";
-import LoadingButton from "../shared/LoadingButton";
-import {addEditQuestionFields} from "../../constants/addEditQuestionFields";
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import RadioField from "../shared/fields/RadioField";
@@ -19,9 +14,7 @@ import {
   fetchCharacteristicsDataTypes,
   fetchCharacteristicsOptionsFromClass
 } from "../../api/characteristicApi";
-import {userInvitationFields} from "../../constants/userInvitationFields";
-import {isFieldEmpty} from "../../helpers";
-import {REQUIRED_HELPER_TEXT} from "../../constants";
+
 
 
 
@@ -58,6 +51,9 @@ export default function AddEditCharacteristic() {
 
   useEffect(() => {
     const newTypes = {};
+    if(option === 'edit'){
+      Promise.all().then()
+    }
     Promise.all([
       fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
       fetchCharacteristicsDataTypes().then(dataTypes => newTypes.dataTypes = dataTypes),
