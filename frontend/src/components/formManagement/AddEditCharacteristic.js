@@ -58,6 +58,7 @@ export default function AddEditCharacteristic() {
       fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
       fetchCharacteristicsDataTypes().then(dataTypes => newTypes.dataTypes = dataTypes),
       fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
+      // Todo fetch codes
     ]).then(() => {
       setTypes(newTypes);
       setLoading(false);
@@ -105,7 +106,7 @@ export default function AddEditCharacteristic() {
           errors[label] = 'This field cannot be empty'
         }
       }else if(label === 'codes' && value.length === 0){
-        errors[label] = 'This field cannot be empty'
+        // errors[label] = 'This field cannot be empty'
       }else if(isSelected() && label === 'optionsFromClass' && form.classOrManually === 'class' && value === ''){
         errors[label] = 'This field cannot be empty'
       }else if(isSelected() && label === 'options' && form.classOrManually === 'manually'){
@@ -124,20 +125,6 @@ export default function AddEditCharacteristic() {
 
   }
 
-  // useEffect(() => {
-  //   fetchUsers().then(data => {
-  //     if(option === 'edit'){
-  //       setState(state => ({...state, loading: false, form: data.form}));
-  //     }else{
-  //       setState(state => ({...state, loading: false}))
-  //     }
-  //   }); //Todo add error handler here
-  // }, []);
-  //
-  //
-  // if(state.loading){
-  //   return <Loading message={'Loading'}/>
-  // }
   if (loading)
     return <Loading/>
 
