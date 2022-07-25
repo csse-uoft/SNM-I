@@ -8,7 +8,7 @@ async function findCharacteristicById(id) {
   );
 }
 
-async function createCharacteristicHelper(data){
+async function createCharacteristicHelper(data) {
   const {label, name, multipleValues, dataType, codes, fieldType, options, optionsFromClass, description} = data;
   const characteristic = GDBCharacteristicModel({
     description,
@@ -17,12 +17,12 @@ async function createCharacteristicHelper(data){
   });
 
 
-  if (label || dataType || fieldType ||optionsFromClass|| options){
+  if (label || dataType || fieldType || optionsFromClass || options) {
     characteristic.implementation = {
       label: label,
       options: options,
       valueDataType: dataType,
-      optionsFromClass : optionsFromClass,
+      optionsFromClass: optionsFromClass,
       fieldType: await GDBFieldTypeModel.findOne({type: fieldType}),
       multipleValues: multipleValues,
     }
@@ -50,8 +50,8 @@ async function updateCharacteristicHelper(id, updateData) {
   const {label, name, multipleValues, dataType, fieldType, options, optionsFromClass, description} = updateData;
 
   //if implementation model is not defined and required in update, initiate here.
-  if(!characteristic.implementation &&
-    (label || dataType || fieldType || options ||optionsFromClass)){
+  if (!characteristic.implementation &&
+    (label || dataType || fieldType || options || optionsFromClass)) {
     characteristic.implementation = {};
   }
 
@@ -59,36 +59,36 @@ async function updateCharacteristicHelper(id, updateData) {
     characteristic.name = name;
   }
 
-  if(description){
+  if (description) {
     characteristic.description = description;
   }
 
-  if(label) {
+  if (label) {
     characteristic.implementation.label = label;
   }
 
-  if(multipleValues) {
+  if (multipleValues) {
     characteristic.implementation.multipleValues = multipleValues;
   }
 
   // dataType looks like [{label: '', value:''}, {label:'', value:''}]
-  if(dataType){
+  if (dataType) {
     characteristic.implementation.dataType.concat(dataType);
   }
 
-  if(fieldType) {
+  if (fieldType) {
     //initiate fieldType model here if it is undefined.
-    if(!characteristic.implementation.fieldType){
+    if (!characteristic.implementation.fieldType) {
       characteristic.implementation.fieldType = {};
     }
     characteristic.implementation.fieldType.type = fieldType;
   }
 
-  if(options) {
+  if (options) {
     characteristic.implementation.options = options;
   }
 
-  if(optionsFromClass){
+  if (optionsFromClass) {
     characteristic.implementation.optionsFromClass = optionsFromClass;
   }
 

@@ -46,7 +46,7 @@ async function createTemporaryUserAccount(data) {
 
   const userAccount = GDBUserAccountModel({
     primaryEmail: email,
-    role: is_superuser? 'admin': 'regular',
+    role: is_superuser ? 'admin' : 'regular',
     expirationDate: expirationDate,
     status: "pending"
   });
@@ -66,14 +66,15 @@ async function updateUserPassword(email, newPassword) {
 }
 
 
-
 async function updateUserAccount(email, updatedData) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   await userAccount.populate('primaryContact.telephone');
 
-  const {securityQuestions, status, givenName, familyName, countryCode,
-    areaCode, phoneNumber, altEmail} = updatedData
-  if (securityQuestions){
+  const {
+    securityQuestions, status, givenName, familyName, countryCode,
+    areaCode, phoneNumber, altEmail
+  } = updatedData
+  if (securityQuestions) {
     const answer1 = await Hashing.hashPassword(securityQuestions[3]);
     const securityQuestion1 = {
       question: securityQuestions[0],
@@ -95,37 +96,37 @@ async function updateUserAccount(email, updatedData) {
     userAccount.securityQuestions = [securityQuestion1, securityQuestion2, securityQuestion3]
 
   }
-  if(status){
+  if (status) {
     userAccount.status = status
   }
   // add more if needed TODO
-  if(givenName) {
+  if (givenName) {
     if (!userAccount.primaryContact) {
       userAccount.primaryContact = {};
     }
     userAccount.primaryContact.givenName = givenName;
   }
 
-  if(familyName) {
+  if (familyName) {
     userAccount.primaryContact.familyName = familyName;
   }
 
-  if(countryCode) {
+  if (countryCode) {
     if (!userAccount.primaryContact.telephone) {
-      userAccount.primaryContact.telephone={};
+      userAccount.primaryContact.telephone = {};
     }
     userAccount.primaryContact.telephone.countryCode = countryCode;
   }
 
-  if(areaCode) {
+  if (areaCode) {
     userAccount.primaryContact.telephone.areaCode = areaCode;
   }
 
-  if(phoneNumber) {
+  if (phoneNumber) {
     userAccount.primaryContact.telephone.phoneNumber = phoneNumber;
   }
 
-  if(altEmail) {
+  if (altEmail) {
     userAccount.secondaryEmail = altEmail;
   }
 
@@ -160,17 +161,18 @@ async function findUserAccountById(id) {
  */
 async function isEmailExists(email) {
   const userAccount = await findUserAccountByEmail(email);
-  if(!!userAccount){
-    if(userAccount.status === 'pending'){
+  if (!!userAccount) {
+    if (userAccount.status === 'pending') {
       return 2
-    }else{
+    } else {
       return 1
     }
-  }else{
+  } else {
     return 0
   }
 }
-async function userExpired(email){
+
+async function userExpired(email) {
   const userAccount = await GDBUserAccountModel.findOne({primaryEmail: email});
   return userAccount.expirationDate < new Date()
 }
@@ -213,21 +215,21 @@ async function initUserAccounts() {
     }
 
 
-
     const userAccount = GDBUserAccountModel({
       primaryEmail: 'admin@snmi.ca',
       secondaryEmail: 'admin2@snmi.ca',
       role: 'admin',
       displayName: 'Admin',
       status: "permanent",
-      expirationDate:new Date('2999-1-1'),
+      expirationDate: new Date('2999-1-1'),
       primaryContact: {
         givenName: 'Super',
         familyName: 'Admin',
         telephone: {
           countryCode: 1,
           areaCode: 647,
-          phoneNumber: 5726356,},
+          phoneNumber: 5726356,
+        },
       },
       securityQuestions: [
         securityQuestion1, securityQuestion2, securityQuestion3
@@ -235,7 +237,6 @@ async function initUserAccounts() {
       hash,
       salt,
     });
-
 
 
     await userAccount.save();
