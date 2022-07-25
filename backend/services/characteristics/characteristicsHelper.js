@@ -1,5 +1,7 @@
-const {GDBCharacteristicModel} = require("../../models/ClientFunctionalities/characteristic");
-const {GDBOptionModel} = require("../../models");
+const {
+  GDBCharacteristicModel,
+  GDBOptionModel, GDBFieldTypeModel
+} = require("../../models/ClientFunctionalities/characteristic");
 
 
 async function findCharacteristicById(id) {
@@ -21,16 +23,15 @@ async function createCharacteristicHelper(data){
     characteristic.implementation = {
       label: characteristic.implementation.label,
       valueDataType: characteristic.implementation.valueDataType,
-      fieldType : characteristic.implementation.fieldType,
       options: [],
       optionsFromClass : characteristic.implementation.optionsFromClass,
     }
   }
 
   if (fieldType){
-    characteristic.implementation.fieldType = {
-      type: fieldType.type,
-    }
+    characteristic.implementation.fieldType = GDBFieldTypeModel({
+      type: fieldType
+    });
   }
 
   if (options){
