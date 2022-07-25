@@ -78,6 +78,15 @@ export default function AddEditCharacteristic() {
   const handleSubmit = async () => {
     if(validate()){
       try {
+        const readyForm = {...form, classOrManually: undefined}
+        if(!isSelected()){
+          readyForm.options = undefined
+          readyForm.optionsFromClass = undefined
+        }else if(form.classOrManually === 'class'){
+          readyForm.options = undefined
+        }else if(form.classOrManually === 'manually'){
+          readyForm.optionsFromClass = undefined
+        }
         const {success, message} = await createCharacteristic(form)
         console.log(message)
       }catch (e){
