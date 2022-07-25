@@ -70,15 +70,16 @@ export default function AddEditCharacteristic() {
       // Todo fetch codes
     ]).then(() => {
       if(option === 'edit' && id){
-        fetchCharacteristic(id).then(fetchedForm => console.log(fetchedForm))
+        return fetchCharacteristic(id).then(fetchedForm => console.log(fetchedForm))
       }
     }).then(() => {
       setTypes(newTypes);
       setLoading(false);
     }).catch(e => {
-      console.log(e)
       if(e.json)
         setErrors(e.json);
+      setLoading(false)
+      setState(state => ({...state, failDialog: true}))
     });
   }, [])
 
@@ -183,7 +184,6 @@ export default function AddEditCharacteristic() {
     }
     setErrors(errors)
     return Object.keys(errors).length === 0
-
   }
 
   if (loading)
