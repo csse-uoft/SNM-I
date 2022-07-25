@@ -43,7 +43,9 @@ export default function AddEditCharacteristic() {
 
   const[state, setState] = useState({
     submitDialog: false,
-    loadingButton: false
+    loadingButton: false,
+    successDialog: false,
+    failDialog: false,
   })
 
   const [errors, setErrors] = useState(
@@ -107,13 +109,16 @@ export default function AddEditCharacteristic() {
         readyForm.multipleValues = false
       }
       const {success, message} = await createCharacteristic(readyForm)
+      if(success)
+        setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
       console.log(message)
     }catch (e){
       if (e.json) {
         setErrors(e.json);
       }
+      setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
     }
-    setState(state => ({...state, loadingButton: false}))
+
   }
 
   const displayDataTypeValue = () => {
@@ -347,15 +352,22 @@ export default function AddEditCharacteristic() {
                                       onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog && option === 'add'}/>
 
+        {/*<AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}*/}
+        {/*             dialogTitle={'Are you sure you want to create a new characteristic?'}*/}
+        {/*             buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))} key={'cancel'}>{'cancel'}</Button>,*/}
+        {/*               <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}*/}
+        {/*                              onClick={handleConfirm} children='confirm' autoFocus/>]}*/}
+        {/*             open={state.submitDialog && option === 'edit'}/>*/}
 
-        {/*<AlertDialog dialogContentText={"You are successfully registered"}*/}
-        {/*             dialogTitle={'Success'}*/}
-        {/*             buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}*/}
-        {/*             open={state.successDialog}/>*/}
-        {/*<AlertDialog dialogContentText={state.errors.message || "Fail to update"}*/}
-        {/*             dialogTitle={'Fail'}*/}
-        {/*             buttons={[<Button onClick={() => {history.push('/login')}} key={'fail'}>{'ok'}</Button>]}*/}
-        {/*             open={state.failDialog}/>*/}
+
+        <AlertDialog dialogContentText={"You have successfully created a new characteristic"}
+                     dialogTitle={'Success'}
+                     buttons={[<Button onClick={() => {history.push('/characteristics')}} key={'success'}> {'ok'}</Button>]}
+                     open={state.successDialog && option === 'add'}/>
+        <AlertDialog dialogContentText={errors.message || "Error occurs"}
+                     dialogTitle={'Fail'}
+                     buttons={[<Button onClick={() => {history.push('/characteristics')}} key={'fail'}>{'ok'}</Button>]}
+                     open={state.failDialog}/>
       </Paper>
 
     </Container>
