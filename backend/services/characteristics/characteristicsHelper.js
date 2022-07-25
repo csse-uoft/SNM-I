@@ -17,27 +17,28 @@ async function createCharacteristicHelper(data){
   });
 
 
-  if (label || dataType || fieldType || options || name ||optionsFromClass){
+  if (label || dataType || fieldType || options ||optionsFromClass){
     characteristic.implementation = {
       label: label,
       valueDataType: dataType,
       options: options,
       optionsFromClass : optionsFromClass,
+      fieldType : {type: fieldType}
     }
   }
 
-  if (fieldType){
-    characteristic.implementation.fieldType = GDBFieldTypeModel({
-      type: fieldType
-    });
-  }
+  // if (fieldType){
+  //   characteristic.implementation.fieldType = GDBFieldTypeModel({
+  //     type: fieldType
+  //   });
+  // }
 
-  if (options){
-    for (const {value, label} of Object.values(options)) {
-      const option = GDBOptionModel({value, label})
-      characteristic.implementation.options.append(option);
-    }
-  }
+  // if (options){
+  //   for (const {value, label} of Object.values(options)) {
+  //     const option = GDBOptionModel({value, label})
+  //     characteristic.implementation.options.concat(option);
+  //   }
+  // }
 
   await characteristic.save();
   return characteristic;
@@ -49,7 +50,7 @@ async function updateCharacteristicHelper(id, updateData) {
 
   //if implementation model is not defined and required in update, initiate here.
   if(!characteristic.implementation &&
-    (label || dataType || fieldType || options || name ||optionsFromClass)){
+    (label || dataType || fieldType || options ||optionsFromClass)){
     characteristic.implementation = {};
   }
 
