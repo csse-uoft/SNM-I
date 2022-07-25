@@ -55,7 +55,18 @@ const fetchCharacteristic = async (req, res, next) => {
   try{
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
-    return res.status(200).json({characteristic, success:true});
+    const fetchData = {
+      name : characteristic.name,
+      description : characteristic.description,
+      codes : [],
+      label : characteristic.implementation.label,
+      dataType : characteristic.implementation.dataType,
+      fieldType : characteristic.implementation.fieldType.type,
+      options : characteristic.implementation.options,
+
+    }
+    return res.status(200).json({fetchData, success:true});
+    // return res.status(200).json({characteristic, success:true});
   }catch (e){
     next(e)
   }
