@@ -1,8 +1,6 @@
-const {
-  GDBCharacteristicModel,
-  GDBOptionModel, GDBFieldTypeModel
-} = require("../../models/ClientFunctionalities/characteristic");
-
+const {GDBCharacteristicModel} = require("../../models/ClientFunctionalities/characteristic");
+const {GDBOptionModel} = require("../../models/ClientFunctionalities/option");
+const {GDBFieldTypeModel} = require("../../models/ClientFunctionalities/fieldType")
 
 async function findCharacteristicById(id) {
   return await GDBCharacteristicModel.findOne(
