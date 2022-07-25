@@ -23,7 +23,7 @@ async function createCharacteristicHelper(data){
       valueDataType: dataType,
       options: options,
       optionsFromClass : optionsFromClass,
-      fieldType : {type: fieldType},
+      fieldType : fieldType,
       multipleValues: multipleValues,
     }
   }
