@@ -10,7 +10,7 @@ import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import RadioField from "../shared/fields/RadioField";
 import {
-  createCharacteristic,
+  createCharacteristic, fetchCharacteristic,
   fetchCharacteristicFieldTypes,
   fetchCharacteristicsDataTypes,
   fetchCharacteristicsOptionsFromClass
@@ -54,7 +54,8 @@ export default function AddEditCharacteristic() {
 
 
   const [form, setForm] = useState({
-    ...defaultAddEditQuestionFields
+    ...defaultAddEditQuestionFields,
+    options: [{key: 0, label: ''}]
   })
 
   const [types, setTypes] = useState({fieldTypes: {}, dataTypes: {}, optionsFromLabel: {}});
@@ -62,17 +63,21 @@ export default function AddEditCharacteristic() {
 
   useEffect(() => {
     const newTypes = {};
-    if(option === 'edit'){
-
-    }
     Promise.all([
       fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
       fetchCharacteristicsDataTypes().then(dataTypes => newTypes.dataTypes = dataTypes),
       fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
       // Todo fetch codes
     ]).then(() => {
+      if(option === 'edit' && id){
+        fetchCharacteristic(id).then(fetchedForm => setForm(fetchedForm))
+      }
+    }).then(() => {
       setTypes(newTypes);
       setLoading(false);
+    }).catch(e => {
+      if(e.json)
+        setErrors(e.json);
     });
   }, [])
 
@@ -108,6 +113,7 @@ export default function AddEditCharacteristic() {
       }else{
         readyForm.multipleValues = false
       }
+      console.log(readyForm)
       const {success, message} = await createCharacteristic(readyForm)
       if(success)
         setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
@@ -352,12 +358,12 @@ export default function AddEditCharacteristic() {
                                       onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog && option === 'add'}/>
 
-        {/*<AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}*/}
-        {/*             dialogTitle={'Are you sure you want to create a new characteristic?'}*/}
-        {/*             buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))} key={'cancel'}>{'cancel'}</Button>,*/}
-        {/*               <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}*/}
-        {/*                              onClick={handleConfirm} children='confirm' autoFocus/>]}*/}
-        {/*             open={state.submitDialog && option === 'edit'}/>*/}
+        <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
+                     dialogTitle={'Are you sure you want to update the characteristic?'}
+                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))} key={'cancel'}>{'cancel'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                                      onClick={handleConfirm} children='confirm' autoFocus/>]}
+                     open={state.submitDialog && option === 'edit'}/>
 
 
         <AlertDialog dialogContentText={"You have successfully created a new characteristic"}

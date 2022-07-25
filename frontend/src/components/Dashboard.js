@@ -73,8 +73,8 @@ function Dashboard() {
       <NavButton to={'/settings/manage-fields'} icon={<Edit/>} disabled
                  text="Manage forms"/>
 
-      <NavButton to={'/questions'} icon={<Edit/>} disabled
-                 text="Manage Questions"/>
+      <NavButton to={'/characteristics'} icon={<Edit/>}
+                 text="Manage Characteristics"/>
 
       <NavButton to={'/settings/manage-forms'} icon={<Edit/>}
                  text="Manage Forms"/>

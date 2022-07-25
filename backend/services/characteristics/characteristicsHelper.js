@@ -17,13 +17,13 @@ async function createCharacteristicHelper(data){
   });
 
 
-  if (label || dataType || fieldType || options ||optionsFromClass){
+  if (label || dataType || fieldType ||optionsFromClass|| options){
     characteristic.implementation = {
       label: label,
+      options: [],
       valueDataType: dataType,
-      options: options,
       optionsFromClass : optionsFromClass,
-      fieldType : {type: fieldType},
+      fieldType: await GDBFieldTypeModel.findOne({type: fieldType}),
       multipleValues: multipleValues,
     }
   }
@@ -34,12 +34,12 @@ async function createCharacteristicHelper(data){
   //   });
   // }
 
-  // if (options){
-  //   for (const {value, label} of Object.values(options)) {
-  //     const option = GDBOptionModel({value, label})
-  //     characteristic.implementation.options.concat(option);
-  //   }
-  // }
+  if (options.length > 0){
+    for (let i = 0; i < options.length; i++) {
+      const option = GDBOptionModel({label: options[i]})
+      characteristic.implementation.options.concat(option);
+    }
+  }
 
   await characteristic.save();
   return characteristic;

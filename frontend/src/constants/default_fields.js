@@ -32,7 +32,7 @@ export const defaultAddEditQuestionFields = {
   codes: [],
   dataType: '', // Ex. string
   fieldType: '', // Ex. address
-  options: [{key: 0, label: ''}], // Ex.
+  // options: [{key: 0, label: ''}], // Ex.
   optionsFromClass: '', // Ex. provider
   description: '', // Ex. the address of the user's home
   classOrManually: 'class'
