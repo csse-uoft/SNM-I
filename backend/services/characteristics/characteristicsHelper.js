@@ -20,7 +20,7 @@ async function createCharacteristicHelper(data){
   if (label || dataType || fieldType ||optionsFromClass|| options){
     characteristic.implementation = {
       label: label,
-      options: [],
+      options: options,
       valueDataType: dataType,
       optionsFromClass : optionsFromClass,
       fieldType: await GDBFieldTypeModel.findOne({type: fieldType}),
@@ -34,12 +34,12 @@ async function createCharacteristicHelper(data){
   //   });
   // }
 
-  if (options.length > 0){
-    for (let i = 0; i < options.length; i++) {
-      const option = GDBOptionModel({label: options[i]})
-      characteristic.implementation.options.concat(option);
-    }
-  }
+  // if (options.length > 0){
+  //   for (let i = 0; i < options.length; i++) {
+  //     const option = GDBOptionModel({label: options[i].label})
+  //     characteristic.implementation.optionss.push(option);
+  //   }
+  // }
 
   await characteristic.save();
   return characteristic;
