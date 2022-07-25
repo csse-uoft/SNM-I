@@ -9,7 +9,7 @@ async function findCharacteristicById(id) {
 }
 
 async function createCharacteristicHelper(data){
-  const {label, name, dataType, codes, fieldType, options, optionsFromClass, description} = data;
+  const {label, name, multipleValues, dataType, codes, fieldType, options, optionsFromClass, description} = data;
   const characteristic = GDBCharacteristicModel({
     description,
     name,
@@ -23,7 +23,8 @@ async function createCharacteristicHelper(data){
       valueDataType: dataType,
       options: options,
       optionsFromClass : optionsFromClass,
-      fieldType : {type: fieldType}
+      fieldType : {type: fieldType},
+      multipleValues: multipleValues,
     }
   }
 
@@ -46,7 +47,7 @@ async function createCharacteristicHelper(data){
 
 async function updateCharacteristicHelper(id, updateData) {
   const characteristic = await findCharacteristicById(id);
-  const {label, name, dataType, fieldType, options, optionsFromClass, description} = updateData;
+  const {label, name, multipleValues, dataType, fieldType, options, optionsFromClass, description} = updateData;
 
   //if implementation model is not defined and required in update, initiate here.
   if(!characteristic.implementation &&
@@ -54,12 +55,20 @@ async function updateCharacteristicHelper(id, updateData) {
     characteristic.implementation = {};
   }
 
+  if (name) {
+    characteristic.name = name;
+  }
+
+  if(description){
+    characteristic.description = description;
+  }
+
   if(label) {
     characteristic.implementation.label = label;
   }
 
-  if(name) {
-    characteristic.implementation.name = name;
+  if(multipleValues) {
+    characteristic.implementation.multipleValues = multipleValues;
   }
 
   // dataType looks like [{label: '', value:''}, {label:'', value:''}]
@@ -81,14 +90,6 @@ async function updateCharacteristicHelper(id, updateData) {
 
   if(optionsFromClass){
     characteristic.implementation.optionsFromClass = optionsFromClass;
-  }
-
-  if (name) {
-    characteristic.name = name;
-  }
-
-  if(description){
-    characteristic.description = description;
   }
 
   await characteristic.save();
