@@ -82,6 +82,7 @@ const fetchCharacteristics = async (req, res, next) => {
     const data = rawData.map((characteristic) => {
       return {
         id: characteristic._id,
+        name: characteristic.name,
         description: characteristic.description,
         codes: characteristic.codes,
         implementation: characteristic.implementation,
