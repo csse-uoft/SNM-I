@@ -87,7 +87,12 @@ export default function AddEditCharacteristic() {
         }else if(form.classOrManually === 'manually'){
           readyForm.optionsFromClass = undefined
         }
-        const {success, message} = await createCharacteristic(form)
+        if(form.fieldType === 'MultiSelectField'){
+          readyForm.multipleValues = true
+        }else{
+          readyForm.multipleValues = false
+        }
+        const {success, message} = await createCharacteristic(readyForm)
         console.log(message)
       }catch (e){
         if (e.json) {
@@ -99,20 +104,27 @@ export default function AddEditCharacteristic() {
 
   const displayDataTypeValue = () => {
     if(form.fieldType === 'TextField'){
+      form.dataType = 'xsd:string'
       return 'xsd:string'
     }else if(form.fieldType === "NumberField"){
+      form.dataType = 'xsd:number'
       return 'xsd:number'
     }else if(form.fieldType === 'BooleanRadioField'){
+      form.dataType = 'xsd:boolean'
       return 'xsd:boolean'
     }else if(form.fieldType === 'DateField' || form.fieldType === 'DateTimeField' || form.fieldType === 'TimeField'){
+      form.dataType = 'xsd:datetimes'
       return 'xsd:datetimes'
     }else if(isSelected()){
       if(form.classOrManually === 'class'){
+        form.dataType = 'owl:NamedIndividual'
         return 'owl:NamedIndividual'
       }else{
+        form.dataType = 'xsd:string'
         return 'xsd:string'
       }
     }else if(form.fieldType === 'PhoneNumberField' || form.fieldType === 'AddressField'){
+      form.dataType = 'owl:NamedIndividual'
       return 'owl:NamedIndividual'
     }
   }
