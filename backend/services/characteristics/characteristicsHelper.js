@@ -75,6 +75,10 @@ async function updateCharacteristicHelper(id, updateData) {
     characteristic.implementation.fieldType.type = fieldType;
   }
 
+  if(options) {
+    characteristic.implementation.options = options;
+  }
+
   if(optionsFromClass){
     characteristic.implementation.optionsFromClass = optionsFromClass;
   }
@@ -92,21 +96,19 @@ async function updateCharacteristicHelper(id, updateData) {
 
 }
 
-async function updateOptions(id, options) {
-  const characteristic = await findCharacteristicById(id);
-  characteristic.implementation.options.concat(options);
-
-}
-
-async function updateFieldType(id, fieldType) {
-  const characteristic = await findCharacteristicById(id);
-  characteristic.implementation.fieldType.type = fieldType;
-}
+// async function updateOptions(id, options) {
+//   const characteristic = await findCharacteristicById(id);
+//   characteristic.implementation.options.concat(options);
+//
+// }
+//
+// async function updateFieldType(id, fieldType) {
+//   const characteristic = await findCharacteristicById(id);
+//   characteristic.implementation.fieldType.type = fieldType;
+// }
 
 module.exports = {
   findCharacteristicById,
   updateCharacteristicHelper,
   createCharacteristicHelper,
-  updateOptions,
-  updateFieldType,
 }
