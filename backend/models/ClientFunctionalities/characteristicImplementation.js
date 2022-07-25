@@ -9,13 +9,13 @@ const {GDBOptionModel} = require("./option");
 
 const GDBCIModel = createGraphDBModel({
   label: {type: String, internalKey: ':hasLabel'},
-  multipleValues:{type: Boolean, internalKey: ':hasMultipleValues'},
-  valueDataType:{type: Types.NamedIndividual, internalKey: ':hasValueDataType'},
-  fieldType:{type: GDBFieldTypeModel, internalKey: ':hasFieldType'},
+  multipleValues: {type: Boolean, internalKey: ':hasMultipleValues'},
+  valueDataType: {type: Types.NamedIndividual, internalKey: ':hasValueDataType'},
+  fieldType: {type: GDBFieldTypeModel, internalKey: ':hasFieldType'},
   // store options as [{}, {}, {}]
-  option:{type: [GDBOptionModel], internalKey: ':hasOption'},
+  option: {type: [GDBOptionModel], internalKey: ':hasOption'},
   //required:{type: Boolean, internalKey: ':isRequired'},
-  optionsFromClass:{type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
+  optionsFromClass: {type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
 }, {
   rdfTypes: [':CharacteristicImplementation'], name: 'characteristicImplementation'
 });

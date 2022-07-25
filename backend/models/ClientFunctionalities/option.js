@@ -9,7 +9,7 @@ const GDBOptionModel = createGraphDBModel({
   dataValue: {type: String, internalKey: ':hasDataValue'},
   objectValue: {type: Types.NamedIndividual, internalKey: ':hasObjectValue'}
 
-},{rdfTypes: [':Option'], name:'option'})
+}, {rdfTypes: [':Option'], name: 'option'})
 
 module.exports = {
   GDBOptionModel
