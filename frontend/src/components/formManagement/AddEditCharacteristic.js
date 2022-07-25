@@ -10,6 +10,7 @@ import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import RadioField from "../shared/fields/RadioField";
 import {
+  createCharacteristic,
   fetchCharacteristicFieldTypes,
   fetchCharacteristicsDataTypes,
   fetchCharacteristicsOptionsFromClass
@@ -52,7 +53,7 @@ export default function AddEditCharacteristic() {
   useEffect(() => {
     const newTypes = {};
     if(option === 'edit'){
-      Promise.all().then()
+
     }
     Promise.all([
       fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
@@ -72,6 +73,18 @@ export default function AddEditCharacteristic() {
 
   const handleRemove = () => {
     setForm(form => ({...form, options: form.options.splice(0, form.options.length - 1)}))
+  }
+
+  const handleSubmit = async () => {
+    if(validate()){
+      try {
+        const {success, message} = await createCharacteristic(form)
+      }catch (e){
+        if (e.json) {
+          setErrors(e.json);
+        }
+      }
+    }
   }
 
   const displayDataTypeValue = () => {
@@ -287,7 +300,7 @@ export default function AddEditCharacteristic() {
         </div> : <div/>}
 
 
-        <Button variant="contained" color="primary" className={classes.button} onClick={validate}>
+        <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
           Submit
         </Button>
 
