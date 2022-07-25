@@ -18,7 +18,7 @@ export function AlertDialog(props) {
           {props.dialogTitle}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText sx={{whiteSpace: 'pre'}}>
             {props.dialogContentText}
           </DialogContentText>
         </DialogContent>

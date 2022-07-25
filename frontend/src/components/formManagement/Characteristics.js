@@ -10,6 +10,7 @@ import { DeleteModal, Loading, DataTable } from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {useHistory} from "react-router";
+import {fetchCharacteristics} from "../../api/characteristicApi";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -28,72 +29,71 @@ const contentTypeOptions = {
   provider: 'Provider',
 };
 
-function AddEditDialog({open, title, value, objectId, handleConfirm, handleClose}) {
-  const [err, setErr] = useState({
-    type: '',
-    value: '',
-  });
-
-  /**
-   * @returns {boolean} true if passed.
-   */
-  const check = () => {
-    const newErr = {};
-    if (value.content_type === '')
-      newErr.content_type = 'This field is required';
-    if (value.text === '')
-      newErr.text = 'This field is required';
-    setErr(newErr);
-    return value.content_type !== '' && value.text !== '';
-  };
-
-  return (
-    <Dialog open={open} onClose={handleClose} fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <Box sx={{mt: 2}}/>
-        <SelectField
-          label={'Content type'}
-          value={value.content_type}
-          options={contentTypeOptions}
-          onChange={(e) => value.content_type = e.target.value}
-          disabled={title === EDIT_TITLE}
-          formControlProps={{fullWidth: true}}
-          error={!!err.content_type}
-          helperText={err.content_type}
-          required noDefaultStyle noEmpty
-        />
-        <GeneralField
-          label="Question"
-          value={value.text}
-          onChange={e => value.text = e.target.value}
-          error={!!err.text}
-          helperText={err.text}
-          fullWidth
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() => {
-            if (check()) {
-              handleConfirm();
-            }
-          }}
-          color="primary">
-          Confirm
-        </Button>
-        <Button onClick={handleClose}>
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
+// function AddEditDialog({open, title, value, objectId, handleConfirm, handleClose}) {
+//   const [err, setErr] = useState({
+//     type: '',
+//     value: '',
+//   });
+//
+//   /**
+//    * @returns {boolean} true if passed.
+//    */
+//   const check = () => {
+//     const newErr = {};
+//     if (value.content_type === '')
+//       newErr.content_type = 'This field is required';
+//     if (value.text === '')
+//       newErr.text = 'This field is required';
+//     setErr(newErr);
+//     return value.content_type !== '' && value.text !== '';
+//   };
+//
+//   return (
+//     <Dialog open={open} onClose={handleClose} fullWidth>
+//       <DialogTitle>{title}</DialogTitle>
+//       <DialogContent>
+//         <Box sx={{mt: 2}}/>
+//         <SelectField
+//           label={'Content type'}
+//           value={value.content_type}
+//           options={contentTypeOptions}
+//           onChange={(e) => value.content_type = e.target.value}
+//           disabled={title === EDIT_TITLE}
+//           formControlProps={{fullWidth: true}}
+//           error={!!err.content_type}
+//           helperText={err.content_type}
+//           required noDefaultStyle noEmpty
+//         />
+//         <GeneralField
+//           label="Question"
+//           value={value.text}
+//           onChange={e => value.text = e.target.value}
+//           error={!!err.text}
+//           helperText={err.text}
+//           fullWidth
+//         />
+//       </DialogContent>
+//       <DialogActions>
+//         <Button
+//           onClick={() => {
+//             if (check()) {
+//               handleConfirm();
+//             }
+//           }}
+//           color="primary">
+//           Confirm
+//         </Button>
+//         <Button onClick={handleClose}>
+//           Cancel
+//         </Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// }
 
 export default function Characteristics() {
   const [state, setState] = useState({
     loading: true,
-    data: [],
     value: {},
     selectedId: null,
     deleteDialogTitle: '',
@@ -101,13 +101,25 @@ export default function Characteristics() {
     dialogTitle: '',
     showAddEditDialog: false,
   });
+  const [form, setForm] = useState(
+    []
+  )
   const classes = useStyles();
   const history = useHistory();
 
   useEffect(() => {
-    fetchQuestions().then(data => {
-      setState(state => ({...state, loading: false, data}));
-    });
+    fetchCharacteristics().then(res => {
+      setForm(res.data.map(characteristic => {
+        return {
+          label: characteristic.implementation.label,
+          name: characteristic.name,
+          fieldType: characteristic.implementation.fieldType.label,
+          dataType: characteristic.implementation.valueDataType
+        }
+      }))
+      setState(state => ({...state, loading: false}))
+      }
+    );
   }, []);
 
   const showDeleteDialog = (id, title) => () => {
@@ -173,12 +185,20 @@ export default function Characteristics() {
 
   const columns = [
     {
-      label: 'Text',
-      body: ({text}) => <Box sx={{width: '60%'}}>{text}</Box>
+      label: 'Name',
+      body: ({name}) => <Box sx={{width: '60%'}}>{name}</Box>
     },
     {
-      label: 'Content type',
-      body: ({content_type}) => content_type
+      label: 'Label',
+      body: ({label}) => label
+    },
+    {
+      label: 'Field Type',
+      body: ({fieldType}) => fieldType
+    },
+    {
+      label: 'Data Type',
+      body: ({dataType}) => dataType
     },
     {
       label: ' ',
@@ -204,13 +224,13 @@ export default function Characteristics() {
   ];
 
   if (state.loading)
-    return <Loading message={`Loading questions...`}/>;
+    return <Loading message={`Loading characteristics...`}/>;
 
   return (
     <Container>
       <DataTable
         title={"Questions"}
-        data={state.data}
+        data={form}
         columns={columns}
         customToolbar={<Chip
           onClick={() => {history.push('characteristic/add')}}
@@ -219,21 +239,21 @@ export default function Characteristics() {
           label="Add"
           variant="outlined"/>}
       />
-      <DeleteModal
-        objectId={state.selectedId}
-        title={state.deleteDialogTitle}
-        show={state.showDeleteDialog}
-        onHide={() => setState(state => ({...state, showDeleteDialog: false}))}
-        delete={handleDelete}
-      />
-      <AddEditDialog
-        open={state.showAddEditDialog}
-        value={state.value}
-        objectId={state.selectedId}
-        title={state.dialogTitle}
-        handleClose={() => setState(state => ({...state, showAddEditDialog: false}))}
-        handleConfirm={state.dialogTitle === ADD_TITLE ? handleAdd : handleEdit}
-      />
+      {/*<DeleteModal*/}
+      {/*  objectId={state.selectedId}*/}
+      {/*  title={state.deleteDialogTitle}*/}
+      {/*  show={state.showDeleteDialog}*/}
+      {/*  onHide={() => setState(state => ({...state, showDeleteDialog: false}))}*/}
+      {/*  delete={handleDelete}*/}
+      {/*/>*/}
+      {/*<AddEditDialog*/}
+      {/*  open={state.showAddEditDialog}*/}
+      {/*  value={state.value}*/}
+      {/*  objectId={state.selectedId}*/}
+      {/*  title={state.dialogTitle}*/}
+      {/*  handleClose={() => setState(state => ({...state, showAddEditDialog: false}))}*/}
+      {/*  handleConfirm={state.dialogTitle === ADD_TITLE ? handleAdd : handleEdit}*/}
+      {/*/>*/}
     </Container>
   );
 }
