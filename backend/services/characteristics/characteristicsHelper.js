@@ -4,7 +4,7 @@ const {GDBFieldTypeModel} = require("../../models/ClientFunctionalities/fieldTyp
 
 async function findCharacteristicById(id) {
   return await GDBCharacteristicModel.findOne(
-    {_id: id}, {populates: ['implementation.fieldType', 'implementation.options', "implementation.label"]}
+    {_id: id}, {populates: ['implementation.fieldType', 'implementation.options']}
   );
 }
 
