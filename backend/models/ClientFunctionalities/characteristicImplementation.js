@@ -14,7 +14,7 @@ const GDBCIModel = createGraphDBModel({
   fieldType:{type: GDBFieldTypeModel, internalKey: ':hasFieldType'},
   // store options as [{}, {}, {}]
   options:{type: [GDBOptionModel], internalKey: ':hasOption'},
-  required:{type: Boolean, internalKey: ':isRequired'},
+  //required:{type: Boolean, internalKey: ':isRequired'},
   optionsFromClass:{type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
 }, {
   rdfTypes: [':CharacteristicImplementation'], name: 'characteristicImplementation'
