@@ -1,26 +1,47 @@
 const {GDBCharacteristicModel} = require("../../models/ClientFunctionalities/characteristic");
-const {findCharacteristicById, updateCharacteristicHelper} = require("./characteristicsHelper");
+const {findCharacteristicById, updateCharacteristicHelper,
+  createCharacteristicHelper, updateOptions, updateFieldType} = require("./characteristicsHelper");
 
 
 const createCharacteristic = async (req, res, next) => {
+  const {label, name, codes, dataType, fieldType, options, optionsFromClass, description} = req.body;
+  const data = {
+    label,
+    name,
+    codes,
+    dataType,
+    fieldType,
+    options,
+    optionsFromClass,
+    description,
+  };
+
+  try{
+    await createCharacteristicHelper(data);
+    return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
+  }catch (e){
+    next(e)
+  }
 
 }
 
 const updateCharacteristic = async (req, res, next) => {
   const id = req.params.id;
-  const {label, dataType, fieldType, option, required, optionsFromClass, description} = req.body;
+  const {label, name, dataType, fieldType, options, optionsFromClass, description} = req.body;
   const updateData = {
     label,
+    name,
     dataType,
     fieldType,
-    option,
-    required,
+    options,
     optionsFromClass,
     description,
   };
 
   try{
     await updateCharacteristicHelper(id, updateData);
+    await updateOptions(id, options);
+    await updateFieldType(id, fieldType);
     return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
   }catch (e){
     next(e)

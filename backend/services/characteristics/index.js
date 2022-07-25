@@ -1,3 +1,5 @@
 module.exports = {
-  ...require('./misc')
+  ...require('./misc'),
+  ...require('./characteristics'),
+  ...require('./characteristicsHelper'),
 }

@@ -1,4 +1,5 @@
-const {GDBCharacteristicModel} = require("../../models");
+const {GDBCharacteristicModel} = require("../../models/ClientFunctionalities/characteristic");
+const {GDBOptionModel} = require("../../models");
 
 
 async function findCharacteristicById(id) {
@@ -7,23 +8,63 @@ async function findCharacteristicById(id) {
   );
 }
 
+async function createCharacteristicHelper(data){
+  const {label, name, dataType, codes, fieldType, options, optionsFromClass, description} = data;
+  const characteristic = GDBCharacteristicModel({
+    description,
+    name,
+    codes,
+  });
+
+
+  if (label || dataType || fieldType || options || name ||optionsFromClass){
+    characteristic.implementation = {
+      label: characteristic.implementation.label,
+      valueDataType: characteristic.implementation.valueDataType,
+      fieldType : characteristic.implementation.fieldType,
+      options: [],
+      optionsFromClass : characteristic.implementation.optionsFromClass,
+    }
+  }
+
+  if (fieldType){
+    characteristic.implementation.fieldType = {
+      type: fieldType.type,
+    }
+  }
+
+  if (options){
+    for (const {value, label} of Object.values(options)) {
+      const option = GDBOptionModel({value, label})
+      characteristic.implementation.options.append(option);
+    }
+  }
+
+  await characteristic.save();
+  return characteristic;
+}
+
 async function updateCharacteristicHelper(id, updateData) {
   const characteristic = await findCharacteristicById(id);
-  const {label, dataType, fieldType, option, required, optionsFromClass, description} = updateData;
+  const {label, name, dataType, fieldType, options, optionsFromClass, description} = updateData;
 
   //if implementation model is not defined and required in update, initiate here.
   if(!characteristic.implementation &&
-    (label || dataType || fieldType || option || required ||optionsFromClass)){
+    (label || dataType || fieldType || options || name ||optionsFromClass)){
     characteristic.implementation = {};
   }
 
   if(label) {
-    characteristic.implementation.options
+    characteristic.implementation.label = label;
+  }
+
+  if(name) {
+    characteristic.implementation.name = name;
   }
 
   // dataType looks like [{label: '', value:''}, {label:'', value:''}]
   if(dataType){
-    //TODO: add update
+    characteristic.implementation.dataType.concat(dataType);
   }
 
   if(fieldType) {
@@ -34,17 +75,12 @@ async function updateCharacteristicHelper(id, updateData) {
     characteristic.implementation.fieldType.type = fieldType;
   }
 
-  //option looks like []
-  if(option) {
-    //TODO: add update
-  }
-
-  if(required) {
-    characteristic.implementation.required = required;
-  }
-
   if(optionsFromClass){
-    //TODO: add update
+    characteristic.implementation.optionsFromClass = optionsFromClass;
+  }
+
+  if (name) {
+    characteristic.name = name;
   }
 
   if(description){
@@ -56,4 +92,21 @@ async function updateCharacteristicHelper(id, updateData) {
 
 }
 
-module.exports = {findCharacteristicById, updateCharacteristicHelper}
+async function updateOptions(id, options) {
+  const characteristic = await findCharacteristicById(id);
+  characteristic.implementation.options.concat(options);
+
+}
+
+async function updateFieldType(id, fieldType) {
+  const characteristic = await findCharacteristicById(id);
+  characteristic.implementation.fieldType.type = fieldType;
+}
+
+module.exports = {
+  findCharacteristicById,
+  updateCharacteristicHelper,
+  createCharacteristicHelper,
+  updateOptions,
+  updateFieldType,
+}
