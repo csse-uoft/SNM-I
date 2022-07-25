@@ -60,7 +60,7 @@ const GraphDB = {
     console.log(`---------- ${Date.now() - time} ms -----------`);
   },
 
-  sendConstructQuery: async (query, onData) => {
+  sendConstructQuery: async (query, onData, inference=false) => {
     const time = Date.now();
     console.log(`------ Construct query: -------\n${query}`);
     const repository = await getRepository();
@@ -69,6 +69,7 @@ const GraphDB = {
       .setQuery(query)
       .setQueryType(QueryType.CONSTRUCT)
       .setResponseType(RDFMimeType.JSON_LD)
+      .setInference(inference)
       .setTimeout(5);
 
     try {
