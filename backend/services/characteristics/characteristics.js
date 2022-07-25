@@ -4,11 +4,12 @@ const {findCharacteristicById, updateCharacteristicHelper,
 
 
 const createCharacteristic = async (req, res, next) => {
-  const {label, name, codes, dataType, fieldType, options, optionsFromClass, description} = req.body;
+  const {label, name, codes, multipleValues, dataType, fieldType, options, optionsFromClass, description} = req.body;
   const data = {
     label,
     name,
     codes,
+    multipleValues,
     dataType,
     fieldType,
     options,
@@ -27,10 +28,11 @@ const createCharacteristic = async (req, res, next) => {
 
 const updateCharacteristic = async (req, res, next) => {
   const id = req.params.id;
-  const {label, name, dataType, fieldType, options, optionsFromClass, description} = req.body;
+  const {label, name, multipleValues, dataType, fieldType, options, optionsFromClass, description} = req.body;
   const updateData = {
     label,
     name,
+    multipleValues,
     dataType,
     fieldType,
     options,
