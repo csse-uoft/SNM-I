@@ -23,7 +23,7 @@ async function createCharacteristicHelper(data){
       valueDataType: dataType,
       options: options,
       optionsFromClass : optionsFromClass,
-      fieldType : fieldType,
+      fieldType: await GDBFieldTypeModel.findOne({type: fieldType}),
       multipleValues: multipleValues,
     }
   }
