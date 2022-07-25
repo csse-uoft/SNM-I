@@ -13,7 +13,7 @@ const GDBCIModel = createGraphDBModel({
   valueDataType:{type: Types.NamedIndividual, internalKey: ':hasValueDataType'},
   fieldType:{type: GDBFieldTypeModel, internalKey: ':hasFieldType'},
   // store options as [{}, {}, {}]
-  options:{type: [GDBOptionModel], internalKey: ':hasOption'},
+  option:{type: [GDBOptionModel], internalKey: ':hasOption'},
   //required:{type: Boolean, internalKey: ':isRequired'},
   optionsFromClass:{type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
 }, {
