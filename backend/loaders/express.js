@@ -6,7 +6,7 @@ const cookieSession = require('cookie-session');
 const cors = require('cors');
 
 const {baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
-  characteristicRoute
+  characteristicRoute, dynamicFormRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -38,6 +38,7 @@ app.use('/api', userRoute);
 app.use('/api', usersRoute);
 app.use('/api', characteristicRoute)
 app.use('/api', clientsRoute);
+app.use('/api', dynamicFormRoute);
 
 
 require('../services/userAccount/user').initUserAccounts();
