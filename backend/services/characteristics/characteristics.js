@@ -9,7 +9,7 @@ const createCharacteristic = async (req, res, next) => {
     label,
     name,
     codes,
-    multipleValues
+    multipleValues,
     dataType,
     fieldType,
     options,
