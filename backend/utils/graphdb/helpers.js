@@ -156,8 +156,14 @@ const Helpers = {
       // Provides a GraphDBDocument instance
       if (val.individualName != null)
         return `:${val.individualName}`
-      // Make sure it has a prefix
-      return val.includes(':') ? val : `:${val}`;
+
+      // Make sure it has a proper syntax
+      if (val.includes('://'))
+        return `<${val}>`
+      else if (val.includes(':'))
+        return val;
+      else
+        throw new Error('Improper instance syntax.');
     } else {
       throw new Error('Helpers.valToGraphDBValue: Should not reach here.');
     }
