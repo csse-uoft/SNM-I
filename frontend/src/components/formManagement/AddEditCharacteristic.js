@@ -15,6 +15,8 @@ import {
   fetchCharacteristicsDataTypes,
   fetchCharacteristicsOptionsFromClass
 } from "../../api/characteristicApi";
+import LoadingButton from "../shared/LoadingButton";
+import {AlertDialog} from "../shared/Dialogs";
 
 
 
@@ -37,6 +39,12 @@ export default function AddEditCharacteristic() {
   const classes = useStyles();
   const history = useHistory();
   const {id, option} = useParams();
+
+
+  const[state, setState] = useState({
+    submitDialog: false,
+    loadingButton: false
+  })
 
   const [errors, setErrors] = useState(
     {}
@@ -75,31 +83,37 @@ export default function AddEditCharacteristic() {
     setForm(form => ({...form, options: form.options.splice(0, form.options.length - 1)}))
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if(validate()){
-      try {
-        const readyForm = {...form, classOrManually: undefined}
-        if(!isSelected()){
-          readyForm.options = undefined
-          readyForm.optionsFromClass = undefined
-        }else if(form.classOrManually === 'class'){
-          readyForm.options = undefined
-        }else if(form.classOrManually === 'manually'){
-          readyForm.optionsFromClass = undefined
-        }
-        if(form.fieldType === 'MultiSelectField'){
-          readyForm.multipleValues = true
-        }else{
-          readyForm.multipleValues = false
-        }
-        const {success, message} = await createCharacteristic(readyForm)
-        console.log(message)
-      }catch (e){
-        if (e.json) {
-          setErrors(e.json);
-        }
+      setState(state => ({...state, submitDialog: true}))
+    }
+  }
+
+  const handleConfirm = async () => {
+    setState(state => ({...state, loadingButton: true}))
+    try {
+      const readyForm = {...form, classOrManually: undefined}
+      if(!isSelected()){
+        readyForm.options = undefined
+        readyForm.optionsFromClass = undefined
+      }else if(form.classOrManually === 'class'){
+        readyForm.options = undefined
+      }else if(form.classOrManually === 'manually'){
+        readyForm.optionsFromClass = undefined
+      }
+      if(form.fieldType === 'MultiSelectField'){
+        readyForm.multipleValues = true
+      }else{
+        readyForm.multipleValues = false
+      }
+      const {success, message} = await createCharacteristic(readyForm)
+      console.log(message)
+    }catch (e){
+      if (e.json) {
+        setErrors(e.json);
       }
     }
+    setState(state => ({...state, loadingButton: false}))
   }
 
   const displayDataTypeValue = () => {
@@ -326,13 +340,14 @@ export default function AddEditCharacteristic() {
           Submit
         </Button>
 
-        {/*<AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}*/}
-        {/*             dialogTitle={'Are you sure you want to submit?'}*/}
-        {/*             buttons={[<Button onClick={handleCancel} key={'cancel'}>{'cancel'}</Button>,*/}
-        {/*               // <Button onClick={handleConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,*/}
-        {/*               <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}*/}
-        {/*                              onClick={handleConfirm} children='confirm' autoFocus/>]}*/}
-        {/*             open={state.submitDialog}/>*/}
+        <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
+                     dialogTitle={'Are you sure you want to create a new characteristic?'}
+                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))} key={'cancel'}>{'cancel'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                                      onClick={handleConfirm} children='confirm' autoFocus/>]}
+                     open={state.submitDialog && option === 'add'}/>
+
+
         {/*<AlertDialog dialogContentText={"You are successfully registered"}*/}
         {/*             dialogTitle={'Success'}*/}
         {/*             buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}*/}
