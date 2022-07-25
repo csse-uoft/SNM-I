@@ -55,6 +55,7 @@ const fetchCharacteristic = async (req, res, next) => {
   try{
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
+    characteristic.populates(['implementation.fieldType', 'implementation.options']);
     const fetchData = {
       name : characteristic.name,
       description : characteristic.description,
