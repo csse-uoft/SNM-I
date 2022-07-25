@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { fetchQuestions, updateQuestion, deleteQuestion, createQuestion } from '../../api/mockedApi/question';
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
@@ -9,6 +9,7 @@ import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/ico
 import { DeleteModal, Loading, DataTable } from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
+import {useHistory} from "react-router";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -18,6 +19,8 @@ const useStyles = makeStyles(() => ({
     margin: null,
   },
 }));
+
+
 
 const ADD_TITLE = 'Add Question';
 const EDIT_TITLE = 'Edit Question';
@@ -87,7 +90,7 @@ function AddEditDialog({open, title, value, objectId, handleConfirm, handleClose
   );
 }
 
-export default function Questions() {
+export default function Characteristics() {
   const [state, setState] = useState({
     loading: true,
     data: [],
@@ -99,6 +102,7 @@ export default function Questions() {
     showAddEditDialog: false,
   });
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
     fetchQuestions().then(data => {
@@ -209,7 +213,7 @@ export default function Questions() {
         data={state.data}
         columns={columns}
         customToolbar={<Chip
-          onClick={showAddDialog}
+          onClick={() => {history.push('characteristic/add')}}
           color="primary"
           icon={<AddIcon/>}
           label="Add"
