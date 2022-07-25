@@ -1,31 +1,31 @@
 const Hashing = require("../../utils/hashing");
 const {GDBOrganizationModel, GDBUserAccountModel, GDBSecurityQuestion, GDBPersonModel} = require('../../models');
 
-async function createUserAccount(data) {
-  const {
-    primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact,
-  } = data;
-
-  const {hash, salt} = await Hashing.hashPassword(password);
-
-  const userAccount = GDBUserAccountModel({
-    primaryEmail,
-    secondaryEmail,
-    primaryContact,
-    hash,
-    salt,
-  });
-
-  if (primaryContact) {
-    userAccount.primaryContact = {
-      familyName: primaryContact.familyName,
-      givenName: primaryContact.givenName,
-    }
-  }
-
-  await userAccount.save();
-  return userAccount;
-}
+// async function createUserAccount(data) {
+//   const {
+//     primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact,
+//   } = data;
+//
+//   const {hash, salt} = await Hashing.hashPassword(password);
+//
+//   const userAccount = GDBUserAccountModel({
+//     primaryEmail,
+//     secondaryEmail,
+//     primaryContact,
+//     hash,
+//     salt,
+//   });
+//
+//   if (primaryContact) {
+//     userAccount.primaryContact = {
+//       familyName: primaryContact.familyName,
+//       givenName: primaryContact.givenName,
+//     }
+//   }
+//
+//   await userAccount.save();
+//   return userAccount;
+// }
 
 // Example:
 // createUserAccount({
@@ -245,6 +245,6 @@ async function initUserAccounts() {
 
 
 module.exports = {
-  createUserAccount, updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
+  updateUserAccount, findUserAccountByEmail, validateCredentials, initUserAccounts, isEmailExists,
   createTemporaryUserAccount, updateUserPassword, findUserAccountById, userExpired
 };

@@ -79,6 +79,7 @@ export default function AddEditCharacteristic() {
     if(validate()){
       try {
         const {success, message} = await createCharacteristic(form)
+        console.log(message)
       }catch (e){
         if (e.json) {
           setErrors(e.json);

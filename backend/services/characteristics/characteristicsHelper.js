@@ -21,10 +21,10 @@ async function createCharacteristicHelper(data){
 
   if (label || dataType || fieldType || options || name ||optionsFromClass){
     characteristic.implementation = {
-      label: characteristic.implementation.label,
-      valueDataType: characteristic.implementation.valueDataType,
-      options: [],
-      optionsFromClass : characteristic.implementation.optionsFromClass,
+      label: label,
+      valueDataType: dataType,
+      options: options,
+      optionsFromClass : optionsFromClass,
     }
   }
 
