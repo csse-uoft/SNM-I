@@ -17,9 +17,7 @@ export async function fetchCharacteristics() {
 }
 
 export async function deleteCharacteristic(id) {
-  const response = deleteJson('/api/characteristic/' + id + '/');
-  if (response.status !== 204)
-    throw Error('Server does not return correct code.');
+  return deleteJson('/api/characteristic/delete/' + id);
 }
 
 export async function fetchCharacteristicFieldTypes() {

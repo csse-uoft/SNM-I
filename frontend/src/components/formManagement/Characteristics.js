@@ -172,7 +172,7 @@ export default function Characteristics() {
 
   const handleDelete = async (id, form) => {
     try {
-      await deleteCharacteristic(id, form);
+      await deleteCharacteristic(id);
       setState(state => ({
         ...state, showDeleteDialog: false,
         data: state.data.filter(item => item.id !== state.selectedId)

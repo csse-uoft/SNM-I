@@ -97,7 +97,7 @@ const fetchCharacteristics = async (req, res, next) => {
 const deleteCharacteristic = async (req, res, next) => {
   try {
     const id = req.params.id;
-    await GDBCharacteristicModel.findByIdAndDelete(id);
+    const doc = await GDBCharacteristicModel.findByIdAndDelete(id);
     return res.status(200).json({success: true});
   } catch (e) {
     next(e)
