@@ -1,4 +1,4 @@
-import React, {useCallback,useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {fetchUsers} from "../../api/userApi";
@@ -17,9 +17,6 @@ import {
 } from "../../api/characteristicApi";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
-
-
-
 
 
 const useStyles = makeStyles(() => ({
@@ -41,7 +38,7 @@ export default function AddEditCharacteristic() {
   const {id, option} = useParams();
 
 
-  const[state, setState] = useState({
+  const [state, setState] = useState({
     success: false,
     submitDialog: false,
     loadingButton: false,
@@ -70,25 +67,25 @@ export default function AddEditCharacteristic() {
       fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
       // Todo fetch codes
     ]).then(() => {
-      if(option === 'edit' && id){
-        return fetchCharacteristic(id).then(data =>{
+      if (option === 'edit' && id) {
+        return fetchCharacteristic(id).then(data => {
           setForm(data.fetchData)
-          if(isSelected()){
-            if(form.dataType === 'xsd:string'){
+          if (isSelected()) {
+            if (form.dataType === 'xsd:string') {
               form.classOrManually = 'manually'
-            }else if(form.dataType === 'owl:NamedIndividual'){
+            } else if (form.dataType === 'owl:NamedIndividual') {
               form.classOrManually = 'class'
             }
-          }else{
+          } else {
             form.classOrManually = 'class'
           }
-        } )
+        })
       }
     }).then(() => {
       setTypes(newTypes);
       setLoading(false);
     }).catch(e => {
-      if(e.json)
+      if (e.json)
         setErrors(e.json);
       setLoading(false)
       setState(state => ({...state, failDialog: true}))
@@ -105,76 +102,77 @@ export default function AddEditCharacteristic() {
   }
 
   const handleSubmit = () => {
-    if(validate()){
+    if (validate()) {
       setState(state => ({...state, submitDialog: true}))
     }
   }
 
   const handleConfirm = async () => {
     setState(state => ({...state, loadingButton: true}))
-    try {
-      const readyForm = {...form, classOrManually: undefined}
-      if(!isSelected()){
-        readyForm.options = undefined
-        readyForm.optionsFromClass = undefined
-      }else if(form.classOrManually === 'class'){
-        readyForm.options = undefined
-      }else if(form.classOrManually === 'manually'){
-        readyForm.optionsFromClass = undefined
-      }
-      if(form.fieldType === 'MultiSelectField'){
-        readyForm.multipleValues = true
-      }else{
-        readyForm.multipleValues = false
-      }
-      console.log(readyForm)
-      if(option === 'add'){
-        createCharacteristic(readyForm).then(res => {
-          if(res.success){
-            setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
-          }
-        })
-      }else if(option === 'edit'){
-        updateCharacteristic(readyForm).then(res => {
-          if(res.success){
-            setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
-          }
-        })
-      }
-
-
-      // console.log(message)
-    }catch (e){
-      if (e.json) {
-        setErrors(e.json);
-      }
-      setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+    const readyForm = {...form, classOrManually: undefined}
+    if (!isSelected()) {
+      readyForm.options = undefined
+      readyForm.optionsFromClass = undefined
+    } else if (form.classOrManually === 'class') {
+      readyForm.options = undefined
+    } else if (form.classOrManually === 'manually') {
+      readyForm.optionsFromClass = undefined
     }
+    if (form.fieldType === 'MultiSelectField') {
+      readyForm.multipleValues = true
+    } else {
+      readyForm.multipleValues = false
+    }
+    console.log(readyForm)
+    if (option === 'add') {
+      createCharacteristic(readyForm).then(res => {
+        if (res.success) {
+          setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+        }
+      }).catch(e => {
+        if (e.json) {
+          setErrors(e.json)
+        }
+        setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+      })
+    } else if (option === 'edit') {
+      updateCharacteristic(readyForm).then(res => {
+        if (res.success) {
+          setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+        }
+      }).catch(e => {
+        if (e.json) {
+          setErrors(e.json)
+        }
+        setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+      })
+    }
+
 
   }
 
   const displayDataTypeValue = () => {
-    if(form.fieldType === 'TextField'){
+    if (form.fieldType === 'TextField') {
       form.dataType = 'xsd:string'
       return 'xsd:string'
-    }else if(form.fieldType === "NumberField"){
+    } else if (form.fieldType === "NumberField") {
       form.dataType = 'xsd:number'
       return 'xsd:number'
-    }else if(form.fieldType === 'BooleanRadioField'){
+    } else if (form.fieldType === 'BooleanRadioField') {
       form.dataType = 'xsd:boolean'
       return 'xsd:boolean'
-    }else if(form.fieldType === 'DateField' || form.fieldType === 'DateTimeField' || form.fieldType === 'TimeField'){
+    } else if (form.fieldType === 'DateField' || form.fieldType === 'DateTimeField' || form.fieldType === 'TimeField') {
       form.dataType = 'xsd:datetimes'
       return 'xsd:datetimes'
-    }else if(isSelected()){
-      if(form.classOrManually === 'class'){
+    } else if (isSelected()) {
+      if (form.classOrManually === 'class') {
         form.dataType = 'owl:NamedIndividual'
         return 'owl:NamedIndividual'
-      }else{
+      } else {
         form.dataType = 'xsd:string'
         return 'xsd:string'
       }
-    }else if(form.fieldType === 'PhoneNumberField' || form.fieldType === 'AddressField'){
+    } else if (form.fieldType === 'PhoneNumberField' || form.fieldType === 'AddressField') {
       form.dataType = 'owl:NamedIndividual'
       return 'owl:NamedIndividual'
     }
@@ -186,19 +184,19 @@ export default function AddEditCharacteristic() {
 
   const validate = () => {
     const errors = {};
-    for (const [label, value] of Object.entries(form)){
-      if(label === 'label' || label === 'description' || label === 'fieldType'|| label === 'classOrManually' || label === 'name'){
-        if(value === ''){
+    for (const [label, value] of Object.entries(form)) {
+      if (label === 'label' || label === 'description' || label === 'fieldType' || label === 'classOrManually' || label === 'name') {
+        if (value === '') {
           errors[label] = 'This field cannot be empty'
         }
-      }else if(label === 'codes' && value.length === 0){
+      } else if (label === 'codes' && value.length === 0) {
         // errors[label] = 'This field cannot be empty'
-      }else if(isSelected() && label === 'optionsFromClass' && form.classOrManually === 'class' && value === ''){
+      } else if (isSelected() && label === 'optionsFromClass' && form.classOrManually === 'class' && value === '') {
         errors[label] = 'This field cannot be empty'
-      }else if(isSelected() && label === 'options' && form.classOrManually === 'manually'){
-        for (let i = 0; i < form.options.length; i++){
-          if(!form.options[i].label){
-            if(!errors[label]){
+      } else if (isSelected() && label === 'options' && form.classOrManually === 'manually') {
+        for (let i = 0; i < form.options.length; i++) {
+          if (!form.options[i].label) {
+            if (!errors[label]) {
               errors[label] = {}
             }
             errors[label][form.options[i].key] = 'This field cannot be empty, please fill in or remove this field'
@@ -256,11 +254,10 @@ export default function AddEditCharacteristic() {
         <Typography sx={{pt: 3}} variant={'h4'}> Implementation</Typography>
 
 
-
         <SelectField
           key={"fieldType"}
           label={'Field Type'}
-          InputLabelProps={{id:'FieldType', }}
+          InputLabelProps={{id: 'FieldType',}}
           options={types.fieldTypes}
           value={form.fieldType}
           noEmpty={true}
@@ -271,14 +268,14 @@ export default function AddEditCharacteristic() {
           helperText={errors.fieldType}
         />
 
-        {isSelected()?
+        {isSelected() ?
           <RadioField
-          label={'Choosing options from class or input manually'}
-          onChange={e => setForm(form => ({...form, classOrManually: e.target.value}))}
-          required
-          value={form.classOrManually}
-          options={{Class: 'class', Manually: 'manually'}}
-        />:<div/>}
+            label={'Choosing options from class or input manually'}
+            onChange={e => setForm(form => ({...form, classOrManually: e.target.value}))}
+            required
+            value={form.classOrManually}
+            options={{Class: 'class', Manually: 'manually'}}
+          /> : <div/>}
 
 
         <SelectField
@@ -297,7 +294,6 @@ export default function AddEditCharacteristic() {
         />
 
 
-
         <GeneralField
           key={'label'}
           label={'label'}
@@ -311,12 +307,10 @@ export default function AddEditCharacteristic() {
         />
 
 
-
-
         {isSelected() && form.classOrManually === 'class' ? <SelectField
           key={"optionsFromClass"}
           label={'Options From Class'}
-          InputLabelProps={{id:'optionsFromClass', }}
+          InputLabelProps={{id: 'optionsFromClass',}}
           options={types.optionsFromClass}
           value={form.optionsFromClass}
           noEmpty={true}
@@ -338,7 +332,6 @@ export default function AddEditCharacteristic() {
         {/*/>*/}
 
 
-
         {isSelected() && form.classOrManually === 'manually' ? <div>
           <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
             Add
@@ -353,12 +346,12 @@ export default function AddEditCharacteristic() {
                 required
                 onChange={e => form.options[index].label = e.target.value}
                 sx={{mt: '16px', minWidth: 350}}
-                error={!!errors.options && !! errors.options[option.key]}
+                error={!!errors.options && !!errors.options[option.key]}
                 helperText={!!errors.options && errors.options[option.key]}
               />
               <Button variant="contained" color="primary" className={classes.button} key={option.key + 1}
                       onClick={() => {
-                        if(index !== 0 || (index === 0 && form.options.length > 1)){
+                        if (index !== 0 || (index === 0 && form.options.length > 1)) {
                           const temp = [...form.options]
                           temp.splice(index, 1)
                           setForm(form => ({...form, options: [...temp]}))
@@ -378,26 +371,34 @@ export default function AddEditCharacteristic() {
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={'Are you sure you want to create a new characteristic?'}
-                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))} key={'cancel'}>{'cancel'}</Button>,
-                       <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
+                                       key={'cancel'}>{'cancel'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
+                                      key={'confirm'}
                                       onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog && option === 'add'}/>
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={'Are you sure you want to update the characteristic?'}
-                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))} key={'cancel'}>{'cancel'}</Button>,
-                       <LoadingButton noDefaultStyle variant="text" color="primary" loading ={state.loadingButton} key={'confirm'}
+                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
+                                       key={'cancel'}>{'cancel'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
+                                      key={'confirm'}
                                       onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog && option === 'edit'}/>
 
 
         <AlertDialog dialogContentText={"You have successfully created a new characteristic"}
                      dialogTitle={'Success'}
-                     buttons={[<Button onClick={() => {history.push('/characteristics')}} key={'success'}> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {
+                       history.push('/characteristics')
+                     }} key={'success'}> {'ok'}</Button>]}
                      open={state.successDialog && option === 'add'}/>
         <AlertDialog dialogContentText={errors.message || "Error occurs"}
                      dialogTitle={'Fail'}
-                     buttons={[<Button onClick={() => {history.push('/characteristics')}} key={'fail'}>{'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {
+                       history.push('/characteristics')
+                     }} key={'fail'}>{'ok'}</Button>]}
                      open={state.failDialog}/>
       </Paper>
 
