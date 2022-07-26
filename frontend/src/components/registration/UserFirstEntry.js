@@ -45,20 +45,29 @@ export default function UserFirstEntry() {
     loadingButton: false
   });
 
-  if (state.loading) {
-    verifyToken({token})
-  }
+  // if (state.loading) {
+  //   verifyToken({token})
+  // }
 
-
-  async function verifyToken(token) {
-    try {
-      const respond = await verifyFirstEntryUser(token);
-      setState(state => ({...state, verified: true, email: respond.email, id: respond.userId, loading: false}))
-    } catch (e) {
+  useEffect(()=> {
+    verifyFirstEntryUser({token}).then(res => {
+      setState(state => ({...state, verified: true, email: res.email, id: res.userId, loading: false}))
+    }).catch(e => {
       setState(state => ({...state, verified: false, loading: false, errors: e.json}))
-    }
+      }
+    )
+  }, [])
 
-  }
+
+  // async function verifyToken(token) {
+  //   try {
+  //     const respond = await verifyFirstEntryUser(token);
+  //     setState(state => ({...state, verified: true, email: respond.email, id: respond.userId, loading: false}))
+  //   } catch (e) {
+  //     setState(state => ({...state, verified: false, loading: false, errors: e.json}))
+  //   }
+  //
+  // }
 
   const handleOnBlur = (field, option) => {
 

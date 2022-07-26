@@ -11,6 +11,7 @@ import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {useHistory} from "react-router";
 import {fetchCharacteristics} from "../../api/characteristicApi";
+import {AlertDialog} from "../shared/Dialogs";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -100,27 +101,38 @@ export default function Characteristics() {
     showDeleteDialog: false,
     dialogTitle: '',
     showAddEditDialog: false,
+    showErrorDialog: false
   });
   const [form, setForm] = useState(
     []
+  )
+  const [errors, setErrors] = useState(
+    {}
   )
   const classes = useStyles();
   const history = useHistory();
 
   useEffect(() => {
     fetchCharacteristics().then(res => {
-      setForm(res.data.map(characteristic => {
-        return {
-          id: characteristic.id,
-          label: characteristic.implementation.label,
-          name: characteristic.name,
-          fieldType: characteristic.implementation.fieldType.label,
-          dataType: characteristic.implementation.valueDataType
-        }
-      }))
+      if(res.success){
+        setForm(res.data.map(characteristic => {
+          return {
+            id: characteristic.id,
+            label: characteristic.implementation.label,
+            name: characteristic.name,
+            fieldType: characteristic.implementation.fieldType.label,
+            dataType: characteristic.implementation.valueDataType
+          }
+        }))
+      }
       setState(state => ({...state, loading: false}))
       }
-    );
+    ).catch(e => {
+      if(e.json){
+        setErrors(e.json)
+        setState(state => ({...state, loading: false, showErrorDialog: true}))
+      }
+    });
   }, []);
 
   const showDeleteDialog = (id, name) => () => {
@@ -255,6 +267,10 @@ export default function Characteristics() {
       {/*  handleClose={() => setState(state => ({...state, showAddEditDialog: false}))}*/}
       {/*  handleConfirm={state.dialogTitle === ADD_TITLE ? handleAdd : handleEdit}*/}
       {/*/>*/}
+      <AlertDialog dialogContentText={errors.message || "Error occurs"}
+                   dialogTitle={'Fail'}
+                   buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
+                   open={state.showErrorDialog}/>
     </Container>
   );
 }
