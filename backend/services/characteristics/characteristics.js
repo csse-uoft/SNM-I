@@ -78,7 +78,7 @@ const fetchCharacteristic = async (req, res, next) => {
 const fetchCharacteristics = async (req, res, next) => {
   try {
     const rawData = await GDBCharacteristicModel.find({},
-      {populates: ['implementation.fieldType', 'implementation.options']});
+      {populates: ['implementation.fieldType', 'implementation.options', 'implementation.dataType']});
     const data = rawData.map((characteristic) => {
       return {
         id: characteristic._id,
