@@ -114,7 +114,7 @@ class GraphDBModel {
     // Remove unwanted fields
     this.cleanData(data);
 
-    const instanceName = `:${this.schemaOptions.name}_${id}`;
+    const instanceName = `${this.schemaOptions.name}_${id}`;
 
     const header = `${SPARQL.getSPARQLPrefixes()}\nINSERT DATA {\n`;
     const footer = '}\n';
@@ -232,7 +232,7 @@ class GraphDBModel {
         throw new Error('Model.find: filter._id supports only {$in: array}, number or string.')
       }
       const filterStr = ids.map(id =>
-        `${subject} = :${this.schemaOptions.name}_${id}`
+        `${subject} = ${this.schemaOptions.name}_${id}`
       ).join(' || ');
       whereClause.push(`FILTER(${filterStr})`);
     }
@@ -314,7 +314,7 @@ class GraphDBModel {
    * @return {{query: string, where: string[]}}
    */
   generateDeleteQuery(doc, cnt = 0) {
-    const subject = `:${this.schemaOptions.name}_${doc._id}`;
+    const subject = `${this.schemaOptions.name}_${doc._id}`;
     const where = [`${subject} ?p_${cnt} ?o_${cnt}.`];
 
     for (const path of this.getCascadePaths()) {
@@ -382,9 +382,9 @@ class GraphDBModel {
     const data = {};
     const resultInArray = new GraphDBDocumentArray();
     await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
-      subject = getGraphDBAttribute(subject.value);
+      subject = SPARQL.getPrefixedURI(subject.value);
       predicate = SPARQL.getPrefixedURI(predicate.value);
-      object = object.termType === 'NamedNode' ? getGraphDBAttribute(object.value) : object.value;
+      object = object.termType === 'NamedNode' ? SPARQL.getPrefixedURI(object.value) : object.value;
 
       // The top instance
       if (subject.startsWith(this.schemaOptions.name)) {

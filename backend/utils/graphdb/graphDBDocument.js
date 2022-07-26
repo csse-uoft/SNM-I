@@ -261,13 +261,13 @@ class GraphDBDocument {
         for (const [idx, subject] of this[fieldKey].entries()) {
           if (typeof subject === "object")
             throw new Error('Should not be a object.')
-          whereClause.push(`?s = :${subject}`);
+          whereClause.push(`?s = ${subject}`);
         }
     }
     // The populated field is a single Model.
     else if (isModel(currModel)) {
       if (this[fieldKey])
-        whereClause.push(`?s = :${this[fieldKey]}`);
+        whereClause.push(`?s = ${this[fieldKey]}`);
     } else {
       throw new Error(`GraphDBDocument.getPopulatedFieldValue: Cannot populate ${fieldKey} into ${this.schemaOptions.name}; Schema is not provided.`);
     }
@@ -311,7 +311,7 @@ class GraphDBDocument {
       await GraphDB.sendUpdateQuery(query);
       this.isNew = false;
     } else {
-      const instanceName = `:${this.schemaOptions.name}_${this._id}`;
+      const instanceName = `${this.schemaOptions.name}_${this._id}`;
 
       if (!this.isModified)
         return;
@@ -360,7 +360,7 @@ class GraphDBDocument {
             if (!this.initialData[key]) {
               value.isNew = true;
               value._id = await getNextCounter(option.type.schemaOptions.name);
-              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} :${option.type.schemaOptions.name}_${value._id}.`);
+              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${option.type.schemaOptions.name}_${value._id}.`);
             } else {
               value._id = typeof this.initialData[key] === "object" ?
                 this.initialData[key]._id : getIdFromIdentifier(this.initialData[key]);
