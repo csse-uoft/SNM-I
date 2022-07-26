@@ -42,6 +42,7 @@ export default function AddEditCharacteristic() {
 
 
   const[state, setState] = useState({
+    success: false,
     submitDialog: false,
     loadingButton: false,
     successDialog: false,
@@ -134,7 +135,7 @@ export default function AddEditCharacteristic() {
       }
 
       // if(success)
-      //   setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+      setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
       // console.log(message)
     }catch (e){
       if (e.json) {
