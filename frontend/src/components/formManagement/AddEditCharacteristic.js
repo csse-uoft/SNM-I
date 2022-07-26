@@ -70,7 +70,9 @@ export default function AddEditCharacteristic() {
       // Todo fetch codes
     ]).then(() => {
       if(option === 'edit' && id){
-        return fetchCharacteristic(id).then(fetchedForm => console.log(fetchedForm))
+        return fetchCharacteristic(id).then(data =>{
+          setForm(data.fetchData)
+        } )
       }
     }).then(() => {
       setTypes(newTypes);
