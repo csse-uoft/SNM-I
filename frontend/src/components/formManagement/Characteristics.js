@@ -111,6 +111,7 @@ export default function Characteristics() {
     fetchCharacteristics().then(res => {
       setForm(res.data.map(characteristic => {
         return {
+          id: characteristic.id,
           label: characteristic.implementation.label,
           name: characteristic.name,
           fieldType: characteristic.implementation.fieldType.label,
@@ -122,10 +123,10 @@ export default function Characteristics() {
     );
   }, []);
 
-  const showDeleteDialog = (id, title) => () => {
+  const showDeleteDialog = (id, name) => () => {
     setState(state => ({
       ...state, selectedId: id, showDeleteDialog: true,
-      deleteDialogTitle: 'Delete ' + title + ' ?'
+      deleteDialogTitle: 'Delete ' + name + ' ?'
     }));
   };
 
@@ -202,17 +203,17 @@ export default function Characteristics() {
     },
     {
       label: ' ',
-      body: ({id, text, content_type: type}) => {
+      body: ({id, name}) => {
         return (
           <span>
               <IconButton
-                onClick={showEditDialog(text, type, id)}
+                onClick={() => history.push('/characteristic/'+ id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
               </IconButton>
               <IconButton
-                onClick={showDeleteDialog(id, text)}
+                onClick={showDeleteDialog(id, name)}
                 className={classes.button}
                 size="large">
                 <DeleteIcon fontSize="small" color="secondary"/>
@@ -239,13 +240,13 @@ export default function Characteristics() {
           label="Add"
           variant="outlined"/>}
       />
-      {/*<DeleteModal*/}
-      {/*  objectId={state.selectedId}*/}
-      {/*  title={state.deleteDialogTitle}*/}
-      {/*  show={state.showDeleteDialog}*/}
-      {/*  onHide={() => setState(state => ({...state, showDeleteDialog: false}))}*/}
-      {/*  delete={handleDelete}*/}
-      {/*/>*/}
+      <DeleteModal
+        objectId={state.selectedId}
+        title={state.deleteDialogTitle}
+        show={state.showDeleteDialog}
+        onHide={() => setState(state => ({...state, showDeleteDialog: false}))}
+        delete={handleDelete}
+      />
       {/*<AddEditDialog*/}
       {/*  open={state.showAddEditDialog}*/}
       {/*  value={state.value}*/}
