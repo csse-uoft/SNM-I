@@ -13,7 +13,7 @@ import {
   createCharacteristic, fetchCharacteristic,
   fetchCharacteristicFieldTypes,
   fetchCharacteristicsDataTypes,
-  fetchCharacteristicsOptionsFromClass
+  fetchCharacteristicsOptionsFromClass, updateCharacteristic
 } from "../../api/characteristicApi";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
@@ -72,6 +72,15 @@ export default function AddEditCharacteristic() {
       if(option === 'edit' && id){
         return fetchCharacteristic(id).then(data =>{
           setForm(data.fetchData)
+          if(isSelected()){
+            if(form.dataType === 'xsd:string'){
+              form.classOrManually = 'manually'
+            }else if(form.dataType === 'owl:NamedIndividual'){
+              form.classOrManually = 'class'
+            }
+          }else{
+            form.classOrManually = 'class'
+          }
         } )
       }
     }).then(() => {
@@ -118,10 +127,15 @@ export default function AddEditCharacteristic() {
         readyForm.multipleValues = false
       }
       console.log(readyForm)
-      const {success, message} = await createCharacteristic(readyForm)
-      if(success)
-        setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
-      console.log(message)
+      if(option === 'add'){
+        const {success, message} = await createCharacteristic(readyForm)
+      }else if(option === 'edit'){
+        // const {success, message} = await updateCharacteristic(readyForm)
+      }
+
+      // if(success)
+      //   setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+      // console.log(message)
     }catch (e){
       if (e.json) {
         setErrors(e.json);
