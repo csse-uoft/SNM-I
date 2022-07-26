@@ -370,7 +370,7 @@ class GraphDBDocument {
           // Store already created nested document id
           if (!value.isNew) {
             deleteClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ?o${index}.`);
-            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} :${value.individualName}.`);
+            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value.individualName}.`);
           }
           // TODO: Avoid unnecessary updates by introducing new state isChanged
           await data[key].save();
@@ -405,7 +405,7 @@ class GraphDBDocument {
               }
             }
 
-            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} :${doc.individualName}.`);
+            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc.individualName}.`);
 
             await value[j].save();
           }

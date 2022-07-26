@@ -155,7 +155,7 @@ const Helpers = {
     else if (type === Helpers.Types.NamedIndividual || (typeof val === "string" && typeof type === "function")) {
       // Provides a GraphDBDocument instance
       if (val.individualName != null)
-        return `:${val.individualName}`
+        return `${val.individualName}`
 
       // Make sure it has a proper syntax
       if (val.includes('://'))

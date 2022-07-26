@@ -158,7 +158,7 @@ class GraphDBModel {
           if (typeof val === "string") {
             queryBody += `:${val}`;
           } else if (val instanceof GraphDBDocument && !val.isNew) {
-            queryBody += `:${val.individualName}`;
+            queryBody += `${val.individualName}`;
           } else {
             // Get data from a document, Wrap it with a new model
             const obj = val.toJSON ? val.toJSON() : val;
