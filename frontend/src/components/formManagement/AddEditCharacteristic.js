@@ -129,13 +129,20 @@ export default function AddEditCharacteristic() {
       }
       console.log(readyForm)
       if(option === 'add'){
-        const {success, message} = await createCharacteristic(readyForm)
+        createCharacteristic(readyForm).then(res => {
+          if(res.success){
+            setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+          }
+        })
       }else if(option === 'edit'){
-        // const {success, message} = await updateCharacteristic(readyForm)
+        updateCharacteristic(readyForm).then(res => {
+          if(res.success){
+            setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+          }
+        })
       }
 
-      // if(success)
-      setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+
       // console.log(message)
     }catch (e){
       if (e.json) {
