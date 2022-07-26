@@ -10,7 +10,7 @@ import { DeleteModal, Loading, DataTable } from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {useHistory} from "react-router";
-import {fetchCharacteristics} from "../../api/characteristicApi";
+import {fetchCharacteristics, deleteCharacteristic} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 
 const useStyles = makeStyles(() => ({
@@ -172,7 +172,7 @@ export default function Characteristics() {
 
   const handleDelete = async (id, form) => {
     try {
-      await deleteQuestion(id, form);
+      await deleteCharacteristic(id, form);
       setState(state => ({
         ...state, showDeleteDialog: false,
         data: state.data.filter(item => item.id !== state.selectedId)
