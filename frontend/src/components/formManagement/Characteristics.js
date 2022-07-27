@@ -142,33 +142,33 @@ export default function Characteristics() {
     }));
   };
 
-  const showEditDialog = (text, type, id) => () => setState(state => ({
-    ...state,
-    value: {id, text, content_type: type},
-    selectedId: id,
-    showAddEditDialog: true,
-    dialogTitle: EDIT_TITLE,
-  }));
+  // const showEditDialog = (text, type, id) => () => setState(state => ({
+  //   ...state,
+  //   value: {id, text, content_type: type},
+  //   selectedId: id,
+  //   showAddEditDialog: true,
+  //   dialogTitle: EDIT_TITLE,
+  // }));
 
-  const showAddDialog = () => setState(state => ({
-    ...state,
-    value: {text: '', content_type: ''},
-    showAddEditDialog: true,
-    dialogTitle: ADD_TITLE,
-  }));
+  // const showAddDialog = () => setState(state => ({
+  //   ...state,
+  //   value: {text: '', content_type: ''},
+  //   showAddEditDialog: true,
+  //   dialogTitle: ADD_TITLE,
+  // }));
 
-  const handleAdd = async () => {
-    try {
-      const newItem = await createQuestion(state.value);
-      setState(state => ({
-        ...state, showAddEditDialog: false,
-        data: [...state.data, newItem]
-      }));
-    } catch (e) {
-      // TODO: show error
-      console.error(e);
-    }
-  };
+  // const handleAdd = async () => {
+  //   try {
+  //     const newItem = await createQuestion(state.value);
+  //     setState(state => ({
+  //       ...state, showAddEditDialog: false,
+  //       data: [...state.data, newItem]
+  //     }));
+  //   } catch (e) {
+  //     // TODO: show error
+  //     console.error(e);
+  //   }
+  // };
 
   const handleDelete = async (id, form) => {
     try {
@@ -183,18 +183,18 @@ export default function Characteristics() {
     }
   };
 
-  const handleEdit = async () => {
-    try {
-      const newItem = await updateQuestion(state.value.id, state.value);
-      setState(state => ({
-        ...state, showAddEditDialog: false,
-        data: state.data.map(item => item.id === state.selectedId ? newItem : item),
-      }));
-    } catch (e) {
-      // TODO: show error
-      console.error(e);
-    }
-  };
+  // const handleEdit = async () => {
+  //   try {
+  //     const newItem = await updateQuestion(state.value.id, state.value);
+  //     setState(state => ({
+  //       ...state, showAddEditDialog: false,
+  //       data: state.data.map(item => item.id === state.selectedId ? newItem : item),
+  //     }));
+  //   } catch (e) {
+  //     // TODO: show error
+  //     console.error(e);
+  //   }
+  // };
 
   const columns = [
     {
@@ -252,13 +252,13 @@ export default function Characteristics() {
           label="Add"
           variant="outlined"/>}
       />
-      <DeleteModal
-        objectId={state.selectedId}
-        title={state.deleteDialogTitle}
-        show={state.showDeleteDialog}
-        onHide={() => setState(state => ({...state, showDeleteDialog: false}))}
-        delete={handleDelete}
-      />
+      {/*<DeleteModal*/}
+      {/*  objectId={state.selectedId}*/}
+      {/*  title={state.deleteDialogTitle}*/}
+      {/*  show={state.showDeleteDialog}*/}
+      {/*  onHide={() => setState(state => ({...state, showDeleteDialog: false}))}*/}
+      {/*  delete={handleDelete}*/}
+      {/*/>*/}
       {/*<AddEditDialog*/}
       {/*  open={state.showAddEditDialog}*/}
       {/*  value={state.value}*/}
@@ -271,6 +271,10 @@ export default function Characteristics() {
                    dialogTitle={'Fail'}
                    buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
+      {/*<AlertDialog dialogContentText={'Are you sure to delete ' + state.selectedId}*/}
+      {/*             dialogTitle={'Fail'}*/}
+      {/*             buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}*/}
+      {/*             open={state.}/>*/}
     </Container>
   );
 }
