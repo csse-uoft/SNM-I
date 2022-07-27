@@ -29,6 +29,8 @@ async function createCharacteristicHelper(data) {
     }
   }
 
+<<<<<<< HEAD
+=======
   // if (fieldType){
   //   characteristics.implementation.fieldType = GDBFieldTypeModel({
   //     type: fieldType
@@ -42,6 +44,7 @@ async function createCharacteristicHelper(data) {
   //   }
   // }
 
+>>>>>>> ee5ebe9d27dcb82498ad6b3c28f37e674a92c1bb
   await characteristic.save();
   return characteristic;
 }
@@ -75,6 +78,9 @@ async function updateCharacteristicHelper(id, updateData) {
   // dataType looks like [{label: '', value:''}, {label:'', value:''}]
   if (dataType) {
     characteristic.implementation.valueDataType = dataType;
+  } else {
+    delete characteristic.implementation.valueDataType;
+    characteristic.implementation.save();
   }
 
   if (fieldType) {
@@ -82,7 +88,7 @@ async function updateCharacteristicHelper(id, updateData) {
     if (!characteristic.implementation.fieldType) {
       characteristic.implementation.fieldType = {};
     }
-    characteristic.implementation.fieldType.type = await GDBFieldTypeModel.findOne({type: fieldType});
+    characteristic.implementation.fieldType = await GDBFieldTypeModel.findOne({type: fieldType});
   }
 
   if (options) {

@@ -241,7 +241,7 @@ export default function Characteristics() {
         return (
           <span>
               <IconButton
-                onClick={() => history.push('/characteristic/'+ id + '/edit')}
+                onClick={() => history.push('/characteristics/'+ id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -268,7 +268,7 @@ export default function Characteristics() {
         data={form}
         columns={columns}
         customToolbar={<Chip
-          onClick={() => {history.push('characteristic/add')}}
+          onClick={() => {history.push('characteristics/add')}}
           color="primary"
           icon={<AddIcon/>}
           label="Add"
