@@ -1,12 +1,12 @@
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Loading} from "../shared";
 import {Box, Button, Container, Paper, Typography, Divider} from "@mui/material";
 import GeneralField from "../shared/fields/GeneralField";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
-import {createQuestion} from "../../api/questionApi";
+import {createQuestion, fetchQuestion, updateQuestion} from "../../api/questionApi";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -43,6 +43,22 @@ export default function AddEditQuestion() {
   })
   const [loading, setLoading] = useState(option === 'edit');
 
+  useEffect(() => {
+    if(option === 'edit' && id){
+      fetchQuestion(id).then(res => {
+        if(res.success){
+          setForm({content: res.fetchData.content, description: res.fetchData.description})
+          setLoading(false)
+        }
+      }).catch(e => {
+        if(e.json)
+          setErrors(e.json)
+        setLoading(false)
+        setState(state => ({...state, failDialog: true}))
+      })
+    }
+  },[])
+
   const handleSubmit = () => {
     if(validate()){
       setState(state => ({...state, submitDialog: true}))
@@ -51,14 +67,26 @@ export default function AddEditQuestion() {
 
   const handleConfirm = () => {
     setState(state => ({...state, loadingButton: true}))
-    createQuestion(form).then(() => {
-      setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
-    }).catch(e => {
-      setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
-      if(e.json){
-        setErrors(e.json)
-      }
-    })
+    if(option === 'add'){
+      createQuestion(form).then(() => {
+        setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+      }).catch(e => {
+        if(e.json){
+          setErrors(e.json)
+        }
+        setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+      })
+    }else if(option === 'edit'){
+      updateQuestion(id, form).then(() => {
+        setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+      }).catch(e => {
+        if(e.json){
+          setErrors(e.json)
+        }
+        setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+      })
+    }
+
   }
 
   const validate = () => {
@@ -105,7 +133,8 @@ export default function AddEditQuestion() {
           Submit
         </Button>
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure you want to create a new question?'}
+                     dialogTitle={option === 'add'?'Are you sure you want to create a new question?':
+        'Are you sure you want to update the question?'}
                      buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
                                        key={'cancel'}>{'cancel'}</Button>,
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
