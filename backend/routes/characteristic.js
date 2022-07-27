@@ -11,7 +11,7 @@ router.get('/characteristic/optionsFromClass', getAllClasses);
 router.get('/characteristic/:id', fetchCharacteristic);
 router.get('/characteristics', fetchCharacteristics);
 router.post('/characteristic', createCharacteristic);
-router.put('/characteristic', updateCharacteristic);
+router.put('/characteristic/:id', updateCharacteristic);
 router.delete('/characteristic/delete/:id', deleteCharacteristic);
 
 

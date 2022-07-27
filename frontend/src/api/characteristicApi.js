@@ -5,7 +5,7 @@ export async function createCharacteristic(params) {
 }
 
 export async function updateCharacteristic(id, params) {
-  return putJson('/api/characteristic/' + id + '/', params);
+  return putJson('/api/characteristic/' + id, params);
 }
 
 export async function fetchCharacteristic(id) {

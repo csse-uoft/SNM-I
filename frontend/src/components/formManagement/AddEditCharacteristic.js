@@ -141,7 +141,7 @@ export default function AddEditCharacteristic() {
         setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
       })
     } else if (option === 'edit') {
-      updateCharacteristic(readyForm).then(res => {
+      updateCharacteristic(id, readyForm).then(res => {
         if (res.success) {
           setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
         }

@@ -74,7 +74,7 @@ async function updateCharacteristicHelper(id, updateData) {
 
   // dataType looks like [{label: '', value:''}, {label:'', value:''}]
   if (dataType) {
-    characteristic.implementation.dataType.concat(dataType);
+    characteristic.implementation.valueDataType = dataType;
   }
 
   if (fieldType) {
@@ -82,7 +82,7 @@ async function updateCharacteristicHelper(id, updateData) {
     if (!characteristic.implementation.fieldType) {
       characteristic.implementation.fieldType = {};
     }
-    characteristic.implementation.fieldType.type = fieldType;
+    characteristic.implementation.fieldType.type = await GDBFieldTypeModel.findOne({type: fieldType});
   }
 
   if (options) {
@@ -97,17 +97,6 @@ async function updateCharacteristicHelper(id, updateData) {
   return characteristic;
 
 }
-
-// async function updateOptions(id, options) {
-//   const characteristic = await findCharacteristicById(id);
-//   characteristic.implementation.options.concat(options);
-//
-// }
-//
-// async function updateFieldType(id, fieldType) {
-//   const characteristic = await findCharacteristicById(id);
-//   characteristic.implementation.fieldType.type = fieldType;
-// }
 
 module.exports = {
   findCharacteristicById,
