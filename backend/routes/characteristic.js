@@ -12,7 +12,7 @@ router.get('/characteristic/:id', fetchCharacteristic);
 router.get('/characteristics', fetchCharacteristics);
 router.post('/characteristic', createCharacteristic);
 router.put('/characteristic', updateCharacteristic);
-router.delete('characteristic/:id', deleteCharacteristic);
+router.delete('/characteristic/delete/:id', deleteCharacteristic);
 
 
 module.exports = router;
