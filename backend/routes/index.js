@@ -7,4 +7,5 @@ module.exports = {
   clientsRoute: require('./clients'),
   characteristicRoute: require('./characteristic'),
   dynamicFormRoute: require('./dynamicForm'),
+  questionRoute: require('./question'),
 }

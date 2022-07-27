@@ -6,7 +6,7 @@ const cookieSession = require('cookie-session');
 const cors = require('cors');
 
 const {baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
-  characteristicRoute, dynamicFormRoute
+  characteristicRoute, questionRoute, dynamicFormRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -36,7 +36,8 @@ app.use('/api', authMiddleware('Authentication Required'));
 
 app.use('/api', userRoute);
 app.use('/api', usersRoute);
-app.use('/api', characteristicRoute)
+app.use('/api', characteristicRoute);
+app.use('/api', questionRoute);
 app.use('/api', clientsRoute);
 app.use('/api', dynamicFormRoute);
 
