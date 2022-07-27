@@ -10,7 +10,7 @@ const createQuestion = async (req, res, next) => {
 
   try {
     await createQuestionHelper(data);
-    return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
+    return res.status(202).json({success: true, message: 'Successfully update characteristic.'});
   } catch (e) {
     next(e)
   }
@@ -26,7 +26,7 @@ const updateQuestion = async (req, res, next) => {
 
   try {
     await updateQuestionHelper(id, updateData);
-    return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
+    return res.status(202).json({success: true, message: 'Successfully update characteristic.'});
   } catch (e) {
     next(e)
   }

@@ -21,7 +21,7 @@ const createCharacteristic = async (req, res, next) => {
 
   try {
     await createCharacteristicHelper(data);
-    return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
+    return res.status(202).json({success: true, message: 'Successfully update characteristic.'});
   } catch (e) {
     next(e)
   }
@@ -44,7 +44,7 @@ const updateCharacteristic = async (req, res, next) => {
 
   try {
     await updateCharacteristicHelper(id, updateData);
-    return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
+    return res.status(202).json({success: true, message: 'Successfully update characteristic.'});
   } catch (e) {
     next(e)
   }

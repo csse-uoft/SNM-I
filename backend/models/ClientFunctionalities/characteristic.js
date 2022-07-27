@@ -7,7 +7,7 @@ const GDBCharacteristicModel = createGraphDBModel({
   codes: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
   implementation: {type: GDBCIModel, internalKey: ':hasCharacteristicImplementation'},
 }, {
-  rdfTypes: [':Characteristic'], name: 'characteristic'
+  rdfTypes: [':characteristic'], name: 'characteristic'
 });
 
 module.exports = {
