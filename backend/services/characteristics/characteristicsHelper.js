@@ -85,12 +85,18 @@ async function updateCharacteristicHelper(id, updateData) {
     characteristic.implementation.fieldType.type = await GDBFieldTypeModel.findOne({type: fieldType});
   }
 
-  if (!options) {
-    characteristic.implementation.options = undefined;
+  if (options) {
+    characteristic.implementation.options = options;
+  } else {
+    delete characteristic.implementation.options;
+    await characteristic.implementation.save();
   }
 
   if (optionsFromClass) {
     characteristic.implementation.optionsFromClass = optionsFromClass;
+  } else {
+    delete characteristic.implementation.optionsFromClass;
+    await characteristic.implementation.save();
   }
 
   await characteristic.save();
