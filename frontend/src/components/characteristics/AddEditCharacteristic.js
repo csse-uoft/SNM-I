@@ -392,7 +392,7 @@ export default function AddEditCharacteristic() {
 
 
         <AlertDialog dialogContentText={option === 'add'? "You have successfully created a new characteristics":
-        'You have successfully update the characteristics'}
+        'You have successfully update the characteristic'}
                      dialogTitle={'Success'}
                      buttons={[<Button onClick={() => {
                        history.push('/characteristics')

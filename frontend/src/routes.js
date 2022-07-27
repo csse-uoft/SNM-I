@@ -43,6 +43,7 @@ import DoubleAuth from "./components/login/DoubleAuth";
 import EditUserForm from "./components/users/EditUserForm";
 import AddEditCharacteristic from "./components/characteristics/AddEditCharacteristic";
 import Characteristics from "./components/characteristics/Characteristics";
+import AddEditQuestion from "./components/questions/AddEditQuestion";
 
 const routes = (
   <Switch>
@@ -95,6 +96,9 @@ const routes = (
     <AdminRoute path='/characteristics' component={Characteristics}/>
     <AdminRoute path={'/characteristic/:id/:option'} component={AddEditCharacteristic}/> // this for edit
     <AdminRoute path={'/characteristic/:option'} component={AddEditCharacteristic}/> // this for add
+
+    <AdminRoute path={'/question/:id/:option'} component={AddEditQuestion}/>
+    <AdminRoute path={'/question/:option'} component={AddEditQuestion}/>
 
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>

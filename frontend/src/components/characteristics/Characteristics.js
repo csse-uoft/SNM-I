@@ -293,7 +293,7 @@ export default function Characteristics() {
                    dialogTitle={'Fail'}
                    buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
-      <AlertDialog dialogContentText={'Are you sure to delete ' + state.selectedName}
+      <AlertDialog dialogContentText={'Are you sure to delete Characteristic ' + state.selectedName}
                    dialogTitle={'Delete characteristics'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
