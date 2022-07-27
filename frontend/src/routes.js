@@ -41,8 +41,8 @@ import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
 import DoubleAuth from "./components/login/DoubleAuth";
 import EditUserForm from "./components/users/EditUserForm";
-import AddEditCharacteristic from "./components/formManagement/AddEditCharacteristic";
-import Characteristics from "./components/formManagement/Characteristics";
+import AddEditCharacteristic from "./components/Characteristic/AddEditCharacteristic";
+import Characteristics from "./components/Characteristic/Characteristics";
 
 const routes = (
   <Switch>
