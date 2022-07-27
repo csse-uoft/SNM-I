@@ -29,22 +29,6 @@ async function createCharacteristicHelper(data) {
     }
   }
 
-<<<<<<< HEAD
-=======
-  // if (fieldType){
-  //   characteristics.implementation.fieldType = GDBFieldTypeModel({
-  //     type: fieldType
-  //   });
-  // }
-
-  // if (options.length > 0){
-  //   for (let i = 0; i < options.length; i++) {
-  //     const option = GDBOptionModel({label: options[i].label})
-  //     characteristics.implementation.optionss.push(option);
-  //   }
-  // }
-
->>>>>>> ee5ebe9d27dcb82498ad6b3c28f37e674a92c1bb
   await characteristic.save();
   return characteristic;
 }
