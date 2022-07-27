@@ -21,7 +21,7 @@ const createCharacteristic = async (req, res, next) => {
 
   try {
     await createCharacteristicHelper(data);
-    return res.status(202).json({success: true, message: 'Successfully update characteristic.'});
+    return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
   } catch (e) {
     next(e)
   }
@@ -44,7 +44,7 @@ const updateCharacteristic = async (req, res, next) => {
 
   try {
     await updateCharacteristicHelper(id, updateData);
-    return res.status(202).json({success: true, message: 'Successfully update characteristic.'});
+    return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
   } catch (e) {
     next(e)
   }
@@ -55,7 +55,7 @@ const fetchCharacteristic = async (req, res, next) => {
   try {
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
-    // characteristic.populate(['implementation.fieldType', 'implementation.options']);
+    // characteristics.populate(['implementation.fieldType', 'implementation.options']);
     const fetchData = {
       name: characteristic.name,
       description: characteristic.description,
@@ -68,7 +68,7 @@ const fetchCharacteristic = async (req, res, next) => {
 
     }
     return res.status(200).json({fetchData, success: true});
-    // return res.status(200).json({characteristic, success:true});
+    // return res.status(200).json({characteristics, success:true});
   } catch (e) {
     next(e)
   }

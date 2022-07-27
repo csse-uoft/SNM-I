@@ -30,7 +30,7 @@ async function createCharacteristicHelper(data) {
   }
 
   // if (fieldType){
-  //   characteristic.implementation.fieldType = GDBFieldTypeModel({
+  //   characteristics.implementation.fieldType = GDBFieldTypeModel({
   //     type: fieldType
   //   });
   // }
@@ -38,7 +38,7 @@ async function createCharacteristicHelper(data) {
   // if (options.length > 0){
   //   for (let i = 0; i < options.length; i++) {
   //     const option = GDBOptionModel({label: options[i].label})
-  //     characteristic.implementation.optionss.push(option);
+  //     characteristics.implementation.optionss.push(option);
   //   }
   // }
 

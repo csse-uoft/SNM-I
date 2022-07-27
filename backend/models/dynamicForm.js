@@ -4,8 +4,8 @@ const exampleFormStructure = [
   {
     stepName: "Step 1",
     form: {
-      "snmi:char_company": {type: "characteristic", required: false},
-      "snmi:char_name": {type: "characteristic", required: false}
+      "snmi:char_company": {type: "characteristics", required: false},
+      "snmi:char_name": {type: "characteristics", required: false}
     }
   },
   {

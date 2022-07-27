@@ -241,7 +241,7 @@ export default function Characteristics() {
         return (
           <span>
               <IconButton
-                onClick={() => history.push('/characteristic/'+ id + '/edit')}
+                onClick={() => history.push('/characteristics/'+ id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -268,7 +268,7 @@ export default function Characteristics() {
         data={form}
         columns={columns}
         customToolbar={<Chip
-          onClick={() => {history.push('characteristic/add')}}
+          onClick={() => {history.push('characteristics/add')}}
           color="primary"
           icon={<AddIcon/>}
           label="Add"
@@ -294,7 +294,7 @@ export default function Characteristics() {
                    buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
       <AlertDialog dialogContentText={'Are you sure to delete ' + state.selectedName}
-                   dialogTitle={'Delete characteristic'}
+                   dialogTitle={'Delete characteristics'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
                                     key={'confirm'}

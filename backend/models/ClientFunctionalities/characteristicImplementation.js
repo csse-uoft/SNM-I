@@ -3,7 +3,7 @@ const {GDBFieldTypeModel} = require("./fieldType");
 const {GDBOptionModel} = require("./option");
 
 /**
- * GDBCIModel stands for GDB - characteristic Implementation - Model
+ * GDBCIModel stands for GDB - characteristics Implementation - Model
  * @type {GDBUtils.GraphDBModelConstructor}
  */
 

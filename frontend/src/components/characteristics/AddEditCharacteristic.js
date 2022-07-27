@@ -373,7 +373,7 @@ export default function AddEditCharacteristic() {
         </Button>
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure you want to create a new characteristic?'}
+                     dialogTitle={'Are you sure you want to create a new characteristics?'}
                      buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
                                        key={'cancel'}>{'cancel'}</Button>,
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
@@ -382,7 +382,7 @@ export default function AddEditCharacteristic() {
                      open={state.submitDialog && option === 'add'}/>
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure you want to update the characteristic?'}
+                     dialogTitle={'Are you sure you want to update the characteristics?'}
                      buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
                                        key={'cancel'}>{'cancel'}</Button>,
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
@@ -391,8 +391,8 @@ export default function AddEditCharacteristic() {
                      open={state.submitDialog && option === 'edit'}/>
 
 
-        <AlertDialog dialogContentText={option === 'add'? "You have successfully created a new characteristic":
-        'You have successfully update the characteristic'}
+        <AlertDialog dialogContentText={option === 'add'? "You have successfully created a new characteristics":
+        'You have successfully update the characteristics'}
                      dialogTitle={'Success'}
                      buttons={[<Button onClick={() => {
                        history.push('/characteristics')
