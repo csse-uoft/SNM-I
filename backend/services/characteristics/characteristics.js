@@ -44,8 +44,6 @@ const updateCharacteristic = async (req, res, next) => {
 
   try {
     await updateCharacteristicHelper(id, updateData);
-    await updateOptions(id, options);
-    await updateFieldType(id, fieldType);
     return res.status(202).json({success: true, message: 'Successfully update Characteristic.'});
   } catch (e) {
     next(e)
@@ -66,6 +64,7 @@ const fetchCharacteristic = async (req, res, next) => {
       dataType: characteristic.implementation.valueDataType,
       fieldType: characteristic.implementation.fieldType.type,
       options: characteristic.implementation.options,
+      optionsFromClass : characteristic.implementation.optionsFromClass,
 
     }
     return res.status(200).json({fetchData, success: true});
