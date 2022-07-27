@@ -1,10 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
-import {fetchUsers} from "../../api/userApi";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
-import {Box, Button, Container, Paper, TextField, Typography, Divider} from "@mui/material";
+import {Box, Button, Container, Paper, Typography, Divider} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
@@ -152,8 +151,6 @@ export default function AddEditCharacteristic() {
         setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
       })
     }
-
-
   }
 
   const displayDataTypeValue = () => {
