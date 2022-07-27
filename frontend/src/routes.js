@@ -44,6 +44,7 @@ import EditUserForm from "./components/users/EditUserForm";
 import AddEditCharacteristic from "./components/characteristics/AddEditCharacteristic";
 import Characteristics from "./components/characteristics/Characteristics";
 import AddEditQuestion from "./components/questions/AddEditQuestion";
+import Questions from './components/questions/Questions'
 
 const routes = (
   <Switch>
@@ -99,6 +100,7 @@ const routes = (
 
     <AdminRoute path={'/question/:id/:option'} component={AddEditQuestion}/>
     <AdminRoute path={'/question/:option'} component={AddEditQuestion}/>
+    <AdminRoute path={'/questions'} component={Questions}/>
 
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>

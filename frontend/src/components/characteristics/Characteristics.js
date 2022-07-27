@@ -25,11 +25,11 @@ const useStyles = makeStyles(() => ({
 
 
 
-const ADD_TITLE = 'Add Question';
-const EDIT_TITLE = 'Edit Question';
-const contentTypeOptions = {
-  provider: 'Provider',
-};
+// const ADD_TITLE = 'Add Question';
+// const EDIT_TITLE = 'Edit Question';
+// const contentTypeOptions = {
+//   provider: 'Provider',
+// };
 
 // function AddEditDialog({open, title, value, objectId, handleConfirm, handleClose}) {
 //   const [err, setErr] = useState({
@@ -96,7 +96,7 @@ const contentTypeOptions = {
 export default function Characteristics() {
   const [state, setState] = useState({
     loading: true,
-    value: {},
+    // value: {},
     selectedId: null,
     selectedName: '',
     showErrorDialog: false,
@@ -133,8 +133,8 @@ export default function Characteristics() {
     ).catch(e => {
       if(e.json){
         setErrors(e.json)
-        setState(state => ({...state, loading: false, showErrorDialog: true}))
       }
+      setState(state => ({...state, loading: false, showErrorDialog: true}))
     });
   }, [trigger]);
 
@@ -160,7 +160,11 @@ export default function Characteristics() {
       setTrigger(!trigger)
       // setForm(form.filter(item => item.id !== state.selectedId))
     }catch (e){
-
+      if(e.json)
+        setErrors(e.json)
+      setState(state => ({
+        ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false, showErrorDialog: true
+      }))
     }
   }
 
@@ -192,18 +196,18 @@ export default function Characteristics() {
   //   }
   // };
 
-  const handleDelete = async (id, form) => {
-    try {
-      await deleteCharacteristic(id);
-      setState(state => ({
-        ...state, showDeleteDialog: false,
-        data: state.data.filter(item => item.id !== state.selectedId)
-      }));
-    } catch (e) {
-      // TODO: show error
-      console.error(e);
-    }
-  };
+  // const handleDelete = async (id, form) => {
+  //   try {
+  //     await deleteCharacteristic(id);
+  //     setState(state => ({
+  //       ...state, showDeleteDialog: false,
+  //       data: state.data.filter(item => item.id !== state.selectedId)
+  //     }));
+  //   } catch (e) {
+  //     // TODO: show error
+  //     console.error(e);
+  //   }
+  // };
 
   // const handleEdit = async () => {
   //   try {
@@ -264,7 +268,7 @@ export default function Characteristics() {
   return (
     <Container>
       <DataTable
-        title={"Questions"}
+        title={"Characteristics"}
         data={form}
         columns={columns}
         customToolbar={<Chip
@@ -294,7 +298,7 @@ export default function Characteristics() {
                    buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
       <AlertDialog dialogContentText={'Are you sure to delete Characteristic ' + state.selectedName}
-                   dialogTitle={'Delete characteristics'}
+                   dialogTitle={'Delete characteristic'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
                                     key={'confirm'}

@@ -53,7 +53,7 @@ export default function AddEditQuestion() {
     setState(state => ({...state, loadingButton: true}))
     createQuestion(form).then(() => {
       setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
-    }).then(e => {
+    }).catch(e => {
       setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
       if(e.json){
         setErrors(e.json)
