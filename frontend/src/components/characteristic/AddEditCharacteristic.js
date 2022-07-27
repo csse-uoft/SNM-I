@@ -397,7 +397,7 @@ export default function AddEditCharacteristic() {
                      buttons={[<Button onClick={() => {
                        history.push('/characteristics')
                      }} key={'success'}> {'ok'}</Button>]}
-                     open={state.successDialog && option === 'add'}/>
+                     open={state.successDialog}/>
         <AlertDialog dialogContentText={errors.message || "Error occurs"}
                      dialogTitle={'Fail'}
                      buttons={[<Button onClick={() => {
