@@ -68,17 +68,22 @@ export default function AddEditCharacteristic() {
       // Todo fetch codes
     ]).then(() => {
       if (option === 'edit' && id) {
-        return fetchCharacteristic(id).then(data => {
-          setForm(data.fetchData)
-          if (isSelected()) {
-            if (form.dataType === 'xsd:string') {
-              form.classOrManually = 'manually'
-            } else if (form.dataType === 'owl:NamedIndividual') {
-              form.classOrManually = 'class'
+        return fetchCharacteristic(id).then(res => {
+          const data = res.fetchData
+          if (data.fieldType === 'MultiSelectField' || data.fieldType === 'SingleSelectField' || data.fieldType === 'RadioSelectField') {
+            if (data.dataType === 'xsd:string') {
+              data.classOrManually = 'manually'
+              data.optionsFromClass = ''
+            } else if (data.dataType === 'owl:NamedIndividual') {
+              data.classOrManually = 'class'
+              data.options = [{key: 0, label: ''}]
             }
           } else {
-            form.classOrManually = 'class'
+            data.classOrManually = 'class'
+            data.options = [{key: 0, label: ''}]
+            data.optionsFromClass = ''
           }
+          setForm(data)
         })
       }
     }).then(() => {
@@ -218,6 +223,7 @@ export default function AddEditCharacteristic() {
       <Paper sx={{p: 2}} variant={'outlined'}>
         <Typography variant={'h4'}> Characteristic</Typography>
         <GeneralField
+          key={'name'}
           label={'Name'}
           value={form.name}
           required
