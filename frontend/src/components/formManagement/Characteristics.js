@@ -12,6 +12,7 @@ import GeneralField from "../shared/fields/GeneralField";
 import {useHistory} from "react-router";
 import {fetchCharacteristics, deleteCharacteristic} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
+import LoadingButton from "../shared/LoadingButton";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -97,17 +98,19 @@ export default function Characteristics() {
     loading: true,
     value: {},
     selectedId: null,
-    deleteDialogTitle: '',
+    selectedName: '',
+    showErrorDialog: false,
     showDeleteDialog: false,
-    dialogTitle: '',
-    showAddEditDialog: false,
-    showErrorDialog: false
+    loadingButton: false
   });
   const [form, setForm] = useState(
     []
   )
   const [errors, setErrors] = useState(
     {}
+  )
+  const[trigger, setTrigger] = useState(
+    false
   )
   const classes = useStyles();
   const history = useHistory();
@@ -133,14 +136,33 @@ export default function Characteristics() {
         setState(state => ({...state, loading: false, showErrorDialog: true}))
       }
     });
-  }, []);
+  }, [trigger]);
 
-  const showDeleteDialog = (id, name) => () => {
+  const showDeleteDialog = (id,name) => () => {
     setState(state => ({
-      ...state, selectedId: id, showDeleteDialog: true,
-      deleteDialogTitle: 'Delete ' + name + ' ?'
+      ...state, selectedId: id, showDeleteDialog: true, selectedName: name
     }));
   };
+
+  const handleCancel = () => {
+    setState(state => ({
+      ...state, selectedId: null, showDeleteDialog: false, selectedName: ''
+    }))
+  }
+
+  const handleConfirm = async () => {
+    try{
+      await deleteCharacteristic(state.selectedId);
+      setState(state => ({
+        ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false,
+        // data: state.data.filter(item => item.id !== state.selectedId)
+      }))
+      setTrigger(!trigger)
+      // setForm(form.filter(item => item.id !== state.selectedId))
+    }catch (e){
+
+    }
+  }
 
   // const showEditDialog = (text, type, id) => () => setState(state => ({
   //   ...state,
@@ -271,10 +293,13 @@ export default function Characteristics() {
                    dialogTitle={'Fail'}
                    buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
-      {/*<AlertDialog dialogContentText={'Are you sure to delete ' + state.selectedId}*/}
-      {/*             dialogTitle={'Fail'}*/}
-      {/*             buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}*/}
-      {/*             open={state.}/>*/}
+      <AlertDialog dialogContentText={'Are you sure to delete ' + state.selectedName}
+                   dialogTitle={'Delete Characteristic'}
+                   buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
+                     <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
+                                    key={'confirm'}
+                                    onClick={handleConfirm} children='confirm' autoFocus/>]}
+                   open={state.showDeleteDialog}/>
     </Container>
   );
 }
