@@ -3,6 +3,7 @@ const {
   findCharacteristicById, updateCharacteristicHelper,
   createCharacteristicHelper, updateOptions, updateFieldType
 } = require("./characteristicsHelper");
+const {SPARQL} = require('../../utils/graphdb/helpers');
 
 
 const createCharacteristic = async (req, res, next) => {
@@ -56,6 +57,11 @@ const fetchCharacteristic = async (req, res, next) => {
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
     // characteristics.populate(['implementation.fieldType', 'implementation.options']);
+
+    if (characteristic.implementation?.optionsFromClass) {
+      characteristic.implementation.optionsFromClass = SPARQL.getFullURI(characteristic.implementation.optionsFromClass);
+    }
+
     const fetchData = {
       name: characteristic.name,
       description: characteristic.description,
@@ -64,7 +70,7 @@ const fetchCharacteristic = async (req, res, next) => {
       dataType: characteristic.implementation.valueDataType,
       fieldType: characteristic.implementation.fieldType.type,
       options: characteristic.implementation.options,
-      optionsFromClass : characteristic.implementation.optionsFromClass,
+      optionsFromClass: characteristic.implementation.optionsFromClass,
 
     }
     return res.status(200).json({fetchData, success: true});

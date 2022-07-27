@@ -27,7 +27,7 @@ const SPARQL = {
     const prefix = prefixedURI.substring(0, indexOfColon);
     for (const [definedPrefix, namespace] of Object.entries(namespaces)) {
       if (prefix === definedPrefix) {
-        return `${namespace}${prefixedURI.substring(indexOfColon)}`;
+        return `${namespace}${prefixedURI.substring(indexOfColon + 1)}`;
       }
     }
     throw new Error(`Cannot get full URI, prefix ${prefix} is not defined.`);
