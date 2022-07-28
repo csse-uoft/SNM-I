@@ -47,16 +47,7 @@ async function importRepositorySnapshot(url) {
   });
 }
 
-async function cleanup(typesToClean) {
-  const generateQuery = type => `
-    PREFIX : <http://snmi#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    delete where { 
-      ?s rdf:type :${type};
-         rdfs:label ?o.
-    }`;
-
+async function cleanup() {
   const sendQuery = async query => {
     try {
       const payload = new UpdateQueryPayload()
@@ -69,10 +60,8 @@ async function cleanup(typesToClean) {
       console.log('Failed to cleanup.', query, e);
     }
   }
-  // remove existing categories
-  await Promise.all(
-    typesToClean.map(type => sendQuery(generateQuery(type)))
-  );
+  // Remove all named graph
+  await sendQuery("DROP NAMED");
 }
 
 async function load() {
@@ -115,7 +104,7 @@ async function load() {
 
   console.log(`GraphDB ${DBName} connected.`);
 
-  await cleanup(['project_type', 'partnership_role', 'organization_type', 'project_stage']);
+  await cleanup();
 
   // await loadInitialData(__dirname + '/../ontologies/icontact.ttl');
   // await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
