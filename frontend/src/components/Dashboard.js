@@ -76,6 +76,9 @@ function Dashboard() {
       <NavButton to={'/characteristics'} icon={<Edit/>}
                  text="Manage Characteristics"/>
 
+      <NavButton to={'/questions'} icon={<Edit/>}
+                 text="Manage Questions"/>
+
       <NavButton to={'/settings/manage-forms'} icon={<Edit/>}
                  text="Manage Forms"/>
 
