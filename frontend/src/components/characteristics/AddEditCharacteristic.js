@@ -3,7 +3,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory, useParams} from "react-router";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
-import {Box, Button, Container, Paper, Typography, Divider} from "@mui/material";
+import {Chip, Button, Container, Paper, Typography, Divider, IconButton, Grid} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
@@ -16,6 +16,7 @@ import {
 } from "../../api/characteristicApi";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
+import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
 
 
 const useStyles = makeStyles(() => ({
@@ -324,52 +325,57 @@ export default function AddEditCharacteristic() {
           helperText={errors.optionsFromClass}
         /> : <div/>}
 
-        {/*<Dropdown*/}
-        {/*  options={}*/}
-        {/*  label={'Options From Class'}*/}
-        {/*  value={state.form.optionsFromClass}*/}
-        {/*  onChange={e => state.form.optionsFromClass = e.target.value}*/}
-        {/*  error={!!state.errors.optionsFromClass}*/}
-        {/*  helperText={state.errors.optionsFromClass}*/}
-        {/*  required*/}
-        {/*/>*/}
 
 
         {isSelected() && form.classOrManually === 'manually' ? <div>
-          <Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>
-            Add
-          </Button>
+          {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>*/}
+          {/*  Add*/}
+          {/*</Button>*/}
 
           {form.options.map((option, index) =>
             <div>
-              <GeneralField
-                key={option.key}
-                label={'Option Label ' + (index + 1)}
-                value={form.options[index].label}
-                required
-                onChange={e => form.options[index].label = e.target.value}
-                sx={{mt: '16px', minWidth: 350}}
-                error={!!errors.options && !!errors.options[option.key]}
-                helperText={!!errors.options && errors.options[option.key]}
-              />
-              <Button variant="contained" color="primary" className={classes.button} key={option.key + 1}
-                      onClick={() => {
-                        if (index !== 0 || (index === 0 && form.options.length > 1)) {
-                          const temp = [...form.options]
-                          temp.splice(index, 1)
-                          setForm(form => ({...form, options: [...temp]}))
-                        }
+              <Grid display={'flex'}>
+                <GeneralField
+                  key={option.key}
+                  label={'Option Label ' + (index + 1)}
+                  value={form.options[index].label}
+                  required
+                  onChange={e => form.options[index].label = e.target.value}
+                  sx={{mt: '16px', minWidth: 350}}
+                  error={!!errors.options && !!errors.options[option.key]}
+                  helperText={!!errors.options && errors.options[option.key]}
+                />
+                <IconButton
+                  onClick={() => {
+                    if (index !== 0 || (index === 0 && form.options.length > 1)) {
+                      const temp = [...form.options]
+                      temp.splice(index, 1)
+                      setForm(form => ({...form, options: [...temp]}))
+                    }
 
-                      }}>
-                Remove
-              </Button>
+                  }}
+                  // className={classes.button}
+                  size="large" className={classes.button}>
+                  <DeleteIcon fontSize="small" color="secondary"/>
+                </IconButton>
+                {index === form.options.length - 1?
+                  <IconButton
+                    onClick={handleAdd}
+                    size="large" className={classes.button}>
+                    <AddIcon fontSize="small" color="primary"/>
+                  </IconButton>:
+                <span/>}
+
+              </Grid>
+
+
             </div>
           )}
         </div> : <div/>}
 
 
         <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
-          Submit
+          submit
         </Button>
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}

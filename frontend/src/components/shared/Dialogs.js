@@ -24,21 +24,6 @@ export function AlertDialog(props) {
         </DialogContent>
         <DialogActions>
           {props.buttons}
-          {/*{Object.entries(props.buttons).map(([buttonText, handleClicking]) => {*/}
-
-          {/*  return (*/}
-
-          {/*    <Button*/}
-          {/*      key={buttonText}*/}
-          {/*      onClick={handleClicking}>*/}
-          {/*      {buttonText}*/}
-          {/*    </Button>*/}
-          {/*  )*/}
-          {/*})}*/}
-          {/*<Button onClick={props.handleCancel}>{cancelButtonText}</Button>*/}
-          {/*<Button onClick={props.handleConfirm} autoFocus>*/}
-          {/*  {confirmButtonText}*/}
-          {/*</Button>*/}
         </DialogActions>
       </Dialog>
   );
