@@ -47,7 +47,7 @@ export default function AddEditQuestion() {
     if(option === 'edit' && id){
       fetchQuestion(id).then(res => {
         if(res.success){
-          setForm({content: res.fetchData.content, description: res.fetchData.description})
+          setForm({content: res.question.content, description: res.question.description})
           setLoading(false)
         }
       }).catch(e => {
@@ -140,7 +140,7 @@ export default function AddEditQuestion() {
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
                                       key={'confirm'}
                                       onClick={handleConfirm} children='confirm' autoFocus/>]}
-                     open={state.submitDialog && option === 'add'}/>
+                     open={state.submitDialog}/>
         <AlertDialog dialogContentText={option === 'add'? "You have successfully created a new question":
           'You have successfully update the question'}
                      dialogTitle={'Success'}
