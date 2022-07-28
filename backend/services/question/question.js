@@ -48,6 +48,7 @@ const fetchQuestions = async (req, res, next) => {
     const rawData = await GDBQuestionModel.find({});
     const data = rawData.map((question) => {
       return {
+        id : question._id,
         content : question.content,
         description: question.description,
       }
