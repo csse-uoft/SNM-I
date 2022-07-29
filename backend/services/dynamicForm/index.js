@@ -52,7 +52,7 @@ async function getDynamicForm(req, res, next) {
 }
 
 async function getAllDynamicForms(req, res, next) {
-  const forms = await MDBDynamicFormModel.find({}, 'formType forOrganization createdBy modifiedAt');
+  const forms = await MDBDynamicFormModel.find({}, 'formType forOrganization createdBy modifiedAt name');
   res.json({
     success: true,
     forms
@@ -60,7 +60,7 @@ async function getAllDynamicForms(req, res, next) {
 }
 
 async function getDynamicFormsByFormType(req, res, next) {
-  const forms = await MDBDynamicFormModel.find({formType: req.params.formType}, 'forOrganization createdBy modifiedAt');
+  const forms = await MDBDynamicFormModel.find({formType: req.params.formType}, 'forOrganization createdBy modifiedAt name');
   res.json({
     success: true,
     forms

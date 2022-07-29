@@ -1,26 +1,67 @@
-import { Container, Typography } from "@mui/material";
+import { Container, IconButton, Typography } from "@mui/material";
 import SelectField from "../shared/fields/SelectField";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { allForms } from "../../constants/provider_fields";
-import { CustomToolbar, DataTable, DropdownMenu } from "../shared";
-import { useHistory } from "react-router-dom";
+import { CustomToolbar, DataTable, Link } from "../shared";
+import { useParams, useHistory } from "react-router";
+import { deleteDynamicForm, getDynamicFormsByFormType } from "../../api/dynamicFormApi";
+import { Edit, Delete } from "@mui/icons-material";
 
 
 export default function ManageForms() {
-  const [formType, setFormType] = useState('client');
-  const [tableData, setTableData] = useState([]);
   const history = useHistory();
+  const {formType} = useParams();
+
+  if (!formType) {
+    history.push(`/settings/manage-forms/client`);
+  }
+
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    getDynamicFormsByFormType(formType).then(({forms}) => setTableData(forms));
+  }, [formType]);
+
+  const handleDelete = (id) => () => {
+    deleteDynamicForm(id).then(() => getDynamicFormsByFormType(formType).then(({forms}) => setTableData(forms)))
+  };
 
   const columns = useMemo(() => {
     return [
       {
         label: 'Form name',
+        body: ({name, _id}) => {
+          return <Link color to={`/settings/forms/${formType}/edit/${_id}`}>
+            {name}
+          </Link>
+        }
       },
       {
-        label: 'Form type'
+        label: 'Form type',
+        body: () => formType
       },
       {
-        label: 'Modified on',
+        label: 'Created By',
+        body: ({createdBy}) => createdBy
+      },
+      {
+        label: 'Modified At',
+        body: ({modifiedAt}) => new Date(modifiedAt).toLocaleString(),
+      },
+      {
+        label: ' ',
+        body: ({_id}) => {
+          return (
+            <>
+              <IconButton onClick={() => history.push(`/settings/forms/${formType}/edit/${_id}`)}>
+                <Edit fontSize="small" color="primary"/>
+              </IconButton>
+              <IconButton onClick={handleDelete(_id)}>
+                <Delete fontSize="small" color="secondary"/>
+              </IconButton>
+            </>
+          )
+        },
       },
     ]
   }, []);
@@ -43,7 +84,7 @@ export default function ManageForms() {
       <SelectField
         label="Form Type"
         value={formType}
-        onChange={e => setFormType(e.target.value)}
+        onChange={e => history.push(`/settings/manage-forms/${e.target.value}`)}
         options={allForms}
         noEmpty
         sx={{mb: 2}}
