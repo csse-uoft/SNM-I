@@ -10,12 +10,16 @@ async function createDynamicForm(req, res, next) {
   const currentUser = await GDBUserAccountModel.findOne({primaryEmail: req.session.email});
   const createdBy = currentUser.individualName;
 
-  const form = MDBDynamicFormModel({
-    name, formType, formStructure, createdBy, modifiedAt
-  });
+  try {
+    const form = new MDBDynamicFormModel({
+      name, formType, formStructure, createdBy, modifiedAt
+    });
 
-  await form.save();
-  res.json({success: true});
+    await form.save();
+    res.json({success: true});
+  } catch (e) {
+    next(e);
+  }
 }
 
 async function updateDynamicForm(req, res, next) {
