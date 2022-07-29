@@ -17,6 +17,14 @@ import { Container } from '@mui/material';
 import { makeStyles } from "@mui/styles";
 import { Loading, FormStepper } from "../shared";
 import { client_verify_form } from '../../helpers/client_verify_form.js';
+import {
+  getAllDynamicForms,
+  getDynamicForm,
+  getDynamicFormsByFormType,
+  getInstancesInClass
+} from "../../api/dynamicFormApi";
+import SelectField from "../shared/fields/SelectField";
+import GeneralField from "../shared/fields/GeneralField";
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -31,48 +39,67 @@ export default function ClientForm() {
   const history = useHistory();
   const {id} = useParams();
   const mode = id ? 'edit' : 'new';
+
   const [state, setState] = useState({
-    loading: true,
     languageOptions: [],
     all_ngo_conditions: [],
-    stepNames: [],
     steps: [],
     client: null,
     dispatchErrorMsg: [],
     fieldErrorMsg: {},
   });
 
-  // DO NOT store form as state, it degrades the performance as all form got rendered every time user type anything.
-  // Instead, for large form like this page, store the form as a variable and pass it to child components (input)
-  const form = useMemo(() => generateClientField(state.client), [state.client]);
+  const [form, setForm] = useState({});
+  const [allForms, setAllForms] = useState({});
 
-  // const [form, setForm] = useState(generateClientField());
+  const [selectedFormId, setSelectedFormId] = useState('');
+  const [dynamicForm, setDynamicForm] = useState({formStructure: []});
+  const [dynamicOptions, setDynamicOptions] = useState({});
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const promises = [];
-    promises.push(fetchOntologyCategories('languages')
-      .then(data => setState(state => ({...state, languageOptions: data}))));
-    promises.push(fetchEligibilities()
-      .then(data => {
-        setState(state => ({...state, all_ngo_conditions: data.map(data => data.title)}))
-      }));
-    promises.push(fetchClientFields()
-      .then(data => {
-        if (data == null || data.steps_order.length === 0
-          || Object.values(data.form_structure).length === 0) {
-          setState(state => ({...state, loading: true, dispatchErrorMsg: ['No fields are available.']}));
-        } else {
-          setState(state => ({
-            ...state,
-            stepNames: data.steps_order,
-            steps: Object.values(data.form_structure)
-          }));
-        }
-      }));
-    id && promises.push(fetchClient(id)
-      .then(data => setState(state => ({...state, client: data}))));
-    Promise.all(promises).then(() => setState(state => ({...state, loading: false})));
+    Promise.all([
+      getDynamicFormsByFormType('client').then(({forms}) => {
+        const allForms = {};
+        forms.forEach(form => allForms[form._id] = form);
+        setAllForms(forms);
+      }),
+    ]).then(() => {
+      setLoading(false);
+    });
+
+    if (id) {
+      // setForm
+    }
   }, [id]);
+
+  const formOptions = useMemo(() => {
+    const options = {};
+    Object.values(allForms).forEach(form => options[form._id] = form.name);
+    return options
+  }, [allForms]);
+
+
+  useEffect(() => {
+    if (selectedFormId)
+      getDynamicForm(selectedFormId).then(({form}) => {
+        setDynamicForm(form);
+        for (const step of form.formStructure) {
+          for (const field of step.fields) {
+            const className = field?.implementation?.optionsFromClass;
+            if (className) {
+              getInstancesInClass(className)
+                .then(options => setDynamicOptions(prev => ({...prev, [className]: options})))
+            }
+          }
+        }
+      });
+  }, [selectedFormId]);
+
+  const stepNames = useMemo(() => {
+    return dynamicForm.formStructure.map(s => s.stepName);
+  }, [dynamicForm]);
 
   const handleFinish = async () => {
     // TODO: pretty error message
@@ -118,70 +145,101 @@ export default function ClientForm() {
   }, [form]);
 
   const getStepContent = idx => {
-    const step = state.steps[idx];
+    console.log('render step ', idx)
+    const step = dynamicForm.formStructure[idx].fields;
     return <div className={classes.content}>
-      {Object.entries(step).map(([field, required]) => {
-        let options;
-        // console.log(field)
-        let errMsg = state.fieldErrorMsg[field];
-        if (field === 'first_language') {
-          options = state.languageOptions;
-        } else if (field === 'other_languages') {
-          options = state.languageOptions.filter(
-            category => category !== form.first_language)
-        } else if (field === 'ngo_conditions') {
-          options = state.all_ngo_conditions;
+      {step.map(({required, id, type, implementation, content}, index) => {
+
+        if (type === 'question') {
+          return <GeneralField key={index} label={content}/>
+        } else if (type === 'characteristic') {
+          const fieldType = implementation.fieldType.type;
+          const {label, optionsFromClass} = implementation;
+
+          let fieldOptions;
+          if (optionsFromClass) {
+            fieldOptions = dynamicOptions[optionsFromClass] || {};
+          } else if (implementation.options) {
+            fieldOptions = {};
+            implementation.options.forEach(option => fieldOptions[option._id] = option.label);
+          }
+
+          return <FieldGroup component={fieldType} key={index} label={label} required={required} options={fieldOptions}
+                             onChange={() => {
+                             }}/>
         }
 
-        if (field === 'address') {
-          return (
-            <LocationFieldGroup
-              key="address"
-              address={form.address}
-              required={required}
-              errMsg={errMsg}
-            />
-          );
-        } else if (field === 'family') {
-          return (
-            <FamilyFields
-              key="family"
-              family={form.family}
-              clientId={id}
-              required={required}
-              errMsg={errMsg}
-            />
-          );
-        } else {
-          const isProfile = Object.keys(defaultProfileFields).includes(field);
-          return (
-            <FieldGroup
-              key={field}
-              label={clientFields[field].label}
-              type={clientFields[field].type}
-              component={clientFields[field].component}
-              value={isProfile ? form.profile[field] : form[field]}
-              onChange={handleChange(isProfile ? 'profile.' + field : field)}
-              required={required}
-              options={clientFields[field].options || options}
-              error={errMsg != null}
-              helperText={errMsg}
-            />
-          );
-        }
+        // let options;
+        // // console.log(field)
+        // let errMsg = state.fieldErrorMsg[field];
+        // if (field === 'first_language') {
+        //   options = state.languageOptions;
+        // } else if (field === 'other_languages') {
+        //   options = state.languageOptions.filter(
+        //     category => category !== form.first_language)
+        // } else if (field === 'ngo_conditions') {
+        //   options = state.all_ngo_conditions;
+        // }
+        //
+        // if (field === 'address') {
+        //   return (
+        //     <LocationFieldGroup
+        //       key="address"
+        //       address={form.address}
+        //       required={required}
+        //       errMsg={errMsg}
+        //     />
+        //   );
+        // } else if (field === 'family') {
+        //   return (
+        //     <FamilyFields
+        //       key="family"
+        //       family={form.family}
+        //       clientId={id}
+        //       required={required}
+        //       errMsg={errMsg}
+        //     />
+        //   );
+        // } else {
+        //   const isProfile = Object.keys(defaultProfileFields).includes(field);
+        //   return (
+        //     <FieldGroup
+        //       key={field}
+        //       label={clientFields[field].label}
+        //       type={clientFields[field].type}
+        //       component={clientFields[field].component}
+        //       value={isProfile ? form.profile[field] : form[field]}
+        //       onChange={handleChange(isProfile ? 'profile.' + field : field)}
+        //       required={required}
+        //       options={clientFields[field].options || options}
+        //       error={errMsg != null}
+        //       helperText={errMsg}
+        //     />
+        //   );
+        // }
       })}
     </div>
   };
 
-  if (state.loading)
+  if (loading)
     return <Loading message={`Loading...`}/>;
 
   return (
     <Container>
+      <SelectField
+        label="Select a form"
+        value={selectedFormId}
+        onChange={e => {
+          setSelectedFormId(e.target.value);
+        }}
+        options={formOptions}
+        sx={{mb: 2}}
+        noEmpty
+      />
       <FormStepper
         getStepContent={getStepContent}
         handleFinish={handleFinish}
-        stepNames={state.stepNames}
+        stepNames={stepNames}
         error={state.dispatchErrorMsg}
       />
     </Container>
