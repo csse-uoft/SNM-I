@@ -52,6 +52,7 @@ export default function Users() {
           {email}
         </Link>
       },
+      sortBy: ({email}) => email
     },
     {
       label: 'First name',
