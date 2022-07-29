@@ -1,16 +1,16 @@
-import React, { useEffect, useState} from 'react';
-import { fetchQuestions, updateQuestion, deleteQuestion, createQuestion } from '../../api/mockedApi/question';
+import React, {useEffect, useState} from 'react';
+import {fetchQuestions, updateQuestion, deleteQuestion, createQuestion} from '../../api/mockedApi/question';
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button, Box
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
-import { DeleteModal, Loading, DataTable } from "../shared";
+import {makeStyles} from "@mui/styles";
+import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";
+import {DeleteModal, Loading, DataTable} from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {useHistory} from "react-router";
-import {fetchCharacteristics, deleteCharacteristic} from "../../api/characteristicApi";
+import {fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsDataTypes} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
 
@@ -22,7 +22,6 @@ const useStyles = makeStyles(() => ({
     margin: null,
   },
 }));
-
 
 
 // const ADD_TITLE = 'Add Question';
@@ -106,39 +105,42 @@ export default function Characteristics() {
   const [form, setForm] = useState(
     []
   )
+  const [dataTypes, setDataTypes] = useState({})
   const [errors, setErrors] = useState(
     {}
   )
-  const[trigger, setTrigger] = useState(
+  const [trigger, setTrigger] = useState(
     false
   )
   const classes = useStyles();
   const history = useHistory();
 
   useEffect(() => {
-    fetchCharacteristics().then(res => {
-      if(res.success){
-        setForm(res.data.map(characteristic => {
-          return {
-            id: characteristic.id,
-            label: characteristic.implementation.label,
-            name: characteristic.name,
-            fieldType: characteristic.implementation.fieldType.label,
-            dataType: characteristic.implementation.valueDataType
-          }
-        }))
+    Promise.all([fetchCharacteristics().then(res => {
+        if (res.success) {
+          setForm(res.data.map(characteristic => {
+            return {
+              id: characteristic.id,
+              label: characteristic.implementation.label,
+              name: characteristic.name,
+              fieldType: characteristic.implementation.fieldType.label,
+              dataType: characteristic.implementation.valueDataType
+            }
+          }))
+        }
       }
-      setState(state => ({...state, loading: false}))
-      }
-    ).catch(e => {
-      if(e.json){
+    ),
+      fetchCharacteristicsDataTypes().then(newDataTypes =>setDataTypes(newDataTypes))]).then(
+        setState(state => ({...state, loading: false}))).catch(e => {
+      if (e.json) {
         setErrors(e.json)
       }
       setState(state => ({...state, loading: false, showErrorDialog: true}))
-    });
+    })
+
   }, [trigger]);
 
-  const showDeleteDialog = (id,name) => () => {
+  const showDeleteDialog = (id, name) => () => {
     setState(state => ({
       ...state, selectedId: id, showDeleteDialog: true, selectedName: name
     }));
@@ -151,7 +153,7 @@ export default function Characteristics() {
   }
 
   const handleConfirm = async () => {
-    try{
+    try {
       await deleteCharacteristic(state.selectedId);
       setState(state => ({
         ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false,
@@ -159,11 +161,16 @@ export default function Characteristics() {
       }))
       setTrigger(!trigger)
       // setForm(form.filter(item => item.id !== state.selectedId))
-    }catch (e){
-      if(e.json)
+    } catch (e) {
+      if (e.json)
         setErrors(e.json)
       setState(state => ({
-        ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false, showErrorDialog: true
+        ...state,
+        showDeleteDialog: false,
+        selectedId: null,
+        selectedName: '',
+        loadingButton: false,
+        showErrorDialog: true
       }))
     }
   }
@@ -237,7 +244,7 @@ export default function Characteristics() {
     },
     {
       label: 'Data Type',
-      body: ({dataType}) => dataType
+      body: ({dataType}) => dataTypes[dataType]
     },
     {
       label: ' ',
@@ -245,7 +252,7 @@ export default function Characteristics() {
         return (
           <span>
               <IconButton
-                onClick={() => history.push('/characteristic/'+ id + '/edit')}
+                onClick={() => history.push('/characteristic/' + id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -272,7 +279,9 @@ export default function Characteristics() {
         data={form}
         columns={columns}
         customToolbar={<Chip
-          onClick={() => {history.push('characteristic/add')}}
+          onClick={() => {
+            history.push('characteristic/add')
+          }}
           color="primary"
           icon={<AddIcon/>}
           label="Add"
@@ -295,7 +304,9 @@ export default function Characteristics() {
       {/*/>*/}
       <AlertDialog dialogContentText={errors.message || "Error occurs"}
                    dialogTitle={'Fail'}
-                   buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
+                   buttons={[<Button onClick={() => {
+                     history.push('/dashboard')
+                   }} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
       <AlertDialog dialogContentText={'Are you sure to delete Characteristic ' + state.selectedName}
                    dialogTitle={'Delete characteristic'}
