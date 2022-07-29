@@ -21,6 +21,7 @@ router.get('/dynamicForms/:formType', dynamicFormService.getDynamicFormsByFormTy
 // Get all forms
 router.get('/dynamicForms', dynamicFormService.getAllDynamicForms);
 
+router.get('/dynamicClassInstances/:class', dynamicFormService.getIndividualsInClass);
 
 
 module.exports = router;

@@ -1,5 +1,7 @@
 const {MDBDynamicFormModel} = require('../../models/dynamicForm');
 const {GDBUserAccountModel} = require('../../models/userAccount')
+const {GraphDB} = require("../../utils/graphdb");
+const {SPARQL} = require('../../utils/graphdb/helpers');
 
 async function createDynamicForm(req, res, next) {
   // TODO: implement forOrganization
@@ -68,6 +70,29 @@ async function getDynamicFormsByFormType(req, res, next) {
 }
 
 
+async function getIndividualsInClass(req, res) {
+  const instances = {};
+
+  const query = `
+    PREFIX : <http://snmi#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX cids: <http://ontology.eil.utoronto.ca/cids/cids#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select * 
+    where { 
+        ?s a <${SPARQL.getFullURI(req.params.class)}>, owl:NamedIndividual.
+        OPTIONAL {?s rdfs:label ?label .}
+        FILTER (isIRI(?s))
+    }`;
+  console.log(query)
+
+  await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
+    instances[s.id] = label?.value || s.id;
+  });
+  res.json(instances);
+}
+
 module.exports = {
-  createDynamicForm, getAllDynamicForms, getDynamicForm, deleteDynamicForm, updateDynamicForm, getDynamicFormsByFormType
+  createDynamicForm, getAllDynamicForms, getDynamicForm, deleteDynamicForm, updateDynamicForm, getDynamicFormsByFormType,
+  getIndividualsInClass
 }
