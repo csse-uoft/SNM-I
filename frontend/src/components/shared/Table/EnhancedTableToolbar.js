@@ -3,8 +3,12 @@ import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import {Paper} from "@mui/material";
+import {InputBase} from "@mui/material";
+import {Grid} from "@mui/material";
 import PropTypes from "prop-types";
-import React from "react";
+import React, {useState} from "react";
+import GeneralField from "../fields/GeneralField";
 
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +33,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 export const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const {numSelected, title, onDelete, customToolbar} = props;
+  const [search, setSearch] = useState('')
 
   return (
     <Toolbar
@@ -64,11 +69,35 @@ export const EnhancedTableToolbar = (props) => {
         </Tooltip>
       )}
 
-      <Tooltip title="Search">
-        <IconButton aria-label="search list" size="large">
-          <SearchIcon/>
+
+
+      {/*<Tooltip title="Search">*/}
+      {/*  <IconButton aria-label="search list" size="large">*/}
+      {/*    <SearchIcon/>*/}
+      {/*  </IconButton>*/}
+      {/*</Tooltip>*/}
+
+
+      <Grid display={'flex'}
+      >
+        <GeneralField
+        value={search}
+        size={'small'}
+        sx={{mt: '16px', minWidth: 50}}
+        />
+        <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+          <IconButton aria-label="search list" size="large">
+            <SearchIcon/>
+          </IconButton>
         </IconButton>
-      </Tooltip>
+      </Grid>
+
+
+
+
+
+
+
       {customToolbar}
     </Toolbar>
   );
