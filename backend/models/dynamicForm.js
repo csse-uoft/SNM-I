@@ -15,7 +15,7 @@ const exampleFormStructure = [
 ]
 
 const MDBDynamicFormModel = mongoose.model('DynamicForm', new mongoose.Schema({
-  name: {type: String, required: false},
+  name: {type: String, required: true},
 
   // Form type could be 'client', 'service', 'provider', 'user', ...
   formType: {type: String, required: true},

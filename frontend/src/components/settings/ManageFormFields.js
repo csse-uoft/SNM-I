@@ -12,7 +12,12 @@ import { Close as Delete } from "@mui/icons-material";
 import { Loading } from "../shared";
 import AddFormDialog from "./components/AddFormDialog";
 import StepFields from "./components/StepFields";
-import { createDynamicForm, getDynamicFormsByFormType, updateDynamicForm } from "../../api/dynamicFormApi";
+import {
+  createDynamicForm,
+  getDynamicForm,
+  getDynamicFormsByFormType,
+  updateDynamicForm
+} from "../../api/dynamicFormApi";
 import { fetchCharacteristics } from "../../api/characteristicApi";
 import { Picker } from "./components/Pickers";
 import { fetchQuestions } from "../../api/questionApi";
@@ -23,11 +28,8 @@ export default function ManageFormFields() {
 
   // Page path: /settings/forms/:formType/:method/:formId
   const {formType, method, formId} = useParams();
-  console.log(formType, method, formId)
 
   const [loading, setLoading] = useState(true);
-
-  const [availableForms, setAvailableForms] = useState([]);
 
   // Characteristic Related
   const [characteristics, setCharacteristics] = useState({});
@@ -41,11 +43,11 @@ export default function ManageFormFields() {
   const [selectedQuestionId, setSelectedQuestionId] = useState('');
   const [usedQuestionIds, setUsedQuestionIds] = useState([]);
 
-  const [openAddFormDialog, setOpenAddFormDialog] = useState(false);
   const [state, setState] = useState({
     stepToAdd: '',
     selectedStep: '',
   });
+  const [errors, setErrors] = useState({});
   // {name: 'form name', formType: 'client', formStructure: [
   //    {stepName: 'step 1', fields: [
   //       {id: 1, type: 'characteristic', required: true, implementation: {...}}
@@ -54,14 +56,11 @@ export default function ManageFormFields() {
   // ]}
   // inferred state
 
-  const [form, setForm] = useState({formStructure: []});
+  const [form, setForm] = useState({formType, formStructure: []});
   console.log('form,', form)
 
   useEffect(() => {
-    const tasks = [
-      // Fetch forms
-      getDynamicFormsByFormType(formType).then(({forms}) => setAvailableForms(forms)),
-
+    Promise.all([
       // Fetch characteristics
       fetchCharacteristics().then(({data}) => {
         const dict = {};
@@ -85,17 +84,46 @@ export default function ManageFormFields() {
         setQuestions(dict);
         setQuestionOptions(options);
       })
-    ];
-
-    Promise.all(tasks).then(() => {
-      console.log('done')
+    ]).then(() => {
       setLoading(false);
     });
 
+  }, []);
+
+  useEffect(() => {
+    form.formType = formType;
   }, [formType]);
+
+  useEffect(() => {
+    if (formId) {
+      getDynamicForm(formId).then(({form}) => {
+        // Calculate used fields
+        const usedQuestionsIds = [];
+        const usedCharacteristicIds = [];
+
+        for (const step of form.formStructure) {
+          for (const field of step.fields) {
+            if (field.type === 'characteristic') {
+              usedCharacteristicIds.push(field.id);
+            } else if (field.type === 'question') {
+              usedQuestionsIds.push(field.id)
+            }
+          }
+        }
+        setForm(form);
+        setUsedQuestionIds(usedQuestionsIds);
+        setUsedCharacteristicIds(usedCharacteristicIds);
+      });
+    }
+  }, [formId]);
 
   const submit = async () => {
     console.log(form);
+
+    if (!form.name) {
+      setErrors(errors => ({...errors, formName: 'Form name is required.'}));
+      return;
+    }
 
     try {
       if (method === 'new') {
@@ -104,7 +132,7 @@ export default function ManageFormFields() {
       } else {
         await updateDynamicForm(formId, form);
       }
-      history.push('/dashboard');
+      history.push('/settings/manage-forms/' + formType);
     } catch (e) {
       console.error(e)
     }
@@ -127,7 +155,11 @@ export default function ManageFormFields() {
           return [...used];
         })
       } else if (removed.type === 'question') {
-        //...
+        setUsedQuestionIds(used => {
+          const idx = used.findIndex(question => question.id === removed.id);
+          used.splice(idx, 1);
+          return [...used];
+        })
       }
 
       return {...form};
@@ -153,6 +185,27 @@ export default function ManageFormFields() {
     setUsedQuestionIds(used => [...used, selectedCharacteristicId])
 
   }, [selectedQuestionId, questions, state.selectedStep]);
+
+  const handleAddStep = useCallback(() => {
+    const existedStepNames = form.formStructure.map(s => s.stepName);
+    if (existedStepNames.includes(state.stepToAdd)) {
+      setErrors(errors => ({...errors, newStepName: 'Step name existed'}))
+      return;
+    }
+
+    // Mutate form and form.formStructure
+    setErrors(errors => ({...errors, newStepName: undefined}))
+    setForm(form => ({
+      ...form,
+      formStructure: [
+        ...form.formStructure,
+        {
+          stepName: state.stepToAdd,
+          fields: []
+        }
+      ]
+    }));
+  }, [state.stepToAdd, form]);
 
   const handleRemoveStep = useCallback((index, stepName) => () => {
     setForm(form => {
@@ -203,30 +256,18 @@ export default function ManageFormFields() {
             label="New step name"
             value={state.stepToAdd}
             onChange={handleChange('stepToAdd')}
+            error={!!errors.newStepName}
+            helperText={errors.newStepName}
           />
         </Grid>
         <Grid item>
-          <Button variant="outlined" color="primary" disabled={!state.stepToAdd} onClick={() => {
-
-            // Mutate form and form.formStructure
-            setForm(form => ({
-              ...form,
-              formStructure: [
-                ...form.formStructure,
-                {
-                  stepName: state.stepToAdd,
-                  fields: []
-                }
-              ]
-            }));
-
-          }}>
+          <Button variant="outlined" color="primary" disabled={!state.stepToAdd} onClick={handleAddStep}>
             Add Step
           </Button>
         </Grid>
       </Grid>
     )
-  }, [state.stepToAdd, formType, handleChange]);
+  }, [state.stepToAdd, formType, handleChange, handleAddStep, errors]);
 
   const getNewFieldComponent = useCallback(() => {
     if (!formType) return null;
@@ -272,7 +313,6 @@ export default function ManageFormFields() {
     if (form.formStructure.length === 0) return null;
 
     return form.formStructure.map((step, index) => {
-      console.log('fieldsComponents', step, index)
       const {stepName, fields} = step;
       return (
         <Box key={index} sx={{pt: 1}}>
@@ -318,29 +358,30 @@ export default function ManageFormFields() {
             onChange={(e) => history.push(`/settings/forms/${e.target.value}/new`)}
             options={allForms}
             noEmpty
+            disabled={!!formId}
           />
         </Grid>
         {method === 'new' ?
           <Grid item xs={6}>
-            <TextField fullWidth label="New form name" onChange={e => form.name = e.target.value}/>
+            <TextField
+              fullWidth
+              label="New form name"
+              onChange={e => form.name = e.target.value}
+              required
+              error={!!errors.formName}
+              helperText={errors.formName}
+            />
           </Grid>
           :
           <>
-            <Grid item>
-              <SelectField
-                label="Choose form"
-                value={state.selectedForm}
-                onChange={() => setForm(availableForms.find(form => form.name === e.target.value))}
-                options={availableForms.map(form => form.name)}
-                // noEmpty
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Form name"
+                value={form.name}
+                disabled
+                required
               />
-
-            </Grid>
-            <Grid item>
-              <Button variant="outlined" color="primary"
-                      onClick={() => setOpenAddFormDialog(true)}>
-                Add form
-              </Button>
             </Grid>
           </>
         }
@@ -360,16 +401,6 @@ export default function ManageFormFields() {
         <Button variant="outlined" color="primary" onClick={submit} sx={{mt: 2}}>
           Submit
         </Button>}
-
-      <AddFormDialog
-        open={openAddFormDialog}
-        handleAdd={(name) => {
-          setAvailableForms(forms => [...forms, {name, formType, formStructure: []}]);
-          setState(state => ({...state, selectedForm: name}));
-          setOpenAddFormDialog(false);
-        }}
-        handleClose={() => setOpenAddFormDialog(false)}
-      />
     </Container>
   )
 }

@@ -106,7 +106,9 @@ const routes = (
 
 
     <AdminRoute path='/settings/manage-fields' component={ManageFields}/>
-    <AdminRoute path='/settings/manage-forms' component={ManageForms}/>
+
+    <AdminRoute exact path='/settings/manage-forms/' component={ManageForms}/>
+    <AdminRoute exact path='/settings/manage-forms/:formType' component={ManageForms}/>
 
     {/*:formType could be `client`, 'organization', ...*/}
     {/*:method could be `edit` or `new`*/}

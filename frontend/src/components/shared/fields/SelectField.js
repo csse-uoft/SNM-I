@@ -43,7 +43,6 @@ export default function SelectField({
   useEffect(() => {
     setValue(props.value === undefined ? UN_SET : props.value);
   }, [props.value]);
-  console.log(options)
 
   return (
     <div>
