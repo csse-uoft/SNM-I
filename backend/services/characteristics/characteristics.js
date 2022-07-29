@@ -80,6 +80,17 @@ const fetchCharacteristic = async (req, res, next) => {
   }
 }
 
+const fetchCharacteristicsWithDetails = async (req, res, next) => {
+  try {
+    const data = await GDBCharacteristicModel.find({},
+      {populates: ['implementation', 'implementation.options']});
+    await data.populate('implementation');
+    return res.status(200).json({data, success: true});
+  } catch (e) {
+    next(e)
+  }
+}
+
 const fetchCharacteristics = async (req, res, next) => {
   try {
     const rawData = await GDBCharacteristicModel.find({},
@@ -112,5 +123,5 @@ const deleteCharacteristic = async (req, res, next) => {
 
 module.exports = {
   createCharacteristic, updateCharacteristic, fetchCharacteristic,
-  fetchCharacteristics, deleteCharacteristic
+  fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsWithDetails
 }

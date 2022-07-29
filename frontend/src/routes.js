@@ -1,6 +1,6 @@
 import React from 'react';
-import {Switch} from 'react-router';
-import {Route} from 'react-router-dom';
+import { Switch } from 'react-router';
+import { Route } from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
@@ -95,8 +95,10 @@ const routes = (
     <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
 
     <AdminRoute path='/characteristics' component={Characteristics}/>
-    <AdminRoute path={'/characteristic/:id/:option'} component={AddEditCharacteristic}/> // this for edit
-    <AdminRoute path={'/characteristic/:option'} component={AddEditCharacteristic}/> // this for add
+    {/*this for edit*/}
+    <AdminRoute path={'/characteristic/:id/:option'} component={AddEditCharacteristic}/>
+    {/*this for add  */}
+    <AdminRoute path={'/characteristic/:option'} component={AddEditCharacteristic}/>
 
     <AdminRoute path={'/question/:id/:option'} component={AddEditQuestion}/>
     <AdminRoute path={'/question/:option'} component={AddEditQuestion}/>

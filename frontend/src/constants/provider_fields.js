@@ -12,6 +12,7 @@ export const providerFormTypes = {
 
 export const allForms = {
   client: 'Client',
+  service: 'Service',
   ...providerFormTypes
 };
 

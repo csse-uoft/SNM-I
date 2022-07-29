@@ -3,18 +3,20 @@ const mongoose = require('mongoose');
 const exampleFormStructure = [
   {
     stepName: "Step 1",
-    form: {
-      "snmi:char_company": {type: "characteristics", required: false},
-      "snmi:char_name": {type: "characteristics", required: false}
+    fields: {
+      "snmi:char_company": {required: false},
+      "snmi:char_name": {required: false}
     }
   },
   {
     stepName: "Step 2",
-    form: {}
+    fields: {}
   }
 ]
 
 const MDBDynamicFormModel = mongoose.model('DynamicForm', new mongoose.Schema({
+  name: {type: String, required: false},
+
   // Form type could be 'client', 'service', 'provider', 'user', ...
   formType: {type: String, required: true},
 

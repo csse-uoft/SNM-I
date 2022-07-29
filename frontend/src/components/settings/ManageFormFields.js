@@ -4,56 +4,19 @@
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from "react-router";
-import { providerFields, allForms, providerFormTypes } from '../../constants/provider_fields.js'
-import { clientFields } from "../../constants/client_fields";
-import { fetchQuestions } from '../../api/mockedApi/question';
-import RadioField from '../shared/fields/RadioField';
+import { allForms } from '../../constants/provider_fields.js'
 import { Button, Container, Grid, TextField, Typography, Divider, IconButton, Box, Paper } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import SelectField from "../shared/fields/SelectField";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Close as Delete } from "@mui/icons-material";
-import { fetchProviderFields, updateProviderFields } from "../../api/mockedApi/providerFields";
-
-import { fetchClientFields, updateClientFields } from '../../api/mockedApi/clientFields';
 import { Loading } from "../shared";
 import AddFormDialog from "./components/AddFormDialog";
+import StepFields from "./components/StepFields";
+import { createDynamicForm, getDynamicFormsByFormType, updateDynamicForm } from "../../api/dynamicFormApi";
+import { fetchCharacteristics } from "../../api/characteristicApi";
+import { Picker } from "./components/Pickers";
+import { fetchQuestions } from "../../api/questionApi";
 
-
-const radioButtonOptions = {'Mandatory': true, 'Not mandatory': false};
-
-function StepFields({stepFields, fields, stepName, handleRadioChange, handleDeleteField}) {
-  return stepFields.map(({field, required, type}, index) => {
-    return (
-      <Draggable key={field} draggableId={field} index={index}>
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            style={{
-              backgroundColor: snapshot.isDragging ? '#bbb' : null,
-              ...provided.draggableProps.style
-            }}>
-            <RadioField
-              required noStar row
-              key={field}
-              label={(fields[field] && fields[field]['label']) || field}
-              onChange={handleRadioChange(field, stepName)}
-              options={radioButtonOptions}
-              value={required}
-            />
-            <IconButton
-              onClick={() => !snapshot.isDragging && handleDeleteField(index, stepName)}
-              size="large">
-              <Delete/>
-            </IconButton>
-          </div>
-        )}
-      </Draggable>
-    );
-  });
-}
 
 export default function ManageFormFields() {
   const history = useHistory();
@@ -62,186 +25,141 @@ export default function ManageFormFields() {
   const {formType, method, formId} = useParams();
   console.log(formType, method, formId)
 
-
   const [loading, setLoading] = useState(true);
 
-  const [availableForms, setAvailableForms] = useState([])
+  const [availableForms, setAvailableForms] = useState([]);
+
+  // Characteristic Related
+  const [characteristics, setCharacteristics] = useState({});
+  const [characteristicOptions, setCharacteristicOptions] = useState({});
+  const [selectedCharacteristicId, setSelectedCharacteristicId] = useState('');
+  const [usedCharacteristicIds, setUsedCharacteristicIds] = useState([]);
+
+  // Questions Related
+  const [questions, setQuestions] = useState({});
+  const [questionOptions, setQuestionOptions] = useState({});
+  const [selectedQuestionId, setSelectedQuestionId] = useState('');
+  const [usedQuestionIds, setUsedQuestionIds] = useState([]);
 
   const [openAddFormDialog, setOpenAddFormDialog] = useState(false);
   const [state, setState] = useState({
-    formToAdd: '',
-    selectedForm: '',
     stepToAdd: '',
     selectedStep: '',
-    selectedField: '',
-    questions: {},
-    /**
-     * @type {{organization: {form_structure: {}, steps_order: []}, }}
-     */
-    fields: {}
   });
+  // {name: 'form name', formType: 'client', formStructure: [
+  //    {stepName: 'step 1', fields: [
+  //       {id: 1, type: 'characteristic', required: true, implementation: {...}}
+  //    ]},
+  //    {...}
+  // ]}
+  // inferred state
+
+  const [form, setForm] = useState({formStructure: []});
+  console.log('form,', form)
 
   useEffect(() => {
+    const tasks = [
+      // Fetch forms
+      getDynamicFormsByFormType(formType).then(({forms}) => setAvailableForms(forms)),
 
-    const tasks = [];
-    tasks.push(fetchQuestions().then(questions => setState(state => ({...state, questions}))));
-    // fetch provider fields
-    tasks.push(fetchProviderFields(false).then(fields => {
-      for (const category of Object.keys(fields)) {
-        const formStructure = fields[category].form_structure;
-        const stepsOrder = fields[category].steps_order;
-        for (const stepName of stepsOrder) {
-          const stepsList = [];
-          const steps = formStructure[stepName];
-          for (const [field, value] of Object.entries(steps)) {
-            stepsList.push({field, ...value});
-          }
-          fields[category].form_structure[stepName] = stepsList;
+      // Fetch characteristics
+      fetchCharacteristics().then(({data}) => {
+        const dict = {};
+        const options = {};
+        for (const characteristic of data) {
+          dict[characteristic.id] = characteristic;
+          options[characteristic.id] = `${characteristic.name} (${characteristic.implementation.label})`
         }
-      }
-      // server may not respond full list of provider options, add it manually
-      for (const providerCategory of Object.keys(providerFormTypes)) {
-        if (!fields[providerCategory])
-          fields[providerCategory] = {form_structure: [], steps_order: []};
-      }
+        setCharacteristics(dict);
+        setCharacteristicOptions(options);
+      }),
 
-      setState(state => ({...state, fields: {...state.fields, ...fields}}));
-    }));
-
-    // fetch clients fields
-    tasks.push(fetchClientFields().then(clientFields => {
-      const formStructure = clientFields.form_structure;
-      for (const stepName of Object.keys(formStructure)) {
-        const stepsList = [];
-        for (const [field, required] of Object.entries(formStructure[stepName])) {
-          stepsList.push({field, type: 'field', required});
+      // Fetch questions
+      fetchQuestions().then(({data}) => {
+        const dict = {};
+        const options = {};
+        for (const question of data) {
+          dict[question.id] = question;
+          options[question.id] = `${question.content} (${question.description || ''})`
         }
-        formStructure[stepName] = stepsList;
-      }
-      setState(state => ({...state, fields: {...state.fields, client: clientFields}}));
-    }))
+        setQuestions(dict);
+        setQuestionOptions(options);
+      })
+    ];
+
     Promise.all(tasks).then(() => {
       console.log('done')
       setLoading(false);
     });
 
-  }, []);
+  }, [formType]);
 
   const submit = async () => {
-    let form = {};
-    let submitFunction;
-    if (formType === 'client') {
-      submitFunction = updateClientFields;
-      form = {
-        steps_order: state.fields.client.steps_order,
-        form_structure: {},
-      };
-      const formStructure = state.fields.client.form_structure;
-      for (const stepName of Object.keys(formStructure)) {
-        const newFormStructure = form.form_structure[stepName] = {};
-        for (const {field, required} of formStructure[stepName]) {
-          newFormStructure[field] = required
-        }
-      }
-    }
-    // providers
-    else {
-      submitFunction = updateProviderFields;
-      for (const category of Object.keys(state.fields)) {
-        form[category] = {
-          steps_order: state.fields[category].steps_order,
-          form_structure: {},
-        };
-        const formStructure = state.fields[category].form_structure;
-        for (const stepName of Object.keys(formStructure)) {
-          const newFormStructure = form[category].form_structure[stepName] = {};
-          for (const {field, required} of formStructure[stepName]) {
-            newFormStructure[field] = {type: 'field', required};
-          }
-        }
-      }
-      delete form.client;
-    }
     console.log(form);
+
     try {
-      await submitFunction(form);
+      if (method === 'new') {
+        await createDynamicForm(form);
+
+      } else {
+        await updateDynamicForm(formId, form);
+      }
       history.push('/dashboard');
     } catch (e) {
-      // TODO: show error message
       console.error(e)
     }
   };
 
-  const initialOptions = useMemo(() => {
-    let fieldOptions = {};
-    const fields = formType === 'client' ? clientFields : providerFields;
-    for (const [field, {label}] of Object.entries(fields)) {
-      fieldOptions[field] = label;
-    }
-    return fieldOptions;
-  }, [formType]);
-
-  // this may not be efficient, but it is easier to implement...
-  const getAvailableOptions = useCallback(() => {
-    if (!formType) return {};
-    const options = {...initialOptions};
-    for (const steps of Object.values(state.fields[formType].form_structure)) {
-      for (const {field} of steps) {
-        if (Object.keys(options).includes(field))
-          delete options[field];
-      }
-    }
-    return options;
-  }, [state.fields, formType, initialOptions]);
-
   const handleChange = useCallback(name => e => {
     const value = e.target.value;
-    if (name === 'category') {
-      if (state.fields[value]) {
-        setState(state => ({
-          ...state, [name]: value, selectedField: '', selectedStep: '', stepToAdd: ''
-        }));
-      }
-    } else
-      setState(state => ({...state, [name]: value}));
+    setState(state => ({...state, [name]: value}));
   }, [state.fields]);
 
-  const handleRadioChange = useCallback((field, stepName) => e => {
-    const fields = state.fields[formType].form_structure[stepName];
-    for (const curr_field of fields) {
-      if (curr_field.field === field)
-        curr_field.required = e.target.value;
-    }
-  }, [state.fields, formType]);
+  const handleDeleteField = useCallback((stepIndex, fieldIndex) => {
+    setForm(form => {
+      const step = form.formStructure[stepIndex];
+      const [removed] = step.fields.splice(fieldIndex, 1);
 
-  const handleDeleteField = useCallback((index, stepName) => {
-    const fields = [...state.fields[formType].form_structure[stepName]];
-    fields.splice(index, 1);
-    state.fields[formType].form_structure[stepName] = fields;
-    setState(state => ({...state, fields: {...state.fields}}));
-  }, [state.fields, formType]);
-
-  const handleAddField = useCallback(() => {
-    const formStructure = state.fields[formType].form_structure;
-    for (const steps of Object.values(formStructure)) {
-      for (const {field} of steps) {
-        if (field === state.selectedField)
-          return;
+      if (removed.type === 'characteristic') {
+        setUsedCharacteristicIds(used => {
+          const idx = used.findIndex(chara => chara.id === removed.id);
+          used.splice(idx, 1);
+          return [...used];
+        })
+      } else if (removed.type === 'question') {
+        //...
       }
-    }
-    state.fields[formType].form_structure[state.selectedStep].push({
-      field: state.selectedField,
-      type: 'field', // TODO: implement questions
-      required: false,
+
+      return {...form};
     });
-    setState(state => ({...state, selectedField: '', fields: {...state.fields}}))
-  }, [state.fields, formType, state.selectedStep, state.selectedField]);
+  }, []);
+
+  const handleAddCharacteristic = useCallback(() => {
+    setForm(form => {
+      const formStructure = form.formStructure.find(structure => state.selectedStep === structure.stepName);
+      formStructure.fields = [...formStructure.fields, {type: 'characteristic', ...characteristics[selectedCharacteristicId]}]
+      return {...form};
+    });
+    setUsedCharacteristicIds(used => [...used, selectedCharacteristicId])
+
+  }, [selectedCharacteristicId, characteristics, state.selectedStep]);
+
+  const handleAddQuestion = useCallback(() => {
+    setForm(form => {
+      const formStructure = form.formStructure.find(structure => state.selectedStep === structure.stepName);
+      formStructure.fields = [...formStructure.fields, {type: 'question', ...questions[selectedQuestionId]}]
+      return {...form};
+    });
+    setUsedQuestionIds(used => [...used, selectedCharacteristicId])
+
+  }, [selectedQuestionId, questions, state.selectedStep]);
 
   const handleRemoveStep = useCallback((index, stepName) => () => {
-    state.fields[formType].steps_order.splice(index, 1);
-    delete state.fields[formType].form_structure[stepName];
-    setState(state => ({...state, fields: {...state.fields}}))
-  }, [state.fields, formType]);
+    setForm(form => {
+      form.formStructure.splice(index, 1)
+      return {...form, formStructure: [...form.formStructure]};
+    })
+  }, []);
 
   // a little function to help us with reordering the result
   const reorder = (list, startIndex, endIndex) => {
@@ -256,20 +174,20 @@ export default function ManageFormFields() {
     if (!destination) {
       return;
     }
-    const targetStepName = destination.droppableId;
-    const sourceStepName = source.droppableId;
+    const targetStepIdx = destination.droppableId;
+    const sourceStepIdx = source.droppableId;
 
     // moved to other steps
     if (source.droppableId !== destination.droppableId) {
-      const sourceSteps = state.fields[formType].form_structure[sourceStepName];
-      const targetSteps = state.fields[formType].form_structure[targetStepName];
-      const [removed] = sourceSteps.splice(source.index, 1);
-      targetSteps.splice(destination.index, 0, removed);
+      const sourceFields = form.formStructure[sourceStepIdx].fields;
+      const targetFields = form.formStructure[targetStepIdx].fields;
+      const [removed] = sourceFields.splice(source.index, 1);
+      targetFields.splice(destination.index, 0, removed);
     }
     // moved within a step
     else {
       reorder(
-        state.fields[formType].form_structure[targetStepName],
+        form.formStructure[targetStepIdx].fields,
         source.index,
         destination.index
       );
@@ -289,11 +207,19 @@ export default function ManageFormFields() {
         </Grid>
         <Grid item>
           <Button variant="outlined" color="primary" disabled={!state.stepToAdd} onClick={() => {
-            setState(state => {
-              state.fields[formType].form_structure[state.stepToAdd] = [];
-              state.fields[formType].steps_order.push(state.stepToAdd);
-              return ({...state, fields: {...state.fields}});
-            });
+
+            // Mutate form and form.formStructure
+            setForm(form => ({
+              ...form,
+              formStructure: [
+                ...form.formStructure,
+                {
+                  stepName: state.stepToAdd,
+                  fields: []
+                }
+              ]
+            }));
+
           }}>
             Add Step
           </Button>
@@ -305,46 +231,49 @@ export default function ManageFormFields() {
   const getNewFieldComponent = useCallback(() => {
     if (!formType) return null;
     return (
-      <Grid container alignItems="flex-end" spacing={2}>
+      <Grid container alignItems="center" spacing={2}>
         <Grid item sm={3} xs={4}>
           <SelectField
             label="Choose step"
             value={state.selectedStep}
             onChange={handleChange('selectedStep')}
-            options={state.fields[formType].steps_order}
+            options={form.formStructure.map(s => s.stepName)}
             noDefaultStyle
             formControlProps={{fullWidth: true}}
             noEmpty
             controlled
           />
         </Grid>
-        <Grid item sm={7} xs={8}>
-          <SelectField
-            label="Choose field"
-            value={state.selectedField}
-            onChange={handleChange('selectedField')}
-            options={getAvailableOptions()}
-            noDefaultStyle
-            formControlProps={{fullWidth: true}}
-            noEmpty
-            controlled
+        <Grid item sm={9} xs={10}>
+          <Picker
+            label={"characteristic"}
+            onChange={setSelectedCharacteristicId}
+            options={characteristicOptions}
+            usedOptionKeys={usedCharacteristicIds}
+            onAdd={handleAddCharacteristic}
+            disabledAdd={!selectedCharacteristicId || !state.selectedStep}
           />
-        </Grid>
-        <Grid item sm={2}>
-          <Button variant="outlined" color="primary" onClick={handleAddField}
-                  disabled={!state.selectedField || !state.selectedStep}>
-            Add Field
-          </Button>
+          <Picker
+            label={"question"}
+            onChange={setSelectedQuestionId}
+            options={questionOptions}
+            usedOptionKeys={usedQuestionIds}
+            onAdd={handleAddQuestion}
+            disabledAdd={!selectedQuestionId || !state.selectedStep}
+          />
         </Grid>
       </Grid>
     )
-  }, [state.fields, formType, handleChange, handleAddField, state.selectedField,
-    state.selectedStep, getAvailableOptions]);
+  }, [state.fields, formType, handleChange, handleAddCharacteristic, state.selectedField,
+    state.selectedStep, characteristicOptions, form.formStructure, usedCharacteristicIds,
+    questionOptions, usedQuestionIds, selectedCharacteristicId, selectedQuestionId]);
 
   const fieldsComponents = useMemo(() => {
-    if (!state.fields[formType]) return null;
-    const formStructure = state.fields[formType].form_structure;
-    return Object.keys(formStructure).map((stepName, index) => {
+    if (form.formStructure.length === 0) return null;
+
+    return form.formStructure.map((step, index) => {
+      console.log('fieldsComponents', step, index)
+      const {stepName, fields} = step;
       return (
         <Box key={index} sx={{pt: 1}}>
           <Typography variant="h6" color="textSecondary">
@@ -353,15 +282,14 @@ export default function ManageFormFields() {
               <Delete/>
             </IconButton>
           </Typography>
-          <Droppable droppableId={stepName}>
+          <Droppable droppableId={index + ''}>
             {(provided, snapshot) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 <StepFields
-                  stepName={stepName}
-                  stepFields={formStructure[stepName]}
-                  handleRadioChange={handleRadioChange}
+                  stepIndex={index}
+                  stepFields={fields}
                   handleDeleteField={handleDeleteField}
-                  fields={formType === 'client' ? clientFields : providerFields}
+                  characteristics={characteristics}
                 />
                 {provided.placeholder}
               </div>
@@ -371,7 +299,7 @@ export default function ManageFormFields() {
         </Box>
       );
     });
-  }, [state.fields, formType, handleRadioChange, handleDeleteField, handleRemoveStep]);
+  }, [form, handleDeleteField, handleRemoveStep]);
 
   if (loading)
     return <Loading/>
@@ -392,22 +320,31 @@ export default function ManageFormFields() {
             noEmpty
           />
         </Grid>
-        <Grid item>
-          <SelectField
-            label="Choose form"
-            value={state.selectedForm}
-            onChange={handleChange('selectedForm')}
-            options={availableForms}
-            noEmpty
-          />
-        </Grid>
+        {method === 'new' ?
+          <Grid item xs={6}>
+            <TextField fullWidth label="New form name" onChange={e => form.name = e.target.value}/>
+          </Grid>
+          :
+          <>
+            <Grid item>
+              <SelectField
+                label="Choose form"
+                value={state.selectedForm}
+                onChange={() => setForm(availableForms.find(form => form.name === e.target.value))}
+                options={availableForms.map(form => form.name)}
+                // noEmpty
+              />
 
-        <Grid item>
-          <Button variant="outlined" color="primary"
-                  onClick={() => setOpenAddFormDialog(true)}>
-            Add form
-          </Button>
-        </Grid>
+            </Grid>
+            <Grid item>
+              <Button variant="outlined" color="primary"
+                      onClick={() => setOpenAddFormDialog(true)}>
+                Add form
+              </Button>
+            </Grid>
+          </>
+        }
+
       </Grid>
 
       <Divider sx={{pt: 1, mb: 1}}/>
@@ -427,7 +364,7 @@ export default function ManageFormFields() {
       <AddFormDialog
         open={openAddFormDialog}
         handleAdd={(name) => {
-          setAvailableForms(forms => [...forms, name]);
+          setAvailableForms(forms => [...forms, {name, formType, formStructure: []}]);
           setState(state => ({...state, selectedForm: name}));
           setOpenAddFormDialog(false);
         }}

@@ -3,7 +3,7 @@ const {GDBUserAccountModel} = require('../../models/userAccount')
 
 async function createDynamicForm(req, res, next) {
   // TODO: implement forOrganization
-  const {formType, forOrganization, formStructure} = req.body;
+  const {name, formType, forOrganization, formStructure} = req.body;
   const modifiedAt = new Date();
 
   // Get current user IRI
@@ -11,7 +11,7 @@ async function createDynamicForm(req, res, next) {
   const createdBy = currentUser.individualName;
 
   const form = MDBDynamicFormModel({
-    formType, formStructure, createdBy, modifiedAt
+    name, formType, formStructure, createdBy, modifiedAt
   });
 
   await form.save();
@@ -19,10 +19,11 @@ async function createDynamicForm(req, res, next) {
 }
 
 async function updateDynamicForm(req, res, next) {
-  const {formType, formStructure} = req.body;
+  const {name, formType, formStructure} = req.body;
   const {id} = req.params;
 
   const form = await MDBDynamicFormModel.findById(id);
+  form.name = name;
   form.formType = formType;
   form.formStructure = formStructure;
   form.modifiedAt = new Date();
