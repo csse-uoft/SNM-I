@@ -11,9 +11,9 @@ import {
 } from "../../constants/updatePasswordFields";
 import {isFieldEmpty} from "../../helpers";
 import {PASSWORD_NOT_MATCH_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
-import {useParams} from "react-router";
+import {useParams} from "react-router-dom";
 import {checkCurrentPassword, saveNewPassword} from "../../api/userApi";
 import LoadingButton from "../shared/LoadingButton";
 import PasswordHint from "../shared/PasswordHint";
@@ -44,7 +44,7 @@ export default function UserResetPassword() {
     const [editNew, setEditNew] = useState(false);
     const [dialogConfirmed, setDialogConfirmed] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false);
-    let history = useHistory();
+    let history = useNavigate();
 
     /**
      * This validates the correctness of current password.
@@ -133,7 +133,7 @@ export default function UserResetPassword() {
      */
     const handleDialogConfirmed = () => {
         setDialogConfirmed(false);
-        history.push('/dashboard');
+        navigate('/dashboard');
     }
 
     /**

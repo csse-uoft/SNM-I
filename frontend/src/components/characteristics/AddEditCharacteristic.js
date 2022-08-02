@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
 import {Chip, Button, Container, Paper, Typography, Divider, IconButton, Grid} from "@mui/material";
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
 export default function AddEditCharacteristic() {
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id, option} = useParams();
 
 
@@ -401,13 +401,13 @@ export default function AddEditCharacteristic() {
         'You have successfully update the characteristic'}
                      dialogTitle={'Success'}
                      buttons={[<Button onClick={() => {
-                       history.push('/characteristics')
+                       navigate('/characteristics')
                      }} key={'success'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
         <AlertDialog dialogContentText={errors.message || "Error occurs"}
                      dialogTitle={'Fail'}
                      buttons={[<Button onClick={() => {
-                       history.push('/characteristics')
+                       navigate('/characteristics')
                      }} key={'fail'}>{'ok'}</Button>]}
                      open={state.failDialog}/>
       </Paper>

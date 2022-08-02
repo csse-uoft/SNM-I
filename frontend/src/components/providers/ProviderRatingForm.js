@@ -33,7 +33,7 @@ class ProviderRatingForm extends Component {
   handleSubmit(e) {
     const id = this.props.match.params.id
     rateProvider(id, this.state);
-    this.props.history.push('/provider/' + id);
+    this.props.navigate('/provider/' + id);
   }
 
   render() {

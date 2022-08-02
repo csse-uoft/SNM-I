@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, MenuItem, CircularProgress, Typography, Chip } from '@mui/material';
 import { makeStyles } from "@mui/styles";
-import { Link as DomLink, useHistory } from 'react-router-dom';
+import { Link as DomLink, useNavigate } from 'react-router-dom';
 import { Add as AddIcon, CloudUpload as UploadIcon } from '@mui/icons-material';
 import GoogleMap from './GoogleMap';
 import CSVUploadModal from './CSVUploadModal';
@@ -50,7 +50,7 @@ export function Link({className = '', color, ...props}) {
  * @constructor
  */
 export function CustomToolbar({handleAdd, handleUpload, type}) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -65,7 +65,7 @@ export function CustomToolbar({handleAdd, handleUpload, type}) {
   };
 
   const handleLink = link => () => {
-    history.push(link);
+    navigate(link);
   };
 
   return (

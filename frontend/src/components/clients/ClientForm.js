@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { useParams, useHistory } from 'react-router';
+import { useParams, useNavigate } from "react-router-dom";
 import { clientFields } from '../../constants/client_fields.js'
 import { defaultProfileFields, generateClientField } from '../../constants/default_fields.js'
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ClientForm() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const mode = id ? 'edit' : 'new';
 
@@ -111,14 +111,14 @@ export default function ClientForm() {
     if (mode === 'edit') {
       const res = await updateClient(id, form);
       if (res.success) {
-        history.push(`/clients/${res.clientId}`);
+        navigate(`/clients/${res.clientId}`);
       } else {
         setState(state => ({...state, dispatchErrorMsg: [res.error]}));
       }
     } else {
       const res = await createClient(form);
       if (res.success) {
-        history.push(`/clients/${res.clientId}`);
+        navigate(`/clients/${res.clientId}`);
       } else {
         setState(state => ({...state, dispatchErrorMsg: [res.error]}));
       }

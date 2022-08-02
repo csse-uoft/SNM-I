@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 import { TextField, Container, Paper, Typography, Button, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
 
 function LoginPane() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   const [form, setForm] = useState({email: '', password: '', alert: ''});
 
@@ -47,7 +47,7 @@ function LoginPane() {
       if (success) {
         console.log('User email and password are correct')
         console.log('successfully logged in:');
-        history.push('/login/doubleAuth');
+        navigate('/login/doubleAuth');
       }
     } catch (e) {
       console.error(e)

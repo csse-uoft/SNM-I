@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
 import { logout } from '../../api/auth';
@@ -45,19 +45,19 @@ const ITEM_HEIGHT = 48;
 // }));
 
 // function NavTab(props) {
-//   const history = useHistory();
-//   return <StyledTab {...props} onClick={() => history.push(props.value)}/>
+//   const navigate = useNavigate();
+//   return <StyledTab {...props} onClick={() => navigate(props.value)}/>
 // }
 
 function TopNavBar() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   const id = userContext.id;
   const isLoggedin = !!userContext.email;
-  const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
-  const [value, setValue] = useState(
-    tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
-  );
+  // const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
+  // const [value, setValue] = useState(
+  //   tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
+  // );
 
   // useEffect(() => {
   //   setValue(tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false);
@@ -65,7 +65,7 @@ function TopNavBar() {
 
   // const tabOnChange = (e, newValue) => {
   //   setValue(newValue);
-  //   history.push(newValue);
+  //   navigate(newValue);
   // };
 
   const [anchorElLeft, setAnchorElLeft] = useState(null);
@@ -81,7 +81,7 @@ function TopNavBar() {
   const handleLink = useCallback(link => () => {
     setAnchorElLeft(null);
     setAnchorElRight(null);
-    history.push(link);
+    navigate(link);
   }, []);
 
   const handleLogout = async () => {
@@ -90,7 +90,7 @@ function TopNavBar() {
     userContext.updateUser(defaultUserContext);
     setAnchorElLeft(null);
     setAnchorElRight(null);
-    history.push('/login');
+    navigate('/login');
   }
 
   return (

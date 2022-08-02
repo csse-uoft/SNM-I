@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { MoreVert as MoreVertIcon, Edit, Delete, OpenInBrowser } from '@mui/icons-material';
 
 const ITEM_HEIGHT = 48;
 
 export default function DropdownMenu({urlPrefix, objectId, handleDelete, hideViewOption}) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -19,7 +19,7 @@ export default function DropdownMenu({urlPrefix, objectId, handleDelete, hideVie
   };
 
   const handleLink = link => () => {
-    history.push(link);
+    navigate(link);
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import {Box, Button, Container, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
 import {getProfile} from "../../api/userApi";
@@ -40,7 +40,7 @@ const useStyles = makeStyles(() => ({
 export default function Profile() {
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const userContext = useContext(UserContext);
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ export default function Profile() {
 
   // goes to edit page
   const handleEdit = () => {
-    history.push('/profile/' + id + '/edit');
+    navigate('/profile/' + id + '/edit');
   }
 
 

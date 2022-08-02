@@ -1,5 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import {useHistory} from "react-router";
+import {useNavigate} from "react-router-dom";
 import React, { useEffect, useState, useContext } from 'react';
 import {
   LoginCheckSecurityQuestion,
@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
 
 export default function DoubleAuth() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
 
   const [state, setState] = useState({
@@ -88,7 +88,7 @@ export default function DoubleAuth() {
           });
 
           setState(state => ({...state, loadingButton: false}))
-          history.push('/dashboard')
+          navigate('/dashboard')
 
         }else{
           setState(state => ({...state, group: state.group + 1, loadingButton: false}))
@@ -138,11 +138,11 @@ export default function DoubleAuth() {
                        onClick={handleSubmit}/>
         <AlertDialog dialogContentText={state.errors.message||"Error occur"}
                      dialogTitle={'Error'}
-                     buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
+                     buttons={[<Button onClick={() => navigate('/')} key={'ok'}>{'ok'}</Button>]}
                      open={state.errorDialog}/>
         {/*<AlertDialog dialogContentText={'A link has been sent to your email address. Please follow it to reset your password'}*/}
         {/*             dialogTitle={'Success'}*/}
-        {/*             buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}*/}
+        {/*             buttons={[<Button onClick={() => navigate('/')} key={'ok'}>{'ok'}</Button>]}*/}
         {/*             open={state.successDialog}/>*/}
       </Container>)
   }else{
@@ -150,7 +150,7 @@ export default function DoubleAuth() {
     return (
       <AlertDialog dialogContentText={'You have missed all 3 chances'}
                    dialogTitle={'Sorry'}
-                   buttons={[<Button onClick={() => history.push('/')} key={'ok'}>{'ok'}</Button>]}
+                   buttons={[<Button onClick={() => navigate('/')} key={'ok'}>{'ok'}</Button>]}
                    open={state.group > 3}/>
     )
   }

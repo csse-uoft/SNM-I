@@ -1,14 +1,13 @@
-import React, {useContext} from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../context";
 
-
-export default function AdminRoute({component: Component, ...rest}) {
+export default function AdminRoute({element: Component, ...rest}) {
   const userContext = useContext(UserContext);
-  return (
-    <Route
-      {...rest}
-      render={props => userContext.isAdmin ? <Component {...props} /> : <Redirect to="/login-pane"/>}
-    />
-  )
+  const navigate = useNavigate();
+  if (!userContext.isAdmin) {
+    navigate('/login-pane');
+    return '';
+  }
+  return <Component {...rest}/>;
 }

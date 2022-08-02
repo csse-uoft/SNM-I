@@ -1,4 +1,4 @@
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
 import { Container, Fade } from "@mui/material";
@@ -24,7 +24,7 @@ export default function GenericPage(props) {
   const title = type.charAt(0).toUpperCase() + type.slice(1);
 
   // react hooks
-  const history = useHistory();
+  const navigate = useNavigate();
   const [state, setState] = useState({
     showUploadDialog: false,
     showDeleteDialog: false,
@@ -93,7 +93,7 @@ export default function GenericPage(props) {
     customToolbar:
       <CustomToolbar
         type={type}
-        handleAdd={() => history.push(`/${type}/new`)}
+        handleAdd={() => navigate(`/${type}/new`)}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
       />,
     onDelete: async (ids) => {

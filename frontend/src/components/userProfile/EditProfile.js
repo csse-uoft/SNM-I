@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import {Button, Container, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
 import {getProfile, updatePrimaryEmail, updateProfile} from "../../api/userApi";
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
  */
 export default function EditProfile() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const userContext = useContext(UserContext);
   const [form, setForm] = useState({...userProfileFields});
@@ -97,7 +97,7 @@ export default function EditProfile() {
   // cancel change button handler
   const handleDialogCancel = () => {
     setDialogQuitEdit(false);
-    history.push('/profile/' + id);
+    navigate('/profile/' + id);
   }
 
   // email-sent dialog confirm button handler
@@ -175,7 +175,7 @@ export default function EditProfile() {
 
       setLoadingButton(false);
       setDialogSubmit(false);
-      history.push('/profile/' + id + '/');
+      navigate('/profile/' + id + '/');
     } catch (e) {
       setLoadingButton(false);
       console.log('catch e');

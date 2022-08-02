@@ -9,7 +9,7 @@ import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons
 import {DeleteModal, Loading, DataTable} from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
-import {useHistory} from "react-router";
+import {useNavigate} from "react-router-dom";
 import {fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsDataTypes} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
@@ -113,7 +113,7 @@ export default function Characteristics() {
     false
   )
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([fetchCharacteristics().then(res => {
@@ -252,7 +252,7 @@ export default function Characteristics() {
         return (
           <span>
               <IconButton
-                onClick={() => history.push('/characteristic/' + id + '/edit')}
+                onClick={() => navigate('/characteristic/' + id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -280,7 +280,7 @@ export default function Characteristics() {
         columns={columns}
         customToolbar={<Chip
           onClick={() => {
-            history.push('characteristic/add')
+            navigate('characteristic/add')
           }}
           color="primary"
           icon={<AddIcon/>}
@@ -305,7 +305,7 @@ export default function Characteristics() {
       <AlertDialog dialogContentText={errors.message || "Error occurs"}
                    dialogTitle={'Fail'}
                    buttons={[<Button onClick={() => {
-                     history.push('/dashboard')
+                     navigate('/dashboard')
                    }} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
       <AlertDialog dialogContentText={'Are you sure to delete Characteristic ' + state.selectedName}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import _ from 'lodash';
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Container, Typography, Alert , Button} from "@mui/material";
 import { Edit, Print } from '@mui/icons-material';
 import { Link } from '../shared'

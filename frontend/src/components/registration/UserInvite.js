@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 
 import {defaultInvitationFields} from "../../constants/default_fields";
 import {Alert, AlertTitle, Button, Container, Typography} from "@mui/material";
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
 
 export default function UserInvite() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   // const {id} = useParams();
   // const mode = id == null ? 'new' : 'edit';
   const [state, setState] = useState({
@@ -157,11 +157,11 @@ export default function UserInvite() {
                    open={state.dialog}/>
       <AlertDialog dialogContentText={"A registration link has been sent to the user."}
                    dialogTitle={'Success'}
-                   buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                   buttons={[<Button onClick={() => navigate('/dashboard')} key={'ok'}>{'ok'}</Button>]}
                    open={state.success}/>
       <AlertDialog dialogContentText={state.errors.message||"Error occur"}
                    dialogTitle={'Fail'}
-                   buttons={[<Button onClick={() => history.push('/dashboard')} key={'ok'}>{'ok'}</Button>]}
+                   buttons={[<Button onClick={() => navigate('/dashboard')} key={'ok'}>{'ok'}</Button>]}
                    open={state.fail}/>
 
 

@@ -6,7 +6,7 @@ import {
 } from '../../helpers/operation_hour_helpers';
 import { provider_verify_form } from "../../helpers/provider_verify_form";
 
-import { useHistory, useParams } from 'react-router';
+import { useNavigate, useParams } from "react-router-dom";
 import { createProvider, updateProvider, fetchProvider } from '../../api/mockedApi/providers';
 import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import { fetchProviderFields } from '../../api/mockedApi/providerFields';
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProviderForm() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id, formType: category} = useParams();
   const mode = id ? 'edit' : 'new';
   const [state, setState] = useState({
@@ -123,14 +123,14 @@ export default function ProviderForm() {
     if (mode === 'edit') {
       const res = await updateProvider(id, newForm);
       if (res.success) {
-        history.push(`/providers/${res.providerId}`);
+        navigate(`/providers/${res.providerId}`);
       } else {
         setState(state => ({...state, errorMessage: [res.error]}));
       }
     } else {
       const res = await createProvider(newForm);
       if (res.success) {
-        history.push(`/providers/${res.providerId}`);
+        navigate(`/providers/${res.providerId}`);
       } else {
         setState(state => ({...state, errorMessage: [res.error]}));
       }

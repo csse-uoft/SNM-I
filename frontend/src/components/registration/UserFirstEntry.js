@@ -1,5 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from 'react';
 import {defaultFirstEntryFields} from "../../constants/default_fields";
 import {createUser, firstEntryUpdate, updateUser, verifyFirstEntryUser, verifyUser} from "../../api/userApi";
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
 
 export default function UserFirstEntry() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {token} = useParams();
 
 
@@ -187,11 +187,11 @@ export default function UserFirstEntry() {
                      open={state.submitDialog}/>
         <AlertDialog dialogContentText={"You are successfully registered"}
                      dialogTitle={'Success'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'success'}> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {navigate('/login')}} key={'success'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
         <AlertDialog dialogContentText={state.errors.message || "Fail to update"}
                      dialogTitle={'Fail'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'fail'}>{'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {navigate('/login')}} key={'fail'}>{'ok'}</Button>]}
                      open={state.failDialog}/>
       </Container>
 
@@ -199,7 +199,7 @@ export default function UserFirstEntry() {
   } else {
     return (<AlertDialog dialogContentText={state.errors.message || "The token is invalid"}
                          dialogTitle={'Invalid token'}
-                         buttons={[<Button onClick={() => {history.push('/login')}} key={'invalidToken'}>{'ok'}</Button>]}
+                         buttons={[<Button onClick={() => {navigate('/login')}} key={'invalidToken'}>{'ok'}</Button>]}
                          open={!state.verified}
     />)
 

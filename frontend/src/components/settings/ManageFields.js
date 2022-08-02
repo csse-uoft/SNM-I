@@ -3,7 +3,7 @@
  * https://github.com/atlassian/react-beautiful-dnd
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { providerFields, allForms, providerFormTypes } from '../../constants/provider_fields.js'
 import { clientFields } from "../../constants/client_fields";
 import { fetchQuestions } from '../../api/mockedApi/question';
@@ -67,7 +67,7 @@ function StepFields({stepFields, fields, stepName, handleRadioChange, handleDele
 
 export default function ManageFields() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [state, setState] = useState({
     category: '',
     stepToAdd: '',
@@ -158,7 +158,7 @@ export default function ManageFields() {
     console.log(form);
     try {
       await submitFunction(form);
-      history.push('/dashboard');
+      navigate('/dashboard');
     } catch (e) {
       // TODO: show error message
       console.error(e)

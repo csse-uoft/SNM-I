@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
 
 export default function EditUserForm() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
@@ -105,7 +105,7 @@ export default function EditUserForm() {
 
   const handleDialogCancel = () => {
     setDialogQuitEdit(false);
-    history.push('/users/' + id);
+    navigate('/users/' + id);
   }
 
   // submit button handler
@@ -155,7 +155,7 @@ export default function EditUserForm() {
       if (success) {
         setLoadingButton(false);
         setDialogSubmit(false);
-        history.push('/users/' + id);
+        navigate('/users/' + id);
       } else {
         setLoadingButton(false);
         setDialogSubmit(false);

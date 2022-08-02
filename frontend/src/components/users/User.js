@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TR from '../shared/TR'
 import {fetchUser, getProfile, getUserProfileById} from '../../api/userApi'
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Link, Loading } from "../shared";
 import {Container, Paper, Table, Typography, TableBody, Button} from "@mui/material";
 import {formatPhoneNumber} from "../../helpers/phone_number_helpers";

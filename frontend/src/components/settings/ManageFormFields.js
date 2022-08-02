@@ -3,7 +3,7 @@
  * https://github.com/atlassian/react-beautiful-dnd
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { allForms } from '../../constants/provider_fields.js'
 import { Button, Container, Grid, TextField, Typography, Divider, IconButton, Box, Paper } from "@mui/material";
 import SelectField from "../shared/fields/SelectField";
@@ -24,7 +24,7 @@ import { fetchQuestions } from "../../api/questionApi";
 
 
 export default function ManageFormFields() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Page path: /settings/forms/:formType/:method/:formId
   const {formType, method, formId} = useParams();
@@ -132,7 +132,7 @@ export default function ManageFormFields() {
       } else {
         await updateDynamicForm(formId, form);
       }
-      history.push('/settings/manage-forms/' + formType);
+      navigate('/settings/manage-forms/' + formType);
     } catch (e) {
       console.error(e)
     }
@@ -355,7 +355,7 @@ export default function ManageFormFields() {
           <SelectField
             label="Form type"
             value={formType}
-            onChange={(e) => history.push(`/settings/forms/${e.target.value}/new`)}
+            onChange={(e) => navigate(`/settings/forms/${e.target.value}/new`)}
             options={allForms}
             noEmpty
             disabled={!!formId}

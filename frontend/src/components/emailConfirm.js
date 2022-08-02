@@ -6,7 +6,7 @@ import {confirmEmailFields, updatePasswordFields} from "../constants/updatePassw
 import {Link} from "./shared";
 import {isFieldEmpty} from "../helpers";
 import {REQUIRED_HELPER_TEXT} from "../constants";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const useStyles = makeStyles(() => ({
@@ -30,7 +30,7 @@ export default function EmailConfirm() {
         //loading: true,
     });
 
-    let history = useHistory();
+    let history = useNavigate();
 
     const validate = () => {
 
@@ -56,7 +56,7 @@ export default function EmailConfirm() {
         console.log(state.form)
         if (validate()) {
             setState(state => ({...state}));
-            history.push('/users/new-password');
+            navigate('/users/new-password');
         }
     }
 

@@ -1,5 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import {useHistory} from "react-router";
+import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {deleteQuestion, fetchQuestions} from "../../api/questionApi";
 import {Box, Button, Chip, Container, IconButton} from "@mui/material";
@@ -37,7 +37,7 @@ export default function Questions() {
     false
   )
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchQuestions().then(res => {
@@ -78,7 +78,7 @@ export default function Questions() {
         return (
           <span>
               <IconButton
-                onClick={() => history.push('/question/'+ id + '/edit')}
+                onClick={() => navigate('/question/'+ id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -128,7 +128,7 @@ export default function Questions() {
         data={form}
         columns={columns}
         customToolbar={<Chip
-          onClick={() => {history.push('question/add')}}
+          onClick={() => {navigate('question/add')}}
           color="primary"
           icon={<AddIcon/>}
           label="Add"
@@ -137,7 +137,7 @@ export default function Questions() {
 
       <AlertDialog dialogContentText={errors.message || "Error occurs"}
                    dialogTitle={'Fail'}
-                   buttons={[<Button onClick={() => {history.push('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
+                   buttons={[<Button onClick={() => {navigate('/dashboard')}} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
       <AlertDialog dialogContentText={'Are you sure to delete Question ' + state.selectedId}
                    dialogTitle={'Delete question'}

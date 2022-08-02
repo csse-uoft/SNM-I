@@ -1,5 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {Loading} from "../shared";
 import {Box, Button, Container, Paper, Typography, Divider} from "@mui/material";
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
 export default function AddEditQuestion() {
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id, option} = useParams();
 
   const [state, setState] = useState({
@@ -145,13 +145,13 @@ export default function AddEditQuestion() {
           'You have successfully update the question'}
                      dialogTitle={'Success'}
                      buttons={[<Button onClick={() => {
-                       history.push('/questions')
+                       navigate('/questions')
                      }} key={'success'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
         <AlertDialog dialogContentText={errors.message || "Error occurs"}
                      dialogTitle={'Fail'}
                      buttons={[<Button onClick={() => {
-                       history.push('/questions')
+                       navigate('/questions')
                      }} key={'fail'}>{'ok'}</Button>]}
                      open={state.failDialog}/>
       </Paper>

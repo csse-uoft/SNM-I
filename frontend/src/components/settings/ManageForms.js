@@ -3,17 +3,17 @@ import SelectField from "../shared/fields/SelectField";
 import React, { useState, useMemo, useEffect } from "react";
 import { allForms } from "../../constants/provider_fields";
 import { CustomToolbar, DataTable, Link } from "../shared";
-import { useParams, useHistory } from "react-router";
+import { useParams, useNavigate } from "react-router-dom";
 import { deleteDynamicForm, getDynamicFormsByFormType } from "../../api/dynamicFormApi";
 import { Edit, Delete } from "@mui/icons-material";
 
 
 export default function ManageForms() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {formType} = useParams();
 
   if (!formType) {
-    history.push(`/settings/manage-forms/client`);
+    navigate(`/settings/manage-forms/client`);
   }
 
   const [tableData, setTableData] = useState([]);
@@ -53,7 +53,7 @@ export default function ManageForms() {
         body: ({_id}) => {
           return (
             <>
-              <IconButton onClick={() => history.push(`/settings/forms/${formType}/edit/${_id}`)}>
+              <IconButton onClick={() => navigate(`/settings/forms/${formType}/edit/${_id}`)}>
                 <Edit fontSize="small" color="primary"/>
               </IconButton>
               <IconButton onClick={handleDelete(_id)}>
@@ -70,7 +70,7 @@ export default function ManageForms() {
     return {
       customToolbar:
         <CustomToolbar
-          handleAdd={() => history.push(`/settings/forms/${formType}/new`)}
+          handleAdd={() => navigate(`/settings/forms/${formType}/new`)}
         />,
     }
   }, [formType]);
@@ -84,7 +84,7 @@ export default function ManageForms() {
       <SelectField
         label="Form Type"
         value={formType}
-        onChange={e => history.push(`/settings/manage-forms/${e.target.value}`)}
+        onChange={e => navigate(`/settings/manage-forms/${e.target.value}`)}
         options={allForms}
         noEmpty
         sx={{mb: 2}}

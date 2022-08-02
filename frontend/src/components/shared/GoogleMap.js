@@ -7,7 +7,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Paper, Typography, Link } from "@mui/material";
 import { render } from 'react-dom';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Google = window.google || {maps: {}};
 const {Map, Marker, InfoWindow, Size} = Google.maps;
@@ -49,7 +49,7 @@ function ReactInfoWindow({marker, history}) {
   const {title, link, content} = marker;
   return (
     <>
-      <Link style={{cursor: 'pointer'}} onClick={() => link ? history.push(link) : null}>
+      <Link style={{cursor: 'pointer'}} onClick={() => link ? navigate(link) : null}>
         <Typography>
           {title}
         </Typography>
@@ -68,7 +68,7 @@ if (Map) {
   // Google map in each pages, native Google API implementation
   // (without any react wrapper, library)
   GoogleMap = function (props) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const defaultCenter = useMemo(() => ({lat: 43.6870, lng: -79.4132}), []);
     const {
       zoom = 11,

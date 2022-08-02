@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component, useEffect, useState } from 'react';
-import { useParams, withRouter } from 'react-router';
+import { useParams, withRouter } from "react-router-dom";
 import { Link } from '../shared';
 import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
 import {
@@ -142,13 +142,13 @@ function ServiceForm() {
       if (mode === 'edit') {
         updateService(id, form, (status, err, serviceId) => {
           if (status === ACTION_SUCCESS) {
-            this.props.history.push('/services');
+            this.props.navigate('/services');
             this.forceUpdate()
           }
         })
       } else {
         createService(form, (status, err, serviceId) => {
-          this.props.history.push('/services');
+          this.props.navigate('/services');
           this.forceUpdate()
         });
       }
