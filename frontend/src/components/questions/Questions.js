@@ -128,7 +128,7 @@ export default function Questions() {
         data={form}
         columns={columns}
         customToolbar={<Chip
-          onClick={() => {navigate('question/add')}}
+          onClick={() => {navigate('/question/add')}}
           color="primary"
           icon={<AddIcon/>}
           label="Add"
