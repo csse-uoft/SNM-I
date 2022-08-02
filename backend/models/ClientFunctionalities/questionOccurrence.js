@@ -2,7 +2,7 @@ const {createGraphDBModel, DeleteType} = require("../../utils/graphdb");
 const {GDBQuestionModel} = require("./question");
 
 /**
- * GDBQOModel stands for GDB - question occurrence - Model
+ * GDBQOModel stands for GDB - Question Occurrence - Model
  * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBQOModel = createGraphDBModel({
