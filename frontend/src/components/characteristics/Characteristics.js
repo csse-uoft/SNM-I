@@ -280,7 +280,7 @@ export default function Characteristics() {
         columns={columns}
         customToolbar={<Chip
           onClick={() => {
-            navigate('characteristic/add')
+            navigate('/characteristic/add')
           }}
           color="primary"
           icon={<AddIcon/>}
