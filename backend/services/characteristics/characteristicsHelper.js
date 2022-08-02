@@ -62,9 +62,6 @@ async function updateCharacteristicHelper(id, updateData) {
   // dataType looks like [{label: '', value:''}, {label:'', value:''}]
   if (dataType) {
     characteristic.implementation.valueDataType = dataType;
-  } else {
-    delete characteristic.implementation.valueDataType;
-    characteristic.implementation.save();
   }
 
   if (fieldType) {
@@ -78,15 +75,17 @@ async function updateCharacteristicHelper(id, updateData) {
   if (options) {
     characteristic.implementation.options = options;
   } else {
-    delete characteristic.implementation.options;
-    await characteristic.implementation.save();
+    let i;
+    for (i = 0; i < characteristic.implementation.options.length; i++){
+      const doc = await GDBOptionModel.findByIdAndDelete(characteristic.implementation.options[i]._id);
+    }
+    characteristic.implementation.options = [];
   }
 
   if (optionsFromClass) {
     characteristic.implementation.optionsFromClass = optionsFromClass;
   } else {
-    delete characteristic.implementation.optionsFromClass;
-    await characteristic.implementation.save();
+    characteristic.implementation.optionsFromClass = undefined;
   }
 
   await characteristic.save();
