@@ -8,4 +8,6 @@ module.exports = {
   ...require('./ClientFunctionalities/characteristicImplementation'),
   ...require('./ClientFunctionalities/fieldType'),
   ...require('./ClientFunctionalities/option'),
+  ...require('./ClientFunctionalities/questionOccurrence'),
+  ...require('./ClientFunctionalities/client'),
 }
