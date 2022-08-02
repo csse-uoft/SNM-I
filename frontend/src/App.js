@@ -8,6 +8,7 @@ import { blue, pink } from '@mui/material/colors'
 
 import routes from "./routes";
 import { UserContext, getUserContext } from './context';
+import {alertSnackBar} from "./components/shared/snackBar";
 
 const theme = createTheme({
   palette: {
@@ -23,6 +24,9 @@ export default function App() {
       updateUser: (user) => {
         localStorage.setItem('userContext', JSON.stringify(user));
         setUserContext(state => ({...state, ...user}));
+      },
+      errorAlert: () => {
+        
       },
     }
   );

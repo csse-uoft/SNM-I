@@ -245,7 +245,7 @@ export const Validator = {
   },
 
   expirationDate: expirationDate => {
-    if(new Date(expirationDate) < new Date())
+    if(new Date(expirationDate.split('-')) < new Date())
       return EXPIRATION_DATE_MSG
   }
 };
