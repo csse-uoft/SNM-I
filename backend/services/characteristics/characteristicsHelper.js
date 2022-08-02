@@ -79,14 +79,14 @@ async function updateCharacteristicHelper(id, updateData) {
     characteristic.implementation.options = options;
   } else {
     delete characteristic.implementation.options;
-    await characteristic.implementation.options.save();
+    await characteristic.implementation.save();
   }
 
   if (optionsFromClass) {
     characteristic.implementation.optionsFromClass = optionsFromClass;
   } else {
     delete characteristic.implementation.optionsFromClass;
-    await characteristic.implementation.optionsFromClass.save();
+    await characteristic.implementation.save();
   }
 
   await characteristic.save();
