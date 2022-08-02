@@ -72,6 +72,8 @@ class GraphDBDocument {
     if (this.isNew)
       this.modified = Object.keys(this.data);
 
+    // TODO: Bug fix when using delete keywords on a property,
+    //  i.e. delete characteristic.implementation.options;
     for (let [key, value] of Object.entries(this.data)) {
       const initialValue = this.initialData[key];
 
@@ -327,6 +329,7 @@ class GraphDBDocument {
 
         // Skip undefined value
         if (value == null) {
+          // TODO: Delete nested object(s) when DELETE_TYPE set to cascade.
           // Removed the value that is marked null or undefined
           if (option)
             deleteClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ?o${index}.`);
