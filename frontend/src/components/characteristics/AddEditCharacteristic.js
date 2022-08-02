@@ -71,10 +71,10 @@ export default function AddEditCharacteristic() {
         return fetchCharacteristic(id).then(res => {
           const data = res.fetchData
           if (data.fieldType === 'MultiSelectField' || data.fieldType === 'SingleSelectField' || data.fieldType === 'RadioSelectField') {
-            if (data.dataType === 'xsd:string') {
+            if (data.options) {
               data.classOrManually = 'manually'
               data.optionsFromClass = ''
-            } else if (data.dataType === 'owl:NamedIndividual') {
+            } else if (data.optionsFromClass) {
               data.classOrManually = 'class'
               data.options = [{key: 0, label: ''}]
             }
@@ -168,13 +168,8 @@ export default function AddEditCharacteristic() {
       form.dataType = 'xsd:datetimes'
       return 'xsd:datetimes'
     } else if (isSelected()) {
-      if (form.classOrManually === 'class') {
-        form.dataType = 'owl:NamedIndividual'
-        return 'owl:NamedIndividual'
-      } else {
-        form.dataType = 'xsd:string'
-        return 'xsd:string'
-      }
+      form.dataType = 'owl:NamedIndividual'
+      return 'owl:NamedIndividual'
     } else if (form.fieldType === 'PhoneNumberField' || form.fieldType === 'AddressField') {
       form.dataType = 'owl:NamedIndividual'
       return 'owl:NamedIndividual'
