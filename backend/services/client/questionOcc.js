@@ -15,9 +15,9 @@ async function createQuestionOccHelper(id, answer) {
 const createQuestionOcc = async (req, res, next) => {
   // assume we get id of the question and answer of that question in req.body
   const {id, answer} = req.body;
-
+  
   try {
-    if (data === []){
+    if (!id){
       return res.status(202).json({success: true, message: 'No questionOcc need to be created.'});
     }
     await createQuestionOccHelper(id, answer);
