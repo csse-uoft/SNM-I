@@ -6,7 +6,7 @@ const {GDBQuestionModel} = require("./question");
  * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBQOModel = createGraphDBModel({
-  StringValue: {type: String, internalKey: ':hasStringValue'},
+  stringValue: {type: String, internalKey: ':hasStringValue'},
   occurrence: {type: GDBQuestionModel, internalKey: ':occurrenceOf', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':QuestionOccurrence'], name: 'questionOccurrence'
