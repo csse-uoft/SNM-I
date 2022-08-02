@@ -1,12 +1,11 @@
 import {Snackbar} from "@mui/material";
 
-export function snackBar(props){
+export function alertSnackBar(props){
   return(
     <Snackbar
       open={props.open}
-      autoHideDuration={6000}
-      message={props.message}
-      action={props.button}>
+      autoHideDuration={1000}
+      message={props.message}>
     </Snackbar>
   );
 }
