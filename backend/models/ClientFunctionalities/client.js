@@ -1,5 +1,5 @@
 const {createGraphDBModel, DeleteType} = require("../../utils/graphdb");
-const {GDBQuestionOccurrenceModel} = require("./questionOccurence");
+const {GDBQuestionOccurrenceModel} = require("./questionOccurrence");
 
 
 const GDBClientModel = createGraphDBModel({
