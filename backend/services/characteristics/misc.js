@@ -1,5 +1,6 @@
 const {GDBFieldTypeModel} = require('../../models/ClientFunctionalities/fieldType');
-const {GraphDB} = require('../../utils/graphdb')
+const {GraphDB} = require('../../utils/graphdb');
+const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
 
 const type2Label = {
   TextField: 'Text Field',
@@ -71,10 +72,7 @@ async function getAllClasses(req, res) {
   const classes = {};
 
   const query = `
-    PREFIX : <http://snmi#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX cids: <http://ontology.eil.utoronto.ca/cids/cids#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    ${SPARQL.getSPARQLPrefixes()}
     select * 
     from <http://ontology.eil.utoronto.ca/cids/cids>
     from <http://snmi>
@@ -86,9 +84,14 @@ async function getAllClasses(req, res) {
     }`;
 
   await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
-    classes[s.id] = label?.value || s.id;
+    if (label?.value) {
+      classes[s.id] = `${SPARQL.getPrefixedURI(s.id)} (${label.value})`;
+    } else {
+      classes[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
+    }
+
   });
-  res.json(classes);
+  res.json(sortObjectByKey(classes));
 }
 
 
