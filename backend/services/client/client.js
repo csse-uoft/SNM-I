@@ -77,12 +77,12 @@ const createClient = async (req, res, next) => {
   if(questionIds.length > 0){
     const questions = await GDBQuestionModel.find({_id: {$in: questionIds}})
     questions.forEach((question, index) => {
-      const newQO = GDBQOModel({occurrenceOf: question.individualName, stringValue: questionValues[index]})
+      const newQO = GDBQOModel({occurrenceOf: question, stringValue: questionValues[index]})
       newClient.questionOccurrences.push(newQO)
     })
   }
 
-  newClient.save()
+  await newClient.save()
 
 
 }
