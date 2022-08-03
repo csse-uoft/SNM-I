@@ -18,6 +18,14 @@ const namespaces = {
   'tove_org': 'http://ontology.eil.utoronto.ca/tove/organization#',
   'ic': 'http://ontology.eil.utoronto.ca/tove/icontact#',
   'cwrc': 'http://sparql.cwrc.ca/ontologies/cwrc#',
+  'dc_terms': 'http://purl.org/dc/terms/',
+  'tove_act': 'http://ontology.eil.utoronto.ca/tove/activity#',
+  'dqv': 'http://www.w3.org/ns/dqv#',
+  'time': 'http://www.w3.org/2006/time#',
+  'dcat': "http://www.w3.org/ns/dcat#",
+  'w3c_org': 'http://www.w3.org/ns/org#',
+  'dc_elements': 'http://purl.org/dc/elements/1.1/',
+  'iso21972': 'http://ontology.eil.utoronto.ca/ISO21972/iso21972#',
 }
 
 module.exports = {namespaces}

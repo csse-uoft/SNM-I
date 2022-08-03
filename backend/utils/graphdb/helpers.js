@@ -272,6 +272,17 @@ const Helpers = {
     }
   },
 
+  /**
+   * (javascript) returns the given object with keys sorted alphanumerically.
+   * @param {T} obj the object to sort
+   * @returns {T} the sorted object
+   */
+  sortObjectByKey: (obj) => Object.keys(obj).sort()
+    .reduce((acc, c) => {
+      acc[c] = obj[c];
+      return acc
+    }, {}),
+
   SPARQL,
 }
 module.exports = Helpers;

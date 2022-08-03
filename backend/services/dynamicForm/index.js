@@ -1,7 +1,7 @@
 const {MDBDynamicFormModel} = require('../../models/dynamicForm');
 const {GDBUserAccountModel} = require('../../models/userAccount')
 const {GraphDB} = require("../../utils/graphdb");
-const {SPARQL} = require('../../utils/graphdb/helpers');
+const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
 
 async function createDynamicForm(req, res, next) {
   // TODO: implement forOrganization
@@ -74,10 +74,7 @@ async function getIndividualsInClass(req, res) {
   const instances = {};
 
   const query = `
-    PREFIX : <http://snmi#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX cids: <http://ontology.eil.utoronto.ca/cids/cids#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    ${SPARQL.getSPARQLPrefixes()}
     select * 
     where { 
         ?s a <${SPARQL.getFullURI(req.params.class)}>, owl:NamedIndividual.
@@ -87,9 +84,13 @@ async function getIndividualsInClass(req, res) {
   console.log(query)
 
   await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
-    instances[s.id] = label?.value || s.id;
+    if (label?.value) {
+      instances[s.id] = `${SPARQL.getPrefixedURI(s.id)} (${label.value})`;
+    } else {
+      instances[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
+    }
   });
-  res.json(instances);
+  res.json(sortObjectByKey(instances));
 }
 
 module.exports = {
