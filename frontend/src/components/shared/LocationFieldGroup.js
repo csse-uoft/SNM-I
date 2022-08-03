@@ -1,33 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GeneralField from './fields/GeneralField';
 import SelectField from './fields/SelectField';
 import { provinceOptions } from '../../store/defaults';
 
-export default function LocationFieldGroup({address, required, errMsg = {}}) {
-  const handleChange = name => e => address[name] = e.target.value;
+export default function LocationFieldGroup({value: defaultValue, required, onChange, errMsg = {}}) {
+
+  const [state, setState] = useState(defaultValue || {});
+
+  const handleChange = name => e => {
+    state[name] = e.target.value;
+    onChange(state);
+  }
+
   return (
     <div>
       <GeneralField
         label="Apt. #"
         type="text"
-        value={address.apt_number}
-        onChange={handleChange('apt_number')}
-        error={!!errMsg['apt_number']}
-        helperText={errMsg['apt_number']}
+        value={state.aptNumber}
+        onChange={handleChange('apartmentNumber')}
+        error={!!errMsg['apartmentNumber']}
+        helperText={errMsg['apartmentNumber']}
       />
       <GeneralField
         label="Street Address"
         type="text"
-        value={address.street_address}
-        onChange={handleChange('street_address')}
+        value={state.streetAddress}
+        onChange={handleChange('streetAddress')}
         required={required}
-        error={!!errMsg['street_address']}
-        helperText={errMsg['street_address']}
+        error={!!errMsg['streetAddress']}
+        helperText={errMsg['streetAddress']}
       />
       <GeneralField
         label="City"
         type="text"
-        value={address.city}
+        value={state.city}
         onChange={handleChange('city')}
         required={required}
         error={!!errMsg['city']}
@@ -35,7 +42,7 @@ export default function LocationFieldGroup({address, required, errMsg = {}}) {
       />
       <SelectField
         label="Province"
-        value={address.province}
+        value={state.province}
         options={provinceOptions}
         onChange={handleChange('province')}
         required={required}
@@ -45,11 +52,11 @@ export default function LocationFieldGroup({address, required, errMsg = {}}) {
       <GeneralField
         label="Postal Code"
         type="text"
-        value={address.postal_code}
-        onChange={handleChange('postal_code')}
+        value={state.postalCode}
+        onChange={handleChange('postalCode')}
         required={required}
-        error={!!errMsg['postal_code']}
-        helperText={errMsg['postal_code']}
+        error={!!errMsg['postalCode']}
+        helperText={errMsg['postalCode']}
       />
     </div>
   );
