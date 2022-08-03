@@ -13,6 +13,7 @@ import {
 } from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
+import { createClient, fetchClient, updateClient } from "../../api/clientApi";
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -94,6 +95,9 @@ export default function ClientForm() {
 
     console.log(form)
     if (mode === 'new') {
+      createClient(form);
+    } else {
+      updateClient(form);
     }
 
   };
