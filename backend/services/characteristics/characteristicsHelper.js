@@ -75,9 +75,11 @@ async function updateCharacteristicHelper(id, updateData) {
   if (options) {
     characteristic.implementation.options = options;
   } else {
-    let i;
-    for (i = 0; i < characteristic.implementation.options.length; i++){
-      const doc = await GDBOptionModel.findByIdAndDelete(characteristic.implementation.options[i]._id);
+    if(characteristic.implementation.options) {
+      let i;
+      for (i = 0; i < characteristic.implementation.options.length; i++){
+        const doc = await GDBOptionModel.findByIdAndDelete(characteristic.implementation.options[i]._id);
+      }
     }
     characteristic.implementation.options = [];
   }
