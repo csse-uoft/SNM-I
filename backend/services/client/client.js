@@ -1,7 +1,7 @@
 const {findClientById, createClientHelper, updateClientHelper} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBCharacteristicModel} = require("../../models");
+const {GDBCharacteristicModel, GDBClientModel, GDBQOModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 
@@ -31,7 +31,20 @@ const createClient = async (req, res, next) => {
   const characteristicValues = []
   const questionIds = []
   const questionValues = []
-  Object.entries(data.fields).map((field, value) => {
+  // Object.entries(data.fields).map((field, value) => {
+  //
+  //   const [fieldType, fieldId] = fieldParser(field)
+  //   if(fieldType === 'characteristic'){
+  //     characteristicIds.push(fieldId)
+  //     characteristicValues.push(value)
+  //   }else if(fieldType === 'question'){
+  //     questionIds.push(fieldId)
+  //     questionValues.push(value)
+  //   }
+  // })
+
+  for (let field in data.fields) {
+    const value = data.fields[field]
     const [fieldType, fieldId] = fieldParser(field)
     if(fieldType === 'characteristic'){
       characteristicIds.push(fieldId)
@@ -40,44 +53,38 @@ const createClient = async (req, res, next) => {
       questionIds.push(fieldId)
       questionValues.push(value)
     }
-  })
-
-  const characteristics = await GDBCharacteristicModel.find({_id: {$in: characteristicIds}})
-  const questions = await GDBQuestionModel.find({_id: {$in: questionIds}})
-
-  characteristics.forEach((characteristic, index) => {
-    const newCO = GDBCOModel({occurrenceOf: characteristic})
-    if(characteristic.implementation.valueDataType == 'xsd: string'){
-      // TODO: check if the dataType of input value is correct
-      newCO.dataStringValue = characteristicValues[index]
-    }else if(characteristic.implementation.valueDataType == 'xsd: number'){
-      newCO.dataNumberValue = characteristicValues[index]
-    }else if(characteristic.implementation.valueDataType == 'xsd:boolean'){
-      newCO.dataBooleanValue = characteristicValues[index]
-    }else if(characteristic.implementation.valueDataType == 'xsd:datetimes'){
-      newCO.dataDateValue = characteristicValues[index]
-    }else if(characteristic.implementation.valueDataType == "owl:NamedIndividual"){
-      newCO.objectValues = [... characteristicValues[index]]
-    }
-    newCO.save()
-  })
-
-
-  // if(!Array.isArray(data.questionOccurrences) || !Array.isArray(data.characteristicOccurrences)){
-  //   return res.status(400).json({success: false, message: 'Wrong format on request body'})
-  // }
-  try {
-    if(!data.id){
-      await createClientHelper(data);
-      return res.status(202).json({success: true, message: 'Successfully create a client.'});
-    }else if(data.id){
-      await updateClientHelper(data)
-      return res.status(202).json({success: true, message: 'Successfully update the client'})
-    }
-
-  } catch (e) {
-    next(e)
   }
+  const newClient = GDBClientModel({characteristicOccurrences: [], questionOccurrences: []})
+  if(characteristicIds.length > 0){
+    const characteristics = await GDBCharacteristicModel.find({_id: {$in: characteristicIds}}, {populates: ['implementation']})
+    characteristics.forEach((characteristic, index) => {
+      const newCO = GDBCOModel({occurrenceOf: characteristic})
+      if(characteristic.implementation.valueDataType === 'xsd:string'){
+        // TODO: check if the dataType of input value is correct
+        newCO.dataStringValue = characteristicValues[index]
+      }else if(characteristic.implementation.valueDataType === 'xsd:number'){
+        newCO.dataNumberValue = characteristicValues[index]
+      }else if(characteristic.implementation.valueDataType === 'xsd:boolean'){
+        newCO.dataBooleanValue = characteristicValues[index]
+      }else if(characteristic.implementation.valueDataType === 'xsd:datetimes'){
+        newCO.dataDateValue = characteristicValues[index]
+      }else if(characteristic.implementation.valueDataType === "owl:NamedIndividual"){
+        newCO.objectValues = [... characteristicValues[index]]
+      }
+      newClient.characteristicOccurrences.push(newCO)
+    })
+  }
+  if(questionIds.length > 0){
+    const questions = await GDBQuestionModel.find({_id: {$in: questionIds}})
+    questions.forEach((question, index) => {
+      const newQO = GDBQOModel({occurrenceOf: question.individualName, stringValue: questionValues[index]})
+      newClient.questionOccurrences.push(newQO)
+    })
+  }
+
+  newClient.save()
+
+
 }
 
 
