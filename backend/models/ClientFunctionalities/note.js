@@ -6,7 +6,7 @@ const GDBNoteModel = createGraphDBModel({
   createdBy: {type: GDBUserAccountModel, internalKey: ':createdBy'},
   createdAt: {type: Date, internalKey: ':createdAt'}
 }, {
-  rdfTypes: [':hasNote'], name: 'note'
+  rdfTypes: [':Note'], name: 'note'
 });
 
 module.exports = {
