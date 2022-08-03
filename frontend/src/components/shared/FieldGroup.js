@@ -8,19 +8,17 @@ import MultiSelectField from './fields/MultiSelectField';
 import LocationFieldGroup from "./LocationFieldGroup";
 import { objectFlip } from "../../helpers";
 
-export default function FieldGroup({component, options, value, ...props}) {
+export default function FieldGroup({component, options, ...props}) {
   if (component === 'GeneralField' || component === 'TextField') {
     return (
       <GeneralField
         {...props}
-        value={value}
       />
     );
   } else if (component === 'NumberField') {
     return (
       <GeneralField
         {...props}
-        value={value}
         type="number"
       />
     );
@@ -28,7 +26,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <GeneralField
         {...props}
-        value={value}
         type="date"
       />
     );
@@ -36,7 +33,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <GeneralField
         {...props}
-        value={value}
         type="date"
       />
     );
@@ -44,7 +40,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <GeneralField
         {...props}
-        value={value}
         type="datetime"
       />
     );
@@ -52,7 +47,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <GeneralField
         {...props}
-        value={value}
         type="time"
       />
     );
@@ -60,27 +54,24 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <GeneralField
         {...props}
-        value={value}
         type="phoneNumber"
       />
     );
   } else if (component === 'AddressField') {
     return (
-      <LocationFieldGroup {...props} address={value || {}}/>
+      <LocationFieldGroup {...props}/>
     );
   } else if (component === 'SelectField' || component === 'SingleSelectField') {
     return (
       <SelectField
         options={options}
         {...props}
-        value={value}
       />
     );
   } else if (component === 'MultiSelectField') {
     return (
       <MultiSelectField
         options={options}
-        value={value}
         {...props}
       />
     );
@@ -88,7 +79,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <RadioField
         options={objectFlip(options)}
-        value={value}
         {...props}
       />
     );
@@ -96,7 +86,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <RadioField
         options={options}
-        value={value}
         {...props}
       />
     );
@@ -105,7 +94,6 @@ export default function FieldGroup({component, options, value, ...props}) {
       <RadioField
         {...props}
         options={{'Yes': true, 'No': false}}
-        value={value}
       />
     );
   }
@@ -114,7 +102,6 @@ export default function FieldGroup({component, options, value, ...props}) {
     return (
       <CheckboxField
         options={options}
-        value={value}
         {...props}
       />
     );

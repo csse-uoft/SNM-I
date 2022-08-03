@@ -14,12 +14,12 @@ export const timeFormat = 'HH:mm:ss';
 
 export default function GeneralField({type, onChange, value: defaultValue, ...props}) {
 
-  let dateFormat = dateFormat, Picker = DatePicker;
+  let customFormat = dateFormat, Picker = DatePicker;
   if (type === 'datetime') {
-    dateFormat = dateTimeFormat;
+    customFormat = dateTimeFormat;
     Picker = DateTimePicker
   } else if (type === 'time') {
-    dateFormat = timeFormat;
+    customFormat = timeFormat;
     Picker = TimePicker;
   }
 
@@ -27,7 +27,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
   const [value, setValue] = useState(() => {
     if (type === 'date' || type === 'datetime' || type === 'time') {
       if (defaultValue)
-        return parse(defaultValue, dateFormat, new Date());
+        return parse(defaultValue, customFormat, new Date());
       else
         return null;
     }
@@ -44,7 +44,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
   const onChangeDate = date => {
     setValue(date);
     try {
-      const formattedDate = format(date, dateFormat);
+      const formattedDate = format(date, customFormat);
       onChange({target: {value: formattedDate}});
     } catch (e) {
       // Clear the date if the input is malformed
