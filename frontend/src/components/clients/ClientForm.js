@@ -1,24 +1,12 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-import { clientFields } from '../../constants/client_fields.js'
-import { defaultProfileFields, generateClientField } from '../../constants/default_fields.js'
 
-import { fetchOntologyCategories } from '../../api/mockedApi/ontologies';
-import { createClient, updateClient, fetchClient } from '../../api/mockedApi/clients';
-import { fetchEligibilities } from '../../api/mockedApi/eligibility';
-import { fetchClientFields } from '../../api/mockedApi/clientFields';
-
-// components
-import LocationFieldGroup from '../shared/LocationFieldGroup';
-import FamilyFields from './client_form/FamilyFields';
 import FieldGroup from '../shared/FieldGroup';
 
 import { Container } from '@mui/material';
 import { makeStyles } from "@mui/styles";
 import { Loading, FormStepper } from "../shared";
-import { client_verify_form } from '../../helpers/client_verify_form.js';
 import {
-  getAllDynamicForms,
   getDynamicForm,
   getDynamicFormsByFormType,
   getInstancesInClass
@@ -103,55 +91,26 @@ export default function ClientForm() {
 
   const handleFinish = async () => {
     // TODO: pretty error message
-    const fieldErrorMsg = client_verify_form(form, state.steps);
-    if (Object.keys(fieldErrorMsg).length !== 0) {
-      setState(state => ({...state, fieldErrorMsg}));
-      return;
+
+    console.log(form)
+    if (mode === 'new') {
     }
-    if (mode === 'edit') {
-      const res = await updateClient(id, form);
-      if (res.success) {
-        navigate(`/clients/${res.clientId}`);
-      } else {
-        setState(state => ({...state, dispatchErrorMsg: [res.error]}));
-      }
-    } else {
-      const res = await createClient(form);
-      if (res.success) {
-        navigate(`/clients/${res.clientId}`);
-      } else {
-        setState(state => ({...state, dispatchErrorMsg: [res.error]}));
-      }
-    }
+
   };
 
-  /**
-   * Handle changes in form
-   * @param name {string}
-   * @returns {Function}
-   */
-  const handleChange = useCallback(name => e => {
-    const {value} = e.target;
-    const splits = name.split('.');
-    if (splits.length === 1) {
-      form[name] = value;
-    } else {
-      let parent = form;
-      for (let i = 0; i < splits.length - 1; i++) {
-        parent = parent[splits[i]];
-      }
-      parent[splits[splits.length - 1]] = value || '';
-    }
-  }, [form]);
+  const handleChange = typeAndId => (e) => {
+    form.fields[typeAndId] = e?.target?.value || e;
+    console.log(e?.target?.value || e)
+  }
 
-  const getStepContent = idx => {
-    console.log('render step ', idx)
-    const step = dynamicForm.formStructure[idx].fields;
+  const getStepContent = stepIdx => {
+    console.log('render step ', stepIdx)
+    const step = dynamicForm.formStructure[stepIdx].fields;
     return <div className={classes.content}>
       {step.map(({required, id, type, implementation, content}, index) => {
 
         if (type === 'question') {
-          return <GeneralField key={index} label={content}/>
+          return <GeneralField key={index} label={content} value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>
         } else if (type === 'characteristic') {
           const fieldType = implementation.fieldType.type;
           const {label, optionsFromClass} = implementation;
@@ -164,59 +123,9 @@ export default function ClientForm() {
             implementation.options.forEach(option => fieldOptions[option._id] = option.label);
           }
 
-          return <FieldGroup component={fieldType} key={index} label={label} required={required} options={fieldOptions}
-                             onChange={() => {
-                             }}/>
+          return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required} options={fieldOptions}
+                             value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>
         }
-
-        // let options;
-        // // console.log(field)
-        // let errMsg = state.fieldErrorMsg[field];
-        // if (field === 'first_language') {
-        //   options = state.languageOptions;
-        // } else if (field === 'other_languages') {
-        //   options = state.languageOptions.filter(
-        //     category => category !== form.first_language)
-        // } else if (field === 'ngo_conditions') {
-        //   options = state.all_ngo_conditions;
-        // }
-        //
-        // if (field === 'address') {
-        //   return (
-        //     <LocationFieldGroup
-        //       key="address"
-        //       address={form.address}
-        //       required={required}
-        //       errMsg={errMsg}
-        //     />
-        //   );
-        // } else if (field === 'family') {
-        //   return (
-        //     <FamilyFields
-        //       key="family"
-        //       family={form.family}
-        //       clientId={id}
-        //       required={required}
-        //       errMsg={errMsg}
-        //     />
-        //   );
-        // } else {
-        //   const isProfile = Object.keys(defaultProfileFields).includes(field);
-        //   return (
-        //     <FieldGroup
-        //       key={field}
-        //       label={clientFields[field].label}
-        //       type={clientFields[field].type}
-        //       component={clientFields[field].component}
-        //       value={isProfile ? form.profile[field] : form[field]}
-        //       onChange={handleChange(isProfile ? 'profile.' + field : field)}
-        //       required={required}
-        //       options={clientFields[field].options || options}
-        //       error={errMsg != null}
-        //       helperText={errMsg}
-        //     />
-        //   );
-        // }
       })}
     </div>
   };
@@ -230,6 +139,7 @@ export default function ClientForm() {
         label="Select a form"
         value={selectedFormId}
         onChange={e => {
+          setForm({formId: e.target.value, fields: {}});
           setSelectedFormId(e.target.value);
         }}
         options={formOptions}
