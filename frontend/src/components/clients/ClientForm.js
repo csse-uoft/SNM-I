@@ -3,8 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import FieldGroup from '../shared/FieldGroup';
 
-import { Container } from '@mui/material';
-import { makeStyles } from "@mui/styles";
+import { Box, Container } from '@mui/material';
 import { Loading, FormStepper } from "../shared";
 import {
   getDynamicForm,
@@ -15,16 +14,13 @@ import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import { createClient, fetchClient, updateClient } from "../../api/clientApi";
 
-const useStyles = makeStyles(theme => ({
-  content: {
-    width: '80%',
-    margin: 'auto',
-    paddingBottom: 10,
-  }
-}));
+const contentStyle = {
+  width: '80%',
+  margin: 'auto',
+  paddingBottom: '10px'
+};
 
 export default function ClientForm() {
-  const classes = useStyles();
   const navigate = useNavigate();
   const {id} = useParams();
   const mode = id ? 'edit' : 'new';
@@ -110,11 +106,12 @@ export default function ClientForm() {
   const getStepContent = stepIdx => {
     console.log('render step ', stepIdx)
     const step = dynamicForm.formStructure[stepIdx].fields;
-    return <div className={classes.content}>
+    return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content}, index) => {
 
         if (type === 'question') {
-          return <GeneralField key={index} label={content} value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>
+          return <GeneralField key={index} label={content} value={form.fields[`${type}_${id}`]}
+                               onChange={handleChange(`${type}_${id}`)}/>
         } else if (type === 'characteristic') {
           const fieldType = implementation.fieldType.type;
           const {label, optionsFromClass} = implementation;
@@ -127,11 +124,12 @@ export default function ClientForm() {
             implementation.options.forEach(option => fieldOptions[option._id] = option.label);
           }
 
-          return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required} options={fieldOptions}
+          return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required}
+                             options={fieldOptions}
                              value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>
         }
       })}
-    </div>
+    </Box>
   };
 
   if (loading)
