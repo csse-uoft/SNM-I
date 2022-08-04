@@ -1,7 +1,7 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
 export async function createClient(body) {
-  return postJson('/api/client', body);
+  return postJson('/api/clientOrOrganization/client/', body);
 }
 
 export async function updateClient(id, body) {

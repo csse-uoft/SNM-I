@@ -1,8 +1,8 @@
 const express = require('express');
-const {createClient} = require("../services/client");
+const {createClientOrganization} = require("../services/client");
 const router = express.Router();
 
-router.post('/client/', createClient);
+router.post('/clientOrOrganization/:option/', createClientOrganization);
 
 
 
