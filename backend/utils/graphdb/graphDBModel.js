@@ -156,14 +156,11 @@ class GraphDBModel {
         else if (typeof options.type === "function") {
           // already created instance, given an instance name
           if (typeof val === "string") {
-            queryBody += `:${val}`;
+            queryBody += `${val}`;
           } else if (val instanceof GraphDBDocument && !val.isNew) {
             queryBody += `${val.individualName}`;
           } else {
-            // Get data from a document, Wrap it with a new model
-            const obj = val.toJSON ? val.toJSON() : val;
-
-            const innerInstance = await options.type(obj).getQueries();
+            const innerInstance = await options.type(val).getQueries();
             queryBody += `${innerInstance.instanceName}`;
             innerQueryBodies.push(innerInstance.queryBody)
           }
@@ -178,12 +175,11 @@ class GraphDBModel {
             else if (typeof innerType === "function") {
               // already created instance, given an instance name
               if (typeof item === "string") {
-                queryBody += `:${item}`;
+                queryBody += `${item}`;
+              } else if (item instanceof GraphDBDocument && !item.isNew) {
+                queryBody += `${item.individualName}`;
               } else {
-                // Get data from a document, Wrap it with a new model
-                const obj = item.toJSON ? item.toJSON() : item;
-
-                const innerInstance = await innerType(obj).getQueries();
+                const innerInstance = await innerType(item).getQueries();
                 queryBody += `${innerInstance.instanceName}`;
                 innerQueryBodies.push(innerInstance.queryBody)
               }
