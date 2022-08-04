@@ -1,7 +1,7 @@
 const {findClientById, createClientHelper, updateClientHelper, findOrganizationById} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBCharacteristicModel, GDBClientModel, GDBQOModel, GDBOrganizationModel} = require("../../models");
+const {GDBClientModel, GDBQOModel, GDBOrganizationModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 
@@ -89,10 +89,10 @@ const createClientOrganization = async (req, res, next) => {
     }
 
     if(option === 'client'){
-      newClient.save()
+      await newClient.save()
       return res.status(202).json({success: true, message: 'Successfully created a client'})
     }else if(option === 'organization'){
-      newOrganization.save()
+      await newOrganization.save()
       return res.status(202).json({success: true, message: 'Successfully created an organization'})
     }
 
@@ -121,5 +121,28 @@ const fetchClientOrOrganization = async (req, res, next) => {
   }
 }
 
+const fetchClientsOrOrganizations = async (req, res, next) => {
+  const {option} = req.params;
+  try {
+    if(option === 'client') {
+      const clients = await GDBClientModel.find({},
+        {populates: ['characteristicOccurrences', 'questionOccurrence']});
+      return res.status(200).json({clients, success: true});
+    }
 
-module.exports = {createClientOrganization, fetchClientOrOrganization}
+    if(option === 'organization') {
+      const organizations = await GDBOrganizationModel.find({},
+        {populates: ['characteristicOccurrences', 'questionOccurrence']});
+      return res.status(200).json({organizations, success: true});
+    }
+
+  } catch (e) {
+    next(e)
+  }
+}
+
+const deleteClientsOrOrganizations = async (req, res, next) => {
+  
+}
+
+  module.exports = {createClientOrganization, fetchClientOrOrganization, fetchClientsOrOrganizations}
