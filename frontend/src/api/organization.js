@@ -13,7 +13,7 @@ export async function fetchOrganization(id) {
 }
 
 export async function fetchOrganizations() {
-  return getJson('/api/organization');
+  return getJson('/api/clientOrOrganization/organization');
 }
 
 export async function deleteOrganization(id) {
