@@ -1,4 +1,4 @@
-const {findClientById, createClientHelper, updateClientHelper} = require("./clientHelper");
+const {findClientById, createClientHelper, updateClientHelper, findOrganizationById} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBCharacteristicModel, GDBClientModel, GDBQOModel, GDBOrganizationModel} = require("../../models");
@@ -6,8 +6,7 @@ const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question"
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 
 const fieldParser = (fieldName) => {
-  const arr = fieldName.split('_')
-  return arr
+  return fieldName.split('_')
 }
 
 const createClientOrganization = async (req, res, next) => {
@@ -103,7 +102,24 @@ const createClientOrganization = async (req, res, next) => {
 
 }
 
+const fetchClientOrOrganization = async (req, res, next) => {
+  try{
+    const {id, option} = req.params;
+
+    if(option === 'client'){
+      const client = await findClientById(id);
+      return res.status(202).json({client, success: true, message: 'Successfully fetched a client.'})
+    }
+
+    if(option === 'organization'){
+      const organization = await findOrganizationById(id);
+      return res.status(202).json({organization, success: true, message: 'Successfully fetched an organization.'})
+    }
+
+  } catch (e) {
+    next(e)
+  }
+}
 
 
-
-module.exports = {createClientOrganization, }
+module.exports = {createClientOrganization, fetchClientOrOrganization}

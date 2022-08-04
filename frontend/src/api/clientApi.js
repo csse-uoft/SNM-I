@@ -9,7 +9,7 @@ export async function updateClient(id, body) {
 }
 
 export async function fetchClient(id) {
-  return getJson('/api/client/' + id);
+  return getJson('/api/clientOrOrganization/client/' + id);
 }
 
 export async function fetchClients() {

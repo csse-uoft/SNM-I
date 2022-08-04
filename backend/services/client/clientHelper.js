@@ -1,7 +1,14 @@
-const {GDBClientModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel} = require("../../models");
 
 async function findClientById(id) {
   return await GDBClientModel.findOne(
+    {_id: id},
+    {populates: ['characteristicOccurrences', 'questionOccurrence']}
+  );
+}
+
+async function findOrganizationById(id) {
+  return await GDBOrganizationModel.findOne(
     {_id: id},
     {populates: ['characteristicOccurrences', 'questionOccurrence']}
   );
@@ -20,4 +27,4 @@ async function updateClientHelper(data) {
 }
 
 
-module.exports = {findClientById, createClientHelper, updateClientHelper}
+module.exports = {findClientById, findOrganizationById, createClientHelper, updateClientHelper}
