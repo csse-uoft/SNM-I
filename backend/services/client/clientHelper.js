@@ -20,8 +20,17 @@ async function updateClientHelper(data) {
 
 }
 
-async function deleteHelper(data) {
-  
+async function deleteHelper(option, id) {
+  // Delete unused forms and occurrence for a client
+  if(option === 'client') {
+    const client = await findClientById(id);
+
+  }
+
+  // Delete unused forms and occurrence for an organization
+  if(option === 'organization') {
+
+  }
 }
 
 

@@ -1,7 +1,7 @@
-const {findClientById, findOrganizationById} = require("./clientHelper");
+const {findClientById, findOrganizationById, deleteHelper} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBClientModel, GDBQOModel, GDBOrganizationModel} = require("../../models");
+const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 
@@ -144,6 +144,9 @@ const fetchClientsOrOrganizations = async (req, res, next) => {
 const deleteClientOrOrganization = async (req, res, next) => {
   try {
     const {option, id} = req.params;
+
+    // TODO: use delete Helper check which form can be deleted.
+    // await deleteHelper(option, id);
 
     if (option === 'client') {
       const doc = await GDBClientModel.findByIdAndDelete(id);
