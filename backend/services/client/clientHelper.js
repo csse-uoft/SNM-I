@@ -14,17 +14,16 @@ async function findOrganizationById(id) {
   );
 }
 
-async function createClientHelper(data) {
-  const {questionOccurrences, characteristicOccurrences} = data
-  const client = GDBClientModel({characteristicOccurrences, questionOccurrences})
-  return client
-}
-
 async function updateClientHelper(data) {
   const {questionOccurrences, characteristicOccurrences, id} = data
   const client = await findClientById(id)
 
 }
 
+async function deleteHelper(data) {
+  
+}
 
-module.exports = {findClientById, findOrganizationById, createClientHelper, updateClientHelper}
+
+module.exports = {
+  findClientById, findOrganizationById, updateClientHelper, deleteHelper}

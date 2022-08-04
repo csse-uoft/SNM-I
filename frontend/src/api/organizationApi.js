@@ -17,5 +17,5 @@ export async function fetchOrganizations() {
 }
 
 export async function deleteOrganization(id) {
-  return deleteJson('/api/organization/delete/' + id);
+  return deleteJson('/api/clientOrOrganization/delete/organization/' + id);
 }
