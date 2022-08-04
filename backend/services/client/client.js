@@ -107,29 +107,26 @@ const fetchClientOrOrganization = async (req, res, next) => {
     const data = req.body;
     const {option, id} = req.params;
 
-    if(!data.formId){
-      return res.status(400).json({success: false, message: 'No form Id is given'})
-    }
-    const form = await MDBDynamicFormModel.findById(data.formId)
-    if(form.formType !== 'client' && option === 'client'){
-      return res.status(400).json({success: false, message: 'The form is not for client'})
-    }
-    if(form.formType !== 'organization' && option === 'organization'){
-      return res.status(400).json({success: false, message: 'The form is not for organization'})
-    }
-    if(!form.formStructure){
-      return res.status(400).json({success: false, message: 'The form structure is undefined'})
-    }
-    const formStructure = form.formStructure
-
-    for (let step in formStructure){
-      for (let x in Object.keys(step.fields)){
-
-      }
-    }
-
-
-
+    // if(!data.formId){
+    //   return res.status(400).json({success: false, message: 'No form Id is given'})
+    // }
+    // const form = await MDBDynamicFormModel.findById(data.formId)
+    // if(form.formType !== 'client' && option === 'client'){
+    //   return res.status(400).json({success: false, message: 'The form is not for client'})
+    // }
+    // if(form.formType !== 'organization' && option === 'organization'){
+    //   return res.status(400).json({success: false, message: 'The form is not for organization'})
+    // }
+    // if(!form.formStructure){
+    //   return res.status(400).json({success: false, message: 'The form structure is undefined'})
+    // }
+    // const formStructure = form.formStructure
+    //
+    // for (let step in formStructure){
+    //   for (let x in Object.keys(step.fields)){
+    //
+    //   }
+    // }
 
     if(option === 'client'){
       const client = await findClientById(id);
