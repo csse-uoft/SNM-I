@@ -49,6 +49,11 @@ export default function ClientForm() {
         const allForms = {};
         forms.forEach(form => allForms[form._id] = form);
         setAllForms(forms);
+
+        // Preselect the first form
+        const firstForm = forms[0];
+        setForm({formId: firstForm._id, fields: {}});
+        setSelectedFormId(firstForm._id);
       }),
     ]).then(() => {
       setLoading(false);
