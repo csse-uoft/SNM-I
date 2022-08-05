@@ -53,7 +53,7 @@ const columnsWithoutOptions = [
 export default function Clients() {
 
   const nameFormatter = (client) => {
-    return client.profile.first_name + ' ' + client.profile.last_name;
+    return client.firstName + ' ' + client.lastName;
   };
 
   const generateMarkers = (clients, pageNumber, rowsPerPage) => {

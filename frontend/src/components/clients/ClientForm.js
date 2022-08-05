@@ -96,9 +96,9 @@ export default function ClientForm() {
 
     console.log(form)
     if (mode === 'new') {
-      createClient(form);
+      createClient(form).then(() => navigate('/clients'));
     } else {
-      updateClient(form);
+      updateClient(form).then(() => navigate('/clients'));
     }
 
   };

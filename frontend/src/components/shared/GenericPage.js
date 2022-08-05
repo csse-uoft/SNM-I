@@ -57,18 +57,17 @@ export default function GenericPage(props) {
       hideDialog();
       setState(state => ({
         ...state,
-        data: state.data.filter(item => item.id !== state.deleteId)
+        data: state.data.filter(item => item._id !== state.deleteId)
       }));
     }
   }, [deleteItem]);
 
-  const showDeleteDialog = useCallback((idx) => {
-    const item = state.data[idx];
+  const showDeleteDialog = useCallback((_id) => {
     setState(state => ({
       ...state,
       showDeleteDialog: true,
-      deleteId: item.id,
-      deleteDialogTitle: `Delete ${title} ` + nameFormatter(item),
+      deleteId: _id,
+      deleteDialogTitle: `Delete ${title} ` + nameFormatter(state.data.find(item => item._id === _id)),
     }));
   }, [state.data, nameFormatter, title]);
 
@@ -82,8 +81,8 @@ export default function GenericPage(props) {
       ...columnsWithoutOptions,
       {
         label: ' ',
-        body: ({id}) => (
-          <DropdownMenu urlPrefix={type} objectId={id} handleDelete={showDeleteDialog}/>
+        body: ({_id}) => (
+          <DropdownMenu urlPrefix={type} objectId={_id} handleDelete={showDeleteDialog}/>
         )
       },
     ]
