@@ -122,8 +122,8 @@ function TopNavBar() {
                   onClose={handleCloseLeft}
                   PaperProps={{
                     style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: 150,
+                      maxHeight: ITEM_HEIGHT * 7,
+                      width: 170,
                     },
                   }}
               >
@@ -139,6 +139,20 @@ function TopNavBar() {
                     <LocationCityIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Services</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={handleLink(`/appointments`)}>
+                  <ListItemIcon>
+                    <BusinessCenterIcon fontSize="medium" sx={{ color:'black' }}/>
+                  </ListItemIcon>
+                  <Typography variant="inherit">Appointments</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={handleLink(`/referrals`)}>
+                  <ListItemIcon>
+                    <BusinessCenterIcon fontSize="medium" sx={{ color:'black' }}/>
+                  </ListItemIcon>
+                  <Typography variant="inherit">Referrals</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/goods`)}>
