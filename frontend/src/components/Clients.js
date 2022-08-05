@@ -1,7 +1,7 @@
 import React from 'react';
 
 // TODO: createClients  (CSV Upload)
-import { fetchClients, deleteClient } from '../api/mockedApi/clients'
+import { fetchClients, deleteClient } from '../api/clientApi'
 
 import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
@@ -15,39 +15,39 @@ const TYPE = 'clients';
 const columnsWithoutOptions = [
   {
     label: 'First Name',
-    body: ({id, profile}) => {
-      return <Link color to={`/${TYPE}/${id}`}>{profile.first_name}</Link>
+    body: ({firstName, _id}) => {
+      return <Link color to={`/${TYPE}/${_id}`}>{firstName}</Link>
     }
   },
   {
     label: 'Last Name',
-    body: ({profile}) => {
-      return profile.last_name;
+    body: ({lastName}) => {
+      return lastName;
     }
   },
   {
     name: 'profile.primary_phone_number',
     label: 'Phone Number',
-    body: ({profile}) => {
-      if (profile.primary_phone_number)
-        return formatPhoneNumber(profile.primary_phone_number);
-      return 'Not Provided';
+    body: () => {
+      // if (profile.primary_phone_number)
+      //   return formatPhoneNumber(profile.primary_phone_number);
+      // return 'Not Provided';
     },
   },
   {
     label: 'Email',
-    body: ({profile}) => {
-      return profile.email;
+    body: ({email}) => {
+      return email || 'Not Provided';
     }
   },
-  {
-    label: 'Address',
-    body: ({profile}) => {
-      if (profile.address)
-        return formatLocation(profile.address);
-      return 'Not Provided';
-    }
-  },
+  // {
+  //   label: 'Address',
+  //   body: ({profile}) => {
+  //     if (profile.address)
+  //       return formatLocation(profile.address);
+  //     return 'Not Provided';
+  //   }
+  // },
 ];
 
 export default function Clients() {
@@ -57,6 +57,7 @@ export default function Clients() {
   };
 
   const generateMarkers = (clients, pageNumber, rowsPerPage) => {
+    return [];
     // TODO: verify this works as expected
     const currPageClients = clients.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageClients.map(client => ({
@@ -67,16 +68,37 @@ export default function Clients() {
     })).filter(client => client.position.lat && client.position.lng);
   };
 
+  const fetchData = async () => {
+    const clients = (await fetchClients()).data;
+    const data = [];
+    for (const client of clients) {
+      const clientData = {_id: client._id};
+      for (const occ of client.characteristicOccurrences) {
+        if (occ.occurrenceOf?.name === 'first name') {
+          clientData.firstName = occ.dataStringValue;
+        } else  if (occ.occurrenceOf?.name === 'last name') {
+          clientData.lastName = occ.dataStringValue;
+        }else  if (occ.occurrenceOf?.name === 'email') {
+          clientData.email = occ.dataStringValue;
+        }
+
+      }
+      data.push(clientData);
+    }
+    return data;
+
+  }
+
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
-      fetchData={fetchClients}
+      fetchData={fetchData}
       deleteItem={deleteClient}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{
-        idField: 'id'
+        idField: '_id'
       }}
     />
   )

@@ -5,105 +5,101 @@ const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel}
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 
-const fieldParser = (fieldName) => {
-  return fieldName.split('_')
+
+const option2Model = {
+  'client': GDBClientModel,
+  'organization': GDBOrganizationModel,
 }
 
 const createClientOrganization = async (req, res, next) => {
   const data = req.body;
   const {option} = req.params
 
-  if(!data.formId){
+  if (!data.formId) {
     return res.status(400).json({success: false, message: 'No form Id is given'})
   }
   const form = await MDBDynamicFormModel.findById(data.formId)
-  if(form.formType !== 'client' && option === 'client'){
+  if (form.formType !== 'client' && option === 'client') {
     return res.status(400).json({success: false, message: 'The form is not for client'})
   }
-  if(form.formType !== 'organization' && option === 'organization'){
+  if (form.formType !== 'organization' && option === 'organization') {
     return res.status(400).json({success: false, message: 'The form is not for organization'})
   }
-  if(!form.formStructure){
+  if (!form.formStructure) {
     return res.status(400).json({success: false, message: 'The form structure is undefined'})
   }
   // TODO: verify if questions and characteristics are in the form
 
-  if(!data.fields){
+  if (!data.fields) {
     return res.status(400).json({success: false, message: 'Please provide the fields'})
   }
 
-  try{
-    const characteristicIds = []
-    const characteristicValues = []
-    const questionIds = []
-    const questionValues = []
+  try {
+    const questions = {};
+    const characteristics = {};
 
-    for (let field in data.fields) {
-      const value = data.fields[field]
-      const [fieldType, fieldId] = fieldParser(field)
-      if(fieldType === 'characteristic'){
-        characteristicIds.push(fieldId)
-        characteristicValues.push(value)
-      }else if(fieldType === 'question'){
-        questionIds.push(fieldId)
-        questionValues.push(value)
+    // Get all ids
+    for (const key of Object.keys(data.fields)) {
+      const [type, id] = key.split('_');
+      if (type === 'characteristic') {
+        characteristics[id] = null;
+      } else if (type === 'question') {
+        questions[id] = null;
       }
     }
-    const newClient = GDBClientModel({characteristicOccurrences: [], questionOccurrences: []})
-    const newOrganization = GDBOrganizationModel({characteristicOccurrences: [], questionOccurrences: []})
-    if(characteristicIds.length > 0){
-      const characteristics = await GDBCharacteristicModel.find({_id: {$in: characteristicIds}}, {populates: ['implementation']})
-      characteristics.forEach((characteristic, index) => {
-        const newCO = GDBCOModel({occurrenceOf: characteristic})
-        if(characteristic.implementation.valueDataType === 'xsd:string'){
+    // Find characteristics & questions
+    if (Object.keys(characteristics).length)
+      (await GDBCharacteristicModel.find({_id: {$in: Object.keys(characteristics)}}, {populates: ['implementation']}))
+        .forEach(item => characteristics[item._id] = item);
+    if (Object.keys(questions).length)
+      (await GDBQuestionModel.find({_id: {$in: Object.keys(questions)}}, {populates: ['implementation']}))
+        .forEach(item => questions[item._id] = item);
+
+    const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
+    for (const [key, value] of Object.entries(data.fields)) {
+      const [type, id] = key.split('_');
+
+      if (type === 'characteristic') {
+        const characteristic = characteristics[id];
+        const occurrence = {occurrenceOf: characteristic};
+
+        if (characteristic.implementation.valueDataType === 'xsd:string') {
           // TODO: check if the dataType of input value is correct
-          newCO.dataStringValue = characteristicValues[index]
-        }else if(characteristic.implementation.valueDataType === 'xsd:number'){
-          newCO.dataNumberValue = characteristicValues[index]
-        }else if(characteristic.implementation.valueDataType === 'xsd:boolean'){
-          newCO.dataBooleanValue = characteristicValues[index]
-        }else if(characteristic.implementation.valueDataType === 'xsd:datetimes'){
-          newCO.dataDateValue = characteristicValues[index]
-        }else if(characteristic.implementation.valueDataType === "owl:NamedIndividual"){
-          newCO.objectValues = [... characteristicValues[index]]
-        }
-        if(option === 'client'){
-          newClient.characteristicOccurrences.push(newCO)
-        }else if(option === 'organization'){
-          newOrganization.characteristicOccurrences.push(newCO)
+          occurrence.dataStringValue = value + '';
+        } else if (characteristic.implementation.valueDataType === 'xsd:number') {
+          occurrence.dataNumberValue = Number(value);
+        } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
+          occurrence.dataBooleanValue = !!value;
+        } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
+          occurrence.dataDateValue = new Date(value);
+        } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
+          continue;
         }
 
-      })
-    }
-    if(questionIds.length > 0){
-      const questions = await GDBQuestionModel.find({_id: {$in: questionIds}})
-      questions.forEach((question, index) => {
-        const newQO = GDBQOModel({occurrenceOf: question, stringValue: questionValues[index]})
-        if(option === 'client'){
-          newClient.questionOccurrences.push(newQO)
-        }else if(option === 'organization'){
-          newOrganization.questionOccurrences.push(newQO)
-        }
+        instanceData.characteristicOccurrences.push(occurrence);
 
-      })
+      } else if (type === 'question') {
+        const occurrence = {occurrenceOf: questions[id], stringValue: value};
+        instanceData.questionOccurrences.push(occurrence);
+      }
     }
 
-    if(option === 'client'){
-      await newClient.save()
+    await option2Model[option](instanceData).save();
+
+    if (option === 'client') {
       return res.status(202).json({success: true, message: 'Successfully created a client'})
-    }else if(option === 'organization'){
-      await newOrganization.save()
+    } else if (option === 'organization') {
       return res.status(202).json({success: true, message: 'Successfully created an organization'})
     }
 
-  }catch (e) {
+  } catch (e) {
     next(e)
   }
 
 }
 
 const fetchClientOrOrganization = async (req, res, next) => {
-  try{
+  try {
     const data = req.body;
     const {option, id} = req.params;
 
@@ -128,12 +124,12 @@ const fetchClientOrOrganization = async (req, res, next) => {
     //   }
     // }
 
-    if(option === 'client'){
+    if (option === 'client') {
       const client = await findClientById(id);
       return res.status(202).json({client, success: true, message: 'Successfully fetched a client.'})
     }
 
-    if(option === 'organization'){
+    if (option === 'organization') {
       const organization = await findOrganizationById(id);
       return res.status(202).json({organization, success: true, message: 'Successfully fetched an organization.'})
     }
@@ -146,17 +142,9 @@ const fetchClientOrOrganization = async (req, res, next) => {
 const fetchClientsOrOrganizations = async (req, res, next) => {
   const {option} = req.params;
   try {
-    if(option === 'client') {
-      const clients = await GDBClientModel.find({},
-        {populates: ['characteristicOccurrences', 'questionOccurrence']});
-      return res.status(200).json({clients, success: true});
-    }
-
-    if(option === 'organization') {
-      const organizations = await GDBOrganizationModel.find({},
-        {populates: ['characteristicOccurrences', 'questionOccurrence']});
-      return res.status(200).json({organizations, success: true});
-    }
+    const data = await option2Model[option].find({},
+      {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']});
+    return res.status(200).json({data, success: true});
 
   } catch (e) {
     next(e)
