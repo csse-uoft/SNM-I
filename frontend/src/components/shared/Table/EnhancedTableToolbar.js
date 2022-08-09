@@ -87,9 +87,7 @@ export const EnhancedTableToolbar = (props) => {
         onChange={(e)=>setSearch(e.target.value)}
         />
         <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-          <IconButton aria-label="search list" size="large">
             <SearchIcon/>
-          </IconButton>
         </IconButton>
       </Grid>
 
