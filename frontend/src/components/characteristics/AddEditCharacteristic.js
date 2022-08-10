@@ -379,9 +379,14 @@ export default function AddEditCharacteristic() {
         </div> : <div/>}
 
 
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+
+        {!state.locked? <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
           submit
-        </Button>
+        </Button>: <Button variant="contained" color="primary" className={classes.button} onClick={() => {
+          navigate('/characteristics')
+        }}>
+          back
+        </Button>}
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={'Are you sure you want to create a new characteristics?'}
