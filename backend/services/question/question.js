@@ -1,6 +1,7 @@
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {createQuestionHelper, updateQuestionHelper, findQuestionById} = require("./questionHelper");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
+const {GDBClientModel} = require("../../models");
 
 
 const createQuestion = async (req, res, next) => {
@@ -42,7 +43,17 @@ const fetchQuestion = async (req, res, next) => {
     const id = req.params.id;
     const question = await findQuestionById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'question'}}}}})
-    return res.status(200).json({question, success: true, locked: forms.length !== 0});
+    const clients = (await GDBClientModel.find({}, {populates: ['questionOccurrences.occurrenceOf']})).filter((client) => {
+
+      if(client.questionOccurrences){
+        for (let occurrence of client.questionOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
+    return res.status(200).json({question, success: true, locked: forms.length !== 0 || clients.length !== 0});
   } catch (e) {
     next(e)
   }
