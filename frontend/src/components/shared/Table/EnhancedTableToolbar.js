@@ -28,9 +28,9 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EnhancedTableToolbar = (onSearch, ...props) => {
+export const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const {numSelected, title, onDelete, customToolbar} = props;
+  const {numSelected, title, onDelete, customToolbar, onSearch} = props;
   const [search, setSearch] = useState('')
 
   const handleSearch = () => {
@@ -92,11 +92,6 @@ export const EnhancedTableToolbar = (onSearch, ...props) => {
             <SearchIcon/>
         </IconButton>
       </Grid>
-
-
-
-
-
 
 
       {customToolbar}
