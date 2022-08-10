@@ -19,11 +19,27 @@ async function getRepository() {
   return repository;
 }
 
+/**
+ * Return an array of number, [10, 0, 1] represents for version 10.0.1
+ * @returns {Promise<number[]>}
+ */
+async function getGraphDBVersion() {
+  const {headers} = await fetch(graphdb.addr + '/protocol');
+  return headers.get('server').match(/GraphDB\/(.*) /)[1].split('.').map(num => Number(num));
+}
+
 async function createRepository(dbClient, dbName) {
   // Create repository configuration
-  const config = new RepositoryConfig(dbName, '', new Map(), '', 'SNM-I', RepositoryType.FREE);
+  let config;
+  const version = await getGraphDBVersion();
+  console.log('GraphDB version:', version.join('.'));
+  if (version[0] >= 10)
+    config = new RepositoryConfig(dbName, '', new Map(), '', 'SNM-I', 'graphdb');
+  else
+    config = new RepositoryConfig(dbName, '', new Map(), '', 'SNM-I', 'free');
   // Use the configuration to create new repository
   await dbClient.createRepository(config);
+
 }
 
 async function loadInitialData(file, overwrite = !!process.env.test) {
