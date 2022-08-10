@@ -4,6 +4,7 @@ const {
   createCharacteristicHelper, updateOptions, updateFieldType
 } = require("./characteristicsHelper");
 const {SPARQL} = require('../../utils/graphdb/helpers');
+const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 
 
 const createCharacteristic = async (req, res, next) => {
@@ -56,7 +57,8 @@ const fetchCharacteristic = async (req, res, next) => {
   try {
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
-    // characteristics.populate(['implementation.fieldType', 'implementation.options']);
+    const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
+    // await GDBClientModel.find()
 
     if (characteristic.implementation?.optionsFromClass) {
       characteristic.implementation.optionsFromClass = SPARQL.getFullURI(characteristic.implementation.optionsFromClass);
@@ -73,7 +75,7 @@ const fetchCharacteristic = async (req, res, next) => {
       optionsFromClass: characteristic.implementation.optionsFromClass,
 
     }
-    return res.status(200).json({fetchData, success: true});
+    return res.status(200).json({fetchData, success: true,});
     // return res.status(200).json({characteristics, success:true});
   } catch (e) {
     next(e)

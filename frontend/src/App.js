@@ -25,8 +25,8 @@ export default function App() {
         localStorage.setItem('userContext', JSON.stringify(user));
         setUserContext(state => ({...state, ...user}));
       },
-      errorAlert: () => {
-        
+      errorAlert: (error) => {
+        setUserContext(state => ({...state, ...error}));
       },
     }
   );
