@@ -33,9 +33,6 @@ const createCharacteristic = async (req, res, next) => {
 
 const updateCharacteristic = async (req, res, next) => {
   const id = req.params.id;
-  const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-  if(forms.length !== 0)
-    res.status(400).json({success: false, message: 'This characteristic cannot be updated'})
 
   const {label, name, multipleValues, dataType, fieldType, options, optionsFromClass, description} = req.body;
   const updateData = {
@@ -50,6 +47,9 @@ const updateCharacteristic = async (req, res, next) => {
   };
 
   try {
+    const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
+    if(forms.length !== 0)
+      res.status(400).json({success: false, message: 'This characteristic cannot be updated'})
     await updateCharacteristicHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
   } catch (e) {
