@@ -65,9 +65,11 @@ const fetchCharacteristic = async (req, res, next) => {
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
     // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
     const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-      for (let occurrence of client.characteristicOccurrences){
-        if(occurrence.occurrenceOf._id === id)
-          return true
+      if(client.characteristicOccurrences){
+        for (let occurrence of client.characteristicOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
       }
       return false
     })
