@@ -32,6 +32,7 @@ export default function AddEditQuestion() {
     loadingButton: false,
     successDialog: false,
     failDialog: false,
+    locked: false
   })
   const [errors, setErrors] = useState(
     {}
@@ -49,6 +50,7 @@ export default function AddEditQuestion() {
         if(res.success){
           setForm({content: res.question.content, description: res.question.description})
           setLoading(false)
+          setState(state => ({...state, locked: res.locked}))
         }
       }).catch(e => {
         if(e.json)
@@ -117,6 +119,7 @@ export default function AddEditQuestion() {
           onChange={e => form.content = e.target.value}
           error={!!errors.content}
           helperText={errors.content}
+          disabled={state.locked}
         />
         <GeneralField
           key={'description'}
@@ -128,10 +131,15 @@ export default function AddEditQuestion() {
           onChange={e => form.description = e.target.value}
           error={!!errors.description}
           helperText={errors.description}
+          disabled={state.locked}
         />
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+        {state.locked? <Button variant="contained" color="primary" className={classes.button} onClick={()=>{navigate('/questions')}}>
+            back
+          </Button>:
+          <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
           Submit
-        </Button>
+        </Button>}
+
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={option === 'add'?'Are you sure you want to create a new question?':
         'Are you sure you want to update the question?'}

@@ -1,5 +1,6 @@
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {createQuestionHelper, updateQuestionHelper, findQuestionById} = require("./questionHelper");
+const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 
 
 const createQuestion = async (req, res, next) => {
@@ -37,7 +38,8 @@ const fetchQuestion = async (req, res, next) => {
   try {
     const id = req.params.id;
     const question = await findQuestionById(id);
-    return res.status(200).json({question, success: true});
+    const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'question'}}}}})
+    return res.status(200).json({question, success: true, locked: forms.length !== 0});
   } catch (e) {
     next(e)
   }
