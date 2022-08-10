@@ -1,0 +1,8 @@
+
+*.xml
+.idea/SNM-I.iml
+frontend/src/context/index.js
+backend/.env
+backend/.DS_Store
+frontend/.idea/snm-client.iml
+.DS_Store

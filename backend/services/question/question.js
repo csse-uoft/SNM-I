@@ -1,5 +1,6 @@
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {createQuestionHelper, updateQuestionHelper, findQuestionById} = require("./questionHelper");
+const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 
 
 const createQuestion = async (req, res, next) => {
@@ -25,6 +26,9 @@ const updateQuestion = async (req, res, next) => {
   };
 
   try {
+    const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'question'}}}}})
+    if(forms.length !== 0)
+      res.status(400).json({success: false, message: 'This question cannot be updated'})
     await updateQuestionHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
   } catch (e) {
@@ -37,7 +41,8 @@ const fetchQuestion = async (req, res, next) => {
   try {
     const id = req.params.id;
     const question = await findQuestionById(id);
-    return res.status(200).json({question, success: true});
+    const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'question'}}}}})
+    return res.status(200).json({question, success: true, locked: forms.length !== 0});
   } catch (e) {
     next(e)
   }

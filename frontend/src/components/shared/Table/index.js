@@ -79,6 +79,9 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
+  const [dataFilter, setDataFilter] = React.useState(
+    data => data
+  )
 
   const handleRequestSort = (event, getFieldValueFn) => {
     const isAsc = orderBy === getFieldValueFn && order === 'asc';
@@ -151,9 +154,14 @@ export function EnhancedTable({data, title, columns, height, ...props}) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
+  const handleOnSearch = (searchTarget) => {
+
+  }
+
+
   return (
     <Paper elevation={5} className={classes.paper}>
-      <EnhancedTableToolbar title={title} numSelected={selected.length} onDelete={handleDelete}
+      <EnhancedTableToolbar title={title} numSelected={selected.length} onDelete={handleDelete} onSearch={handleOnSearch}
                             customToolbar={customToolbar}/>
       <TableContainer style={{maxHeight: height || 'calc(100vh - 228px)'}}>
         <Table

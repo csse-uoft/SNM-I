@@ -44,6 +44,7 @@ export default function AddEditCharacteristic() {
     loadingButton: false,
     successDialog: false,
     failDialog: false,
+    locked: false
   })
 
   const [errors, setErrors] = useState(
@@ -70,6 +71,7 @@ export default function AddEditCharacteristic() {
       if (option === 'edit' && id) {
         return fetchCharacteristic(id).then(res => {
           const data = res.fetchData
+          const locked = res.locked
           if (data.fieldType === 'MultiSelectField' || data.fieldType === 'SingleSelectField' || data.fieldType === 'RadioSelectField') {
             if (data.options) {
               data.classOrManually = 'manually'
@@ -84,6 +86,7 @@ export default function AddEditCharacteristic() {
             data.optionsFromClass = ''
           }
           setForm(data)
+          setState(state => ({...state, locked}))
         })
       }
     }).then(() => {
@@ -222,7 +225,7 @@ export default function AddEditCharacteristic() {
           required
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.name = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
+          disabled={state.locked}
           error={!!errors.name}
           helperText={errors.name}
         />
@@ -237,6 +240,7 @@ export default function AddEditCharacteristic() {
           error={!!errors.description}
           helperText={errors.description}
           multiline
+          disabled={state.locked}
         />
         <Dropdown
           key={'codes'}
@@ -247,6 +251,7 @@ export default function AddEditCharacteristic() {
           error={!!errors.codes}
           helperText={errors.codes}
           required
+          disabled={state.locked}
         />
 
         <Divider sx={{pt: 2}}/>
@@ -265,6 +270,7 @@ export default function AddEditCharacteristic() {
           // onBlur={() => handleOnBlur(field, option)}
           error={!!errors.fieldType}
           helperText={errors.fieldType}
+          disabled={state.locked}
         />
 
         {isSelected() ?
@@ -274,6 +280,7 @@ export default function AddEditCharacteristic() {
             required
             value={form.classOrManually}
             options={{Class: 'class', Manually: 'manually'}}
+            disabled={state.locked}
           /> : <div/>}
 
 
@@ -303,6 +310,7 @@ export default function AddEditCharacteristic() {
           error={!!errors.label}
           helperText={errors.label}
           sx={{mt: '16px', minWidth: 350}}
+          disabled={state.locked}
         />
 
 
@@ -318,6 +326,7 @@ export default function AddEditCharacteristic() {
           // onBlur={() => handleOnBlur(field, option)}
           error={!!errors.optionsFromClass}
           helperText={errors.optionsFromClass}
+          disabled={state.locked}
         /> : <div/>}
 
 
@@ -339,6 +348,7 @@ export default function AddEditCharacteristic() {
                   sx={{mt: '16px', minWidth: 350}}
                   error={!!errors.options && !!errors.options[option.key]}
                   helperText={!!errors.options && errors.options[option.key]}
+                  disabled={state.locked}
                 />
                 <IconButton
                   onClick={() => {
@@ -369,9 +379,14 @@ export default function AddEditCharacteristic() {
         </div> : <div/>}
 
 
-        <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+
+        {!state.locked? <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
           submit
-        </Button>
+        </Button>: <Button variant="contained" color="primary" className={classes.button} onClick={() => {
+          navigate('/characteristics')
+        }}>
+          back
+        </Button>}
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
                      dialogTitle={'Are you sure you want to create a new characteristics?'}
