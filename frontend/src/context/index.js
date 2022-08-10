@@ -11,7 +11,7 @@ export const defaultUserContext = {
   countryCode:null,
   areaCode:null,
   phoneNumber:null,
-  errorMessage:'',
+  errorMessage:[],
 }
 
 export const getUserContext = () => {
