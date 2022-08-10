@@ -63,7 +63,14 @@ const fetchCharacteristic = async (req, res, next) => {
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-    const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: {_id: id}}}, {populates: ['characteristicOccurrence']})
+    // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
+    const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
+      for (let occurrence of client.characteristicOccurrences){
+        if(occurrence.occurrenceOf._id === id)
+          return true
+      }
+      return false
+    })
 
     if (characteristic.implementation?.optionsFromClass) {
       characteristic.implementation.optionsFromClass = SPARQL.getFullURI(characteristic.implementation.optionsFromClass);
@@ -80,7 +87,7 @@ const fetchCharacteristic = async (req, res, next) => {
       optionsFromClass: characteristic.implementation.optionsFromClass,
 
     }
-    return res.status(200).json({fetchData, success: true,locked: forms.length !== 0});
+    return res.status(200).json({fetchData, success: true,locked: forms.length !== 0 || clients.length !== 0});
   } catch (e) {
     next(e)
   }
