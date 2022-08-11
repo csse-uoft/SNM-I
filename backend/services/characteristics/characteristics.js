@@ -5,7 +5,7 @@ const {
 } = require("./characteristicsHelper");
 const {SPARQL} = require('../../utils/graphdb/helpers');
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBClientModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel} = require("../../models");
 
 
 const createCharacteristic = async (req, res, next) => {
@@ -56,9 +56,18 @@ const updateCharacteristic = async (req, res, next) => {
       }
       return false
     })
+    const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
+      if(organization.characteristicOccurrences){
+        for (let occurrence of organization.characteristicOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
     const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-    if(forms.length !== 0 || clients.length !== 0 || characteristic.isPredefined)
+    if(forms.length !== 0 || clients.length !== 0 || organizations.length !== 1 || characteristic.isPredefined)
       res.status(400).json({success: false, message: 'This characteristic cannot be updated'})
     await updateCharacteristicHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
@@ -83,7 +92,15 @@ const fetchCharacteristic = async (req, res, next) => {
       }
       return false
     })
-
+    const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
+      if(organization.characteristicOccurrences) {
+        for (let occurrence of organization.characteristicOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
     if (characteristic.implementation?.optionsFromClass) {
       characteristic.implementation.optionsFromClass = SPARQL.getFullURI(characteristic.implementation.optionsFromClass);
     }
@@ -99,7 +116,7 @@ const fetchCharacteristic = async (req, res, next) => {
       optionsFromClass: characteristic.implementation.optionsFromClass,
 
     }
-    return res.status(200).json({fetchData, success: true,locked: forms.length !== 0 || clients.length !== 0 || characteristic.isPredefined});
+    return res.status(200).json({fetchData, success: true, locked: forms.length !== 0 || organizations.length !== 0 || clients.length !== 0 || characteristic.isPredefined});
   } catch (e) {
     next(e)
   }

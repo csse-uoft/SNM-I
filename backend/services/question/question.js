@@ -1,7 +1,7 @@
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {createQuestionHelper, updateQuestionHelper, findQuestionById} = require("./questionHelper");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBClientModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel} = require("../../models");
 
 
 const createQuestion = async (req, res, next) => {
@@ -12,7 +12,7 @@ const createQuestion = async (req, res, next) => {
 
   try {
     await createQuestionHelper(data);
-    return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
+    return res.status(202).json({success: true, message: 'Successfully update question.'});
   } catch (e) {
     next(e)
   }
@@ -37,11 +37,20 @@ const updateQuestion = async (req, res, next) => {
       }
       return false
     })
+    const organizations = (await GDBOrganizationModel.find({}, {populates: ['questionOccurrences.occurrenceOf']})).filter((organization) => {
+      if(organization.questionOccurrences){
+        for (let occurrence of organization.questionOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
     const question = await findQuestionById(id);
-    if(forms.length !== 0 || clients.length !== 0 || question.isPredefined)
+    if(forms.length !== 0 || clients.length !== 0 || organizations.length !== 0 || question.isPredefined)
       res.status(400).json({success: false, message: 'This question cannot be updated'})
     await updateQuestionHelper(id, updateData);
-    return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
+    return res.status(202).json({success: true, message: 'Successfully update question.'});
   } catch (e) {
     next(e)
   }
@@ -62,7 +71,16 @@ const fetchQuestion = async (req, res, next) => {
       }
       return false
     })
-    return res.status(200).json({question, success: true, locked: forms.length !== 0 || clients.length !== 0 || question.isPredefined});
+    const organizations = (await GDBOrganizationModel.find({}, {populates: ['questionOccurrences.occurrenceOf']})).filter((organization) => {
+      if(organization.questionOccurrences){
+        for (let occurrence of organization.questionOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
+    return res.status(200).json({question, success: true, locked: forms.length !== 0 || clients.length !== 0 || organizations.length !== 0 || question.isPredefined});
   } catch (e) {
     next(e)
   }
