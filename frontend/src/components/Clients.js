@@ -25,15 +25,15 @@ const columnsWithoutOptions = [
       return lastName;
     }
   },
-  {
-    name: 'profile.primary_phone_number',
-    label: 'Phone Number',
-    body: () => {
-      // if (profile.primary_phone_number)
-      //   return formatPhoneNumber(profile.primary_phone_number);
-      // return 'Not Provided';
-    },
-  },
+  // {
+  //   name: 'profile.primary_phone_number',
+  //   label: 'Phone Number',
+  //   body: () => {
+  //     // if (profile.primary_phone_number)
+  //     //   return formatPhoneNumber(profile.primary_phone_number);
+  //     // return 'Not Provided';
+  //   },
+  // },
   {
     label: 'Email',
     body: ({email}) => {
@@ -68,21 +68,26 @@ export default function Clients() {
     })).filter(client => client.position.lat && client.position.lng);
   };
 
+  /**
+   * Fetch and transform data
+   * @returns {Promise<*[]>}
+   */
   const fetchData = async () => {
     const clients = (await fetchClients()).data;
     const data = [];
     for (const client of clients) {
       const clientData = {_id: client._id};
-      for (const occ of client.characteristicOccurrences) {
-        if (occ.occurrenceOf?.name === 'first name') {
-          clientData.firstName = occ.dataStringValue;
-        } else  if (occ.occurrenceOf?.name === 'last name') {
-          clientData.lastName = occ.dataStringValue;
-        }else  if (occ.occurrenceOf?.name === 'email') {
-          clientData.email = occ.dataStringValue;
-        }
+      if (client.characteristicOccurrences)
+        for (const occ of client.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'first name') {
+            clientData.firstName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'last name') {
+            clientData.lastName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'email') {
+            clientData.email = occ.dataStringValue;
+          }
 
-      }
+        }
       data.push(clientData);
     }
     return data;
