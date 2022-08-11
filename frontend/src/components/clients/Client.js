@@ -11,7 +11,7 @@ import AppointmentRow from '../appointments/AppointmentRow';
 
 import { fetchClient } from '../../api/mockedApi/clients';
 import { fetchClientFields } from "../../api/mockedApi/clientFields";
-import { clientFields } from '../../constants/client_fields.js'
+import { clientFields } from '../../constants/client_fields.js';
 
 //Table
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"

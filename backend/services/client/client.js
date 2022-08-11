@@ -1,4 +1,4 @@
-const {findClientById, findOrganizationById, deleteHelper} = require("./clientHelper");
+const {findClientById, findOrganizationById, deleteHelper, parseHelper} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel} = require("../../models");
@@ -126,7 +126,8 @@ const fetchClientOrOrganization = async (req, res, next) => {
 
     if (option === 'client') {
       const client = await findClientById(id);
-      return res.status(202).json({client, success: true, message: 'Successfully fetched a client.'})
+      const displayAll = await parseHelper(client);
+      return res.status(202).json({displayAll, success: true, message: 'Successfully fetched a client.'})
     }
 
     if (option === 'organization') {
@@ -170,6 +171,8 @@ const deleteClientOrOrganization = async (req, res, next) => {
     next(e)
   }
 }
+
+
 
 module.exports = {
   createClientOrganization,
