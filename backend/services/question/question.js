@@ -28,7 +28,17 @@ const updateQuestion = async (req, res, next) => {
 
   try {
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'question'}}}}})
-    if(forms.length !== 0)
+    const clients = (await GDBClientModel.find({}, {populates: ['questionOccurrences.occurrenceOf']})).filter((client) => {
+      if(client.questionOccurrences){
+        for (let occurrence of client.questionOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
+    const question = await findQuestionById(id);
+    if(forms.length !== 0 || clients.length !== 0 || question.isPredefined)
       res.status(400).json({success: false, message: 'This question cannot be updated'})
     await updateQuestionHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
@@ -44,7 +54,6 @@ const fetchQuestion = async (req, res, next) => {
     const question = await findQuestionById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'question'}}}}})
     const clients = (await GDBClientModel.find({}, {populates: ['questionOccurrences.occurrenceOf']})).filter((client) => {
-
       if(client.questionOccurrences){
         for (let occurrence of client.questionOccurrences) {
           if (occurrence.occurrenceOf._id === id)
@@ -53,7 +62,7 @@ const fetchQuestion = async (req, res, next) => {
       }
       return false
     })
-    return res.status(200).json({question, success: true, locked: forms.length !== 0 || clients.length !== 0});
+    return res.status(200).json({question, success: true, locked: forms.length !== 0 || clients.length !== 0 || question.isPredefined});
   } catch (e) {
     next(e)
   }

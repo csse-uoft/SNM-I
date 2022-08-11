@@ -47,8 +47,18 @@ const updateCharacteristic = async (req, res, next) => {
   };
 
   try {
+    const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
+      if(client.characteristicOccurrences) {
+        for (let occurrence of client.characteristicOccurrences) {
+          if (occurrence.occurrenceOf._id === id)
+            return true
+        }
+      }
+      return false
+    })
+    const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-    if(forms.length !== 0)
+    if(forms.length !== 0 || clients.length !== 0 || characteristic.isPredefined)
       res.status(400).json({success: false, message: 'This characteristic cannot be updated'})
     await updateCharacteristicHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
@@ -65,7 +75,7 @@ const fetchCharacteristic = async (req, res, next) => {
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
     // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
     const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-      if(client.characteristicOccurrences){
+      if(client.characteristicOccurrences) {
         for (let occurrence of client.characteristicOccurrences) {
           if (occurrence.occurrenceOf._id === id)
             return true
@@ -89,7 +99,7 @@ const fetchCharacteristic = async (req, res, next) => {
       optionsFromClass: characteristic.implementation.optionsFromClass,
 
     }
-    return res.status(200).json({fetchData, success: true,locked: forms.length !== 0 || clients.length !== 0});
+    return res.status(200).json({fetchData, success: true,locked: forms.length !== 0 || clients.length !== 0 || characteristic.isPredefined});
   } catch (e) {
     next(e)
   }
