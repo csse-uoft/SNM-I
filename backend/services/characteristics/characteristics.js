@@ -6,6 +6,8 @@ const {
 const {SPARQL} = require('../../utils/graphdb/helpers');
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {query} = require("express");
+const {GraphDB} = require("../../utils/graphdb");
 
 
 const createCharacteristic = async (req, res, next) => {
@@ -47,28 +49,41 @@ const updateCharacteristic = async (req, res, next) => {
   };
 
   try {
-    const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-      if(client.characteristicOccurrences) {
-        for (let occurrence of client.characteristicOccurrences) {
-          if (occurrence.occurrenceOf._id === id)
-            return true
-        }
-      }
-      return false
-    })
-    const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
-      if(organization.characteristicOccurrences){
-        for (let occurrence of organization.characteristicOccurrences) {
-          if (occurrence.occurrenceOf._id === id)
-            return true
-        }
-      }
-      return false
-    })
+    // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
+    //   if(client.characteristicOccurrences) {
+    //     for (let occurrence of client.characteristicOccurrences) {
+    //       if (occurrence.occurrenceOf._id === id)
+    //         return true
+    //     }
+    //   }
+    //   return false
+    // })
+
+    const query = `
+    PREFIX : <http://snmi#>
+    select * where { 
+	      ?s ?p :characteristic_${id}.
+        ?s a :CharacteristicOccurrence.
+    } limit 1`
+
+    let isUsed = false
+    await GraphDB.sendSelectQuery(query, false, () => {
+      isUsed = true
+    });
+
+    // const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
+    //   if(organization.characteristicOccurrences){
+    //     for (let occurrence of organization.characteristicOccurrences) {
+    //       if (occurrence.occurrenceOf._id === id)
+    //         return true
+    //     }
+    //   }
+    //   return false
+    // })
     const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-    if(forms.length !== 0 || clients.length !== 0 || organizations.length !== 1 || characteristic.isPredefined)
-      res.status(400).json({success: false, message: 'This characteristic cannot be updated'})
+    if(forms.length !== 0 || isUsed || characteristic.isPredefined)
+      return res.status(400).json({success: false, message: 'This characteristic cannot be updated'})
     await updateCharacteristicHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update characteristics.'});
   } catch (e) {
@@ -83,24 +98,35 @@ const fetchCharacteristic = async (req, res, next) => {
     const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
     // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
-    const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-      if(client.characteristicOccurrences) {
-        for (let occurrence of client.characteristicOccurrences) {
-          if (occurrence.occurrenceOf._id === id)
-            return true
-        }
-      }
-      return false
-    })
-    const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
-      if(organization.characteristicOccurrences) {
-        for (let occurrence of organization.characteristicOccurrences) {
-          if (occurrence.occurrenceOf._id === id)
-            return true
-        }
-      }
-      return false
-    })
+    // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
+    //   if(client.characteristicOccurrences) {
+    //     for (let occurrence of client.characteristicOccurrences) {
+    //       if (occurrence.occurrenceOf._id === id)
+    //         return true
+    //     }
+    //   }
+    //   return false
+    // })
+    // const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
+    //   if(organization.characteristicOccurrences) {
+    //     for (let occurrence of organization.characteristicOccurrences) {
+    //       if (occurrence.occurrenceOf._id === id)
+    //         return true
+    //     }
+    //   }
+    //   return false
+    // })
+    const query = `
+    PREFIX : <http://snmi#>
+    select * where { 
+	      ?s ?p :characteristic_${id}.
+        ?s a :CharacteristicOccurrence.
+    } limit 1`
+
+    let isUsed = false
+    await GraphDB.sendSelectQuery(query, false, () => {
+      isUsed = true
+    });
     if (characteristic.implementation?.optionsFromClass) {
       characteristic.implementation.optionsFromClass = SPARQL.getFullURI(characteristic.implementation.optionsFromClass);
     }
@@ -116,7 +142,7 @@ const fetchCharacteristic = async (req, res, next) => {
       optionsFromClass: characteristic.implementation.optionsFromClass,
 
     }
-    return res.status(200).json({fetchData, success: true, locked: forms.length !== 0 || organizations.length !== 0 || clients.length !== 0 || characteristic.isPredefined});
+    return res.status(200).json({fetchData, success: true, locked: forms.length !== 0 || isUsed || characteristic.isPredefined});
   } catch (e) {
     next(e)
   }
@@ -155,6 +181,40 @@ const fetchCharacteristics = async (req, res, next) => {
 const deleteCharacteristic = async (req, res, next) => {
   try {
     const id = req.params.id;
+    const characteristic = await findCharacteristicById(id);
+    const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
+    // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
+    // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
+    //   if(client.characteristicOccurrences) {
+    //     for (let occurrence of client.characteristicOccurrences) {
+    //       if (occurrence.occurrenceOf._id === id)
+    //         return true
+    //     }
+    //   }
+    //   return false
+    // })
+    // const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
+    //   if(organization.characteristicOccurrences) {
+    //     for (let occurrence of organization.characteristicOccurrences) {
+    //       if (occurrence.occurrenceOf._id === id)
+    //         return true
+    //     }
+    //   }
+    //   return false
+    // })
+    const query = `
+    PREFIX : <http://snmi#>
+    select * where { 
+	      ?s ?p :characteristic_${id}.
+        ?s a :CharacteristicOccurrence.
+    } limit 1`
+
+    let isUsed = false
+    await GraphDB.sendSelectQuery(query, false, () => {
+      isUsed = true
+    });
+    if(characteristic.isPredefined || forms.length !== 0 || isUsed)
+      return res.status(400).json({success: false, message: 'The characteristic is not deletable'});
     const doc = await GDBCharacteristicModel.findByIdAndDelete(id);
     return res.status(200).json({success: true});
   } catch (e) {
