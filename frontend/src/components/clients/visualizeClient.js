@@ -21,7 +21,7 @@ export default function visualizeClient() {
 
   }, [id]);
 
-  console.log(client.displayAll)
+  console.log(client)
 
   if (loading)
     return <Loading message={`Loading user...`}/>;
@@ -38,7 +38,7 @@ export default function visualizeClient() {
             <Table>
               <TableBody>
                 <TR title={content}
-                    value={'Not Provided'}
+                    value={occurrence}
                 />
               </TableBody>
             </Table>
