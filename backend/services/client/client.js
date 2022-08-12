@@ -64,17 +64,17 @@ const createClientOrganization = async (req, res, next) => {
         const characteristic = characteristics[id];
         const occurrence = {occurrenceOf: characteristic};
 
-        if(characteristic.isPredefined){
-          if ((Object.keys(GDBClientModel.schema).filter((property) => {
-            return property === characteristic.name
-          })).length !== 0 && option === 'client'){
-            instanceData[characteristic.name] = value
-          }else if((Object.keys(GDBOrganizationModel.schema).filter((property) => {
-            return property === characteristic.name
-          })).length !== 0 && option === 'organization'){
-            instanceData[characteristic.name] = value
-          }
-        }
+        // if(characteristic.isPredefined){
+        //   if ((Object.keys(GDBClientModel.schema).filter((property) => {
+        //     return property === characteristic.name
+        //   })).length !== 0 && option === 'client'){
+        //     instanceData[characteristic.name] = value
+        //   }else if((Object.keys(GDBOrganizationModel.schema).filter((property) => {
+        //     return property === characteristic.name
+        //   })).length !== 0 && option === 'organization'){
+        //     instanceData[characteristic.name] = value
+        //   }
+        // }
 
         if (characteristic.implementation.valueDataType === 'xsd:string') {
           // TODO: check if the dataType of input value is correct
