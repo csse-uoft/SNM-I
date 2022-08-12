@@ -15,6 +15,7 @@ const createClientOrganization = async (req, res, next) => {
   const data = req.body;
   const {option} = req.params
 
+  // check the data package from frontend
   if (!data.formId) {
     return res.status(400).json({success: false, message: 'No form Id is given'})
   }
@@ -38,7 +39,7 @@ const createClientOrganization = async (req, res, next) => {
     const questions = {};
     const characteristics = {};
 
-    // Get all ids
+    // Pick all characteristics and questions from package and put their ids into dictionary
     for (const key of Object.keys(data.fields)) {
       const [type, id] = key.split('_');
       if (type === 'characteristic') {
@@ -47,7 +48,7 @@ const createClientOrganization = async (req, res, next) => {
         questions[id] = null;
       }
     }
-    // Find characteristics & questions
+    // Fetch characteristics & questions from database and put them into dictionary
     if (Object.keys(characteristics).length)
       (await GDBCharacteristicModel.find({_id: {$in: Object.keys(characteristics)}}, {populates: ['implementation']}))
         .forEach(item => characteristics[item._id] = item);
