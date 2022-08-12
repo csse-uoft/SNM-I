@@ -5,14 +5,14 @@ const {findQuestionById} = require("../question/questionHelper");
 async function findClientById(id) {
   return await GDBClientModel.findOne(
     {_id: id},
-    {populates: ['characteristicOccurrences', 'questionOccurrence']}
+    {populates: ['characteristicOccurrences', 'questionOccurrences']}
   );
 }
 
 async function findOrganizationById(id) {
   return await GDBOrganizationModel.findOne(
     {_id: id},
-    {populates: ['characteristicOccurrences', 'questionOccurrence']}
+    {populates: ['characteristicOccurrences', 'questionOccurrences']}
   );
 }
 
@@ -45,17 +45,37 @@ async function parseHelper(data) {
       const [char, charId] = characteristic.occurrenceOf.split('_');
       const result = await findCharacteristicById(charId);
       let charValue;
+
+      // Storing string value
       if (!!characteristic.dataStringValue) {
         charValue = characteristic.dataStringValue;
       }
+
+      // Storing number value
       if (!!characteristic.dataNumberValue) {
         charValue = characteristic.dataNumberValue;
       }
-      if (!!characteristic.dataBooleanValue) {
-        charValue = characteristic.dataBooleanValue;
+
+      // Storing boolean value, convert to 'Yes' or 'No'
+      if (typeof characteristic.dataBooleanValue !== 'undefined') {
+        if (characteristic.dataBooleanValue === false) {
+          charValue = 'No';
+        } else if (characteristic.dataBooleanValue === true) {
+          charValue = 'Yes';
+        }
       }
+
+      // Storing date value
       if (!!characteristic.dataDateValue) {
-        charValue = characteristic.dataDateValue;
+        // use toLocaleDateString() for date value
+        // use toLocaleString() for date time value.
+        const test = characteristic.dataDateValue;
+        charValue = new Date(characteristic.dataDateValue).toLocaleString('en-US', {timeZone: 'UTC'});
+      }
+
+      // Storing object value
+      if (!!characteristic.objectValue) {
+        charValue = characteristic.objectValue;
       }
 
       displayAll[result.implementation.label] = charValue;

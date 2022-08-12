@@ -70,7 +70,7 @@ const createClientOrganization = async (req, res, next) => {
         } else if (characteristic.implementation.valueDataType === 'xsd:number') {
           occurrence.dataNumberValue = Number(value);
         } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
-          occurrence.dataBooleanValue = !!value;
+          occurrence.dataBooleanValue = !!value.target.value;
         } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
           occurrence.dataDateValue = new Date(value);
         } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
