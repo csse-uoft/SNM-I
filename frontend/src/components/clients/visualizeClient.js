@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
 import {getDynamicFormsByFormType} from "../../api/dynamicFormApi";
 import {fetchClient} from "../../api/clientApi";
-import {Container, Paper, Table, TableBody, TableHead, Typography} from "@mui/material";
+import {Button, Container, Paper, Table, TableBody, TableHead, Typography} from "@mui/material";
 import {Loading} from "../shared";
 import TR from "../shared/TR";
 import TableRow from "@mui/material/TableRow";
@@ -36,7 +36,10 @@ export default function visualizeClient() {
             <TableCell component="th" scope="row">
               {'Information for Client with ID: ' + id}
             </TableCell>
-            <TableCell></TableCell>
+            <TableCell>
+              <Button>Appointment</Button>
+              <Button>Referral</Button>
+            </TableCell>
           </TableHead>
           <TableBody>
             {Object.entries(client).map(([content, occurrence]) => {
