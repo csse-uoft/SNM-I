@@ -86,7 +86,12 @@ const createClientOrganization = async (req, res, next) => {
         } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
           occurrence.dataDateValue = new Date(value);
         } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-          continue;
+          // occurrence.objectValue = value;
+          if (characteristic.implementation.label === 'phone number field') {
+            occurrence.dataStringValue = value;
+            occurrence.objectValue = [occurrence.dataStringValue];
+          }
+          // continue;
         }
 
         instanceData.characteristicOccurrences.push(occurrence);
