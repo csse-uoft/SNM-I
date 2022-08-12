@@ -57,7 +57,7 @@ async function parseHelper(data) {
       }
 
       // Storing boolean value, convert to 'Yes' or 'No'
-      if (!!characteristic.dataBooleanValue) {
+      if (typeof characteristic.dataBooleanValue !== 'undefined') {
         if (characteristic.dataBooleanValue === false) {
           charValue = 'No';
         } else if (characteristic.dataBooleanValue === true) {

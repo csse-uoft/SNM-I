@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
 import {getDynamicFormsByFormType} from "../../api/dynamicFormApi";
 import {fetchClient} from "../../api/clientApi";
-import {Container, Paper, Table, TableBody, Typography} from "@mui/material";
+import {Container, Paper, Table, TableBody, TableHead, Typography} from "@mui/material";
 import {Loading} from "../shared";
 import TR from "../shared/TR";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
 
 export default function visualizeClient() {
 
@@ -28,20 +30,23 @@ export default function visualizeClient() {
 
   return(
     <Container>
-      <Typography variant="h5" gutterBottom>
-        {'Client Information with ID: ' + id}
-      </Typography>
       <Paper>
         <Table>
-          {Object.entries(client).map(([content, occurrence]) => {
-            return(
-                <TableBody>
+          <TableHead>
+            <TableCell component="th" scope="row">
+              {'Information for Client with ID: ' + id}
+            </TableCell>
+            <TableCell></TableCell>
+          </TableHead>
+          <TableBody>
+            {Object.entries(client).map(([content, occurrence]) => {
+              return(
                   <TR title={content}
                       value={occurrence}
                   />
-                </TableBody>
-            )
-          })}
+              )
+            })}
+          </TableBody>
         </Table>
       </Paper>
 
