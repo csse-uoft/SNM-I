@@ -182,6 +182,7 @@ const deleteCharacteristic = async (req, res, next) => {
   try {
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
+    // check if the characteristic is used by a form
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
     // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
     // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
@@ -202,6 +203,9 @@ const deleteCharacteristic = async (req, res, next) => {
     //   }
     //   return false
     // })
+
+
+    // check if the characteristic has an occurrence
     const query = `
     PREFIX : <http://snmi#>
     select * where { 
