@@ -31,20 +31,19 @@ export default function visualizeClient() {
       <Typography variant="h5" gutterBottom>
         {'Client Information with ID: ' + id}
       </Typography>
-
-      {Object.entries(client).map(([content, occurrence]) => {
-        return(
-          <Paper>
-            <Table>
-              <TableBody>
-                <TR title={content}
-                    value={occurrence}
-                />
-              </TableBody>
-            </Table>
-          </Paper>
-        )
-      })}
+      <Paper>
+        <Table>
+          {Object.entries(client).map(([content, occurrence]) => {
+            return(
+                <TableBody>
+                  <TR title={content}
+                      value={occurrence}
+                  />
+                </TableBody>
+            )
+          })}
+        </Table>
+      </Paper>
 
     </Container>
   );
