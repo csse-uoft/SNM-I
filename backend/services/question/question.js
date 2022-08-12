@@ -60,7 +60,7 @@ const updateQuestion = async (req, res, next) => {
     });
     const question = await findQuestionById(id);
     if(forms.length !== 0 || isUsed || question.isPredefined)
-      res.status(400).json({success: false, message: 'This question cannot be updated'})
+      return res.status(400).json({success: false, message: 'This question cannot be updated'})
     await updateQuestionHelper(id, updateData);
     return res.status(202).json({success: true, message: 'Successfully update question.'});
   } catch (e) {
