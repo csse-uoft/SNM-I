@@ -67,7 +67,10 @@ async function parseHelper(data) {
 
       // Storing date value
       if (!!characteristic.dataDateValue) {
-        charValue = characteristic.dataDateValue;
+        // use toLocaleDateString() for date value
+        // use toLocaleString() for date time value.
+        const test = characteristic.dataDateValue;
+        charValue = new Date(characteristic.dataDateValue).toLocaleString('en-US', {timeZone: 'UTC'});
       }
 
       // Storing object value
