@@ -21,6 +21,26 @@ const linkedProperty = (option, characteristic) => {
   return false
 }
 
+const implementCharacteristicOccurrence = (characteristic, occurrence) => {
+  if (characteristic.implementation.valueDataType === 'xsd:string') {
+    // TODO: check if the dataType of input value is correct
+    occurrence.dataStringValue = value + '';
+  } else if (characteristic.implementation.valueDataType === 'xsd:number') {
+    occurrence.dataNumberValue = Number(value);
+  } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
+    occurrence.dataBooleanValue = !!value.target.value;
+  } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
+    occurrence.dataDateValue = new Date(value);
+  } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
+    // occurrence.objectValue = value;
+    if (characteristic.implementation.label === 'phone number field') {
+      occurrence.dataStringValue = value;
+      occurrence.objectValue = [occurrence.dataStringValue];
+    }
+
+  }
+}
+
 const createClientOrganization = async (req, res, next) => {
   const data = req.body;
   const {option} = req.params
@@ -94,23 +114,24 @@ const createClientOrganization = async (req, res, next) => {
             instanceData[property] = value
         }
 
-        if (characteristic.implementation.valueDataType === 'xsd:string') {
-          // TODO: check if the dataType of input value is correct
-          occurrence.dataStringValue = value + '';
-        } else if (characteristic.implementation.valueDataType === 'xsd:number') {
-          occurrence.dataNumberValue = Number(value);
-        } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
-          occurrence.dataBooleanValue = !!value.target.value;
-        } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
-          occurrence.dataDateValue = new Date(value);
-        } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-          // occurrence.objectValue = value;
-          if (characteristic.implementation.label === 'phone number field') {
-            occurrence.dataStringValue = value;
-            occurrence.objectValue = [occurrence.dataStringValue];
-          }
-
-        }
+        // if (characteristic.implementation.valueDataType === 'xsd:string') {
+        //   // TODO: check if the dataType of input value is correct
+        //   occurrence.dataStringValue = value + '';
+        // } else if (characteristic.implementation.valueDataType === 'xsd:number') {
+        //   occurrence.dataNumberValue = Number(value);
+        // } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
+        //   occurrence.dataBooleanValue = !!value.target.value;
+        // } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
+        //   occurrence.dataDateValue = new Date(value);
+        // } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
+        //   // occurrence.objectValue = value;
+        //   if (characteristic.implementation.label === 'phone number field') {
+        //     occurrence.dataStringValue = value;
+        //     occurrence.objectValue = [occurrence.dataStringValue];
+        //   }
+        //
+        // }
+        implementCharacteristicOccurrence(characteristic, occurrence)
 
         instanceData.characteristicOccurrences.push(occurrence);
 
