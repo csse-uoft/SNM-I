@@ -9,4 +9,5 @@ module.exports = {
   characteristicRoute: require('./characteristic'),
   dynamicFormRoute: require('./dynamicForm'),
   questionRoute: require('./question'),
+  genericRoute: require('./genericData'),
 }

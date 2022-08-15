@@ -143,6 +143,9 @@ class GraphDBDocumentArray extends Array {
             const key = instanceName.slice(0, instanceName.lastIndexOf('_'));
             const model = doc.model.instancePrefix2Model.get(key);
 
+            if (!model) {
+              console.error('Cannot populate: ', instanceName, 'Model not found.');
+            }
             newValue = new GraphDBDocument({
               data: {_id, ...data[instanceName]},
               model: model,

@@ -12,7 +12,8 @@ import {
 } from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
-import { createClient, fetchClient, updateClient } from "../../api/clientApi";
+import { createClient, updateClient } from "../../api/clientApi";
+import { fetchSingleGeneric } from "../../api/genericDataApi";
 
 const contentStyle = {
   width: '80%',
@@ -55,13 +56,17 @@ export default function ClientForm() {
         setForm({formId: firstForm._id, fields: {}});
         setSelectedFormId(firstForm._id);
       }),
-    ]).then(() => {
-      setLoading(false);
+    ]).then(async () => {
+      if (id) {
+        // setForm
+        const {data: clientData} = await fetchSingleGeneric('client', id);
+        setForm(form => ({...form, fields: clientData}));
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     });
 
-    if (id) {
-      // setForm
-    }
   }, [id]);
 
   const formOptions = useMemo(() => {
@@ -98,7 +103,7 @@ export default function ClientForm() {
     if (mode === 'new') {
       createClient(form).then(() => navigate('/clients'));
     } else {
-      updateClient(form).then(() => navigate('/clients'));
+      updateClient(id, form).then(() => navigate('/clients'));
     }
 
   };

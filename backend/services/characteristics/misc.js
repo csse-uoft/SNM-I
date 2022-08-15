@@ -1,4 +1,5 @@
 const {GDBFieldTypeModel} = require('../../models/ClientFunctionalities/fieldType');
+const {GDBCharacteristicModel} = require('../../models/ClientFunctionalities/characteristic');
 const {GraphDB} = require('../../utils/graphdb');
 const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
 
@@ -18,6 +19,8 @@ const type2Label = {
   PhoneNumberField: 'Phone Number Field',
   AddressField: 'Address Field',
 }
+
+const fieldTypeCache = {};
 
 const dataTypes = [
   {label: 'String', value: 'xsd:string'},
@@ -41,15 +44,44 @@ async function initFieldTypes() {
       // This won't be triggered if label is unchanged.
       await fieldType.save();
       delete newFieldTypes[fieldType.type];
+
+      // Cache it
+      fieldTypeCache[fieldType.type] = fieldType;
     }
   }
 
   // Create new field types
   for (const [type, label] of Object.entries(newFieldTypes)) {
-    await new GDBFieldTypeModel({type, label}).save();
+    const newFieldType = new GDBFieldTypeModel({type, label});
+    await newFieldType.save();
+
+    // Cache it
+    fieldTypeCache[newFieldType.type] = newFieldType;
+  }
+}
+
+
+async function initPredefinedCharacteristics() {
+  const {allPredefinedCharacteristics} = require('./predefined');
+  const predefined = {...allPredefinedCharacteristics};
+  const existingPredefined = await GDBCharacteristicModel.find({isPredefined: true});
+  for (const existingCharacteristic of existingPredefined) {
+    if (Object.keys(predefined).includes(existingCharacteristic.name)) {
+      Object.assign(existingCharacteristic, predefined);
+
+      // This won't be triggered if the predefined characteristic is not changed.
+      await existingCharacteristic.save();
+      delete predefined[existingCharacteristic.name];
+    }
+  }
+
+  // Create new field types
+  for (const characteristic of Object.values(predefined)) {
+    await new GDBCharacteristicModel(characteristic).save();
   }
 
 }
+
 
 async function getFieldTypes(req, res) {
   const fieldTypes = await GDBFieldTypeModel.find({});
@@ -95,4 +127,7 @@ async function getAllClasses(req, res) {
 }
 
 
-module.exports = {initFieldTypes, getFieldTypes, getDataTypes, getAllClasses}
+module.exports = {
+  initFieldTypes, getFieldTypes, getDataTypes, getAllClasses,
+  initPredefinedCharacteristics, FieldTypes: fieldTypeCache
+}

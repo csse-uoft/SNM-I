@@ -66,6 +66,7 @@ export default function FieldGroup({component, options, ...props}) {
       <SelectField
         options={options}
         {...props}
+        noEmpty
       />
     );
   } else if (component === 'MultiSelectField') {

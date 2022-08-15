@@ -79,11 +79,11 @@ export default function Clients() {
       const clientData = {_id: client._id};
       if (client.characteristicOccurrences)
         for (const occ of client.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'first name') {
+          if (occ.occurrenceOf?.name === 'First Name') {
             clientData.firstName = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'last name') {
+          } else if (occ.occurrenceOf?.name === 'Last Name') {
             clientData.lastName = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'email') {
+          } else if (occ.occurrenceOf?.name === 'Email') {
             clientData.email = occ.dataStringValue;
           }
 
