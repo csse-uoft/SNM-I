@@ -4,11 +4,21 @@ const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
+const {SPARQL} = require('../../utils/graphdb/helpers');
 
 
 const option2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
+}
+
+const linkedProperty = (option, characteristic) => {
+  const schema = option2Model[option].schema
+  for (let key in schema){
+    if(schema[key].internalKey === characteristic.predefinedProperty)
+      return key
+  }
+  return false
 }
 
 const createClientOrganization = async (req, res, next) => {
@@ -66,8 +76,11 @@ const createClientOrganization = async (req, res, next) => {
 
         // if(characteristic.isPredefined){
         //   if ((Object.keys(GDBClientModel.schema).filter((property) => {
-        //     return property === characteristic.name
+        //     return property === characteristic.predefinedProperty
         //   })).length !== 0 && option === 'client'){
+        //
+        //
+        //
         //     instanceData[characteristic.name] = value
         //   }else if((Object.keys(GDBOrganizationModel.schema).filter((property) => {
         //     return property === characteristic.name
@@ -75,6 +88,11 @@ const createClientOrganization = async (req, res, next) => {
         //     instanceData[characteristic.name] = value
         //   }
         // }
+        if(characteristic.isPredefined){
+          const property = linkedProperty(option, characteristic)
+          if (property)
+            instanceData[property] = value
+        }
 
         if (characteristic.implementation.valueDataType === 'xsd:string') {
           // TODO: check if the dataType of input value is correct
@@ -91,7 +109,7 @@ const createClientOrganization = async (req, res, next) => {
             occurrence.dataStringValue = value;
             occurrence.objectValue = [occurrence.dataStringValue];
           }
-          // continue;
+
         }
 
         instanceData.characteristicOccurrences.push(occurrence);
