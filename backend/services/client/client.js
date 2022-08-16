@@ -1,4 +1,4 @@
-const {findClientById, findOrganizationById, deleteHelper, parseHelper} = require("./clientHelper");
+const {findClientById, findOrganizationById, parseHelper} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel} = require("../../models");
@@ -86,12 +86,17 @@ const createClientOrganization = async (req, res, next) => {
         } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
           occurrence.dataDateValue = new Date(value);
         } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-          // occurrence.objectValue = value;
+          // continue;
+
+          // storing phone number field
           if (characteristic.implementation.label === 'phone number field') {
             occurrence.dataStringValue = value;
             occurrence.objectValue = [occurrence.dataStringValue];
           }
-          // continue;
+
+          // storing address field
+
+          // storing
         }
 
         instanceData.characteristicOccurrences.push(occurrence);

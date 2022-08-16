@@ -22,18 +22,6 @@ async function updateClientHelper(data) {
 
 }
 
-async function deleteHelper(option, id) {
-  // Delete unused forms and occurrence for a client
-  if(option === 'client') {
-    const client = await findClientById(id);
-
-  }
-
-  // Delete unused forms and occurrence for an organization
-  if(option === 'organization') {
-
-  }
-}
 
 async function parseHelper(data) {
   const displayAll = {};
@@ -96,4 +84,4 @@ async function parseHelper(data) {
 
 
 module.exports = {
-  findClientById, findOrganizationById, updateClientHelper, deleteHelper, parseHelper}
+  findClientById, findOrganizationById, updateClientHelper, parseHelper}
