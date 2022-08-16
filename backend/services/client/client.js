@@ -94,43 +94,14 @@ const createClientOrganization = async (req, res, next) => {
         const characteristic = characteristics[id];
         const occurrence = {occurrenceOf: characteristic};
 
-        // if(characteristic.isPredefined){
-        //   if ((Object.keys(GDBClientModel.schema).filter((property) => {
-        //     return property === characteristic.predefinedProperty
-        //   })).length !== 0 && option === 'client'){
-        //
-        //
-        //
-        //     instanceData[characteristic.name] = value
-        //   }else if((Object.keys(GDBOrganizationModel.schema).filter((property) => {
-        //     return property === characteristic.name
-        //   })).length !== 0 && option === 'organization'){
-        //     instanceData[characteristic.name] = value
-        //   }
-        // }
+
         if(characteristic.isPredefined){
           const property = linkedProperty(option, characteristic)
           if (property)
             instanceData[property] = value
         }
 
-        // if (characteristic.implementation.valueDataType === 'xsd:string') {
-        //   // TODO: check if the dataType of input value is correct
-        //   occurrence.dataStringValue = value + '';
-        // } else if (characteristic.implementation.valueDataType === 'xsd:number') {
-        //   occurrence.dataNumberValue = Number(value);
-        // } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
-        //   occurrence.dataBooleanValue = !!value.target.value;
-        // } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
-        //   occurrence.dataDateValue = new Date(value);
-        // } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-        //   // occurrence.objectValue = value;
-        //   if (characteristic.implementation.label === 'phone number field') {
-        //     occurrence.dataStringValue = value;
-        //     occurrence.objectValue = [occurrence.dataStringValue];
-        //   }
-        //
-        // }
+
         implementCharacteristicOccurrence(characteristic, occurrence, value)
 
         instanceData.characteristicOccurrences.push(occurrence);
@@ -153,6 +124,10 @@ const createClientOrganization = async (req, res, next) => {
     next(e)
   }
 
+}
+
+const updateClientOrOrganization = async (req, res, next) => {
+  const data = req.body
 }
 
 const fetchClientOrOrganization = async (req, res, next) => {
