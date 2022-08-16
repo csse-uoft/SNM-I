@@ -1,7 +1,7 @@
 const {findClientById, findOrganizationById, deleteHelper, parseHelper} = require("./clientHelper");
 
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel} = require("../../models");
+const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel, GDBPhoneNumberModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 const {SPARQL} = require('../../utils/graphdb/helpers');
@@ -26,16 +26,15 @@ const parsePhoneNumber = (phone) => {
 
 
   // this only works for North American phone numbers
-  const [countryCode, phoneNumber, areaCode] = phone.match(/\+(\d+)((?: \((\d+)\))? \d+\-\d+)/)
-  return {countryCode: countryCode, areaCode: areaCode, phoneNumber: phoneNumber.trim().replace('-', '')}
+  const [_, countryCode, phoneNumber, areaCode] = phone.match(/\+(\d+)((?: \((\d+)\))? \d+\-\d+)/)
+  return {countryCode: Number(countryCode), areaCode: Number(areaCode), phoneNumber: Number(phoneNumber.replace(/[() +-]/g, ''))}
   // const countryCode = phone.split('(')[0].split('+')[1].trim()
   // const areaCode = phone.split('(')[1].split(')')[0]
   // const phoneNumber = phone.split('(')[1].split(')')[1].trim().replace('-', '')
-  return {countryCode, areaCode, phoneNumber}
 
 }
 
-const implementCharacteristicOccurrence = (characteristic, occurrence, value) => {
+const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     // TODO: check if the dataType of input value is correct
@@ -56,7 +55,9 @@ const implementCharacteristicOccurrence = (characteristic, occurrence, value) =>
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.PhoneNumberField.individualName) {
-      occurrence.objectValue = parsePhoneNumber(value);
+      const phoneNumber = GDBPhoneNumberModel(parsePhoneNumber(value));
+      await phoneNumber.save()
+      occurrence.objectValue = phoneNumber.individualName;
     } else if (fieldType === FieldTypes.AddressField.individualName) {
       occurrence.objectValue = value
     } else {
@@ -127,7 +128,7 @@ const createClientOrganization = async (req, res, next) => {
         }
 
 
-        implementCharacteristicOccurrence(characteristic, occurrence, value)
+        await implementCharacteristicOccurrence(characteristic, occurrence, value)
 
         instanceData.characteristicOccurrences.push(occurrence);
 
@@ -153,6 +154,7 @@ const createClientOrganization = async (req, res, next) => {
 
 const updateClientOrOrganization = async (req, res, next) => {
   const data = req.body
+
 }
 
 const fetchClientOrOrganization = async (req, res, next) => {
