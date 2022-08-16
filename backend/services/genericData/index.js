@@ -25,12 +25,12 @@ async function fetchSingleGeneric(req, res, next) {
       if (co.objectValue) {
         co.objectValue = SPARQL.getFullURI(co.objectValue);
       } else if (co.multipleObjectValues) {
-        co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(co.objectValue));
+        co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(value));
       }
 
       result[co.occurrenceOf.replace(':', '')] =
         co.dataStringValue ?? co.dataNumberValue ?? co.dataBooleanValue ?? co.dataDateValue
-        ?? co.objectValue ?? co.multipleObjectValue;
+        ?? co.objectValue ?? co.multipleObjectValues;
     }
 
   if (data.questionOccurrences)

@@ -39,7 +39,7 @@ const implementCharacteristicOccurrence = (characteristic, occurrence, value) =>
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
       console.assert(value instanceof Array);
-      occurrence.multipleObjectValue = value;
+      occurrence.multipleObjectValues = value;
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.PhoneNumberField.individualName) {
