@@ -21,7 +21,7 @@ const linkedProperty = (option, characteristic) => {
   return false
 }
 
-const implementCharacteristicOccurrence = (characteristic, occurrence) => {
+const implementCharacteristicOccurrence = (characteristic, occurrence, value) => {
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     // TODO: check if the dataType of input value is correct
     occurrence.dataStringValue = value + '';
@@ -131,7 +131,7 @@ const createClientOrganization = async (req, res, next) => {
         //   }
         //
         // }
-        implementCharacteristicOccurrence(characteristic, occurrence)
+        implementCharacteristicOccurrence(characteristic, occurrence, value)
 
         instanceData.characteristicOccurrences.push(occurrence);
 
