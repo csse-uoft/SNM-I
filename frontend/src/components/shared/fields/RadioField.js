@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 const tryCastBool = val => val === 'true' ? true : (val === 'false' ? false : val);
 
 export default function RadioField({
-                                     row,
+                                     row, disabled,
                                      noStar,
                                      label,
                                      required,
@@ -61,6 +61,7 @@ export default function RadioField({
                 control={<Radio color="primary"/>}
                 label={label}
                 labelPlacement="end"
+                disabled={disabled}
               />
           ))}
         </RadioGroup>
