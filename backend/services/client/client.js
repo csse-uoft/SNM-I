@@ -22,6 +22,19 @@ const linkedProperty = (option, characteristic) => {
   return false
 }
 
+const parsePhoneNumber = (phone) => {
+
+
+  // this only works for North American phone numbers
+  const [countryCode, phoneNumber, areaCode] = phone.match(/\+(\d+)((?: \((\d+)\))? \d+\-\d+)/)
+  return {countryCode: countryCode, areaCode: areaCode, phoneNumber: phoneNumber.trim().replace('-', '')}
+  // const countryCode = phone.split('(')[0].split('+')[1].trim()
+  // const areaCode = phone.split('(')[1].split(')')[0]
+  // const phoneNumber = phone.split('(')[1].split(')')[1].trim().replace('-', '')
+  return {countryCode, areaCode, phoneNumber}
+
+}
+
 const implementCharacteristicOccurrence = (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
   if (characteristic.implementation.valueDataType === 'xsd:string') {
@@ -43,9 +56,9 @@ const implementCharacteristicOccurrence = (characteristic, occurrence, value) =>
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.PhoneNumberField.individualName) {
-
+      occurrence.objectValue = parsePhoneNumber(value);
     } else if (fieldType === FieldTypes.AddressField.individualName) {
-
+      occurrence.objectValue = value
     } else {
       throw Error(`Should not reach here. ${fieldType}`)
     }
