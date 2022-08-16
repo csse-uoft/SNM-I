@@ -1,4 +1,5 @@
 const {GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {SPARQL} = require('../../utils/graphdb/helpers');
 
 const option2Model = {
   'client': GDBClientModel,
@@ -19,8 +20,17 @@ async function fetchSingleGeneric(req, res, next) {
   // Copy the values to occurrence.value regardless of its type.
   if (data.characteristicOccurrences)
     for (const co of data.characteristicOccurrences) {
-      result[co.occurrenceOf.replace(':', '')]
-        = co.dataStringValue ?? co.dataNumberValue ?? co.dataBooleanValue ?? co.dataDateValue ?? co.objectValues;
+
+      // Assign full URI
+      if (co.objectValue) {
+        co.objectValue = SPARQL.getFullURI(co.objectValue);
+      } else if (co.multipleObjectValues) {
+        co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(co.objectValue));
+      }
+
+      result[co.occurrenceOf.replace(':', '')] =
+        co.dataStringValue ?? co.dataNumberValue ?? co.dataBooleanValue ?? co.dataDateValue
+        ?? co.objectValue ?? co.multipleObjectValue;
     }
 
   if (data.questionOccurrences)

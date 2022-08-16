@@ -5,6 +5,7 @@ const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel}
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 const {SPARQL} = require('../../utils/graphdb/helpers');
+const {FieldTypes} = require('../characteristics/misc');
 
 
 const option2Model = {
@@ -14,14 +15,15 @@ const option2Model = {
 
 const linkedProperty = (option, characteristic) => {
   const schema = option2Model[option].schema
-  for (let key in schema){
-    if(schema[key].internalKey === characteristic.predefinedProperty)
+  for (let key in schema) {
+    if (schema[key].internalKey === characteristic.predefinedProperty)
       return key
   }
   return false
 }
 
 const implementCharacteristicOccurrence = (characteristic, occurrence, value) => {
+  const {valueDataType, fieldType} = characteristic.implementation;
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     // TODO: check if the dataType of input value is correct
     occurrence.dataStringValue = value + '';
@@ -32,10 +34,20 @@ const implementCharacteristicOccurrence = (characteristic, occurrence, value) =>
   } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
     occurrence.dataDateValue = new Date(value);
   } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-    // occurrence.objectValue = value;
-    if (characteristic.implementation.label === 'phone number field') {
-      occurrence.dataStringValue = value;
-      occurrence.objectValue = [occurrence.dataStringValue];
+
+    if (fieldType === FieldTypes.SingleSelectField.individualName) {
+      occurrence.objectValue = value;
+    } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
+      console.assert(value instanceof Array);
+      occurrence.multipleObjectValue = value;
+    } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
+      occurrence.objectValue = value;
+    } else if (fieldType === FieldTypes.PhoneNumberField.individualName) {
+
+    } else if (fieldType === FieldTypes.AddressField.individualName) {
+
+    } else {
+      throw Error(`Should not reach here. ${fieldType}`)
     }
 
   }
@@ -95,7 +107,7 @@ const createClientOrganization = async (req, res, next) => {
         const occurrence = {occurrenceOf: characteristic};
 
 
-        if(characteristic.isPredefined){
+        if (characteristic.isPredefined) {
           const property = linkedProperty(option, characteristic)
           if (property)
             instanceData[property] = value
@@ -203,7 +215,6 @@ const deleteClientOrOrganization = async (req, res, next) => {
     next(e)
   }
 }
-
 
 
 module.exports = {
