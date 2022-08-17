@@ -14,7 +14,7 @@ import {
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import { createClient, updateClient } from "../../api/clientApi";
-import { fetchSingleGeneric } from "../../api/genericDataApi";
+import { fetchSingleGeneric, createSingleGeneric} from "../../api/genericDataApi";
 
 const contentStyle = {
   width: '80%',
@@ -105,7 +105,7 @@ export default function ClientForm() {
     console.log(form)
     if (mode === 'new') {
       try {
-        await createClient(form).then(() => navigate('/clients'));
+        await createSingleGeneric('client', form).then(() => navigate('/clients'));
         enqueueSnackbar('Client created', {variant: 'success'});
       } catch (e) {
         console.log(e)
