@@ -1,5 +1,6 @@
-const {GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel} = require("../../models");
 const {SPARQL} = require('../../utils/graphdb/helpers');
+const {FieldTypes} = require("../characteristics");
 
 const option2Model = {
   'client': GDBClientModel,
@@ -23,7 +24,11 @@ async function fetchSingleGeneric(req, res, next) {
 
       // Assign full URI
       if (co.objectValue) {
-        co.objectValue = SPARQL.getFullURI(co.objectValue);
+        const [type, id] = co.objectValue.split('_')
+        if(type ===  ':phoneNumber'){
+          co.objectValue = await GDBPhoneNumberModel.findOne({_id: id})
+        }
+        // co.objectValue = SPARQL.getFullURI(co.objectValue);
       } else if (co.multipleObjectValues) {
         co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(value));
       }
