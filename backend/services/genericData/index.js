@@ -7,6 +7,17 @@ const option2Model = {
   'organization': GDBOrganizationModel,
 }
 
+const combinePhoneNumber = ({countryCode, phoneNumber, areaCode}) => {
+  let ret = ''
+  if(areaCode){
+    ret ='+' + countryCode + ' (' + phoneNumber.toString().slice(0,3) + ') ' +
+      phoneNumber.toString().slice(3,6) + '-' + phoneNumber.toString().slice(6)
+  }else{
+    ret = '+' + countryCode + ' ' + phoneNumber.toString().slice(0, 2) + '-' + phoneNumber.toString().slice(2)
+  }
+  return ret
+}
+
 async function fetchSingleGeneric(req, res, next) {
   const {option, id} = req.params;
 
@@ -14,7 +25,8 @@ async function fetchSingleGeneric(req, res, next) {
     return res.status(400).json({success: false, message: 'Invalid generic type.'});
 
   const data = await option2Model[option].findOne({_id: id},
-    {populates: ['characteristicOccurrences', 'questionOccurrence']});
+    {populates: ['characteristicOccurrences', 'questionOccurrences']});
+  // TODO: model.populate("characteristicOccurrences.occurrenceOf.implementation")
 
   const result = {};
 
@@ -24,16 +36,22 @@ async function fetchSingleGeneric(req, res, next) {
 
       // Assign full URI
       if (co.objectValue) {
-        const [type, id] = co.objectValue.split('_')
-        if(type ===  ':phoneNumber'){
-          co.objectValue = await GDBPhoneNumberModel.findOne({_id: id})
+        // when object is a phoneNumber
+        await co.populate('occurrenceOf.implementation')
+        if(co.occurrenceOf.implementation.fieldType === FieldTypes.PhoneNumberField.individualName){
+          const id = co.objectValue.split('_')[1]
+          co.objectValue = combinePhoneNumber(await GDBPhoneNumberModel.findOne({_id: id}))
+        }else if(co.occurrenceOf.implementation.fieldType === FieldTypes.AddressField.individualName){
+
+        }else{
+          co.objectValue = SPARQL.getFullURI(co.objectValue);
         }
-        // co.objectValue = SPARQL.getFullURI(co.objectValue);
+
       } else if (co.multipleObjectValues) {
         co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(value));
       }
 
-      result[co.occurrenceOf.replace(':', '')] =
+      result[co.occurrenceOf.individualName.replace(':', '')] =
         co.dataStringValue ?? co.dataNumberValue ?? co.dataBooleanValue ?? co.dataDateValue
         ?? co.objectValue ?? co.multipleObjectValues;
     }
