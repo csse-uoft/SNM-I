@@ -23,14 +23,8 @@ const linkedProperty = (option, characteristic) => {
 }
 
 const parsePhoneNumber = (phone) => {
-
-
-  // this only works for North American phone numbers
   const [_, countryCode, phoneNumber, areaCode] = phone.match(/\+(\d+)((?: \((\d+)\))? \d+\-\d+)/)
   return {countryCode: Number(countryCode), areaCode: Number(areaCode), phoneNumber: Number(phoneNumber.replace(/[() +-]/g, ''))}
-  // const countryCode = phone.split('(')[0].split('+')[1].trim()
-  // const areaCode = phone.split('(')[1].split(')')[0]
-  // const phoneNumber = phone.split('(')[1].split(')')[1].trim().replace('-', '')
 
 }
 
@@ -152,52 +146,6 @@ const createClientOrganization = async (req, res, next) => {
 
 }
 
-const updateClientOrOrganization = async (req, res, next) => {
-  const data = req.body
-
-}
-
-const fetchClientOrOrganization = async (req, res, next) => {
-  try {
-    const data = req.body;
-    const {option, id} = req.params;
-
-    // if(!data.formId){
-    //   return res.status(400).json({success: false, message: 'No form Id is given'})
-    // }
-    // const form = await MDBDynamicFormModel.findById(data.formId)
-    // if(form.formType !== 'client' && option === 'client'){
-    //   return res.status(400).json({success: false, message: 'The form is not for client'})
-    // }
-    // if(form.formType !== 'organization' && option === 'organization'){
-    //   return res.status(400).json({success: false, message: 'The form is not for organization'})
-    // }
-    // if(!form.formStructure){
-    //   return res.status(400).json({success: false, message: 'The form structure is undefined'})
-    // }
-    // const formStructure = form.formStructure
-    //
-    // for (let step in formStructure){
-    //   for (let x in Object.keys(step.fields)){
-    //
-    //   }
-    // }
-
-    if (option === 'client') {
-      const client = await findClientById(id);
-      const displayAll = await parseHelper(client);
-      return res.status(202).json({displayAll, success: true, message: 'Successfully fetched a client.'})
-    }
-
-    if (option === 'organization') {
-      const organization = await findOrganizationById(id);
-      return res.status(202).json({organization, success: true, message: 'Successfully fetched an organization.'})
-    }
-
-  } catch (e) {
-    next(e)
-  }
-}
 
 const fetchClientsOrOrganizations = async (req, res, next) => {
   const {option} = req.params;
@@ -234,7 +182,6 @@ const deleteClientOrOrganization = async (req, res, next) => {
 
 module.exports = {
   createClientOrganization,
-  fetchClientOrOrganization,
   fetchClientsOrOrganizations,
   deleteClientOrOrganization,
 }

@@ -8,10 +8,6 @@ export async function updateClient(id, body) {
   return putJson('/api/client/' + id, body);
 }
 
-export async function fetchClient(id) {
-  return getJson('/api/clientOrOrganization/client/' + id);
-}
-
 export async function fetchClients() {
   return getJson('/api/clientOrOrganization/client');
 }
