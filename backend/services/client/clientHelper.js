@@ -1,4 +1,4 @@
-const {GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel} = require("../../models");
 const {findCharacteristicById} = require("../characteristics");
 const {findQuestionById} = require("../question/questionHelper");
 
@@ -75,7 +75,12 @@ async function parseHelper(data) {
 
       // Storing object value
       if (!!characteristic.objectValue) {
-        charValue = characteristic.objectValue;
+        const [type, id] = characteristic.objectValue.split('_')
+        if(type === ':phoneNumber'){
+          charValue = await GDBPhoneNumberModel.findOne({_id: id})
+        }
+
+        // charValue = characteristic.objectValue;
       }
 
       displayAll[result.implementation.label] = charValue;
