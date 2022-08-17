@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
+import { useSnackbar } from 'notistack';
 
 import FieldGroup from '../shared/FieldGroup';
 
@@ -43,6 +44,8 @@ export default function ClientForm() {
   const [dynamicOptions, setDynamicOptions] = useState({});
 
   const [loading, setLoading] = useState(true);
+
+  const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
     Promise.all([
@@ -101,9 +104,21 @@ export default function ClientForm() {
 
     console.log(form)
     if (mode === 'new') {
-      createClient(form).then(() => navigate('/clients'));
+      try {
+        await createClient(form).then(() => navigate('/clients'));
+        enqueueSnackbar('Client created', {variant: 'success'});
+      } catch (e) {
+        console.log(e)
+        enqueueSnackbar('Failed to create client: ' + e.message, {variant: 'error'});
+      }
+
     } else {
-      updateClient(id, form).then(() => navigate('/clients'));
+      try {
+        await updateClient(id, form).then(() => navigate('/clients'));
+        enqueueSnackbar('Client updated', {variant: 'success'});
+      } catch (e) {
+        enqueueSnackbar('Failed to update client: ' + e.message, {variant: 'error'});
+      }
     }
 
   };

@@ -8,7 +8,7 @@ import { blue, pink } from '@mui/material/colors'
 
 import routes from "./routes";
 import { UserContext, getUserContext } from './context';
-import {alertSnackBar} from "./components/shared/snackBar";
+import { SnackbarProvider } from 'notistack';
 
 const theme = createTheme({
   palette: {
@@ -24,10 +24,7 @@ export default function App() {
       updateUser: (user) => {
         localStorage.setItem('userContext', JSON.stringify(user));
         setUserContext(state => ({...state, ...user}));
-      },
-      // errorAlert: (error) => {
-      //   setUserContext(state => ({...state, ...error}));
-      // },
+      }
     }
   );
 
@@ -36,11 +33,13 @@ export default function App() {
       <StyledEngineProvider injectFirst>
         <UserContext.Provider value={userContext}>
           <ThemeProvider theme={theme}>
-            <TopNavbar/>
-            <div style={{paddingTop: 50, paddingBottom: 22}}>
-              {/*<Breadcurum/>*/}
-              {routes}
-            </div>
+            <SnackbarProvider>
+              <TopNavbar/>
+              <div style={{paddingTop: 50, paddingBottom: 22}}>
+                {/*<Breadcurum/>*/}
+                {routes}
+              </div>
+            </SnackbarProvider>
             <Footer/>
           </ThemeProvider>
         </UserContext.Provider>

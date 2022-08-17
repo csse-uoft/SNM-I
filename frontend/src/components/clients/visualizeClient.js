@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
 import {getDynamicFormsByFormType} from "../../api/dynamicFormApi";
-import {fetchClient} from "../../api/clientApi";
+// import {fetchClient} from "../../api/clientApi";
 import {Button, Container, Paper, Table, TableBody, TableHead, Typography} from "@mui/material";
 import {Loading} from "../shared";
 import TR from "../shared/TR";
@@ -16,9 +16,9 @@ export default function visualizeClient() {
   const [client, setClient] = useState({});
 
   useEffect(() => {
-    fetchClient(id).then(data => {
-      setClient(data.displayAll);
-    });
+    // fetchClient(id).then(data => {
+    //   setClient(data.displayAll);
+    // });
     setLoading(false);
 
   }, [id]);
