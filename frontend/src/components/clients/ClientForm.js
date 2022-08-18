@@ -13,8 +13,7 @@ import {
 } from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
-import { createClient, updateClient } from "../../api/clientApi";
-import { fetchSingleGeneric, createSingleGeneric} from "../../api/genericDataApi";
+import { fetchSingleGeneric, createSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
 
 const contentStyle = {
   width: '80%',
@@ -114,7 +113,7 @@ export default function ClientForm() {
 
     } else {
       try {
-        await updateClient(id, form).then(() => navigate('/clients'));
+        await updateSingleGeneric('client', id, form).then(() => navigate('/clients'));
         enqueueSnackbar('Client updated', {variant: 'success'});
       } catch (e) {
         enqueueSnackbar('Failed to update client: ' + e.message, {variant: 'error'});

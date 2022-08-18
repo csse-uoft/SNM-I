@@ -9,5 +9,5 @@ export async function createSingleGeneric(option, body) {
 }
 
 export async function updateSingleGeneric(option, id, body) {
-  return putJson(`/api/genetic/${option}/${id}`, body)
+  return putJson(`/api/generic/${option}/${id}`, body)
 }
