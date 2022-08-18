@@ -271,12 +271,12 @@ async function updateSingleGeneric(req, res, next) {
         let query = `
         PREFIX : <http://snmi#>
         select * where { 
-	          ?s ?p :characteristic_${id}.
-            ?s a :CharacteristicOccurrence.
+	          ?co ?p :characteristic_${id}.
+            ?co a :CharacteristicOccurrence.
         }`
         const possibleCharacteristicOccurrencesIds = []
-        await GraphDB.sendSelectQuery(query, false, (co, p) => {
-          possibleCharacteristicOccurrencesIds.push(co.split('_')[1])
+        await GraphDB.sendSelectQuery(query, false, ({co, p}) => {
+          possibleCharacteristicOccurrencesIds.push(co.value.split('_')[1])
         });
         // check if there is a CO in possibleCharacteristicOccurrencesIds is related to this generic
         const existedCO = generic.characteristicOccurrences.filter((co)=>{
@@ -306,12 +306,12 @@ async function updateSingleGeneric(req, res, next) {
         let query = `
         PREFIX : <http://snmi#>
         select * where { 
-	          ?s ?p :question_${id}.
-            ?s a :QuestionOccurrence.
+	          ?co ?p :question_${id}.
+            ?co a :QuestionOccurrence.
         }`
         const possibleQuestionOccurrencesIds = []
-        await GraphDB.sendSelectQuery(query, false, (co, p) => {
-          possibleQuestionOccurrencesIds.push(co.split('_')[1])
+        await GraphDB.sendSelectQuery(query, false, ({co, p}) => {
+          possibleQuestionOccurrencesIds.push(co.value.split('_')[1])
         });
         // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
         const existedQO = generic.questionOccurrences.filter((qo) => {
@@ -327,13 +327,14 @@ async function updateSingleGeneric(req, res, next) {
           existedQO.stringValue = value
         }
 
-        await generic.save()
-
       }
     }
 
-  } catch (e) {
+    await generic.save();
+    res.json({success: true});
 
+  } catch (e) {
+    console.log(e)
   }
 
 }
