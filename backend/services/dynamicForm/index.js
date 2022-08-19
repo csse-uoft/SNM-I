@@ -85,7 +85,7 @@ async function getIndividualsInClass(req, res) {
 
   await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
     if (label?.value) {
-      instances[s.id] = `${SPARQL.getPrefixedURI(s.id)} (${label.value})`;
+      instances[s.id] = `${label.value}`;
     } else {
       instances[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
     }

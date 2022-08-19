@@ -14,7 +14,7 @@ import { fetchProviderFields } from '../../api/mockedApi/providerFields';
 // components
 import FieldGroup from '../shared/FieldGroup';
 import OperationHoursFieldGroup from '../shared/OperationHoursFieldGroup';
-import LocationFieldGroup from '../shared/LocationFieldGroup';
+import LocationFieldGroup from '../shared/AddressFieldField';
 
 import { generateProviderFields } from "../../constants/default_fields";
 import { FormStepper, Loading, FieldsWrapper, OtherLocationsFields } from "../shared";

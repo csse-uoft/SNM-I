@@ -13,8 +13,9 @@ const {authMiddleware, errorHandler} = require('../services/middleware');
 
 
 const config = require('../config');
-const {initUserAccounts} = require('../services/userAccount/user')
-const {initFieldTypes, initPredefinedCharacteristics} = require('../services/characteristics')
+const {initUserAccounts} = require('../services/userAccount/user');
+const {initFieldTypes, initPredefinedCharacteristics} = require('../services/characteristics');
+const {initStreetTypes, initStreetDirections} = require('../services/address');
 
 const app = express();
 
@@ -47,6 +48,8 @@ app.use('/api', genericRoute);
 
 initUserAccounts();
 initFieldTypes().then(() => initPredefinedCharacteristics());
+initStreetTypes();
+initStreetDirections();
 
 app.use(errorHandler);
 

@@ -22,7 +22,7 @@ import { ACTION_SUCCESS } from '../../store/defaults.js';
 
 import { Container, Divider, Typography, Button, Alert } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import LocationFieldGroup from "../shared/LocationFieldGroup";
+import LocationFieldGroup from "../shared/AddressFieldField";
 import EligibilityCondition from './EligibilityCondition'
 import { transformToBackendType, transformToFrontendType } from '../../helpers/formulaHelpers';
 

@@ -5,8 +5,8 @@ import SelectField from './fields/SelectField';
 import RadioField from './fields/RadioField';
 import CheckboxField from './fields/CheckboxField';
 import MultiSelectField from './fields/MultiSelectField';
-import LocationFieldGroup from "./LocationFieldGroup";
 import { objectFlip } from "../../helpers";
+import AddressField from "./AddressFieldField";
 
 export default function FieldGroup({component, options, ...props}) {
   if (component === 'GeneralField' || component === 'TextField') {
@@ -59,7 +59,7 @@ export default function FieldGroup({component, options, ...props}) {
     );
   } else if (component === 'AddressField') {
     return (
-      <LocationFieldGroup {...props}/>
+      <AddressField {...props}/>
     );
   } else if (component === 'SelectField' || component === 'SingleSelectField') {
     return (

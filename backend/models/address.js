@@ -12,7 +12,6 @@ const GDBSchemaState = createGraphDBModel({
 
 const GDBStreetType = createGraphDBModel({
   label: {type: String, internalKey: 'rdfs:label'},
-  code: {type: String, internalKey: 'ic:hasISO3166Code'}
 }, {rdfTypes: ['ic:StreetType'], name: 'streetType'});
 
 const GDBStreetDirection = createGraphDBModel({
@@ -30,7 +29,7 @@ const GDBAddressModel = createGraphDBModel({
   unitNumber: {type: String, internalKey: 'ic:hasUnitNumber'},
 
   streetNumber: {type: String, internalKey: 'ic:hasStreetNumber'},
-  street: {type: String, internalKey: 'ic:hasStreet'},
+  streetName: {type: String, internalKey: 'ic:hasStreet'},
   streetType: {type: GDBStreetType, internalKey: 'ic:hasStreetType'},
   streetDirection: {type: GDBStreetDirection, internalKey: 'ic:hasStreet'},
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, FormLabel, Alert } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FieldsWrapper } from "./index";
-import LocationFieldGroup from "./LocationFieldGroup";
+import LocationFieldGroup from "./AddressFieldField";
 import { defaultLocationFields } from "../../constants/default_fields";
 
 const useStyles = makeStyles(theme => ({
