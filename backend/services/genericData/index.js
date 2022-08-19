@@ -41,10 +41,18 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.PhoneNumberField.individualName) {
+      if(occurrence.objectValue){
+        const [_, phoneNumberId] = occurrence.objectValue.split('_')
+        await GDBPhoneNumberModel.findByIdAndDelete(phoneNumberId)
+      }
       const phoneNumber = GDBPhoneNumberModel(parsePhoneNumber(value));
       await phoneNumber.save()
       occurrence.objectValue = phoneNumber.individualName;
     } else if (fieldType === FieldTypes.AddressField.individualName) {
+      if(occurrence.objectValue){
+        const [_, addressId] = occurrence.objectValue.split('_')
+        await GDBAddressModel.findByIdAndDelete(addressId)
+      }
       const address = GDBAddressModel(value)
       await address.save()
       occurrence.objectValue = address.individualName
@@ -204,7 +212,7 @@ const createSingleGeneric = async (req, res, next) => {
         const characteristic = characteristics[id];
         const occurrence = {occurrenceOf: characteristic};
 
-
+        // TODO: what if predefined property is object value?
         if (characteristic.isPredefined) {
           const property = linkedProperty(option, characteristic)
           if (property)
@@ -300,8 +308,11 @@ async function updateSingleGeneric(req, res, next) {
         const characteristic = characteristics[id]
         if (characteristic.isPredefined) {
           const property = linkedProperty(option, characteristic)
-          if (property)
+          if (property){
+            // TODO: what if it stores an object value
             generic[property] = value
+          }
+
         }
         if(!existedCO){ // have to create a new CO
           const occurrence = {occurrenceOf: characteristic};
