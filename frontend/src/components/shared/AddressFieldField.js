@@ -48,7 +48,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
             fullWidth
             label="Unit/Apt/Suit #"
             type="text"
-            value={state.aptNumber}
+            value={state.unitNumber}
             onChange={handleChange('unitNumber')}
           />
         </Grid>
@@ -58,7 +58,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
             fullWidth
             label="Street number"
             type="text"
-            value={state.aptNumber}
+            value={state.streetNumber}
             onChange={handleChange('streetNumber')}
           />
         </Grid>
@@ -68,7 +68,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
             fullWidth
             label="Street name"
             type="text"
-            value={state.streetAddress}
+            value={state.streetName}
             onChange={handleChange('streetName')}
             required={required}
           />
@@ -79,7 +79,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
             options={Object.keys(options.streetType)}
             getOptionLabel={(key) => options.streetType[key]}
             fullWidth
-            value={state.streetAddress}
+            value={state.streetType}
             onChange={handleChange('streetType')}
             filterOptions={filterOptions}
             renderInput={(params) => <TextField {...params} label="Street type"/>}
