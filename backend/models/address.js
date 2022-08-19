@@ -31,7 +31,7 @@ const GDBAddressModel = createGraphDBModel({
   streetNumber: {type: String, internalKey: 'ic:hasStreetNumber'},
   streetName: {type: String, internalKey: 'ic:hasStreet'},
   streetType: {type: GDBStreetType, internalKey: 'ic:hasStreetType'},
-  streetDirection: {type: GDBStreetDirection, internalKey: 'ic:hasStreet'},
+  streetDirection: {type: GDBStreetDirection, internalKey: 'ic:hasStreetDirection'},
 
   city: {type: String, internalKey: 'ic:hasCityS'},
   citySection: {type: String, internalKey: 'ic:hasCitySection'},
