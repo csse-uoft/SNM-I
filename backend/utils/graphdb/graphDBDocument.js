@@ -342,7 +342,15 @@ class GraphDBDocument {
           // Provides an individual name
           if (typeof value === "string") {
             deleteClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ?o${index}.`);
-            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value.includes(':') ? value : `:${value}`}.`);
+
+            if (value.includes('://'))
+              value = `<${value}>`
+            else if (value.includes(':'))
+              return value;
+            else
+              throw new Error('Improper instance syntax.');
+
+            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value}.`);
             continue;
           }
 
@@ -387,7 +395,15 @@ class GraphDBDocument {
           for (let [j, doc] of value.entries()) {
 
             if (typeof doc === 'string') {
-              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc.includes(':') ? doc : `:${doc}`}.`)
+
+              if (doc.includes('://'))
+                doc = `<${doc}>`
+              else if (doc.includes(':'))
+                return doc;
+              else
+                throw new Error('Improper instance syntax.');
+
+              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc}.`)
               continue;
             }
 
