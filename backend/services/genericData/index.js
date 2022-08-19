@@ -118,8 +118,16 @@ async function fetchSingleGeneric(req, res, next) {
           const id = co.objectValue.split('_')[1]
           co.objectValue = combinePhoneNumber(await GDBPhoneNumberModel.findOne({_id: id}))
         } else if (co.occurrenceOf.implementation.fieldType === FieldTypes.AddressField.individualName) {
-          const id = co.objectValue.split('_')[1]
-          co.objectValue = await GDBAddressModel.findOne({_id: id})
+          const id = co.objectValue.split('_')[1];
+          const address = (await GDBAddressModel.findOne({_id: id})).toJSON();
+
+          // Get full URI
+          if (address.streetType) address.streetType = SPARQL.getFullURI(address.streetType);
+          if (address.streetDirection) address.streetDirection = SPARQL.getFullURI(address.streetDirection);
+          if (address.state) address.state = SPARQL.getFullURI(address.state);
+
+          co.objectValue = address;
+
         } else {
           co.objectValue = SPARQL.getFullURI(co.objectValue);
         }
