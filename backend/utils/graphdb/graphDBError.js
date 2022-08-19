@@ -10,7 +10,7 @@ class GraphDBError extends Error {
     //   if (p3) return '\n' + p3.trim().toUpperCase();
     // });
     const message =
-      `GraphDB.${functionName}: ${e.response.data}\nSPARQL:\n${query}`
+      `GraphDB.${functionName}: ${e.response?.data}\nSPARQL:\n${query}`
     super(message);
   }
 }
