@@ -1,4 +1,4 @@
-const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel, GDBCharacteristicModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel, GDBCharacteristicModel, GDBAddressModel} = require("../../models");
 const {SPARQL} = require('../../utils/graphdb/helpers');
 const {FieldTypes} = require("../characteristics");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
@@ -45,7 +45,10 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
       await phoneNumber.save()
       occurrence.objectValue = phoneNumber.individualName;
     } else if (fieldType === FieldTypes.AddressField.individualName) {
-      occurrence.objectValue = value
+      const address = GDBAddressModel(value)
+      await address.save()
+      occurrence.objectValue = address.individualName
+
     } else {
       throw Error(`Should not reach here. ${fieldType}`)
     }
@@ -306,12 +309,12 @@ async function updateSingleGeneric(req, res, next) {
         let query = `
         PREFIX : <http://snmi#>
         select * where { 
-	          ?co ?p :question_${id}.
-            ?co a :QuestionOccurrence.
+	          ?qo ?p :question_${id}.
+            ?qo a :QuestionOccurrence.
         }`
         const possibleQuestionOccurrencesIds = []
-        await GraphDB.sendSelectQuery(query, false, ({co, p}) => {
-          possibleQuestionOccurrencesIds.push(co.value.split('_')[1])
+        await GraphDB.sendSelectQuery(query, false, ({qo, p}) => {
+          possibleQuestionOccurrencesIds.push(qo.value.split('_')[1])
         });
         // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
         const existedQO = generic.questionOccurrences.filter((qo) => {
