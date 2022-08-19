@@ -118,7 +118,8 @@ async function fetchSingleGeneric(req, res, next) {
           const id = co.objectValue.split('_')[1]
           co.objectValue = combinePhoneNumber(await GDBPhoneNumberModel.findOne({_id: id}))
         } else if (co.occurrenceOf.implementation.fieldType === FieldTypes.AddressField.individualName) {
-
+          const id = co.objectValue.split('_')[1]
+          co.objectValue = await GDBAddressModel.findOne({_id: id})
         } else {
           co.objectValue = SPARQL.getFullURI(co.objectValue);
         }
