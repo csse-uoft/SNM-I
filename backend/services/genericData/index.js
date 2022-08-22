@@ -278,12 +278,15 @@ async function updateSingleGeneric(req, res, next) {
       return res.status(400).json({success: false, message: 'Please provide the fields'})
     }
 
-
+    // fetch characteristics and questions from database
     const questions = {};
     const characteristics = {};
     await fetchCharacteristicAndQuestionsBasedOnFields(characteristics, questions, data.fields)
 
 
+    // check should we update or create a characteristicOccurrence or questionOccurrence
+    // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
+    // and related to the characteristic/question
     for (const [key, value] of Object.entries(data.fields)) {
       const [type, id] = key.split('_')
       if (type === 'characteristic') {
@@ -305,6 +308,7 @@ async function updateSingleGeneric(req, res, next) {
           }).length > 0
         })[0]
 
+        // update the generic's property if needed
         const characteristic = characteristics[id]
         if (characteristic.isPredefined) {
           const property = linkedProperty(option, characteristic)
@@ -314,6 +318,7 @@ async function updateSingleGeneric(req, res, next) {
           }
 
         }
+
         if(!existedCO){ // have to create a new CO
           const occurrence = {occurrenceOf: characteristic};
           await implementCharacteristicOccurrence(characteristic, occurrence, value)
@@ -346,7 +351,7 @@ async function updateSingleGeneric(req, res, next) {
         if(!existedQO){ // create a new QO
           const occurrence = {occurrenceOf: questions[id], stringValue: value};
           generic.questionOccurrences.push(occurrence);
-        }else{
+        }else{ // update the question
           existedQO.stringValue = value
         }
 
