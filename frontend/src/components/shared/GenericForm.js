@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack';
 
 import FieldGroup from '../shared/FieldGroup';
 
-import { Box, Container } from '@mui/material';
+import { Box, Container, Paper, Typography } from '@mui/material';
 import { FormStepper, Loading } from "../shared";
 import { getDynamicForm, getDynamicFormsByFormType, getInstancesInClass } from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
@@ -39,10 +39,14 @@ export default function GenericForm({name, mainPage}) {
       forms.forEach(form => allForms[form._id] = form);
       setAllForms(forms);
 
-      // Preselect the first form
-      const firstForm = forms[0];
-      setForm({formId: firstForm._id, fields: {}});
-      setSelectedFormId(firstForm._id);
+      if (forms.length > 0) {
+        // Preselect the first form
+        const firstForm = forms[0];
+        setForm({formId: firstForm._id, fields: {}});
+        setSelectedFormId(firstForm._id);
+      } else {
+        setLoading(false);
+      }
     });
   }, [id]);
 
@@ -148,6 +152,9 @@ export default function GenericForm({name, mainPage}) {
 
   if (loading)
     return <Loading message={`Loading...`}/>;
+
+  if (Object.keys(form).length === 0)
+    return <Container><Typography variant="h5">No form available</Typography></Container>
 
   return (
     <Container>
