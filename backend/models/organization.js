@@ -1,6 +1,6 @@
 const {createGraphDBModel, DeleteType} = require("../utils/graphdb");
 const {GDBAddressModel} = require('./address')
-const {GDBCOModel} = require("./ClientFunctionalities/CharacteristicOccurrence");
+const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBQOModel} = require("./ClientFunctionalities/questionOccurrence");
 const {MDBDynamicFormModel} = require("./dynamicForm");
 
