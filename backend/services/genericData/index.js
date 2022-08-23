@@ -3,7 +3,6 @@ const {SPARQL} = require('../../utils/graphdb/helpers');
 const {FieldTypes} = require("../characteristics");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
-const {characteristicRoute} = require("../../routes");
 const {GraphDB} = require("../../utils/graphdb");
 
 const option2Model = {
