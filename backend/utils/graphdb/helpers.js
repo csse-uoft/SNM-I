@@ -163,7 +163,7 @@ const Helpers = {
       else if (val.includes(':'))
         return val;
       else
-        throw new Error('Improper instance syntax.');
+        throw new Error('Improper instance syntax:' + val);
     } else {
       throw new Error('Helpers.valToGraphDBValue: Should not reach here.');
     }
