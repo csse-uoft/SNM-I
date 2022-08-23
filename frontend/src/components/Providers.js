@@ -1,6 +1,6 @@
 import React from 'react';
 // TODO: createProviderWithCSV  (CSV Upload)
-import { fetchProviders, deleteProvider } from '../api/mockedApi/providers';
+import { fetchOrganizations, deleteOrganization } from '../api/organizationApi';
 
 import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
@@ -22,11 +22,9 @@ const formatProviderName = provider => {
 const columnsWithoutOptions = [
   {
     label: 'Name',
-    body: ({id, profile, company, type}) => {
-      return <Link color to={`/${TYPE}/${id}`}>
-        {formatProviderName({
-          company, type, profile,
-        })}
+    body: ({_id, name, type}) => {
+      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}`}>
+        {name}
       </Link>
     },
   },
@@ -36,30 +34,31 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Email',
-    body: ({profile}) => profile.email,
+    body: ({profile}) => profile?.email,
   },
-  {
-    label: 'Phone Number',
-    body: ({profile}) => {
-      if (profile.primary_phone_number)
-        return formatPhoneNumber(profile.primary_phone_number);
-      return 'Not Provided';
-    }
-  },
-  {
-    name: 'main_address',
-    label: 'Address',
-    body: ({main_address}) => {
-      if (main_address)
-        return formatLocation(main_address);
-      return 'Not Provided';
-    }
-  },
+  // {
+  //   label: 'Phone Number',
+  //   body: ({profile}) => {
+  //     if (profile.primary_phone_number)
+  //       return formatPhoneNumber(profile.primary_phone_number);
+  //     return 'Not Provided';
+  //   }
+  // },
+  // {
+  //   name: 'address',
+  //   label: 'Address',
+  //   body: ({address}) => {
+  //     if (address)
+  //       return formatLocation(address);
+  //     return 'Not Provided';
+  //   }
+  // },
 ];
 
 export default function Providers() {
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
+    return [];
     // TODO: verify this works as expected
     const currPageProviders = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageProviders.map(provider => ({
@@ -70,16 +69,42 @@ export default function Providers() {
     })).filter(provider => provider.position.lat && provider.position.lng);
   };
 
+  /**
+   * Fetch and transform data
+   * @returns {Promise<*[]>}
+   */
+  const fetchData = async () => {
+    const orgs = (await fetchOrganizations()).data;
+    const data = [];
+    for (const org of orgs) {
+      const orgData = {_id: org._id, type: 'Organization'};
+      if (org.characteristicOccurrences)
+        for (const occ of org.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Organization name') {
+            orgData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Organization address') {
+            orgData.address = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Email') {
+            orgData.email = occ.dataStringValue;
+          }
+
+        }
+      data.push(orgData);
+    }
+    return data;
+
+  }
+
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
-      fetchData={fetchProviders}
-      deleteItem={deleteProvider}
+      fetchData={fetchData}
+      deleteItem={deleteOrganization}
       generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
       tableOptions={{
-        idField: 'id'
+        idField: '_id'
       }}
     />
   )

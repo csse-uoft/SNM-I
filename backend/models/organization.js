@@ -7,11 +7,10 @@ const {MDBDynamicFormModel} = require("./dynamicForm");
 const GDBOrganizationModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
-  characteristicOcc: {type: [GDBCOModel],
+  characteristicOccurrence: {type: [GDBCOModel],
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
-  questionOcc: {type: [GDBQOModel],
+  questionOccurrence: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
-  // form:{type: [MDBDynamicFormModel], internalKey: 'hasForm'}
 
 }, {
   rdfTypes: ['cp:Organization'], name: 'organization'

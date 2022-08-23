@@ -81,9 +81,12 @@ export default function GenericPage(props) {
       ...columnsWithoutOptions,
       {
         label: ' ',
-        body: ({_id}) => (
-          <DropdownMenu urlPrefix={type} objectId={_id} handleDelete={showDeleteDialog}/>
-        )
+        body: ({_id, type: rowType}) => {
+          if (type === 'providers')
+            return <DropdownMenu urlPrefix={`${type}/${rowType.toLowerCase()}`} objectId={_id} handleDelete={showDeleteDialog}/>
+          else
+            return <DropdownMenu urlPrefix={type} objectId={_id} handleDelete={showDeleteDialog}/>
+        }
       },
     ]
   }, [showDeleteDialog, columnsWithoutOptions, type]);

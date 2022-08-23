@@ -1,7 +1,8 @@
 const client = require('./client');
+const organization = require('./organization');
 const allPredefinedCharacteristics = {};
 
-for (const characteristic of client) {
+for (const characteristic of [...client, ...organization]) {
   if (allPredefinedCharacteristics[characteristic.name]) {
     throw Error(`Duplicated name in predefined characteristics: ${characteristic.name}`);
   } else {

@@ -145,6 +145,7 @@ const fetchClientsOrOrganizations = async (req, res, next) => {
   try {
     const data = await option2Model[option].find({},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']});
+
     return res.status(200).json({data, success: true});
 
   } catch (e) {

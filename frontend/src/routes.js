@@ -24,7 +24,7 @@ import PrivateRoute from './components/routes/PrivateRoute'
 import AdminRoute from './components/routes/AdminRoute'
 import Providers from './components/Providers';
 import AddServicePrompt from './components/providers/AddServicePrompt'
-import ProviderForm from './components/providers/ProviderForm'
+import ProviderForm from './components/providers/ProviderForm2'
 import ProviderProfile from './components/providers/ProviderProfile'
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
@@ -83,7 +83,7 @@ const routes = (
     <Route path='/providers/:id/rate' element={<PrivateRoute element={ProviderRatingForm}/>}/>
     <Route path='/providers/new/add-service' element={<PrivateRoute element={AddServicePrompt}/>}/>
     <Route path='/providers/:formType/new' element={<PrivateRoute element={ProviderForm}/>}/>
-    <Route path='/providers/:id/edit/' element={<PrivateRoute element={ProviderForm}/>}/>
+    <Route path='/providers/:formType/:id/edit/' element={<PrivateRoute element={ProviderForm}/>}/>
     <Route path='/providers/:id' element={<PrivateRoute element={ProviderProfile}/>}/>
     <Route path='/providers' element={<PrivateRoute element={Providers}/>}/>
 

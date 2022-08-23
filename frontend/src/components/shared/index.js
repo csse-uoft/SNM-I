@@ -95,7 +95,7 @@ export function CustomToolbar({handleAdd, handleUpload, type}) {
         onClose={handleClose}
       >
         {Object.entries(providerFormTypes).map(([value, formType]) =>
-          <MenuItem key={formType} onClick={handleLink(`/providers/${value}/new`)}>
+          <MenuItem disabled={formType !== 'Organization'} key={formType} onClick={handleLink(`/providers/${value}/new`)}>
             {formType}
           </MenuItem>)
         }

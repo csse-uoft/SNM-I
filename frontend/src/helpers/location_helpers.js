@@ -4,8 +4,8 @@ export function formatLocation(location) {
   }
 
   let format_location = ''
-  if (location.apt_number !== undefined){
-    format_location += `${location.apt_number}-`
+  if (location.unitNumber !== undefined){
+    format_location += `${location.unitNumber}-`
   }
   if (location.street_address !== undefined){
     format_location += `${location.street_address}, `
