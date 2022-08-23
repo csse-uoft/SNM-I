@@ -47,28 +47,16 @@ export default function ClientForm() {
   const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
-    Promise.all([
-      getDynamicFormsByFormType('client').then(({forms}) => {
-        const allForms = {};
-        forms.forEach(form => allForms[form._id] = form);
-        setAllForms(forms);
+    getDynamicFormsByFormType('client').then(({forms}) => {
+      const allForms = {};
+      forms.forEach(form => allForms[form._id] = form);
+      setAllForms(forms);
 
-        // Preselect the first form
-        const firstForm = forms[0];
-        setForm({formId: firstForm._id, fields: {}});
-        setSelectedFormId(firstForm._id);
-      }),
-    ]).then(async () => {
-      if (id) {
-        // setForm
-        const {data: clientData} = await fetchSingleGeneric('client', id);
-        setForm(form => ({...form, fields: clientData}));
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
+      // Preselect the first form
+      const firstForm = forms[0];
+      setForm({formId: firstForm._id, fields: {}});
+      setSelectedFormId(firstForm._id);
     });
-
   }, [id]);
 
   const formOptions = useMemo(() => {
@@ -79,19 +67,35 @@ export default function ClientForm() {
 
 
   useEffect(() => {
-    if (selectedFormId)
-      getDynamicForm(selectedFormId).then(({form}) => {
+    // Invoked only after selectedFormId is set
+    if (selectedFormId) {
+
+      (async function () {
+        setLoading(true);
+
+        // Get the form and dynamic options used in the form
+        const {form} = await getDynamicForm(selectedFormId);
         setDynamicForm(form);
         for (const step of form.formStructure) {
           for (const field of step.fields) {
             const className = field?.implementation?.optionsFromClass;
             if (className) {
-              getInstancesInClass(className)
+              await getInstancesInClass(className)
                 .then(options => setDynamicOptions(prev => ({...prev, [className]: options})))
             }
           }
         }
-      });
+
+        // Get client data
+        if (id) {
+          const {data: clientData} = await fetchSingleGeneric('client', id);
+          setForm(form => ({...form, fields: clientData}));
+        }
+
+        setLoading(false);
+      })();
+    }
+
   }, [selectedFormId]);
 
   const stepNames = useMemo(() => {
@@ -145,7 +149,7 @@ export default function ClientForm() {
             fieldOptions = dynamicOptions[optionsFromClass] || {};
           } else if (implementation.options) {
             fieldOptions = {};
-            implementation.options.forEach(option => fieldOptions[option._id] = option.label);
+            implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
           }
 
           return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required}
