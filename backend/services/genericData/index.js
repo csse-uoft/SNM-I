@@ -20,7 +20,7 @@ const linkedProperty = (option, characteristic) => {
   return false
 }
 
-const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
+const implementCharacteristicOccurrence = async (characteristic, occurrence, value, res) => {
   const {valueDataType, fieldType} = characteristic.implementation;
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     // TODO: check if the dataType of input value is correct
@@ -36,7 +36,9 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     if (fieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
-      console.assert(value instanceof Array);
+      if(!(value instanceof Array)){
+        return res.status(400).json({success: false, message: 'Wrong data format'})
+      }
       occurrence.multipleObjectValues = value;
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
@@ -211,16 +213,16 @@ const createSingleGeneric = async (req, res, next) => {
       if (type === 'characteristic') {
         const characteristic = characteristics[id];
         const occurrence = {occurrenceOf: characteristic};
+        await implementCharacteristicOccurrence(characteristic, occurrence, value, res)
 
-        // TODO: what if predefined property is object value?
         if (characteristic.isPredefined) {
           const property = linkedProperty(option, characteristic)
-          if (property)
-            instanceData[property] = value
+          if (property) {
+            instanceData[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ??
+              occurrence.dataDateValue ?? occurrence.objectValue;
+            instanceData[property + 's'] = occurrence.multipleObjectValue
+          }
         }
-
-
-        await implementCharacteristicOccurrence(characteristic, occurrence, value)
 
         instanceData.characteristicOccurrences.push(occurrence);
 
@@ -308,23 +310,32 @@ async function updateSingleGeneric(req, res, next) {
           }).length > 0
         })[0]
 
-        // update the generic's property if needed
-        const characteristic = characteristics[id]
-        if (characteristic.isPredefined) {
-          const property = linkedProperty(option, characteristic)
-          if (property){
-            // TODO: what if it stores an object value
-            generic[property] = value
-          }
 
-        }
+        const characteristic = characteristics[id]
 
         if(!existedCO){ // have to create a new CO
           const occurrence = {occurrenceOf: characteristic};
-          await implementCharacteristicOccurrence(characteristic, occurrence, value)
+          await implementCharacteristicOccurrence(characteristic, occurrence, value, res)
           generic.characteristicOccurrences.push(occurrence)
+          // update the generic's property if needed
+          if (characteristic.isPredefined) {
+            const property = linkedProperty(option, characteristic)
+            if (property){
+              generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
+                ?? occurrence.objectValue;
+              generic[property + 's'] = occurrence.multipleObjectValue
+            }
+          }
         }else{ // just add the value on existedCO
-          await implementCharacteristicOccurrence(characteristic, existedCO, value)
+          await implementCharacteristicOccurrence(characteristic, existedCO, value, res)
+          if (characteristic.isPredefined) {
+            const property = linkedProperty(option, characteristic)
+            if (property){
+              generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue
+              // TODO: what if the property is an object
+
+            }
+          }
         }
 
       }
@@ -359,15 +370,28 @@ async function updateSingleGeneric(req, res, next) {
     }
 
     await generic.save();
-    res.json({success: true});
+    res.status(200).json({success: true});
 
   } catch (e) {
-    console.log(e)
+    next(e)
   }
 
 }
 
+async function deleteSingleGeneric(req, res, next){
+  try{
+    const {option, id} = req.params;
+    if(!option || !id)
+      return res.status(400).json({success: false, message: 'option or id is not given'})
+
+
+
+  }catch (e) {
+    next(e)
+  }
+}
+
 
 module.exports = {
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric
 }
