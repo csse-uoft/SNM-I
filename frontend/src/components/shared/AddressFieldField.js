@@ -1,10 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import GeneralField from './fields/GeneralField';
-import SelectField from './fields/SelectField';
-import { provinceOptions } from '../../store/defaults';
-import { Divider, Box, Typography, Grid, TextField, FormControl, Paper, Autocomplete } from "@mui/material";
+import { Autocomplete, CircularProgress, Grid, Paper, TextField, Typography } from "@mui/material";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
 import { createFilterOptions } from '@mui/material/Autocomplete';
+
+
+const filterOptions = createFilterOptions({
+  ignoreAccents: false,
+  matchFrom: 'start'
+});
+
+function LoadingAutoComplete({label, options, property, state, onChange}) {
+  const loading = Object.keys(options[property]).length === 0;
+  return (
+    <Autocomplete
+      sx={{mt: 2}}
+      options={Object.keys(options[property])}
+      getOptionLabel={(key) => options[property][key]}
+      fullWidth
+      value={loading ? null : state[property]}
+      onChange={onChange(property)}
+      filterOptions={filterOptions}
+      renderInput={(params) =>
+        <TextField
+          {...params}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+          label={label}
+        />
+      }
+      loading={loading}
+    />
+  );
+}
 
 export default function AddressField({value: defaultValue, required, onChange, label}) {
 
@@ -35,7 +69,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
   const handleChange = name => (e, value) => {
     state[name] = value ?? e.target.value;
     onChange(state);
-  }
+  };
 
   return (
     <Paper variant="outlined" sx={{mt: 3, mb: 3, p: 2.5, borderRadius: 2}}>
@@ -74,28 +108,21 @@ export default function AddressField({value: defaultValue, required, onChange, l
           />
         </Grid>
         <Grid item xs={6}>
-          <Autocomplete
-            sx={{mt: 2}}
-            options={Object.keys(options.streetType)}
-            getOptionLabel={(key) => options.streetType[key]}
-            fullWidth
-            value={state.streetType}
-            onChange={handleChange('streetType')}
-            filterOptions={filterOptions}
-            renderInput={(params) => <TextField {...params} label="Street type"/>}
-            loading={Object.keys(options.streetType).length === 0}
+          <LoadingAutoComplete
+            label="Street type"
+            options={options}
+            property={'streetType'}
+            state={state}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={6}>
-          <Autocomplete
-            sx={{mt: 2}}
-            options={Object.keys(options.streetDirection)}
-            getOptionLabel={(key) => options.streetDirection[key]}
-            fullWidth
-            value={state.streetDirection}
-            onChange={handleChange('streetDirection')}
-            filterOptions={filterOptions}
-            renderInput={(params) => <TextField {...params} label="Street direction"/>}
+          <LoadingAutoComplete
+            label="Street direction"
+            options={options}
+            property={'streetDirection'}
+            state={state}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={3}>
@@ -110,15 +137,12 @@ export default function AddressField({value: defaultValue, required, onChange, l
           />
         </Grid>
         <Grid item xs={6}>
-          <Autocomplete
-            sx={{mt: 2}}
-            options={Object.keys(options.state)}
-            getOptionLabel={(key) => options.state[key]}
-            fullWidth
-            value={state.state}
-            onChange={handleChange('state')}
-            filterOptions={filterOptions}
-            renderInput={(params) => <TextField {...params} label="Province"/>}
+          <LoadingAutoComplete
+            label="Province"
+            options={options}
+            property={'state'}
+            state={state}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={3}>

@@ -164,13 +164,16 @@ const fetchCharacteristics = async (req, res, next) => {
     const rawData = await GDBCharacteristicModel.find({},
       {populates: ['implementation.fieldType', 'implementation.options']});
     const data = rawData.map((characteristic) => {
-      return {
-        id: characteristic._id,
-        name: characteristic.name,
-        description: characteristic.description,
-        codes: characteristic.codes,
-        implementation: characteristic.implementation,
+      if (characteristic?.implementation?.options) {
+        characteristic.implementation.options = characteristic.implementation.options
+          .map(option => {
+            option = option.toJSON();
+            return {...option, iri: SPARQL.getFullURI(`:option_${option._id}`)};
+          });
       }
+      characteristic.id = characteristic._id;
+      delete characteristic._id;
+      return characteristic;
     })
     return res.status(200).json({data, success: true});
   } catch (e) {
