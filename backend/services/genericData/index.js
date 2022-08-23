@@ -331,8 +331,9 @@ async function updateSingleGeneric(req, res, next) {
           if (characteristic.isPredefined) {
             const property = linkedProperty(option, characteristic)
             if (property){
-              generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue
-              // TODO: what if the property is an object
+              generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
+                existedCO.objectValue
+              generic[property + 's'] = existedCO.multipleObjectValue
 
             }
           }
