@@ -4,6 +4,7 @@ const {FieldTypes} = require("../characteristics");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GraphDB} = require("../../utils/graphdb");
+const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 
 const option2Model = {
   'client': GDBClientModel,
@@ -380,10 +381,37 @@ async function updateSingleGeneric(req, res, next) {
 
 async function deleteSingleGeneric(req, res, next){
   try{
+    // check the package from frontend
     const {option, id} = req.params;
     if(!option || !id)
-      return res.status(400).json({success: false, message: 'option or id is not given'})
+      return res.status(400).json({success: false, message: 'Option or id is not given'})
 
+    const generic = await option2Model[option].findOne({_id: id},
+      {populates: ['characteristicOccurrences', 'questionOccurrences']})
+    if(!generic)
+      return res.status(400).json({success: false, message: 'Invalid option or id'})
+
+    // recursively delete characteristicsOccurrences and questionOccurrences, including phoneNumber and Address
+    // also delete notes
+
+    const characteristicsOccurrences = generic.characteristicOccurrences
+    const questionsOccurrences = generic.questionOccurrences
+    const note = generic.note
+    // delete notes
+    await GDBNoteModel.findByIdAndDelete(note?._id)
+
+    for (let characteristicOccurrence of characteristicsOccurrences){
+      if(characteristicOccurrence.objectValue){
+
+      }
+    }
+
+    for (let questionOccurrence of questionsOccurrences){
+
+    }
+
+    await option2Model[option].findByIdAndDelete(id)
+    return res.status(200).json({success: true})
 
 
   }catch (e) {
