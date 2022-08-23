@@ -70,11 +70,8 @@ const createClientOrganization = async (req, res, next) => {
     return res.status(400).json({success: false, message: 'No form Id is given'})
   }
   const form = await MDBDynamicFormModel.findById(data.formId)
-  if (form.formType !== 'client' && option === 'client') {
-    return res.status(400).json({success: false, message: 'The form is not for client'})
-  }
-  if (form.formType !== 'organization' && option === 'organization') {
-    return res.status(400).json({success: false, message: 'The form is not for organization'})
+  if (form.formType !== option) {
+    return res.status(400).json({success: false, message: 'Invalid form type.'})
   }
   if (!form.formStructure) {
     return res.status(400).json({success: false, message: 'The form structure is undefined'})
@@ -134,11 +131,7 @@ const createClientOrganization = async (req, res, next) => {
 
     await option2Model[option](instanceData).save();
 
-    if (option === 'client') {
-      return res.status(202).json({success: true, message: 'Successfully created a client'})
-    } else if (option === 'organization') {
-      return res.status(202).json({success: true, message: 'Successfully created an organization'})
-    }
+    return res.status(202).json({success: true, message: 'Successfully created a ' + option});
 
   } catch (e) {
     next(e)
@@ -166,14 +159,9 @@ const deleteClientOrOrganization = async (req, res, next) => {
     // TODO: use delete Helper check which form can be deleted.
     // await deleteHelper(option, id);
 
-    if (option === 'client') {
-      const doc = await GDBClientModel.findByIdAndDelete(id);
-      return res.status(200).json({success: true});
-    }
-    if (option === 'organization') {
-      const doc = await GDBOrganizationModel.findByIdAndDelete(id);
-      return res.status(200).json({success: true});
-    }
+    const doc = await option2Model[option].findByIdAndDelete(id);
+    return res.status(200).json({success: true});
+
   } catch (e) {
     next(e)
   }
