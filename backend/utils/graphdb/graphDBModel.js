@@ -284,7 +284,7 @@ class GraphDBModel {
           }
           // Deal with inner instances
           else {
-            const innerQuery = options.type.generateFindQuery(val, {
+            const innerQuery = (options.type instanceof Array ? options.type[0] : options.type).generateFindQuery(val, {
               counters: {p: counters.p + 1, o: counters.o + 1},
               subjectNameOverride: object
             });
