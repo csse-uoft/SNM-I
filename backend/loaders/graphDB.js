@@ -10,7 +10,6 @@ const FormData = require('form-data');
 const {sleep} = require('../utils');
 const {namespaces} = require('./namespaces');
 
-
 let dbClient, repository;
 
 async function getRepository() {
@@ -20,11 +19,27 @@ async function getRepository() {
   return repository;
 }
 
+/**
+ * Return an array of number, [10, 0, 1] represents for version 10.0.1
+ * @returns {Promise<number[]>}
+ */
+async function getGraphDBVersion() {
+  const {headers} = await fetch(graphdb.addr + '/protocol');
+  return headers.get('server').match(/GraphDB\/(.*) /)[1].split('.').map(num => Number(num));
+}
+
 async function createRepository(dbClient, dbName) {
   // Create repository configuration
-  const config = new RepositoryConfig(dbName, '', new Map(), '',  'SNM-I', RepositoryType.FREE);
+  let config;
+  const version = await getGraphDBVersion();
+  console.log('GraphDB version:', version.join('.'));
+  if (version[0] >= 10)
+    config = new RepositoryConfig(dbName, '', new Map(), '', 'SNM-I', 'graphdb');
+  else
+    config = new RepositoryConfig(dbName, '', new Map(), '', 'SNM-I', 'free');
   // Use the configuration to create new repository
   await dbClient.createRepository(config);
+
 }
 
 async function loadInitialData(file, overwrite = !!process.env.test) {
@@ -38,16 +53,17 @@ async function loadInitialData(file, overwrite = !!process.env.test) {
   });
 }
 
-async function cleanup(typesToClean) {
-  const generateQuery = type => `
-    PREFIX : <http://snmi#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    delete where { 
-      ?s rdf:type :${type};
-         rdfs:label ?o.
-    }`;
+async function importRepositorySnapshot(url) {
+  const response = await fetch(url);
 
+  return new Promise((resolve, reject) => {
+    repository.upload(response.body, RDFMimeType.BINARY_RDF, null, null)
+      .then(resolve)
+      .catch(reason => reject(reason));
+  });
+}
+
+async function cleanup() {
   const sendQuery = async query => {
     try {
       const payload = new UpdateQueryPayload()
@@ -60,10 +76,8 @@ async function cleanup(typesToClean) {
       console.log('Failed to cleanup.', query, e);
     }
   }
-  // remove existing categories
-  await Promise.all(
-    typesToClean.map(type => sendQuery(generateQuery(type)))
-  );
+  // Remove all named graph
+  await sendQuery("DROP NAMED");
 }
 
 async function load() {
@@ -106,10 +120,11 @@ async function load() {
 
   console.log(`GraphDB ${DBName} connected.`);
 
-  await cleanup(['project_type', 'partnership_role', 'organization_type', 'project_stage']);
+  await cleanup();
 
   // await loadInitialData(__dirname + '/../ontologies/icontact.ttl');
-  await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
+  // await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
+  await importRepositorySnapshot('https://github.com/csse-uoft/compass-ontology/releases/download/latest/repository-export.brf');
 
   // Namespaces, this could be used within the query without specifying it in the prefixes
   const tasks = []

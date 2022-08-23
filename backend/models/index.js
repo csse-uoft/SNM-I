@@ -4,4 +4,10 @@ module.exports = {
   ...require('./person'),
   ...require('./organization'),
   ...require('./userAccount'),
+  ...require('./ClientFunctionalities/characteristic'),
+  ...require('./ClientFunctionalities/characteristicImplementation'),
+  ...require('./ClientFunctionalities/fieldType'),
+  ...require('./ClientFunctionalities/option'),
+  ...require('./ClientFunctionalities/questionOccurrence'),
+  ...require('./ClientFunctionalities/client'),
 }

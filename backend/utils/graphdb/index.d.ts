@@ -308,9 +308,10 @@ declare namespace GDBUtils {
         /**
          * Send select query
          * @param query - the query
+         * @param inference - Whether to turn inference on or off
          * @param onData - on data callback
          */
-        export function sendSelectQuery(query: string, onData: onDataCallback): Promise<void>;
+        export function sendSelectQuery(query: string, inference: boolean, onData: onDataCallback): Promise<void>;
 
         export function sendUpdateQuery(query: string): Promise<void>;
 

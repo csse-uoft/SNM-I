@@ -27,7 +27,7 @@ const SPARQL = {
     const prefix = prefixedURI.substring(0, indexOfColon);
     for (const [definedPrefix, namespace] of Object.entries(namespaces)) {
       if (prefix === definedPrefix) {
-        return `${namespace}${prefixedURI.substring(indexOfColon)}`;
+        return `${namespace}${prefixedURI.substring(indexOfColon + 1)}`;
       }
     }
     throw new Error(`Cannot get full URI, prefix ${prefix} is not defined.`);
@@ -155,9 +155,15 @@ const Helpers = {
     else if (type === Helpers.Types.NamedIndividual || (typeof val === "string" && typeof type === "function")) {
       // Provides a GraphDBDocument instance
       if (val.individualName != null)
-        return `:${val.individualName}`
-      // Make sure it has a prefix
-      return val.includes(':') ? val : `:${val}`;
+        return `${val.individualName}`
+
+      // Make sure it has a proper syntax
+      if (val.includes('://'))
+        return `<${val}>`
+      else if (val.includes(':'))
+        return val;
+      else
+        throw new Error('Improper instance syntax:' + val);
     } else {
       throw new Error('Helpers.valToGraphDBValue: Should not reach here.');
     }
@@ -265,6 +271,17 @@ const Helpers = {
       return `"${pattern}", "${flags}"`
     }
   },
+
+  /**
+   * (javascript) returns the given object with keys sorted alphanumerically.
+   * @param {T} obj the object to sort
+   * @returns {T} the sorted object
+   */
+  sortObjectByKey: (obj) => Object.keys(obj).sort()
+    .reduce((acc, c) => {
+      acc[c] = obj[c];
+      return acc
+    }, {}),
 
   SPARQL,
 }

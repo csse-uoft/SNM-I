@@ -70,11 +70,14 @@ function Dashboard() {
       {/*<NavButton to={`/eligibility-criteria`} icon={<Criteria/>}*/}
       {/*           text="Manage Eligibility Criteria"/>*/}
 
-      <NavButton to={'/settings/manage-fields'} icon={<Edit/>} disabled
-                 text="Manage forms"/>
+      <NavButton to={'/characteristics'} icon={<Edit/>}
+                 text="Manage Characteristics"/>
 
-      <NavButton to={'/questions'} icon={<Edit/>} disabled
+      <NavButton to={'/questions'} icon={<Edit/>}
                  text="Manage Questions"/>
+
+      <NavButton to={'/settings/manage-forms/client'} icon={<Edit/>}
+                 text="Manage Forms"/>
 
 
     </Container>

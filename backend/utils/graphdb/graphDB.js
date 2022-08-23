@@ -17,14 +17,14 @@ function getGraphDBAttribute(uri) {
 
 
 const GraphDB = {
-  sendSelectQuery: async (query, onData) => {
+  sendSelectQuery: async (query, inference=false, onData) => {
     const repository = await getRepository();
 
     const payload = new GetQueryPayload()
       .setQuery(query)
       .setQueryType(QueryType.SELECT)
       .setResponseType(RDFMimeType.SPARQL_RESULTS_JSON)
-      // .setInference(true);
+      .setInference(inference);
 
     try {
       const stream = await repository.query(payload);
@@ -44,7 +44,7 @@ const GraphDB = {
 
   sendUpdateQuery: async (query) => {
     const time = Date.now();
-    console.log(`------ Update query: ------\n${query}`);
+    console.log(`------ Update query: ------\n${query.replaceAll(/prefix .*\n/gi, '')}`);
     try {
       const payload = new UpdateQueryPayload()
         .setQuery(query)
@@ -60,15 +60,16 @@ const GraphDB = {
     console.log(`---------- ${Date.now() - time} ms -----------`);
   },
 
-  sendConstructQuery: async (query, onData) => {
+  sendConstructQuery: async (query, onData, inference=false) => {
     const time = Date.now();
-    console.log(`------ Construct query: -------\n${query}`);
+    console.log(`------ Construct query: -------\n${query.replaceAll(/prefix .*\n/gi, '')}`);
     const repository = await getRepository();
 
     const payload = new GetQueryPayload()
       .setQuery(query)
       .setQueryType(QueryType.CONSTRUCT)
       .setResponseType(RDFMimeType.JSON_LD)
+      .setInference(inference)
       .setTimeout(5);
 
     try {
@@ -83,6 +84,7 @@ const GraphDB = {
         })
       });
     } catch (e) {
+      console.error(e.message);
       throw new GraphDBError('sendConstructQuery', e);
     }
     console.log(`---------- ${Date.now() - time} ms -----------`);
@@ -128,7 +130,7 @@ const GraphDB = {
       }`;
 
     const result = {};
-    await GraphDB.sendSelectQuery(query, ({s, label, comment}) => {
+    await GraphDB.sendSelectQuery(query, false,({s, label, comment}) => {
       result[s.value.match(/#([^#]*)/)[1]] = {
         label: label.value, comment: comment.value,
       };

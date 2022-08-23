@@ -114,7 +114,7 @@ class GraphDBModel {
     // Remove unwanted fields
     this.cleanData(data);
 
-    const instanceName = `:${this.schemaOptions.name}_${id}`;
+    const instanceName = `${this.schemaOptions.name}_${id}`;
 
     const header = `${SPARQL.getSPARQLPrefixes()}\nINSERT DATA {\n`;
     const footer = '}\n';
@@ -156,14 +156,17 @@ class GraphDBModel {
         else if (typeof options.type === "function") {
           // already created instance, given an instance name
           if (typeof val === "string") {
-            queryBody += `:${val}`;
-          } else if (val instanceof GraphDBDocument && !val.isNew) {
-            queryBody += `:${val.individualName}`;
-          } else {
-            // Get data from a document, Wrap it with a new model
-            const obj = val.toJSON ? val.toJSON() : val;
+            if (val.includes('://'))
+              queryBody += `<${val}>`
+            else if (val.includes(':'))
+              queryBody += val;
+            else
+              throw new Error('Improper instance syntax.');
 
-            const innerInstance = await options.type(obj).getQueries();
+          } else if (val instanceof GraphDBDocument && !val.isNew) {
+            queryBody += `${val.individualName}`;
+          } else {
+            const innerInstance = await options.type(val).getQueries();
             queryBody += `${innerInstance.instanceName}`;
             innerQueryBodies.push(innerInstance.queryBody)
           }
@@ -178,12 +181,11 @@ class GraphDBModel {
             else if (typeof innerType === "function") {
               // already created instance, given an instance name
               if (typeof item === "string") {
-                queryBody += `:${item}`;
+                queryBody += `${item}`;
+              } else if (item instanceof GraphDBDocument && !item.isNew) {
+                queryBody += `${item.individualName}`;
               } else {
-                // Get data from a document, Wrap it with a new model
-                const obj = item.toJSON ? item.toJSON() : item;
-
-                const innerInstance = await innerType(obj).getQueries();
+                const innerInstance = await innerType(item).getQueries();
                 queryBody += `${innerInstance.instanceName}`;
                 innerQueryBodies.push(innerInstance.queryBody)
               }
@@ -232,7 +234,7 @@ class GraphDBModel {
         throw new Error('Model.find: filter._id supports only {$in: array}, number or string.')
       }
       const filterStr = ids.map(id =>
-        `${subject} = :${this.schemaOptions.name}_${id}`
+        `${subject} = ${this.schemaOptions.name}_${id}`
       ).join(' || ');
       whereClause.push(`FILTER(${filterStr})`);
     }
@@ -282,7 +284,7 @@ class GraphDBModel {
           }
           // Deal with inner instances
           else {
-            const innerQuery = options.type.generateFindQuery(val, {
+            const innerQuery = (options.type instanceof Array ? options.type[0] : options.type).generateFindQuery(val, {
               counters: {p: counters.p + 1, o: counters.o + 1},
               subjectNameOverride: object
             });
@@ -314,7 +316,7 @@ class GraphDBModel {
    * @return {{query: string, where: string[]}}
    */
   generateDeleteQuery(doc, cnt = 0) {
-    const subject = `:${this.schemaOptions.name}_${doc._id}`;
+    const subject = `${this.schemaOptions.name}_${doc._id}`;
     const where = [`${subject} ?p_${cnt} ?o_${cnt}.`];
 
     for (const path of this.getCascadePaths()) {
@@ -382,9 +384,9 @@ class GraphDBModel {
     const data = {};
     const resultInArray = new GraphDBDocumentArray();
     await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
-      subject = getGraphDBAttribute(subject.value);
+      subject = SPARQL.getPrefixedURI(subject.value);
       predicate = SPARQL.getPrefixedURI(predicate.value);
-      object = object.termType === 'NamedNode' ? getGraphDBAttribute(object.value) : object.value;
+      object = object.termType === 'NamedNode' ? SPARQL.getPrefixedURI(object.value) : object.value;
 
       // The top instance
       if (subject.startsWith(this.schemaOptions.name)) {

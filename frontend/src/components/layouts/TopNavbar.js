@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
 import { logout } from '../../api/auth';
@@ -45,19 +45,19 @@ const ITEM_HEIGHT = 48;
 // }));
 
 // function NavTab(props) {
-//   const history = useHistory();
-//   return <StyledTab {...props} onClick={() => history.push(props.value)}/>
+//   const navigate = useNavigate();
+//   return <StyledTab {...props} onClick={() => navigate(props.value)}/>
 // }
 
 function TopNavBar() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   const id = userContext.id;
   const isLoggedin = !!userContext.email;
-  const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
-  const [value, setValue] = useState(
-    tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
-  );
+  // const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
+  // const [value, setValue] = useState(
+  //   tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
+  // );
 
   // useEffect(() => {
   //   setValue(tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false);
@@ -65,7 +65,7 @@ function TopNavBar() {
 
   // const tabOnChange = (e, newValue) => {
   //   setValue(newValue);
-  //   history.push(newValue);
+  //   navigate(newValue);
   // };
 
   const [anchorElLeft, setAnchorElLeft] = useState(null);
@@ -81,7 +81,7 @@ function TopNavBar() {
   const handleLink = useCallback(link => () => {
     setAnchorElLeft(null);
     setAnchorElRight(null);
-    history.push(link);
+    navigate(link);
   }, []);
 
   const handleLogout = async () => {
@@ -90,7 +90,7 @@ function TopNavBar() {
     userContext.updateUser(defaultUserContext);
     setAnchorElLeft(null);
     setAnchorElRight(null);
-    history.push('/login');
+    navigate('/login');
   }
 
   return (
@@ -122,8 +122,8 @@ function TopNavBar() {
                   onClose={handleCloseLeft}
                   PaperProps={{
                     style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: 150,
+                      maxHeight: ITEM_HEIGHT * 7,
+                      width: 170,
                     },
                   }}
               >
@@ -139,6 +139,20 @@ function TopNavBar() {
                     <LocationCityIcon fontSize="medium" sx={{ color:'black' }}/>
                   </ListItemIcon>
                   <Typography variant="inherit">Services</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={handleLink(`/appointments`)}>
+                  <ListItemIcon>
+                    <BusinessCenterIcon fontSize="medium" sx={{ color:'black' }}/>
+                  </ListItemIcon>
+                  <Typography variant="inherit">Appointments</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={handleLink(`/referrals`)}>
+                  <ListItemIcon>
+                    <BusinessCenterIcon fontSize="medium" sx={{ color:'black' }}/>
+                  </ListItemIcon>
+                  <Typography variant="inherit">Referrals</Typography>
                 </MenuItem>
 
                 <MenuItem onClick={handleLink(`/goods`)}>

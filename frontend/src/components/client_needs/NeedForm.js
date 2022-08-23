@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router-dom";
 import GeneralField from '../shared/fields/GeneralField'
 import SelectField from '../shared/fields/SelectField'
 import MultiSelectField from '../shared/fields/MultiSelectField';
@@ -68,7 +68,7 @@ class NeedForm extends Component {
     } else {
       this.props.dispatch(createClientNeed(this.props.clientId, this.state.form));
     }
-    this.props.history.push(`/clients/${this.props.clientId}`)
+    this.props.navigate(`/clients/${this.props.clientId}`)
   }
 
   render() {

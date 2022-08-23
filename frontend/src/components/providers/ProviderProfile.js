@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import _ from 'lodash';
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Container, Button, Rating, Box } from "@mui/material";
 import { Edit, RateReview, Print } from '@mui/icons-material';

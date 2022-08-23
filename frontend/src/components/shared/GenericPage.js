@@ -1,4 +1,4 @@
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
 import { Container, Fade } from "@mui/material";
@@ -24,7 +24,7 @@ export default function GenericPage(props) {
   const title = type.charAt(0).toUpperCase() + type.slice(1);
 
   // react hooks
-  const history = useHistory();
+  const navigate = useNavigate();
   const [state, setState] = useState({
     showUploadDialog: false,
     showDeleteDialog: false,
@@ -57,18 +57,17 @@ export default function GenericPage(props) {
       hideDialog();
       setState(state => ({
         ...state,
-        data: state.data.filter(item => item.id !== state.deleteId)
+        data: state.data.filter(item => item._id !== state.deleteId)
       }));
     }
   }, [deleteItem]);
 
-  const showDeleteDialog = useCallback((idx) => {
-    const item = state.data[idx];
+  const showDeleteDialog = useCallback((_id) => {
     setState(state => ({
       ...state,
       showDeleteDialog: true,
-      deleteId: item.id,
-      deleteDialogTitle: `Delete ${title} ` + nameFormatter(item),
+      deleteId: _id,
+      deleteDialogTitle: `Delete ${title} ` + nameFormatter(state.data.find(item => item._id === _id)),
     }));
   }, [state.data, nameFormatter, title]);
 
@@ -82,9 +81,12 @@ export default function GenericPage(props) {
       ...columnsWithoutOptions,
       {
         label: ' ',
-        body: ({id}) => (
-          <DropdownMenu urlPrefix={type} objectId={id} handleDelete={showDeleteDialog}/>
-        )
+        body: ({_id, type: rowType}) => {
+          if (type === 'providers')
+            return <DropdownMenu urlPrefix={`${type}/${rowType.toLowerCase()}`} objectId={_id} handleDelete={showDeleteDialog}/>
+          else
+            return <DropdownMenu urlPrefix={type} objectId={_id} handleDelete={showDeleteDialog}/>
+        }
       },
     ]
   }, [showDeleteDialog, columnsWithoutOptions, type]);
@@ -93,7 +95,7 @@ export default function GenericPage(props) {
     customToolbar:
       <CustomToolbar
         type={type}
-        handleAdd={() => history.push(`/${type}/new`)}
+        handleAdd={() => navigate(`/${type}/new`)}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
       />,
     onDelete: async (ids) => {

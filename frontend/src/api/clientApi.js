@@ -1,0 +1,17 @@
+import { deleteJson, getJson, postJson, putJson } from "./index";
+
+export async function createClient(body) {
+  return postJson('/api/clientOrOrganization/client/', body);
+}
+
+export async function updateClient(id, body) {
+  return putJson('/api/client/' + id, body);
+}
+
+export async function fetchClients() {
+  return getJson('/api/clientOrOrganization/client');
+}
+
+export async function deleteClient(id) {
+  return deleteJson('/api/clientOrOrganization/delete/client/' + id);
+}

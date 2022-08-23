@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import TR from '../shared/TR'
 import {fetchUser, getProfile, getUserProfileById} from '../../api/userApi'
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Link, Loading } from "../shared";
-import { Container, Paper, Table, Typography, TableBody } from "@mui/material";
+import {Container, Paper, Table, Typography, TableBody, Button} from "@mui/material";
 import {formatPhoneNumber} from "../../helpers/phone_number_helpers";
 
 export default function User() {
@@ -22,17 +22,22 @@ export default function User() {
   if (loading)
    return <Loading message={`Loading user...`}/>;
 
-  console.log(user)
   return (
     <Container>
       <Typography variant="h5" gutterBottom>
-        User profile
+        {'Profile for user : ' + user.primaryEmail}
       </Typography>
-      {/*<Link to={`/users/${id}/edit`}>*/}
-      {/*  <Button color="primary" variant="contained" style={{marginBottom: 12}}>*/}
-      {/*    Edit*/}
-      {/*  </Button>*/}
-      {/*</Link>*/}
+
+      <Link to={`/users/`}>
+        <Button color="primary" variant="contained" style={{marginBottom: 12, marginRight: 12}}>
+          Back to User Form
+        </Button>
+      </Link>
+      <Link to={`/users/${id}/edit`}>
+        <Button color="primary" variant="contained" style={{marginBottom: 12, marginRight: 12}}>
+          Edit
+        </Button>
+      </Link>
 
       <Paper elevation={4}>
         <Table>

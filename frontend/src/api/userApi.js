@@ -47,6 +47,10 @@ export function checkSecurityQuestion(params) {
   return postJson('/api/forgotPassword/securityQuestions/check', params)
 }
 
+export function LoginCheckSecurityQuestion(params) {
+  return postJson('/api/login/securityQuestions/check', params)
+}
+
 /**
  * this will send the verification email during forgot password process
  * @param params: {email}
@@ -122,7 +126,17 @@ export async function updatePrimaryEmail(id, email) {
  * @returns {Promise<*>}
  */
 export function updateProfile(id, params) {
-  return postJson('/api//user/editProfile/' + id + '/', params);
+  return postJson('/api/user/editProfile/' + id + '/', params);
+}
+
+/**
+ * This allows admin to update user form.
+ * @param id
+ * @param params
+ * @returns {Promise<*>}
+ */
+export function updateUserForm(id, params) {
+  return postJson('/api/user/updateUserForm/' + id + '/', params);
 }
 
 /**
@@ -157,6 +171,8 @@ export function fetchUsers() {
 export function getUserProfileById(id, params) {
   return getJson('/api/users/getUserProfileById/' + id + '/', {params})
 }
+
+
 
 
 export function deleteUser(id, params, callback) {

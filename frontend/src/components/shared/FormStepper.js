@@ -46,6 +46,9 @@ export default function FormStepper({stepNames, handleFinish, getStepContent, er
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
 
+  if (stepNames.length === 0)
+    return 'No steps are available.'
+
   return (
     <div>
       <Stepper alternativeLabel nonLinear activeStep={activeStep}>

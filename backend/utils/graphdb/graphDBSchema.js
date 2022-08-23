@@ -52,6 +52,11 @@ function createGraphDBModel(schema, schemaOptions) {
   // nested model information
   const instancePrefix2Model = new Map();
 
+  // if type.schemaOptions.name does not contain prefix, default to empty prefix `:`
+  if (!schemaOptions.name.includes(':')) {
+    schemaOptions.name = `:${schemaOptions.name}`
+  }
+
   for (let [key, options] of Object.entries(schema)) {
     // Map to our data structure with some predefined options
     if (typeof options !== "object" || Array.isArray(options)) {
@@ -94,7 +99,7 @@ function createGraphDBModel(schema, schemaOptions) {
   return model;
 }
 
-function getGraphDBModel(name){
+function getGraphDBModel(name) {
   return store[name];
 }
 

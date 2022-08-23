@@ -1,9 +1,9 @@
 const express = require('express');
 
 // const {login, logout} = require("../services/auth");
-const {inviteNewUser} = require("../services/invite")
-const {verifyUser} = require("../services/firstEntry");
-const {firstEntryUpdate} = require("../services/updateUser");
+const {inviteNewUser} = require("../services/userAccount/invite")
+const {verifyUser} = require("../services/userAccount/firstEntry");
+const {firstEntryUpdate} = require("../services/userAccount/updateUser");
 
 const router = express.Router();
 

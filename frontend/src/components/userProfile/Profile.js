@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import {Box, Button, Container, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
 import {getProfile} from "../../api/userApi";
@@ -40,12 +40,12 @@ const useStyles = makeStyles(() => ({
 export default function Profile() {
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const userContext = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({...userProfileFields});
-  const [dialogConfirm, setDialogConfirm] = useState(false);
+  //const [dialogConfirm, setDialogConfirm] = useState(false);
   const profileForm = {
     givenName: userContext.givenName,
     familyName: userContext.familyName,
@@ -62,16 +62,11 @@ export default function Profile() {
     });
   }, [id]);
 
-  // handler for Edit profile button
+  // goes to edit page
   const handleEdit = () => {
-    setDialogConfirm(true);
+    navigate('/profile/' + id + '/edit');
   }
 
-  // handler for dialog confirm
-  const handleDialogConfirm =() => {
-    setDialogConfirm(false);
-    history.push('/profile/' + id + '/edit');
-  }
 
   if (loading)
     return <Loading message={`Loading...`}/>;
@@ -128,13 +123,6 @@ export default function Profile() {
                      key={'Reset Password'}/>
         </Box>
       </div>
-
-      <AlertDialog
-        dialogContentText={"Click confirm to redirect to the edit profile page."}
-        dialogTitle={'Leaving the current page'}
-        buttons={<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>}
-        open={dialogConfirm}/>
-
     </Container>
   )
 }

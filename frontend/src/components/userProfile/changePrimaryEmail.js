@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {Button, Container, Typography} from "@mui/material";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import {verifyChangePrimaryEmail} from "../../api/userApi";
 import {AlertDialog} from "../shared/Dialogs";
 
@@ -24,7 +24,7 @@ export default function changePrimaryEmail() {
   const classes = useStyles();
   const {token} = useParams();
   const [dialogConfirmed, setDialogConfirmed] = useState(false);
-  let history = useHistory();
+  let history = useNavigate();
 
   const handleCheck = async () => {
     try {
@@ -40,7 +40,7 @@ export default function changePrimaryEmail() {
   };
 
   const handleDialogConfirmed = () => {
-    history.push('/login');
+    navigate('/login');
   }
 
   return (

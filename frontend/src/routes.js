@@ -1,11 +1,10 @@
 import React from 'react';
-import {Switch} from 'react-router';
-import {Route} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 // components
 import Landing from './components/Landing';
-import Login from './components/Login';
-import LoginPane from './components/LoginPane';
+// import Login from './components/login/Login';
+import LoginPane from './components/login/LoginPane';
 import Dashboard from './components/Dashboard';
 import changePrimaryEmail from './components/userProfile/changePrimaryEmail';
 import Clients from './components/Clients';
@@ -14,18 +13,18 @@ import ClientForm from './components/clients/ClientForm'
 import Users from './components/Users';
 import User from './components/users/User';
 import UserForm from './components/users/UserForm'
-import UserInvite from './components/register/UserInvite'
+import UserInvite from './components/registration/UserInvite'
 import ResetPassword from './components/userProfile/UserResetPassword'
 import EmailConfirm from './components/emailConfirm'
 import UserProfile from './components/userProfile/Profile'
 import UpdateUserProfile from './components/userProfile/EditProfile'
-import NeedForm from './components/client_needs/NeedForm'
-import Need from './components/client_needs/Need'
+// import NeedForm from './components/client_needs/NeedForm'
+// import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute'
 import AdminRoute from './components/routes/AdminRoute'
 import Providers from './components/Providers';
 import AddServicePrompt from './components/providers/AddServicePrompt'
-import ProviderForm from './components/providers/ProviderForm'
+import ProviderForm from './components/providers/ProviderForm2'
 import ProviderProfile from './components/providers/ProviderProfile'
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
@@ -34,64 +33,89 @@ import ServiceForm from './components/services/ServiceForm'
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
-import Questions from './components/additionalFIelds/Questions';
-import UserFirstEntry from "./components/register/UserFirstEntry";
+import ManageForms from './components/settings/ManageForms';
+import ManageFormFields from './components/settings/ManageFormFields';
+import UserFirstEntry from "./components/registration/UserFirstEntry";
 import ForgotPassword from "./components/forgotPassword/ForgotPassword";
 import ForgotPasswordResetPassword from "./components/forgotPassword/ResetPassword";
+import DoubleAuth from "./components/login/DoubleAuth";
+import EditUserForm from "./components/users/EditUserForm";
+import AddEditCharacteristic from "./components/characteristics/AddEditCharacteristic";
+import Characteristics from "./components/characteristics/Characteristics";
+import AddEditQuestion from "./components/questions/AddEditQuestion";
+import Questions from './components/questions/Questions';
+import VisualizeClient from './components/clients/visualizeClient';
 
 const routes = (
-  <Switch>
-    <Route exact path='/' component={Landing}/>
-    {/*<Route path='/login' component={Login}/>*/}
-    <Route path='/email-confirm' component={EmailConfirm}/>
-    <Route path='/login' component={LoginPane}/>
-    <Route path='/forgot-password' component={ForgotPassword}/>
-    <Route path='/update-primary-email/:token' component={changePrimaryEmail}/>
-    <PrivateRoute path='/dashboard' component={Dashboard}/>
+  <Routes>
+    <Route exact path='/' element={<Landing/>}/>
+    {/*<Route path='/login' element={Login}/>}/>*/}
+    <Route path='/email-confirm' element={<EmailConfirm/>}/>
+    <Route path='/login/doubleAuth' element={<DoubleAuth/>}/>
+    <Route path='/login' element={<LoginPane/>}/>
+    <Route path='/forgot-password' element={<ForgotPassword/>}/>
+    <Route path='/update-primary-email/:token' element={<changePrimaryEmail/>}/>
+    <Route path='/dashboard' element={<PrivateRoute element={Dashboard}/>}/>
 
-    <Route path='/verify/:token' component={UserFirstEntry}/>
-    <Route path='/resetPassword/:token' component={ForgotPasswordResetPassword}/>
+    <Route path='/verify/:token' element={<UserFirstEntry/>}/>}/>
+    <Route path='/resetPassword/:token' element={<PrivateRoute element={ForgotPasswordResetPassword}/>}/>
 
-    <PrivateRoute path='/clients/:id/edit' component={ClientForm}/>
-    <PrivateRoute path='/clients/:id/needs/new' component={NeedForm}/>
-    <PrivateRoute path='/clients/new' component={ClientForm}/>
-    <PrivateRoute path='/clients/:id' component={Client}/>
-    <PrivateRoute path='/clients' component={Clients}/>
-    <PrivateRoute path='/profile/:id/edit' component={UpdateUserProfile}/>
-    <PrivateRoute path='/profile/:id' component={UserProfile}/>
-    <PrivateRoute path='/users/reset-password/:id' component={ResetPassword}/>
+    <Route path='/clients/:id/edit' element={<ClientForm/>}/>}/>
+    {/*<PrivateRoute path='/clients/:id/needs/new' element={NeedForm}/>}/>*/}
+    <Route path='/clients/new' element={<PrivateRoute element={ClientForm}/>}/>
+    <Route path='/clients/:id' element={<PrivateRoute element={VisualizeClient}/>}/>
+    <Route path='/clients' element={<PrivateRoute element={Clients}/>}/>
+    <Route path='/profile/:id/edit' element={<PrivateRoute element={UpdateUserProfile}/>}/>
+    <Route path='/profile/:id' element={<PrivateRoute element={UserProfile}/>}/>
+    <Route path='/users/reset-password/:id' element={<PrivateRoute element={ResetPassword}/>}/>
 
-    <AdminRoute path='/users/:id/edit' component={UserForm}/>
-    <AdminRoute path='/users/new' component={UserForm}/>
-    <AdminRoute path='/users/invite' component={UserInvite}/>
-
-
-    <AdminRoute path='/users/:id' component={User}/>
-    <AdminRoute path='/users' component={Users}/>
-    <AdminRoute path='/admin-logs' component={AdminLogs}/>
+    <Route path='/users/:id/edit' element={<AdminRoute element={EditUserForm}/>}/>
+    <Route path='/users/new' element={<AdminRoute element={UserForm}/>}/>
+    <Route path='/users/invite' element={<AdminRoute element={UserInvite}/>}/>
+    <Route path='/users/:id' element={<AdminRoute element={User}/>}/>
+    <Route path='/users' element={<AdminRoute element={Users}/>}/>
+    <Route path='/admin-logs' element={<AdminRoute element={AdminLogs}/>}/>
 
 
-    <PrivateRoute path='/needs/:need_id/edit' component={NeedForm}/>
-    <PrivateRoute path='/needs/:need_id' component={Need}/>
+    {/*<PrivateRoute path='/needs/:need_id/edit' element={NeedForm}/>}/>*/}
+    {/*<PrivateRoute path='/needs/:need_id' element={Need}/>}/>*/}
 
-    <PrivateRoute path='/providers/:id/rate' component={ProviderRatingForm}/>
-    <PrivateRoute path='/providers/new/add-service' component={AddServicePrompt}/>
-    <PrivateRoute path='/providers/:formType/new' component={ProviderForm}/>
-    <PrivateRoute path='/providers/:id/edit/' component={ProviderForm}/>
-    <PrivateRoute path='/providers/:id' component={ProviderProfile}/>
-    <PrivateRoute path='/providers' component={Providers}/>
+    <Route path='/providers/:id/rate' element={<PrivateRoute element={ProviderRatingForm}/>}/>
+    <Route path='/providers/new/add-service' element={<PrivateRoute element={AddServicePrompt}/>}/>
+    <Route path='/providers/:formType/new' element={<PrivateRoute element={ProviderForm}/>}/>
+    <Route path='/providers/:formType/:id/edit/' element={<PrivateRoute element={ProviderForm}/>}/>
+    <Route path='/providers/:id' element={<PrivateRoute element={ProviderProfile}/>}/>
+    <Route path='/providers' element={<PrivateRoute element={Providers}/>}/>
 
-    <PrivateRoute path='/services/:id/edit' component={ServiceForm}/>
-    <PrivateRoute path='/services/new' component={ServiceForm}/>
-    <PrivateRoute path='/services/:id' component={Service}/>
-    <PrivateRoute path='/services' component={Services}/>
+    <Route path='/services/:id/edit' element={<PrivateRoute element={ServiceForm}/>}/>
+    <Route path='/services/new' element={<PrivateRoute element={ServiceForm}/>}/>
+    <Route path='/services/:id' element={<PrivateRoute element={Service}/>}/>
+    <Route path='/services' element={<PrivateRoute element={Services}/>}/>
 
-    <PrivateRoute path='/eligibility-criteria' component={Eligibilities}/>
+    <Route path='/eligibility-criteria' element={<PrivateRoute element={Eligibilities}/>}/>
 
-    <PrivateRoute path='/questions' component={Questions}/>
+    <Route path='/characteristics' element={<AdminRoute element={Characteristics}/>}/>
+    {/*this for edit*/}
+    <Route path={'/characteristic/:id/:option'} element={<AdminRoute element={AddEditCharacteristic}/>}/>
+    {/*this for add  */}
+    <Route path={'/characteristic/:option'} element={<AdminRoute element={AddEditCharacteristic}/>}/>
 
-    <AdminRoute path='/settings/manage-fields' component={ManageFields}/>
-  </Switch>
+    <Route path={'/question/:id/:option'} element={<AdminRoute element={AddEditQuestion}/>}/>
+    <Route path={'/question/:option'} element={<AdminRoute element={AddEditQuestion}/>}/>
+    <Route path={'/questions'} element={<AdminRoute element={Questions}/>}/>
+
+
+    <Route path='/settings/manage-fields' element={<AdminRoute element={ManageFields}/>}/>
+
+    <Route exact path='/settings/manage-forms/' element={<AdminRoute element={ManageForms}/>}/>
+    <Route exact path='/settings/manage-forms/:formType' element={<AdminRoute element={ManageForms}/>}/>
+
+    {/*:formType could be `client`, 'organization', ...*/}
+    {/*:method could be `edit` or `new`*/}
+    <Route exact path='/settings/forms/' element={<AdminRoute element={ManageFormFields}/>}/>
+    <Route exact path='/settings/forms/:formType/:method' element={<AdminRoute element={ManageFormFields}/>}/>
+    <Route exact path='/settings/forms/:formType/:method/:formId' element={<AdminRoute element={ManageFormFields}/>}/>
+  </Routes>
 );
 
 export default routes;

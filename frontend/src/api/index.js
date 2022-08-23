@@ -47,7 +47,7 @@ export async function putJson(url, body) {
 
 // return raw response
 export async function deleteJson(url, body) {
-  return sendJson(url, body, 'DELETE', true);
+  return sendJson(url, body, 'DELETE');
 }
 
 export function sleep(milliseconds) {

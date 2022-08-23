@@ -3,11 +3,11 @@ import { Chip, Container } from "@mui/material";
 import { Add as AddIcon, Check as YesIcon } from "@mui/icons-material";
 import { DeleteModal, DropdownMenu, Link, Loading, DataTable } from "./shared";
 import { deleteUser, fetchUsers } from "../api/userApi";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { formatPhoneNumber } from "../helpers/phone_number_helpers";
 
 export default function Users() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [state, setState] = useState({
     loading: true,
     data: [],
@@ -51,7 +51,8 @@ export default function Users() {
         return <Link color to={`/users/${id}`}>
           {email}
         </Link>
-      }
+      },
+      sortBy: ({email}) => email
     },
     {
       label: 'First name',
@@ -90,6 +91,15 @@ export default function Users() {
       }
     },
     {
+      label: 'Expiration Date',
+      body: ({expirationDate}) => {
+        if(expirationDate)
+          return (new Date(expirationDate)).toString()
+      }
+
+
+    },
+    {
       label: ' ',
       body: ({username, id}) =>
         <DropdownMenu urlPrefix={'users'} objectId={id}
@@ -109,7 +119,7 @@ export default function Users() {
         idField="id"
         customToolbar={
           <Chip
-            onClick={() => history.push('/users/invite')}
+            onClick={() => navigate('/users/invite')}
             color="primary"
             icon={<AddIcon/>}
             label="Invite User"

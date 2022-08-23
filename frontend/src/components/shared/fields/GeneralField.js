@@ -4,18 +4,30 @@ import { format, parse } from 'date-fns';
 import { TextField } from '@mui/material'
 import {
   LocalizationProvider,
-  DatePicker,
+  DatePicker, DateTimePicker, TimePicker
 } from '@mui/x-date-pickers';
 import MuiPhoneNumber from "material-ui-phone-number";
 
 export const dateFormat = 'yyyy-MM-dd';
+export const dateTimeFormat = 'yyyy-MM-dd HH:mm:ss';
+export const timeFormat = 'HH:mm:ss';
 
 export default function GeneralField({type, onChange, value: defaultValue, ...props}) {
+
+  let customFormat = dateFormat, Picker = DatePicker;
+  if (type === 'datetime') {
+    customFormat = dateTimeFormat;
+    Picker = DateTimePicker
+  } else if (type === 'time') {
+    customFormat = timeFormat;
+    Picker = TimePicker;
+  }
+
   // duplicate the state, the drawback is much smaller than re-render all the form.
   const [value, setValue] = useState(() => {
-    if (type === 'date') {
+    if (type === 'date' || type === 'datetime' || type === 'time') {
       if (defaultValue)
-        return parse(defaultValue, dateFormat, new Date());
+        return parse(defaultValue, customFormat, new Date());
       else
         return null;
     }
@@ -32,7 +44,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
   const onChangeDate = date => {
     setValue(date);
     try {
-      const formattedDate = format(date, dateFormat);
+      const formattedDate = format(date, customFormat);
       onChange({target: {value: formattedDate}});
     } catch (e) {
       // Clear the date if the input is malformed
@@ -40,11 +52,11 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
     }
   };
 
-  if (type === 'date')
+  if (type === 'date' || type === 'datetime' || type === 'time')
     return (
       <div>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
+          <Picker
             value={value}
             onChange={onChangeDate}
             onAccept={() => props.onBlur()}

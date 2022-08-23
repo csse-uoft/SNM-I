@@ -8,7 +8,7 @@ const authMiddleware = (message) => (req, res, next) => {
   if (req.session.email) {
     next();
   } else {
-    res.json({error: true, message: message || 'Authentication required.'})
+    res.status(403).json({error: true, message: message || 'Authentication required.'})
   }
 };
 

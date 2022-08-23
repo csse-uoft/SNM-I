@@ -25,6 +25,18 @@ export const defaultFirstEntryFields = {
   securityQuestionAnswer3: '',
 }
 
+let classOrManually;
+export const defaultAddEditQuestionFields = {
+  name:'',
+  label: '', // Ex. address
+  codes: [],
+  dataType: '', // Ex. string
+  fieldType: '', // Ex. address
+  // options: [{key: 0, label: ''}], // Ex.
+  optionsFromClass: '', // Ex. provider
+  description: '', // Ex. the address of the user's home
+  classOrManually: 'class'
+}
 export const defaultInvitationFields = {
   isSuperuser: false,
   email: '',
@@ -45,6 +57,12 @@ export const defaultForgotPasswordFields = {
   group2: {securityQuestion1: '', securityQuestionAnswer1: ''},
   group3: {securityQuestion2: '', securityQuestionAnswer2: ''},
   group4: {securityQuestion3: '', securityQuestionAnswer3: ''},
+}
+
+export const defaultSecurityQuestionsFields = {
+  group1: {securityQuestion1: '', securityQuestionAnswer1: ''},
+  group2: {securityQuestion2: '', securityQuestionAnswer2: ''},
+  group3: {securityQuestion3: '', securityQuestionAnswer3: ''},
 }
 
 export const defaultContactFields = {

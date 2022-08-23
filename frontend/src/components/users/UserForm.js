@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from "react-router";
-
+import { useNavigate, useParams } from "react-router-dom";
 import { defaultUserFields } from "../../constants/default_fields";
 import { Button, Container, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -22,7 +21,7 @@ const useStyles = makeStyles(() => ({
 
 export default function UserForm() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const mode = id == null ? 'new' : 'edit';
   const [state, setState] = useState({
@@ -76,10 +75,10 @@ export default function UserForm() {
       try {
         if (mode === 'new') {
           await createUser(state.form);
-          history.push('/users/');
+          navigate('/users/');
         } else {
           await updateUser(id, state.form);
-          history.push('/users/' + id);
+          navigate('/users/' + id);
         }
       } catch (e) {
         if (e.json) {

@@ -1,5 +1,5 @@
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useState} from 'react';
 import {defaultNewPasswordFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
 
 export default function ForgotPasswordResetPassword(){
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {token} = useParams();
 
   const [state, setState] = useState({
@@ -172,12 +172,12 @@ export default function ForgotPasswordResetPassword(){
 
         <AlertDialog dialogContentText={"You have successfully reset your password, please login"}
                      dialogTitle={'Success'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {navigate('/login')}} key={'ok'}> {'ok'}</Button>]}
                      open={state.successDialog}/>
 
         <AlertDialog dialogContentText={state.errors.message || "Error occurs"}
                      dialogTitle={'Error'}
-                     buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                     buttons={[<Button onClick={() => {navigate('/login')}} key={'ok'}> {'ok'}</Button>]}
                      open={state.failDialog}/>
 
       </Container>
@@ -189,7 +189,7 @@ export default function ForgotPasswordResetPassword(){
     return(
       <AlertDialog dialogContentText={state.errors.message || "Token invalid"}
                    dialogTitle={'Error'}
-                   buttons={[<Button onClick={() => {history.push('/login')}} key={'ok'}> {'ok'}</Button>]}
+                   buttons={[<Button onClick={() => {navigate('/login')}} key={'ok'}> {'ok'}</Button>]}
                    open={state.failDialog}/>
     )
   }

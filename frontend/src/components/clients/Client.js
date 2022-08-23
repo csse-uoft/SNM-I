@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import _ from 'lodash';
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Container, Typography, Alert , Button} from "@mui/material";
 import { Edit, Print } from '@mui/icons-material';
 import { Link } from '../shared'
@@ -11,7 +11,7 @@ import AppointmentRow from '../appointments/AppointmentRow';
 
 import { fetchClient } from '../../api/mockedApi/clients';
 import { fetchClientFields } from "../../api/mockedApi/clientFields";
-import { clientFields } from '../../constants/client_fields.js'
+import { clientFields } from '../../constants/client_fields.js';
 
 //Table
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"

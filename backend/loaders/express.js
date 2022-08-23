@@ -5,12 +5,17 @@ const logger = require('morgan');
 const cookieSession = require('cookie-session');
 const cors = require('cors');
 
-const {baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute} = require('../routes');
+const {
+  baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
+  characteristicRoute, questionRoute, dynamicFormRoute, genericRoute
+} = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
 
 const config = require('../config');
-const {getCurrentUserProfile} = require("../services/users");
+const {initUserAccounts} = require('../services/userAccount/user');
+const {initFieldTypes, initPredefinedCharacteristics} = require('../services/characteristics');
+const {initStreetTypes, initStreetDirections} = require('../services/address');
 
 const app = express();
 
@@ -33,9 +38,18 @@ app.use('/api', forgotPasswordRoute);
 app.use('/api', authMiddleware('Authentication Required'));
 
 app.use('/api', userRoute);
-app.use('/api', usersRoute)
+app.use('/api', usersRoute);
+app.use('/api', characteristicRoute);
+app.use('/api', questionRoute);
+app.use('/api', clientsRoute);
+app.use('/api', dynamicFormRoute);
+app.use('/api', genericRoute);
 
-require('../services/user').initUserAccounts();
+
+initUserAccounts();
+initFieldTypes().then(() => initPredefinedCharacteristics());
+initStreetTypes();
+initStreetDirections();
 
 app.use(errorHandler);
 

@@ -72,6 +72,8 @@ class GraphDBDocument {
     if (this.isNew)
       this.modified = Object.keys(this.data);
 
+    // TODO: Bug fix when using delete keywords on a property,
+    //  i.e. delete characteristic.implementation.options;
     for (let [key, value] of Object.entries(this.data)) {
       const initialValue = this.initialData[key];
 
@@ -261,13 +263,13 @@ class GraphDBDocument {
         for (const [idx, subject] of this[fieldKey].entries()) {
           if (typeof subject === "object")
             throw new Error('Should not be a object.')
-          whereClause.push(`?s = :${subject}`);
+          whereClause.push(`?s = ${subject}`);
         }
     }
     // The populated field is a single Model.
     else if (isModel(currModel)) {
       if (this[fieldKey])
-        whereClause.push(`?s = :${this[fieldKey]}`);
+        whereClause.push(`?s = ${this[fieldKey]}`);
     } else {
       throw new Error(`GraphDBDocument.getPopulatedFieldValue: Cannot populate ${fieldKey} into ${this.schemaOptions.name}; Schema is not provided.`);
     }
@@ -311,7 +313,7 @@ class GraphDBDocument {
       await GraphDB.sendUpdateQuery(query);
       this.isNew = false;
     } else {
-      const instanceName = `:${this.schemaOptions.name}_${this._id}`;
+      const instanceName = `${this.schemaOptions.name}_${this._id}`;
 
       if (!this.isModified)
         return;
@@ -327,6 +329,7 @@ class GraphDBDocument {
 
         // Skip undefined value
         if (value == null) {
+          // TODO: Delete nested object(s) when DELETE_TYPE set to cascade.
           // Removed the value that is marked null or undefined
           if (option)
             deleteClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ?o${index}.`);
@@ -339,7 +342,15 @@ class GraphDBDocument {
           // Provides an individual name
           if (typeof value === "string") {
             deleteClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ?o${index}.`);
-            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value.includes(':') ? value : `:${value}`}.`);
+
+            if (value.includes('://'))
+              value = `<${value}>`
+            else if (value.includes(':'))
+              return value;
+            else
+              throw new Error('Improper instance syntax.');
+
+            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value}.`);
             continue;
           }
 
@@ -360,7 +371,7 @@ class GraphDBDocument {
             if (!this.initialData[key]) {
               value.isNew = true;
               value._id = await getNextCounter(option.type.schemaOptions.name);
-              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} :${option.type.schemaOptions.name}_${value._id}.`);
+              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${option.type.schemaOptions.name}_${value._id}.`);
             } else {
               value._id = typeof this.initialData[key] === "object" ?
                 this.initialData[key]._id : getIdFromIdentifier(this.initialData[key]);
@@ -370,7 +381,7 @@ class GraphDBDocument {
           // Store already created nested document id
           if (!value.isNew) {
             deleteClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ?o${index}.`);
-            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} :${value.individualName}.`);
+            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value.individualName}.`);
           }
           // TODO: Avoid unnecessary updates by introducing new state isChanged
           await data[key].save();
@@ -384,7 +395,15 @@ class GraphDBDocument {
           for (let [j, doc] of value.entries()) {
 
             if (typeof doc === 'string') {
-              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc.includes(':') ? doc : `:${doc}`}.`)
+
+              if (doc.includes('://'))
+                doc = `<${doc}>`
+              else if (doc.includes(':'))
+                return doc;
+              else
+                throw new Error('Improper instance syntax.');
+
+              insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc}.`)
               continue;
             }
 
@@ -405,7 +424,7 @@ class GraphDBDocument {
               }
             }
 
-            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} :${doc.individualName}.`);
+            insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc.individualName}.`);
 
             await value[j].save();
           }

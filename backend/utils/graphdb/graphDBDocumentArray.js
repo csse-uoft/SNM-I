@@ -82,9 +82,9 @@ class GraphDBDocumentArray extends Array {
       const data = {};
 
       await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
-        subject = getGraphDBAttribute(subject.value);
+        subject = SPARQL.getPrefixedURI(subject.value);
         predicate = SPARQL.getPrefixedURI(predicate.value);
-        object = object.termType === 'NamedNode' ? getGraphDBAttribute(object.value) : object.value;
+        object = object.termType === 'NamedNode' ? SPARQL.getPrefixedURI(object.value) : object.value;
 
         const key = subject.slice(0, subject.lastIndexOf('_'));
         if (!this[0].model.instancePrefix2Model.has(key)) return;
@@ -143,6 +143,9 @@ class GraphDBDocumentArray extends Array {
             const key = instanceName.slice(0, instanceName.lastIndexOf('_'));
             const model = doc.model.instancePrefix2Model.get(key);
 
+            if (!model) {
+              console.error('Cannot populate: ', instanceName, 'Model not found.');
+            }
             newValue = new GraphDBDocument({
               data: {_id, ...data[instanceName]},
               model: model,

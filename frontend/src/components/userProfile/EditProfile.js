@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {makeStyles} from "@mui/styles";
-import {useHistory, useParams} from "react-router";
+import {useNavigate, useParams} from "react-router-dom";
 import {Button, Container, Typography} from "@mui/material";
 import {userProfileFields} from "../../constants/userProfileFields";
 import {getProfile, updatePrimaryEmail, updateProfile} from "../../api/userApi";
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
  */
 export default function EditProfile() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {id} = useParams();
   const userContext = useContext(UserContext);
   const [form, setForm] = useState({...userProfileFields});
@@ -43,7 +43,8 @@ export default function EditProfile() {
   const [loading, setLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
   const [dialogEmail, setDialogEmail] = useState(false);
-  let emailSent = false;
+  const [dialogQuitEdit, setDialogQuitEdit] = useState(false);
+  const [dialogExistEmail, setDialogExistEmail] = useState(false);
 
   const profileForm = {
     givenName: userContext.givenName,
@@ -90,57 +91,51 @@ export default function EditProfile() {
       setErrors(newErrors);
       return false
     }
-
     return true;
   };
 
   // cancel change button handler
-  const handleCancel = () => {
-    alert('All the changes you made will not be saved.');
-    history.push('/profile/' + id);
+  const handleDialogCancel = () => {
+    setDialogQuitEdit(false);
+    navigate('/profile/' + id);
   }
 
   // email-sent dialog confirm button handler
   const handleDialogEmail =() => {
     setDialogEmail(false);
-    history.push('/profile/' + id + '/');
+    setDialogSubmit(true);
   }
 
   // submit button handler
-  const handleSubmitChanges = () => {
+  const handleSubmitChanges = async () => {
     if (validate()) {
-      setDialogSubmit(true);
+      if (form.email !== userContext.email) {
+        console.log('reach before send verification')
+        const {sentEmailConfirm} = await updatePrimaryEmail(id, form.email);
+        console.log(sentEmailConfirm)
+        if (sentEmailConfirm) {
+          setDialogEmail(true);
+          console.log('email verification link sent');
+        } else {
+          setDialogExistEmail(true);
+          console.log('email verification is not sent.');
+        }
+      } else {
+        setDialogSubmit(true);
+      }
     }
   }
 
   // confirmation dialog confirm button handler
   const handleDialogConfirm = async () => {
     try {
-
-      if (form.email !== userContext.email) {
-        console.log('reach before send verification')
-        const {sentEmailConfirm} = await updatePrimaryEmail(id, form.email);
-        console.log(sentEmailConfirm)
-        if (sentEmailConfirm) {
-          emailSent = true;
-          console.log('email verification link sent');
-        } else {
-          console.log('email verification is not sent.');
-        }
-      }
-
       let phoneUnchanged;
-      console.log(userContext.countryCode)
-      console.log(userContext.areaCode)
-      console.log(userContext.phoneNumber)
       if (!userContext.phoneNumber) {
         phoneUnchanged = null;
       } else {
         phoneUnchanged = userContext.countryCode.toString() +
           userContext.areaCode.toString() + userContext.phoneNumber.toString()
       }
-
-      console.log("phone not changed:", phoneUnchanged)
       const updateForm = {
         givenName: form.givenName,
         familyName: form.familyName,
@@ -180,16 +175,11 @@ export default function EditProfile() {
 
       setLoadingButton(false);
       setDialogSubmit(false);
-      if (emailSent) {
-        setDialogEmail(true);
-      } else {
-        history.push('/profile/' + id + '/');
-      }
+      navigate('/profile/' + id + '/');
     } catch (e) {
       setLoadingButton(false);
       console.log('catch e');
-      console.log( e.json);
-      console.log( e);
+      console.log(e);
     }
   };
 
@@ -233,13 +223,11 @@ export default function EditProfile() {
               onBlur={e => handleOnBlur(e, field, option)}
               error={!!errors[field]}
               helperText={errors[field]}
-            />)
-
-        })}
+            />)})}
 
         {/* Button for cancelling account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
-                onClick={handleCancel} key={'Cancel Changes'}>
+                onClick={() => setDialogQuitEdit(true)} key={'Cancel Changes'}>
           Cancel Changes
         </Button>
 
@@ -269,6 +257,19 @@ export default function EditProfile() {
           dialogTitle={'Congratulations!'}
           buttons={<Button onClick={handleDialogEmail} key={'confirm'} autoFocus> {'confirm'}</Button>}
           open={dialogEmail}/>
+
+        <AlertDialog
+          dialogContentText={"All the changes you made will not be saved."}
+          dialogTitle={'Notice!'}
+          buttons={<Button onClick={handleDialogCancel} key={'confirm'} autoFocus> {'confirm'}</Button>}
+          open={dialogQuitEdit}/>
+
+        <AlertDialog
+          dialogContentText={"Your input new primary email already registered as the primary email for another account."}
+          dialogTitle={'Notice!'}
+          buttons={<Button onClick={() => setDialogExistEmail(false)}
+                           key={'Got it'} autoFocus> {'Got it'}</Button>}
+          open={dialogExistEmail}/>
 
       </div>
 
