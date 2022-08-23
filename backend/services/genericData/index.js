@@ -1,14 +1,20 @@
-const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel, GDBCharacteristicModel, GDBAddressModel} = require("../../models");
+const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel, GDBCharacteristicModel, GDBAddressModel, GDBQOModel} = require("../../models");
 const {SPARQL} = require('../../utils/graphdb/helpers');
 const {FieldTypes} = require("../characteristics");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GraphDB} = require("../../utils/graphdb");
 const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
+const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 
 const option2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
+}
+
+const specialField2Model = {
+  'address': GDBAddressModel,
+  'phoneNumber': GDBPhoneNumberModel
 }
 
 const linkedProperty = (option, characteristic) => {
@@ -391,23 +397,24 @@ async function deleteSingleGeneric(req, res, next){
     if(!generic)
       return res.status(400).json({success: false, message: 'Invalid option or id'})
 
-    // recursively delete characteristicsOccurrences and questionOccurrences, including phoneNumber and Address
-    // also delete notes
-
     const characteristicsOccurrences = generic.characteristicOccurrences
     const questionsOccurrences = generic.questionOccurrences
     const note = generic.note
     // delete notes
     await GDBNoteModel.findByIdAndDelete(note?._id)
 
+    // recursively delete characteristicsOccurrences, including phoneNumber and Address
     for (let characteristicOccurrence of characteristicsOccurrences){
       if(characteristicOccurrence.objectValue){
-
+        const [fieldType, id] = characteristicOccurrence.objectValue.split('_')
+        await specialField2Model[fieldType]?.findByIdAndDelete(id)
       }
+      await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id)
     }
 
+    // recursively delete questionOccurrences
     for (let questionOccurrence of questionsOccurrences){
-
+      await GDBQOModel.findByIdAndDelete(questionOccurrence._id)
     }
 
     await option2Model[option].findByIdAndDelete(id)
