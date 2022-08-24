@@ -17,6 +17,8 @@ const specialField2Model = {
   'phoneNumber': GDBPhoneNumberModel
 }
 
+const TIMEPATTERN = /^\d\d:\d\d:\d\d$/
+
 const linkedProperty = (option, characteristic) => {
   const schema = option2Model[option].schema
   for (let key in schema) {
@@ -36,6 +38,9 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
   } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
     occurrence.dataBooleanValue = !!value.target.value;
   } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
+    if(TIMEPATTERN.test(value)){
+      value = '1970-01-01 '+ value // when the field is time field
+    }
     occurrence.dataDateValue = new Date(value);
   } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
 
@@ -167,52 +172,50 @@ async function fetchSingleGeneric(req, res, next) {
 
 const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
+  // option will be 'client', 'organization',...
   const {option} = req.params
 
   // check the data package from frontend
+  // check if a formId was sent
   if (!data.formId) {
     return res.status(400).json({success: false, message: 'No form id is given'})
   }
   const form = await MDBDynamicFormModel.findById(data.formId)
 
-  for (let key of Object.keys(option2Model)) {
-    if (form.formType !== key && option === key) {
-      return res.status(400).json({success: false, message: `The form is not for ${key}`})
-    }
-  }
+  // check if the option is in option2Model
+  if(!option2Model[option])
+    return res.status(400).json({success: false, message: 'Invalid option'})
+
+  // for (let key of Object.keys(option2Model)) {
+  //   if (form.formType !== key && option === key) {
+  //     return res.status(400).json({success: false, message: `The form is not for ${key}`})
+  //   }
+  // }
+
+  // check if the form type is consist with request type(client, organization, ...)
+  if(form.formType !== option)
+    return res.status(400).json({success: false, message: `The form is not for ${option}`})
+
+  // check if the form has a structure
   if (!form.formStructure) {
     return res.status(400).json({success: false, message: 'The form structure is not defined'})
   }
   // TODO: verify if questions and characteristics are in the form
 
+  // check if the fields are provided
   if (!data.fields) {
-    return res.status(400).json({success: false, message: 'Please provide the fields'})
+    return res.status(400).json({success: false, message: 'No fields provided'})
   }
 
   try {
     const questions = {};
     const characteristics = {};
 
-    // // Pick all characteristics and questions from package and put their ids into dictionary
-    // for (const key of Object.keys(data.fields)) {
-    //   const [type, id] = key.split('_');
-    //   if (type === 'characteristic') {
-    //     characteristics[id] = null;
-    //   } else if (type === 'question') {
-    //     questions[id] = null;
-    //   }
-    // }
-    // // Fetch characteristics & questions from database and put them into dictionary
-    // if (Object.keys(characteristics).length)
-    //   (await GDBCharacteristicModel.find({_id: {$in: Object.keys(characteristics)}}, {populates: ['implementation']}))
-    //     .forEach(item => characteristics[item._id] = item);
-    // if (Object.keys(questions).length)
-    //   (await GDBQuestionModel.find({_id: {$in: Object.keys(questions)}}, {populates: ['implementation']}))
-    //     .forEach(item => questions[item._id] = item);
-
+    // extract questions and characteristics based on fields from the database
     await fetchCharacteristicAndQuestionsBasedOnFields(characteristics, questions, data.fields)
 
     const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
+    // iterating over all fields and create occurrences and store them into instanceData
     for (const [key, value] of Object.entries(data.fields)) {
       const [type, id] = key.split('_');
 
@@ -238,13 +241,11 @@ const createSingleGeneric = async (req, res, next) => {
       }
     }
 
+    // the instance data is stored into graphdb
     await option2Model[option](instanceData).save();
 
-    if (option === 'client') {
-      return res.status(202).json({success: true, message: 'Successfully created a client'})
-    } else if (option === 'organization') {
-      return res.status(202).json({success: true, message: 'Successfully created an organization'})
-    }
+    return res.status(202).json({success: true, message: `Successfully created a/an ${option}`})
+
 
   } catch (e) {
     next(e)
@@ -256,21 +257,21 @@ async function updateSingleGeneric(req, res, next) {
   const data = req.body
   const {id, option} = req.params
 
-
   try {
     // check the data package from frontend
+    // checking if a generic id is provided
     if (!id) {
-      return res.status(400).json({success: false, message: 'No generic id is given'})
+      return res.status(400).json({success: false, message: `No ${option} id is given`})
     }
     const generic = await option2Model[option].findOne({_id: id}, {
       populates: ['characteristicOccurrences',
         'questionOccurrences']
     })
     if (!generic) {
-      return res.status(400).json({success: false, message: 'No such generic'})
+      return res.status(400).json({success: false, message: `No such ${option}`})
     }
     if (!data.formId) {
-      return res.status(400).json({success: false, message: 'No form id is given'})
+      return res.status(400).json({success: false, message: 'No form id was provided'})
     }
     const form = await MDBDynamicFormModel.findById(data.formId)
     for (let key of Object.keys(option2Model)) {
@@ -283,10 +284,10 @@ async function updateSingleGeneric(req, res, next) {
     }
     // TODO: verify if questions and characteristics are in the form
     if (!data.fields) {
-      return res.status(400).json({success: false, message: 'Please provide the fields'})
+      return res.status(400).json({success: false, message: 'No fields provided'})
     }
 
-    // fetch characteristics and questions from database
+    // fetch characteristics and questions from GDB
     const questions = {};
     const characteristics = {};
     await fetchCharacteristicAndQuestionsBasedOnFields(characteristics, questions, data.fields)
