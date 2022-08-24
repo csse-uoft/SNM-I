@@ -45,6 +45,7 @@ import Characteristics from "./components/characteristics/Characteristics";
 import AddEditQuestion from "./components/questions/AddEditQuestion";
 import Questions from './components/questions/Questions';
 import VisualizeClient from './components/clients/visualizeClient';
+import ClientSearch from "./components/clients/ClientSearch";
 
 const routes = (
   <Routes>
@@ -63,6 +64,7 @@ const routes = (
     <Route path='/clients/:id/edit' element={<ClientForm/>}/>}/>
     {/*<PrivateRoute path='/clients/:id/needs/new' element={NeedForm}/>}/>*/}
     <Route path='/clients/new' element={<PrivateRoute element={ClientForm}/>}/>
+    <Route path='/clients/advance-search' element={<PrivateRoute element={ClientSearch}/>}/>
     <Route path='/clients/:id' element={<PrivateRoute element={VisualizeClient}/>}/>
     <Route path='/clients' element={<PrivateRoute element={Clients}/>}/>
     <Route path='/profile/:id/edit' element={<PrivateRoute element={UpdateUserProfile}/>}/>

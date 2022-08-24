@@ -96,6 +96,7 @@ export default function GenericPage(props) {
       <CustomToolbar
         type={type}
         handleAdd={() => navigate(`/${type}/new`)}
+        handleSearch={() => navigate(`/${type}/advance-search`)}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
       />,
     onDelete: async (ids) => {
