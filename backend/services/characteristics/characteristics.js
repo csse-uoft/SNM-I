@@ -9,6 +9,10 @@ const {GDBClientModel, GDBOrganizationModel} = require("../../models");
 const {query} = require("express");
 const {GraphDB} = require("../../utils/graphdb");
 
+const option2Model = {
+  'client': GDBClientModel,
+  'organization': GDBOrganizationModel,
+}
 
 const createCharacteristic = async (req, res, next) => {
   const {label, name, codes, multipleValues, dataType, fieldType, options, optionsFromClass, description} = req.body;
@@ -230,7 +234,25 @@ const deleteCharacteristic = async (req, res, next) => {
 }
 
 
+async function fetchCharacteristicsByType(req, res, next){
+  try{
+    const {option} = req.params
+    if(!option)
+      return res.status(400).json({success: false, message: 'Option is not provided'})
+    if(!option2Model[option])
+      return res.status(400).json({success: false, message: 'Invalid option'})
+
+    const characteristics = GDBCharacteristicModel.find({_})
+    if(!Array.isArray(generics))
+      return res.status(400).json({success: false})
+
+  }catch (e){
+
+  }
+}
+
+
 module.exports = {
   createCharacteristic, updateCharacteristic, fetchCharacteristic,
-  fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsWithDetails
+  fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsWithDetails,fetchCharacteristicsByType
 }

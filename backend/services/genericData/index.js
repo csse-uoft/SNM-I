@@ -291,7 +291,7 @@ async function updateSingleGeneric(req, res, next) {
     const questions = {};
     const characteristics = {};
     await fetchCharacteristicAndQuestionsBasedOnFields(characteristics, questions, data.fields)
-
+    // TODO: change function name to based on form
 
     // check should we update or create a characteristicOccurrence or questionOccurrence
     // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
