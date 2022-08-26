@@ -1,11 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Container, Divider, Grid, IconButton, Paper, Typography} from "@mui/material";
+import {Button, Container, Divider, Grid, IconButton, ListItem, Paper, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import GeneralField from "./fields/GeneralField";
 import {Delete as DeleteIcon} from "@mui/icons-material";
 import {fetchCharacteristics} from "../../api/characteristicApi";
 import {Loading} from "./index";
 import {Picker} from "../settings/components/Pickers";
+import {fetchClients} from "../../api/clientApi";
+import {AlertDialog} from "./Dialogs";
 
 
 export default function GenericAdvanceSearch({name, homepage}) {
@@ -15,7 +17,10 @@ export default function GenericAdvanceSearch({name, homepage}) {
   const [characteristicOptions, setCharacteristicOptions] = useState({});
   const [selectedCharacteristicId, setSelectedCharacteristicId] = useState('');
   const [usedCharacteristicIds, setUsedCharacteristicIds] = useState([]);
+  const [searched, setSearched] = useState(false);
   const [searchConditions, setSearchConditions] = useState({});
+  const [searchResults, setSearchResults] = useState({});
+  const [alertDialog, setAlertDialog] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -40,24 +45,34 @@ export default function GenericAdvanceSearch({name, homepage}) {
       }
       setLoading(false);
     });
-  }, []);
-
-  useEffect( () => {
-
-    },[])
-
-  console.log('characteristicOptions', characteristicOptions)
+  }, [searchResults]);
 
   const handleAddCharacteristic = useCallback(() => {
     setUsedCharacteristicIds(used => [...used, selectedCharacteristicId])
   }, [selectedCharacteristicId])
 
 
-  const handleSubmit = () => {
-    console.log(searchConditions);
-    // search generic for getting
-    // setLoading(true);
+  // search generic for getting certain clients
+  const findResult = async () => {
+    // TODO: Add the search backend.
+    const {data, success} = await fetchClients();
+    if (success) {
+      setSearchResults(data);
+      setSearched(true);
+    } else {
+      setAlertDialog(true);
+    }
   }
+
+  const handleSubmit = () => {
+    setLoading(true);
+    if (findResult()) {
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }
+
 
   if (loading)
     return <Loading/>
@@ -108,8 +123,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
                   if (index > -1) {
                     currIds.splice(index, 1);
                   }
-                  setUsedCharacteristicIds(currIds);
-                  console.log(usedCharacteristicIds);
+                  setUsedCharacteristicIds([...currIds]);
                 }}>
                 <DeleteIcon/>
               </IconButton>
@@ -118,6 +132,41 @@ export default function GenericAdvanceSearch({name, homepage}) {
         )}
 
         <Divider sx={{pt: 2}}/>
+
+        <Button sx={{marginTop: '20px'}}
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}>
+          Submit for Advance Search
+        </Button>
+
+        {/*display search result below*/}
+        {searched ?
+          <Container sx={{p: 2}} variant={'outlined'}>
+            <Typography sx={{fontFamily: 'Georgia', fontSize: '150%'}}>
+              Search Results is listed below.
+            </Typography>
+            {searchResults.map((singleResult) =>
+              <Grid container spacing={3} sx={{marginTop: '10px'}}>
+                <Grid item xs={4}>
+                  <ListItem sx={{display: 'list-item', fontSize: '150%'}}>
+                    {name}: {singleResult.firstName} {singleResult.lastName}
+                  </ListItem>
+                </Grid>
+                <Grid item xs={4} sx={{marginTop: '5px'}}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      navigate(`/${name}s/${singleResult._id}`)
+                    }}>
+                    Go to {singleResult.firstName} {singleResult.lastName}'s detailed page.
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
+          </Container>
+          : <div/>}
 
         <Button sx={{marginTop: '20px', marginRight: '20px'}}
                 variant="contained"
@@ -128,16 +177,13 @@ export default function GenericAdvanceSearch({name, homepage}) {
           Back to {name} Listing Page
         </Button>
 
-        <Button sx={{marginTop: '20px'}}
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}>
-          Submit for Advance Search
-        </Button>
-
+        <AlertDialog dialogTitle={"No Result"}
+                     dialogContentText={`No ${name} is found based on your search condition.`}
+                     buttons={[<Button onClick={() => setAlertDialog(false)}
+                                       key={'confirm'}>{'confirm'}</Button>]}
+                     open={alertDialog}/>
 
       </Paper>
-
     </Container>
   )
 }
