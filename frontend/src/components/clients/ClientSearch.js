@@ -1,8 +1,8 @@
 import React from 'react';
-import GenericSearch from "../shared/GenericSearch";
+import GenericAdvanceSearch from "../shared/GenericAdvanceSearch";
 
 export default function ClientSearch() {
   return (
-    <GenericSearch name={'client'} mainPage={'/clients'}/>
+    <GenericAdvanceSearch name={'client'} mainPage={'/clients'}/>
   );
 };
