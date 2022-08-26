@@ -313,7 +313,7 @@ async function updateSingleGeneric(req, res, next) {
         // check if there is a CO in possibleCharacteristicOccurrencesIds is related to this generic
         const existedCO = generic.characteristicOccurrences.filter((co)=>{
           return possibleCharacteristicOccurrencesIds.filter((id) => {
-            return id === co.individualName.split('_')[1]
+            return id === co._id
           }).length > 0
         })[0]
 
@@ -330,7 +330,8 @@ async function updateSingleGeneric(req, res, next) {
             if (property){
               generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
                 ?? occurrence.objectValue;
-              generic[property + 's'] = occurrence.multipleObjectValue
+              if(occurrence.multipleObjectValue)
+                generic[property + 's'] = occurrence.multipleObjectValue
             }
           }
         }else{ // just add the value on existedCO
@@ -340,7 +341,8 @@ async function updateSingleGeneric(req, res, next) {
             if (property){
               generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
                 existedCO.objectValue
-              generic[property + 's'] = existedCO.multipleObjectValue
+              if(existedCO.multipleObjectValue)
+                generic[property + 's'] = existedCO.multipleObjectValue
 
             }
           }
@@ -363,7 +365,7 @@ async function updateSingleGeneric(req, res, next) {
         // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
         const existedQO = generic.questionOccurrences.filter((qo) => {
           return possibleQuestionOccurrencesIds.filter((id) => {
-            return id === qo.individualName.split('_')[1]
+            return id === qo._id
           }).length > 0
         })[0]
 
