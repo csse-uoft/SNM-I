@@ -119,7 +119,6 @@ class GraphDBDocument {
           this.modified.push(key);
         } else if (value.length !== initialValue.length) {
           this.modified.push(key);
-          break;
         } else {
           for (let i = 0; i < value.length; i++) {
             if (initialValue[i] instanceof GraphDBDocument) {
