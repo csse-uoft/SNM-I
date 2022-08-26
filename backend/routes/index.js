@@ -10,4 +10,5 @@ module.exports = {
   dynamicFormRoute: require('./dynamicForm'),
   questionRoute: require('./question'),
   genericRoute: require('./genericData'),
+  advancedSearchRoute: require('./advancedSearch')
 }
