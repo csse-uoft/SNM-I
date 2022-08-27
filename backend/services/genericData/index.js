@@ -178,6 +178,7 @@ async function addIdToUsage(option, genericType, id){
   await usage.save()
 }
 
+//todo: this function doesn't have chance to be tested yet
 async function deleteIdFromUsageAfterChecking(option, genericType, id){
   // check if this option's occurrence is linked with another instance of the genericType
   const key = option + 'Occurrence'
