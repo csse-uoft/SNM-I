@@ -6,6 +6,7 @@ const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question"
 const {GraphDB} = require("../../utils/graphdb");
 const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
+const {MDBUsageModel} = require("../../models/usage");
 
 const option2Model = {
   'client': GDBClientModel,
@@ -28,7 +29,7 @@ const linkedProperty = (option, characteristic) => {
   return false
 }
 
-const implementCharacteristicOccurrence = async (characteristic, occurrence, value, res) => {
+const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     // TODO: check if the dataType of input value is correct
@@ -47,9 +48,6 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     if (fieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
-      if(!(value instanceof Array)){
-        return res.status(400).json({success: false, message: 'Wrong data format'})
-      }
       occurrence.multipleObjectValues = value;
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
@@ -170,6 +168,16 @@ async function fetchSingleGeneric(req, res, next) {
   return res.status(200).json({data: result, success: true});
 }
 
+async function addIdToUsage(option, genericType, id){
+  let usage = await MDBUsageModel.findOne({option: option, genericType: genericType})
+  if(!usage)
+    usage = new MDBUsageModel({option: option, genericType: genericType, optionKeys: []})
+  // check whether the characteristic linked to this option
+  if(!usage.optionKeys.includes(id))
+    usage.optionKeys.push(id)
+  await usage.save()
+}
+
 const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
   // option will be 'client', 'organization',...
@@ -222,7 +230,10 @@ const createSingleGeneric = async (req, res, next) => {
       if (type === 'characteristic') {
         const characteristic = characteristics[id];
         const occurrence = {occurrenceOf: characteristic};
-        await implementCharacteristicOccurrence(characteristic, occurrence, value, res)
+        await implementCharacteristicOccurrence(characteristic, occurrence, value)
+
+        // find the usage(given option and geneticType), create a new one if no such
+        await addIdToUsage('characteristic', option, id)
 
         if (characteristic.isPredefined) {
           const property = linkedProperty(option, characteristic)
@@ -236,6 +247,7 @@ const createSingleGeneric = async (req, res, next) => {
         instanceData.characteristicOccurrences.push(occurrence);
 
       } else if (type === 'question') {
+        await addIdToUsage('question', option, id)
         const occurrence = {occurrenceOf: questions[id], stringValue: value};
         instanceData.questionOccurrences.push(occurrence);
       }
@@ -320,9 +332,9 @@ async function updateSingleGeneric(req, res, next) {
 
         const characteristic = characteristics[id]
 
-        if(!existedCO){ // have to create a new CO
+        if(!existedCO){ // have to create a new CO and add the characteristic's id to the usage
           const occurrence = {occurrenceOf: characteristic};
-          await implementCharacteristicOccurrence(characteristic, occurrence, value, res)
+          await implementCharacteristicOccurrence(characteristic, occurrence, value)
           generic.characteristicOccurrences.push(occurrence)
           // update the generic's property if needed
           if (characteristic.isPredefined) {
@@ -335,7 +347,7 @@ async function updateSingleGeneric(req, res, next) {
             }
           }
         }else{ // just add the value on existedCO
-          await implementCharacteristicOccurrence(characteristic, existedCO, value, res)
+          await implementCharacteristicOccurrence(characteristic, existedCO, value)
           if (characteristic.isPredefined) {
             const property = linkedProperty(option, characteristic)
             if (property){

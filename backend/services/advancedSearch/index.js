@@ -1,5 +1,5 @@
-import {GDBCharacteristicModel, GDBClientModel, GDBOrganizationModel} from "../../models";
-import {GDBQuestionModel} from "../../models/ClientFunctionalities/question";
+const {GDBCharacteristicModel, GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 
 
 const genericType2Model = {
