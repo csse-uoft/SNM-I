@@ -323,6 +323,8 @@ async function updateSingleGeneric(req, res, next) {
           possibleCharacteristicOccurrencesIds.push(co.value.split('_')[1])
         });
         // check if there is a CO in possibleCharacteristicOccurrencesIds is related to this generic
+        if(!generic.characteristicOccurrences)
+          generic.characteristicOccurrences = []
         const existedCO = generic.characteristicOccurrences.filter((co)=>{
           return possibleCharacteristicOccurrencesIds.filter((id) => {
             return id === co._id
@@ -333,6 +335,7 @@ async function updateSingleGeneric(req, res, next) {
         const characteristic = characteristics[id]
 
         if(!existedCO){ // have to create a new CO and add the characteristic's id to the usage
+          await addIdToUsage('characteristic', option, id)
           const occurrence = {occurrenceOf: characteristic};
           await implementCharacteristicOccurrence(characteristic, occurrence, value)
           generic.characteristicOccurrences.push(occurrence)
@@ -375,6 +378,8 @@ async function updateSingleGeneric(req, res, next) {
           possibleQuestionOccurrencesIds.push(qo.value.split('_')[1])
         });
         // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
+        if(!generic.questionOccurrences)
+          generic.questionOccurrences = []
         const existedQO = generic.questionOccurrences.filter((qo) => {
           return possibleQuestionOccurrencesIds.filter((id) => {
             return id === qo._id
@@ -382,6 +387,7 @@ async function updateSingleGeneric(req, res, next) {
         })[0]
 
         if(!existedQO){ // create a new QO
+          await addIdToUsage('question', option, id)
           const occurrence = {occurrenceOf: questions[id], stringValue: value};
           generic.questionOccurrences.push(occurrence);
         }else{ // update the question
