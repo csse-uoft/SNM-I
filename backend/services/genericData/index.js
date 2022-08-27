@@ -178,6 +178,20 @@ async function addIdToUsage(option, genericType, id){
   await usage.save()
 }
 
+async function deleteIdFromUsageAfterChecking(option, genericType, id){
+  // check if this option's occurrence is linked with another instance of the genericType
+  const key = option + 'Occurrence'
+  const value = option + "_" + id
+  const x = await option2Model[genericType].find({[key]: value})
+  if(x.length === 0){
+    // then we have to remove the id from the usage
+    const usage = await MDBUsageModel.findOne({option: option, genericType: genericType})
+    usage.optionKeys = usage.optionKeys.filter((key) => (key !== id))
+    usage.save()
+  }
+
+}
+
 const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
   // option will be 'client', 'organization',...
@@ -425,20 +439,27 @@ async function deleteSingleGeneric(req, res, next){
     await GDBNoteModel.findByIdAndDelete(note?._id)
 
     // recursively delete characteristicsOccurrences, including phoneNumber and Address
-    for (let characteristicOccurrence of characteristicsOccurrences){
-      if(characteristicOccurrence.objectValue){
-        const [fieldType, id] = characteristicOccurrence.objectValue.split('_')
-        await specialField2Model[fieldType]?.findByIdAndDelete(id)
+    if(characteristicsOccurrences){
+      for (let characteristicOccurrence of characteristicsOccurrences) {
+        await characteristicOccurrence.populate('occurrenceOf')
+        if (characteristicOccurrence.objectValue) {
+          const [fieldType, id] = characteristicOccurrence.objectValue.split('_');
+          await specialField2Model[fieldType]?.findByIdAndDelete(id);
+        }
+        await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id);
+        await deleteIdFromUsageAfterChecking('characteristic', option, characteristicOccurrence.occurrenceOf._id);
       }
-      await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id)
     }
+
 
     // recursively delete questionOccurrences
-    for (let questionOccurrence of questionsOccurrences){
-      await GDBQOModel.findByIdAndDelete(questionOccurrence._id)
+    if(questionsOccurrences){
+      for (let questionOccurrence of questionsOccurrences) {
+        await GDBQOModel.findByIdAndDelete(questionOccurrence._id);
+      }
     }
-
-    await option2Model[option].findByIdAndDelete(id)
+    // todo: notable to delete
+    await option2Model[option].findByIdAndDelete(id);
     return res.status(200).json({success: true})
 
 
