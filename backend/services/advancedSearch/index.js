@@ -21,12 +21,13 @@ async function fetchForAdvancedSearch(req, res, next){
     if(!genericType || !genericItemType)
       res.status(400).json({success: false, message:"genericType or genericItemType is not given"})
     const usage = await MDBUsageModel.find({option: genericItemType, genericType: genericType})
+    let data;
     if(usage){
-      const data = await Promise.all(usage.optionKeys.map(async id => {
+      data = await Promise.all(usage.optionKeys.map(async id => {
         return (await genericItemType2Model[genericItemType].findById(id)).name
       }))
     }
-    res.status(200).json({success: true, data: usage?usage.optionKeys:[], message: usage?'':`There is no such ${genericItemType} associated with ${genericType}.`})
+    res.status(200).json({success: true, data: data || [], message: usage?'':`There is no such ${genericItemType} associated with ${genericType}.`})
   }catch (e){
     next(e)
   }
