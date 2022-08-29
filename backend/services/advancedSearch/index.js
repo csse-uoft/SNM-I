@@ -18,6 +18,8 @@ const genericItemType2Model = {
 // ex. return all characteristics associated with client
 async function fetchForAdvancedSearch(req, res, next){
   try{
+    // genericType: client, organization...
+    // genericItemType: characteristic, question ...
     const {genericType, genericItemType} = req.params
     if(!genericType || !genericItemType)
       res.status(400).json({success: false, message:"genericType or genericItemType is not given"})
