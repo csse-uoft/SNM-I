@@ -27,7 +27,7 @@ async function fetchForAdvancedSearch(req, res, next){
     let data;
     if(usage){
       data = await Promise.all(usage.optionKeys.map(async id => {
-        return (await genericItemType2Model[genericItemType].findById(id))
+        return (await genericItemType2Model[genericItemType].findOne({_id:id}, {populates: ['implementation']}))
       }))
     }
     res.status(200).json({success: true, data: data || [], message: usage?'':`There is no such ${genericItemType} associated with ${genericType}.`})
@@ -38,26 +38,19 @@ async function fetchForAdvancedSearch(req, res, next){
 
 
 async function advancedSearchGeneric(req, res, next) {
-  const {genericType, genericItemType} = req.params;
-  const searchConditions = req.body;
+  const {genericType, genericItemType} = req.params; // genericType: ex. client; genericItemType: ex. characteristic
+  const searchConditions = req.body; // searchConditions: ex. {1: 'emolee', 2: 'Cheng'}
   try {
-    for (const condition in searchConditions) {
-      let query = `
-        PREFIX : <http://snmi#>
-        select * where { 
-	          ?co ?p :characteristic_${condition}.
-            ?co a :CharacteristicOccurrence.
-        }`
-      const possibleCO = []
-      await GraphDB.sendSelectQuery(query, true, ({co, p}) => {
-        possibleCO.push(co.value.split('_')[1])
-      });
-
-
+    const conditions = []
+    const key = genericItemType + 'Occurrences'
+    for(let genericItemId in searchConditions){
+      conditions.push(
+        {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataStringValue: searchConditions[genericItemId]}
+      )
     }
-
-    return res.status(200).json({success: true});
-
+    // const query = {[key]: {$and: conditions}}
+    const data = await genericType2Model[genericType].find({[key]: {$and: conditions}})
+    return res.status(200).json({success: true, data});
   } catch (e) {
     next(e)
   }
