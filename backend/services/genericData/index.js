@@ -6,8 +6,9 @@ const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question"
 const {GraphDB} = require("../../utils/graphdb");
 const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
+const {MDBUsageModel} = require("../../models/usage");
 
-const option2Model = {
+const genericType2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
 }
@@ -19,8 +20,8 @@ const specialField2Model = {
 
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/
 
-const linkedProperty = (option, characteristic) => {
-  const schema = option2Model[option].schema
+const linkedProperty = (genericType, characteristic) => {
+  const schema = genericType2Model[genericType].schema
   for (let key in schema) {
     if (schema[key].internalKey === characteristic.predefinedProperty)
       return key
@@ -28,7 +29,7 @@ const linkedProperty = (option, characteristic) => {
   return false
 }
 
-const implementCharacteristicOccurrence = async (characteristic, occurrence, value, res) => {
+const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     // TODO: check if the dataType of input value is correct
@@ -41,15 +42,12 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     if(TIMEPATTERN.test(value)){
       value = '1970-01-01 '+ value // when the field is time field
     }
-    occurrence.dataDateValue = new Date(value);
+    occurrence.dataDateValue = value? new Date(value): undefined;
   } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
 
     if (fieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
-      if(!(value instanceof Array)){
-        return res.status(400).json({success: false, message: 'Wrong data format'})
-      }
       occurrence.multipleObjectValues = value;
     } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
@@ -116,12 +114,12 @@ const combinePhoneNumber = ({countryCode, phoneNumber, areaCode}) => {
 }
 
 async function fetchSingleGeneric(req, res, next) {
-  const {option, id} = req.params;
+  const {genericType, id} = req.params;
 
-  if (!option2Model[option])
+  if (!genericType2Model[genericType])
     return res.status(400).json({success: false, message: 'Invalid generic type.'});
 
-  const data = await option2Model[option].findOne({_id: id},
+  const data = await genericType2Model[genericType].findOne({_id: id},
     {populates: ['characteristicOccurrences', 'questionOccurrences']});
   // TODO: model.populate("characteristicOccurrences.occurrenceOf.implementation")
 
@@ -170,10 +168,35 @@ async function fetchSingleGeneric(req, res, next) {
   return res.status(200).json({data: result, success: true});
 }
 
+async function addIdToUsage(option, genericType, id){
+  let usage = await MDBUsageModel.findOne({option: option, genericType: genericType})
+  if(!usage)
+    usage = new MDBUsageModel({option: option, genericType: genericType, optionKeys: []})
+  // check whether the characteristic linked to this option
+  if(!usage.optionKeys.includes(id))
+    usage.optionKeys.push(id)
+  await usage.save()
+}
+
+//todo: this function doesn't have chance to be tested yet
+async function deleteIdFromUsageAfterChecking(option, genericType, id){
+  // check if this option's occurrence is linked with another instance of the genericType
+  const key = option + 'Occurrence'
+  const value = option + "_" + id
+  const x = await genericType2Model[genericType].find({[key]: value})
+  if(x.length === 0){
+    // then we have to remove the id from the usage
+    const usage = await MDBUsageModel.findOne({option: option, genericType: genericType})
+    usage.optionKeys = usage.optionKeys.filter((key) => (key !== id))
+    usage.save()
+  }
+
+}
+
 const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
-  // option will be 'client', 'organization',...
-  const {option} = req.params
+  // genericType will be 'client', 'organization',...
+  const {genericType} = req.params
 
   // check the data package from frontend
   // check if a formId was sent
@@ -182,19 +205,19 @@ const createSingleGeneric = async (req, res, next) => {
   }
   const form = await MDBDynamicFormModel.findById(data.formId)
 
-  // check if the option is in option2Model
-  if(!option2Model[option])
-    return res.status(400).json({success: false, message: 'Invalid option'})
+  // check if the genericType is in genericType2Model
+  if(!genericType2Model[genericType])
+    return res.status(400).json({success: false, message: 'Invalid genericType'})
 
-  // for (let key of Object.keys(option2Model)) {
-  //   if (form.formType !== key && option === key) {
+  // for (let key of Object.keys(genericType2Model)) {
+  //   if (form.formType !== key && genericType === key) {
   //     return res.status(400).json({success: false, message: `The form is not for ${key}`})
   //   }
   // }
 
   // check if the form type is consist with request type(client, organization, ...)
-  if(form.formType !== option)
-    return res.status(400).json({success: false, message: `The form is not for ${option}`})
+  if(form.formType !== genericType)
+    return res.status(400).json({success: false, message: `The form is not for ${genericType}`})
 
   // check if the form has a structure
   if (!form.formStructure) {
@@ -222,10 +245,13 @@ const createSingleGeneric = async (req, res, next) => {
       if (type === 'characteristic') {
         const characteristic = characteristics[id];
         const occurrence = {occurrenceOf: characteristic};
-        await implementCharacteristicOccurrence(characteristic, occurrence, value, res)
+        await implementCharacteristicOccurrence(characteristic, occurrence, value)
+
+        // find the usage(given option and geneticType), create a new one if no such
+        await addIdToUsage('characteristic', genericType, id)
 
         if (characteristic.isPredefined) {
-          const property = linkedProperty(option, characteristic)
+          const property = linkedProperty(genericType, characteristic)
           if (property) {
             instanceData[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ??
               occurrence.dataDateValue ?? occurrence.objectValue;
@@ -236,15 +262,16 @@ const createSingleGeneric = async (req, res, next) => {
         instanceData.characteristicOccurrences.push(occurrence);
 
       } else if (type === 'question') {
+        await addIdToUsage('question', genericType, id)
         const occurrence = {occurrenceOf: questions[id], stringValue: value};
         instanceData.questionOccurrences.push(occurrence);
       }
     }
 
     // the instance data is stored into graphdb
-    await option2Model[option](instanceData).save();
+    await genericType2Model[genericType](instanceData).save();
 
-    return res.status(202).json({success: true, message: `Successfully created a/an ${option}`})
+    return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`})
 
 
   } catch (e) {
@@ -255,27 +282,27 @@ const createSingleGeneric = async (req, res, next) => {
 
 async function updateSingleGeneric(req, res, next) {
   const data = req.body
-  const {id, option} = req.params
+  const {id, genericType} = req.params
 
   try {
     // check the data package from frontend
     // checking if a generic id is provided
     if (!id) {
-      return res.status(400).json({success: false, message: `No ${option} id is given`})
+      return res.status(400).json({success: false, message: `No ${genericType} id is given`})
     }
-    const generic = await option2Model[option].findOne({_id: id}, {
+    const generic = await genericType2Model[genericType].findOne({_id: id}, {
       populates: ['characteristicOccurrences',
         'questionOccurrences']
     })
     if (!generic) {
-      return res.status(400).json({success: false, message: `No such ${option}`})
+      return res.status(400).json({success: false, message: `No such ${genericType}`})
     }
     if (!data.formId) {
       return res.status(400).json({success: false, message: 'No form id was provided'})
     }
     const form = await MDBDynamicFormModel.findById(data.formId)
-    for (let key of Object.keys(option2Model)) {
-      if (form.formType !== key && option === key) {
+    for (let key of Object.keys(genericType2Model)) {
+      if (form.formType !== key && genericType === key) {
         return res.status(400).json({success: false, message: `The form is not for ${key}`})
       }
     }
@@ -311,6 +338,8 @@ async function updateSingleGeneric(req, res, next) {
           possibleCharacteristicOccurrencesIds.push(co.value.split('_')[1])
         });
         // check if there is a CO in possibleCharacteristicOccurrencesIds is related to this generic
+        if(!generic.characteristicOccurrences)
+          generic.characteristicOccurrences = []
         const existedCO = generic.characteristicOccurrences.filter((co)=>{
           return possibleCharacteristicOccurrencesIds.filter((id) => {
             return id === co._id
@@ -320,13 +349,14 @@ async function updateSingleGeneric(req, res, next) {
 
         const characteristic = characteristics[id]
 
-        if(!existedCO){ // have to create a new CO
+        if(!existedCO){ // have to create a new CO and add the characteristic's id to the usage
+          await addIdToUsage('characteristic', genericType, id)
           const occurrence = {occurrenceOf: characteristic};
-          await implementCharacteristicOccurrence(characteristic, occurrence, value, res)
+          await implementCharacteristicOccurrence(characteristic, occurrence, value)
           generic.characteristicOccurrences.push(occurrence)
           // update the generic's property if needed
           if (characteristic.isPredefined) {
-            const property = linkedProperty(option, characteristic)
+            const property = linkedProperty(genericType, characteristic)
             if (property){
               generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
                 ?? occurrence.objectValue;
@@ -335,9 +365,9 @@ async function updateSingleGeneric(req, res, next) {
             }
           }
         }else{ // just add the value on existedCO
-          await implementCharacteristicOccurrence(characteristic, existedCO, value, res)
+          await implementCharacteristicOccurrence(characteristic, existedCO, value)
           if (characteristic.isPredefined) {
-            const property = linkedProperty(option, characteristic)
+            const property = linkedProperty(genericType, characteristic)
             if (property){
               generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
                 existedCO.objectValue
@@ -363,6 +393,8 @@ async function updateSingleGeneric(req, res, next) {
           possibleQuestionOccurrencesIds.push(qo.value.split('_')[1])
         });
         // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
+        if(!generic.questionOccurrences)
+          generic.questionOccurrences = []
         const existedQO = generic.questionOccurrences.filter((qo) => {
           return possibleQuestionOccurrencesIds.filter((id) => {
             return id === qo._id
@@ -370,6 +402,7 @@ async function updateSingleGeneric(req, res, next) {
         })[0]
 
         if(!existedQO){ // create a new QO
+          await addIdToUsage('question', genericType, id)
           const occurrence = {occurrenceOf: questions[id], stringValue: value};
           generic.questionOccurrences.push(occurrence);
         }else{ // update the question
@@ -391,14 +424,14 @@ async function updateSingleGeneric(req, res, next) {
 async function deleteSingleGeneric(req, res, next){
   try{
     // check the package from frontend
-    const {option, id} = req.params;
-    if(!option || !id)
-      return res.status(400).json({success: false, message: 'Option or id is not given'})
+    const {genericType, id} = req.params;
+    if(!genericType || !id)
+      return res.status(400).json({success: false, message: 'genericType or id is not given'})
 
-    const generic = await option2Model[option].findOne({_id: id},
+    const generic = await genericType2Model[genericType].findOne({_id: id},
       {populates: ['characteristicOccurrences', 'questionOccurrences']})
     if(!generic)
-      return res.status(400).json({success: false, message: 'Invalid option or id'})
+      return res.status(400).json({success: false, message: 'Invalid genericType or id'})
 
     const characteristicsOccurrences = generic.characteristicOccurrences
     const questionsOccurrences = generic.questionOccurrences
@@ -407,20 +440,27 @@ async function deleteSingleGeneric(req, res, next){
     await GDBNoteModel.findByIdAndDelete(note?._id)
 
     // recursively delete characteristicsOccurrences, including phoneNumber and Address
-    for (let characteristicOccurrence of characteristicsOccurrences){
-      if(characteristicOccurrence.objectValue){
-        const [fieldType, id] = characteristicOccurrence.objectValue.split('_')
-        await specialField2Model[fieldType]?.findByIdAndDelete(id)
+    if(characteristicsOccurrences){
+      for (let characteristicOccurrence of characteristicsOccurrences) {
+        await characteristicOccurrence.populate('occurrenceOf')
+        if (characteristicOccurrence.objectValue) {
+          const [fieldType, id] = characteristicOccurrence.objectValue.split('_');
+          await specialField2Model[fieldType]?.findByIdAndDelete(id);
+        }
+        await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id);
+        await deleteIdFromUsageAfterChecking('characteristic', genericType, characteristicOccurrence.occurrenceOf._id);
       }
-      await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id)
     }
+
 
     // recursively delete questionOccurrences
-    for (let questionOccurrence of questionsOccurrences){
-      await GDBQOModel.findByIdAndDelete(questionOccurrence._id)
+    if(questionsOccurrences){
+      for (let questionOccurrence of questionsOccurrences) {
+        await GDBQOModel.findByIdAndDelete(questionOccurrence._id);
+      }
     }
-
-    await option2Model[option].findByIdAndDelete(id)
+    // todo: notable to delete
+    await genericType2Model[genericType].findByIdAndDelete(id);
     return res.status(200).json({success: true})
 
 

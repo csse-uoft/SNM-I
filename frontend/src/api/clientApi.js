@@ -13,5 +13,5 @@ export async function fetchClients() {
 }
 
 export async function deleteClient(id) {
-  return deleteJson('/api/clientOrOrganization/delete/client/' + id);
+  return deleteJson('/api/generic/client/' + id);
 }
