@@ -278,13 +278,30 @@ class GraphDBModel {
               whereClause.push(`FILTER(${object} ${Comparison[operator]} ${operand})`);
             } else if (operator === '$regex') {
               whereClause.push(`FILTER regex(${object}, ${operand})`);
+            } else if (operator === '$and' && Array.isArray(operand)) {
+              // Remove the last one
+              whereClause.splice(whereClause.length - 1, 1);
+              let objCnt = 0;
+              for (const innerFilter of operand) {
+                const innerObject = `${object}_inner_${(objCnt)}`;
+                whereClause.push(`${subject} ${SPARQL.getPredicate(options.internalKey)} ${innerObject}.`);
+
+                const innerQuery = (Array.isArray(options.type) ? options.type[0] : options.type).generateFindQuery(innerFilter, {
+                  counters: {p: counters.p + 1, o: counters.o + 1},
+                  subjectNameOverride: innerObject
+                });
+                whereClause.push(...innerQuery.where);
+                counters.p++;
+                counters.o++;
+                objCnt++;
+              }
             } else {
               throw new Error(`Model.find: Unknown combination: ${operator} with ${operand}`)
             }
           }
           // Deal with inner instances
           else {
-            const innerQuery = (options.type instanceof Array ? options.type[0] : options.type).generateFindQuery(val, {
+            const innerQuery = (Array.isArray(options.type) ? options.type[0] : options.type).generateFindQuery(val, {
               counters: {p: counters.p + 1, o: counters.o + 1},
               subjectNameOverride: object
             });
