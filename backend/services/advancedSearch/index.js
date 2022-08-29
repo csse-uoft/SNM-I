@@ -1,7 +1,7 @@
 const {GDBCharacteristicModel, GDBClientModel, GDBOrganizationModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {MDBUsageModel} = require("../../models/usage");
-const {GraphDB} = require("../../utils/graphdb");
+const {GraphDB, regexBuilder} = require("../../utils/graphdb");
 
 
 const genericType2Model = {
@@ -27,7 +27,7 @@ async function fetchForAdvancedSearch(req, res, next){
     let data;
     if(usage){
       data = await Promise.all(usage.optionKeys.map(async id => {
-        return (await genericItemType2Model[genericItemType].findOne({_id:id}, {populates: ['implementation']}))
+        return (await genericItemType2Model[genericItemType].findOne({_id: id}, {populates: ['implementation']}))
       }))
     }
     res.status(200).json({success: true, data: data || [], message: usage?'':`There is no such ${genericItemType} associated with ${genericType}.`})
@@ -45,7 +45,7 @@ async function advancedSearchGeneric(req, res, next) {
     const key = genericItemType + 'Occurrences'
     for(let genericItemId in searchConditions){
       conditions.push(
-        {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataStringValue: searchConditions[genericItemId]}
+        {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataStringValue: {$regex: regexBuilder(searchConditions[genericItemId], 'i')} }
       )
     }
     // const query = {[key]: {$and: conditions}}
