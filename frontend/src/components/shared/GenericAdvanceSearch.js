@@ -56,7 +56,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
   // search generic for getting certain clients
   const findResult = async () => {
     // TODO: Add advance search backend.
-    // const {data, success} = await advanceSearchGeneric(name, searchConditions)
+    // const {data, success} = await advancedSearchGeneric(name, searchConditions)
     const {data, success} = await fetchClients();
     if (success) {
       setSearchResults(data);

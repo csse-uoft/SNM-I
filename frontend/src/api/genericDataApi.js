@@ -12,6 +12,6 @@ export async function updateSingleGeneric(option, id, body) {
   return putJson(`/api/generic/${option}/${id}`, body)
 }
 
-export async function advanceSearchGeneric(option, body) {
-  return putJson(`/api/generic-advance-search/${option}`, body)
+export async function advancedSearchGeneric(genericType, body) {
+  return putJson(`/api/advancedSearch/${genericType}`, body)
 }

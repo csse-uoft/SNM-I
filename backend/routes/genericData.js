@@ -3,8 +3,8 @@ const {fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingl
 const router = express.Router();
 
 router.get('/generic/:genericType/:id', fetchSingleGeneric);
-router.post('/generic/:genericType', createSingleGeneric)
-router.put('/generic/:genericType/:id', updateSingleGeneric)
-router.delete('/generic/:genericType/:id', deleteSingleGeneric)
+router.post('/generic/:genericType', createSingleGeneric);
+router.put('/generic/:genericType/:id', updateSingleGeneric);
+router.delete('/generic/:genericType/:id', deleteSingleGeneric);
 
 module.exports = router;
