@@ -27,13 +27,12 @@ export default function GenericAdvanceSearch({name, homepage}) {
   useEffect(() => {
     Promise.all([
       // Fetch characteristics
-      // TODO: make fetch generic by {name}
       fetchForAdvancedSearch(name, 'characteristic').then(({data}) => {
         const characteristics = {};
         const options = {};
         for (const characteristic of data) {
-          characteristics[characteristic.id] = characteristic;
-          options[characteristic.id] = `${characteristic.implementation.label}`
+          characteristics[characteristic._id] = characteristic;
+          options[characteristic._id] = `${characteristic.name}`
         }
         setCharacteristics(characteristics);
         setCharacteristicOptions(options);
@@ -56,8 +55,8 @@ export default function GenericAdvanceSearch({name, homepage}) {
   // search generic for getting certain clients
   const findResult = async () => {
     // TODO: Add advance search backend.
-    // const {data, success} = await advancedSearchGeneric(name, searchConditions)
-    const {data, success} = await fetchClients();
+    const {data, success} = await advancedSearchGeneric(name, 'characteristic', searchConditions);
+    // const {data, success} = await fetchClients();
     if (success) {
       setSearchResults(data);
       setSearched(true);
@@ -115,7 +114,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
           <Grid container spacing={4}>
             <Grid item xs={4}>
               <Typography sx={{fontFamily: 'Georgia', fontSize: '130%', paddingTop: '30px'}}>
-                {characteristics[option].implementation.label}
+                {characteristics[option].name}
               </Typography>
             </Grid>
             <Grid item xs={3}>
