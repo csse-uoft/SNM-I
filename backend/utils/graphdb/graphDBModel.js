@@ -283,11 +283,12 @@ class GraphDBModel {
               whereClause.splice(whereClause.length - 1, 1);
               let objCnt = 0;
               for (const innerFilter of operand) {
-                whereClause.push(`${subject} ${SPARQL.getPredicate(options.internalKey)} ${object + (objCnt)}.`);
+                const innerObject = `${object}_inner_${(objCnt)}`;
+                whereClause.push(`${subject} ${SPARQL.getPredicate(options.internalKey)} ${innerObject}.`);
 
                 const innerQuery = (Array.isArray(options.type) ? options.type[0] : options.type).generateFindQuery(innerFilter, {
                   counters: {p: counters.p + 1, o: counters.o + 1},
-                  subjectNameOverride: object + (objCnt)
+                  subjectNameOverride: innerObject
                 });
                 whereClause.push(...innerQuery.where);
                 counters.p++;
