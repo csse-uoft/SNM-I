@@ -178,12 +178,12 @@ async function addIdToUsage(option, genericType, id){
   await usage.save()
 }
 
-//todo: this function doesn't have chance to be tested yet
+
 async function deleteIdFromUsageAfterChecking(option, genericType, id){
   // check if this option's occurrence is linked with another instance of the genericType
-  const key = option + 'Occurrence'
-  const value = option + "_" + id
-  const x = await genericType2Model[genericType].find({[key]: value})
+  const key = option + 'Occurrences'
+  const value = ':' + option + "_" + id
+  const x = await genericType2Model[genericType].find({[key]: {occurrenceOf: value}})
   if(x.length === 0){
     // then we have to remove the id from the usage
     const usage = await MDBUsageModel.findOne({option: option, genericType: genericType})
@@ -208,12 +208,6 @@ const createSingleGeneric = async (req, res, next) => {
   // check if the genericType is in genericType2Model
   if(!genericType2Model[genericType])
     return res.status(400).json({success: false, message: 'Invalid genericType'})
-
-  // for (let key of Object.keys(genericType2Model)) {
-  //   if (form.formType !== key && genericType === key) {
-  //     return res.status(400).json({success: false, message: `The form is not for ${key}`})
-  //   }
-  // }
 
   // check if the form type is consist with request type(client, organization, ...)
   if(form.formType !== genericType)
