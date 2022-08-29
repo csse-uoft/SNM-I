@@ -192,6 +192,17 @@ declare namespace GDBUtils {
          *      'organization.primary_contact'  // Populate organization and organization.primary_contact
          *    ]
          * });
+         *
+         * // Find all clients where the characteristic_14 contains 'le' and characteristic_15='lyu'
+         * await GDBClientModel.find({
+         * characteristicOccurrences: {
+         *   $and: [
+         *     {occurrenceOf: ":characteristic_14",dataStringValue: {$regex: regexBuilder('le', 'i')}},
+         *     {occurrenceOf: ":characteristic_15",dataStringValue: 'lyu' }
+         *   ]
+         * }
+         * });
+         *
          * ```
          */
         find(filter: GDBFilter, options: GDBFindOptions): Promise<GraphDBDocumentArray<GraphDBDocument>>;
