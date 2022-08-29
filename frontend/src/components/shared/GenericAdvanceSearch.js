@@ -8,6 +8,7 @@ import {Loading} from "./index";
 import {Picker} from "../settings/components/Pickers";
 import {fetchClients} from "../../api/clientApi";
 import {AlertDialog} from "./Dialogs";
+import {advanceSearchGeneric} from "../../api/genericDataApi";
 
 
 export default function GenericAdvanceSearch({name, homepage}) {
@@ -26,7 +27,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
   useEffect(() => {
     Promise.all([
       // Fetch characteristics
-      // make fetch generic by {name}
+      // TODO: make fetch generic by {name}
       fetchCharacteristics().then(({data}) => {
         const characteristics = {};
         const options = {};
@@ -54,7 +55,8 @@ export default function GenericAdvanceSearch({name, homepage}) {
 
   // search generic for getting certain clients
   const findResult = async () => {
-    // TODO: Add the search backend.
+    // TODO: Add advance search backend.
+    // const {data, success} = await advanceSearchGeneric(name, searchConditions)
     const {data, success} = await fetchClients();
     if (success) {
       setSearchResults(data);

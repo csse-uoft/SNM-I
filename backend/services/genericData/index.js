@@ -429,7 +429,35 @@ async function deleteSingleGeneric(req, res, next){
   }
 }
 
+async function advanceSearchGeneric(req, res, next) {
+  const {option} = req.params;
+  const searchConditions = req.body;
+  try {
+    for (const condition in searchConditions) {
+      let query = `
+        PREFIX : <http://snmi#>
+        select * where { 
+	          ?co ?p :characteristic_${condition}.
+            ?co a :CharacteristicOccurrence.
+        }`
+      const possibleCO = []
+      await GraphDB.sendSelectQuery(query, true, ({co, p}) => {
+        possibleCO.push(co.value.split('_')[1])
+      });
+
+
+
+
+    }
+
+    return res.status(200).json({success: true});
+
+  } catch (e) {
+    next(e)
+  }
+}
+
 
 module.exports = {
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, advanceSearchGeneric
 }
