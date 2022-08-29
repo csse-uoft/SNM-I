@@ -3,7 +3,7 @@ const {fetchForAdvancedSearch, advancedSearchGeneric} = require("../services/adv
 
 const router = express.Router();
 router.get('/advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType', fetchForAdvancedSearch);
-router.put('/advancedSearch/:genericType', advancedSearchGeneric);
+router.put('/advancedSearch/:genericType/:genericItemType', advancedSearchGeneric);
 // genericItemType: characteristic, question, ...
 // genericType: client, organization, ...
 

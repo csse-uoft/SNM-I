@@ -38,7 +38,7 @@ async function fetchForAdvancedSearch(req, res, next){
 
 
 async function advancedSearchGeneric(req, res, next) {
-  const {genericType} = req.params;
+  const {genericType, genericItemType} = req.params;
   const searchConditions = req.body;
   try {
     for (const condition in searchConditions) {
