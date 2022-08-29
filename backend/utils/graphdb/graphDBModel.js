@@ -335,7 +335,12 @@ class GraphDBModel {
       }
     }
 
-    const query = `${SPARQL.getSPARQLPrefixes()}\n DELETE WHERE {\n\t${where.join('\n\t')}\n}`;
+    let query = '';
+    for (const triple of where) {
+      query += `DELETE WHERE {\n\t${triple}\n};`
+    }
+
+    query = `${SPARQL.getSPARQLPrefixes()}\n${query}`;
 
     return {
       query, where, cnt
@@ -532,7 +537,12 @@ class GraphDBModel {
     if (whereClause.length === 0)
       return docs;
 
-    const query = `${SPARQL.getSPARQLPrefixes()}\n DELETE WHERE {\n\t${whereClause.join('\n\t')}\n}`;
+    let query = '';
+    for (const triple of whereClause) {
+      query += `DELETE WHERE {\n\t${triple}\n};`
+    }
+
+    query = `${SPARQL.getSPARQLPrefixes()}\n${query}`;
 
     await GraphDB.sendUpdateQuery(query);
     return docs;
