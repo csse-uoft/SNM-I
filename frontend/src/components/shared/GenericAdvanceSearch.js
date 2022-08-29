@@ -8,7 +8,7 @@ import {Loading} from "./index";
 import {Picker} from "../settings/components/Pickers";
 import {fetchClients} from "../../api/clientApi";
 import {AlertDialog} from "./Dialogs";
-import {fetchForAdvancedSearch} from "../../api/advancedSearchApi";
+import {advancedSearchGeneric, fetchForAdvancedSearch} from "../../api/advancedSearchApi";
 
 
 export default function GenericAdvanceSearch({name, homepage}) {
