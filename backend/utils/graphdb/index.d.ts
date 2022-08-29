@@ -195,12 +195,12 @@ declare namespace GDBUtils {
          *
          * // Find all clients where the characteristic_14 contains 'le' and characteristic_15='lyu'
          * await GDBClientModel.find({
-         * characteristicOccurrences: {
-         *   $and: [
-         *     {occurrenceOf: ":characteristic_14",dataStringValue: {$regex: regexBuilder('le', 'i')}},
-         *     {occurrenceOf: ":characteristic_15",dataStringValue: 'lyu' }
-         *   ]
-         * }
+         *   characteristicOccurrences: {
+         *     $and: [
+         *       {occurrenceOf: ":characteristic_14", dataStringValue: 'lester'},
+         *       {occurrenceOf: ":characteristic_15", dataStringValue: 'lyu'}
+         *     ]
+         *   }
          * });
          *
          * ```
