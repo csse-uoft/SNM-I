@@ -8,7 +8,7 @@ import {Loading} from "./index";
 import {Picker} from "../settings/components/Pickers";
 import {fetchClients} from "../../api/clientApi";
 import {AlertDialog} from "./Dialogs";
-import {advanceSearchGeneric} from "../../api/genericDataApi";
+import {fetchForAdvancedSearch} from "../../api/advancedSearchApi";
 
 
 export default function GenericAdvanceSearch({name, homepage}) {
@@ -28,7 +28,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
     Promise.all([
       // Fetch characteristics
       // TODO: make fetch generic by {name}
-      fetchCharacteristics().then(({data}) => {
+      fetchForAdvancedSearch(name, 'characteristic').then(({data}) => {
         const characteristics = {};
         const options = {};
         for (const characteristic of data) {
@@ -81,7 +81,17 @@ export default function GenericAdvanceSearch({name, homepage}) {
 
   return (
     <Container>
+
       <Paper sx={{p: 2}} variant={'outlined'}>
+        <Button sx={{marginBottom: '20px', marginRight: '20px'}}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  navigate(`/${name}s`)
+                }}>
+          Back to {name} Listing Page
+        </Button>
+
         <Typography sx={{fontFamily: 'Georgia', fontSize: '150%'}}>
           Advance Search for {name} based on characteristics.
         </Typography>
@@ -169,15 +179,6 @@ export default function GenericAdvanceSearch({name, homepage}) {
             )}
           </Container>
           : <div/>}
-
-        <Button sx={{marginTop: '20px', marginRight: '20px'}}
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  navigate(`/${name}s`)
-                }}>
-          Back to {name} Listing Page
-        </Button>
 
         <AlertDialog dialogTitle={"No Result"}
                      dialogContentText={`No ${name} is found based on your search condition.`}
