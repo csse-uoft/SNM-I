@@ -80,6 +80,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
 
   const handleSubmit = () => {
     setLoading(true);
+    setSearched(false);
     if (findResult()) {
       const column = [
         {
@@ -190,7 +191,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
         </Button>
 
         {/*display search result below*/}
-        {searched ?
+        {(searched && (searchResults !== {})) ?
           <Container sx={{p: 2}} variant={'outlined'}>
 
             <DataTable
