@@ -57,8 +57,8 @@ export default function GenericAdvanceSearch({name, homepage}) {
   // search generic for getting certain clients
   const findResult = async () => {
     console.log(searchConditions, searchTypes)
-    setSearchResults({})
-    setSearchTypes({})
+    setSearchResults({});
+    setSearchTypes({});
     const {data, success} = await advancedSearchGeneric(name, 'characteristic', {searchConditions, searchTypes});
     console.log('search results: ', data)
     if (success) {
@@ -74,7 +74,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
 
     } else if (characteristics[option].implementation.fieldType.type !== "NumberField") {
       searchConditions[option] = e.target.value;
-      setSearchTypes[option] = characteristics[option].implementation.fieldType.type;
+      searchTypes[option] = characteristics[option].implementation.fieldType.type;
     }
   }
 
