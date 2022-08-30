@@ -53,7 +53,6 @@ async function advancedSearchGeneric(req, res, next) {
         conditions.push(
           {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataStringValue: {$regex: regexBuilder(value, 'i')}}
         );
-
       } else if (searchTypes[genericItemId] === 'NumberField') { // number range
         conditions.push(
           {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataNumberValue: {$lt: value.max, $gt: value.min}}
