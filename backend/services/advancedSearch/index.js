@@ -27,8 +27,8 @@ async function fetchForAdvancedSearch(req, res, next) {
     let data;
     if (usage) {
       data = await Promise.all(usage.optionKeys.map(async id => {
-        return (await genericItemType2Model[genericItemType].findOne({_id: id}, {populates: ['implementation']}));
-      }));
+        return (await genericItemType2Model[genericItemType].findOne({_id: id}, {populates: ['implementation.fieldType']}))
+      }))
     }
     res.status(200).json({
       success: true,
