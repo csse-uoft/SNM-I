@@ -49,16 +49,19 @@ async function advancedSearchGeneric(req, res, next) {
     const key = genericItemType + 'Occurrences';
     for (let genericItemId in searchConditions) {
       const value = searchConditions[genericItemId];
-      if (typeof value.min === 'number' && typeof value.max === 'number') { // number range
-        conditions.push(
-          {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataNumberValue: {$lt: value.max, $gt: value.min}}
-        );
-      } else if (undefined) {
-
-      } else { // string object
+      if (searchTypes[genericItemId] === 'TextField') { // string
         conditions.push(
           {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataStringValue: {$regex: regexBuilder(value, 'i')}}
         );
+
+      } else if (searchTypes[genericItemId] === 'NumberField') { // number range
+        conditions.push(
+          {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataNumberValue: {$lt: value.max, $gt: value.min}}
+        );
+      } else if(searchTypes[genericItemId] === 'DateField'){ // dateObject
+
+      }else{
+
       }
     }
     const data = await genericType2Model[genericType].find({[key]: {$and: conditions}});
