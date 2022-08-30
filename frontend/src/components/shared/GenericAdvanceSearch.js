@@ -77,13 +77,22 @@ export default function GenericAdvanceSearch({name, homepage}) {
   }
 
   const handleOnChangeMin = option => (e) => {
-    searchConditions[option] = {min: e.target.value};
-    // searchConditions[option]['min'] = e.target.value;
+    console.log(searchConditions[option])
+    if (searchConditions[option] === undefined) {
+      searchConditions[option] = {min: e.target.value};
+      // searchConditions[option]['min'] = e.target.value;
+    } else {
+      searchConditions[option]['min'] = e.target.value;
+    }
     searchTypes[option] = characteristics[option].implementation.fieldType.type;
   }
 
   const handleOnChangeMax = option => (e) => {
-    searchConditions[option]['max'] = e.target.value;
+    if (searchConditions[option] === undefined) {
+      searchConditions[option] = {max: e.target.value};
+    } else {
+      searchConditions[option]['max'] = e.target.value;
+    }
     searchTypes[option] = characteristics[option].implementation.fieldType.type;
   }
 
