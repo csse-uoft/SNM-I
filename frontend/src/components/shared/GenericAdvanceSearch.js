@@ -23,6 +23,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
   const [searchTypes, setSearchTypes] = useState({});
   const [searchResults, setSearchResults] = useState({});
   const [alertDialog, setAlertDialog] = useState(false);
+  const [dynamicOptions, setDynamicOptions] = useState({});
   const [errors, setErrors] = useState({});
   const [column, setColumn] = useState([]);
 
@@ -59,6 +60,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
     console.log(searchConditions, searchTypes)
     setSearchResults({});
     setSearchTypes({});
+    console.log(searchResults, searchTypes);
     const {data, success} = await advancedSearchGeneric(name, 'characteristic', {searchConditions, searchTypes});
     console.log('search results: ', data)
     if (success) {
@@ -70,12 +72,19 @@ export default function GenericAdvanceSearch({name, homepage}) {
   }
 
   const handleOnChange = option => (e) => {
-    if (characteristics[option].implementation.fieldType.type === "NumberField") {
+    searchConditions[option] = e.target.value;
+    searchTypes[option] = characteristics[option].implementation.fieldType.type;
+  }
 
-    } else if (characteristics[option].implementation.fieldType.type !== "NumberField") {
-      searchConditions[option] = e.target.value;
-      searchTypes[option] = characteristics[option].implementation.fieldType.type;
-    }
+  const handleOnChangeMin = option => (e) => {
+    searchConditions[option] = {min: e.target.value};
+    // searchConditions[option]['min'] = e.target.value;
+    searchTypes[option] = characteristics[option].implementation.fieldType.type;
+  }
+
+  const handleOnChangeMax = option => (e) => {
+    searchConditions[option]['max'] = e.target.value;
+    searchTypes[option] = characteristics[option].implementation.fieldType.type;
   }
 
   const handleSubmit = () => {
@@ -142,44 +151,133 @@ export default function GenericAdvanceSearch({name, homepage}) {
         </Grid>
 
         {/*adding comments*/}
-        {usedCharacteristicIds.map((option) =>
-          <Grid container spacing={4}>
-            <Grid item xs={4}>
-              <Typography sx={{fontSize: '130%', paddingTop: '30px'}}>
-                {characteristics[option].name}
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography sx={{color: 'darkblue', fontSize: '130%', paddingTop: '30px'}}>
-                enter condition:
-              </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              {/*<GeneralField*/}
-              {/*  type="phoneNumber"*/}
-              {/*  onChange={e => searchConditions[option] = e.target.value}/>*/}
+        {usedCharacteristicIds.map((option) => {
+          const fieldType = characteristics[option].implementation.fieldType.type;
+          const {label, optionsFromClass} = characteristics[option].implementation;
+          let fieldOptions;
+          if (optionsFromClass) {
+            fieldOptions = dynamicOptions[optionsFromClass] || {};
+          } else if (characteristics[option].implementation.options) {
+            fieldOptions = {};
+            characteristics[option].implementation.options.forEach(op => fieldOptions[op.iri] = op.label);
+          }
 
-              <SearchConditionField
-                component={characteristics[option].implementation.fieldType.type}
-                onChange={handleOnChange(option)}/>
-                {/*onChange={e => searchConditions[option] = e.target.value}/>*/}
-            </Grid>
-            <Grid item xs={0.5}>
-              <IconButton
-                sx={{marginTop: '25px'}}
-                onClick={() => {
-                  const currIds = usedCharacteristicIds;
-                  const index = currIds.indexOf(option);
-                  if (index > -1) {
-                    currIds.splice(index, 1);
-                  }
-                  setUsedCharacteristicIds([...currIds]);
-                }}>
-                <DeleteIcon/>
-              </IconButton>
-            </Grid>
-          </Grid>
-        )}
+          if (fieldType === "NumberField") {
+            return(
+              <Grid container spacing={4}>
+                <Grid item xs={4}>
+                  <Typography sx={{fontSize: '130%', paddingTop: '30px'}}>
+                    {characteristics[option].name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography sx={{color: 'darkblue', fontSize: '130%', paddingTop: '30px'}}>
+                    enter condition:
+                  </Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <SearchConditionField
+                    key={`${option}_min`}
+                    label={`inclusive minimum`}
+                    options={fieldOptions}
+                    component={fieldType}
+                    onChange={handleOnChangeMin(option)}/>
+                  <SearchConditionField
+                    key={`${option}_max`}
+                    label={`inclusive maximum`}
+                    options={fieldOptions}
+                    component={fieldType}
+                    onChange={handleOnChangeMax(option)}/>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton
+                    sx={{marginTop: '25px'}}
+                    onClick={() => {
+                      const currIds = usedCharacteristicIds;
+                      const index = currIds.indexOf(option);
+                      if (index > -1) {
+                        currIds.splice(index, 1);
+                      }
+                      setUsedCharacteristicIds([...currIds]);
+                    }}>
+                    <DeleteIcon/>
+                  </IconButton>
+                </Grid>
+              </Grid>)
+          } else {
+            return(
+              <Grid container spacing={4}>
+                <Grid item xs={4}>
+                  <Typography sx={{fontSize: '130%', paddingTop: '30px'}}>
+                    {characteristics[option].name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography sx={{color: 'darkblue', fontSize: '130%', paddingTop: '30px'}}>
+                    enter condition:
+                  </Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <SearchConditionField
+                    key={`${option}`}
+                    label={label}
+                    options={fieldOptions}
+                    component={fieldType}
+                    onChange={handleOnChange(option)}/>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton
+                    sx={{marginTop: '25px'}}
+                    onClick={() => {
+                      const currIds = usedCharacteristicIds;
+                      const index = currIds.indexOf(option);
+                      if (index > -1) {
+                        currIds.splice(index, 1);
+                      }
+                      setUsedCharacteristicIds([...currIds]);
+                    }}>
+                    <DeleteIcon/>
+                  </IconButton>
+                </Grid>
+              </Grid>)
+          }
+          // return(
+          //   <Grid container spacing={4}>
+          //     <Grid item xs={4}>
+          //       <Typography sx={{fontSize: '130%', paddingTop: '30px'}}>
+          //         {characteristics[option].name}
+          //       </Typography>
+          //     </Grid>
+          //     <Grid item xs={3}>
+          //       <Typography sx={{color: 'darkblue', fontSize: '130%', paddingTop: '30px'}}>
+          //         enter condition:
+          //       </Typography>
+          //     </Grid>
+          //     <Grid item xs={4}>
+          //       }
+          //       <SearchConditionField
+          //         key={`${option}`}
+          //         label={label}
+          //         options={fieldOptions}
+          //         component={fieldType}
+          //         onChange={handleOnChange(option)}/>
+          //     </Grid>
+          //     <Grid item xs={0.5}>
+          //       <IconButton
+          //         sx={{marginTop: '25px'}}
+          //         onClick={() => {
+          //           const currIds = usedCharacteristicIds;
+          //           const index = currIds.indexOf(option);
+          //           if (index > -1) {
+          //             currIds.splice(index, 1);
+          //           }
+          //           setUsedCharacteristicIds([...currIds]);
+          //         }}>
+          //         <DeleteIcon/>
+          //       </IconButton>
+          //     </Grid>
+          //   </Grid>)
+        })}
 
         <Divider sx={{pt: 2}}/>
 
@@ -200,27 +298,6 @@ export default function GenericAdvanceSearch({name, homepage}) {
               columns={column}
               options={options}
             />
-
-            {/*{searchResults.map((singleResult) =>*/}
-            {/*  <Grid container spacing={3} sx={{marginTop: '10px'}}>*/}
-            {/*    <Grid item xs={3}>*/}
-            {/*      <ListItem sx={{display: 'list-item', fontSize: '150%'}}>*/}
-            {/*        {name}: {singleResult.firstName} {singleResult.lastName}*/}
-            {/*      </ListItem>*/}
-            {/*    </Grid>*/}
-
-            {/*    <Grid item xs={4} sx={{marginTop: '5px'}}>*/}
-            {/*      <Button*/}
-            {/*        variant="outlined"*/}
-            {/*        color="primary"*/}
-            {/*        onClick={() => {*/}
-            {/*          navigate(`/${name}s/${singleResult._id}`)*/}
-            {/*        }}>*/}
-            {/*        Go to {singleResult.firstName} {singleResult.lastName}'s detailed page.*/}
-            {/*      </Button>*/}
-            {/*    </Grid>*/}
-            {/*  </Grid>*/}
-            {/*)}*/}
           </Container>
           : <div/>}
 

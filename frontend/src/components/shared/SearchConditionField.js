@@ -21,12 +21,6 @@ export default function SearchConditionField({component, options, ...props}) {
       <Grid container>
         <GeneralField
           {...props}
-          label="minimum"
-          type="number"
-        />
-        <GeneralField
-          {...props}
-          label="maximum"
           type="number"
         />
       </Grid>
