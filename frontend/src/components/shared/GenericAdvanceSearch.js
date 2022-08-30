@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Container, Divider, Grid, IconButton, ListItem, Paper, Typography} from "@mui/material";
+import {Button, Container, Divider, Grid, IconButton, ListItem, Paper, Table, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import GeneralField from "./fields/GeneralField";
 import {Delete as DeleteIcon} from "@mui/icons-material";
-import {fetchCharacteristics} from "../../api/characteristicApi";
-import {Loading} from "./index";
+import {DataTable, Link, Loading} from "./index";
 import {Picker} from "../settings/components/Pickers";
 import {fetchClients} from "../../api/clientApi";
 import {AlertDialog} from "./Dialogs";
 import {advancedSearchGeneric, fetchForAdvancedSearch} from "../../api/advancedSearchApi";
+import SearchConditionField from "./SearchConditionField";
 
 
 export default function GenericAdvanceSearch({name, homepage}) {
@@ -20,9 +20,11 @@ export default function GenericAdvanceSearch({name, homepage}) {
   const [usedCharacteristicIds, setUsedCharacteristicIds] = useState([]);
   const [searched, setSearched] = useState(false);
   const [searchConditions, setSearchConditions] = useState({});
+  const [searchTypes, setSearchTypes] = useState({});
   const [searchResults, setSearchResults] = useState({});
   const [alertDialog, setAlertDialog] = useState(false);
   const [errors, setErrors] = useState({});
+  const [column, setColumn] = useState([]);
 
   useEffect(() => {
     Promise.all([
@@ -54,9 +56,11 @@ export default function GenericAdvanceSearch({name, homepage}) {
 
   // search generic for getting certain clients
   const findResult = async () => {
-    // TODO: Add advance search backend.
-    const {data, success} = await advancedSearchGeneric(name, 'characteristic', searchConditions);
-    // const {data, success} = await fetchClients();
+    console.log(searchConditions, searchTypes)
+    setSearchResults({})
+    setSearchTypes({})
+    const {data, success} = await advancedSearchGeneric(name, 'characteristic', {searchConditions, searchTypes});
+    console.log('search results: ', data)
     if (success) {
       setSearchResults(data);
       setSearched(true);
@@ -65,15 +69,42 @@ export default function GenericAdvanceSearch({name, homepage}) {
     }
   }
 
+  const handleOnChange = option => (e) => {
+    if (characteristics[option].implementation.fieldType.type === "NumberField") {
+
+    } else if (characteristics[option].implementation.fieldType.type !== "NumberField") {
+      searchConditions[option] = e.target.value;
+      setSearchTypes[option] = characteristics[option].implementation.fieldType.type;
+    }
+  }
+
   const handleSubmit = () => {
     setLoading(true);
     if (findResult()) {
+      const column = [
+        {
+          label: 'First Name',
+          body: ({firstName, _id}) => {
+            return <Link color to={`/${name}s/${_id}`}>{firstName}</Link>
+          }
+        },
+        {
+          label: 'Last Name',
+          body: ({lastName}) => {
+            return lastName;
+          }
+        },
+      ]
+      setColumn(column);
       setLoading(false);
     } else {
       setLoading(false);
     }
   }
 
+  const options = {
+    enhancedTableToolBar: false,
+  }
 
   if (loading)
     return <Loading/>
@@ -91,10 +122,10 @@ export default function GenericAdvanceSearch({name, homepage}) {
           Back to {name} Listing Page
         </Button>
 
-        <Typography sx={{fontFamily: 'Georgia', fontSize: '150%'}}>
+        <Typography sx={{fontSize: '150%'}}>
           Advance Search for {name} based on characteristics.
         </Typography>
-        <Typography sx={{fontFamily: 'Georgia', fontSize: '150%'}}>
+        <Typography sx={{fontSize: '150%'}}>
           You can choose as many characteristics as you want by selecting from the list.
         </Typography>
         <Divider sx={{pt: 2}}/>
@@ -106,24 +137,31 @@ export default function GenericAdvanceSearch({name, homepage}) {
             options={characteristicOptions}
             usedOptionKeys={usedCharacteristicIds}
             onAdd={handleAddCharacteristic}
-
           />
         </Grid>
 
+        {/*adding comments*/}
         {usedCharacteristicIds.map((option) =>
           <Grid container spacing={4}>
             <Grid item xs={4}>
-              <Typography sx={{fontFamily: 'Georgia', fontSize: '130%', paddingTop: '30px'}}>
+              <Typography sx={{fontSize: '130%', paddingTop: '30px'}}>
                 {characteristics[option].name}
               </Typography>
             </Grid>
             <Grid item xs={3}>
-              <Typography sx={{color: 'darkblue', fontFamily: 'Georgia', fontSize: '130%', paddingTop: '30px'}}>
+              <Typography sx={{color: 'darkblue', fontSize: '130%', paddingTop: '30px'}}>
                 enter condition:
               </Typography>
             </Grid>
             <Grid item xs={4}>
-              <GeneralField onChange={e => searchConditions[option] = e.target.value}/>
+              {/*<GeneralField*/}
+              {/*  type="phoneNumber"*/}
+              {/*  onChange={e => searchConditions[option] = e.target.value}/>*/}
+
+              <SearchConditionField
+                component={characteristics[option].implementation.fieldType.type}
+                onChange={handleOnChange(option)}/>
+                {/*onChange={e => searchConditions[option] = e.target.value}/>*/}
             </Grid>
             <Grid item xs={0.5}>
               <IconButton
@@ -154,28 +192,34 @@ export default function GenericAdvanceSearch({name, homepage}) {
         {/*display search result below*/}
         {searched ?
           <Container sx={{p: 2}} variant={'outlined'}>
-            <Typography sx={{fontFamily: 'Georgia', fontSize: '150%'}}>
-              Search Results is listed below.
-            </Typography>
-            {searchResults.map((singleResult) =>
-              <Grid container spacing={3} sx={{marginTop: '10px'}}>
-                <Grid item xs={4}>
-                  <ListItem sx={{display: 'list-item', fontSize: '150%'}}>
-                    {name}: {singleResult.firstName} {singleResult.lastName}
-                  </ListItem>
-                </Grid>
-                <Grid item xs={4} sx={{marginTop: '5px'}}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => {
-                      navigate(`/${name}s/${singleResult._id}`)
-                    }}>
-                    Go to {singleResult.firstName} {singleResult.lastName}'s detailed page.
-                  </Button>
-                </Grid>
-              </Grid>
-            )}
+
+            <DataTable
+              title={`List of ${name}s matched the conditions`}
+              data={searchResults}
+              columns={column}
+              options={options}
+            />
+
+            {/*{searchResults.map((singleResult) =>*/}
+            {/*  <Grid container spacing={3} sx={{marginTop: '10px'}}>*/}
+            {/*    <Grid item xs={3}>*/}
+            {/*      <ListItem sx={{display: 'list-item', fontSize: '150%'}}>*/}
+            {/*        {name}: {singleResult.firstName} {singleResult.lastName}*/}
+            {/*      </ListItem>*/}
+            {/*    </Grid>*/}
+
+            {/*    <Grid item xs={4} sx={{marginTop: '5px'}}>*/}
+            {/*      <Button*/}
+            {/*        variant="outlined"*/}
+            {/*        color="primary"*/}
+            {/*        onClick={() => {*/}
+            {/*          navigate(`/${name}s/${singleResult._id}`)*/}
+            {/*        }}>*/}
+            {/*        Go to {singleResult.firstName} {singleResult.lastName}'s detailed page.*/}
+            {/*      </Button>*/}
+            {/*    </Grid>*/}
+            {/*  </Grid>*/}
+            {/*)}*/}
           </Container>
           : <div/>}
 
