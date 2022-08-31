@@ -1,15 +1,20 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Button, Container, Divider, Grid, IconButton, ListItem, Paper, Table, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import GeneralField from "./fields/GeneralField";
 import {Delete as DeleteIcon} from "@mui/icons-material";
 import {DataTable, Link, Loading} from "./index";
 import {Picker} from "../settings/components/Pickers";
-import {fetchClients} from "../../api/clientApi";
 import {AlertDialog} from "./Dialogs";
 import {advancedSearchGeneric, fetchForAdvancedSearch} from "../../api/advancedSearchApi";
 import SearchConditionField from "./SearchConditionField";
 
+/**
+ * This is the frontend for Generic Advanced Search.
+ * @param name
+ * @param homepage
+ * @returns {JSX.Element}
+ * @constructor
+ */
 
 export default function GenericAdvanceSearch({name, homepage}) {
   const navigate = useNavigate();
@@ -50,43 +55,49 @@ export default function GenericAdvanceSearch({name, homepage}) {
     });
   }, [searchResults]);
 
+  // This is the handle for adding characteristics to the
+  // UsedCharacteristicsIds object.
   const handleAddCharacteristic = useCallback(() => {
     setUsedCharacteristicIds(used => [...used, selectedCharacteristicId])
   }, [selectedCharacteristicId])
 
 
-  // search generic for getting certain clients
+  // search generic for getting certain clients.
+  // If success, will parse the data in searchResults,
+  // If not success, will pop up the 'no result' alert dialog.
   const findResult = async () => {
-    console.log(searchConditions, searchTypes)
     setSearchResults({});
     setSearchTypes({});
-    console.log(searchResults, searchTypes);
     const {data, success} = await advancedSearchGeneric(name, 'characteristic', {searchConditions, searchTypes});
-    console.log('search results: ', data)
     if (success) {
       setSearchResults(data);
       setSearched(true);
+      setSearchConditions({});
     } else {
       setAlertDialog(true);
     }
   }
 
+  // This is onChange handle for search conditions (i.e. string, phone number...) except number range.
+  // It updates search Conditions and searchTypes.
   const handleOnChange = option => (e) => {
     searchConditions[option] = e.target.value;
     searchTypes[option] = characteristics[option].implementation.fieldType.type;
   }
 
+  // This is onChange handle for entering the min value of the range
+  // It updates searchConditions and searchTypes.
   const handleOnChangeMin = option => (e) => {
-    console.log(searchConditions[option])
     if (searchConditions[option] === undefined) {
       searchConditions[option] = {min: e.target.value};
-      // searchConditions[option]['min'] = e.target.value;
     } else {
       searchConditions[option]['min'] = e.target.value;
     }
     searchTypes[option] = characteristics[option].implementation.fieldType.type;
   }
 
+  // This is onChange handle for entering the max value of the range
+  // It updates searchConditions and searchTypes.
   const handleOnChangeMax = option => (e) => {
     if (searchConditions[option] === undefined) {
       searchConditions[option] = {max: e.target.value};
@@ -96,10 +107,15 @@ export default function GenericAdvanceSearch({name, homepage}) {
     searchTypes[option] = characteristics[option].implementation.fieldType.type;
   }
 
+  // This is the onChange handle for submit.
+  // Reach here if clicked "submit for advance search"
   const handleSubmit = () => {
     setLoading(true);
     setSearched(false);
     if (findResult()) {
+
+      // this is the column for search results
+      // currently is hardcoded for displaying First Name and Last Name.
       const column = [
         {
           label: 'First Name',
@@ -119,10 +135,6 @@ export default function GenericAdvanceSearch({name, homepage}) {
     } else {
       setLoading(false);
     }
-  }
-
-  const options = {
-    enhancedTableToolBar: false,
   }
 
   if (loading)
@@ -149,6 +161,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
         </Typography>
         <Divider sx={{pt: 2}}/>
 
+        {/*This is the dropdown bar letting you choose from the list*/}
         <Grid sx={{pt: 2}}>
           <Picker
             label={"characteristic"}
@@ -159,17 +172,18 @@ export default function GenericAdvanceSearch({name, homepage}) {
           />
         </Grid>
 
-        {/*adding comments*/}
+        {/*This is a map between all characteristics and generating */}
+        {/*search condition fields*/}
         {usedCharacteristicIds.map((option) => {
           const fieldType = characteristics[option].implementation.fieldType.type;
           const {label, optionsFromClass} = characteristics[option].implementation;
-          let fieldOptions;
-          if (optionsFromClass) {
-            fieldOptions = dynamicOptions[optionsFromClass] || {};
-          } else if (characteristics[option].implementation.options) {
-            fieldOptions = {};
-            characteristics[option].implementation.options.forEach(op => fieldOptions[op.iri] = op.label);
-          }
+          // let fieldOptions;
+          // if (optionsFromClass) {
+          //   fieldOptions = dynamicOptions[optionsFromClass] || {};
+          // } else if (characteristics[option].implementation.options) {
+          //   fieldOptions = {};
+          //   characteristics[option].implementation.options.forEach(op => fieldOptions[op.iri] = op.label);
+          // }
 
           if (fieldType === "NumberField") {
             return(
@@ -188,13 +202,13 @@ export default function GenericAdvanceSearch({name, homepage}) {
                   <SearchConditionField
                     key={`${option}_min`}
                     label={`inclusive minimum`}
-                    options={fieldOptions}
+                    // options={fieldOptions}
                     component={fieldType}
                     onChange={handleOnChangeMin(option)}/>
                   <SearchConditionField
                     key={`${option}_max`}
                     label={`inclusive maximum`}
-                    options={fieldOptions}
+                    // options={fieldOptions}
                     component={fieldType}
                     onChange={handleOnChangeMax(option)}/>
                 </Grid>
@@ -230,7 +244,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
                   <SearchConditionField
                     key={`${option}`}
                     label={label}
-                    options={fieldOptions}
+                    // options={fieldOptions}
                     component={fieldType}
                     onChange={handleOnChange(option)}/>
                 </Grid>
@@ -250,42 +264,6 @@ export default function GenericAdvanceSearch({name, homepage}) {
                 </Grid>
               </Grid>)
           }
-          // return(
-          //   <Grid container spacing={4}>
-          //     <Grid item xs={4}>
-          //       <Typography sx={{fontSize: '130%', paddingTop: '30px'}}>
-          //         {characteristics[option].name}
-          //       </Typography>
-          //     </Grid>
-          //     <Grid item xs={3}>
-          //       <Typography sx={{color: 'darkblue', fontSize: '130%', paddingTop: '30px'}}>
-          //         enter condition:
-          //       </Typography>
-          //     </Grid>
-          //     <Grid item xs={4}>
-          //       }
-          //       <SearchConditionField
-          //         key={`${option}`}
-          //         label={label}
-          //         options={fieldOptions}
-          //         component={fieldType}
-          //         onChange={handleOnChange(option)}/>
-          //     </Grid>
-          //     <Grid item xs={0.5}>
-          //       <IconButton
-          //         sx={{marginTop: '25px'}}
-          //         onClick={() => {
-          //           const currIds = usedCharacteristicIds;
-          //           const index = currIds.indexOf(option);
-          //           if (index > -1) {
-          //             currIds.splice(index, 1);
-          //           }
-          //           setUsedCharacteristicIds([...currIds]);
-          //         }}>
-          //         <DeleteIcon/>
-          //       </IconButton>
-          //     </Grid>
-          //   </Grid>)
         })}
 
         <Divider sx={{pt: 2}}/>
@@ -305,11 +283,12 @@ export default function GenericAdvanceSearch({name, homepage}) {
               title={`List of ${name}s matched the conditions`}
               data={searchResults}
               columns={column}
-              options={options}
+              // options={options}
             />
           </Container>
           : <div/>}
 
+        {/*This is a pop up alert for no result when no result is found*/}
         <AlertDialog dialogTitle={"No Result"}
                      dialogContentText={`No ${name} is found based on your search condition.`}
                      buttons={[<Button onClick={() => setAlertDialog(false)}
