@@ -1,6 +1,10 @@
 const {createGraphDBModel, Types, DeleteType} = require("../../utils/graphdb");
 const {GDBCIModel} = require("./characteristicImplementation");
 
+/**
+ * Characteristic Model in GraphDB
+ * @type {GDBUtils.GraphDBModelConstructor}
+ */
 const GDBCharacteristicModel = createGraphDBModel({
   description: {type: String, internalKey: 'cids:hasDescription'},
   name: {type: String, internalKey: ':hasName'},

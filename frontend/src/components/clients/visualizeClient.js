@@ -9,7 +9,10 @@ import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import FieldGroup from "../shared/FieldGroup";
 
-
+/**
+ * This function is the frontend for visualizing single client
+ * @returns {JSX.Element}
+ */
 export default function visualizeClient() {
 
   const {option, id} = useParams();
@@ -25,6 +28,7 @@ export default function visualizeClient() {
 
   useEffect(() => {
     Promise.all([
+      // get all client forms
       getDynamicFormsByFormType('client').then(({forms}) => {
         const allForms = {};
         forms.forEach(form => allForms[form._id] = form);

@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
 import { logout } from '../../api/auth';
-import styled from "@emotion/styled";
 import { UserContext, defaultUserContext } from "../../context";
-
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import ReportIcon from '@mui/icons-material/Report';
@@ -17,7 +15,6 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LoginIcon from '@mui/icons-material/Login';
-import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon';
 
 const ITEM_HEIGHT = 48;
 
@@ -49,24 +46,17 @@ const ITEM_HEIGHT = 48;
 //   return <StyledTab {...props} onClick={() => navigate(props.value)}/>
 // }
 
+/**
+ * This is the TopNavBar shows on every page.
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 function TopNavBar() {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
   const id = userContext.id;
   const isLoggedin = !!userContext.email;
-  // const tabNames = ['/clients', '/services', '/goods', '/providers', '/reporting'];
-  // const [value, setValue] = useState(
-  //   tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false,
-  // );
-
-  // useEffect(() => {
-  //   setValue(tabNames.indexOf(history.location.pathname) !== -1 ? history.location.pathname : false);
-  // }, [history.location.pathname, tabNames]);
-
-  // const tabOnChange = (e, newValue) => {
-  //   setValue(newValue);
-  //   navigate(newValue);
-  // };
 
   const [anchorElLeft, setAnchorElLeft] = useState(null);
   const [anchorElRight, setAnchorElRight] = useState(null);
@@ -97,15 +87,6 @@ function TopNavBar() {
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
       <Toolbar variant="dense">
         {isLoggedin ? (
-          // <StyledTabs sx={{flexGrow: 2}} value={value} onChange={tabOnChange} variant="scrollable"
-          //             indicatorColor='secondary'>
-          //   <NavTab label="Clients" value="/clients"/>
-          //   <NavTab label="Services" value="/services"/>
-          //   <NavTab label="Goods" value="/goods"/>
-          //   <NavTab label="Providers" value="/providers"/>
-          //   <NavTab label="Reporting" value="/reporting"/>
-          //   <Tab sx={{display: 'none'}} label="" value="none"/>
-          // </StyledTabs>
             <div style={{flexGrow: 1}}>
               <IconButton
                   onClick={handleClickLeft}
