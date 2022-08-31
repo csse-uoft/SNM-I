@@ -18,7 +18,6 @@ const getUserProfileById = async (req, res, next) => {
     return res.json(user)
 };
 
-
 const updateProfile = async (req, res, next) => {
     const {id, givenName, familyName, email, altEmail, countryCode, areaCode, phoneNumber} = req.body;
     const updateData = {
@@ -84,7 +83,6 @@ const updateUserForm = async (req, res, next) => {
     }
 }
 
-
 const checkCurrentPassword = async (req, res, next) => {
     const {password} = req.body;
     if (!password) {
@@ -126,6 +124,15 @@ const saveNewPassword = async (req, res, next) => {
         next(e);
     }};
 
+/**
+ * This function updates primary email.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ * emailStatus === 1 means permanent account
+ * emailStatus === 2 means temporary account
+ */
 const updatePrimaryEmail = async (req, res, next) => {
     const {id, email} = req.body;
     const currentEmail = req.session.email;
@@ -134,12 +141,10 @@ const updatePrimaryEmail = async (req, res, next) => {
         return res.status(200).json({sentEmailConfirm: false,
             message: 'Your input primaryEmail already exists as a permanent account.'});
     }
-
     if (emailStatus === 2) {
         return res.status(200).json({sentEmailConfirm: false,
             message: 'Your input primaryEmail already exists as a temporary account.'});
     }
-
 
     try {
         const token = sign({
@@ -156,19 +161,15 @@ const fetchUsers = async (req, res, next) => {
     try{
         const rawData = await GDBUserAccountModel.find({}, {populates: ['primaryContact.telephone',]});
         const data = rawData.map((user) => {
-            const ret = {email:user.primaryEmail, id: user._id, isSuperuser: user.role === 'admin',
-                primaryContact: user.primaryContact, status: user.status, expirationDate: user.expirationDate}
-            return ret
+            return {
+                email: user.primaryEmail, id: user._id, isSuperuser: user.role === 'admin',
+                primaryContact: user.primaryContact, status: user.status, expirationDate: user.expirationDate
+            }
         })
-
-
-
-
         return res.status(200).json({data, success:true})
     }catch (e){
         next(e)
     }
-
 }
 
 module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword, updatePrimaryEmail,
