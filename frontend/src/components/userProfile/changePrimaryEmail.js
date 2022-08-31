@@ -28,6 +28,7 @@ export default function changePrimaryEmail() {
 
   const handleCheck = async () => {
     try {
+      // send the token to backend for validation.
       const {success} = await verifyChangePrimaryEmail(token);
       if (success) {
         setDialogConfirmed(true);
