@@ -288,7 +288,7 @@ export default function GenericAdvanceSearch({name, homepage}) {
           </Container>
           : <div/>}
 
-        {/*This is a pop up alert for no result when no result is found*/}
+        {/*This is a pop-up alert for no result when no result is found*/}
         <AlertDialog dialogTitle={"No Result"}
                      dialogContentText={`No ${name} is found based on your search condition.`}
                      buttons={[<Button onClick={() => setAlertDialog(false)}

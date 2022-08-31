@@ -29,22 +29,30 @@ const linkedProperty = (genericType, characteristic) => {
   return false
 }
 
+/**
+ * This function saves one characteristic occurrence.
+ * @param characteristic
+ * @param occurrence
+ * @param value
+ * @returns {Promise<void>}
+ */
 const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
+
+  // Storing value in the characteristic occurrence model.
   if (characteristic.implementation.valueDataType === 'xsd:string') {
-    // TODO: check if the dataType of input value is correct
     occurrence.dataStringValue = value + '';
   } else if (characteristic.implementation.valueDataType === 'xsd:number') {
     occurrence.dataNumberValue = Number(value);
   } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
     occurrence.dataBooleanValue = !!value.target.value;
+    // TODO: test it stores date before 1970 and explanation of how line 52 works.
   } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
     if(TIMEPATTERN.test(value)){
       value = '1970-01-01 '+ value // when the field is time field
     }
     occurrence.dataDateValue = value? new Date(value): undefined;
   } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-
     if (fieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
     } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
@@ -57,6 +65,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
         await GDBPhoneNumberModel.findByIdAndDelete(phoneNumberId)
       }
       const phoneNumber = GDBPhoneNumberModel(parsePhoneNumber(value));
+      // save phoneNumber since it is stored in a separate model.
       await phoneNumber.save()
       occurrence.objectValue = phoneNumber.individualName;
     } else if (fieldType === FieldTypes.AddressField.individualName) {
@@ -65,6 +74,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
         await GDBAddressModel.findByIdAndDelete(addressId)
       }
       const address = GDBAddressModel(value)
+      // save address since it is stored in a separate model.
       await address.save()
       occurrence.objectValue = address.individualName
 
