@@ -41,6 +41,7 @@ app.use('/api', userRoute);
 app.use('/api', usersRoute);
 app.use('/api', characteristicRoute);
 app.use('/api', questionRoute);
+app.use('/api', clientsRoute);
 app.use('/api', dynamicFormRoute);
 app.use('/api', genericRoute);
 app.use('/api', advancedSearchRoute);
