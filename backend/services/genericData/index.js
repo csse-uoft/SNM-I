@@ -7,6 +7,7 @@ const {GraphDB} = require("../../utils/graphdb");
 const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 const {MDBUsageModel} = require("../../models/usage");
+const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumber");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -75,14 +76,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
   }
 }
 
-const parsePhoneNumber = (phone) => {
-  const [_, countryCode, phoneNumber, areaCode] = phone.match(/\+(\d+)((?: \((\d+)\))? \d+\-\d+)/)
-  return {
-    countryCode: Number(countryCode),
-    areaCode: areaCode ? Number(areaCode) : undefined,
-    phoneNumber: Number(phoneNumber.replace(/[() +-]/g, ''))
-  }
-}
+
 
 const fetchCharacteristicAndQuestionsBasedOnFields = async (characteristics, questions, fields) => {
   for (const key of Object.keys(fields)) {
@@ -102,16 +96,7 @@ const fetchCharacteristicAndQuestionsBasedOnFields = async (characteristics, que
       .forEach(item => questions[item._id] = item);
 }
 
-const combinePhoneNumber = ({countryCode, phoneNumber, areaCode}) => {
-  let ret = ''
-  if (areaCode) {
-    ret = '+' + countryCode + ' (' + phoneNumber.toString().slice(0, 3) + ') ' +
-      phoneNumber.toString().slice(3, 6) + '-' + phoneNumber.toString().slice(6)
-  } else {
-    ret = '+' + countryCode + ' ' + phoneNumber.toString().slice(0, 2) + '-' + phoneNumber.toString().slice(2)
-  }
-  return ret
-}
+
 
 async function fetchSingleGeneric(req, res, next) {
   const {genericType, id} = req.params;
