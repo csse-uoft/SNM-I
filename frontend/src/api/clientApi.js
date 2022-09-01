@@ -7,7 +7,7 @@ import { deleteJson, getJson, postJson, putJson } from "./index";
  * @returns {Promise<*>}
  */
 export async function fetchClients() {
-  return getJson('/api/clientOrOrganization/client');
+  return getJson('/api/generics/client');
 }
 
 /**
