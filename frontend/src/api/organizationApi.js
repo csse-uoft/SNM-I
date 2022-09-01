@@ -10,7 +10,6 @@ export async function fetchOrganizations() {
 
 /**
  * This function fetches one single organization.
- * Should be replaced with fetchSingleGeneric.
  * @param id
  * @returns {Promise<*>}
  */
