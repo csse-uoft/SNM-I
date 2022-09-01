@@ -442,6 +442,7 @@ async function deleteSingleGeneric(req, res, next){
     }
 
 
+
     // recursively delete questionOccurrences
     if(questionsOccurrences){
       for (let questionOccurrence of questionsOccurrences) {
@@ -458,8 +459,21 @@ async function deleteSingleGeneric(req, res, next){
   }
 }
 
+const fetchGenericDatas = async (req, res, next) => {
+  const {genericType} = req.params;
+  try {
+    const data = await genericType2Model[genericType].find({},
+      {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']});
+
+    return res.status(200).json({data, success: true});
+
+  } catch (e) {
+    next(e)
+  }
+}
+
 
 
 module.exports = {
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas
 }
