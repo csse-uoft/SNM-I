@@ -19,6 +19,7 @@ const specialField2Model = {
   'phoneNumber': GDBPhoneNumberModel
 }
 
+// help to detect the time
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/
 
 const linkedProperty = (genericType, characteristic) => {
@@ -50,9 +51,9 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     // TODO: explanation of how line 52 works.
   } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
     if(TIMEPATTERN.test(value)){
-      value = '1970-01-01 '+ value // when the field is time field
+      value = '1970-01-01 '+ value // when the field is time field, add 1970 to make it be able to stored into the database
     }
-    occurrence.dataDateValue = value? new Date(value): undefined;
+    occurrence.dataDateValue = new Date(value);
   } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
     if (fieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
@@ -88,7 +89,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
 
 
 
-const fetchCharacteristicAndQuestionsBasedOnFields = async (characteristics, questions, fields) => {
+const fetchCharacteristicAndQuestionsBasedOnForms = async (characteristics, questions, fields) => {
   for (const key of Object.keys(fields)) {
     const [type, id] = key.split('_');
     if (type === 'characteristic') {
@@ -224,11 +225,13 @@ const createSingleGeneric = async (req, res, next) => {
     const characteristics = {};
 
     // extract questions and characteristics based on fields from the database
-    await fetchCharacteristicAndQuestionsBasedOnFields(characteristics, questions, data.fields)
+    await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
 
     const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
     // iterating over all fields and create occurrences and store them into instanceData
     for (const [key, value] of Object.entries(data.fields)) {
+      if(!value)
+        continue;
       const [type, id] = key.split('_');
 
       if (type === 'characteristic') {
@@ -269,6 +272,7 @@ const createSingleGeneric = async (req, res, next) => {
 
 }
 
+// TODO: how to empty a field
 async function updateSingleGeneric(req, res, next) {
   const data = req.body
   const {id, genericType} = req.params
@@ -306,13 +310,14 @@ async function updateSingleGeneric(req, res, next) {
     // fetch characteristics and questions from GDB
     const questions = {};
     const characteristics = {};
-    await fetchCharacteristicAndQuestionsBasedOnFields(characteristics, questions, data.fields)
-    // TODO: change function name to based on form
+    await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
 
     // check should we update or create a characteristicOccurrence or questionOccurrence
     // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
     // and related to the characteristic/question
     for (const [key, value] of Object.entries(data.fields)) {
+      if(!value)
+        continue;
       const [type, id] = key.split('_')
       if (type === 'characteristic') {
         // find out all possible COs related to this characteristic
@@ -449,7 +454,6 @@ async function deleteSingleGeneric(req, res, next){
         await GDBQOModel.findByIdAndDelete(questionOccurrence._id);
       }
     }
-    // todo: notable to delete
     await genericType2Model[genericType].findByIdAndDelete(id);
     return res.status(200).json({success: true})
 
