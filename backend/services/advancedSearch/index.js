@@ -2,6 +2,7 @@ const {GDBCharacteristicModel, GDBClientModel, GDBOrganizationModel} = require("
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {MDBUsageModel} = require("../../models/usage");
 const {GraphDB, regexBuilder} = require("../../utils/graphdb");
+const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 
 
 const genericType2Model = {
@@ -57,8 +58,11 @@ async function advancedSearchGeneric(req, res, next) {
         conditions.push(
           {occurrenceOf: `:${genericItemType}_${genericItemId}`, dataNumberValue: {$lt: value.max, $gt: value.min}}
         );
-      } else if(searchTypes[genericItemId] === 'DateField'){ // dateObject
-
+      } else if(searchTypes[genericItemId] === 'PhoneNumberField'){ // phoneNumber object
+        const {areaCode, countryCode, phoneNumber} = parsePhoneNumber(value)
+        conditions.push(
+          {occurrenceOf: `:${genericItemType}_${genericItemId}`, objectValue: {areaCode, countryCode, phoneNumber}}
+        );
       }else{
 
       }
