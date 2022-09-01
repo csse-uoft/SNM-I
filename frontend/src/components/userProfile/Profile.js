@@ -45,7 +45,6 @@ export default function Profile() {
   const userContext = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({...userProfileFields});
-  //const [dialogConfirm, setDialogConfirm] = useState(false);
   const profileForm = {
     givenName: userContext.givenName,
     familyName: userContext.familyName,
@@ -66,7 +65,6 @@ export default function Profile() {
   const handleEdit = () => {
     navigate('/profile/' + id + '/edit');
   }
-
 
   if (loading)
     return <Loading message={`Loading...`}/>;

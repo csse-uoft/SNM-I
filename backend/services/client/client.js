@@ -1,5 +1,9 @@
-const {findClientById, findOrganizationById, deleteHelper, parseHelper} = require("./clientHelper");
+/**
+ * This file is deprecated.
+ * The content/functionality is now included in backend/src/services/genericData/index.js
+ */
 
+const {findClientById, findOrganizationById, deleteHelper, parseHelper} = require("./clientHelper");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBQOModel, GDBOrganizationModel, GDBCharacteristicModel, GDBPhoneNumberModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");

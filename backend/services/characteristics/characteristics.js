@@ -101,25 +101,7 @@ const fetchCharacteristic = async (req, res, next) => {
     const id = req.params.id;
     const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-    // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
-    // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-    //   if(client.characteristicOccurrences) {
-    //     for (let occurrence of client.characteristicOccurrences) {
-    //       if (occurrence.occurrenceOf._id === id)
-    //         return true
-    //     }
-    //   }
-    //   return false
-    // })
-    // const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
-    //   if(organization.characteristicOccurrences) {
-    //     for (let occurrence of organization.characteristicOccurrences) {
-    //       if (occurrence.occurrenceOf._id === id)
-    //         return true
-    //     }
-    //   }
-    //   return false
-    // })
+
     const query = `
     PREFIX : <http://snmi#>
     select * where { 

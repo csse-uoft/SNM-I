@@ -9,6 +9,14 @@ import { objectFlip } from "../../helpers";
 import AddressField from "./AddressFieldField";
 import {Grid} from "@mui/material";
 
+/**
+ * This function is a reuse-able template for entering search conditions
+ * @param component
+ * @param options
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function SearchConditionField({component, options, ...props}) {
   if (component === 'GeneralField' || component === 'TextField') {
     return (
@@ -21,12 +29,6 @@ export default function SearchConditionField({component, options, ...props}) {
       <Grid container>
         <GeneralField
           {...props}
-          label="minimum"
-          type="number"
-        />
-        <GeneralField
-          {...props}
-          label="maximum"
           type="number"
         />
       </Grid>

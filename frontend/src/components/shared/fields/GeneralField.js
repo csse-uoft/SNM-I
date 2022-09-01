@@ -26,8 +26,12 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
   // duplicate the state, the drawback is much smaller than re-render all the form.
   const [value, setValue] = useState(() => {
     if (type === 'date' || type === 'datetime' || type === 'time') {
-      if (defaultValue)
-        return parse(defaultValue, customFormat, new Date());
+      if (defaultValue) {
+        if (typeof defaultValue === "string")
+          return parse(defaultValue, customFormat, new Date());
+        else if (typeof defaultValue === "number")
+          return new Date(defaultValue);
+      }
       else
         return null;
     }

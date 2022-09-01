@@ -1,21 +1,20 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
-export async function createOrganization(body) {
-  return postJson('/api/clientOrOrganization/organization/', body);
-}
-
-export async function updateOrganization(id, body) {
-  return putJson('/api/organization/' + id, body);
-}
-
-export async function fetchOrganization(id) {
-  return getJson('/api/clientOrOrganization/organization/' + id);
-}
-
+/**
+ * This function fetches one organization.
+ * Could be replaced with fetchGeneric in the future
+ * @returns {Promise<*>}
+ */
 export async function fetchOrganizations() {
   return getJson('/api/clientOrOrganization/organization');
 }
 
+/**
+ * This function fetches one single organization.
+ * Should be replaced with fetchSingleGeneric.
+ * @param id
+ * @returns {Promise<*>}
+ */
 export async function deleteOrganization(id) {
   return deleteJson('/api/clientOrOrganization/delete/organization/' + id);
 }
