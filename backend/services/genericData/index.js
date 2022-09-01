@@ -272,7 +272,7 @@ const createSingleGeneric = async (req, res, next) => {
 
 }
 
-// TODO: how to empty a field
+// what should we do if the field is empty
 async function updateSingleGeneric(req, res, next) {
   const data = req.body
   const {id, genericType} = req.params
@@ -316,8 +316,6 @@ async function updateSingleGeneric(req, res, next) {
     // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
     // and related to the characteristic/question
     for (const [key, value] of Object.entries(data.fields)) {
-      if(!value)
-        continue;
       const [type, id] = key.split('_')
       if (type === 'characteristic') {
         // find out all possible COs related to this characteristic
