@@ -341,7 +341,7 @@ async function updateSingleGeneric(req, res, next) {
 
         const characteristic = characteristics[id]
 
-        if(!existedCO){ // have to create a new CO and add the characteristic's id to the usage
+        if(!existedCO && value){ // have to create a new CO and add the characteristic's id to the usage
           await addIdToUsage('characteristic', genericType, id)
           const occurrence = {occurrenceOf: characteristic};
           await implementCharacteristicOccurrence(characteristic, occurrence, value)
@@ -356,7 +356,7 @@ async function updateSingleGeneric(req, res, next) {
                 generic[property + 's'] = occurrence.multipleObjectValue
             }
           }
-        }else{ // just add the value on existedCO
+        }else if(existedCO && value){ // just add the value on existedCO
           await implementCharacteristicOccurrence(characteristic, existedCO, value)
           if (characteristic.isPredefined) {
             const property = linkedProperty(genericType, characteristic)
@@ -368,6 +368,15 @@ async function updateSingleGeneric(req, res, next) {
 
             }
           }
+        }else if(existedCO && !value){ // when the user wants to remove the occurrence
+          await existedCO.populate('occurrenceOf');
+          if(existedCO.objectValue) { // remove the objectValue if necessary
+            const [fieldType, id] = existedCO.objectValue.split('_');
+            await specialField2Model[fieldType]?.findByIdAndDelete(id);
+          }
+          await GDBCOModel.findByIdAndDelete(existedCO._id); // remove the occurrence
+          // also have to remove from usage if necessary
+          await deleteIdFromUsageAfterChecking('characteristic', genericType, existedCO.occurrenceOf._id)
         }
 
       }
@@ -393,12 +402,16 @@ async function updateSingleGeneric(req, res, next) {
           }).length > 0
         })[0]
 
-        if(!existedQO){ // create a new QO
+        if(!existedQO && value){ // create a new QO
           await addIdToUsage('question', genericType, id)
           const occurrence = {occurrenceOf: questions[id], stringValue: value};
           generic.questionOccurrences.push(occurrence);
-        }else{ // update the question
+        }else if(existedQO && value){ // update the question
           existedQO.stringValue = value
+        }else if(existedQO && !value) { // remove the occurrence
+          await GDBQOModel.findByIdAndDelete(existedQO._id);
+          await existedQO.populate('occurrenceOf');
+          await deleteIdFromUsageAfterChecking('question', genericType, existedQO.occurrenceOf._id);
         }
 
       }
@@ -444,12 +457,12 @@ async function deleteSingleGeneric(req, res, next){
       }
     }
 
-
-
     // recursively delete questionOccurrences
     if(questionsOccurrences){
       for (let questionOccurrence of questionsOccurrences) {
         await GDBQOModel.findByIdAndDelete(questionOccurrence._id);
+        await questionOccurrence.populate('occurrenceOf');
+        await deleteIdFromUsageAfterChecking('question', genericType, questionOccurrence.occurrenceOf._id);
       }
     }
     await genericType2Model[genericType].findByIdAndDelete(id);
