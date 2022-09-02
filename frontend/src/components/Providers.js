@@ -1,6 +1,6 @@
 import React from 'react';
 // TODO: createProviderWithCSV  (CSV Upload)
-import { fetchOrganizations, deleteOrganization } from '../api/organizationApi';
+import { fetchServiceProviders, deleteServiceProvider } from '../api/serviceProviderApi';
 
 import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
@@ -74,7 +74,7 @@ export default function Providers() {
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
-    const orgs = (await fetchOrganizations()).data;
+    const orgs = (await fetchServiceProviders()).data;
     const data = [];
     for (const org of orgs) {
       const orgData = {_id: org._id, type: 'Organization'};
@@ -100,7 +100,7 @@ export default function Providers() {
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteOrganization}
+      deleteItem={deleteServiceProvider}
       generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
       tableOptions={{
