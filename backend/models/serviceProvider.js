@@ -2,9 +2,8 @@ const {createGraphDBModel, DeleteType} = require("../utils/graphdb");
 const {GDBAddressModel} = require('./address')
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBQOModel} = require("./ClientFunctionalities/questionOccurrence");
-const {MDBDynamicFormModel} = require("./dynamicForm");
 
-const GDBOrganizationModel = createGraphDBModel({
+const GDBServiceProviderModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
   characteristicOccurrence: {type: [GDBCOModel],
@@ -13,9 +12,9 @@ const GDBOrganizationModel = createGraphDBModel({
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
 
 }, {
-  rdfTypes: ['cp:Organization'], name: 'organization'
+  rdfTypes: [':ServiceProvider'], name: 'serviceProvider'
 });
 
 module.exports = {
-  GDBOrganizationModel
+  GDBServiceProviderModel
 }

@@ -5,13 +5,13 @@ const {
 } = require("./characteristicsHelper");
 const {SPARQL} = require('../../utils/graphdb/helpers');
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
-const {GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {GDBClientModel, GDBServiceProviderModel} = require("../../models");
 const {query} = require("express");
 const {GraphDB} = require("../../utils/graphdb");
 
 const option2Model = {
   'client': GDBClientModel,
-  'organization': GDBOrganizationModel,
+  'serviceProvider': GDBServiceProviderModel,
 }
 
 const createCharacteristic = async (req, res, next) => {
@@ -53,15 +53,6 @@ const updateCharacteristic = async (req, res, next) => {
   };
 
   try {
-    // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-    //   if(client.characteristicOccurrences) {
-    //     for (let occurrence of client.characteristicOccurrences) {
-    //       if (occurrence.occurrenceOf._id === id)
-    //         return true
-    //     }
-    //   }
-    //   return false
-    // })
 
     const query = `
     PREFIX : <http://snmi#>
@@ -75,15 +66,6 @@ const updateCharacteristic = async (req, res, next) => {
       isUsed = true
     });
 
-    // const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
-    //   if(organization.characteristicOccurrences){
-    //     for (let occurrence of organization.characteristicOccurrences) {
-    //       if (occurrence.occurrenceOf._id === id)
-    //         return true
-    //     }
-    //   }
-    //   return false
-    // })
     const characteristic = await findCharacteristicById(id);
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
     if(forms.length !== 0 || isUsed || characteristic.isPredefined)
@@ -173,25 +155,6 @@ const deleteCharacteristic = async (req, res, next) => {
     const characteristic = await findCharacteristicById(id);
     // check if the characteristic is used by a form
     const forms = await MDBDynamicFormModel.find({formStructure: {$elemMatch: {fields: {$elemMatch: {id: id, type: 'characteristic'}}}}})
-    // const clients = await GDBClientModel.find({characteristicOccurrence: {occurrenceOf: 'characteristic_' + id}}, {populates: ['characteristicOccurrences']})
-    // const clients = (await GDBClientModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((client) => {
-    //   if(client.characteristicOccurrences) {
-    //     for (let occurrence of client.characteristicOccurrences) {
-    //       if (occurrence.occurrenceOf._id === id)
-    //         return true
-    //     }
-    //   }
-    //   return false
-    // })
-    // const organizations = (await GDBOrganizationModel.find({}, {populates: ['characteristicOccurrences.occurrenceOf']})).filter((organization) => {
-    //   if(organization.characteristicOccurrences) {
-    //     for (let occurrence of organization.characteristicOccurrences) {
-    //       if (occurrence.occurrenceOf._id === id)
-    //         return true
-    //     }
-    //   }
-    //   return false
-    // })
 
 
     // check if the characteristic has an occurrence

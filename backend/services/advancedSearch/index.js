@@ -1,4 +1,4 @@
-const {GDBCharacteristicModel, GDBClientModel, GDBOrganizationModel} = require("../../models");
+const {GDBCharacteristicModel, GDBClientModel, GDBServiceProviderModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {MDBUsageModel} = require("../../models/usage");
 const {GraphDB, regexBuilder} = require("../../utils/graphdb");
@@ -7,7 +7,7 @@ const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 
 const genericType2Model = {
   client: GDBClientModel,
-  organization: GDBOrganizationModel
+  serviceProvider: GDBServiceProviderModel
 };
 
 const genericItemType2Model = {
@@ -19,7 +19,7 @@ const genericItemType2Model = {
 // ex. return all characteristics associated with client
 async function fetchForAdvancedSearch(req, res, next) {
   try {
-    // genericType: client, organization...
+    // genericType: client, serviceProvider...
     // genericItemType: characteristic, question ...
     const {genericType, genericItemType} = req.params;
     if (!genericType || !genericItemType)

@@ -5,7 +5,7 @@ import { deleteJson, getJson, postJson, putJson } from "./index";
  * @returns {Promise<*>}
  */
 export async function fetchOrganizations() {
-  return getJson('/api/generics/organization');
+  return getJson('/api/generics/serviceProvider');
 }
 
 /**
@@ -14,5 +14,5 @@ export async function fetchOrganizations() {
  * @returns {Promise<*>}
  */
 export async function deleteOrganization(id) {
-  return deleteJson('/api/generic/organization/' + id);
+  return deleteJson('/api/generic/serviceProvider/' + id);
 }

@@ -1,4 +1,4 @@
-const {GDBClientModel, GDBOrganizationModel, GDBPhoneNumberModel, GDBCharacteristicModel, GDBAddressModel, GDBQOModel} = require("../../models");
+const {GDBClientModel, GDBServiceProviderModel, GDBPhoneNumberModel, GDBCharacteristicModel, GDBAddressModel, GDBQOModel} = require("../../models");
 const {SPARQL} = require('../../utils/graphdb/helpers');
 const {FieldTypes} = require("../characteristics");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
@@ -11,7 +11,7 @@ const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumbe
 
 const genericType2Model = {
   'client': GDBClientModel,
-  'organization': GDBOrganizationModel,
+  'serviceProvider': GDBServiceProviderModel,
 }
 
 const specialField2Model = {
@@ -191,7 +191,7 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id){
 
 const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
-  // genericType will be 'client', 'organization',...
+  // genericType will be 'client', 'serviceProvider',...
   const {genericType} = req.params
 
   // check the data package from frontend
@@ -205,7 +205,7 @@ const createSingleGeneric = async (req, res, next) => {
   if(!genericType2Model[genericType])
     return res.status(400).json({success: false, message: 'Invalid genericType'})
 
-  // check if the form type is consist with request type(client, organization, ...)
+  // check if the form type is consist with request type(client, serviceProvider, ...)
   if(form.formType !== genericType)
     return res.status(400).json({success: false, message: `The form is not for ${genericType}`})
 
