@@ -8,10 +8,14 @@ const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 const {MDBUsageModel} = require("../../models/usage");
 const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumber");
+const {GDBServiceModel} = require("../../models/service");
+const {GDBProgramModel} = require("../../models/program");
 
 const genericType2Model = {
   'client': GDBClientModel,
   'serviceProvider': GDBServiceProviderModel,
+  'service': GDBServiceModel,
+  'program': GDBProgramModel
 }
 
 const specialField2Model = {
