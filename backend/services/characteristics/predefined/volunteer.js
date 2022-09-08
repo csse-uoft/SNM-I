@@ -2,21 +2,21 @@ const {FieldTypes} = require('../misc');
 
 module.exports = [
   {
-    name: 'Service Provider Name',
-    description: 'Service Provider name',
+    name: 'Volunteer Name',
+    description: 'Volunteer name',
     predefinedProperty: 'http://ontology.eil.utoronto.ca/tove/organization#hasName',
     implementation: {
-      label: 'Service Provider Name',
+      label: 'Organization Name',
       valueDataType: 'xsd:string',
       fieldType: FieldTypes.TextField,
     },
   },
   {
-    name: 'Service Provider Address',
-    description: 'Service Provider address',
+    name: 'Volunteer Address',
+    description: 'Volunteer address',
     predefinedProperty: 'http://ontology.eil.utoronto.ca/tove/icontact#hasAddress',
     implementation: {
-      label: 'Service Provider Address',
+      label: 'Volunteer Address',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.AddressField,
     }

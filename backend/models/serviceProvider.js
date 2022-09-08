@@ -1,6 +1,6 @@
 const {createGraphDBModel, DeleteType} = require("../utils/graphdb");
 const {GDBOrganizationModel} = require("./organization");
-const {GDBVolunteerModel} = require("./Volunteer");
+const {GDBVolunteerModel} = require("./volunteer");
 
 const GDBServiceProviderModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},

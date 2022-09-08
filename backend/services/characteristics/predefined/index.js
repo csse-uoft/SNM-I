@@ -1,5 +1,5 @@
 const client = require('./client');
-const serviceProvider = require('./serviceProvider');
+const serviceProvider = require('./organization');
 const service = require('./service')
 const program = require('./program')
 const allPredefinedCharacteristics = {};
