@@ -22,7 +22,17 @@ const createSingleServiceProvider = async (req, res, next) => {
 }
 
 const fetchMultipleServiceProviders = async (req, res, next) => {
-  // GDBServiceProviderModel()
+  try {
+    const data = await GDBServiceProviderModel.find({},
+      {
+        populates: ['organization.characteristicOccurrences.occurrenceOf',
+          'organization.questionOccurrence', 'volunteer.characteristicOccurrences.occurrenceOf',
+          'volunteer.questionOccurrence',]
+      });
+    return res.status(200).json({success: true});
+  } catch (e) {
+    next(e)
+  }
 }
 
 module.exports = {
