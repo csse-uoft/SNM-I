@@ -10,10 +10,14 @@ const {MDBUsageModel} = require("../../models/usage");
 const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBServiceModel} = require("../../models/service");
 const {GDBProgramModel} = require("../../models/program");
+const {Server400Error} = require("../../utils");
+const {GDBOrganizationModel} = require("../../models/organization");
+const {GDBVolunteerModel} = require("../../models/volunteer");
 
 const genericType2Model = {
   'client': GDBClientModel,
-  'serviceProvider': GDBServiceProviderModel,
+  'organization': GDBOrganizationModel,
+  'volunteer': GDBVolunteerModel,
   'service': GDBServiceModel,
   'program': GDBProgramModel
 }
@@ -116,8 +120,12 @@ const fetchCharacteristicAndQuestionsBasedOnForms = async (characteristics, ques
 async function fetchSingleGeneric(req, res, next) {
   const {genericType, id} = req.params;
 
-  if (!genericType2Model[genericType])
-    return res.status(400).json({success: false, message: 'Invalid generic type.'});
+  if (!genericType2Model[genericType]) {
+    throw new Server400Error('Invalid generic type.')
+    // return res.status(400).json({success: false, message: 'Invalid generic type.'});
+  }
+
+
 
   const data = await genericType2Model[genericType].findOne({_id: id},
     {populates: ['characteristicOccurrences', 'questionOccurrences']});
@@ -193,83 +201,93 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id){
 
 }
 
-const createSingleGeneric = async (req, res, next) => {
-  const data = req.body;
-  // genericType will be 'client', 'serviceProvider',...
-  const {genericType} = req.params
-
+const createSingleGenericHelper = async (data, genericType) => {
   // check the data package from frontend
   // check if a formId was sent
   if (!data.formId) {
-    return res.status(400).json({success: false, message: 'No form id is given'})
+    throw new Server400Error('No form id is given')
+    // return res.status(400).json({success: false, message: 'No form id is given'})
   }
   const form = await MDBDynamicFormModel.findById(data.formId)
 
   // check if the genericType is in genericType2Model
   if(!genericType2Model[genericType])
-    return res.status(400).json({success: false, message: 'Invalid genericType'})
+    throw new Server400Error('Invalid genericType')
+  // return res.status(400).json({success: false, message: 'Invalid genericType'})
 
   // check if the form type is consist with request type(client, serviceProvider, ...)
   if(form.formType !== genericType)
-    return res.status(400).json({success: false, message: `The form is not for ${genericType}`})
+    throw new Server400Error(`The form is not for ${genericType}`)
+  // return res.status(400).json({success: false, message: `The form is not for ${genericType}`})
 
   // check if the form has a structure
   if (!form.formStructure) {
-    return res.status(400).json({success: false, message: 'The form structure is not defined'})
+    throw new Server400Error('The form structure is not defined')
+    // return res.status(400).json({success: false, message: 'The form structure is not defined'})
   }
   // TODO: verify if questions and characteristics are in the form
 
   // check if the fields are provided
   if (!data.fields) {
-    return res.status(400).json({success: false, message: 'No fields provided'})
+    throw new Server400Error('No fields provided')
+    // return res.status(400).json({success: false, message: 'No fields provided'})
   }
 
-  try {
-    const questions = {};
-    const characteristics = {};
 
-    // extract questions and characteristics based on fields from the database
-    await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
+  const questions = {};
+  const characteristics = {};
 
-    const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
-    // iterating over all fields and create occurrences and store them into instanceData
-    for (const [key, value] of Object.entries(data.fields)) {
-      if(!value)
-        continue;
-      const [type, id] = key.split('_');
+  // extract questions and characteristics based on fields from the database
+  await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
 
-      if (type === 'characteristic') {
-        const characteristic = characteristics[id];
-        const occurrence = {occurrenceOf: characteristic};
-        await implementCharacteristicOccurrence(characteristic, occurrence, value)
+  const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
+  // iterating over all fields and create occurrences and store them into instanceData
+  for (const [key, value] of Object.entries(data.fields)) {
+    if(!value)
+      continue;
+    const [type, id] = key.split('_');
 
-        // find the usage(given option and geneticType), create a new one if no such
-        await addIdToUsage('characteristic', genericType, id)
+    if (type === 'characteristic') {
+      const characteristic = characteristics[id];
+      const occurrence = {occurrenceOf: characteristic};
+      await implementCharacteristicOccurrence(characteristic, occurrence, value)
 
-        if (characteristic.isPredefined) {
-          const property = linkedProperty(genericType, characteristic)
-          if (property) {
-            instanceData[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ??
-              occurrence.dataDateValue ?? occurrence.objectValue;
-            instanceData[property + 's'] = occurrence.multipleObjectValue
-          }
+      // find the usage(given option and geneticType), create a new one if no such
+      await addIdToUsage('characteristic', genericType, id)
+
+      if (characteristic.isPredefined) {
+        const property = linkedProperty(genericType, characteristic)
+        if (property) {
+          instanceData[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ??
+            occurrence.dataDateValue ?? occurrence.objectValue;
+          instanceData[property + 's'] = occurrence.multipleObjectValue
         }
-
-        instanceData.characteristicOccurrences.push(occurrence);
-
-      } else if (type === 'question') {
-        await addIdToUsage('question', genericType, id)
-        const occurrence = {occurrenceOf: questions[id], stringValue: value};
-        instanceData.questionOccurrences.push(occurrence);
       }
+
+      instanceData.characteristicOccurrences.push(occurrence);
+
+    } else if (type === 'question') {
+      await addIdToUsage('question', genericType, id)
+      const occurrence = {occurrenceOf: questions[id], stringValue: value};
+      instanceData.questionOccurrences.push(occurrence);
     }
+  }
 
-    // the instance data is stored into graphdb
-    await genericType2Model[genericType](instanceData).save();
+  // the instance data is stored into graphdb
+  genericType2Model[genericType](instanceData).save();
 
-    return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`})
+  return instanceData
 
+}
 
+const createSingleGeneric = async (req, res, next) => {
+  const data = req.body;
+  // genericType will be 'client', 'serviceProvider',...
+  const {genericType} = req.params
+
+  try {
+    if(await createSingleGenericHelper(data, genericType))
+      return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`})
   } catch (e) {
     next(e)
   }
@@ -494,5 +512,5 @@ const fetchGenericDatas = async (req, res, next) => {
 
 
 module.exports = {
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas, createSingleGenericHelper
 }
