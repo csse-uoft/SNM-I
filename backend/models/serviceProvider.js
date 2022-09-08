@@ -1,15 +1,11 @@
 const {createGraphDBModel, DeleteType} = require("../utils/graphdb");
-const {GDBAddressModel} = require('./address')
-const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
-const {GDBQOModel} = require("./ClientFunctionalities/questionOccurrence");
+const {GDBOrganizationModel} = require("./organization");
+const {GDBVolunteerModel} = require("./Volunteer");
 
 const GDBServiceProviderModel = createGraphDBModel({
-  name: {type: String, internalKey: 'tove_org:hasName'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
-  characteristicOccurrence: {type: [GDBCOModel],
-    internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
-  questionOccurrence: {type: [GDBQOModel],
-    internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
+  type: {type: String, internalKey: ':hasType'},
+  organization: {type: GDBOrganizationModel, internalKey: ':hasOrganization'},
+  volunteer: {type: GDBVolunteerModel, internalKey: ':hasVolunteer'}
 
 }, {
   rdfTypes: [':ServiceProvider'], name: 'serviceProvider'
