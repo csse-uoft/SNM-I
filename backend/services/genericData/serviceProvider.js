@@ -29,13 +29,25 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
           'organization.questionOccurrence', 'volunteer.characteristicOccurrences.occurrenceOf',
           'volunteer.questionOccurrence',]
       });
-    return res.status(200).json({success: true});
+    return res.status(200).json({success: true, data});
   } catch (e) {
     next(e)
   }
 }
 
 const fetchSingleServiceProvider = async (req, res, next) => {
+  const {id} = req.params;
+  try {
+    const data = await GDBServiceProviderModel.find({_id: id},
+      {
+        populates: ['organization.characteristicOccurrences.occurrenceOf',
+          'organization.questionOccurrences', 'volunteer.characteristicOccurrences.occurrenceOf',
+          'volunteer.questionOccurrences', 'organization.address', 'volunteer.address', 'volunteer.address.gender']
+      });
+    return res.status(200).json({data, success: true});
+  } catch (e) {
+    next(e)
+  }
 
 }
 
