@@ -79,13 +79,14 @@ async function getIndividualsInClass(req, res) {
     where { 
         ?s a <${SPARQL.getFullURI(req.params.class)}>, owl:NamedIndividual.
         OPTIONAL {?s rdfs:label ?label .}
+        OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider
         FILTER (isIRI(?s))
     }`;
   console.log(query)
 
-  await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
-    if (label?.value) {
-      instances[s.id] = `${label.value}`;
+  await GraphDB.sendSelectQuery(query, false, ({s, label, name}) => {
+    if (label?.value || name?.value) {
+      instances[s.id] = label?.value || name?.value;
     } else {
       instances[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
     }
