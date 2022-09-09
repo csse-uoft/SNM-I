@@ -54,6 +54,6 @@ initStreetDirections();
 
 app.use(errorHandler);
 
-process.env.TZ = 'America/Toronto'
+process.env.TZ = 'America/Toronto';
 
 module.exports = app;

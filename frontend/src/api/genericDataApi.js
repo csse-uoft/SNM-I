@@ -33,3 +33,17 @@ export async function createSingleGeneric(option, body) {
 export async function updateSingleGeneric(option, id, body) {
   return putJson(`/api/generic/${option}/${id}`, body)
 }
+
+/**
+ * This function fetches all instances with the generic given type
+ */
+export async function fetchMultipleGeneric(type) {
+  return getJson(`/api/generics/${type}`);
+}
+
+/**
+ * This function delete single generic instance.
+ */
+export async function deleteSingleGeneric(type, id) {
+  return deleteJson(`/api/generic/${type}/${id}`);
+}

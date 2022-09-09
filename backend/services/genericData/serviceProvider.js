@@ -38,7 +38,7 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
 const fetchSingleServiceProvider = async (req, res, next) => {
   const {id} = req.params;
   try {
-    const data = await GDBServiceProviderModel.find({_id: id},
+    const data = await GDBServiceProviderModel.findOne({_id: id},
       {
         populates: ['organization.characteristicOccurrences.occurrenceOf',
           'organization.questionOccurrences', 'volunteer.characteristicOccurrences.occurrenceOf',
