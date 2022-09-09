@@ -39,7 +39,7 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
 const fetchSingleServiceProvider = async (req, res, next) => {
   const {id} = req.params;
   try {
-    const provider = await GDBServiceProviderModel.find({_id: id},
+    const provider = await GDBServiceProviderModel.findOne({_id: id},
       {
         populates: ['organization', 'volunteer',]
       });

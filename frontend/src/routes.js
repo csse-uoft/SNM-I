@@ -29,7 +29,8 @@ import ProviderProfile from './components/providers/ProviderProfile'
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
 import Service from './components/services/Service';
-import ServiceForm from './components/services/ServiceForm'
+// import ServiceForm from './components/services/ServiceForm'
+import ServiceForm from './components/services/ServiceForm2'
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
