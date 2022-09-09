@@ -1,5 +1,6 @@
 const {GDBServiceProviderModel} = require("../../models");
-const {createSingleGenericHelper} = require("./index");
+const {createSingleGenericHelper, fetchSingleGenericHelper} = require("./index");
+const {Server400Error} = require("../../utils");
 
 
 const createSingleServiceProvider = async (req, res, next) => {
@@ -38,13 +39,16 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
 const fetchSingleServiceProvider = async (req, res, next) => {
   const {id} = req.params;
   try {
-    const data = await GDBServiceProviderModel.find({_id: id},
+    const provider = await GDBServiceProviderModel.find({_id: id},
       {
-        populates: ['organization.characteristicOccurrences.occurrenceOf',
-          'organization.questionOccurrences', 'volunteer.characteristicOccurrences.occurrenceOf',
-          'volunteer.questionOccurrences', 'organization.address', 'volunteer.address', 'volunteer.address.gender']
+        populates: ['organization', 'volunteer',]
       });
-    return res.status(200).json({data, success: true});
+    if(!provider)
+      res.status(400).json({message: 'No such provider', success: false});
+    const providerType = provider.type;
+    const genericId = provider[providerType]._id;
+    provider[providerType] = await fetchSingleGenericHelper(providerType, genericId);
+    return res.status(200).json({provider, success: true});
   } catch (e) {
     next(e)
   }

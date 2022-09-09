@@ -115,17 +115,12 @@ const fetchCharacteristicAndQuestionsBasedOnForms = async (characteristics, ques
       .forEach(item => questions[item._id] = item);
 }
 
-
-
-async function fetchSingleGeneric(req, res, next) {
-  const {genericType, id} = req.params;
+async function fetchSingleGenericHelper(genericType, id) {
 
   if (!genericType2Model[genericType]) {
     throw new Server400Error('Invalid generic type.')
     // return res.status(400).json({success: false, message: 'Invalid generic type.'});
   }
-
-
 
   const data = await genericType2Model[genericType].findOne({_id: id},
     {populates: ['characteristicOccurrences', 'questionOccurrences']});
@@ -173,7 +168,15 @@ async function fetchSingleGeneric(req, res, next) {
       result[qo.occurrenceOf.replace(':', '')] = qo.stringValue;
     }
 
-  return res.status(200).json({data: result, success: true});
+  return result
+}
+
+async function fetchSingleGeneric(req, res, next) {
+  const {genericType, id} = req.params;
+
+  const result = await fetchSingleGenericHelper(genericType, id);
+  if(result)
+    return res.status(200).json({data: result, success: true});
 }
 
 async function addIdToUsage(option, genericType, id){
@@ -512,5 +515,6 @@ const fetchGenericDatas = async (req, res, next) => {
 
 
 module.exports = {
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas, createSingleGenericHelper
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
+  createSingleGenericHelper, fetchSingleGenericHelper
 }
