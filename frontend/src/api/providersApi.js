@@ -4,14 +4,14 @@ import { deleteJson, getJson, postJson, putJson } from "./index";
 export async function fetchSingleProvider(providerType, id) {
   const body = await getJson(`/api/providers/${id}`);
 
-  return body;
+  return {data: body.provider[body.provider.type]};
 }
 
 export async function createSingleProvider(providerType, data) {
   return postJson(`/api/providers`, {data, providerType});
 }
 
-export async function updateSingleProvider(providerType, id, body) {
+export async function updateSingleProvider(providerType, id, data) {
   return putJson(`/api/providers/${id}`, {data, providerType});
 }
 
