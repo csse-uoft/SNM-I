@@ -13,54 +13,56 @@ import FieldGroup from "../shared/FieldGroup";
  * This function is the frontend for visualizing single client
  * @returns {JSX.Element}
  */
-export default function visualizeClient() {
+export default function visualizeServiceProvider() {
 
-  const {option, id} = useParams();
+  const {formType, id} = useParams();
   const [loading, setLoading] = useState(true);
-  const [client, setClient] = useState({});
+  const [provider, setProvider] = useState({});
   const [display, setDisplay] = useState({});
   const [displayAll, setDisplayAll] = useState({});
   const [fieldTypes, setFieldTypes] = useState({});
-  const [form, setForm] = useState({});
-  const [allForms, setAllForms] = useState({});
-  const [selectedFormId, setSelectedFormId] = useState('');
+  const [form, setForm] = useState({}); // current form with information
+  const [allForms, setAllForms] = useState({}); // all forms belong to this kind of user
+  const [selectedFormId, setSelectedFormId] = useState(''); // current form's id
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
 
   useEffect(() => {
     Promise.all([
-      // get all client forms
-      getDynamicFormsByFormType('client').then(({forms}) => {
-        const allForms = {};
-        forms.forEach(form => allForms[form._id] = form);
+      // get all provider forms
+      // options can be organization， volunteer...
+
+      getDynamicFormsByFormType(formType).then(({forms}) => {
+
         setAllForms(forms);
         // Preselect the first form
         const firstForm = forms[0];
-        setForm({formId: firstForm._id, fields: {}});
+        setForm({formId: firstForm._id});
         setSelectedFormId(firstForm._id);
       }),
     ]).then(async () => {
       if (id) {
         // setForm
-        const {data: clientData} = await fetchSingleGeneric('client', id);
-        setForm(form => ({...form, fields: clientData}));
+        const {data: providerData} = await fetchSingleGeneric(formType, id);
+        setForm(form => ({...form, fields: providerData}));
 
         const displayAll = {};
-        for (const key in clientData) {
+        for (const key in providerData) {
           const [type, id] = key.split('_');
           if (type === 'characteristic') {
             const characteristic = await fetchCharacteristic(id);
-            displayAll[characteristic.fetchData.label] = clientData[key];
+            displayAll[characteristic.fetchData.label] = providerData[key];
           } else if (type === 'question') {
             const question = await fetchQuestion(id);
-            displayAll[question.fetchData.content] = clientData[key];
+            displayAll[question.fetchData.content] = providerData[key];
           }
         }
 
-        setClient(clientData);
+        setProvider(providerData);
         setDisplayAll(displayAll);
 
         setLoading(false);
       } else {
+        // TODO: No id given
         setLoading(false);
       }
     });
@@ -79,8 +81,8 @@ export default function visualizeClient() {
             const property = field.type + '_' + field.id;
             fieldTypes[property] = field.implementation.fieldType.type;
             for (const label in displayAll) {
-              if (displayAll[label] === client[property]) {
-                display[label] = client[property]
+              if (displayAll[label] === provider[property]) {
+                display[label] = provider[property]
               }}}}
 
         setFieldTypes(fieldTypes);
@@ -137,8 +139,8 @@ export default function visualizeClient() {
         {Object.entries(display).map(([content, occurrence]) => {
 
           let fieldType;
-          for (const p in client) {
-            if (client[p] === occurrence) {
+          for (const p in provider) {
+            if (provider[p] === occurrence) {
               fieldType = fieldTypes[p];
             }}
 

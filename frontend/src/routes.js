@@ -45,8 +45,9 @@ import AddEditCharacteristic from "./components/characteristics/AddEditCharacter
 import Characteristics from "./components/characteristics/Characteristics";
 import AddEditQuestion from "./components/questions/AddEditQuestion";
 import Questions from './components/questions/Questions';
-import VisualizeClient from './components/clients/visualizeClient';
+import VisualizeClient from './components/clients/VisualizeClient';
 import ClientSearch from "./components/clients/ClientSearch";
+import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
 
 const routes = (
   <Routes>
@@ -86,6 +87,7 @@ const routes = (
     <Route path='/providers/:id/rate' element={<PrivateRoute element={ProviderRatingForm}/>}/>
     <Route path='/providers/new/add-service' element={<PrivateRoute element={AddServicePrompt}/>}/>
     <Route path='/providers/:formType/new' element={<PrivateRoute element={ProviderForm}/>}/>
+    <Route path='/providers/:formType/:id' element={<PrivateRoute element={VisualizeServiceProvider}/> }/>
     <Route path='/providers/:formType/:id/edit/' element={<PrivateRoute element={ProviderForm}/>}/>
     <Route path='/providers/:id' element={<PrivateRoute element={ProviderProfile}/>}/>
     <Route path='/providers' element={<PrivateRoute element={Providers}/>}/>

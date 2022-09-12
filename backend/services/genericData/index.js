@@ -172,11 +172,15 @@ async function fetchSingleGenericHelper(genericType, id) {
 }
 
 async function fetchSingleGeneric(req, res, next) {
-  const {genericType, id} = req.params;
+  try {
+    const {genericType, id} = req.params;
 
-  const result = await fetchSingleGenericHelper(genericType, id);
-  if(result)
-    return res.status(200).json({data: result, success: true});
+    const result = await fetchSingleGenericHelper(genericType, id);
+    if (result)
+      return res.status(200).json({data: result, success: true});
+  } catch (e) {
+    next(e);
+  }
 }
 
 async function addIdToUsage(option, genericType, id){
@@ -199,7 +203,7 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id){
     // then we have to remove the id from the usage
     const usage = await MDBUsageModel.findOne({option: option, genericType: genericType})
     usage.optionKeys = usage.optionKeys.filter((key) => (key !== id))
-    usage.save()
+    await usage.save()
   }
 
 }
