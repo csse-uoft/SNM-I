@@ -8,6 +8,7 @@ import SelectField from "../shared/fields/SelectField";
 import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import FieldGroup from "../shared/FieldGroup";
+import {fetchSingleProvider} from "../../api/providersApi";
 
 /**
  * This function is the frontend for visualizing single client
@@ -42,7 +43,7 @@ export default function visualizeServiceProvider() {
     ]).then(async () => {
       if (id) {
         // setForm
-        const {data: providerData} = await fetchSingleGeneric(formType, id);
+        const {data: providerData} = await fetchSingleProvider(formType, id);
         setForm(form => ({...form, fields: providerData}));
 
         const displayAll = {};
@@ -115,7 +116,7 @@ export default function visualizeServiceProvider() {
         }}>
         <Typography
           sx={{marginTop: '20px', marginRight: '20px', fontFamily: 'Georgia', fontSize: '150%'}}>
-          {'Information for Client with ID: ' + id}
+          {'Information for Service Provider with ID: ' + id}
         </Typography>
 
         <SelectField
