@@ -75,7 +75,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 fullWidth
                 label="Unit/Apt/Suit #"
                 type="text"
-                value={state.unitNumber}
+                defaultValue={state.unitNumber}
                 onChange={handleChange('unitNumber')}
                 disabled={disabled}
               />
@@ -86,7 +86,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 fullWidth
                 label="Street number"
                 type="text"
-                value={state.streetNumber}
+                defaultValue={state.streetNumber}
                 onChange={handleChange('streetNumber')}
                 disabled={disabled}
               />
@@ -97,7 +97,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 fullWidth
                 label="Street name"
                 type="text"
-                value={state.streetName}
+                defaultValue={state.streetName}
                 onChange={handleChange('streetName')}
                 required={required}
                 disabled={disabled}
@@ -129,7 +129,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 fullWidth
                 label="City"
                 type="text"
-                value={state.city}
+                defaultValue={state.city}
                 onChange={handleChange('city')}
                 required={required}
                 disabled={disabled}
@@ -151,7 +151,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 fullWidth
                 label="Postal Code"
                 type="text"
-                value={state.postalCode}
+                defaultValue={state.postalCode}
                 onChange={handleChange('postalCode')}
                 required={required}
                 disabled={disabled}
