@@ -344,9 +344,7 @@ class GraphDBDocument {
 
             if (value.includes('://'))
               value = `<${value}>`
-            else if (value.includes(':'))
-              return value;
-            else
+            else if (!value.includes(':'))
               throw new Error('Improper instance syntax.');
 
             insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${value}.`);
@@ -355,6 +353,8 @@ class GraphDBDocument {
 
           // Create a new document if provides a data object
           if (!(value instanceof GraphDBDocument)) {
+            // This document could contain an _id property, thus we cannot set isNew to true,
+            // Instead, we mark all properties as modified to avoid creating duplicated object with different _id.
             const modifiedKeys = Object.keys(value);
             value = data[key] = new GraphDBDocument({
               model: option.type,
@@ -397,9 +397,7 @@ class GraphDBDocument {
 
               if (doc.includes('://'))
                 doc = `<${doc}>`
-              else if (doc.includes(':'))
-                return doc;
-              else
+              else if (!doc.includes(':'))
                 throw new Error('Improper instance syntax.');
 
               insertClause.push(`${instanceName} ${SPARQL.getPredicate(option.internalKey)} ${doc}.`)
@@ -407,7 +405,10 @@ class GraphDBDocument {
             }
 
             if (!(doc instanceof GraphDBDocument)) {
+              // This document could contain an _id property, thus we cannot set isNew to true,
+              // Instead, we mark all properties as modified to avoid creating duplicated object with different _id.
               doc = value[j] = new GraphDBDocument({model: nestedModel, data: value[j]});
+              doc.markModified(Object.keys(value[j]));
             }
 
             // Reuse previous _id, if we don't have enough ids, create a new one
