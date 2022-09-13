@@ -56,7 +56,6 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     occurrence.dataNumberValue = Number(value);
   } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
     occurrence.dataBooleanValue = !!value.target.value;
-    // TODO: explanation of how line 52 works.
   } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
     if(TIMEPATTERN.test(value)){
       value = '1970-01-01 '+ value // when the field is time field, add 1970 to make it be able to stored into the database
@@ -304,6 +303,143 @@ const createSingleGeneric = async (req, res, next) => {
 
 }
 
+async function updateSingleGenericHelper(genericId, data, genericType) {
+  const generic = await genericType2Model[genericType].findOne({_id: genericId}, {
+    populates: ['characteristicOccurrences',
+      'questionOccurrences']
+  })
+  if (!generic) {
+    throw Server400Error(`No such ${genericType}`);
+  }
+  if (!data.formId) {
+    throw Server400Error('No form id was provided');
+  }
+  const form = await MDBDynamicFormModel.findById(data.formId)
+  for (let key of Object.keys(genericType2Model)) {
+    if (form.formType !== key && genericType === key) {
+      throw Server400Error(`The form is not for ${key}`);
+    }
+  }
+  if (!form.formStructure) {
+    throw Server400Error('The form structure is not defined')
+  }
+  // TODO: verify if questions and characteristics are in the form
+  if (!data.fields) {
+    throw Server400Error('No fields provided');
+  }
+
+  // fetch characteristics and questions from GDB
+  const questions = {};
+  const characteristics = {};
+  await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
+
+  // check should we update or create a characteristicOccurrence or questionOccurrence
+  // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
+  // and related to the characteristic/question
+  for (const [key, value] of Object.entries(data.fields)) {
+    const [type, id] = key.split('_')
+    if (type === 'characteristic') {
+      // find out all possible COs related to this characteristic
+      let query = `
+        PREFIX : <http://snmi#>
+        select * where { 
+	          ?co ?p :characteristic_${id}.
+            ?co a :CharacteristicOccurrence.
+        }`
+      const possibleCharacteristicOccurrencesIds = []
+      await GraphDB.sendSelectQuery(query, false, ({co, p}) => {
+        possibleCharacteristicOccurrencesIds.push(co.value.split('_')[1])
+      });
+      // check if there is a CO in possibleCharacteristicOccurrencesIds is related to this generic
+      if(!generic.characteristicOccurrences)
+        generic.characteristicOccurrences = []
+      const existedCO = generic.characteristicOccurrences.filter((co)=>{
+        return possibleCharacteristicOccurrencesIds.filter((id) => {
+          return id === co._id
+        }).length > 0
+      })[0]
+
+
+      const characteristic = characteristics[id]
+
+      if(!existedCO && value){ // have to create a new CO and add the characteristic's id to the usage
+        await addIdToUsage('characteristic', genericType, id)
+        const occurrence = {occurrenceOf: characteristic};
+        await implementCharacteristicOccurrence(characteristic, occurrence, value)
+        generic.characteristicOccurrences.push(occurrence)
+        // update the generic's property if needed
+        if (characteristic.isPredefined) {
+          const property = linkedProperty(genericType, characteristic)
+          if (property){
+            generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
+              ?? occurrence.objectValue;
+            if(occurrence.multipleObjectValue)
+              generic[property + 's'] = occurrence.multipleObjectValue
+          }
+        }
+      }else if(existedCO && value){ // just add the value on existedCO
+        await implementCharacteristicOccurrence(characteristic, existedCO, value)
+        if (characteristic.isPredefined) {
+          const property = linkedProperty(genericType, characteristic)
+          if (property){
+            generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
+              existedCO.objectValue
+            if(existedCO.multipleObjectValue)
+              generic[property + 's'] = existedCO.multipleObjectValue
+
+          }
+        }
+      }else if(existedCO && !value){ // when the user wants to remove the occurrence
+        await existedCO.populate('occurrenceOf');
+        if(existedCO.objectValue) { // remove the objectValue if necessary
+          const [fieldType, id] = existedCO.objectValue.split('_');
+          await specialField2Model[fieldType]?.findByIdAndDelete(id);
+        }
+        await GDBCOModel.findByIdAndDelete(existedCO._id); // remove the occurrence
+        // also have to remove from usage if necessary
+        await deleteIdFromUsageAfterChecking('characteristic', genericType, existedCO.occurrenceOf._id)
+      }
+
+    }
+
+    if (type === 'question'){
+      // find out all possible QOs related to this question
+      let query = `
+        PREFIX : <http://snmi#>
+        select * where { 
+	          ?qo ?p :question_${id}.
+            ?qo a :QuestionOccurrence.
+        }`
+      const possibleQuestionOccurrencesIds = []
+      await GraphDB.sendSelectQuery(query, false, ({qo, p}) => {
+        possibleQuestionOccurrencesIds.push(qo.value.split('_')[1])
+      });
+      // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
+      if(!generic.questionOccurrences)
+        generic.questionOccurrences = []
+      const existedQO = generic.questionOccurrences.filter((qo) => {
+        return possibleQuestionOccurrencesIds.filter((id) => {
+          return id === qo._id
+        }).length > 0
+      })[0]
+
+      if(!existedQO && value){ // create a new QO
+        await addIdToUsage('question', genericType, id)
+        const occurrence = {occurrenceOf: questions[id], stringValue: value};
+        generic.questionOccurrences.push(occurrence);
+      }else if(existedQO && value){ // update the question
+        existedQO.stringValue = value
+      }else if(existedQO && !value) { // remove the occurrence
+        await GDBQOModel.findByIdAndDelete(existedQO._id);
+        await existedQO.populate('occurrenceOf');
+        await deleteIdFromUsageAfterChecking('question', genericType, existedQO.occurrenceOf._id);
+      }
+
+    }
+  }
+  return generic;
+}
+
 // what should we do if the field is empty
 async function updateSingleGeneric(req, res, next) {
   const data = req.body
@@ -315,141 +451,7 @@ async function updateSingleGeneric(req, res, next) {
     if (!id) {
       return res.status(400).json({success: false, message: `No ${genericType} id is given`})
     }
-    const generic = await genericType2Model[genericType].findOne({_id: id}, {
-      populates: ['characteristicOccurrences',
-        'questionOccurrences']
-    })
-    if (!generic) {
-      return res.status(400).json({success: false, message: `No such ${genericType}`})
-    }
-    if (!data.formId) {
-      return res.status(400).json({success: false, message: 'No form id was provided'})
-    }
-    const form = await MDBDynamicFormModel.findById(data.formId)
-    for (let key of Object.keys(genericType2Model)) {
-      if (form.formType !== key && genericType === key) {
-        return res.status(400).json({success: false, message: `The form is not for ${key}`})
-      }
-    }
-    if (!form.formStructure) {
-      return res.status(400).json({success: false, message: 'The form structure is not defined'})
-    }
-    // TODO: verify if questions and characteristics are in the form
-    if (!data.fields) {
-      return res.status(400).json({success: false, message: 'No fields provided'})
-    }
-
-    // fetch characteristics and questions from GDB
-    const questions = {};
-    const characteristics = {};
-    await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
-
-    // check should we update or create a characteristicOccurrence or questionOccurrence
-    // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
-    // and related to the characteristic/question
-    for (const [key, value] of Object.entries(data.fields)) {
-      const [type, id] = key.split('_')
-      if (type === 'characteristic') {
-        // find out all possible COs related to this characteristic
-        let query = `
-        PREFIX : <http://snmi#>
-        select * where { 
-	          ?co ?p :characteristic_${id}.
-            ?co a :CharacteristicOccurrence.
-        }`
-        const possibleCharacteristicOccurrencesIds = []
-        await GraphDB.sendSelectQuery(query, false, ({co, p}) => {
-          possibleCharacteristicOccurrencesIds.push(co.value.split('_')[1])
-        });
-        // check if there is a CO in possibleCharacteristicOccurrencesIds is related to this generic
-        if(!generic.characteristicOccurrences)
-          generic.characteristicOccurrences = []
-        const existedCO = generic.characteristicOccurrences.filter((co)=>{
-          return possibleCharacteristicOccurrencesIds.filter((id) => {
-            return id === co._id
-          }).length > 0
-        })[0]
-
-
-        const characteristic = characteristics[id]
-
-        if(!existedCO && value){ // have to create a new CO and add the characteristic's id to the usage
-          await addIdToUsage('characteristic', genericType, id)
-          const occurrence = {occurrenceOf: characteristic};
-          await implementCharacteristicOccurrence(characteristic, occurrence, value)
-          generic.characteristicOccurrences.push(occurrence)
-          // update the generic's property if needed
-          if (characteristic.isPredefined) {
-            const property = linkedProperty(genericType, characteristic)
-            if (property){
-              generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
-                ?? occurrence.objectValue;
-              if(occurrence.multipleObjectValue)
-                generic[property + 's'] = occurrence.multipleObjectValue
-            }
-          }
-        }else if(existedCO && value){ // just add the value on existedCO
-          await implementCharacteristicOccurrence(characteristic, existedCO, value)
-          if (characteristic.isPredefined) {
-            const property = linkedProperty(genericType, characteristic)
-            if (property){
-              generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
-                existedCO.objectValue
-              if(existedCO.multipleObjectValue)
-                generic[property + 's'] = existedCO.multipleObjectValue
-
-            }
-          }
-        }else if(existedCO && !value){ // when the user wants to remove the occurrence
-          await existedCO.populate('occurrenceOf');
-          if(existedCO.objectValue) { // remove the objectValue if necessary
-            const [fieldType, id] = existedCO.objectValue.split('_');
-            await specialField2Model[fieldType]?.findByIdAndDelete(id);
-          }
-          await GDBCOModel.findByIdAndDelete(existedCO._id); // remove the occurrence
-          // also have to remove from usage if necessary
-          await deleteIdFromUsageAfterChecking('characteristic', genericType, existedCO.occurrenceOf._id)
-        }
-
-      }
-
-      if (type === 'question'){
-        // find out all possible QOs related to this question
-        let query = `
-        PREFIX : <http://snmi#>
-        select * where { 
-	          ?qo ?p :question_${id}.
-            ?qo a :QuestionOccurrence.
-        }`
-        const possibleQuestionOccurrencesIds = []
-        await GraphDB.sendSelectQuery(query, false, ({qo, p}) => {
-          possibleQuestionOccurrencesIds.push(qo.value.split('_')[1])
-        });
-        // check if there is a QO in possibleQuestionOccurrencesIds is related to this generic
-        if(!generic.questionOccurrences)
-          generic.questionOccurrences = []
-        const existedQO = generic.questionOccurrences.filter((qo) => {
-          return possibleQuestionOccurrencesIds.filter((id) => {
-            return id === qo._id
-          }).length > 0
-        })[0]
-
-        if(!existedQO && value){ // create a new QO
-          await addIdToUsage('question', genericType, id)
-          const occurrence = {occurrenceOf: questions[id], stringValue: value};
-          generic.questionOccurrences.push(occurrence);
-        }else if(existedQO && value){ // update the question
-          existedQO.stringValue = value
-        }else if(existedQO && !value) { // remove the occurrence
-          await GDBQOModel.findByIdAndDelete(existedQO._id);
-          await existedQO.populate('occurrenceOf');
-          await deleteIdFromUsageAfterChecking('question', genericType, existedQO.occurrenceOf._id);
-        }
-
-      }
-    }
-
-    await generic.save();
+    await (await updateSingleGenericHelper(id, data, genericType)).save();
     res.status(200).json({success: true});
 
   } catch (e) {
@@ -529,5 +531,5 @@ const fetchGenericDatas = async (req, res, next) => {
 
 module.exports = {
   fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
-  createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper
+  createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper
 }

@@ -1,5 +1,5 @@
 const {GDBServiceProviderModel} = require("../../models");
-const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper} = require("./index");
+const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper} = require("./index");
 const {Server400Error} = require("../../utils");
 
 
@@ -35,6 +35,25 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
     next(e);
   }
 };
+
+const updateServiceProvider = async (req, res, next) => {
+  const {data, providerType} = req.body;
+  const {id} = req.params;
+  if (!providerType || !data || !id)
+    return res.status(400).json({success: false, message: 'Type, data or id is not given'});
+  try{
+    const provider = await getProviderById(id);
+    const providerType = provider.type;
+    const genericId = provider[providerType]._id;
+
+    const generic = await updateSingleGenericHelper(genericId, data, providerType);
+    provider[providerType] = generic;
+    await provider.save();
+    return res.status(200).json({success: true});
+  } catch (e) {
+    next(e);
+  }
+}
 
 const getProviderById = async (providerId) => {
   if (!providerId)
@@ -83,5 +102,6 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 };
 
 module.exports = {
-  createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider
+  createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
+  updateServiceProvider
 };
