@@ -74,6 +74,7 @@ const deleteSingleServiceProvider = async (req, res, next) => {
     await deleteSingleGenericHelper(providerType, genericId);
     // delete the provider
     await GDBServiceProviderModel.findByIdAndDelete(id);
+    return res.status(200).json({success: true});
 
   } catch (e) {
     next(e);
