@@ -458,46 +458,52 @@ async function updateSingleGeneric(req, res, next) {
 
 }
 
+async function deleteSingleGenericHelper(genericType, id){
+  if(!genericType || !id)
+    throw Server400Error('genericType or id is not given');
+
+  const generic = await genericType2Model[genericType].findOne({_id: id},
+    {populates: ['characteristicOccurrences', 'questionOccurrences']})
+  if(!generic)
+    throw Server400Error('Invalid genericType or id');
+
+  const characteristicsOccurrences = generic.characteristicOccurrences
+  const questionsOccurrences = generic.questionOccurrences
+  const note = generic.note
+  // delete notes
+  await GDBNoteModel.findByIdAndDelete(note?._id)
+
+  // recursively delete characteristicsOccurrences, including phoneNumber and Address
+  // todo: other special fields
+  if(characteristicsOccurrences){
+    for (let characteristicOccurrence of characteristicsOccurrences) {
+      await characteristicOccurrence.populate('occurrenceOf')
+      if (characteristicOccurrence.objectValue) {
+        const [fieldType, id] = characteristicOccurrence.objectValue.split('_');
+        await specialField2Model[fieldType]?.findByIdAndDelete(id);
+      }
+      await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id);
+      await deleteIdFromUsageAfterChecking('characteristic', genericType, characteristicOccurrence.occurrenceOf._id);
+    }
+  }
+
+  // recursively delete questionOccurrences
+  if(questionsOccurrences){
+    for (let questionOccurrence of questionsOccurrences) {
+      await GDBQOModel.findByIdAndDelete(questionOccurrence._id);
+      await questionOccurrence.populate('occurrenceOf');
+      await deleteIdFromUsageAfterChecking('question', genericType, questionOccurrence.occurrenceOf._id);
+    }
+  }
+  await genericType2Model[genericType].findByIdAndDelete(id);
+}
+
 async function deleteSingleGeneric(req, res, next){
   try{
     // check the package from frontend
     const {genericType, id} = req.params;
-    if(!genericType || !id)
-      return res.status(400).json({success: false, message: 'genericType or id is not given'})
+    await deleteSingleGenericHelper(genericType, id);
 
-    const generic = await genericType2Model[genericType].findOne({_id: id},
-      {populates: ['characteristicOccurrences', 'questionOccurrences']})
-    if(!generic)
-      return res.status(400).json({success: false, message: 'Invalid genericType or id'})
-
-    const characteristicsOccurrences = generic.characteristicOccurrences
-    const questionsOccurrences = generic.questionOccurrences
-    const note = generic.note
-    // delete notes
-    await GDBNoteModel.findByIdAndDelete(note?._id)
-
-    // recursively delete characteristicsOccurrences, including phoneNumber and Address
-    if(characteristicsOccurrences){
-      for (let characteristicOccurrence of characteristicsOccurrences) {
-        await characteristicOccurrence.populate('occurrenceOf')
-        if (characteristicOccurrence.objectValue) {
-          const [fieldType, id] = characteristicOccurrence.objectValue.split('_');
-          await specialField2Model[fieldType]?.findByIdAndDelete(id);
-        }
-        await GDBCOModel.findByIdAndDelete(characteristicOccurrence._id);
-        await deleteIdFromUsageAfterChecking('characteristic', genericType, characteristicOccurrence.occurrenceOf._id);
-      }
-    }
-
-    // recursively delete questionOccurrences
-    if(questionsOccurrences){
-      for (let questionOccurrence of questionsOccurrences) {
-        await GDBQOModel.findByIdAndDelete(questionOccurrence._id);
-        await questionOccurrence.populate('occurrenceOf');
-        await deleteIdFromUsageAfterChecking('question', genericType, questionOccurrence.occurrenceOf._id);
-      }
-    }
-    await genericType2Model[genericType].findByIdAndDelete(id);
     return res.status(200).json({success: true})
 
 
@@ -523,5 +529,5 @@ const fetchGenericDatas = async (req, res, next) => {
 
 module.exports = {
   fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
-  createSingleGenericHelper, fetchSingleGenericHelper
+  createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper
 }

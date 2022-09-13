@@ -1,26 +1,26 @@
 const {GDBServiceProviderModel} = require("../../models");
-const {createSingleGenericHelper, fetchSingleGenericHelper} = require("./index");
+const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper} = require("./index");
 const {Server400Error} = require("../../utils");
 
 
 const createSingleServiceProvider = async (req, res, next) => {
   const {providerType, data} = req.body;
-  if(!providerType || !data)
-    return res.status(400).json({message: 'Type or data is not given'})
-  try{
-    const provider = await GDBServiceProviderModel({type: providerType})
+  if (!providerType || !data)
+    return res.status(400).json({message: 'Type or data is not given'});
+  try {
+    const provider = await GDBServiceProviderModel({type: providerType});
     provider[providerType] = await createSingleGenericHelper(data, providerType);
-    if(provider[providerType]){
+    if (provider[providerType]) {
       await provider.save();
-      return res.status(200).json({success: true})
-    }else{
-      return res.status(400).json({message: 'Fail to create the provider'})
+      return res.status(200).json({success: true});
+    } else {
+      return res.status(400).json({message: 'Fail to create the provider'});
     }
-  }catch (e) {
-    next(e)
+  } catch (e) {
+    next(e);
   }
 
-}
+};
 
 const fetchMultipleServiceProviders = async (req, res, next) => {
   try {
@@ -32,29 +32,55 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
       });
     return res.status(200).json({success: true, data});
   } catch (e) {
-    next(e)
+    next(e);
   }
-}
+};
+
+const getProviderById = async (providerId) => {
+  if (!providerId)
+    throw Server400Error('No id is given');
+  const provider = await GDBServiceProviderModel.findOne({_id: providerId},
+    {
+      populates: ['organization', 'volunteer',]
+    });
+  if (!provider)
+    throw Server400Error('No such provider');
+
+  return provider;
+};
 
 const fetchSingleServiceProvider = async (req, res, next) => {
   const {id} = req.params;
   try {
-    const provider = await GDBServiceProviderModel.findOne({_id: id},
-      {
-        populates: ['organization', 'volunteer',]
-      });
-    if(!provider)
-      res.status(400).json({message: 'No such provider', success: false});
+    const provider = await getProviderById(id);
     const providerType = provider.type;
     const genericId = provider[providerType]._id;
     provider[providerType] = await fetchSingleGenericHelper(providerType, genericId);
     return res.status(200).json({provider, success: true});
   } catch (e) {
-    next(e)
+    next(e);
   }
 
-}
+};
+
+const deleteSingleServiceProvider = async (req, res, next) => {
+  const {id} = req.params;
+  try {
+    const provider = await getProviderById(id);
+    const providerType = provider.type;
+    const genericId = provider[providerType]._id;
+
+    // delete the generic
+    await deleteSingleGenericHelper(providerType, genericId);
+    // delete the provider
+    await GDBServiceProviderModel.findByIdAndDelete(id);
+
+  } catch (e) {
+    next(e);
+  }
+
+};
 
 module.exports = {
-  createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider
-}
+  createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider
+};
