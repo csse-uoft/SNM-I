@@ -9,7 +9,7 @@ const filterOptions = createFilterOptions({
   matchFrom: 'start'
 });
 
-function LoadingAutoComplete({label, options, property, state, onChange}) {
+function LoadingAutoComplete({label, options, property, state, onChange, disabled}) {
   return (
     <Autocomplete
       sx={{mt: 2}}
@@ -23,13 +23,14 @@ function LoadingAutoComplete({label, options, property, state, onChange}) {
         <TextField
           {...params}
           label={label}
+          disabled={disabled}
         />
       }
     />
   );
 }
 
-export default function AddressField({value: defaultValue, required, onChange, label}) {
+export default function AddressField({value: defaultValue, required, onChange, label, disabled}) {
 
   const [state, setState] = useState(defaultValue || {});
 
@@ -76,6 +77,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 type="text"
                 value={state.unitNumber}
                 onChange={handleChange('unitNumber')}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={3}>
@@ -86,6 +88,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 type="text"
                 value={state.streetNumber}
                 onChange={handleChange('streetNumber')}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={6}>
@@ -97,6 +100,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 value={state.streetName}
                 onChange={handleChange('streetName')}
                 required={required}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={6}>
@@ -106,6 +110,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 property={'streetType'}
                 state={state}
                 onChange={handleChange}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={6}>
@@ -115,6 +120,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 property={'streetDirection'}
                 state={state}
                 onChange={handleChange}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={3}>
@@ -126,6 +132,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 value={state.city}
                 onChange={handleChange('city')}
                 required={required}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={6}>
@@ -135,6 +142,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 property={'state'}
                 state={state}
                 onChange={handleChange}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs={3}>
@@ -146,6 +154,7 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 value={state.postalCode}
                 onChange={handleChange('postalCode')}
                 required={required}
+                disabled={disabled}
               />
             </Grid>
           </Grid>

@@ -28,7 +28,6 @@ export default function visualizeServiceProvider() {
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
 
   useEffect(() => {
-    Promise.all([
       // get all provider forms
       // options can be organization， volunteer...
 
@@ -39,8 +38,8 @@ export default function visualizeServiceProvider() {
         const firstForm = forms[0];
         setForm({formId: firstForm._id});
         setSelectedFormId(firstForm._id);
-      }),
-    ]).then(async () => {
+      })
+    .then(async () => {
       if (id) {
         // setForm
         const {data: providerData} = await fetchSingleProvider(formType, id);
@@ -93,6 +92,7 @@ export default function visualizeServiceProvider() {
   }, [selectedFormId, displayAll]);
 
 
+  // form options is all possible forms
   const formOptions = useMemo(() => {
     const options = {};
     Object.values(allForms).forEach(form => options[form._id] = form.name);
@@ -116,7 +116,7 @@ export default function visualizeServiceProvider() {
         }}>
         <Typography
           sx={{marginTop: '20px', marginRight: '20px', fontFamily: 'Georgia', fontSize: '150%'}}>
-          {'Information for Service Provider with ID: ' + id}
+          {`Information for ${formType} ${id}`}
         </Typography>
 
         <SelectField
@@ -185,6 +185,7 @@ export default function visualizeServiceProvider() {
                           key={`${content}`}
                           label={content}
                           value={occurrence}
+                          disabled
               />
             )
           }

@@ -182,6 +182,7 @@ export default function VisualizeClient() {
                           key={`${content}`}
                           label={content}
                           value={occurrence}
+                          disabled
               />
             )
           }
