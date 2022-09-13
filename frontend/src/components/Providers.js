@@ -23,9 +23,9 @@ const formatProviderName = provider => {
 const columnsWithoutOptions = [
   {
     label: 'Name',
-    body: ({_id, name, type}) => {
+    body: ({_id, name, type, lastName, firstName}) => {
       return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}/edit`}>
-        {name}
+        {name || `${lastName || ''}, ${firstName || ''}`}
       </Link>
     },
   },
@@ -78,21 +78,25 @@ export default function Providers() {
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
-      const orgData = {_id: provider._id, type: provider.type};
+      const providerData = {_id: provider._id, type: provider.type};
       const innerData = provider[provider.type];
 
       if (innerData.characteristicOccurrences)
         for (const occ of innerData.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Organization Name') {
-            orgData.name = occ.dataStringValue;
+            providerData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Organization Address') {
-            orgData.address = occ.objectValue;
+            providerData.address = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Email') {
-            orgData.email = occ.dataStringValue;
+            providerData.email = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'First Name') {
+            providerData.firstName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Last Name') {
+            providerData.lastName = occ.dataStringValue;
           }
 
         }
-      data.push(orgData);
+      data.push(providerData);
     }
     return data;
 
