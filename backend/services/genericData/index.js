@@ -13,6 +13,7 @@ const {GDBProgramModel} = require("../../models/program");
 const {Server400Error} = require("../../utils");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBVolunteerModel} = require("../../models/volunteer");
+const {GDBAppointmentModel} = require("../../models/appointment");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -309,23 +310,23 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
       'questionOccurrences']
   })
   if (!generic) {
-    throw Server400Error(`No such ${genericType}`);
+    throw new Server400Error(`No such ${genericType}`);
   }
   if (!data.formId) {
-    throw Server400Error('No form id was provided');
+    throw new Server400Error('No form id was provided');
   }
   const form = await MDBDynamicFormModel.findById(data.formId)
   for (let key of Object.keys(genericType2Model)) {
     if (form.formType !== key && genericType === key) {
-      throw Server400Error(`The form is not for ${key}`);
+      throw new Server400Error(`The form is not for ${key}`);
     }
   }
   if (!form.formStructure) {
-    throw Server400Error('The form structure is not defined')
+    throw new Server400Error('The form structure is not defined')
   }
   // TODO: verify if questions and characteristics are in the form
   if (!data.fields) {
-    throw Server400Error('No fields provided');
+    throw new Server400Error('No fields provided');
   }
 
   // fetch characteristics and questions from GDB
@@ -462,12 +463,12 @@ async function updateSingleGeneric(req, res, next) {
 
 async function deleteSingleGenericHelper(genericType, id){
   if(!genericType || !id)
-    throw Server400Error('genericType or id is not given');
+    throw new Server400Error('genericType or id is not given');
 
   const generic = await genericType2Model[genericType].findOne({_id: id},
     {populates: ['characteristicOccurrences', 'questionOccurrences']})
   if(!generic)
-    throw Server400Error('Invalid genericType or id');
+    throw new Server400Error('Invalid genericType or id');
 
   const characteristicsOccurrences = generic.characteristicOccurrences
   const questionsOccurrences = generic.questionOccurrences

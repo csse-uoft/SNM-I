@@ -57,13 +57,13 @@ const updateServiceProvider = async (req, res, next) => {
 
 const getProviderById = async (providerId) => {
   if (!providerId)
-    throw Server400Error('No id is given');
+    throw new Server400Error('No id is given');
   const provider = await GDBServiceProviderModel.findOne({_id: providerId},
     {
       populates: ['organization', 'volunteer',]
     });
   if (!provider)
-    throw Server400Error('No such provider');
+    throw new Server400Error('No such provider');
 
   return provider;
 };
