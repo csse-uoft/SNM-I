@@ -1,42 +1,6 @@
 const Hashing = require("../../utils/hashing");
-const {GDBOrganizationModel, GDBUserAccountModel, GDBSecurityQuestion, GDBPersonModel} = require('../../models');
+const {GDBUserAccountModel} = require('../../models');
 
-// async function createUserAccount(data) {
-//   const {
-//     primaryEmail, secondaryEmail, password, displayName, organizationId, primaryContact,
-//   } = data;
-//
-//   const {hash, salt} = await Hashing.hashPassword(password);
-//
-//   const userAccount = GDBUserAccountModel({
-//     primaryEmail,
-//     secondaryEmail,
-//     primaryContact,
-//     hash,
-//     salt,
-//   });
-//
-//   if (primaryContact) {
-//     userAccount.primaryContact = {
-//       familyName: primaryContact.familyName,
-//       givenName: primaryContact.givenName,
-//     }
-//   }
-//
-//   await userAccount.save();
-//   return userAccount;
-// }
-
-// Example:
-// createUserAccount({
-//   primaryEmail: '1@test.com',
-//   secondaryEmail: '2@test.com',
-//   password: '123',
-//   primaryContact: {
-//     familyName: 'Lyu',
-//     givenName: 'Dishu'
-//   },
-// })
 
 async function createTemporaryUserAccount(data) {
   const {
@@ -136,19 +100,17 @@ async function updateUserAccount(email, updatedData) {
 }
 
 async function findUserAccountByEmail(email) {
-  const userAccount = await GDBUserAccountModel.findOne(
+  return await GDBUserAccountModel.findOne(
     {primaryEmail: email},
     {populates: ['primaryContact.telephone', 'organization']}
   );
-  return userAccount;
 }
 
 async function findUserAccountById(id) {
-  const userAccount = await GDBUserAccountModel.findOne(
+  return await GDBUserAccountModel.findOne(
     {_id: id},
     {populates: ['primaryContact.telephone', 'organization']}
   );
-  return userAccount;
 }
 
 /**

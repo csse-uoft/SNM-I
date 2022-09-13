@@ -42,10 +42,6 @@ export default function User() {
       <Paper elevation={4}>
         <Table>
           <TableBody>
-            {/*<TR*/}
-            {/*  title="Display Name"*/}
-            {/*  value={user.displayName}*/}
-            {/*/>*/}
             <TR
               title="Role"
               value={user.role}

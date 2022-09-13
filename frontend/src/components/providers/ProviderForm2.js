@@ -5,6 +5,6 @@ import { useParams } from "react-router-dom";
 export default function ProviderForm() {
   const {formType} = useParams();
   return (
-    <GenericForm name={formType} mainPage={'/providers'}/>
+    <GenericForm name={formType} mainPage={'/providers'} isProvider/>
   );
 };

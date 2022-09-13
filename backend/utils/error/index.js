@@ -4,6 +4,13 @@ class NotImplementedError extends Error {
   }
 }
 
+class Server400Error extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
+  }
+}
+
 module.exports = {
-  NotImplementedError,
+  NotImplementedError, Server400Error
 }

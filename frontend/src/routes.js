@@ -29,7 +29,10 @@ import ProviderProfile from './components/providers/ProviderProfile'
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
 import Service from './components/services/Service';
-import ServiceForm from './components/services/ServiceForm'
+// import ServiceForm from './components/services/ServiceForm'
+import ServiceForm from './components/services/ServiceForm2'
+import Appointments from "./components/Appointments";
+import AppointmentForm from "./components/appointments/AppointmentForm";
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
@@ -44,7 +47,9 @@ import AddEditCharacteristic from "./components/characteristics/AddEditCharacter
 import Characteristics from "./components/characteristics/Characteristics";
 import AddEditQuestion from "./components/questions/AddEditQuestion";
 import Questions from './components/questions/Questions';
-import VisualizeClient from './components/clients/visualizeClient';
+import VisualizeClient from './components/clients/VisualizeClient';
+import ClientSearch from "./components/clients/ClientSearch";
+import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
 
 const routes = (
   <Routes>
@@ -63,6 +68,7 @@ const routes = (
     <Route path='/clients/:id/edit' element={<ClientForm/>}/>}/>
     {/*<PrivateRoute path='/clients/:id/needs/new' element={NeedForm}/>}/>*/}
     <Route path='/clients/new' element={<PrivateRoute element={ClientForm}/>}/>
+    <Route path='/clients/advance-search' element={<PrivateRoute element={ClientSearch}/>}/>
     <Route path='/clients/:id' element={<PrivateRoute element={VisualizeClient}/>}/>
     <Route path='/clients' element={<PrivateRoute element={Clients}/>}/>
     <Route path='/profile/:id/edit' element={<PrivateRoute element={UpdateUserProfile}/>}/>
@@ -83,6 +89,7 @@ const routes = (
     <Route path='/providers/:id/rate' element={<PrivateRoute element={ProviderRatingForm}/>}/>
     <Route path='/providers/new/add-service' element={<PrivateRoute element={AddServicePrompt}/>}/>
     <Route path='/providers/:formType/new' element={<PrivateRoute element={ProviderForm}/>}/>
+    <Route path='/providers/:formType/:id' element={<PrivateRoute element={VisualizeServiceProvider}/> }/>
     <Route path='/providers/:formType/:id/edit/' element={<PrivateRoute element={ProviderForm}/>}/>
     <Route path='/providers/:id' element={<PrivateRoute element={ProviderProfile}/>}/>
     <Route path='/providers' element={<PrivateRoute element={Providers}/>}/>
@@ -91,6 +98,10 @@ const routes = (
     <Route path='/services/new' element={<PrivateRoute element={ServiceForm}/>}/>
     <Route path='/services/:id' element={<PrivateRoute element={Service}/>}/>
     <Route path='/services' element={<PrivateRoute element={Services}/>}/>
+
+    <Route path='/appointments/:id/edit' element={<PrivateRoute element={AppointmentForm}/>}/>
+    <Route path='/appointments/new' element={<PrivateRoute element={AppointmentForm}/>}/>
+    <Route path='/appointments' element={<PrivateRoute element={Appointments}/>}/>
 
     <Route path='/eligibility-criteria' element={<PrivateRoute element={Eligibilities}/>}/>
 

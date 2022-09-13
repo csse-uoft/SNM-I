@@ -1,38 +1,34 @@
-import React from 'react'
+import React from 'react';
 import { Link } from './shared';
-import { fetchServices, deleteService } from '../api/mockedApi/services'
 import { GenericPage } from "./shared";
+import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
 
 const TYPE = 'services';
-
-const formatProvider = ({provider}) => {
-  return provider.type === 'Organization' ? provider.company
-    : (provider.profile ? `${provider.profile.first_name} ${provider.profile.last_name}` : 'Not provided')
-};
 
 const columnsWithoutOptions = [
   {
     label: 'Name',
-    body: ({id, name}) => {
-      return <Link color to={`/${TYPE}/${id}`}>{name}</Link>
+    body: ({_id, name}) => {
+      return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>;
     }
   },
   {
     label: 'Provider',
     body: ({provider}) => {
-      return  <Link color to={`/providers/${provider.id}`}>
-        {formatProvider({provider})}
-      </Link>
+      return provider;
+      return <Link color to={`/providers/${provider.split('_')[1]}`}>
+        {provider}
+      </Link>;
     }
   },
-  {
-    label: 'Description',
-    body: ({desc}) => desc
-  },
-  {
-    label: 'Category',
-    body: ({category}) => category
-  }
+  // {
+  //   label: 'Description',
+  //   body: ({desc}) => desc
+  // },
+  // {
+  //   label: 'Category',
+  //   body: ({category}) => category
+  // }
 ];
 
 export default function Services() {
@@ -40,6 +36,7 @@ export default function Services() {
   const nameFormatter = service => service.name;
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
+    return [];
     // TODO: verify this works as expected
     const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageServices.map(service => ({
@@ -50,17 +47,37 @@ export default function Services() {
     })).filter(service => service.position.lat && service.position.lng);
   };
 
+  const fetchData = async () => {
+    const services = (await fetchMultipleGeneric('service')).data;
+    const data = [];
+    for (const service of services) {
+      const serviceData = {_id: service._id};
+      if (service.characteristicOccurrences)
+        for (const occ of service.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Service Name') {
+            serviceData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Service Provider') {
+            serviceData.provider = occ.objectValue;
+          }
+        }
+      data.push(serviceData);
+    }
+    return data;
+  };
+
+  const deleteService = (id) => deleteSingleGeneric('service', id);
+
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
-      fetchData={fetchServices}
+      fetchData={fetchData}
       deleteItem={deleteService}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{
-        idField: 'id'
+        idField: '_id'
       }}
     />
-  )
+  );
 }

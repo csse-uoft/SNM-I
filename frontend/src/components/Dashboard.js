@@ -33,10 +33,6 @@ function Dashboard() {
   if (!userContext.isAdmin)
     return (
       <Container>
-        {/*<Typography color={'primary'} variant="h4">*/}
-        {/*  {(userContext.givenName && userContext.familyName) ? ('Dear ' + userContext.givenName + '' + userContext.familyName + ":") :*/}
-        {/*    ('Dear ' + userContext.email + ':')}*/}
-        {/*</Typography>*/}
         <Typography
           color={'black'}
           variant="h2"
@@ -44,7 +40,6 @@ function Dashboard() {
           marginTop={'20%'}>
           {'Welcome to Social Needs Market Place!'}
         </Typography>
-
       </Container>)
 
   return (

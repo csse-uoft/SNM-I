@@ -3,7 +3,10 @@ const {GDBQOModel} = require("./questionOccurrence");
 const {GDBCOModel} = require("./characteristicOccurrence");
 const {GDBNoteModel} = require("./note");
 
-
+/**
+ * This is a Client model.
+ * @type {GDBUtils.GraphDBModelConstructor}
+ */
 const GDBClientModel = createGraphDBModel({
   characteristicOccurrence: {type: [GDBCOModel],
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
