@@ -20,7 +20,8 @@ const genericType2Model = {
   'organization': GDBOrganizationModel,
   'volunteer': GDBVolunteerModel,
   'service': GDBServiceModel,
-  'program': GDBProgramModel
+  'program': GDBProgramModel,
+  'appointment': GDBAppointmentModel,
 }
 
 const specialField2Model = {

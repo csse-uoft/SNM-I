@@ -31,6 +31,8 @@ import Services from './components/Services';
 import Service from './components/services/Service';
 // import ServiceForm from './components/services/ServiceForm'
 import ServiceForm from './components/services/ServiceForm2'
+import Appointments from "./components/Appointments";
+import AppointmentForm from "./components/appointments/AppointmentForm";
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageFields from './components/settings/ManageFields';
@@ -96,6 +98,10 @@ const routes = (
     <Route path='/services/new' element={<PrivateRoute element={ServiceForm}/>}/>
     <Route path='/services/:id' element={<PrivateRoute element={Service}/>}/>
     <Route path='/services' element={<PrivateRoute element={Services}/>}/>
+
+    <Route path='/appointments/:id/edit' element={<PrivateRoute element={AppointmentForm}/>}/>
+    <Route path='/appointments/new' element={<PrivateRoute element={AppointmentForm}/>}/>
+    <Route path='/appointments' element={<PrivateRoute element={Appointments}/>}/>
 
     <Route path='/eligibility-criteria' element={<PrivateRoute element={Eligibilities}/>}/>
 

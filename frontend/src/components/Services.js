@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
@@ -9,16 +9,16 @@ const columnsWithoutOptions = [
   {
     label: 'Name',
     body: ({_id, name}) => {
-      return <Link color to={`/${TYPE}/${_id}`}>{name}</Link>
+      return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>;
     }
   },
   {
     label: 'Provider',
     body: ({provider}) => {
       return provider;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      return <Link color to={`/providers/${provider.split('_')[1]}`}>
+        {provider}
+      </Link>;
     }
   },
   // {
@@ -56,12 +56,14 @@ export default function Services() {
         for (const occ of service.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Service Name') {
             serviceData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Service Provider') {
+            serviceData.provider = occ.objectValue;
           }
         }
       data.push(serviceData);
     }
     return data;
-  }
+  };
 
   const deleteService = (id) => deleteSingleGeneric('service', id);
 
@@ -74,8 +76,8 @@ export default function Services() {
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{
-        idField: 'id'
+        idField: '_id'
       }}
     />
-  )
+  );
 }

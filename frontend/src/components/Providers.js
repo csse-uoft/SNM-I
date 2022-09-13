@@ -24,7 +24,7 @@ const columnsWithoutOptions = [
   {
     label: 'Name',
     body: ({_id, name, type}) => {
-      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}`}>
+      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}/edit`}>
         {name}
       </Link>
     },
@@ -83,9 +83,9 @@ export default function Providers() {
 
       if (innerData.characteristicOccurrences)
         for (const occ of innerData.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Organization name') {
+          if (occ.occurrenceOf?.name === 'Organization Name') {
             orgData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Organization address') {
+          } else if (occ.occurrenceOf?.name === 'Organization Address') {
             orgData.address = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Email') {
             orgData.email = occ.dataStringValue;
