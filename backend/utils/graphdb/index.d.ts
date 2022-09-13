@@ -9,7 +9,7 @@ declare namespace GDBUtils {
         NON_CASCADE
     }
 
-    export interface Types {
+    export const Types: {
         NamedIndividual: 'owl:NamedIndividual',
         String,
         Number,
