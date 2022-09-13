@@ -32,11 +32,17 @@ app.use(cors({
 app.use(cookieParser());
 app.use(cookieSession(config.cookieSession));
 
+// Public routes
+// Generate token for login (for frontend is in the cookie)
 app.use('/api', baseRoute);
 app.use('/api', registerRoute);
 app.use('/api', forgotPasswordRoute);
-app.use('/api', authMiddleware('Authentication Required'));
 
+// Authentication required for the below routes
+app.use('/api', authMiddleware('Authentication Required'));
+// TODO: Check authorization
+
+// Private routes
 app.use('/api', userRoute);
 app.use('/api', usersRoute);
 app.use('/api', characteristicRoute);
