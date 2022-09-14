@@ -50,6 +50,7 @@ import Questions from './components/questions/Questions';
 import VisualizeClient from './components/clients/VisualizeClient';
 import ClientSearch from "./components/clients/ClientSearch";
 import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
+import VisualizeService from "./components/services/visualizeService";
 
 const routes = (
   <Routes>
@@ -96,7 +97,7 @@ const routes = (
 
     <Route path='/services/:id/edit' element={<PrivateRoute element={ServiceForm}/>}/>
     <Route path='/services/new' element={<PrivateRoute element={ServiceForm}/>}/>
-    <Route path='/services/:id' element={<PrivateRoute element={Service}/>}/>
+    <Route path='/services/:id' element={<PrivateRoute element={VisualizeService}/>}/>
     <Route path='/services' element={<PrivateRoute element={Services}/>}/>
 
     <Route path='/appointments/:id/edit' element={<PrivateRoute element={AppointmentForm}/>}/>
