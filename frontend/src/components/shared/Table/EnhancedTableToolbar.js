@@ -82,15 +82,15 @@ export const EnhancedTableToolbar = (props) => {
 
       <Grid display={'flex'}
       >
-        <GeneralField
-        value={search}
-        size={'small'}
-        sx={{mt: '16px', minWidth: 50}}
-        onChange={(e)=>setSearch(e.target.value)}
-        />
-        <IconButton type="submit" sx={{ p: '10px' }} aria-label="search" size="large" onClick={handleSearch}>
-            <SearchIcon/>
-        </IconButton>
+        {/*<GeneralField*/}
+        {/*value={search}*/}
+        {/*size={'small'}*/}
+        {/*sx={{mt: '16px', minWidth: 50}}*/}
+        {/*onChange={(e)=>setSearch(e.target.value)}*/}
+        {/*/>*/}
+        {/*<IconButton type="submit" sx={{ p: '10px' }} aria-label="search" size="large" onClick={handleSearch}>*/}
+        {/*    <SearchIcon/>*/}
+        {/*</IconButton>*/}
       </Grid>
 
 
