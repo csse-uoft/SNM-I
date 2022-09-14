@@ -110,7 +110,7 @@ export default function VisualizeGeneric({genericType, }) {
         }}>
         <Typography
           sx={{marginTop: '20px', marginRight: '20px', fontFamily: 'Georgia', fontSize: '150%'}}>
-          {`Information for ${generic} with ID: ` + id}
+          {`Information for ${genericType} with ID: ` + id}
         </Typography>
 
         <SelectField
