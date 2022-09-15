@@ -32,10 +32,10 @@ const columnsWithoutOptions = [
     label: 'Type',
     body: ({type}) => type,
   },
-  {
-    label: 'Email',
-    body: ({profile}) => profile?.email,
-  },
+  // {
+  //   label: 'Email',
+  //   body: ({profile}) => profile?.email,
+  // },
   // {
   //   label: 'Phone Number',
   //   body: ({profile}) => {
