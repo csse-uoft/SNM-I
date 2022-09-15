@@ -11,6 +11,7 @@ import GenericPage from './GenericPage';
 import FormStepper from './FormStepper';
 import FieldsWrapper from "./FieldsWrapper";
 import OtherLocationsFields from "./OtherLocationsFields";
+import SearchIcon from '@mui/icons-material/Search';
 
 import { providerFormTypes } from '../../constants/provider_fields.js'
 
@@ -49,7 +50,7 @@ export function Link({className = '', color, ...props}) {
  * @returns {*}
  * @constructor
  */
-export function CustomToolbar({handleAdd, handleUpload, type}) {
+export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
   const navigate = useNavigate();
   const classes = useStyles();
 
@@ -77,6 +78,14 @@ export function CustomToolbar({handleAdd, handleUpload, type}) {
             variant="outlined"
             className={classes.chipButton}
       />}
+
+      <Chip onClick={type === 'providers' ? handleClick : handleSearch}
+            color="primary"
+            icon={<SearchIcon/>}
+            label="Advance Search"
+            variant="outlined"
+            className={classes.chipButton}
+      />
       <Chip onClick={type === 'providers' ? handleClick : handleAdd}
             color="primary"
             icon={<AddIcon/>}
@@ -95,7 +104,7 @@ export function CustomToolbar({handleAdd, handleUpload, type}) {
         onClose={handleClose}
       >
         {Object.entries(providerFormTypes).map(([value, formType]) =>
-          <MenuItem disabled={formType !== 'Organization'} key={formType} onClick={handleLink(`/providers/${value}/new`)}>
+          <MenuItem disabled={formType !== 'Organization' && formType !== 'Volunteer'} key={formType} onClick={handleLink(`/providers/${value}/new`)}>
             {formType}
           </MenuItem>)
         }

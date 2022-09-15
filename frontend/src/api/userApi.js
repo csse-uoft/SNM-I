@@ -150,7 +150,7 @@ export async function checkCurrentPassword(id, password) {
 }
 
 /**
- * THis will send new password to backend and database.
+ * This will send new password to backend and database.
  * @param id
  * @param password
  * @returns {Promise<*>}
@@ -159,22 +159,39 @@ export async function saveNewPassword(id, password) {
   return postJson('/api/user/resetPassword/saveNewPassword/' + id + '/', {password});
 }
 
-
+/**
+ * This function fetches one single user by id.
+ * @param id
+ * @returns {Promise<any>}
+ */
 export function fetchUser(id) {
   return getJson('/user/' + id + '/');
 }
 
+/**
+ * This function fetches all users.
+ * @returns {Promise<any>}
+ */
 export function fetchUsers() {
   return getJson('/api/users/');
 }
 
+/**
+ * This function fetches one user profile by user id.
+ * @param id
+ * @param params
+ * @returns {Promise<any>}
+ */
 export function getUserProfileById(id, params) {
   return getJson('/api/users/getUserProfileById/' + id + '/', {params})
 }
 
-
-
-
+/**
+ * This function deletes one user by id.
+ * @param id
+ * @param params
+ * @param callback
+ */
 export function deleteUser(id, params, callback) {
   const response = deleteJson('/user/' + id + '/');
   if (response.status !== 204)

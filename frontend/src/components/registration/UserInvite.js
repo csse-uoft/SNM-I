@@ -41,22 +41,6 @@ export default function UserInvite() {
     loadingButton: false
   });
 
-  // useEffect(() => {
-  //   if (mode === 'edit') {
-  //     fetchUser(id).then(user => {
-  //       setState(state => ({
-  //         ...state,
-  //         form: {
-  //           ...state.form,
-  //           ...user
-  //         },
-  //         loading: false,
-  //       }))
-  //     })
-  //   } else
-  //     setState(state => ({...state, loading: false}));
-  // }, [mode, id]);
-
   /**
    * @returns {boolean} true if valid.
    */
@@ -124,7 +108,6 @@ export default function UserInvite() {
   return (
     <Container className={classes.root}>
       <Typography variant="h5">
-        {/*{mode === 'new' ? 'Create new user' : 'Edit user'}*/}
         {'Create new user'}
       </Typography>
       {Object.entries(userInvitationFields).map(([field, option]) => {

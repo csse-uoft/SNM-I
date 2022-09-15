@@ -15,7 +15,6 @@ import LoadingButton from "../shared/LoadingButton";
 import {UserContext} from "../../context";
 
 
-
 const useStyles = makeStyles(() => ({
   root: {
     width: '80%'
@@ -101,7 +100,7 @@ export default function EditProfile() {
   }
 
   // email-sent dialog confirm button handler
-  const handleDialogEmail =() => {
+  const handleDialogEmail = () => {
     setDialogEmail(false);
     setDialogSubmit(true);
   }
@@ -144,35 +143,33 @@ export default function EditProfile() {
         phoneNumber: null,
         altEmail: form.altEmail,
       }
-      console.log(form.telephone, phoneUnchanged)
       if (form.telephone === phoneUnchanged) {
-        updateForm.countryCode = parseInt(form.telephone.slice(0,1));
+        updateForm.countryCode = parseInt(form.telephone.slice(0, 1));
         console.log(updateForm.countryCode)
-        updateForm.areaCode = parseInt(form.telephone.slice(1,4));
-        updateForm.phoneNumber = parseInt(form.telephone.slice(4,11));
+        updateForm.areaCode = parseInt(form.telephone.slice(1, 4));
+        updateForm.phoneNumber = parseInt(form.telephone.slice(4, 11));
       } else {
         const phone = form.telephone.split(' ');
         updateForm.countryCode = parseInt(phone[0]);
-        updateForm.areaCode = parseInt(phone[1].slice(1,4));
-        updateForm.phoneNumber = parseInt(phone[2].slice(0,3) + phone[2].slice(4,8));
+        updateForm.areaCode = parseInt(phone[1].slice(1, 4));
+        updateForm.phoneNumber = parseInt(phone[2].slice(0, 3) + phone[2].slice(4, 8));
       }
 
       setLoadingButton(true);
       const {success} = await updateProfile(id, updateForm);
-        if (success) {
-          for (const [key, value] of Object.entries(updateForm)) {
-            userContext[key] = value;
-          }
-          userContext.updateUser({
-            altEmail: userContext.altEmail,
-            givenName: userContext.givenName,
-            familyName: userContext.familyName,
-            countryCode: userContext.countryCode,
-            areaCode: userContext.areaCode,
-            phoneNumber: userContext.phoneNumber,
-          });
+      if (success) {
+        for (const [key, value] of Object.entries(updateForm)) {
+          userContext[key] = value;
         }
-
+        userContext.updateUser({
+          altEmail: userContext.altEmail,
+          givenName: userContext.givenName,
+          familyName: userContext.familyName,
+          countryCode: userContext.countryCode,
+          areaCode: userContext.areaCode,
+          phoneNumber: userContext.phoneNumber,
+        });
+      }
       setLoadingButton(false);
       setDialogSubmit(false);
       navigate('/profile/' + id + '/');
@@ -191,7 +188,7 @@ export default function EditProfile() {
    * @param option
    */
   const handleOnBlur = (e, field, option) => {
-    if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])){
+    if (!isFieldEmpty(form[field]) && option.validator && !!option.validator(form[field])) {
       setErrors({...errors, [field]: option.validator(form[field])});
     } else {
       setErrors({...errors, [field]: undefined});
@@ -223,7 +220,8 @@ export default function EditProfile() {
               onBlur={e => handleOnBlur(e, field, option)}
               error={!!errors[field]}
               helperText={errors[field]}
-            />)})}
+            />)
+        })}
 
         {/* Button for cancelling account info changes */}
         <Button variant="contained" color="primary" className={classes.button}
@@ -247,7 +245,7 @@ export default function EditProfile() {
           buttons={[
             <Button onClick={() => setDialogSubmit(false)} key={'cancel'}>{'cancel'}</Button>,
             //<Button onClick={handleDialogConfirm} key={'confirm'} autoFocus> {'confirm'}</Button>,
-            <LoadingButton noDefaultStyle variant="text" color="primary" loading ={loadingButton} key={'confirm'}
+            <LoadingButton noDefaultStyle variant="text" color="primary" loading={loadingButton} key={'confirm'}
                            onClick={handleDialogConfirm} children='confirm' autoFocus/>]}
           open={dialogSubmit}/>
 

@@ -2,10 +2,7 @@ import React from 'react';
 
 // TODO: createClients  (CSV Upload)
 import { fetchClients, deleteClient } from '../api/clientApi'
-
 import { formatLocation } from '../helpers/location_helpers'
-import { formatPhoneNumber } from '../helpers/phone_number_helpers'
-
 import { GenericPage, Link } from "./shared";
 
 const TYPE = 'clients';
@@ -34,12 +31,12 @@ const columnsWithoutOptions = [
   //     // return 'Not Provided';
   //   },
   // },
-  {
-    label: 'Email',
-    body: ({email}) => {
-      return email || 'Not Provided';
-    }
-  },
+  // {
+  //   label: 'Email',
+  //   body: ({email}) => {
+  //     return email || 'Not Provided';
+  //   }
+  // },
   // {
   //   label: 'Address',
   //   body: ({profile}) => {

@@ -1,11 +1,12 @@
 import React from 'react';
 // TODO: createProviderWithCSV  (CSV Upload)
-import { fetchOrganizations, deleteOrganization } from '../api/organizationApi';
 
 import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
 
 import { GenericPage, Link } from "./shared";
+import { fetchMultipleGeneric } from "../api/genericDataApi";
+import { deleteSingleProvider, fetchMultipleProviders } from "../api/providersApi";
 
 const TYPE = 'providers';
 
@@ -22,9 +23,9 @@ const formatProviderName = provider => {
 const columnsWithoutOptions = [
   {
     label: 'Name',
-    body: ({_id, name, type}) => {
-      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}`}>
-        {name}
+    body: ({_id, name, type, lastName, firstName}) => {
+      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}/edit`}>
+        {name || `${lastName || ''}, ${firstName || ''}`}
       </Link>
     },
   },
@@ -74,22 +75,28 @@ export default function Providers() {
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
-    const orgs = (await fetchOrganizations()).data;
+    const providers = (await fetchMultipleProviders()).data;
     const data = [];
-    for (const org of orgs) {
-      const orgData = {_id: org._id, type: 'Organization'};
-      if (org.characteristicOccurrences)
-        for (const occ of org.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Organization name') {
-            orgData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Organization address') {
-            orgData.address = occ.objectValue;
+    for (const provider of providers) {
+      const providerData = {_id: provider._id, type: provider.type};
+      const innerData = provider[provider.type];
+
+      if (innerData.characteristicOccurrences)
+        for (const occ of innerData.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Organization Name') {
+            providerData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Organization Address') {
+            providerData.address = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Email') {
-            orgData.email = occ.dataStringValue;
+            providerData.email = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'First Name') {
+            providerData.firstName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Last Name') {
+            providerData.lastName = occ.dataStringValue;
           }
 
         }
-      data.push(orgData);
+      data.push(providerData);
     }
     return data;
 
@@ -100,7 +107,7 @@ export default function Providers() {
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteOrganization}
+      deleteItem={deleteSingleProvider}
       generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
       tableOptions={{

@@ -4,12 +4,13 @@ import { useSnackbar } from 'notistack';
 
 import FieldGroup from '../shared/FieldGroup';
 
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { FormStepper, Loading } from "../shared";
 import { getDynamicForm, getDynamicFormsByFormType, getInstancesInClass } from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import { createSingleGeneric, fetchSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
+import { createSingleProvider, fetchSingleProvider, updateSingleProvider } from "../../api/providersApi";
 
 const contentStyle = {
   width: '80%',
@@ -17,7 +18,7 @@ const contentStyle = {
   paddingBottom: '10px'
 };
 
-export default function GenericForm({name, mainPage}) {
+export default function GenericForm({name, mainPage, isProvider}) {
   const navigate = useNavigate();
   const {id} = useParams();
   const mode = id ? 'edit' : 'new';
@@ -79,7 +80,7 @@ export default function GenericForm({name, mainPage}) {
 
         // Get data
         if (id) {
-          const {data} = await fetchSingleGeneric(name, id);
+          const {data} = await (isProvider ? fetchSingleProvider : fetchSingleGeneric)(name, id);
           setForm(form => ({...form, fields: data}));
         }
 
@@ -99,7 +100,7 @@ export default function GenericForm({name, mainPage}) {
     console.log(form);
     if (mode === 'new') {
       try {
-        await createSingleGeneric(name, form).then(() => navigate(mainPage));
+        await (isProvider ? createSingleProvider : createSingleGeneric)(name, form).then(() => navigate(mainPage));
         enqueueSnackbar(name + ' created', {variant: 'success'});
       } catch (e) {
         console.log(e);
@@ -108,7 +109,7 @@ export default function GenericForm({name, mainPage}) {
 
     } else {
       try {
-        await updateSingleGeneric(name, id, form).then(() => navigate(mainPage));
+        await (isProvider ? updateSingleProvider : updateSingleGeneric)(name, id, form).then(() => navigate(mainPage));
         enqueueSnackbar(`${name} updated`, {variant: 'success'});
       } catch (e) {
         enqueueSnackbar(`Failed to update ${name}: ` + e.message, {variant: 'error'});

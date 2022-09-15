@@ -7,7 +7,7 @@ const cors = require('cors');
 
 const {
   baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
-  characteristicRoute, questionRoute, dynamicFormRoute, genericRoute
+  characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -32,18 +32,25 @@ app.use(cors({
 app.use(cookieParser());
 app.use(cookieSession(config.cookieSession));
 
+// Public routes
+// Generate token for login (for frontend is in the cookie)
 app.use('/api', baseRoute);
 app.use('/api', registerRoute);
 app.use('/api', forgotPasswordRoute);
-app.use('/api', authMiddleware('Authentication Required'));
 
+// Authentication required for the below routes
+app.use('/api', authMiddleware('Authentication Required'));
+// TODO: Check authorization
+
+// Private routes
 app.use('/api', userRoute);
 app.use('/api', usersRoute);
 app.use('/api', characteristicRoute);
 app.use('/api', questionRoute);
-app.use('/api', clientsRoute);
 app.use('/api', dynamicFormRoute);
 app.use('/api', genericRoute);
+app.use('/api', advancedSearchRoute);
+app.use('/api', serviceProviderRoute);
 
 
 initUserAccounts();
@@ -53,6 +60,6 @@ initStreetDirections();
 
 app.use(errorHandler);
 
-process.env.TZ = 'America/Toronto'
+process.env.TZ = 'America/Toronto';
 
 module.exports = app;
