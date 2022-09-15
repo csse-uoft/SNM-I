@@ -144,13 +144,17 @@ export default function VisualizeGeneric({genericType, }) {
             const [prefix, choice] = occurrence.split('#')
             return (
               <Box sx={{padding: '10px'}}>
+                {/*<Typography>*/}
+                {/*  {content}*/}
+                {/*</Typography>*/}
+                {/*<Chip label={choice}*/}
+                {/*      key={`${content}`}*/}
+                {/*/>*/}
                 <Typography>
-                  {content}
+                  {`${content}: ${choice}`}
                 </Typography>
-                <Chip label={choice}
-                      key={`${content}`}
-                />
               </Box>
+
             )
           } else if (fieldType === 'MultiSelectField') {
             return (
@@ -165,22 +169,43 @@ export default function VisualizeGeneric({genericType, }) {
             console.log(content, occurrence)
             return (
               <Box sx={{padding: '10px'}}>
-                <Typography>
-                  {content}
-                </Typography>
-                <Chip label={choice}
-                      key={`${content}`}
-                />
+              <Typography>
+                {`${content}: ${choice}`}
+              </Typography>
               </Box>
+              // <Box sx={{padding: '10px'}}>
+              //   <Typography>
+              //     {content}
+              //   </Typography>
+              //   <Chip label={choice}
+              //         key={`${content}`}
+              //   />
+              // </Box>
             )
-          } else {
+          } else if(fieldType === 'AddressField'){
             return (
-              <FieldGroup component={fieldType}
-                          key={`${content}`}
-                          label={content}
-                          value={occurrence}
-                          disabled
-              />
+              <Box sx={{padding: '10px'}}>
+                <Typography>
+                  {`${content}: ${occurrence.unitNumber} ${occurrence.streetNumber} ${occurrence.streetName} ${occurrence.streetType}
+            ${occurrence.streetDirection} ${occurrence.city} ${occurrence.state} ${occurrence.postalCode}`}
+                </Typography>
+              </Box>)
+          }
+          else {
+            console.log(fieldType)
+            console.log(occurrence)
+            return (
+              // <FieldGroup component={fieldType}
+              //             key={`${content}`}
+              //             label={content}
+              //             value={occurrence}
+              //             disabled
+              // />
+              <Box sx={{padding: '10px'}}>
+              <Typography>
+                {`${content}: ${occurrence}`}
+              </Typography>
+              </Box>
             )
           }
         })}
