@@ -157,21 +157,21 @@ async function initUserAccounts() {
   if (!account) {
     const {hash, salt} = await Hashing.hashPassword('admin');
 
-    const answer1 = await Hashing.hashPassword('Toronto');
+    const answer1 = await Hashing.hashPassword('UofT');
     const securityQuestion1 = {
-      question: 'Where is the University',
+      question: 'What university is CSSE associated with',
       hash: answer1.hash,
       salt: answer1.salt
     }
-    const answer2 = await Hashing.hashPassword('Mark');
+    const answer2 = await Hashing.hashPassword('MIE');
     const securityQuestion2 = {
-      question: 'The first name of our boss',
+      question: ' What is CSSE\'s home department',
       hash: answer2.hash,
       salt: answer2.salt
     }
-    const answer3 = await Hashing.hashPassword('Fox');
+    const answer3 = await Hashing.hashPassword('research');
     const securityQuestion3 = {
-      question: 'The last name of our boss',
+      question: 'What is CSSE\'s purpose',
       hash: answer3.hash,
       salt: answer3.salt
     }
