@@ -49,7 +49,7 @@ export default function VisualizeGeneric({genericType, }) {
             displayAll[characteristic.fetchData.label] = genericData[key];
           } else if (type === 'question') {
             const question = await fetchQuestion(id);
-            displayAll[question.fetchData.content] = genericData[key];
+            displayAll[question.question.content] = genericData[key];
           }
         }
 
@@ -74,8 +74,9 @@ export default function VisualizeGeneric({genericType, }) {
         for (const step of form.formStructure) {
           for (const field of step.fields) {
             const property = field.type + '_' + field.id;
-            fieldTypes[property] = field.implementation.fieldType.type;
+            fieldTypes[property] = field.implementation? field.implementation.fieldType.type: 'TextField';
             for (const label in displayAll) {
+              console.log(label)
               if (displayAll[label] === generic[property]) {
                 display[label] = generic[property]
               }}}}
@@ -192,8 +193,8 @@ export default function VisualizeGeneric({genericType, }) {
               </Box>)
           }
           else {
-            console.log(fieldType)
-            console.log(occurrence)
+            // console.log(fieldType)
+            // console.log(occurrence)
             return (
               // <FieldGroup component={fieldType}
               //             key={`${content}`}
