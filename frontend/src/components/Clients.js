@@ -31,12 +31,12 @@ const columnsWithoutOptions = [
   //     // return 'Not Provided';
   //   },
   // },
-  {
-    label: 'Email',
-    body: ({email}) => {
-      return email || 'Not Provided';
-    }
-  },
+  // {
+  //   label: 'Email',
+  //   body: ({email}) => {
+  //     return email || 'Not Provided';
+  //   }
+  // },
   // {
   //   label: 'Address',
   //   body: ({profile}) => {
