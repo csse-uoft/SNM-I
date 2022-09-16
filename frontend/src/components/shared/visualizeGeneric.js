@@ -195,8 +195,8 @@ export default function VisualizeGeneric({genericType, }) {
             return (
               <Box sx={{padding: '10px'}}>
                 <Typography>
-                  {`${content}: ${occurrence.unitNumber} ${occurrence.streetNumber} ${occurrence.streetName} ${streetTypes[occurrence.streetType]}
-            ${streetDirections[occurrence.streetDirection]}, ${occurrence.city}, ${states[occurrence.state]}, ${occurrence.postalCode}`}
+                  {`${content}: ${occurrence.unitNumber?occurrence.unitNumber + '-':''}${occurrence.streetNumber?occurrence.streetNumber:''} ${occurrence.streetName} ${occurrence.streetType?streetTypes[occurrence.streetType]:''}
+            ${occurrence.streetDirection?streetDirections[occurrence.streetDirection]:''}, ${occurrence.city}, ${states[occurrence.state]}, ${occurrence.postalCode}`}
                 </Typography>
               </Box>)
           }else if(fieldType === 'DateTimeField' || fieldType === "DateField"){
