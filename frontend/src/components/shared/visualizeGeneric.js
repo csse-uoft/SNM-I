@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from "react";
 import {useParams} from "react-router-dom";
-import {getDynamicForm, getDynamicFormsByFormType} from "../../api/dynamicFormApi";
+import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "../../api/dynamicFormApi";
 import {Box, Chip, Container, Paper, Typography} from "@mui/material";
 import {GoogleMap, Loading} from "../shared";
 import {fetchSingleGeneric} from "../../api/genericDataApi";
@@ -8,6 +8,7 @@ import SelectField from "../shared/fields/SelectField";
 import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import FieldGroup from "../shared/FieldGroup";
+import {fetchSingleProvider} from "../../api/providersApi";
 
 /**
  * This function is the frontend for visualizing single generic
@@ -15,16 +16,19 @@ import FieldGroup from "../shared/FieldGroup";
  */
 export default function VisualizeGeneric({genericType, }) {
 
-  const {option, id} = useParams();
+  const {id} = useParams();
   const [loading, setLoading] = useState(true);
   const [generic, setGeneric] = useState({});
   const [display, setDisplay] = useState({});
   const [displayAll, setDisplayAll] = useState({});
   const [fieldTypes, setFieldTypes] = useState({});
   const [form, setForm] = useState({});
-  const [allForms, setAllForms] = useState({});
-  const [selectedFormId, setSelectedFormId] = useState('');
+  const [allForms, setAllForms] = useState({}); // a list with all forms
+  const [selectedFormId, setSelectedFormId] = useState(''); // the id of the selected form
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
+  const [streetTypes, setStreetTypes] = useState({})
+  const [streetDirections, setStreetDirection] = useState({})
+  const [states, setStates] = useState({})
 
   useEffect(() => {
     Promise.all([
@@ -32,13 +36,17 @@ export default function VisualizeGeneric({genericType, }) {
         setAllForms(forms);
         // Preselect the first form
         const firstForm = forms[0];
-        setForm({formId: firstForm._id, fields: {}});
+        setForm({formId: firstForm._id, fields: {}}); // ?
         setSelectedFormId(firstForm._id);
       }),
+      getInstancesInClass('ic:StreetType').then((streetTypes)=>setStreetTypes(streetTypes)),
+      getInstancesInClass('ic:StreetDirection').then((streetDirections)=>setStreetDirection(streetDirections)),
+      getInstancesInClass('schema:State').then((states)=>setStates(states)),
     ]).then(async () => {
       if (id) {
         // setForm
-        const {data: genericData} = await fetchSingleGeneric(genericType, id);
+        const {data: genericData} = (genericType === 'organization'||genericType === 'volunteer') ? await fetchSingleProvider(genericType, id):
+          await fetchSingleGeneric(genericType, id);
         setForm(form => ({...form, fields: genericData}));
 
         const displayAll = {};
@@ -49,7 +57,7 @@ export default function VisualizeGeneric({genericType, }) {
             displayAll[characteristic.fetchData.label] = genericData[key];
           } else if (type === 'question') {
             const question = await fetchQuestion(id);
-            displayAll[question.fetchData.content] = genericData[key];
+            displayAll[question.question.content] = genericData[key];
           }
         }
 
@@ -74,8 +82,9 @@ export default function VisualizeGeneric({genericType, }) {
         for (const step of form.formStructure) {
           for (const field of step.fields) {
             const property = field.type + '_' + field.id;
-            fieldTypes[property] = field.implementation.fieldType.type;
+            fieldTypes[property] = field.implementation? field.implementation.fieldType.type: 'TextField';
             for (const label in displayAll) {
+              console.log(label)
               if (displayAll[label] === generic[property]) {
                 display[label] = generic[property]
               }}}}
@@ -144,13 +153,17 @@ export default function VisualizeGeneric({genericType, }) {
             const [prefix, choice] = occurrence.split('#')
             return (
               <Box sx={{padding: '10px'}}>
+                {/*<Typography>*/}
+                {/*  {content}*/}
+                {/*</Typography>*/}
+                {/*<Chip label={choice}*/}
+                {/*      key={`${content}`}*/}
+                {/*/>*/}
                 <Typography>
-                  {content}
+                  {`${content}: ${choice}`}
                 </Typography>
-                <Chip label={choice}
-                      key={`${content}`}
-                />
               </Box>
+
             )
           } else if (fieldType === 'MultiSelectField') {
             return (
@@ -165,22 +178,51 @@ export default function VisualizeGeneric({genericType, }) {
             console.log(content, occurrence)
             return (
               <Box sx={{padding: '10px'}}>
+              <Typography>
+                {`${content}: ${choice}`}
+              </Typography>
+              </Box>
+              // <Box sx={{padding: '10px'}}>
+              //   <Typography>
+              //     {content}
+              //   </Typography>
+              //   <Chip label={choice}
+              //         key={`${content}`}
+              //   />
+              // </Box>
+            )
+          } else if(fieldType === 'AddressField'){
+            return (
+              <Box sx={{padding: '10px'}}>
                 <Typography>
-                  {content}
+                  {`${content}: ${occurrence.unitNumber} ${occurrence.streetNumber} ${occurrence.streetName} ${streetTypes[occurrence.streetType]}
+            ${streetDirections[occurrence.streetDirection]}, ${occurrence.city}, ${states[occurrence.state]}, ${occurrence.postalCode}`}
                 </Typography>
-                <Chip label={choice}
-                      key={`${content}`}
-                />
+              </Box>)
+          }else if(fieldType === 'DateTimeField' || fieldType === "DateField"){
+            return (
+              <Box sx={{padding: '10px'}}>
+              <Typography>
+                {`${content}: ${Date(occurrence)}`}
+              </Typography>
               </Box>
             )
-          } else {
+          }
+          else {
+            console.log(fieldType)
+            // console.log(occurrence)
             return (
-              <FieldGroup component={fieldType}
-                          key={`${content}`}
-                          label={content}
-                          value={occurrence}
-                          disabled
-              />
+              // <FieldGroup component={fieldType}
+              //             key={`${content}`}
+              //             label={content}
+              //             value={occurrence}
+              //             disabled
+              // />
+              <Box sx={{padding: '10px'}}>
+              <Typography>
+                {`${content}: ${occurrence}`}
+              </Typography>
+              </Box>
             )
           }
         })}

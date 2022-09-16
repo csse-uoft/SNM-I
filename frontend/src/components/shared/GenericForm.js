@@ -72,6 +72,7 @@ export default function GenericForm({name, mainPage, isProvider}) {
           for (const field of step.fields) {
             const className = field?.implementation?.optionsFromClass;
             if (className) {
+              console.log(className)
               await getInstancesInClass(className)
                 .then(options => setDynamicOptions(prev => ({...prev, [className]: options})));
             }
