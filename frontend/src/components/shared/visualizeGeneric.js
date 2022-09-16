@@ -8,6 +8,7 @@ import SelectField from "../shared/fields/SelectField";
 import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import FieldGroup from "../shared/FieldGroup";
+import {fetchSingleProvider} from "../../api/providersApi";
 
 /**
  * This function is the frontend for visualizing single generic
@@ -44,7 +45,8 @@ export default function VisualizeGeneric({genericType, }) {
     ]).then(async () => {
       if (id) {
         // setForm
-        const {data: genericData} = await fetchSingleGeneric(genericType, id);
+        const {data: genericData} = (genericType === 'organization'||genericType === 'volunteer') ? await fetchSingleProvider(genericType, id):
+          await fetchSingleGeneric(genericType, id);
         setForm(form => ({...form, fields: genericData}));
 
         const displayAll = {};
