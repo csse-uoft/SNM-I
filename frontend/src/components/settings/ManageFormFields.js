@@ -57,7 +57,7 @@ export default function ManageFormFields() {
   // inferred state
 
   const [form, setForm] = useState({formType, formStructure: []});
-  console.log('form,', form)
+  // console.log('form,', form)
 
   useEffect(() => {
     Promise.all([

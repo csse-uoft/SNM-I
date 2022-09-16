@@ -66,7 +66,6 @@ export default function AddEditCharacteristic() {
       fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
       fetchCharacteristicsDataTypes().then(dataTypes => newTypes.dataTypes = dataTypes),
       fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
-      // Todo fetch codes
     ]).then(() => {
       if (option === 'edit' && id) {
         return fetchCharacteristic(id).then(res => {
