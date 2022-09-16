@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from "react";
 import {useParams} from "react-router-dom";
-import {getDynamicForm, getDynamicFormsByFormType} from "../../api/dynamicFormApi";
+import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "../../api/dynamicFormApi";
 import {Box, Chip, Container, Paper, Typography} from "@mui/material";
 import {GoogleMap, Loading} from "../shared";
 import {fetchSingleGeneric} from "../../api/genericDataApi";
@@ -15,16 +15,19 @@ import FieldGroup from "../shared/FieldGroup";
  */
 export default function VisualizeGeneric({genericType, }) {
 
-  const {option, id} = useParams();
+  const {id} = useParams();
   const [loading, setLoading] = useState(true);
   const [generic, setGeneric] = useState({});
   const [display, setDisplay] = useState({});
   const [displayAll, setDisplayAll] = useState({});
   const [fieldTypes, setFieldTypes] = useState({});
   const [form, setForm] = useState({});
-  const [allForms, setAllForms] = useState({});
-  const [selectedFormId, setSelectedFormId] = useState('');
+  const [allForms, setAllForms] = useState({}); // a list with all forms
+  const [selectedFormId, setSelectedFormId] = useState(''); // the id of the selected form
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
+  const [streetTypes, setStreetTypes] = useState({})
+  const [streetDirections, setStreetDirection] = useState({})
+  const [states, setStates] = useState({})
 
   useEffect(() => {
     Promise.all([
@@ -32,9 +35,12 @@ export default function VisualizeGeneric({genericType, }) {
         setAllForms(forms);
         // Preselect the first form
         const firstForm = forms[0];
-        setForm({formId: firstForm._id, fields: {}});
+        setForm({formId: firstForm._id, fields: {}}); // ?
         setSelectedFormId(firstForm._id);
       }),
+      getInstancesInClass('ic:StreetType').then((streetTypes)=>setStreetTypes(streetTypes)),
+      getInstancesInClass('ic:StreetDirection').then((streetDirections)=>setStreetDirection(streetDirections)),
+      getInstancesInClass('schema:State').then((states)=>setStates(states)),
     ]).then(async () => {
       if (id) {
         // setForm
@@ -187,13 +193,21 @@ export default function VisualizeGeneric({genericType, }) {
             return (
               <Box sx={{padding: '10px'}}>
                 <Typography>
-                  {`${content}: ${occurrence.unitNumber} ${occurrence.streetNumber} ${occurrence.streetName} ${occurrence.streetType}
-            ${occurrence.streetDirection} ${occurrence.city} ${occurrence.state} ${occurrence.postalCode}`}
+                  {`${content}: ${occurrence.unitNumber} ${occurrence.streetNumber} ${occurrence.streetName} ${streetTypes[occurrence.streetType]}
+            ${streetDirections[occurrence.streetDirection]}, ${occurrence.city}, ${states[occurrence.state]}, ${occurrence.postalCode}`}
                 </Typography>
               </Box>)
+          }else if(fieldType === 'DateTimeField' || fieldType === "DateField"){
+            return (
+              <Box sx={{padding: '10px'}}>
+              <Typography>
+                {`${content}: ${Date(occurrence)}`}
+              </Typography>
+              </Box>
+            )
           }
           else {
-            // console.log(fieldType)
+            console.log(fieldType)
             // console.log(occurrence)
             return (
               // <FieldGroup component={fieldType}
