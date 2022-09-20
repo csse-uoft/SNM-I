@@ -124,7 +124,7 @@ async function load() {
 
   // await loadInitialData(__dirname + '/../ontologies/icontact.ttl');
   // await loadInitialData(__dirname + '/../ontologies/creative_mixed-use_ontology.ttl');
-  await importRepositorySnapshot('https://github.com/csse-uoft/compass-ontology/releases/download/latest/repository-export.brf');
+  await importRepositorySnapshot('https://github.com/csse-uoft/compass-ontology/releases/download/latest/compass-ontology+dependencies.brf');
 
   // Namespaces, this could be used within the query without specifying it in the prefixes
   const tasks = []
