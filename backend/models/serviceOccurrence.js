@@ -1,8 +1,5 @@
 const {GDBAddressModel} = require('./address')
-const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
-const {GDBServiceProviderModel} = require("./serviceProvider");
 const {createGraphDBModel, Types, DeleteType} = require("../utils/graphdb");
-const {GDBNeedModel} = require("./need");
 const {GDBServiceModel} = require("./service");
 
 const GDBServiceOccurrenceModel = createGraphDBModel({
@@ -17,7 +14,7 @@ const GDBServiceOccurrenceModel = createGraphDBModel({
   //   internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
 
 }, {
-  rdfTypes: [':Service'], name: 'service'
+  rdfTypes: [':ServiceOccurrence'], name: 'serviceOccurrence'
 });
 
 module.exports = {
