@@ -11,7 +11,7 @@ const GDBServiceModel = createGraphDBModel({
   serviceProvider: {type: GDBServiceProviderModel, internalKey: ':hasServiceProvider'},
   eligibilityCondition: {type: String, internalKey: ':hasEligibilityCondition'},
   address: {type: GDBAddressModel, internalKey: ':hasLocation'},
-  mode: {type: {}, internalKey: ':hasMode'} // todo
+  mode: {type: Types.NamedIndividual, internalKey: ':hasMode'}
   // questionOccurrence: {type: [GDBQOModel],
   //   internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
 
