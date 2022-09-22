@@ -2,6 +2,7 @@ const {createGraphDBModel, DeleteType, Types} = require("../../utils/graphdb");
 const {GDBQOModel} = require("./questionOccurrence");
 const {GDBCOModel} = require("./characteristicOccurrence");
 const {GDBNoteModel} = require("./note");
+const {GDBNeedModel} = require("../need");
 
 /**
  * This is a Client model.
@@ -12,7 +13,8 @@ const GDBClientModel = createGraphDBModel({
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
   questionOccurrence: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
-  note: {type: [GDBNoteModel], internalKey: ':hasNote'},
+  needOccurrence: {type: [GDBNeedModel], internalKey: 'hasNeedOccurence', onDelete: DeleteType.CASCADE},
+  note: {type: [String], internalKey: ':hasNote'},
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},
   gender: {type: Types.NamedIndividual, internalKey: 'cp:hasGender'},
