@@ -15,6 +15,7 @@ import User from './components/users/User';
 import UserForm from './components/users/UserForm';
 import UserInvite from './components/registration/UserInvite';
 import ResetPassword from './components/userProfile/UserResetPassword';
+import UserResetSecurityQuestions from "./components/userProfile/UserResetSecurityQuestions";
 import EmailConfirm from './components/emailConfirm';
 import UserProfile from './components/userProfile/Profile';
 import UpdateUserProfile from './components/userProfile/EditProfile';
@@ -76,6 +77,7 @@ const routes = (
     <Route path="/profile/:id/edit" element={<PrivateRoute element={UpdateUserProfile}/>}/>
     <Route path="/profile/:id" element={<PrivateRoute element={UserProfile}/>}/>
     <Route path="/users/reset-password/:id" element={<PrivateRoute element={ResetPassword}/>}/>
+    <Route path="/users/reset-securityQuestions/:id" element={<PrivateRoute element={UserResetSecurityQuestions}/>}/>
 
     <Route path="/users/:id/edit" element={<AdminRoute element={EditUserForm}/>}/>
     <Route path="/users/new" element={<AdminRoute element={UserForm}/>}/>
