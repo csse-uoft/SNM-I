@@ -19,6 +19,7 @@ import UserResetSecurityQuestions from "./components/userProfile/UserResetSecuri
 import EmailConfirm from './components/emailConfirm';
 import UserProfile from './components/userProfile/Profile';
 import UpdateUserProfile from './components/userProfile/EditProfile';
+import AddEditNeed from "./components/need/addEditNeed";
 // import NeedForm from './components/client_needs/NeedForm'
 // import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute';
@@ -120,6 +121,8 @@ const routes = (
     <Route path={'/question/:option'} element={<AdminRoute element={AddEditQuestion}/>}/>
     <Route path={'/questions'} element={<AdminRoute element={Questions}/>}/>
 
+    <Route path={'/need/:id/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
+    <Route path={'/need/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
 
     <Route path="/settings/manage-fields" element={<AdminRoute element={ManageFields}/>}/>
 

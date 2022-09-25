@@ -6,7 +6,7 @@ const GDBServiceOccurrenceModel = createGraphDBModel({
   occurrenceOf: {type: GDBServiceModel, internalKey: ':occurrenceOf'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
-  mode: {type: Types.NamedIndividual, internalKey: ':hasMode'}, // todo
+  mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   hoursOfOperation: {type: Number, internalKey: ':hasHoursOfOperation'},
   address: {type: GDBAddressModel, internalKey: ':hasLocation'},
 

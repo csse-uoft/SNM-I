@@ -37,6 +37,14 @@ export const defaultAddEditQuestionFields = {
   description: '', // Ex. the address of the user's home
   classOrManually: 'class'
 }
+
+export const defaultAddEditNeedFields = {
+  type: '',
+  changeType: '',
+  needSatisfyer : '',
+  characteristic: '',
+  code: []
+}
 export const defaultInvitationFields = {
   isSuperuser: false,
   email: '',
