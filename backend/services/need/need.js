@@ -10,11 +10,17 @@ const createNeed = async (req, res, next) => {
     if (form.characteristic) {
       const characteristicId = form.characteristic;
       form.characteristic = await GDBCharacteristicModel.findById(characteristicId);
+    }else{
+      form.characteristic = undefined;
     }
     // fetch needSatisfier
-    if (form.needSatisfier) {
+    if(!Array.isArray(form.needSatisfier))
+      return res.status(400).json({success: false, message: `Wrong input format`});
+    if (form.needSatisfier.length > 0) {
       const needSatisfierId = form.needSatisfier;
       form.needSatisfier = await GDBNeedSatisfierModel.findById(needSatisfierId);
+    }else{
+      form.needSatisfier = undefined;
     }
 
     const need = GDBNeedModel(form);
