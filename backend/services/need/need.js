@@ -27,7 +27,7 @@ const createNeed = async (req, res, next) => {
     await need.save();
     return res.status(200).json({success: true});
   }catch (e) {
-    return res.status(400).json({success: false, message: `failed to create need`});
+    next(e);
   }
 }
 
@@ -36,8 +36,20 @@ const fetchNeeds = async (req, res, next) => {
     const needs = await GDBNeedModel.find({}, {populates: ['characteristic']});
     return res.status(200).json({success: true, needs});
   }catch (e){
-    return res.status(400).json({success: false, message: 'Fail to fetch needs'})
+    next(e);
   }
 }
 
-module.exports = {createNeed, fetchNeeds}
+const deleteNeed = async (req, res, next) => {
+  const {id} = req.params
+  if(!id)
+    return res.status(400).json({success: false, message: 'Id is not provided'})
+  try {
+    await GDBNeedModel.findByIdAndDelete(id);
+    return res.status(200).json({success: true});
+  }catch (e){
+    next(e);
+  }
+}
+
+module.exports = {createNeed, fetchNeeds, deleteNeed}

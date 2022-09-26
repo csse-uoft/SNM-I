@@ -9,11 +9,11 @@ export async function updateNeed(id, params) {
 }
 
 export async function deleteNeed(id) {
-  return deleteJson('api/need/' + id)
+  return deleteJson('/api/need/' + id);
 }
 
 export async function fetchNeed(id) {
-  return getJson('api/need/' + id)
+  return getJson('/api/need/' + id);
 }
 
 export async function fetchNeeds() {

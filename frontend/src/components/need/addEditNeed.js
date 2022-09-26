@@ -103,6 +103,7 @@ export default function AddEditNeed() {
       createNeed(form).then(res => {
         if (res.success) {
           setState(state => ({...state, loadingButton: false, submitDialog: false}))
+          navigate('/needs');
           enqueueSnackbar(`Success: Need is created`, {variant: 'success'});
         }
       }).catch(e => {

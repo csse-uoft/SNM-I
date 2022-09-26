@@ -10,7 +10,7 @@ import {useNavigate} from "react-router-dom";
 import {fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsDataTypes} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
-import {fetchNeeds} from "../../api/needApi";
+import {deleteNeed, fetchNeeds} from "../../api/needApi";
 import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles(() => ({
@@ -27,18 +27,12 @@ export default function Needs() {
     loading: true,
     // value: {},
     selectedId: null,
-    selectedName: '',
-    showErrorDialog: false,
     showDeleteDialog: false,
     loadingButton: false
   });
   const {enqueueSnackbar} = useSnackbar();
   const [form, setForm] = useState(
     []
-  )
-  const [dataTypes, setDataTypes] = useState({})
-  const [errors, setErrors] = useState(
-    {}
   )
   const [trigger, setTrigger] = useState(
     false
@@ -51,6 +45,7 @@ export default function Needs() {
         if (res.success) {
           setForm(res.needs.map(need => {
             return {
+              id: need._id,
               type: need.type,
               changeType: need.changeType,
               characteristic: need.characteristic.name,
@@ -62,47 +57,40 @@ export default function Needs() {
       }
     ),]).then(
       setState(state => ({...state, loading: false}))).catch(e => {
-      if (e.json) {
-        setErrors(e.json)
-      }
       setState(state => ({...state, loading: false,}));
       enqueueSnackbar(`Error: ${e.message}`, {variant: 'error'});
     })
 
   }, [trigger]);
 
-  const showDeleteDialog = (id, name) => () => {
+  const showDeleteDialog = (id) => () => {
     setState(state => ({
-      ...state, selectedId: id, showDeleteDialog: true, selectedName: name
+      ...state, selectedId: id, showDeleteDialog: true,
     }));
   };
 
   const handleCancel = () => {
     setState(state => ({
-      ...state, selectedId: null, showDeleteDialog: false, selectedName: ''
+      ...state, selectedId: null, showDeleteDialog: false
     }))
   }
 
   const handleConfirm = async () => {
     try {
-      await deleteneed(state.selectedId);
+      await deleteNeed(state.selectedId);
       setState(state => ({
-        ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false,
-        // data: state.data.filter(item => item.id !== state.selectedId)
+        ...state, showDeleteDialog: false, selectedId: null, loadingButton: false,
       }))
       setTrigger(!trigger)
       // setForm(form.filter(item => item.id !== state.selectedId))
     } catch (e) {
-      if (e.json)
-        setErrors(e.json)
       setState(state => ({
         ...state,
         showDeleteDialog: false,
         selectedId: null,
-        selectedName: '',
         loadingButton: false,
-        showErrorDialog: true
       }))
+      enqueueSnackbar(`Error: ${e.message}`, {variant: 'error'});
     }
   }
 
@@ -125,7 +113,7 @@ export default function Needs() {
     },
     {
       label: ' ',
-      body: ({id, name}) => {
+      body: ({id}) => {
         return (
           <span>
               <IconButton
@@ -135,7 +123,7 @@ export default function Needs() {
                 <EditIcon fontSize="small" color="primary"/>
               </IconButton>
               <IconButton
-                onClick={showDeleteDialog(id, name)}
+                onClick={showDeleteDialog(id)}
                 className={classes.button}
                 size="large">
                 <DeleteIcon fontSize="small" color="secondary"/>
@@ -165,13 +153,7 @@ export default function Needs() {
           variant="outlined"/>}
       />
 
-      <AlertDialog dialogContentText={errors.message || "Error occurs"}
-                   dialogTitle={'Fail'}
-                   buttons={[<Button onClick={() => {
-                     navigate('/dashboard')
-                   }} key={'fail'}>{'ok'}</Button>]}
-                   open={state.showErrorDialog}/>
-      <AlertDialog dialogContentText={'Are you sure to delete Need ' + state.selectedName}
+      <AlertDialog dialogContentText={'Are you sure to delete Need_' + state.selectedId}
                    dialogTitle={'Delete Need'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
