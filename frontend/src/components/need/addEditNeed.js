@@ -91,6 +91,7 @@ export default function AddEditNeed() {
   }, [])
 
   const handleSubmit = () => {
+    console.log(form)
     if (validate()) {
       setState(state => ({...state, submitDialog: true}))
     }
@@ -142,23 +143,12 @@ export default function AddEditNeed() {
   const validate = () => {
     const errors = {};
     for (const [label, value] of Object.entries(form)) {
-      if (label === 'label' || label === 'description' || label === 'fieldType' || label === 'classOrManually' || label === 'name') {
-        if (value === '') {
+      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === '') { // the last should be need satisfyer
+        if (!value) {
           errors[label] = 'This field cannot be empty'
         }
       } else if (label === 'codes' && value.length === 0) {
         // errors[label] = 'This field cannot be empty'
-      } else if (isSelected() && label === 'optionsFromClass' && form.classOrManually === 'class' && value === '') {
-        errors[label] = 'This field cannot be empty'
-      } else if (isSelected() && label === 'options' && form.classOrManually === 'manually') {
-        for (let i = 0; i < form.options.length; i++) {
-          if (!form.options[i].label) {
-            if (!errors[label]) {
-              errors[label] = {}
-            }
-            errors[label][form.options[i].key] = 'This field cannot be empty, please fill in or remove this field'
-          }
-        }
       }
     }
     setErrors(errors)
@@ -228,6 +218,24 @@ export default function AddEditNeed() {
         <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
           submit
         </Button>
+
+        <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
+                     dialogTitle={'Are you sure you want to create a new need?'}
+                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
+                                       key={'cancel'}>{'cancel'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
+                                      key={'confirm'}
+                                      onClick={handleConfirm} children='confirm' autoFocus/>]}
+                     open={state.submitDialog && option === 'add'}/>
+
+        <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
+                     dialogTitle={'Are you sure you want to update the need?'}
+                     buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
+                                       key={'cancel'}>{'cancel'}</Button>,
+                       <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
+                                      key={'confirm'}
+                                      onClick={handleConfirm} children='confirm' autoFocus/>]}
+                     open={state.submitDialog && option === 'edit'}/>
       </Paper>
 
     </Container>
