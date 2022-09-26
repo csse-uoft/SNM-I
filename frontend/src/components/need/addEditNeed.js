@@ -17,8 +17,8 @@ import {
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
-import {createNeedsatisfier, fetchNeedsatisfiers} from "../../api/needsatisfierApi";
-import {fetchNeed} from "../../api/needApi";
+import {createneedSatisfier, fetchneedSatisfiers} from "../../api/needSatisfierApi";
+import {createNeed, fetchNeed} from "../../api/needApi";
 import {useSnackbar} from "notistack";
 
 
@@ -69,7 +69,7 @@ export default function AddEditNeed() {
       fetchCharacteristics().then(characteristics => {
         characteristics.data.map((characteristic)=>{options.characteristics[characteristic.id] = characteristic.name});
       }),
-      // fetchNeedsatisfiers().then(needsatisfiers => options.needsatisfiers = needsatisfiers)
+      // fetchneedSatisfiers().then(needSatisfiers => options.needSatisfiers = needSatisfiers)
 
       // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
     ]).then(() => {
@@ -100,7 +100,7 @@ export default function AddEditNeed() {
   const handleConfirm = async () => {
     setState(state => ({...state, loadingButton: true}))
     if (option === 'add') {
-      createNeedsatisfier(form).then(res => {
+      createNeed(form).then(res => {
         if (res.success) {
           setState(state => ({...state, loadingButton: false, submitDialog: false}))
           enqueueSnackbar(`Success: Need is created`, {variant: 'success'});
@@ -183,13 +183,13 @@ export default function AddEditNeed() {
         />
 
         <Dropdown
-          key={'needsatisfier'}
+          key={'needSatisfier'}
           options={[]}
           label={'Need satisfier'}
-          value={form.needsatisfier}
-          onChange={e => form.needsatisfier = e.target.value}
-          error={!!errors.needsatisfier}
-          helperText={errors.needsatisfier}
+          value={form.needSatisfier}
+          onChange={e => form.needSatisfier = e.target.value}
+          error={!!errors.needSatisfier}
+          helperText={errors.needSatisfier}
         />
 
         <Dropdown

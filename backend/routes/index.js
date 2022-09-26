@@ -9,5 +9,6 @@ module.exports = {
   questionRoute: require('./question'),
   genericRoute: require('./genericData'),
   advancedSearchRoute: require('./advancedSearch'),
-  serviceProviderRoute: require('./serviceProviders')
+  serviceProviderRoute: require('./serviceProviders'),
+  needRoute: require('./need')
 }

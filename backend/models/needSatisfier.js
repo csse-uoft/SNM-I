@@ -1,13 +1,13 @@
 const {createGraphDBModel, Types} = require("../utils/graphdb");
 
-const GDBNeedsatisfierModel = createGraphDBModel({
+const GDBNeedSatisfierModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},
   code: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
 
 }, {
-  rdfTypes: [':Needsatisfier'], name: 'needsatisfier'
+  rdfTypes: [':NeedSatisfier'], name: 'needSatisfier'
 });
 
 module.exports = {
-  GDBNeedsatisfierModel
+  GDBNeedSatisfierModel
 }

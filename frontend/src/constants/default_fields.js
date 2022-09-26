@@ -41,7 +41,7 @@ export const defaultAddEditQuestionFields = {
 export const defaultAddEditNeedFields = {
   type: '',
   changeType: '',
-  needSatisfyer : '',
+  needSatisfier : '',
   characteristic: '',
   code: []
 }
