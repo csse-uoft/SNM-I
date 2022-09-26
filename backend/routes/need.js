@@ -1,12 +1,12 @@
 const express = require('express');
-const {fetchCharacteristic, fetchCharacteristics, createCharacteristic, updateCharacteristic, deleteCharacteristic} = require("../services/characteristics/characteristics");
-const {createNeed} = require("../services/need/need");
+const {createCharacteristic, updateCharacteristic, deleteCharacteristic} = require("../services/characteristics/characteristics");
+const {createNeed, fetchNeeds} = require("../services/need/need");
 const router = express.Router();
 
 
 
 router.post('/need', createNeed);
-router.get('/characteristics', fetchCharacteristics);
+router.get('/needs', fetchNeeds);
 
 router.post('/characteristic', createCharacteristic);
 router.put('/characteristic/:id', updateCharacteristic);

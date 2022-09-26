@@ -31,4 +31,13 @@ const createNeed = async (req, res, next) => {
   }
 }
 
-module.exports = {createNeed}
+const fetchNeeds = async (req, res, next) => {
+  try {
+    const needs = await GDBNeedModel.find({}, {populates: ['characteristic']});
+    return res.status(200).json({success: true, needs});
+  }catch (e){
+    return res.status(400).json({success: false, message: 'Fail to fetch needs'})
+  }
+}
+
+module.exports = {createNeed, fetchNeeds}

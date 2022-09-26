@@ -54,6 +54,7 @@ import ClientSearch from "./components/clients/ClientSearch";
 import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
+import Needs from "./components/need/needs";
 
 const routes = (
   <Routes>
@@ -123,6 +124,7 @@ const routes = (
 
     <Route path={'/need/:id/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
     <Route path={'/need/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
+    <Route path={'/needs'} element={<AdminRoute element={Needs}/>}/>
 
     <Route path="/settings/manage-fields" element={<AdminRoute element={ManageFields}/>}/>
 

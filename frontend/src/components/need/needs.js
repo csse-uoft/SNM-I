@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {fetchQuestions, updateQuestion, deleteQuestion, createQuestion} from '../../api/mockedApi/question';
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button, Box
@@ -7,12 +6,12 @@ import {
 import {makeStyles} from "@mui/styles";
 import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";
 import {DeleteModal, Loading, DataTable} from "../shared";
-import SelectField from "../shared/fields/SelectField";
-import GeneralField from "../shared/fields/GeneralField";
 import {useNavigate} from "react-router-dom";
 import {fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsDataTypes} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
+import {fetchNeeds} from "../../api/needApi";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -23,7 +22,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Characteristics() {
+export default function Needs() {
   const [state, setState] = useState({
     loading: true,
     // value: {},
@@ -33,6 +32,7 @@ export default function Characteristics() {
     showDeleteDialog: false,
     loadingButton: false
   });
+  const {enqueueSnackbar} = useSnackbar();
   const [form, setForm] = useState(
     []
   )
@@ -47,26 +47,26 @@ export default function Characteristics() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([fetchCharacteristics().then(res => {
+    Promise.all([fetchNeeds().then(res => {
         if (res.success) {
-          setForm(res.data.map(characteristic => {
+          setForm(res.needs.map(need => {
             return {
-              id: characteristic.id,
-              label: characteristic.implementation.label,
-              name: characteristic.name,
-              fieldType: characteristic.implementation.fieldType.label,
-              dataType: characteristic.implementation.valueDataType
+              type: need.type,
+              changeType: need.changeType,
+              characteristic: need.characteristic.name,
+              needSatisfier: need.needSatisfier,
+              codes: need.codes
             }
           }))
         }
       }
-    ),
-      fetchCharacteristicsDataTypes().then(newDataTypes =>setDataTypes(newDataTypes))]).then(
-        setState(state => ({...state, loading: false}))).catch(e => {
+    ),]).then(
+      setState(state => ({...state, loading: false}))).catch(e => {
       if (e.json) {
         setErrors(e.json)
       }
-      setState(state => ({...state, loading: false, showErrorDialog: true}))
+      setState(state => ({...state, loading: false,}));
+      enqueueSnackbar(`Error: ${e.message}`, {variant: 'error'});
     })
 
   }, [trigger]);
@@ -85,7 +85,7 @@ export default function Characteristics() {
 
   const handleConfirm = async () => {
     try {
-      await deleteCharacteristic(state.selectedId);
+      await deleteneed(state.selectedId);
       setState(state => ({
         ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false,
         // data: state.data.filter(item => item.id !== state.selectedId)
@@ -108,20 +108,20 @@ export default function Characteristics() {
 
   const columns = [
     {
-      label: 'Name',
-      body: ({name}) => <Box sx={{width: '60%'}}>{name}</Box>
+      label: 'Type',
+      body: ({type}) => <Box sx={{width: '60%'}}>{type}</Box>
     },
     {
-      label: 'Label',
-      body: ({label}) => label
+      label: 'Change Type',
+      body: ({changeType}) => changeType
     },
     {
-      label: 'Field Type',
-      body: ({fieldType}) => fieldType
+      label: 'characteristic',
+      body: ({characteristic}) => characteristic
     },
     {
-      label: 'Data Type',
-      body: ({dataType}) => dataTypes[dataType]
+      label: 'Need Satisfier',
+      body: ({needSatistier}) => needSatistier
     },
     {
       label: ' ',
@@ -129,7 +129,7 @@ export default function Characteristics() {
         return (
           <span>
               <IconButton
-                onClick={() => navigate('/characteristic/' + id + '/edit')}
+                onClick={() => navigate('/need/' + id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -147,17 +147,17 @@ export default function Characteristics() {
   ];
 
   if (state.loading)
-    return <Loading message={`Loading characteristics...`}/>;
+    return <Loading message={`Loading needs...`}/>;
 
   return (
     <Container>
       <DataTable
-        title={"Characteristics"}
+        title={"needs"}
         data={form}
         columns={columns}
         customToolbar={<Chip
           onClick={() => {
-            navigate('/characteristic/add')
+            navigate('/need/add')
           }}
           color="primary"
           icon={<AddIcon/>}
@@ -171,8 +171,8 @@ export default function Characteristics() {
                      navigate('/dashboard')
                    }} key={'fail'}>{'ok'}</Button>]}
                    open={state.showErrorDialog}/>
-      <AlertDialog dialogContentText={'Are you sure to delete Characteristic ' + state.selectedName}
-                   dialogTitle={'Delete characteristic'}
+      <AlertDialog dialogContentText={'Are you sure to delete Need ' + state.selectedName}
+                   dialogTitle={'Delete Need'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
                                     key={'confirm'}
