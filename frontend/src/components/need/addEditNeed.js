@@ -18,7 +18,7 @@ import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
 import {createneedSatisfier, fetchneedSatisfiers} from "../../api/needSatisfierApi";
-import {createNeed, fetchNeed} from "../../api/needApi";
+import {createNeed, fetchNeed, updateNeed} from "../../api/needApi";
 import {useSnackbar} from "notistack";
 
 
@@ -114,15 +114,18 @@ export default function AddEditNeed() {
         enqueueSnackbar(`Fail: ` + e.message, {variant: 'error'});
       })
     } else if (option === 'edit') {
-      updateCharacteristic(id, readyForm).then(res => {
+      updateNeed(id, form).then(res => {
         if (res.success) {
-          setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+          setState(state => ({...state, loadingButton: false, submitDialog: false,}))
+          navigate('/needs')
+          enqueueSnackbar(`Successfully update Need_${id}`, {variant: 'success'})
         }
       }).catch(e => {
         if (e.json) {
           setErrors(e.json)
         }
-        setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+        setState(state => ({...state, loadingButton: false, submitDialog: false,}))
+        enqueueSnackbar(`Fail: ` + e.message, {variant: 'error'});
       })
     }
   }
