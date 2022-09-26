@@ -75,8 +75,8 @@ export default function AddEditNeed() {
     ]).then(() => {
       if (option === 'edit' && id) {
         return fetchNeed(id).then(res => {
-          const data = res.fetchData
-          setForm(data)
+          const need = res.need;
+          setForm(need);
         })
       }
     }).then(() => {
