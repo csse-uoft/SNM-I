@@ -1,11 +1,11 @@
 const {createGraphDBModel, Types} = require("../utils/graphdb");
-const {GDBNeedSatisfyerModel} = require("./needSatisfier");
+const {GDBNeedsatisfierModel} = require("./needSatisfier");
 const {GDBCharacteristicModel} = require("./ClientFunctionalities/characteristic");
 
 const GDBNeedModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},
   changeType: {type: String, internalKey: ':hasChangeType'},
-  needSatisfyer: {type: GDBNeedSatisfyerModel, internalKey: ':hasNeedSatisfyer'},
+  needSatisfier: {type: GDBNeedsatisfierModel, internalKey: ':hasNeedsatisfier'},
   characteristic: {type: GDBCharacteristicModel, internalKey: ':forCharacteristic'},
   code: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
 }, {

@@ -17,7 +17,7 @@ import {
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
-import {fetchNeedSatisfyers} from "../../api/needSatisfyerApi";
+import {createNeedsatisfier, fetchNeedsatisfiers} from "../../api/needsatisfierApi";
 import {fetchNeed} from "../../api/needApi";
 import {useSnackbar} from "notistack";
 
@@ -69,7 +69,7 @@ export default function AddEditNeed() {
       fetchCharacteristics().then(characteristics => {
         characteristics.data.map((characteristic)=>{options.characteristics[characteristic.id] = characteristic.name});
       }),
-      // fetchNeedSatisfyers().then(needSatisfyers => options.needSatisfyers = needSatisfyers)
+      // fetchNeedsatisfiers().then(needsatisfiers => options.needsatisfiers = needsatisfiers)
 
       // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
     ]).then(() => {
@@ -99,31 +99,18 @@ export default function AddEditNeed() {
 
   const handleConfirm = async () => {
     setState(state => ({...state, loadingButton: true}))
-    const readyForm = {...form, classOrManually: undefined}
-    if (!isSelected()) {
-      readyForm.options = undefined
-      readyForm.optionsFromClass = undefined
-    } else if (form.classOrManually === 'class') {
-      readyForm.options = undefined
-    } else if (form.classOrManually === 'manually') {
-      readyForm.optionsFromClass = undefined
-    }
-    if (form.fieldType === 'MultiSelectField') {
-      readyForm.multipleValues = true
-    } else {
-      readyForm.multipleValues = false
-    }
-    console.log(readyForm)
     if (option === 'add') {
-      createCharacteristic(readyForm).then(res => {
+      createNeedsatisfier(form).then(res => {
         if (res.success) {
-          setState(state => ({...state, loadingButton: false, submitDialog: false, successDialog: true}))
+          setState(state => ({...state, loadingButton: false, submitDialog: false}))
+          enqueueSnackbar(`Success: Need is created`, {variant: 'success'});
         }
       }).catch(e => {
         if (e.json) {
           setErrors(e.json)
         }
-        setState(state => ({...state, loadingButton: false, submitDialog: false, failDialog: true}))
+        setState(state => ({...state, loadingButton: false, submitDialog: false,}))
+        enqueueSnackbar(`Fail: ` + e.message, {variant: 'error'});
       })
     } else if (option === 'edit') {
       updateCharacteristic(id, readyForm).then(res => {
@@ -143,7 +130,7 @@ export default function AddEditNeed() {
   const validate = () => {
     const errors = {};
     for (const [label, value] of Object.entries(form)) {
-      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === '') { // the last should be need satisfyer
+      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === '') { // the last should be need satisfier
         if (!value) {
           errors[label] = 'This field cannot be empty'
         }
@@ -196,13 +183,13 @@ export default function AddEditNeed() {
         />
 
         <Dropdown
-          key={'needSatisfyer'}
+          key={'needsatisfier'}
           options={[]}
-          label={'Need Satisfyer'}
-          value={form.needSatisfyer}
-          onChange={e => form.needSatisfyer = e.target.value}
-          error={!!errors.needSatisfyer}
-          helperText={errors.needSatisfyer}
+          label={'Need satisfier'}
+          value={form.needsatisfier}
+          onChange={e => form.needsatisfier = e.target.value}
+          error={!!errors.needsatisfier}
+          helperText={errors.needsatisfier}
         />
 
         <Dropdown

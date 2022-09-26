@@ -75,7 +75,7 @@ function Dashboard() {
                  text="Manage Needs"/>
 
       <NavButton to={'/need sayisfyers'} icon={<Edit/>}
-                 text="Manage Need Sayisfyers"/>
+                 text="Manage Need Satisfiers"/>
 
       <NavButton to={'/settings/manage-forms/client'} icon={<Edit/>}
                  text="Manage Forms"/>
