@@ -42,10 +42,10 @@ export default function NeedSatisfiers() {
   useEffect(() => {
     Promise.all([fetchNeedSatisfiers().then(res => {
         if (res.success) {
-          setForm(res.needSatifiers.map(need => {
+          setForm(res.needSatisfiers.map(needSatisfier => {
             return {
-              id: need._id,
-              type: need.type,
+              id: needSatisfier._id,
+              type: needSatisfier.type,
               // codes: need.codes
             }
           }))

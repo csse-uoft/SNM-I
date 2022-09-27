@@ -59,13 +59,16 @@ export default function AddEditNeed() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const options = {characteristics: {}, };
+    const options = {characteristics: {}, needSatisfiers: {}};
     Promise.all([
       // fetchAllCodes todo
       fetchCharacteristics().then(characteristics => {
         characteristics.data.map((characteristic)=>{options.characteristics[characteristic.id] = characteristic.name});
       }),
-      // fetchneedSatisfiers().then(needSatisfiers => options.needSatisfiers = needSatisfiers)
+      fetchNeedSatisfiers().then(res => {
+        console.log(res.needSatisfiers)
+        res.needSatisfiers.map(needSatisfier => options.needSatisfiers[needSatisfier._id] = needSatisfier.type)
+      })
 
       // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
     ]).then(() => {
@@ -183,13 +186,13 @@ export default function AddEditNeed() {
         />
 
         <Dropdown
-          key={'needSatisfier'}
-          options={[]}
+          key={'needSatisfiers'}
+          options={options.needSatisfiers}
           label={'Need satisfier'}
-          value={form.needSatisfier}
-          onChange={e => form.needSatisfier = e.target.value}
-          error={!!errors.needSatisfier}
-          helperText={errors.needSatisfier}
+          value={form.needSatisfiers._id}
+          onChange={e => form.needSatisfiers = e.target.value}
+          error={!!errors.needSatisfiers}
+          helperText={errors.needSatisfiers}
         />
 
         <Dropdown

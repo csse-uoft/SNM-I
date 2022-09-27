@@ -19,8 +19,8 @@ const createNeedSatisfier = async (req, res, next) => {
 
 const fetchNeedSatisfiers = async (req, res, next) => {
   try {
-    const needSatifiers = await GDBNeedSatisfierModel.find({});
-    return res.status(200).json({success: true, needSatifiers});
+    const needSatisfiers = await GDBNeedSatisfierModel.find({});
+    return res.status(200).json({success: true, needSatisfiers});
   } catch (e) {
     next(e);
   }

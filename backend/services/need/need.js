@@ -12,14 +12,16 @@ const implementHelper = async (form) => {
     form.characteristic = undefined;
   }
   // fetch needSatisfier
-  if(form.needSatisfier){
-    if (!Array.isArray(form.needSatisfier))
+  if(form.needSatisfiers){
+    if (!Array.isArray(form.needSatisfiers))
       throw new Server400Error('Wrong input format');
-    if (form.needSatisfier.length > 0) {
-      const needSatisfierId = form.needSatisfier;
-      form.needSatisfier = await GDBNeedSatisfierModel.findById(needSatisfierId);
+    if (form.needSatisfiers.length > 0) {
+      form.needSatisfiers = await Promise.all(form.needSatisfiers.map(async needSatisfierId => {
+          return await GDBNeedSatisfierModel.findById(needSatisfierId);
+        }
+      ))
     } else {
-      form.needSatisfier = undefined;
+      form.needSatisfier = [];
     }
   }
 }
