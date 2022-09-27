@@ -39,5 +39,36 @@ const deleteNeedSatisfier = async (req, res, next) => {
   }
 };
 
+const fetchNeedSatisfier = async (req, res, next) => {
+  const {id} = req.params;
+  if (!id)
+    return res.status(400).json({success: false, message: 'Id is not provided'});
+  try {
+    const needSatisfier = await GDBNeedSatisfierModel.findById(id);
+    return res.status(200).json({success: true, needSatisfier});
+  } catch (e) {
+    next(e);
+  }
 
-module.exports = {createNeedSatisfier, fetchNeedSatisfiers, deleteNeedSatisfier}
+};
+
+const updateNeedSatisfier = async (req, res, next) => {
+  const {id} = req.params;
+  const form = req.body;
+  if (!id)
+    return res.status(400).json({success: false, message: 'Id is not provided'});
+  if(!form)
+    return res.status(400).json({success: false, message: 'Information is not provided'});
+  try{
+    const needSatisfier = await GDBNeedSatisfierModel.findById(id);
+    needSatisfier.type = form.type;
+    needSatisfier.codes = form.codes;
+    await needSatisfier.save();
+    return res.status(200).json({success: true});
+  }catch (e){
+    next(e);
+  }
+};
+
+
+module.exports = {createNeedSatisfier, fetchNeedSatisfiers, deleteNeedSatisfier, fetchNeedSatisfier, updateNeedSatisfier}

@@ -78,6 +78,8 @@ const updateNeed = async (req, res, next) => {
   const form = req.body;
   if (!id)
     return res.status(400).json({success: false, message: 'Id is not provided'});
+  if(!form)
+    return res.status(400).json({success: false, message: 'Information is not provided'});
   try{
     await implementHelper(form);
     const need = await GDBNeedModel.findById(id);

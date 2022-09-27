@@ -127,7 +127,7 @@ export default function NeedSatisfiers() {
   return (
     <Container>
       <DataTable
-        title={"needs"}
+        title={"Need Satisfiers"}
         data={form}
         columns={columns}
         customToolbar={<Chip

@@ -66,7 +66,7 @@ export default function AddEditNeedSatisfier() {
       // fetchAllCodes todo
     ]).then(() => {
       if (option === 'edit' && id) {
-        return fetchNeedsatisfier(id).then(res => {
+        return fetchNeedSatisfier(id).then(res => {
           const needSatisfier = res.needSatisfier;
           setForm(needSatisfier);
         })
@@ -103,7 +103,7 @@ export default function AddEditNeedSatisfier() {
         enqueueSnackbar(`Fail: ` + e.message, {variant: 'error'});
       })
     } else if (option === 'edit') {
-      updateNeedsatisfier(id, form).then(res => {
+      updateNeedSatisfier(id, form).then(res => {
         if (res.success) {
           setState(state => ({...state, loadingButton: false, submitDialog: false,}))
           navigate('/needSatisfiers')
