@@ -1,5 +1,4 @@
 const express = require('express');
-const {createCharacteristic, updateCharacteristic,} = require("../services/characteristics/characteristics");
 const {createNeed, fetchNeeds, deleteNeed, fetchNeed, updateNeed} = require("../services/need/need");
 const router = express.Router();
 

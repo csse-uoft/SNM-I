@@ -13,8 +13,12 @@ import { fetchCharacteristics,
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
-import {createNeedSatisfier, fetchNeedSatisfiers} from "../../api/needSatisfierApi";
-import {createNeed, fetchNeed, updateNeed} from "../../api/needApi";
+import {
+  createNeedSatisfier,
+  fetchNeedSatisfier,
+  fetchNeedSatisfiers,
+  updateNeedSatisfier
+} from "../../api/needSatisfierApi";
 import {useSnackbar} from "notistack";
 
 
@@ -30,7 +34,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-export default function AddEditNeed() {
+export default function AddEditNeedSatisfier() {
 
   const classes = useStyles();
   const navigate = useNavigate();
@@ -52,35 +56,24 @@ export default function AddEditNeed() {
 
 
   const [form, setForm] = useState({
-    ...defaultAddEditNeedFields,
+    type: '', codes: []
   })
 
-  const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const options = {characteristics: {}, };
     Promise.all([
       // fetchAllCodes todo
-      fetchCharacteristics().then(characteristics => {
-        characteristics.data.map((characteristic)=>{options.characteristics[characteristic.id] = characteristic.name});
-      }),
-      // fetchneedSatisfiers().then(needSatisfiers => options.needSatisfiers = needSatisfiers)
-
-      // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
     ]).then(() => {
       if (option === 'edit' && id) {
-        return fetchNeed(id).then(res => {
-          const need = res.need;
-          setForm(need);
+        return fetchNeedsatisfier(id).then(res => {
+          const needSatisfier = res.needSatisfier;
+          setForm(needSatisfier);
         })
       }
     }).then(() => {
-      setOptions(options);
       setLoading(false);
     }).catch(e => {
-      if (e.json)
-        setErrors(e.json);
       setLoading(false);
       enqueueSnackbar(`Fail: ` + e.message, {variant: 'error'});
     });
@@ -96,11 +89,11 @@ export default function AddEditNeed() {
   const handleConfirm = async () => {
     setState(state => ({...state, loadingButton: true}))
     if (option === 'add') {
-      createNeed(form).then(res => {
+      createNeedSatisfier(form).then(res => {
         if (res.success) {
           setState(state => ({...state, loadingButton: false, submitDialog: false}))
-          navigate('/needs');
-          enqueueSnackbar(`Success: Need is created`, {variant: 'success'});
+          navigate('/needSatisfiers');
+          enqueueSnackbar(`Success: The Need Satisfier is created`, {variant: 'success'});
         }
       }).catch(e => {
         if (e.json) {
@@ -110,11 +103,11 @@ export default function AddEditNeed() {
         enqueueSnackbar(`Fail: ` + e.message, {variant: 'error'});
       })
     } else if (option === 'edit') {
-      updateNeed(id, form).then(res => {
+      updateNeedsatisfier(id, form).then(res => {
         if (res.success) {
           setState(state => ({...state, loadingButton: false, submitDialog: false,}))
-          navigate('/needs')
-          enqueueSnackbar(`Successfully update Need_${id}`, {variant: 'success'})
+          navigate('/needSatisfiers')
+          enqueueSnackbar(`Successfully update needSatisfier_${id}`, {variant: 'success'})
         }
       }).catch(e => {
         if (e.json) {
@@ -150,7 +143,7 @@ export default function AddEditNeed() {
 
     <Container maxWidth='md'>
       <Paper sx={{p: 2}} variant={'outlined'}>
-        <Typography variant={'h4'}> Need </Typography>
+        <Typography variant={'h4'}> Need Satisfier </Typography>
         <GeneralField
           key={'type'}
           label={'Type'}
@@ -160,36 +153,6 @@ export default function AddEditNeed() {
           onChange={e => form.type = e.target.value}
           error={!!errors.type}
           helperText={errors.type}
-        />
-        <GeneralField
-          key={'changeType'}
-          label={'Change Type'}
-          value={form.changeType}
-          required
-          sx={{mt: '16px', minWidth: 350}}
-          onChange={e => form.changeType = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
-          error={!!errors.changeType}
-          helperText={errors.changeType}
-        />
-        <SelectField
-          key={'characteristic'}
-          options={options.characteristics}
-          label={'Characteristic'}
-          value={form.characteristic}
-          onChange={e => form.characteristic = e.target.value}
-          error={!!errors.characteristic}
-          helperText={errors.characteristic}
-        />
-
-        <Dropdown
-          key={'needSatisfier'}
-          options={[]}
-          label={'Need satisfier'}
-          value={form.needSatisfier}
-          onChange={e => form.needSatisfier = e.target.value}
-          error={!!errors.needSatisfier}
-          helperText={errors.needSatisfier}
         />
 
         <Dropdown
@@ -207,7 +170,7 @@ export default function AddEditNeed() {
         </Button>
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure you want to create a new need?'}
+                     dialogTitle={'Are you sure you want to create a new need satisfier?'}
                      buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
                                        key={'cancel'}>{'cancel'}</Button>,
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
@@ -216,7 +179,7 @@ export default function AddEditNeed() {
                      open={state.submitDialog && option === 'add'}/>
 
         <AlertDialog dialogContentText={"You won't be able to edit the information after clicking CONFIRM."}
-                     dialogTitle={'Are you sure you want to update the need?'}
+                     dialogTitle={'Are you sure you want to update the need satisfier?'}
                      buttons={[<Button onClick={() => setState(state => ({...state, submitDialog: false}))}
                                        key={'cancel'}>{'cancel'}</Button>,
                        <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}

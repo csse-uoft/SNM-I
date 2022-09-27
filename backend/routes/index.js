@@ -10,5 +10,6 @@ module.exports = {
   genericRoute: require('./genericData'),
   advancedSearchRoute: require('./advancedSearch'),
   serviceProviderRoute: require('./serviceProviders'),
-  needRoute: require('./need')
+  needRoute: require('./need'),
+  needSatisfierRoute: require('./needSatisfier')
 }

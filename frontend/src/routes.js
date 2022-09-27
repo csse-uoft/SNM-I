@@ -55,6 +55,8 @@ import VisualizeServiceProvider from './components/serviceProviders/visualizaSer
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
 import Needs from "./components/need/needs";
+import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
+import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
 
 const routes = (
   <Routes>
@@ -125,6 +127,11 @@ const routes = (
     <Route path={'/need/:id/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
     <Route path={'/need/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
     <Route path={'/needs'} element={<AdminRoute element={Needs}/>}/>
+
+    <Route path={'/needSatisfier/:id/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
+    <Route path={'/needSatisfier/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
+    <Route path={'/needSatisfiers'} element={<AdminRoute element={NeedSatisfiers}/>}/>
+
 
     <Route path="/settings/manage-fields" element={<AdminRoute element={ManageFields}/>}/>
 
