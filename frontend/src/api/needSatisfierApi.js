@@ -9,11 +9,11 @@ export async function updateNeedSatisfier(id, params) {
 }
 
 export async function deleteNeedSatisfier(id) {
-  return deleteJson('api/needSatistyer/' + id);
+  return deleteJson('/api/needSatisfier/' + id);
 }
 
 export async function fetchNeedSatisfier(id) {
-  return getJson('api/needSatistyer/' + id);
+  return getJson('/api/needSatisfier/' + id);
 }
 
 export async function fetchNeedSatisfiers() {

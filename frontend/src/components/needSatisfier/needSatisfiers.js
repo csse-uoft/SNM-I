@@ -12,6 +12,7 @@ import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
 import {deleteNeed, fetchNeeds} from "../../api/needApi";
 import {useSnackbar} from "notistack";
+import {deleteNeedSatisfier, fetchNeedSatisfiers} from "../../api/needSatisfierApi";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -41,16 +42,13 @@ export default function NeedSatisfiers() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([fetchNeeds().then(res => {
+    Promise.all([fetchNeedSatisfiers().then(res => {
         if (res.success) {
-          setForm(res.needs.map(need => {
+          setForm(res.needSatifiers.map(need => {
             return {
               id: need._id,
               type: need.type,
-              changeType: need.changeType,
-              characteristic: need.characteristic.name,
-              needSatisfier: need.needSatisfier,
-              codes: need.codes
+              // codes: need.codes
             }
           }))
         }
@@ -77,7 +75,7 @@ export default function NeedSatisfiers() {
 
   const handleConfirm = async () => {
     try {
-      await deleteNeed(state.selectedId);
+      await deleteNeedSatisfier(state.selectedId);
       setState(state => ({
         ...state, showDeleteDialog: false, selectedId: null, loadingButton: false,
       }))
@@ -99,25 +97,14 @@ export default function NeedSatisfiers() {
       label: 'Type',
       body: ({type}) => <Box sx={{width: '60%'}}>{type}</Box>
     },
-    {
-      label: 'Change Type',
-      body: ({changeType}) => changeType
-    },
-    {
-      label: 'characteristic',
-      body: ({characteristic}) => characteristic
-    },
-    {
-      label: 'Need Satisfier',
-      body: ({needSatistier}) => needSatistier
-    },
+
     {
       label: ' ',
       body: ({id}) => {
         return (
           <span>
               <IconButton
-                onClick={() => navigate('/need/' + id + '/edit')}
+                onClick={() => navigate('/needSatisfier/' + id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
@@ -135,7 +122,7 @@ export default function NeedSatisfiers() {
   ];
 
   if (state.loading)
-    return <Loading message={`Loading needs...`}/>;
+    return <Loading message={`Loading Need Satisfiers...`}/>;
 
   return (
     <Container>
@@ -145,7 +132,7 @@ export default function NeedSatisfiers() {
         columns={columns}
         customToolbar={<Chip
           onClick={() => {
-            navigate('/need/add')
+            navigate('/needSatisfier/add')
           }}
           color="primary"
           icon={<AddIcon/>}
@@ -153,7 +140,7 @@ export default function NeedSatisfiers() {
           variant="outlined"/>}
       />
 
-      <AlertDialog dialogContentText={'Are you sure to delete Need_' + state.selectedId}
+      <AlertDialog dialogContentText={'Are you sure to delete NeedSatisfier_' + state.selectedId}
                    dialogTitle={'Delete Need'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
