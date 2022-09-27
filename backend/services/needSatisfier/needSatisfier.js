@@ -1,6 +1,5 @@
 
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
-const {GDBNeedModel} = require("../../models/need");
 
 
 

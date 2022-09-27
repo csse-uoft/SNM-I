@@ -7,10 +7,8 @@ import {makeStyles} from "@mui/styles";
 import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";
 import {DeleteModal, Loading, DataTable} from "../shared";
 import {useNavigate} from "react-router-dom";
-import {fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsDataTypes} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
-import {deleteNeed, fetchNeeds} from "../../api/needApi";
 import {useSnackbar} from "notistack";
 import {deleteNeedSatisfier, fetchNeedSatisfiers} from "../../api/needSatisfierApi";
 
