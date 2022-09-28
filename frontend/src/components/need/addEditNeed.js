@@ -189,7 +189,7 @@ export default function AddEditNeed() {
           key={'needSatisfiers'}
           options={options.needSatisfiers}
           label={'Need satisfier'}
-          value={form.needSatisfiers._id}
+          value={form.needSatisfiers}  // todo
           onChange={e => form.needSatisfiers = e.target.value}
           error={!!errors.needSatisfiers}
           helperText={errors.needSatisfiers}

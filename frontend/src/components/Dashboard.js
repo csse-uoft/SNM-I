@@ -74,7 +74,7 @@ function Dashboard() {
       <NavButton to={'/needs'} icon={<Edit/>}
                  text="Manage Needs"/>
 
-      <NavButton to={'/need sayisfyers'} icon={<Edit/>}
+      <NavButton to={'/needSatisfiers'} icon={<Edit/>}
                  text="Manage Need Satisfiers"/>
 
       <NavButton to={'/settings/manage-forms/client'} icon={<Edit/>}
