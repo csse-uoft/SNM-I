@@ -49,7 +49,6 @@ export default function Needs() {
               type: need.type,
               changeType: need.changeType,
               characteristic: need.characteristic.name,
-              needSatisfier: need.needSatisfier,
               codes: need.codes
             }
           }))
@@ -106,10 +105,6 @@ export default function Needs() {
     {
       label: 'characteristic',
       body: ({characteristic}) => characteristic
-    },
-    {
-      label: 'Need Satisfier',
-      body: ({needSatistier}) => needSatistier
     },
     {
       label: ' ',
