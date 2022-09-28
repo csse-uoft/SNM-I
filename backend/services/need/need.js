@@ -90,7 +90,7 @@ const updateNeed = async (req, res, next) => {
     need.type = form.type;
     need.changeType = form.changeType;
     need.characteristic = form.characteristic;
-    need.needSatisfier = form.needSatisfier;
+    need.needSatisfiers = form.needSatisfiers;
     need.codes = form.codes;
     await need.save();
     return res.status(200).json({success: true});
