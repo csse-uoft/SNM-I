@@ -68,6 +68,8 @@ const fetchNeed = async (req, res, next) => {
     const need = await GDBNeedModel.findById(id);
     if (need.characteristic)
       need.characteristic = need.characteristic.split('_')[1];
+    if (need.needSatisfiers)
+      need.needSatisfiers = need.needSatisfiers.map(needSatisfier => needSatisfier.split('_')[1])
     return res.status(200).json({success: true, need});
   } catch (e) {
     next(e);

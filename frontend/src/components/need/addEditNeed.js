@@ -69,7 +69,6 @@ export default function AddEditNeed() {
         console.log(res.needSatisfiers)
         res.needSatisfiers.map(needSatisfier => options.needSatisfiers[needSatisfier._id] = needSatisfier.type)
       })
-
       // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
     ]).then(() => {
       if (option === 'edit' && id) {
