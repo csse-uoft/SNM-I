@@ -2,6 +2,7 @@ const {createGraphDBModel, DeleteType, Types} = require("../utils/graphdb");
 const {GDBAddressModel} = require('./address')
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBServiceProviderModel} = require("./serviceProvider");
+const {GDBNeedSatisfierModel} = require("./needSatisfier");
 
 const GDBServiceModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},
@@ -10,11 +11,9 @@ const GDBServiceModel = createGraphDBModel({
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
   serviceProvider: {type: GDBServiceProviderModel, internalKey: ':hasServiceProvider'},
   eligibilityCondition: {type: String, internalKey: ':hasEligibilityCondition'},
-  address: {type: GDBAddressModel, internalKey: ':hasLocation'},
-  mode: {type: Types.NamedIndividual, internalKey: ':hasMode'}
-  // questionOccurrence: {type: [GDBQOModel],
-  //   internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
-
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
+  needSatisfier: {type: GDBNeedSatisfierModel, internalKey: ':hasNeedSatisfier'}
 }, {
   rdfTypes: [':Service'], name: 'service'
 });
