@@ -89,6 +89,7 @@ const updateNeed = async (req, res, next) => {
     const need = await GDBNeedModel.findById(id);
     need.type = form.type;
     need.changeType = form.changeType;
+    need.description = form.description;
     need.characteristic = form.characteristic;
     need.needSatisfiers = form.needSatisfiers;
     need.codes = form.codes;

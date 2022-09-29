@@ -47,6 +47,7 @@ export default function Needs() {
             return {
               id: need._id,
               type: need.type,
+              description: need.description,
               changeType: need.changeType,
               characteristic: need.characteristic.name,
               codes: need.codes
@@ -103,8 +104,12 @@ export default function Needs() {
       body: ({changeType}) => changeType
     },
     {
-      label: 'characteristic',
+      label: 'Dharacteristic',
       body: ({characteristic}) => characteristic
+    },
+    {
+      label: 'Description',
+      body: ({description}) => description
     },
     {
       label: ' ',

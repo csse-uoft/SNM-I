@@ -174,6 +174,17 @@ export default function AddEditNeed() {
           error={!!errors.changeType}
           helperText={errors.changeType}
         />
+        <GeneralField
+          key={'description'}
+          label={'Description'}
+          value={form.description}
+          required
+          sx={{mt: '16px', minWidth: 350}}
+          onChange={e => form.description = e.target.value}
+          // onBlur={() => handleOnBlur(field, option)}
+          error={!!errors.description}
+          helperText={errors.description}
+        />
         <SelectField
           key={'characteristic'}
           options={options.characteristics}
