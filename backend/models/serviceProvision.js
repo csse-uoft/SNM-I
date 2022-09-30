@@ -12,7 +12,7 @@ const GDBServiceProvisionModel = createGraphDBModel({
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   needSatisfierOccurrence: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
 }, {
-  rdfTypes: [':Service'], name: 'service'
+  rdfTypes: [':ServiceProvision'], name: 'serviceProvision'
 });
 
 module.exports = {
