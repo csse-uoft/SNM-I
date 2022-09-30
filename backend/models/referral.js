@@ -1,11 +1,8 @@
 const {createGraphDBModel, DeleteType} = require("../utils/graphdb");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
-const {GDBUserAccountModel} = require("./userAccount");
 const {GDBServiceProviderModel} = require("./serviceProvider");
-const {GDBNeedModel} = require("./need");
 const {GDBNeedOccurrenceModel} = require("./needOccurrence");
 const {GDBServiceModel} = require("./service");
-const {GDBProgramModel} = require("./program");
 
 const GDBReferralModel = createGraphDBModel({
   client: {type: GDBClientModel, internalKey: ':hasClient'},
