@@ -1,7 +1,11 @@
 
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
+const {GDBCharacteristicModel} = require("../../models");
 
-
+const implementHelper = async (form) => {
+  form.characteristics = await GDBCharacteristicModel.find({_id: {$in: form.characteristics}});
+  // todo: code also have to be implemented
+}
 
 const createNeedSatisfier = async (req, res, next) => {
   const form = req.body;
@@ -9,6 +13,7 @@ const createNeedSatisfier = async (req, res, next) => {
   if(!form)
     return res.status(400).json({success: false, message: 'Information is not given'})
   try {
+    await implementHelper(form);
     const needSatisfier = GDBNeedSatisfierModel(form);
     await needSatisfier.save();
     return res.status(200).json({success: true});
@@ -43,7 +48,7 @@ const fetchNeedSatisfier = async (req, res, next) => {
   if (!id)
     return res.status(400).json({success: false, message: 'Id is not provided'});
   try {
-    const needSatisfier = await GDBNeedSatisfierModel.findById(id);
+    const needSatisfier = await GDBNeedSatisfierModel.findOne({_id: id}, {populates: ['characteristics']})
     return res.status(200).json({success: true, needSatisfier});
   } catch (e) {
     next(e);
@@ -59,9 +64,12 @@ const updateNeedSatisfier = async (req, res, next) => {
   if(!form)
     return res.status(400).json({success: false, message: 'Information is not provided'});
   try{
+    await implementHelper(form);
     const needSatisfier = await GDBNeedSatisfierModel.findById(id);
     needSatisfier.type = form.type;
     needSatisfier.codes = form.codes;
+    needSatisfier.description = form.description;
+    needSatisfier.characteristics = form.characteristics;
     await needSatisfier.save();
     return res.status(200).json({success: true});
   }catch (e){

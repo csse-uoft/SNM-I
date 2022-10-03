@@ -16,10 +16,7 @@ const implementHelper = async (form) => {
     if (!Array.isArray(form.needSatisfiers))
       throw new Server400Error('Wrong input format');
     if (form.needSatisfiers.length > 0) {
-      form.needSatisfiers = await Promise.all(form.needSatisfiers.map(async needSatisfierId => {
-          return await GDBNeedSatisfierModel.findById(needSatisfierId);
-        }
-      ))
+      form.needSatisfiers = GDBNeedSatisfierModel.find({_id: {$in: form.needSatisfiers}});
     } else {
       form.needSatisfier = [];
     }

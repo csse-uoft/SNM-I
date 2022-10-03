@@ -54,9 +54,11 @@ export default function AddEditNeedSatisfier() {
     {}
   )
 
+  const [options, setOptions] = useState({});
+
 
   const [form, setForm] = useState({
-    type: '', codes: []
+    type: '', codes: [], characteristics : [], description: ''
   })
 
   const [loading, setLoading] = useState(true);
@@ -64,10 +66,20 @@ export default function AddEditNeedSatisfier() {
   useEffect(() => {
     Promise.all([
       // fetchAllCodes todo
+      fetchCharacteristics().then(res => {
+        const options = {};
+        res.data.map(characteristic => {
+          options[characteristic.id] = characteristic.name;
+        });
+        setOptions(options);
+      })
     ]).then(() => {
       if (option === 'edit' && id) {
         return fetchNeedSatisfier(id).then(res => {
           const needSatisfier = res.needSatisfier;
+          needSatisfier.characteristics = needSatisfier.characteristics.map(characteristic => {
+            return characteristic._id;
+          });
           setForm(needSatisfier);
         })
       }
@@ -123,7 +135,7 @@ export default function AddEditNeedSatisfier() {
   const validate = () => {
     const errors = {};
     for (const [label, value] of Object.entries(form)) {
-      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === '') { // the last should be need satisfier
+      if (label === 'type' || label === 'changeType' || label === 'characteristics' || label === '') { // the last should be need satisfier
         if (!value) {
           errors[label] = 'This field cannot be empty'
         }
@@ -153,6 +165,28 @@ export default function AddEditNeedSatisfier() {
           onChange={e => form.type = e.target.value}
           error={!!errors.type}
           helperText={errors.type}
+        />
+
+        <GeneralField
+          key={'description'}
+          label={'Description'}
+          value={form.description}
+          required
+          multiline
+          sx={{mt: '16px', minWidth: 350}}
+          onChange={e => form.description = e.target.value}
+          error={!!errors.description}
+          helperText={errors.description}
+        />
+
+        <Dropdown
+          key={'characteristics'}
+          options={options}
+          label={'Characteristics'}
+          value={form.characteristics}
+          onChange={e => form.characteristics = e.target.value}
+          error={!!errors.characteristics}
+          helperText={errors.characteristics}
         />
 
         <Dropdown

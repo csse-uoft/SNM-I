@@ -132,7 +132,7 @@ export default function AddEditNeed() {
   const validate = () => {
     const errors = {};
     for (const [label, value] of Object.entries(form)) {
-      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === '') { // the last should be need satisfier
+      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === 'needSatisfiers') {
         if (!value) {
           errors[label] = 'This field cannot be empty'
         }
@@ -198,7 +198,7 @@ export default function AddEditNeed() {
         <Dropdown
           key={'needSatisfiers'}
           options={options.needSatisfiers}
-          label={'Need satisfier'}
+          label={'Need Satisfiers'}
           value={form.needSatisfiers}  // todo
           onChange={e => form.needSatisfiers = e.target.value}
           error={!!errors.needSatisfiers}
