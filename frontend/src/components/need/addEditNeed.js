@@ -144,6 +144,14 @@ export default function AddEditNeed() {
     return Object.keys(errors).length === 0
   }
 
+  const handleOnBlur = (label) => {
+    if(!form[label] || (Array.isArray(form[label]) && form[label].length === 0)){
+      setErrors({...errors, [label]: 'This field cannot be empty'});
+    }else{
+      setErrors({...errors, [label]: null});
+    }
+  }
+
   if (loading)
     return <Loading/>
 
@@ -158,6 +166,7 @@ export default function AddEditNeed() {
           label={'Type'}
           value={form.type}
           required
+          onBlur={() => handleOnBlur( 'type')}
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.type = e.target.value}
           error={!!errors.type}
@@ -170,7 +179,7 @@ export default function AddEditNeed() {
           required
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.changeType = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
+          onBlur={() => handleOnBlur( 'changeType')}
           error={!!errors.changeType}
           helperText={errors.changeType}
         />
@@ -179,6 +188,7 @@ export default function AddEditNeed() {
           label={'Description'}
           value={form.description}
           required
+          onBlur={() => handleOnBlur('description')}
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.description = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
@@ -190,6 +200,7 @@ export default function AddEditNeed() {
           options={options.characteristics}
           label={'Characteristic'}
           value={form.characteristic}
+          onBlur={() => handleOnBlur('characteristic')}
           onChange={e => form.characteristic = e.target.value}
           error={!!errors.characteristic}
           helperText={errors.characteristic}
@@ -199,7 +210,8 @@ export default function AddEditNeed() {
           key={'needSatisfiers'}
           options={options.needSatisfiers}
           label={'Need Satisfiers'}
-          value={form.needSatisfiers}  // todo
+          value={form.needSatisfiers}
+          onBlur={() => handleOnBlur('needSatisfiers')} // todo: something wrong here
           onChange={e => form.needSatisfiers = e.target.value}
           error={!!errors.needSatisfiers}
           helperText={errors.needSatisfiers}
