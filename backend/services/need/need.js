@@ -16,17 +16,23 @@ const implementHelper = async (form) => {
     if (!Array.isArray(form.needSatisfiers))
       throw new Server400Error('Wrong input format');
     if (form.needSatisfiers.length > 0) {
-      form.needSatisfiers = GDBNeedSatisfierModel.find({_id: {$in: form.needSatisfiers}});
+      form.needSatisfiers = await GDBNeedSatisfierModel.find({_id: {$in: form.needSatisfiers}});
     } else {
       form.needSatisfier = [];
     }
   }
 }
+const formFormatChecking = (form) => {
+  return (!form || !form.type || !form.changeType || !form.description || !form.characteristic || !form.needSatisfiers ||
+    !(Array.isArray(form.needSatisfiers) || form.needSatisfiers.length === 0)) // todo: need to add codes checker
+}
 
 const createNeed = async (req, res, next) => {
   const form = req.body;
-  // fetch characteristic and replace it into the form
+  if (formFormatChecking(form))
+    return res.status(400).json({success: false, message: 'Wrong information format'})
   try {
+
     await implementHelper(form);
     const need = GDBNeedModel(form);
     await need.save();
@@ -79,8 +85,8 @@ const updateNeed = async (req, res, next) => {
   const form = req.body;
   if (!id)
     return res.status(400).json({success: false, message: 'Id is not provided'});
-  if(!form)
-    return res.status(400).json({success: false, message: 'Information is not provided'});
+  if(formFormatChecking(form))
+    return res.status(400).json({success: false, message: 'Wrong information format'});
   try{
     await implementHelper(form);
     const need = await GDBNeedModel.findById(id);

@@ -66,7 +66,6 @@ export default function AddEditNeed() {
         characteristics.data.map((characteristic)=>{options.characteristics[characteristic.id] = characteristic.name});
       }),
       fetchNeedSatisfiers().then(res => {
-        console.log(res.needSatisfiers)
         res.needSatisfiers.map(needSatisfier => options.needSatisfiers[needSatisfier._id] = needSatisfier.type)
       })
       // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
@@ -132,12 +131,18 @@ export default function AddEditNeed() {
   const validate = () => {
     const errors = {};
     for (const [label, value] of Object.entries(form)) {
-      if (label === 'type' || label === 'changeType' || label === 'characteristic' || label === 'needSatisfiers') {
+      if (label === 'type' || label === 'changeType' || label === 'characteristic') {
         if (!value) {
           errors[label] = 'This field cannot be empty'
         }
       } else if (label === 'codes' && value.length === 0) {
         // errors[label] = 'This field cannot be empty'
+      } else if (label === 'needSatisfiers') {
+        if(!Array.isArray(value))
+          errors[label] = 'Wrong format'
+        if(value.length === 0){
+          errors[label] = 'This field cannot be empty'
+        }
       }
     }
     setErrors(errors)
@@ -191,7 +196,6 @@ export default function AddEditNeed() {
           onBlur={() => handleOnBlur('description')}
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.description = e.target.value}
-          // onBlur={() => handleOnBlur(field, option)}
           error={!!errors.description}
           helperText={errors.description}
         />
@@ -211,7 +215,7 @@ export default function AddEditNeed() {
           options={options.needSatisfiers}
           label={'Need Satisfiers'}
           value={form.needSatisfiers}
-          onBlur={() => handleOnBlur('needSatisfiers')} // todo: something wrong here
+          onBlur={() => handleOnBlur('needSatisfiers')}
           onChange={e => form.needSatisfiers = e.target.value}
           error={!!errors.needSatisfiers}
           helperText={errors.needSatisfiers}
