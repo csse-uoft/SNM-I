@@ -1,12 +1,12 @@
-import React, { useContext, useState } from 'react'
-import { useNavigate } from "react-router-dom";
+import React, {useContext, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 
-import { TextField, Container, Paper, Typography, Button, Divider } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { Link } from '../shared';
+import {TextField, Container, Paper, Typography, Button, Divider} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {Link} from '../shared';
 
-import { login } from '../../api/auth';
-import { UserContext } from "../../context";
+import {login} from '../../api/auth';
+import {UserContext} from "../../context";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -43,14 +43,14 @@ function LoginPane() {
   const submit = async () => {
     try {
       const {success, data} = await login(form.email, form.password);
-      console.log(form.email, form.password, success, data)
+      console.log(form.email, form.password, success, data);
       if (success) {
-        console.log('User email and password are correct')
+        console.log('User email and password are correct');
         console.log('successfully logged in:');
         navigate('/login/doubleAuth');
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
       setForm(prev => ({...prev, alert: e.json.message}));
     }
   };
