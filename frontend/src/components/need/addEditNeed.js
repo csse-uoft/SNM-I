@@ -157,13 +157,18 @@ export default function AddEditNeed() {
     }
   }
 
+  const keyPress = e => {
+    if(e.key === 'Enter')
+      handleSubmit();
+  }
+
   if (loading)
     return <Loading/>
 
   return (
 
 
-    <Container maxWidth='md'>
+    <Container maxWidth='md' onKeyPress={keyPress}>
       <Paper sx={{p: 2}} variant={'outlined'}>
         <Typography variant={'h4'}> Need </Typography>
         <GeneralField
