@@ -16,7 +16,6 @@ import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
 import {
   createNeedSatisfier,
   fetchNeedSatisfier,
-  fetchNeedSatisfiers,
   updateNeedSatisfier
 } from "../../api/needSatisfierApi";
 import {useSnackbar} from "notistack";
@@ -135,16 +134,39 @@ export default function AddEditNeedSatisfier() {
   const validate = () => {
     const errors = {};
     for (const [label, value] of Object.entries(form)) {
-      if (label === 'type' || label === 'changeType' || label === 'characteristics' || label === '') { // the last should be need satisfier
+      if (label === 'type' || label === 'description') {
         if (!value) {
           errors[label] = 'This field cannot be empty'
         }
       } else if (label === 'codes' && value.length === 0) {
         // errors[label] = 'This field cannot be empty'
+      } else if(label === 'characteristics') {
+        if(!Array.isArray(value))
+          errors[label] = 'Wrong format'
+        else if(value.length === 0)
+          errors[label] = 'This format cannot be empty'
       }
     }
     setErrors(errors)
     return Object.keys(errors).length === 0
+  }
+
+  const handleOnblur = (field) => {
+    if(field === 'type' || field === 'description'){
+      if(!form[field])
+        setErrors({...errors, [field]: 'This field cannot be empty'})
+      else
+        setErrors({...errors, [field]: null})
+    }else if(field === 'characteristics'){
+      if(!Array.isArray(form[field]))
+        setErrors({...errors, [field]: 'Wrong format'})
+      else if(form[field].length === 0)
+        setErrors({...errors, [field]: 'This field cannot be empty'})
+      else
+        setErrors({...errors, [field]: null})
+    }else if(field === 'codes'){
+      // todo
+    }
   }
 
   if (loading)
@@ -161,6 +183,7 @@ export default function AddEditNeedSatisfier() {
           label={'Type'}
           value={form.type}
           required
+          onBlur = {() => handleOnblur('type')}
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.type = e.target.value}
           error={!!errors.type}
@@ -173,6 +196,7 @@ export default function AddEditNeedSatisfier() {
           value={form.description}
           required
           multiline
+          onBlur = {() => handleOnblur('description')}
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.description = e.target.value}
           error={!!errors.description}
@@ -183,6 +207,7 @@ export default function AddEditNeedSatisfier() {
           key={'characteristics'}
           options={options}
           label={'Characteristics'}
+          onBlur = {() => handleOnblur('characteristics')}
           value={form.characteristics}
           onChange={e => form.characteristics = e.target.value}
           error={!!errors.characteristics}

@@ -7,11 +7,16 @@ const implementHelper = async (form) => {
   // todo: code also have to be implemented
 }
 
+const formFormatChecker = (form) => {
+  return (!form || !form.type || !form.description || !form.characteristics ||
+    !(Array.isArray(form.characteristics) || form.characteristics.length === 0)) // todo: need to add codes checker
+}
+
 const createNeedSatisfier = async (req, res, next) => {
   const form = req.body;
   // fetch characteristic and replace it into the form
-  if(!form)
-    return res.status(400).json({success: false, message: 'Information is not given'})
+  if(formFormatChecker(form))
+    return res.status(400).json({success: false, message: 'Wrong information format'})
   try {
     await implementHelper(form);
     const needSatisfier = GDBNeedSatisfierModel(form);
@@ -61,8 +66,8 @@ const updateNeedSatisfier = async (req, res, next) => {
   const form = req.body;
   if (!id)
     return res.status(400).json({success: false, message: 'Id is not provided'});
-  if(!form)
-    return res.status(400).json({success: false, message: 'Information is not provided'});
+  if(formFormatChecker(form))
+    return res.status(400).json({success: false, message: 'Wrong information format'});
   try{
     await implementHelper(form);
     const needSatisfier = await GDBNeedSatisfierModel.findById(id);
