@@ -1,6 +1,6 @@
 const {createGraphDBModel, DeleteType, Types} = require("../utils/graphdb");
-const {GDBNeedOccurrenceModel} = require("./needOccurrence");
-const {GDBServiceOccurrenceModel} = require("./serviceOccurrence");
+const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
+const {GDBServiceOccurrenceModel} = require("./service/serviceOccurrence");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBNeedSatisfierOccurrenceModel} = require("./needSatisfierOccurrence");
 

@@ -1,4 +1,4 @@
-const {createGraphDBModel} = require("../utils/graphdb");
+const {createGraphDBModel} = require("../../utils/graphdb");
 const {GDBTimeIntervalModel} = require("./timeInterval");
 
 

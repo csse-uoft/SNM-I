@@ -1,6 +1,6 @@
 const {GDBCharacteristicModel} = require("../../models");
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
-const {GDBNeedModel} = require("../../models/need");
+const {GDBNeedModel} = require("../../models/need/need");
 const {Server400Error} = require("../../utils");
 
 

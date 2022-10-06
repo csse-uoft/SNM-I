@@ -1,8 +1,8 @@
-const {createGraphDBModel, DeleteType, Types} = require("../utils/graphdb");
-const {GDBAddressModel} = require('./address')
-const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
-const {GDBServiceProviderModel} = require("./serviceProvider");
-const {GDBNeedSatisfierModel} = require("./needSatisfier");
+const {createGraphDBModel, DeleteType, Types} = require("../../utils/graphdb");
+const {GDBAddressModel} = require('../address')
+const {GDBCOModel} = require("../ClientFunctionalities/characteristicOccurrence");
+const {GDBServiceProviderModel} = require("../serviceProvider");
+const {GDBNeedSatisfierModel} = require("../needSatisfier");
 
 const GDBServiceModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},

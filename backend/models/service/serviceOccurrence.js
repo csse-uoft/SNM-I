@@ -1,7 +1,7 @@
-const {GDBAddressModel} = require('./address')
-const {createGraphDBModel, Types, DeleteType} = require("../utils/graphdb");
+const {GDBAddressModel} = require('../address')
+const {createGraphDBModel, Types, DeleteType} = require("../../utils/graphdb");
 const {GDBServiceModel} = require("./service");
-const {GDBNeedSatisfierModel} = require("./needSatisfier");
+const {GDBNeedSatisfierModel} = require("../needSatisfier");
 
 const GDBServiceOccurrenceModel = createGraphDBModel({
   occurrenceOf: {type: GDBServiceModel, internalKey: ':occurrenceOf'},

@@ -1,6 +1,6 @@
-const {createGraphDBModel, Types} = require("../utils/graphdb");
-const {GDBNeedSatisfierModel} = require("./needSatisfier");
-const {GDBCharacteristicModel} = require("./ClientFunctionalities/characteristic");
+const {createGraphDBModel, Types} = require("../../utils/graphdb");
+const {GDBNeedSatisfierModel} = require("../needSatisfier");
+const {GDBCharacteristicModel} = require("../ClientFunctionalities/characteristic");
 
 const GDBNeedModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},

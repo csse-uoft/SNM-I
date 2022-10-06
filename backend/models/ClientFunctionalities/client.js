@@ -2,7 +2,7 @@ const {createGraphDBModel, DeleteType, Types} = require("../../utils/graphdb");
 const {GDBQOModel} = require("./questionOccurrence");
 const {GDBCOModel} = require("./characteristicOccurrence");
 const {GDBNoteModel} = require("./note");
-const {GDBNeedModel} = require("../need");
+const {GDBNeedModel} = require("../need/need");
 
 /**
  * This is a Client model.
