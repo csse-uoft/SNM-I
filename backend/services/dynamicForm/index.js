@@ -2,6 +2,25 @@ const {MDBDynamicFormModel} = require('../../models/dynamicForm');
 const {GDBUserAccountModel} = require('../../models/userAccount')
 const {GraphDB} = require("../../utils/graphdb");
 const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
+const {Server400Error} = require('../../utils');
+
+// this object contains checkers for different type of generics
+const field2Checker = {
+  service: haveNoQuestionChecker,
+  client: noRestriction,
+}
+
+function noRestriction(formStructure){
+}
+
+function haveNoQuestionChecker(formStructure) {
+  formStructure.map(step => {
+    step.fields.map(field => {
+      if(field.type === 'question')
+        throw new Server400Error('Wrong information fields')
+    })
+  })
+}
 
 async function createDynamicForm(req, res, next) {
   // TODO: implement forOrganization
@@ -13,6 +32,7 @@ async function createDynamicForm(req, res, next) {
   const createdBy = currentUser.individualName;
 
   try {
+    field2Checker[formType](formStructure);
     const form = new MDBDynamicFormModel({
       name, formType, formStructure, createdBy, modifiedAt
     });
