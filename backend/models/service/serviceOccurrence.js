@@ -13,9 +13,6 @@ const GDBServiceOccurrenceModel = createGraphDBModel({
   needSatisfierOccurrence: {type: GDBNeedSatisfierModel, internalKey: ':hasNeedSatisfierOccurrence'},
   description: {type: String, internalKey: ':hasDescription'}
 
-  // questionOccurrence: {type: [GDBQOModel],
-  //   internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
-
 }, {
   rdfTypes: [':ServiceOccurrence'], name: 'serviceOccurrence'
 });

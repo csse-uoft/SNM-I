@@ -7,11 +7,8 @@ const {Server400Error} = require('../../utils');
 // this object contains checkers for different type of generics
 const field2Checker = {
   service: haveNoQuestionChecker,
-  client: noRestriction,
 }
 
-function noRestriction(formStructure){
-}
 
 function haveNoQuestionChecker(formStructure) {
   formStructure.map(step => {
@@ -32,7 +29,8 @@ async function createDynamicForm(req, res, next) {
   const createdBy = currentUser.individualName;
 
   try {
-    field2Checker[formType](formStructure);
+    if(field2Checker[formType])
+      field2Checker[formType](formStructure);
     const form = new MDBDynamicFormModel({
       name, formType, formStructure, createdBy, modifiedAt
     });

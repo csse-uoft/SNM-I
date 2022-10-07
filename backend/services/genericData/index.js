@@ -26,15 +26,11 @@ const genericType2Model = {
 
 const genericType2Checker = {
   'service': noQuestion,
-  'client': noRestriction
 }
 
 function noQuestion(characteristics, questions) {
   if(Object.keys(questions) > 0)
     throw new Server400Error('Service should not contain question.')
-}
-
-function noRestriction(characteristics, questions) {
 }
 
 const specialField2Model = {
@@ -260,8 +256,8 @@ const createSingleGenericHelper = async (data, genericType) => {
 
   // extract questions and characteristics based on fields from the database
   await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
-
-  genericType2Checker[genericType](characteristics, questions);
+  if(genericType2Checker[genericType])
+    genericType2Checker[genericType](characteristics, questions);
 
   const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
   // iterating over all fields and create occurrences and store them into instanceData
