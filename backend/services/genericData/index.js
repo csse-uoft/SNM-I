@@ -8,7 +8,7 @@ const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 const {MDBUsageModel} = require("../../models/usage");
 const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumber");
-const {GDBServiceModel} = require("../../models/service");
+const {GDBServiceModel} = require("../../models/service/service");
 const {GDBProgramModel} = require("../../models/program");
 const {Server400Error} = require("../../utils");
 const {GDBOrganizationModel} = require("../../models/organization");
@@ -22,6 +22,15 @@ const genericType2Model = {
   'service': GDBServiceModel,
   'program': GDBProgramModel,
   'appointment': GDBAppointmentModel,
+}
+
+const genericType2Checker = {
+  'service': noQuestion,
+}
+
+function noQuestion(characteristics, questions) {
+  if(Object.keys(questions) > 0)
+    throw new Server400Error('Service should not contain question.')
 }
 
 const specialField2Model = {
@@ -247,6 +256,8 @@ const createSingleGenericHelper = async (data, genericType) => {
 
   // extract questions and characteristics based on fields from the database
   await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
+  if(genericType2Checker[genericType])
+    genericType2Checker[genericType](characteristics, questions);
 
   const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
   // iterating over all fields and create occurrences and store them into instanceData

@@ -1,6 +1,6 @@
 import {makeStyles} from "@mui/styles";
 import {useNavigate} from "react-router-dom";
-import React, { useEffect, useState, useContext } from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   LoginCheckSecurityQuestion,
 } from "../../api/userApi";
@@ -11,7 +11,7 @@ import {Button, Container, Typography} from "@mui/material";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {loginDoubleAuthFields} from "../../constants/login_double_auth_fields";
-import { UserContext } from "../../context";
+import {UserContext} from "../../context";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,7 +24,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-
 export default function DoubleAuth() {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -35,9 +34,9 @@ export default function DoubleAuth() {
     group: 1,
     form: {...defaultSecurityQuestionsFields},
     errors: {
-    group1: {},
-    group2: {},
-    group3: {},
+      group1: {},
+      group2: {},
+      group3: {},
     },
     email: '',
     loadingButton: false,
@@ -46,34 +45,36 @@ export default function DoubleAuth() {
 
   useEffect(() => {
     getUserSecurityQuestionsLogin().then(response => {
-      if (response.success){
-        const securityQuestions = response.data.securityQuestions
-        state.form.group1.securityQuestion1 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
-        state.form.group2.securityQuestion2 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
-        state.form.group3.securityQuestion3 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0]
+      if (response.success) {
+        const securityQuestions = response.data.securityQuestions;
+        state.form.group1.securityQuestion1 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0];
+        state.form.group2.securityQuestion2 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0];
+        state.form.group3.securityQuestion3 = securityQuestions.splice(Math.floor(Math.random() * securityQuestions.length), 1)[0];
         setState(state => ({...state, loading: false, email: response.data.email}));
       }
 
-    }).catch(e =>{
-      if(e.json){
-        setState(state => ({...state, errors: e.json, errorDialog: true, loading: false}))
+    }).catch(e => {
+      if (e.json) {
+        setState(state => ({...state, errors: e.json, errorDialog: true, loading: false}));
       }
     });
   }, []);
 
   const handleSubmit = async () => {
-    setState(state => ({...state, loadingButton: true}))
-    try{
-      if(state.group < 4){
-        const group = 'group' + state.group
-        const securityQuestionAnswer = 'securityQuestionAnswer' + state.group
-        const answer = state.form[group][securityQuestionAnswer]
-        const securityQuestion = 'securityQuestion' + state.group
+    setState(state => ({...state, loadingButton: true}));
+    try {
+      if (state.group < 4) {
+        const group = 'group' + state.group;
+        const securityQuestionAnswer = 'securityQuestionAnswer' + state.group;
+        const answer = state.form[group][securityQuestionAnswer];
+        const securityQuestion = 'securityQuestion' + state.group;
 
-        const {success, message, matched, userAccount} = await LoginCheckSecurityQuestion({email: state.email,
-          question: state.form[group][securityQuestion], answer})
+        const {success, message, matched, userAccount} = await LoginCheckSecurityQuestion({
+          email: state.email,
+          question: state.form[group][securityQuestion], answer
+        });
 
-        if(matched){
+        if (matched) {
           userContext.updateUser({
             id: userAccount._id,
             isAdmin: userAccount.role === 'admin',
@@ -87,28 +88,33 @@ export default function DoubleAuth() {
             phoneNumber: userAccount.primaryContact?.telephone?.phoneNumber,
           });
 
-          setState(state => ({...state, loadingButton: false}))
-          navigate('/dashboard')
+          setState(state => ({...state, loadingButton: false}));
+          navigate('/dashboard');
 
-        }else{
-          setState(state => ({...state, group: state.group + 1, loadingButton: false}))
+        } else {
+          setState(state => ({...state, group: state.group + 1, loadingButton: false}));
         }
       }
-    }catch (e){
+    } catch (e) {
       if (e.json) {
-        setState(state => ({...state, errors: e.json, errorDialog: true, loadingButton: false}))
+        setState(state => ({...state, errors: e.json, errorDialog: true, loadingButton: false}));
       }
     }
-  }
+  };
 
-  if(state.loading)
-    return <Loading message={`Loading`}/>
+  if (state.loading)
+    return <Loading message={`Loading`}/>;
 
-  const group = 'group' + state.group
+  const group = 'group' + state.group;
 
-  if(state.group < 4) {
+  const keyPress = e => {
+    if (e.key === 'Enter')
+      handleSubmit();
+  };
+
+  if (state.group < 4) {
     return (
-      <Container className={classes.root}>
+      <Container className={classes.root} onKeyPress={keyPress}>
         <Typography variant="h5">
           {'Please answer security question'}
         </Typography>
@@ -129,14 +135,15 @@ export default function DoubleAuth() {
               error={!!state.errors[group][field]}
               helperText={state.errors[group][field]}
             />
-          )
+          );
         })}
         {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>*/}
         {/*  Submit*/}
         {/*</Button>*/}
-        <LoadingButton noDefaultStyle variant="contained" color="primary" loading ={state.loadingButton} className={classes.button}
+        <LoadingButton noDefaultStyle variant="contained" color="primary" loading={state.loadingButton}
+                       className={classes.button}
                        onClick={handleSubmit}/>
-        <AlertDialog dialogContentText={state.errors.message||"Error occur"}
+        <AlertDialog dialogContentText={state.errors.message || "Error occur"}
                      dialogTitle={'Error'}
                      buttons={[<Button onClick={() => navigate('/')} key={'ok'}>{'ok'}</Button>]}
                      open={state.errorDialog}/>
@@ -144,14 +151,14 @@ export default function DoubleAuth() {
         {/*             dialogTitle={'Success'}*/}
         {/*             buttons={[<Button onClick={() => navigate('/')} key={'ok'}>{'ok'}</Button>]}*/}
         {/*             open={state.successDialog}/>*/}
-      </Container>)
-  }else{
+      </Container>);
+  } else {
     // the user wasted all 3 chances, the user should remove id from req but haven't implemented TODO
     return (
       <AlertDialog dialogContentText={'You have missed all 3 chances'}
                    dialogTitle={'Sorry'}
                    buttons={[<Button onClick={() => navigate('/')} key={'ok'}>{'ok'}</Button>]}
                    open={state.group > 3}/>
-    )
+    );
   }
 }

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {fetchQuestions, updateQuestion, deleteQuestion, createQuestion} from '../../api/mockedApi/question';
 import {
   Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
   Button, Box
@@ -7,12 +6,12 @@ import {
 import {makeStyles} from "@mui/styles";
 import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";
 import {DeleteModal, Loading, DataTable} from "../shared";
-import SelectField from "../shared/fields/SelectField";
-import GeneralField from "../shared/fields/GeneralField";
 import {useNavigate} from "react-router-dom";
 import {fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsDataTypes} from "../../api/characteristicApi";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
+import {deleteNeed, fetchNeeds} from "../../api/needApi";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -23,22 +22,17 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Characteristics() {
+export default function Needs() {
   const [state, setState] = useState({
     loading: true,
     // value: {},
     selectedId: null,
-    selectedName: '',
-    showErrorDialog: false,
     showDeleteDialog: false,
     loadingButton: false
   });
+  const {enqueueSnackbar} = useSnackbar();
   const [form, setForm] = useState(
     []
-  )
-  const [dataTypes, setDataTypes] = useState({})
-  const [errors, setErrors] = useState(
-    {}
   )
   const [trigger, setTrigger] = useState(
     false
@@ -47,95 +41,89 @@ export default function Characteristics() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([fetchCharacteristics().then(res => {
+    Promise.all([fetchNeeds().then(res => {
         if (res.success) {
-          setForm(res.data.map(characteristic => {
+          setForm(res.needs.map(need => {
             return {
-              id: characteristic.id,
-              label: characteristic.implementation.label,
-              name: characteristic.name,
-              fieldType: characteristic.implementation.fieldType.label,
-              dataType: characteristic.implementation.valueDataType
+              id: need._id,
+              type: need.type,
+              description: need.description,
+              changeType: need.changeType,
+              characteristic: need.characteristic.name,
+              codes: need.codes
             }
           }))
         }
       }
-    ),
-      fetchCharacteristicsDataTypes().then(newDataTypes =>setDataTypes(newDataTypes))]).then(
-        setState(state => ({...state, loading: false}))).catch(e => {
-      if (e.json) {
-        setErrors(e.json)
-      }
-      setState(state => ({...state, loading: false, showErrorDialog: true}))
+    ),]).then(
+      setState(state => ({...state, loading: false}))).catch(e => {
+      setState(state => ({...state, loading: false,}));
+      enqueueSnackbar(`Error: ${e.message}`, {variant: 'error'});
     })
 
   }, [trigger]);
 
-  const showDeleteDialog = (id, name) => () => {
+  const showDeleteDialog = (id) => () => {
     setState(state => ({
-      ...state, selectedId: id, showDeleteDialog: true, selectedName: name
+      ...state, selectedId: id, showDeleteDialog: true,
     }));
   };
 
   const handleCancel = () => {
     setState(state => ({
-      ...state, selectedId: null, showDeleteDialog: false, selectedName: ''
+      ...state, selectedId: null, showDeleteDialog: false
     }))
   }
 
   const handleConfirm = async () => {
     try {
-      await deleteCharacteristic(state.selectedId);
+      await deleteNeed(state.selectedId);
       setState(state => ({
-        ...state, showDeleteDialog: false, selectedId: null, selectedName: '', loadingButton: false,
-        // data: state.data.filter(item => item.id !== state.selectedId)
+        ...state, showDeleteDialog: false, selectedId: null, loadingButton: false,
       }))
       setTrigger(!trigger)
       // setForm(form.filter(item => item.id !== state.selectedId))
     } catch (e) {
-      if (e.json)
-        setErrors(e.json)
       setState(state => ({
         ...state,
         showDeleteDialog: false,
         selectedId: null,
-        selectedName: '',
         loadingButton: false,
-        showErrorDialog: true
       }))
+      enqueueSnackbar(`Error: ${e.message}`, {variant: 'error'});
     }
   }
 
   const columns = [
     {
-      label: 'Name',
-      body: ({name}) => <Box sx={{width: '60%'}}>{name}</Box>
+      label: 'Type',
+      body: ({type}) => <Box sx={{width: '60%'}}>{type}</Box>
     },
     {
-      label: 'Label',
-      body: ({label}) => label
+      label: 'Change Type',
+      body: ({changeType}) => changeType
     },
     {
-      label: 'Field Type',
-      body: ({fieldType}) => fieldType
+      label: 'Dharacteristic',
+      body: ({characteristic}) => characteristic
     },
     {
-      label: 'Data Type',
-      body: ({dataType}) => dataTypes[dataType]
+      label: 'Description',
+      body: ({description}) => description
     },
     {
       label: ' ',
-      body: ({id, name}) => {
+      body: ({id}) => {
         return (
           <span>
               <IconButton
-                onClick={() => navigate('/characteristic/' + id + '/edit')}
+                onClick={() => navigate('/need/' + id + '/edit')}
                 className={classes.button}
                 size="large">
                 <EditIcon fontSize="small" color="primary"/>
               </IconButton>
               <IconButton
-                onClick={showDeleteDialog(id, name)}
+                onClick={showDeleteDialog(id)}
                 className={classes.button}
                 size="large">
                 <DeleteIcon fontSize="small" color="secondary"/>
@@ -147,17 +135,17 @@ export default function Characteristics() {
   ];
 
   if (state.loading)
-    return <Loading message={`Loading characteristics...`}/>;
+    return <Loading message={`Loading needs...`}/>;
 
   return (
     <Container>
       <DataTable
-        title={"Characteristics"}
+        title={"needs"}
         data={form}
         columns={columns}
         customToolbar={<Chip
           onClick={() => {
-            navigate('/characteristic/add')
+            navigate('/need/add')
           }}
           color="primary"
           icon={<AddIcon/>}
@@ -165,14 +153,8 @@ export default function Characteristics() {
           variant="outlined"/>}
       />
 
-      <AlertDialog dialogContentText={errors.message || "Error occurs"}
-                   dialogTitle={'Fail'}
-                   buttons={[<Button onClick={() => {
-                     navigate('/dashboard')
-                   }} key={'fail'}>{'ok'}</Button>]}
-                   open={state.showErrorDialog}/>
-      <AlertDialog dialogContentText={'Are you sure to delete Characteristic ' + state.selectedName}
-                   dialogTitle={'Delete characteristic'}
+      <AlertDialog dialogContentText={'Are you sure to delete Need_' + state.selectedId}
+                   dialogTitle={'Delete Need'}
                    buttons={[<Button onClick={handleCancel} key={'Cancel'}>{'cancel'}</Button>,
                      <LoadingButton noDefaultStyle variant="text" color="primary" loading={state.loadingButton}
                                     key={'confirm'}

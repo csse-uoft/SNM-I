@@ -294,14 +294,17 @@ export default function ManageFormFields() {
             onAdd={handleAddCharacteristic}
             disabledAdd={!selectedCharacteristicId || !state.selectedStep}
           />
-          <Picker
+          {formType !== 'service'?
+            <Picker
             label={"question"}
             onChange={setSelectedQuestionId}
             options={questionOptions}
             usedOptionKeys={usedQuestionIds}
             onAdd={handleAddQuestion}
             disabledAdd={!selectedQuestionId || !state.selectedStep}
-          />
+          />:
+          <div/>}
+
         </Grid>
       </Grid>
     )

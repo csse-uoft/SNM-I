@@ -22,4 +22,28 @@ module.exports = [
       optionsFromClass: 'http://snmi#ServiceProvider'
     }
   },
+
+  {
+    name: 'Eligibility Condition',
+    description: 'Eligibility Condition of the service',
+    predefinedProperty: 'http://snmi#hasEligibilityCondition',
+    implementation: {
+      label: 'Eligibility Condition',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.TextField,
+    }
+  },
+
+  {
+    name: 'Need Satisfier',
+    description: 'Need satisifer of the service',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+  // todo: mode and codes
 ]

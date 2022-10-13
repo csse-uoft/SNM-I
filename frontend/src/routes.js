@@ -15,9 +15,11 @@ import User from './components/users/User';
 import UserForm from './components/users/UserForm';
 import UserInvite from './components/registration/UserInvite';
 import ResetPassword from './components/userProfile/UserResetPassword';
+import UserResetSecurityQuestions from "./components/userProfile/UserResetSecurityQuestions";
 import EmailConfirm from './components/emailConfirm';
 import UserProfile from './components/userProfile/Profile';
 import UpdateUserProfile from './components/userProfile/EditProfile';
+import AddEditNeed from "./components/need/addEditNeed";
 // import NeedForm from './components/client_needs/NeedForm'
 // import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute';
@@ -52,6 +54,9 @@ import ClientSearch from "./components/clients/ClientSearch";
 import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
+import Needs from "./components/need/needs";
+import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
+import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
 
 const routes = (
   <Routes>
@@ -76,6 +81,7 @@ const routes = (
     <Route path="/profile/:id/edit" element={<PrivateRoute element={UpdateUserProfile}/>}/>
     <Route path="/profile/:id" element={<PrivateRoute element={UserProfile}/>}/>
     <Route path="/users/reset-password/:id" element={<PrivateRoute element={ResetPassword}/>}/>
+    <Route path="/users/reset-securityQuestions/:id" element={<PrivateRoute element={UserResetSecurityQuestions}/>}/>
 
     <Route path="/users/:id/edit" element={<AdminRoute element={EditUserForm}/>}/>
     <Route path="/users/new" element={<AdminRoute element={UserForm}/>}/>
@@ -117,6 +123,14 @@ const routes = (
     <Route path={'/question/:id/:option'} element={<AdminRoute element={AddEditQuestion}/>}/>
     <Route path={'/question/:option'} element={<AdminRoute element={AddEditQuestion}/>}/>
     <Route path={'/questions'} element={<AdminRoute element={Questions}/>}/>
+
+    <Route path={'/need/:id/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
+    <Route path={'/need/:option'} element={<AdminRoute element={AddEditNeed}/>}/>
+    <Route path={'/needs'} element={<AdminRoute element={Needs}/>}/>
+
+    <Route path={'/needSatisfier/:id/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
+    <Route path={'/needSatisfier/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
+    <Route path={'/needSatisfiers'} element={<AdminRoute element={NeedSatisfiers}/>}/>
 
 
     <Route path="/settings/manage-fields" element={<AdminRoute element={ManageFields}/>}/>

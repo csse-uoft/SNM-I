@@ -120,6 +120,25 @@ export default function Profile() {
                      text={'Reset Password'}
                      key={'Reset Password'}/>
         </Box>
+
+        <Box sx={{
+          backgroundColor: 'transparent',
+          width: 'max-content',
+          paddingTop: 3,
+          borderBlockColor: 'grey',
+          borderRadius: 2
+        }}>
+          <Typography variant="h6"
+                      style={{marginTop: '10px'}}
+                      key={'Reset Password Text'}>
+            {'Want to change your security questions? Click below:'}
+          </Typography>
+
+          {/* Button for password reset */}
+          <NavButton to={'/users/reset-securityQuestions/' + id}
+                     text={'Reset Security Questions'}
+                     key={'Reset Security Questions'}/>
+        </Box>
       </div>
     </Container>
   )

@@ -2,6 +2,22 @@ const {MDBDynamicFormModel} = require('../../models/dynamicForm');
 const {GDBUserAccountModel} = require('../../models/userAccount')
 const {GraphDB} = require("../../utils/graphdb");
 const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
+const {Server400Error} = require('../../utils');
+
+// this object contains checkers for different type of generics
+const field2Checker = {
+  service: haveNoQuestionChecker,
+}
+
+
+function haveNoQuestionChecker(formStructure) {
+  formStructure.map(step => {
+    step.fields.map(field => {
+      if(field.type === 'question')
+        throw new Server400Error('Wrong information fields')
+    })
+  })
+}
 
 async function createDynamicForm(req, res, next) {
   // TODO: implement forOrganization
@@ -13,6 +29,8 @@ async function createDynamicForm(req, res, next) {
   const createdBy = currentUser.individualName;
 
   try {
+    if(field2Checker[formType])
+      field2Checker[formType](formStructure);
     const form = new MDBDynamicFormModel({
       name, formType, formStructure, createdBy, modifiedAt
     });
@@ -79,15 +97,18 @@ async function getIndividualsInClass(req, res) {
     where { 
         ?s a <${SPARQL.getFullURI(req.params.class)}>, owl:NamedIndividual.
         OPTIONAL {?s rdfs:label ?label .}
-        OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider
-        OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client/Volunteer
+        OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider: organization
+        OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
+        OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client
+        OPTIONAL {?s :hasType ?type . } # for needSatisfier
         FILTER (isIRI(?s))
     }`;
   console.log(query)
 
-  await GraphDB.sendSelectQuery(query, false, ({s, label, name, familyName, givenName}) => {
-    if (label?.value || name?.value || (familyName?.value || givenName?.value)) {
-      instances[s.id] = label?.value || name?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+  // todo: volunteer will only give last name
+  await GraphDB.sendSelectQuery(query, false, ({s, label, name, familyName, givenName, type, lastName}) => {
+    if (label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
+      instances[s.id] = label?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
       instances[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
     }
