@@ -107,6 +107,8 @@ const routes = (
     <Route path="/services/:id" element={<PrivateRoute element={VisualizeService}/>}/>
     <Route path="/services" element={<PrivateRoute element={Services}/>}/>
 
+    {/*<Route path="/serviceOccurrence" element={<PrivateRoute element={}/>}/>*/}
+
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>

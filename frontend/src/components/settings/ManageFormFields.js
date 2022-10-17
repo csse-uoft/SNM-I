@@ -294,7 +294,7 @@ export default function ManageFormFields() {
             onAdd={handleAddCharacteristic}
             disabledAdd={!selectedCharacteristicId || !state.selectedStep}
           />
-          {formType !== 'service'?
+          {formType !== 'service' && formType !== 'serviceOccurrence'?
             <Picker
             label={"question"}
             onChange={setSelectedQuestionId}

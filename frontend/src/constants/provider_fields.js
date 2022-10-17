@@ -6,8 +6,8 @@ import { objectFlip } from '../helpers';
 export const providerFormTypes = {
   'organization': 'Organization',
   'volunteer': 'Volunteer',
-  'goods_donor': 'Goods Donor',
-  'professional_service_provider': 'Professional Service Provider',
+  // 'goods_donor': 'Goods Donor',
+  // 'professional_service_provider': 'Professional Service Provider',
 };
 
 export const allForms = {
@@ -15,6 +15,8 @@ export const allForms = {
   service: 'Service',
   appointment: 'Appointment',
   referral: 'Referral',
+  serviceOccurrence: 'Service Occurrence',
+  serviceRegistration: 'Service Registration',
   ...providerFormTypes
 };
 

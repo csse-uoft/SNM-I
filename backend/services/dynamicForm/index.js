@@ -7,6 +7,7 @@ const {Server400Error} = require('../../utils');
 // this object contains checkers for different type of generics
 const field2Checker = {
   service: haveNoQuestionChecker,
+  serviceOccurrence: haveNoQuestionChecker,
 }
 
 

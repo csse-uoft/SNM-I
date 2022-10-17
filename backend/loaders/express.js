@@ -15,7 +15,7 @@ const {authMiddleware, errorHandler} = require('../services/middleware');
 
 const config = require('../config');
 const {initUserAccounts} = require('../services/userAccount/user');
-const {initFieldTypes, initPredefinedCharacteristics} = require('../services/characteristics');
+const {initFieldTypes, initPredefinedCharacteristics, initPredefinedInternalType} = require('../services/characteristics');
 const {initStreetTypes, initStreetDirections} = require('../services/address');
 
 const app = express();
@@ -57,7 +57,10 @@ app.use('/api', needSatisfierRoute);
 
 
 initUserAccounts();
-initFieldTypes().then(() => initPredefinedCharacteristics());
+initFieldTypes().then(() => {
+  initPredefinedCharacteristics();
+  initPredefinedInternalType();
+});
 initStreetTypes();
 initStreetDirections();
 

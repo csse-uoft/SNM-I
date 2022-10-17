@@ -53,7 +53,10 @@ export default function ManageForms() {
         body: ({_id}) => {
           return (
             <>
-              <IconButton onClick={() => navigate(`/settings/forms/${formType}/edit/${_id}`)}>
+              <IconButton onClick={() => {
+                console.log(formType);
+                navigate(`/settings/forms/${formType}/edit/${_id}`);
+              }}>
                 <Edit fontSize="small" color="primary"/>
               </IconButton>
               <IconButton onClick={handleDelete(_id)}>
