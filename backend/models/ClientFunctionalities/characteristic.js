@@ -1,5 +1,5 @@
 const {createGraphDBModel, Types, DeleteType} = require("../../utils/graphdb");
-const {GDBCIModel} = require("./characteristicImplementation");
+const {GDBFIIModel} = require("./formItemImplementation");
 
 /**
  * Characteristic Model in GraphDB
@@ -12,7 +12,7 @@ const GDBCharacteristicModel = createGraphDBModel({
   // predefined characteristics (i.e. firstName, lastName) link to properties that already defined in compass Ontology.
   predefinedProperty: {type: Types.NamedIndividual, internalKey: ':hasPredefinedProperty'},
   isPredefined: {type: Boolean, internalKey: ':isPredefined'},
-  implementation: {type: GDBCIModel, internalKey: ':hasCharacteristicImplementation', onDelete: DeleteType.CASCADE},
+  implementation: {type: GDBFIIModel, internalKey: ':hasFormItemImplementation', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':characteristics'], name: 'characteristic'
 });

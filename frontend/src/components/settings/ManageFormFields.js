@@ -134,7 +134,7 @@ export default function ManageFormFields() {
         setUsedCharacteristicIds(usedCharacteristicIds);
       });
     }
-  }, [formId]);
+  }, [formId, formType]);
 
   const submit = async () => {
     console.log(form);
@@ -160,7 +160,7 @@ export default function ManageFormFields() {
   const handleChange = useCallback(name => e => {
     const value = e.target.value;
     setState(state => ({...state, [name]: value}));
-  }, [state.fields]);
+  }, [state.fields, formType]);
 
   const handleDeleteField = useCallback((stepIndex, fieldIndex) => {
     setForm(form => {
@@ -357,6 +357,7 @@ export default function ManageFormFields() {
 
     return form.formStructure.map((step, index) => {
       const {stepName, fields} = step;
+      console.log(fields)
       return (
         <Box key={index} sx={{pt: 1}}>
           <Typography variant="h6" color="textSecondary">
@@ -382,7 +383,7 @@ export default function ManageFormFields() {
         </Box>
       );
     });
-  }, [form, handleDeleteField, handleRemoveStep]);
+  }, [form, handleDeleteField, handleRemoveStep, formType]);
 
   if (loading)
     return <Loading/>

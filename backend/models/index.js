@@ -5,7 +5,7 @@ module.exports = {
   ...require('./serviceProvider'),
   ...require('./userAccount'),
   ...require('./ClientFunctionalities/characteristic'),
-  ...require('./ClientFunctionalities/characteristicImplementation'),
+  ...require('./ClientFunctionalities/formItemImplementation'),
   ...require('./ClientFunctionalities/fieldType'),
   ...require('./ClientFunctionalities/option'),
   ...require('./ClientFunctionalities/questionOccurrence'),

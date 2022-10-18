@@ -7,7 +7,7 @@ const {GDBOptionModel} = require("./option");
  * @type {GDBUtils.GraphDBModelConstructor}
  */
 
-const GDBCIModel = createGraphDBModel({
+const GDBFIIModel = createGraphDBModel({
   label: {type: String, internalKey: ':hasLabel'},
   multipleValues: {type: Boolean, internalKey: ':hasMultipleValues'},
   valueDataType: {type: Types.NamedIndividual, internalKey: ':hasValueDataType'},
@@ -17,9 +17,9 @@ const GDBCIModel = createGraphDBModel({
   //required:{type: Boolean, internalKey: ':isRequired'},
   optionsFromClass: {type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
 }, {
-  rdfTypes: [':CharacteristicImplementation'], name: 'characteristicImplementation'
+  rdfTypes: [':FormItemImplementation'], name: 'formItemImplementation'
 });
 
 module.exports = {
-  GDBCIModel
+  GDBFIIModel
 }
