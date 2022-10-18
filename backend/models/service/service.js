@@ -13,7 +13,7 @@ const GDBServiceModel = createGraphDBModel({
   eligibilityCondition: {type: String, internalKey: ':hasEligibilityCondition'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
-  needSatisfier: {type: GDBNeedSatisfierModel, internalKey: ':hasNeedSatisfier'}
+  needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'}
 }, {
   rdfTypes: [':Service'], name: 'service'
 });

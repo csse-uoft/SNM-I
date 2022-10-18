@@ -21,6 +21,7 @@ import {
 import { fetchCharacteristics } from "../../api/characteristicApi";
 import { Picker } from "./components/Pickers";
 import { fetchQuestions } from "../../api/questionApi";
+import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 
 
 export default function ManageFormFields() {
@@ -42,6 +43,12 @@ export default function ManageFormFields() {
   const [questionOptions, setQuestionOptions] = useState({});
   const [selectedQuestionId, setSelectedQuestionId] = useState('');
   const [usedQuestionIds, setUsedQuestionIds] = useState([]);
+
+  // internalTypes Related
+  const [internalTypes, setInternalTypes] = useState({});
+  const [internalTypeOptions, setInternalTypeOptions] = useState({});
+  const [selectedInternalTypeId, setSelectedInternalTypeId] = useState('');
+  const [usedInternalTypeIds, setUsedInternalTypeIds] = useState([]);
 
   const [state, setState] = useState({
     stepToAdd: '',
@@ -83,6 +90,18 @@ export default function ManageFormFields() {
         }
         setQuestions(dict);
         setQuestionOptions(options);
+      }),
+
+      // fetch internalTypes
+      fetchInternalTypeByFormType(formType).then(({internalTypes}) => {
+        const dict = {}
+        const options = {}
+        for (const internalType of internalTypes) {
+          dict[internalType._id] = internalType;
+          options[internalType._id] = internalType.name;
+        }
+        setInternalTypes(dict);
+        setInternalTypeOptions(options);
       })
     ]).then(() => {
       setLoading(false);
@@ -186,6 +205,16 @@ export default function ManageFormFields() {
 
   }, [selectedQuestionId, questions, state.selectedStep]);
 
+  const handleAddInternalType = useCallback(() => {
+    setForm(form => {
+      const formStructure = form.formStructure.find(structure => state.selectedStep === structure.stepName);
+      formStructure.fields = [...formStructure.fields, {type: 'internalType', ...internalTypes[selectedInternalTypeId]}]
+      return {...form};
+    });
+    setUsedInternalTypeIds(used => [...used, selectedCharacteristicId])
+
+  }, [selectedInternalTypeId, internalTypes, state.selectedStep]);
+
   const handleAddStep = useCallback(() => {
     const existedStepNames = form.formStructure.map(s => s.stepName);
     if (existedStepNames.includes(state.stepToAdd)) {
@@ -270,6 +299,7 @@ export default function ManageFormFields() {
   }, [state.stepToAdd, formType, handleChange, handleAddStep, errors]);
 
   const getNewFieldComponent = useCallback(() => {
+    console.log(!selectedInternalTypeId)
     if (!formType) return null;
     return (
       <Grid container alignItems="center" spacing={2}>
@@ -286,15 +316,15 @@ export default function ManageFormFields() {
           />
         </Grid>
         <Grid item sm={9} xs={10}>
-          <Picker
+          {Object.keys(characteristics).length > 0? <Picker
             label={"characteristic"}
             onChange={setSelectedCharacteristicId}
             options={characteristicOptions}
             usedOptionKeys={usedCharacteristicIds}
             onAdd={handleAddCharacteristic}
             disabledAdd={!selectedCharacteristicId || !state.selectedStep}
-          />
-          {formType !== 'service' && formType !== 'serviceOccurrence'?
+          />: <div/>}
+          {Object.keys(questions).length > 0?
             <Picker
             label={"question"}
             onChange={setSelectedQuestionId}
@@ -304,13 +334,23 @@ export default function ManageFormFields() {
             disabledAdd={!selectedQuestionId || !state.selectedStep}
           />:
           <div/>}
+          {Object.keys(internalTypes).length > 0?
+            <Picker
+              label={"internal type"}
+              onChange={setSelectedInternalTypeId}
+              options={internalTypeOptions}
+              usedOptionKeys={usedInternalTypeIds}
+              onAdd={handleAddInternalType}
+              disabledAdd={!state.selectedStep || !selectedInternalTypeId}
+            />:
+            <div/>}
 
         </Grid>
       </Grid>
     )
-  }, [state.fields, formType, handleChange, handleAddCharacteristic, state.selectedField,
-    state.selectedStep, characteristicOptions, form.formStructure, usedCharacteristicIds,
-    questionOptions, usedQuestionIds, selectedCharacteristicId, selectedQuestionId]);
+  }, [state.fields, formType, handleChange, handleAddCharacteristic, state.selectedField, handleAddInternalType,
+    state.selectedStep, characteristicOptions, form.formStructure, usedCharacteristicIds, usedInternalTypeIds,
+    internalTypeOptions, questionOptions, usedQuestionIds, selectedCharacteristicId, selectedQuestionId, selectedInternalTypeId]);
 
   const fieldsComponents = useMemo(() => {
     if (form.formStructure.length === 0) return null;

@@ -11,5 +11,6 @@ module.exports = {
   advancedSearchRoute: require('./advancedSearch'),
   serviceProviderRoute: require('./serviceProviders'),
   needRoute: require('./need'),
-  needSatisfierRoute: require('./needSatisfier')
+  needSatisfierRoute: require('./needSatisfier'),
+  internalTypeRoute: require('./internalType')
 }
