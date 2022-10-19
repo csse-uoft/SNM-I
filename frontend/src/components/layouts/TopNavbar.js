@@ -103,7 +103,7 @@ function TopNavBar() {
                 <Typography variant="inherit">Services</Typography>
               </MenuItem>
 
-              <MenuItem onClick={handleLink(`/service occurrences`)}>
+              <MenuItem onClick={handleLink(`/serviceOccurrences`)}>
                 <ListItemIcon>
                   <LocationCityIcon fontSize="medium" sx={{color: 'black'}}/>
                 </ListItemIcon>

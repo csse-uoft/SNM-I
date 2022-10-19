@@ -15,7 +15,7 @@ const GDBServiceOccurrenceModel = createGraphDBModel({
   needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: 'hasNeedSatisfier'},
   needSatisfierOccurrence: {type: [GDBNeedSatisfierOccurrenceModel], internalKey: ':hasNeedSatisfierOccurrence'},
   description: {type: String, internalKey: 'cids:hasDescription'},
-  characteristicOccurrence: {type: GDBCOModel, internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':ServiceOccurrence'], name: 'serviceOccurrence'
 });

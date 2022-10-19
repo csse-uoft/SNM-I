@@ -57,7 +57,8 @@ import VisualizeAppointment from "./components/appointment/visualizeAppointment"
 import Needs from "./components/need/needs";
 import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
-
+import ServiceOccurrences from "./components/ServiceOccurrences";
+import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -107,7 +108,8 @@ const routes = (
     <Route path="/services/:id" element={<PrivateRoute element={VisualizeService}/>}/>
     <Route path="/services" element={<PrivateRoute element={Services}/>}/>
 
-    {/*<Route path="/serviceOccurrence" element={<PrivateRoute element={}/>}/>*/}
+    <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
+    <Route path="/serviceOccurrences/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
 
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>

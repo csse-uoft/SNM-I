@@ -14,6 +14,8 @@ const {Server400Error} = require("../../utils");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBVolunteerModel} = require("../../models/volunteer");
 const {GDBAppointmentModel} = require("../../models/appointment");
+const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
+const {GDBInternalTypeModel} = require("../../models/internalType");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -22,10 +24,12 @@ const genericType2Model = {
   'service': GDBServiceModel,
   'program': GDBProgramModel,
   'appointment': GDBAppointmentModel,
+  'serviceOccurrence': GDBServiceOccurrenceModel
 }
 
 const genericType2Checker = {
   'service': noQuestion,
+  'serviceOccurrence': noQuestion
 }
 
 function noQuestion(characteristics, questions) {
@@ -107,13 +111,15 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
 
 
 
-const fetchCharacteristicAndQuestionsBasedOnForms = async (characteristics, questions, fields) => {
+const fetchCharacteristicQuestionsInternalTypesBasedOnForms = async (characteristics, questions, internalTypes, fields) => {
   for (const key of Object.keys(fields)) {
     const [type, id] = key.split('_');
     if (type === 'characteristic') {
       characteristics[id] = null;
     } else if (type === 'question') {
       questions[id] = null;
+    } else if (type === 'internalType') {
+      internalTypes[id] = null;
     }
   }
   // Fetch characteristics & questions from database and put them into dictionary
@@ -123,6 +129,9 @@ const fetchCharacteristicAndQuestionsBasedOnForms = async (characteristics, ques
   if (Object.keys(questions).length)
     (await GDBQuestionModel.find({_id: {$in: Object.keys(questions)}}, {populates: ['implementation']}))
       .forEach(item => questions[item._id] = item);
+  if (Object.keys(internalTypes).length)
+    (await GDBInternalTypeModel.find({_id: {$in: Object.keys(internalTypes)}}, {populates: ['implementation']}))
+      .forEach(item => internalTypes[item._id] = item);
 }
 
 async function fetchSingleGenericHelper(genericType, id) {
@@ -253,9 +262,10 @@ const createSingleGenericHelper = async (data, genericType) => {
 
   const questions = {};
   const characteristics = {};
+  const internalTypes = {};
 
   // extract questions and characteristics based on fields from the database
-  await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields)
+  await fetchCharacteristicQuestionsInternalTypesBasedOnForms(characteristics, questions,internalTypes, data.fields);
   if(genericType2Checker[genericType])
     genericType2Checker[genericType](characteristics, questions);
 
@@ -286,9 +296,18 @@ const createSingleGenericHelper = async (data, genericType) => {
       instanceData.characteristicOccurrences.push(occurrence);
 
     } else if (type === 'question') {
-      await addIdToUsage('question', genericType, id)
+      await addIdToUsage('question', genericType, id);
       const occurrence = {occurrenceOf: questions[id], stringValue: value};
       instanceData.questionOccurrences.push(occurrence);
+    } else if(type === 'internalType') {
+      await addIdToUsage('internalType', genericType, id);
+
+      const internalType = internalTypes[id];
+      const property = linkedProperty(genericType, internalType)
+      if (property) {
+        instanceData[property] = value
+        // instanceData[property + 's'] = occurrence.multipleObjectValue todo: what if there are multiple
+      }
     }
   }
 

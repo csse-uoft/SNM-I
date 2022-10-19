@@ -72,7 +72,6 @@ export default function GenericForm({name, mainPage, isProvider}) {
           for (const field of step.fields) {
             const className = field?.implementation?.optionsFromClass;
             if (className) {
-              console.log(className)
               await getInstancesInClass(className)
                 .then(options => setDynamicOptions(prev => ({...prev, [className]: options})));
             }
@@ -127,12 +126,12 @@ export default function GenericForm({name, mainPage, isProvider}) {
   const getStepContent = stepIdx => {
     const step = dynamicForm.formStructure[stepIdx].fields;
     return <Box sx={contentStyle}>
-      {step.map(({required, id, type, implementation, content}, index) => {
+      {step.map(({required, id, type, implementation, content, _id}, index) => {
 
         if (type === 'question') {
           return <GeneralField key={index} label={content} value={form.fields[`${type}_${id}`]}
                                onChange={handleChange(`${type}_${id}`)}/>;
-        } else if (type === 'characteristic') {
+        } else if (type === 'characteristic' || type === 'internalType') {
           const fieldType = implementation.fieldType.type;
           const {label, optionsFromClass} = implementation;
 
@@ -144,9 +143,9 @@ export default function GenericForm({name, mainPage, isProvider}) {
             implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
           }
 
-          return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required}
+          return <FieldGroup component={fieldType} key={id? `${type}_${id}`: `${type}_${_id}`} label={label} required={required}
                              options={fieldOptions}
-                             value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
+                             value={form.fields[id? `${type}_${id}`:`${type}_${_id}`]} onChange={handleChange(id? `${type}_${id}`:`${type}_${_id}`)}/>;
         }
       })}
     </Box>;
