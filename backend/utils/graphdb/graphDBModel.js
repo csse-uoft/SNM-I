@@ -180,11 +180,11 @@ class GraphDBModel {
             // nested model
             else if (typeof innerType === "function") {
               // already created instance, given an instance name
-              if (typeof val === "string") {
-                if (val.includes('://'))
-                  queryBody += `<${val}>`
-                else if (val.includes(':'))
-                  queryBody += val;
+              if (typeof item === "string") {
+                if (item.includes('://'))
+                  queryBody += `<${item}>`
+                else if (item.includes(':'))
+                  queryBody += item;
                 else
                   throw new Error('Improper instance syntax.');
 
