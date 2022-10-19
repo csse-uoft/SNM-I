@@ -180,8 +180,14 @@ class GraphDBModel {
             // nested model
             else if (typeof innerType === "function") {
               // already created instance, given an instance name
-              if (typeof item === "string") {
-                queryBody += `${item}`;
+              if (typeof val === "string") {
+                if (val.includes('://'))
+                  queryBody += `<${val}>`
+                else if (val.includes(':'))
+                  queryBody += val;
+                else
+                  throw new Error('Improper instance syntax.');
+
               } else if (item instanceof GraphDBDocument && !item.isNew) {
                 queryBody += `${item.individualName}`;
               } else {
