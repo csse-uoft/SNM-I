@@ -3,28 +3,19 @@ import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
 
-const TYPE = 'serviceOccurrences';
+const TYPE = 'serviceOccurrence';
 
 const columnsWithoutOptions = [
   {
-    label: 'Occurrence Of',
-    body: ({_id, service}) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{service}</Link>;
+    label: 'Description',
+    body: ({_id, description}) => {
+      return <Link color to={`/${TYPE}/${_id}/edit`}>{description}</Link>;
     }
   },
-  // {
-  //   label: 'Provider',
-  //   body: ({provider}) => {
-  //     return provider;
-  //     return <Link color to={`/providers/${provider.split('_')[1]}`}>
-  //       {provider}
-  //     </Link>;
-  //   }
-  // },
-  // {
-  //   label: 'Description',
-  //   body: ({desc}) => desc
-  // },
+  {
+    label: 'Occurrence Of',
+    body: ({occurrenceOf}) => occurrenceOf
+  },
   // {
   //   label: 'Category',
   //   body: ({category}) => category
@@ -33,7 +24,7 @@ const columnsWithoutOptions = [
 
 export default function ServiceOccurrences() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = serviceOccurrence => serviceOccurrence._id;
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     return [];
