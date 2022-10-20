@@ -16,6 +16,8 @@ const {GDBVolunteerModel} = require("../../models/volunteer");
 const {GDBAppointmentModel} = require("../../models/appointment");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
+const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
+const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -30,6 +32,35 @@ const genericType2Model = {
 const genericType2Checker = {
   'service': noQuestion,
   'serviceOccurrence': noQuestion
+}
+
+
+
+const serviceOccurrenceInternalTypeTreater = async (internalType, instanceData, value) => {
+  const property = linkedProperty('serviceOccurrence', internalType)
+  if (property === 'occurrenceOf') {
+    instanceData[property] = value
+  }else if(property === 'needSatisfier') {
+    instanceData['needSatisfiers'] = value;
+    const needSatisfierOccurrences = []
+    for (let needSatisfierURI of value){
+      const [_, nsid] = needSatisfierURI.split('_');
+      const needSatisfierOccurrenceData = {occurrenceOf: needSatisfierURI}
+      const needSatisfier = await GDBNeedSatisfierModel.findById(nsid);
+      needSatisfierOccurrenceData.address = needSatisfier.address;
+      needSatisfierOccurrenceData.startDate = needSatisfier.startDate;
+      needSatisfierOccurrenceData.endDate = needSatisfier.endDate;
+      needSatisfierOccurrenceData.description = needSatisfier.description;
+      const needSatisfierOccurrence = GDBNeedSatisfierOccurrenceModel(needSatisfierOccurrenceData);
+      await needSatisfierOccurrence.save();
+      needSatisfierOccurrences.push(needSatisfierOccurrence);
+    }
+    instanceData['needSatisfierOccurrences'] = needSatisfierOccurrences;
+  }
+}
+
+const genericType2InternalTypeTreater = {
+  'serviceOccurrence': serviceOccurrenceInternalTypeTreater,
 }
 
 function noQuestion(characteristics, questions) {
@@ -303,11 +334,7 @@ const createSingleGenericHelper = async (data, genericType) => {
       await addIdToUsage('internalType', genericType, id);
 
       const internalType = internalTypes[id];
-      const property = linkedProperty(genericType, internalType)
-      if (property) {
-        instanceData[property] = value
-        // instanceData[property + 's'] = occurrence.multipleObjectValue todo: what if there are multiple
-      }
+      await genericType2InternalTypeTreater[genericType](internalType, instanceData, value);
     }
   }
 

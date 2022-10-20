@@ -3,24 +3,24 @@ import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
 
-const TYPE = 'service occurrences';
+const TYPE = 'serviceOccurrences';
 
 const columnsWithoutOptions = [
   {
-    label: 'Name',
-    body: ({_id, name}) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>;
+    label: 'Occurrence Of',
+    body: ({_id, service}) => {
+      return <Link color to={`/${TYPE}/${_id}/edit`}>{service}</Link>;
     }
   },
-  {
-    label: 'Provider',
-    body: ({provider}) => {
-      return provider;
-      return <Link color to={`/providers/${provider.split('_')[1]}`}>
-        {provider}
-      </Link>;
-    }
-  },
+  // {
+  //   label: 'Provider',
+  //   body: ({provider}) => {
+  //     return provider;
+  //     return <Link color to={`/providers/${provider.split('_')[1]}`}>
+  //       {provider}
+  //     </Link>;
+  //   }
+  // },
   // {
   //   label: 'Description',
   //   body: ({desc}) => desc
@@ -48,19 +48,19 @@ export default function ServiceOccurrences() {
   };
 
   const fetchData = async () => {
-    const services = (await fetchMultipleGeneric('service')).data;
+    const serviceOccurrences = (await fetchMultipleGeneric(TYPE)).data;
     const data = [];
-    for (const service of services) {
-      const serviceData = {_id: service._id};
-      if (service.characteristicOccurrences)
-        for (const occ of service.characteristicOccurrences) {
+    for (const serviceOccurrence of serviceOccurrences) {
+      const serviceOccurrenceData = {_id: serviceOccurrence._id};
+      if (serviceOccurrence.characteristicOccurrences)
+        for (const occ of serviceOccurrence.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Service Name') {
-            serviceData.name = occ.dataStringValue;
+            serviceOccurrenceData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
-            serviceData.provider = occ.objectValue;
+            serviceOccurrenceData.provider = occ.objectValue;
           }
         }
-      data.push(serviceData);
+      data.push(serviceOccurrenceData);
     }
     return data;
   };

@@ -12,7 +12,7 @@ const GDBServiceOccurrenceModel = createGraphDBModel({
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   hoursOfOperation: {type: Types.NamedIndividual, internalKey: ':hasOperatingHours'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
-  needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: 'hasNeedSatisfier'},
+  needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   needSatisfierOccurrence: {type: [GDBNeedSatisfierOccurrenceModel], internalKey: ':hasNeedSatisfierOccurrence'},
   description: {type: String, internalKey: 'cids:hasDescription'},
   characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
