@@ -125,6 +125,18 @@ module.exports = [
       optionsFromClass: 'http://snmi#Service'
     }
   },
+  {
+    name: 'serviceOccurrenceForReferral',
+    predefinedProperty: 'http://snmi#hasServiceOccurrence',
+    formType: 'referral',
+    implementation: {
+      label: 'Service Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ServiceOccurrence'
+    }
+  },
+
   // below are for service registration
   {
     name: 'serviceOccurrenceForServiceRegistration',

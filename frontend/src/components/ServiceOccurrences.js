@@ -13,7 +13,7 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Occurrence Of',
+    label: 'Service Name',
     body: ({occurrenceOf}) => occurrenceOf
   },
   // {
@@ -40,17 +40,20 @@ export default function ServiceOccurrences() {
 
   const fetchData = async () => {
     const serviceOccurrences = (await fetchMultipleGeneric(TYPE)).data;
+    console.log(serviceOccurrences)
     const data = [];
     for (const serviceOccurrence of serviceOccurrences) {
       const serviceOccurrenceData = {_id: serviceOccurrence._id};
-      if (serviceOccurrence.characteristicOccurrences)
-        for (const occ of serviceOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Service Name') {
-            serviceOccurrenceData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Service Provider') {
-            serviceOccurrenceData.provider = occ.objectValue;
-          }
-        }
+      // if (serviceOccurrence.characteristicOccurrences)
+      //   for (const occ of serviceOccurrence.characteristicOccurrences) {
+      //    if (occ.occurrenceOf?.name === 'Description') {
+      //       serviceOccurrenceData.description = occ.dataStringValue;
+      //     }
+      //   }
+      if(serviceOccurrence.description)
+        serviceOccurrenceData.description = serviceOccurrence.description
+      if(serviceOccurrence.occurrenceOf)
+        serviceOccurrenceData.occurrenceOf = serviceOccurrence.occurrenceOf
       data.push(serviceOccurrenceData);
     }
     return data;
