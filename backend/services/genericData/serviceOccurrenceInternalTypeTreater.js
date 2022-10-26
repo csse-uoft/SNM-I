@@ -1,5 +1,6 @@
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
+const {linkedProperty} = require('./helper functions')
 
 const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = linkedProperty('serviceOccurrence', internalType);

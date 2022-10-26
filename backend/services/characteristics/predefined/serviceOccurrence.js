@@ -32,16 +32,6 @@ module.exports = [
     }
   },
 
-  {
-    name: 'Description',
-    description: 'Description of a service occurrence',
-    predefinedProperty: 'http://ontology.eil.utoronto.ca/cids/cids#description',
-    implementation: {
-      label: 'Description',
-      valueDataType: 'xsd:string',
-      fieldType: FieldTypes.TextField,
-    }
-  },
 
   // todo: mode and codes
 ]

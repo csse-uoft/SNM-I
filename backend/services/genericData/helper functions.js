@@ -81,4 +81,14 @@ const fetchCharacteristicQuestionsInternalTypesBasedOnForms = async (characteris
       .forEach(item => internalTypes[item._id] = item);
 };
 
-module.exports = {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence}
+function linkedProperty(genericType, characteristic) {
+  const {genericType2Model} = require('./index');
+  const schema = genericType2Model[genericType].schema;
+  for (let key in schema) {
+    if (schema[key].internalKey === characteristic.predefinedProperty)
+      return key;
+  }
+  return false;
+};
+
+module.exports = {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty}

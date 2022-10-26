@@ -32,14 +32,5 @@ module.exports = [
       optionsFromClass: 'http://helpseeker.co/compass#CL-Gender'
     }
   },
-  {
-    name: 'Address',
-    description: 'Address',
-    predefinedProperty: 'http://ontology.eil.utoronto.ca/tove/icontact#hasAddress',
-    implementation: {
-      label: 'Address',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.AddressField,
-    }
-  },
+
 ]

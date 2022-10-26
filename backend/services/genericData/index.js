@@ -25,7 +25,8 @@ const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurre
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {noQuestion} = require('./checkers')
 const {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater} = require("./serviceOccurrenceInternalTypeTreater");
-const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence} = require("./helper functions");
+const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty} = require("./helper functions");
+const {GDBReferralModel} = require("../../models/referral");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -34,7 +35,8 @@ const genericType2Model = {
   'service': GDBServiceModel,
   'program': GDBProgramModel,
   'appointment': GDBAppointmentModel,
-  'serviceOccurrence': GDBServiceOccurrenceModel
+  'serviceOccurrence': GDBServiceOccurrenceModel,
+  'referral': GDBReferralModel,
 };
 
 const genericType2Checker = {
@@ -71,14 +73,6 @@ const specialField2Model = {
 // help to detect the time
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
 
-const linkedProperty = (genericType, characteristic) => {
-  const schema = genericType2Model[genericType].schema;
-  for (let key in schema) {
-    if (schema[key].internalKey === characteristic.predefinedProperty)
-      return key;
-  }
-  return false;
-};
 
 
 async function fetchSingleGenericHelper(genericType, id) {
@@ -509,6 +503,7 @@ const fetchGenericDatas = async (req, res, next) => {
 
 
 module.exports = {
+  genericType2Model,
   fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
   createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper
 };

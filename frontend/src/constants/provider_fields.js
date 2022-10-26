@@ -17,6 +17,7 @@ export const allForms = {
   referral: 'Referral',
   serviceOccurrence: 'Service Occurrence',
   serviceRegistration: 'Service Registration',
+  serviceProvision: 'Service Provision',
   ...providerFormTypes
 };
 
