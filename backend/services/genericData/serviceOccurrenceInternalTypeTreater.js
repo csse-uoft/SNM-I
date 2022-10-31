@@ -40,4 +40,8 @@ const serviceOccurrenceInternalTypeFetchTreater = async (data) => {
   return result;
 };
 
-module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater}
+const serviceOccurrenceInternalTypeUpdateTreater = async (internalType, value, result) => {
+  await serviceOccurrenceInternalTypeCreateTreater(internalType, result, value);
+}
+
+module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater, serviceOccurrenceInternalTypeUpdateTreater}

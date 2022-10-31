@@ -24,9 +24,12 @@ const {GDBAppointmentModel} = require("../../models/appointment");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {noQuestion} = require('./checkers')
-const {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater} = require("./serviceOccurrenceInternalTypeTreater");
+const {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
+  serviceOccurrenceInternalTypeUpdateTreater
+} = require("./serviceOccurrenceInternalTypeTreater");
 const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty} = require("./helper functions");
 const {GDBReferralModel} = require("../../models/referral");
+
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -58,7 +61,7 @@ const genericType2InternalTypeFetchTreater = {
 };
 
 const genericType2InternalTypeUpdateTreater = {
-  // todo 'serviceOccurrence': serviceOccurrenceInternalTypeUpdateTreater,
+  'serviceOccurrence': serviceOccurrenceInternalTypeUpdateTreater,
   // todo 'service': ...
 };
 
@@ -302,7 +305,8 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
   // fetch characteristics and questions from GDB
   const questions = {};
   const characteristics = {};
-  await fetchCharacteristicAndQuestionsBasedOnForms(characteristics, questions, data.fields);
+  const internalTypes = {};
+  await fetchCharacteristicQuestionsInternalTypesBasedOnForms(characteristics, questions, internalTypes, data.fields);
 
   // check should we update or create a characteristicOccurrence or questionOccurrence
   // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
@@ -407,6 +411,11 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
       }
 
     }
+
+    if(type === 'internalType'){
+      await genericType2InternalTypeUpdateTreater[genericType](internalTypes[id],value,generic);
+    }
+
   }
   return generic;
 }
