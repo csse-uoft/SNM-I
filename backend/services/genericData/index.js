@@ -86,12 +86,9 @@ async function fetchSingleGenericHelper(genericType, id) {
     {populates: ['characteristicOccurrences', 'questionOccurrences']});
   // TODO: model.populate("characteristicOccurrences.occurrenceOf.implementation")
 
-  const result = {};
-  for (const property in data) {
-    if (property === 'characteristicOccurrences' || property === 'questionOccurrences')
-      continue;
-    result.property = data.property;
-  }
+  const inter = await GDBInternalTypeModel.findById(1);
+
+  const result = await genericType2InternalTypeFetchTreater[genericType](data);
 
   // Copy the values to occurrence.value regardless of its type.
   if (data.characteristicOccurrences)

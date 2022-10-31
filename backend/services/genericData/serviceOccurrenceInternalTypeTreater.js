@@ -1,6 +1,9 @@
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {linkedProperty} = require('./helper functions')
+const {genericType2Model} = require("./index");
+const {GDBInternalTypeModel} = require("../../models/internalType");
+const {SPARQL} = require('../../utils/graphdb/helpers');
 
 const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = linkedProperty('serviceOccurrence', internalType);
@@ -25,8 +28,16 @@ const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instance
   }
 };
 
-const serviceOccurrenceInternalTypeFetchTreater = () => {
-
+const serviceOccurrenceInternalTypeFetchTreater = async (data) => {
+  const result = {};
+  const schema =  data.schema;
+  for (const property in data) {
+    if (property === 'occurrenceOf' || property === 'address' || property === 'needSatisfiers' || property ==='needSatisfierOccurrences') {
+      const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: 'serviceOccurrence'});
+      result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+    }
+  }
+  return result;
 };
 
 module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater}
