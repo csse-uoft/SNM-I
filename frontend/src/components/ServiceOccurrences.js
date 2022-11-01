@@ -59,7 +59,7 @@ export default function ServiceOccurrences() {
     return data;
   };
 
-  const deleteService = (id) => deleteSingleGeneric('service', id);
+  const deleteService = (id) => deleteSingleGeneric('serviceOccurrence', id);
 
   return (
     <GenericPage

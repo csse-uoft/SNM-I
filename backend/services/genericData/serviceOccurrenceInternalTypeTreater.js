@@ -101,4 +101,9 @@ const serviceOccurrenceInternalTypeUpdateTreater = async (internalType, value, r
   }
 }
 
-module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater, serviceOccurrenceInternalTypeUpdateTreater}
+const serviceOccurrenceInternalTypeDeleteTreater = () => {
+
+}
+
+module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater, serviceOccurrenceInternalTypeUpdateTreater,
+  serviceOccurrenceInternalTypeDeleteTreater}
