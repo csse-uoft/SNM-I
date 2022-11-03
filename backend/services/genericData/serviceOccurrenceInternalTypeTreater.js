@@ -32,7 +32,7 @@ const serviceOccurrenceInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema =  data.schema;
   for (const property in data) {
-    if (property === 'occurrenceOf' || property === 'address') {
+    if (property === 'occurrenceOf') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: 'serviceOccurrence'});
       result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
     }else if(property === 'needSatisfiers'){
@@ -101,9 +101,6 @@ const serviceOccurrenceInternalTypeUpdateTreater = async (internalType, value, r
   }
 }
 
-const serviceOccurrenceInternalTypeDeleteTreater = () => {
 
-}
 
-module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater, serviceOccurrenceInternalTypeUpdateTreater,
-  serviceOccurrenceInternalTypeDeleteTreater}
+module.exports = {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater, serviceOccurrenceInternalTypeUpdateTreater, }

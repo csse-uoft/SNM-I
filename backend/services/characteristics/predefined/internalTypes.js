@@ -31,8 +31,30 @@ module.exports = [
     implementation: {
       label: 'Need Satisfier',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.SingleSelectField,
+      fieldType: FieldTypes.MultiSelectField,
       optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+  {
+    name: 'serviceProviderForService',
+    predefinedProperty: 'http://snmi#hasServiceProvider',
+    formType: 'service',
+    implementation: {
+      label: 'Service Provider',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ServiceProvider'
+    }
+  },
+  {
+    name: 'programForService',
+    predefinedProperty: 'http://snmi#hasProgram',
+    formType: 'service',
+    implementation: {
+      label: 'Program',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Program'
     }
   },
   // below are for appointment
