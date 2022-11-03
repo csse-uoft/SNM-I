@@ -14,12 +14,14 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Provider',
-    body: ({provider}) => {
-      return provider;
-      return <Link color to={`/providers/${provider.split('_')[1]}`}>
-        {provider}
+    body: ({serviceProvider}) =>{
+      return serviceProvider
+      return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
+        {serviceProvider}
       </Link>;
     }
+
+
   },
   // {
   //   label: 'Description',
@@ -60,6 +62,8 @@ export default function Services() {
             serviceData.provider = occ.objectValue;
           }
         }
+      if(service.serviceProvider)
+        serviceData.serviceProvider = service.serviceProvider;
       data.push(serviceData);
     }
     return data;

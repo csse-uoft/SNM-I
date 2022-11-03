@@ -92,7 +92,9 @@ async function fetchSingleGenericHelper(genericType, id) {
 
   const inter = await GDBInternalTypeModel.findById(1);
 
-  const result = await genericType2InternalTypeFetchTreater[genericType](data);
+  let result = {}
+  if(genericType2InternalTypeFetchTreater[genericType])
+    result = await genericType2InternalTypeFetchTreater[genericType](data);
 
   // Copy the values to occurrence.value regardless of its type.
   if (data.characteristicOccurrences)
