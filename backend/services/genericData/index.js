@@ -30,6 +30,7 @@ const {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalType
 const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty} = require("./helper functions");
 const {GDBReferralModel} = require("../../models/referral");
 const {serviceInternalTypeCreateTreater, serviceInternalTypeFetchTreater, serviceInternalTypeUpdateTreater} = require("./serviceInternalTypeTreater");
+const {referralInternalTypeCreateTreater, referralInternalTypeFetchTreater, referralInternalTypeUpdateTreater} = require("./referralInternalTypeTreater");
 
 
 const genericType2Model = {
@@ -54,20 +55,21 @@ const genericType2Checker = {
 const genericType2InternalTypeCreateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeCreateTreater,
   'service': serviceInternalTypeCreateTreater,
+  'referral': referralInternalTypeCreateTreater,
 };
 
 const genericType2InternalTypeFetchTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeFetchTreater,
   'service': serviceInternalTypeFetchTreater,
+  'referral': referralInternalTypeFetchTreater,
 };
 
 const genericType2InternalTypeUpdateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeUpdateTreater,
   'service': serviceInternalTypeUpdateTreater,
+  'referral': referralInternalTypeUpdateTreater,
 };
 
-// todo
-const genericType2InternalTypeDeleteTreater = {};
 
 const specialField2Model = {
   'address': GDBAddressModel,

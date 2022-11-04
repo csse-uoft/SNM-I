@@ -3,7 +3,6 @@ const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBServiceProviderModel} = require("./serviceProvider");
 const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 const {GDBServiceModel} = require("./service/service");
-const {GDBCharacteristicModel} = require("./ClientFunctionalities/characteristic");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBServiceOccurrenceModel} = require("./service/serviceOccurrence");
 
@@ -14,8 +13,8 @@ const GDBReferralModel = createGraphDBModel({
   date: {type: Date, internalKey: ':hasDate'},
   referringServiceProvider: {type: GDBServiceProviderModel, internalKey: ':hasReferringServiceProvider'},
   receivingServiceProvider: {type: GDBServiceProviderModel, internalKey: ':hasReceivingServiceProvider'},
-  note: {type: String, internalKey: 'hasNote'},
-  description: {type: String, internalKey: 'hasDescription'},
+  note: {type: String, internalKey: ':hasNote'},
+  description: {type: String, internalKey: 'cids:hasDescription'},
   needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':hasNeedOccurrence'},
   service: {type: GDBServiceModel, internalKey: ':forService'},
   serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},

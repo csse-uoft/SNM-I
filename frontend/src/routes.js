@@ -59,7 +59,8 @@ import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfie
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
 import ServiceOccurrences from "./components/ServiceOccurrences";
 import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
-import Referrals from "./components/referrals/referrals";
+import ReferralForm from "./components/referrals/ReferralForm";
+import Referrals from "./components/referrals/Referrals";
 
 const routes = (
   <Routes>
@@ -109,6 +110,11 @@ const routes = (
     <Route path="/services/new" element={<PrivateRoute element={ServiceForm}/>}/>
     <Route path="/services/:id" element={<PrivateRoute element={VisualizeService}/>}/>
     <Route path="/services" element={<PrivateRoute element={Services}/>}/>
+
+    <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
+    <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
+    <Route path="/referrals/:id" element={<PrivateRoute element={VisualizeService}/>}/>
+    <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
 
     <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
     <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>

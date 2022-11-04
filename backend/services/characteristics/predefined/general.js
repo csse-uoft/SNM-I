@@ -31,5 +31,24 @@ module.exports = [{
       fieldType: FieldTypes.TextField,
     }
   },
-
+  {
+    name: 'Date',
+    description: 'The date',
+    predefinedProperty: 'http://snmi#hasDate',
+    implementation: {
+      label: 'Date',
+      valueDataType: 'xsd:datetimes',
+      fieldType: FieldTypes.DateField,
+    }
+  },
+  {
+    name: 'Note',
+    description: 'The note',
+    predefinedProperty: 'http://snmi#hasNote',
+    implementation: {
+      label: 'Note',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.TextField,
+    }
+  },
 ]
