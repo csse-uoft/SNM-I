@@ -35,6 +35,13 @@ const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration"
 const {serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
   serviceRegistrationInternalTypeUpdateTreater
 } = require("./serviceRegistration");
+const {appointmentInternalTypeCreateTreater, appointmentInternalTypeFetchTreater, appointmentInternalTypeUpdateTreater} = require("./appointment");
+const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
+const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
+const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
+const {serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
+  serviceProvisionInternalTypeUpdateTreater
+} = require("./serviceProvision");
 
 
 const genericType2Model = {
@@ -46,7 +53,10 @@ const genericType2Model = {
   'appointment': GDBAppointmentModel,
   'serviceOccurrence': GDBServiceOccurrenceModel,
   'referral': GDBReferralModel,
-  'serviceRegistration': GDBServiceRegistrationModel
+  'serviceRegistration': GDBServiceRegistrationModel,
+  'serviceProvision': GDBServiceProvisionModel,
+  'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
+  'needOccurrence': GDBNeedOccurrenceModel
 };
 
 const genericType2Checker = {
@@ -62,6 +72,8 @@ const genericType2InternalTypeCreateTreater = {
   'service': serviceInternalTypeCreateTreater,
   'referral': referralInternalTypeCreateTreater,
   'serviceRegistration': serviceRegistrationInternalTypeCreateTreater,
+  'appointment': appointmentInternalTypeCreateTreater,
+  'serviceProvision': serviceProvisionInternalTypeCreateTreater,
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -69,6 +81,8 @@ const genericType2InternalTypeFetchTreater = {
   'service': serviceInternalTypeFetchTreater,
   'referral': referralInternalTypeFetchTreater,
   'serviceRegistration': serviceRegistrationInternalTypeFetchTreater,
+  'appointment': appointmentInternalTypeFetchTreater,
+  'serviceProvision': serviceProvisionInternalTypeFetchTreater,
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -76,6 +90,8 @@ const genericType2InternalTypeUpdateTreater = {
   'service': serviceInternalTypeUpdateTreater,
   'referral': referralInternalTypeUpdateTreater,
   'serviceRegistration': serviceRegistrationInternalTypeUpdateTreater,
+  'appointment': appointmentInternalTypeUpdateTreater,
+  'serviceProvision': serviceProvisionInternalTypeUpdateTreater,
 };
 
 

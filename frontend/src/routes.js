@@ -63,6 +63,8 @@ import ReferralForm from "./components/referrals/ReferralForm";
 import Referrals from "./components/referrals/Referrals";
 import ServiceRegistrationForm from "./components/serviceRegistration/ServiceRegistrationForm";
 import ServiceRegistrations from "./components/serviceRegistration/ServiceRegistrations";
+import ServiceProvisionForm from "./components/serviceProvision/serviceProvisionForm";
+import ServiceProvisions from "./components/serviceProvision/serviceProvisions";
 
 const routes = (
   <Routes>
@@ -133,6 +135,11 @@ const routes = (
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
+
+    <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
+    {/*<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    <Route path="/serviceProvisions/new" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
+    <Route path="/serviceProvisions" element={<PrivateRoute element={ServiceProvisions}/>}/>
 
     <Route path="/eligibility-criteria" element={<PrivateRoute element={Eligibilities}/>}/>
 

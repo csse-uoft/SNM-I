@@ -23,7 +23,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     occurrence.dataNumberValue = Number(value);
   } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
     occurrence.dataBooleanValue = !!value;
-  } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
+  } else if (characteristic.implementation.valueDataType === 'xsd:dateTimes') {
     if (TIMEPATTERN.test(value)) {
       value = '1970-01-01 ' + value; // when the field is time field, add 1970 to make it be able to stored into the database
     }

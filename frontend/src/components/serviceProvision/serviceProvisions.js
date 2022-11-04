@@ -1,9 +1,9 @@
 import React from 'react'
-import { Link } from './shared';
-import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { Link } from '../shared';
+import { GenericPage } from "../shared";
+import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
 
-const TYPE = 'appointments';
+const TYPE = 'serviceProvisions';
 
 const columnsWithoutOptions = [
   {
@@ -13,27 +13,27 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Client',
-    body: ({client}) => {
-      return client;
+    label: 'Service Occurrence',
+    body: ({serviceOccurrence}) => {
+      return serviceOccurrence;
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
     }
   },
   {
-    label: 'Person',
-    body: ({person}) => {
-      return person;
+    label: 'Start Date',
+    body: ({startDate}) => {
+      return new Date(startDate).toLocaleString();
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
     }
   },
   {
-    label: 'Datetime',
-    body: ({datetime}) => {
-      return new Date(datetime).toLocaleString();
+    label: 'End Date',
+    body: ({endDate}) => {
+      return new Date(endDate).toLocaleString();
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
@@ -49,7 +49,7 @@ const columnsWithoutOptions = [
   // }
 ];
 
-export default function Appointments() {
+export default function ServiceProvisions() {
 
   const nameFormatter = appointment => appointment.name;
 
@@ -66,20 +66,16 @@ export default function Appointments() {
   };
 
   const fetchData = async () => {
-    const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const appointmens = (await fetchMultipleGeneric('serviceProvision')).data;
     const data = [];
     for (const appointment of appointmens) {
       const appointmentData = {_id: appointment._id};
       if (appointment.characteristicOccurrences)
         for (const occ of appointment.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Appointment Name') {
-            appointmentData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Client') {
-            appointmentData.client = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Person') {
-            appointmentData.person = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Date and Time') {
-            appointmentData.datetime = occ.dataDateValue;
+          if (occ.occurrenceOf?.name === 'Start Date') {
+            appointmentData.startDate = occ.dataDateValue;
+          } else if (occ.occurrenceOf?.name === 'End Date') {
+            appointmentData.endDate = occ.dataDateValue;
           }
         }
       data.push(appointmentData);
@@ -87,14 +83,14 @@ export default function Appointments() {
     return data;
   }
 
-  const deleteAppointment = (id) => deleteSingleGeneric('appointment', id);
+  const deleteServiceProvision = (id) => deleteSingleGeneric('serviceProvision', id);
 
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteAppointment}
+      deleteItem={deleteServiceProvision}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{

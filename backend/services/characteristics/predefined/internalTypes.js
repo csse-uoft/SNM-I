@@ -57,6 +57,41 @@ module.exports = [
       optionsFromClass: 'http://snmi#Program'
     }
   },
+  // below are for service Provision
+  {
+    name: 'needOccurrenceForServiceProvision',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
+    formType: 'serviceProvision',
+    implementation: {
+      label: 'Need Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedOccurrence'
+    }
+  },
+  {
+    name: 'needSatisifierOccurrenceForServiceProvision',
+    predefinedProperty: 'http://snmi#hasNeedSatisfierOccurrence',
+    formType: 'serviceProvision',
+    implementation: {
+      label: 'Need Satisfier Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfierOccurrence'
+    }
+  },
+  {
+    name: 'serviceOccurrenceForServiceProvision',
+    predefinedProperty: 'http://snmi#hasServiceOccurrence',
+    formType: 'serviceProvision',
+    implementation: {
+      label: 'Service Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ServiceOccurrence'
+    }
+  },
+
   // below are for appointment
   {
     name: 'clientForAppointment',
