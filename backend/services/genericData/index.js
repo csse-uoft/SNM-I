@@ -76,8 +76,6 @@ const specialField2Model = {
   'phoneNumber': GDBPhoneNumberModel
 };
 
-// help to detect the time
-const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
 
 
 

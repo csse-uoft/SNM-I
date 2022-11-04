@@ -18,7 +18,7 @@ const GDBReferralModel = createGraphDBModel({
   needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':hasNeedOccurrence'},
   service: {type: GDBServiceModel, internalKey: ':forService'},
   serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
-  characteristicOccurrence : {type: GDBCOModel, internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':Referral'], name: 'referral'
 });

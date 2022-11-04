@@ -3,6 +3,9 @@ const {GDBPhoneNumberModel, GDBAddressModel, GDBCharacteristicModel} = require("
 const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBInternalTypeModel} = require("../../models/internalType");
+
+// help to detect the time
+const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
 /**
  * This function saves one characteristic occurrence.
  * @param characteristic
