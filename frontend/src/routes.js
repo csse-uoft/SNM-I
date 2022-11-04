@@ -61,6 +61,8 @@ import ServiceOccurrences from "./components/ServiceOccurrences";
 import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
 import ReferralForm from "./components/referrals/ReferralForm";
 import Referrals from "./components/referrals/Referrals";
+import ServiceRegistrationForm from "./components/serviceRegistration/ServiceRegistrationForm";
+import ServiceRegistrations from "./components/serviceRegistration/ServiceRegistrations";
 
 const routes = (
   <Routes>
@@ -113,8 +115,13 @@ const routes = (
 
     <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
-    <Route path="/referrals/:id" element={<PrivateRoute element={VisualizeService}/>}/>
+    {/*<Route path="/referrals/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
+
+    <Route path="/serviceRegistrations/:id/edit" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
+    <Route path="/serviceRegistrations/new" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
+    {/*<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
+    <Route path="/serviceRegistrations" element={<PrivateRoute element={ServiceRegistrations}/>}/>
 
     <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
     <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>

@@ -31,6 +31,10 @@ const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacter
 const {GDBReferralModel} = require("../../models/referral");
 const {serviceInternalTypeCreateTreater, serviceInternalTypeFetchTreater, serviceInternalTypeUpdateTreater} = require("./serviceInternalTypeTreater");
 const {referralInternalTypeCreateTreater, referralInternalTypeFetchTreater, referralInternalTypeUpdateTreater} = require("./referralInternalTypeTreater");
+const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration");
+const {serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
+  serviceRegistrationInternalTypeUpdateTreater
+} = require("./serviceRegistration");
 
 
 const genericType2Model = {
@@ -42,6 +46,7 @@ const genericType2Model = {
   'appointment': GDBAppointmentModel,
   'serviceOccurrence': GDBServiceOccurrenceModel,
   'referral': GDBReferralModel,
+  'serviceRegistration': GDBServiceRegistrationModel
 };
 
 const genericType2Checker = {
@@ -56,18 +61,21 @@ const genericType2InternalTypeCreateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeCreateTreater,
   'service': serviceInternalTypeCreateTreater,
   'referral': referralInternalTypeCreateTreater,
+  'serviceRegistration': serviceRegistrationInternalTypeCreateTreater,
 };
 
 const genericType2InternalTypeFetchTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeFetchTreater,
   'service': serviceInternalTypeFetchTreater,
   'referral': referralInternalTypeFetchTreater,
+  'serviceRegistration': serviceRegistrationInternalTypeFetchTreater,
 };
 
 const genericType2InternalTypeUpdateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeUpdateTreater,
   'service': serviceInternalTypeUpdateTreater,
   'referral': referralInternalTypeUpdateTreater,
+  'serviceRegistration': serviceRegistrationInternalTypeUpdateTreater,
 };
 
 
@@ -500,6 +508,8 @@ async function deleteSingleGeneric(req, res, next) {
 const fetchGenericDatas = async (req, res, next) => {
   const {genericType} = req.params;
   try {
+    if(!genericType2Model[genericType])
+      return res.status(400).json({success: false, message: 'No such generic type'})
     const data = await genericType2Model[genericType].find({},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']});
 
