@@ -25,7 +25,7 @@ async function getRepository() {
  */
 async function getGraphDBVersion() {
   const {headers} = await fetch(graphdb.addr + '/protocol');
-  return headers.get('server').match(/GraphDB\/(.*) /)[1].split('.').map(num => Number(num));
+  return headers.get('server').match(/GraphDB(?:Free)?\/(.*) /)[1].split('.').map(num => Number(num));
 }
 
 async function createRepository(dbClient, dbName) {

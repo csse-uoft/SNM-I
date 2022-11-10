@@ -11,14 +11,4 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
-  {
-    name: 'Organization Address',
-    description: 'Organization address',
-    predefinedProperty: 'http://ontology.eil.utoronto.ca/tove/icontact#hasAddress',
-    implementation: {
-      label: 'Organization Address',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.AddressField,
-    }
-  },
 ]

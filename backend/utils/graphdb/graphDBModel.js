@@ -181,7 +181,13 @@ class GraphDBModel {
             else if (typeof innerType === "function") {
               // already created instance, given an instance name
               if (typeof item === "string") {
-                queryBody += `${item}`;
+                if (item.includes('://'))
+                  queryBody += `<${item}>`
+                else if (item.includes(':'))
+                  queryBody += item;
+                else
+                  throw new Error('Improper instance syntax.');
+
               } else if (item instanceof GraphDBDocument && !item.isNew) {
                 queryBody += `${item.individualName}`;
               } else {

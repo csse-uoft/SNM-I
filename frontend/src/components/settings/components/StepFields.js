@@ -6,11 +6,11 @@ import RequiredSwitch from "./RequiredSwitch";
 
 export default function StepFields({stepFields, characteristics, stepIndex, handleDeleteField}) {
   return stepFields.map((field, index) => {
-    const {id, required, type, implementation, content} = field;
-    const label = type === 'characteristic' ? implementation.label : content;
+    const {id, required, type, implementation, content, _id} = field;
+    const label = implementation ? implementation.label : content;
 
     // A unique key for frontend
-    const frontendKey = type + '-' + id;
+    const frontendKey = id? type + '-' + id: type + '-' + _id;
 
     return (
       <Draggable key={frontendKey} draggableId={frontendKey} index={index}>

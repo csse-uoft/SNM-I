@@ -2,6 +2,7 @@ const {GDBFieldTypeModel} = require('../../models/ClientFunctionalities/fieldTyp
 const {GDBCharacteristicModel} = require('../../models/ClientFunctionalities/characteristic');
 const {GraphDB} = require('../../utils/graphdb');
 const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
+const {GDBInternalTypeModel} = require("../../models/internalType");
 
 const type2Label = {
   TextField: 'Text Field',
@@ -82,6 +83,26 @@ async function initPredefinedCharacteristics() {
 
 }
 
+async function initPredefinedInternalType() {
+  const {allPredefinedInternalType} = require('./predefined');
+  const predefined = {...allPredefinedInternalType}
+  const existingPredefined = await GDBInternalTypeModel.find({isPredefined: true});
+  for (const existingInternalType of existingPredefined) {
+    if (Object.keys(predefined).includes(existingInternalType.name)) {
+      Object.assign(existingInternalType, predefined);
+
+      // This won't be triggered if the predefined characteristic is not changed.
+      await existingInternalType.save();
+      delete predefined[existingInternalType.name];
+    }
+  }
+
+  // Create new field types
+  for (const internalType of Object.values(predefined)) {
+    await new GDBInternalTypeModel(internalType).save();
+  }
+}
+
 
 async function getFieldTypes(req, res) {
   const fieldTypes = await GDBFieldTypeModel.find({});
@@ -129,5 +150,5 @@ async function getAllClasses(req, res) {
 
 module.exports = {
   initFieldTypes, getFieldTypes, getDataTypes, getAllClasses,
-  initPredefinedCharacteristics, FieldTypes: fieldTypeCache
+  initPredefinedCharacteristics, FieldTypes: fieldTypeCache, initPredefinedInternalType
 }

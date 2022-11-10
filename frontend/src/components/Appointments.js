@@ -7,9 +7,9 @@ const TYPE = 'appointments';
 
 const columnsWithoutOptions = [
   {
-    label: 'Name',
-    body: ({_id, name}) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>
+    label: 'ID',
+    body: ({_id}) => {
+      return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>
     }
   },
   {

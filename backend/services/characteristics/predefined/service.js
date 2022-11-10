@@ -11,17 +11,6 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
-  {
-    name: 'Service Provider',
-    description: 'Service provider of the service',
-    predefinedProperty: 'http://snmi#hasServiceProvider',
-    implementation: {
-      label: 'Service Provider',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#ServiceProvider'
-    }
-  },
 
   {
     name: 'Eligibility Condition',
@@ -34,16 +23,27 @@ module.exports = [
     }
   },
 
-  {
-    name: 'Need Satisfier',
-    description: 'Need satisifer of the service',
-    predefinedProperty: 'http://snmi#hasNeedSatisfier',
-    implementation: {
-      label: 'Need Satisfier',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#NeedSatisfier'
-    }
-  },
+  // {
+  //   name: 'Need Satisfier',
+  //   description: 'Need satisifer of the service',
+  //   predefinedProperty: 'http://snmi#hasNeedSatisfier',
+  //   implementation: {
+  //     label: 'Need Satisfier',
+  //     valueDataType: 'owl:NamedIndividual',
+  //     fieldType: FieldTypes.SingleSelectField,
+  //     optionsFromClass: 'http://snmi#NeedSatisfier'
+  //   }
+  // },
+  // {
+  //   name: 'Service Provider',
+  //   description: 'Service provider of the service',
+  //   predefinedProperty: 'http://snmi#hasServiceProvider',
+  //   implementation: {
+  //     label: 'Service Provider',
+  //     valueDataType: 'owl:NamedIndividual',
+  //     fieldType: FieldTypes.SingleSelectField,
+  //     optionsFromClass: 'http://snmi#ServiceProvider'
+  //   }
+  // },
   // todo: mode and codes
 ]

@@ -57,7 +57,16 @@ import VisualizeAppointment from "./components/appointment/visualizeAppointment"
 import Needs from "./components/need/needs";
 import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
-
+import ServiceOccurrences from "./components/ServiceOccurrences";
+import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
+import ReferralForm from "./components/referrals/ReferralForm";
+import Referrals from "./components/referrals/Referrals";
+import ServiceRegistrationForm from "./components/serviceRegistration/ServiceRegistrationForm";
+import ServiceRegistrations from "./components/serviceRegistration/ServiceRegistrations";
+import ServiceProvisionForm from "./components/serviceProvision/serviceProvisionForm";
+import ServiceProvisions from "./components/serviceProvision/serviceProvisions";
+import NeedOccurrenceForm from "./components/needOccurrence/needOccurrenceForm";
+import NeedOccurrences from "./components/needOccurrence/NeedOccurrences";
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -107,10 +116,36 @@ const routes = (
     <Route path="/services/:id" element={<PrivateRoute element={VisualizeService}/>}/>
     <Route path="/services" element={<PrivateRoute element={Services}/>}/>
 
+    <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
+    <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
+    {/*<Route path="/referrals/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
+    <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
+
+    <Route path="/serviceRegistrations/:id/edit" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
+    <Route path="/serviceRegistrations/new" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
+    {/*<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
+    <Route path="/serviceRegistrations" element={<PrivateRoute element={ServiceRegistrations}/>}/>
+
+    <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
+    <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
+    <Route path="/serviceOccurrence/:id/edit" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
+
+    <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
+
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
+
+    <Route path="/needOccurrences/:id/edit" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
+    {/*<Route path="/needOccurrences/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    <Route path="/needOccurrences/new" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
+    <Route path="/needOccurrences" element={<PrivateRoute element={NeedOccurrences}/>}/>
+
+    <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
+    {/*<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    <Route path="/serviceProvisions/new" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
+    <Route path="/serviceProvisions" element={<PrivateRoute element={ServiceProvisions}/>}/>
 
     <Route path="/eligibility-criteria" element={<PrivateRoute element={Eligibilities}/>}/>
 
