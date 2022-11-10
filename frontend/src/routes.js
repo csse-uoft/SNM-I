@@ -65,7 +65,8 @@ import ServiceRegistrationForm from "./components/serviceRegistration/ServiceReg
 import ServiceRegistrations from "./components/serviceRegistration/ServiceRegistrations";
 import ServiceProvisionForm from "./components/serviceProvision/serviceProvisionForm";
 import ServiceProvisions from "./components/serviceProvision/serviceProvisions";
-
+import NeedOccurrenceForm from "./components/needOccurrence/needOccurrenceForm";
+import NeedOccurrences from "./components/needOccurrence/NeedOccurrences";
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -135,6 +136,11 @@ const routes = (
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
+
+    <Route path="/needOccurrences/:id/edit" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
+    {/*<Route path="/needOccurrences/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    <Route path="/needOccurrences/new" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
+    <Route path="/needOccurrences" element={<PrivateRoute element={NeedOccurrences}/>}/>
 
     <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
     {/*<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}

@@ -138,6 +138,20 @@ function TopNavBar() {
                 <Typography variant="inherit">Referrals</Typography>
               </MenuItem>
 
+              <MenuItem onClick={handleLink(`/needSatisfierOccurrences`)}>
+                <ListItemIcon>
+                  <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Need Satisfier Occurrence</Typography>
+              </MenuItem>
+
+              <MenuItem onClick={handleLink(`/needOccurrences`)}>
+                <ListItemIcon>
+                  <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Need Occurrence</Typography>
+              </MenuItem>
+
               <MenuItem onClick={handleLink(`/goods`)}>
                 <ListItemIcon>
                   <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
