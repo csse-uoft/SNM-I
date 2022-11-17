@@ -2,15 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-  fetchUser,
-  updateUser,
-  createUser,
-  getProfile,
-  getUserProfileById,
-  updatePrimaryEmail,
-  updateProfile, updateUserForm
-} from "../../api/userApi";
+import { getUserProfileById, updateUserForm } from "../../api/userApi";
 import { Loading } from "../shared"
 import { isFieldEmpty } from "../../helpers";
 import {DUPLICATE_HELPER_TEXT, REQUIRED_HELPER_TEXT} from "../../constants";
@@ -162,6 +154,7 @@ export default function EditUserForm() {
         console.log('backend update not success.')
       }
     } catch (e){
+      console.log(e);
       setLoadingButton(false);
       console.log('catch e');
       console.log(e.json);

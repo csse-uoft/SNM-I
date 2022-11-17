@@ -5,8 +5,7 @@ import {defaultInvitationFields} from "../../constants/default_fields";
 import {Alert, AlertTitle, Button, Container, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {userInvitationFields} from "../../constants/userInvitationFields";
-import {fetchUser, updateUser, createUser} from "../../api/userApi";
-import {Loading} from "../shared"
+import {createUser} from "../../api/userApi";
 import {AlertDialog} from "../shared/Dialogs"
 import {isFieldEmpty} from "../../helpers";
 import {REQUIRED_HELPER_TEXT} from "../../constants";
