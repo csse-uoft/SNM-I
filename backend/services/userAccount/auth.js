@@ -45,7 +45,9 @@ const getUserSecurityQuestions = async (req, res, next) => {
       return res.status(400).json({success: false, message:'No such user'})
     }
     const securityQuestions = [userAccount.securityQuestions[0].question, userAccount.securityQuestions[1].question,userAccount.securityQuestions[2].question]
-    req.session.email = userAccount.primaryEmail
+    req.session.email = userAccount.primaryEmail;
+    req.session.accountId = userAccount._id;
+
     return res.status(200).json({success: true, message: 'Success', data:{email: userAccount.primaryEmail, securityQuestions}})
   }catch(e){
     next(e)
@@ -65,6 +67,7 @@ const checkUserSecurityQuestion = async (req, res, next) => {
         const match = await Hashing.validatePassword(answer, securityQuestion.hash, securityQuestion.salt)
         if (match) {
           req.session.email = email
+          req.session.accountId = userAccount._id;
           delete userAccount.salt;
           delete userAccount.hash;
           delete userAccount.securityQuestions;

@@ -165,7 +165,7 @@ export async function saveNewPassword(id, password) {
  * @returns {Promise<any>}
  */
 export function fetchUser(id) {
-  return getJson('/user/' + id + '/');
+  return getJson('/api/user/' + id + '/');
 }
 
 /**
@@ -190,10 +190,7 @@ export function getUserProfileById(id, params) {
  * This function deletes one user by id.
  * @param id
  * @param params
- * @param callback
  */
-export function deleteUser(id, params, callback) {
-  const response = deleteJson('/user/' + id + '/');
-  if (response.status !== 204)
-    throw Error('Server does not return correct code.');
+export function deleteUser(id, params) {
+  return deleteJson('/api/user/' + id);
 }

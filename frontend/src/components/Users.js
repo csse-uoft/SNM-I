@@ -94,16 +94,14 @@ export default function Users() {
       label: 'Expiration Date',
       body: ({expirationDate}) => {
         if(expirationDate)
-          return (new Date(expirationDate)).toString()
+          return new Date(expirationDate).toLocaleString()
       }
-
-
     },
     {
       label: ' ',
-      body: ({username, id}) =>
+      body: ({email, id}) =>
         <DropdownMenu urlPrefix={'users'} objectId={id}
-                      handleDelete={() => showDeleteDialog(id, username)}/>
+                      handleDelete={showDeleteDialog(id, email)}/>
     }
   ];
 

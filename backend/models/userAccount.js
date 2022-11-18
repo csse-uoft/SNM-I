@@ -25,7 +25,7 @@ const GDBUserAccountModel = createGraphDBModel({
   // Person information
   // firstName: givenName
   // lastName: familyName
-  primaryContact: {type: GDBPersonModel, internalKey: ':hasPrimaryContact', },
+  primaryContact: {type: GDBPersonModel, internalKey: ':hasPrimaryContact', onDelete: DeleteType.CASCADE},
 
   role: {type: String, internalKey: ':hasAccountRole'},
   positionInOrganization: {type: String, internalKey: ':hasPositionInOrganization'},
@@ -34,7 +34,7 @@ const GDBUserAccountModel = createGraphDBModel({
   status: {type: String, internalKey: ':hasAccountStatus'},
 
   // Exact 3 questions, the answer should be case-insensitive.
-  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', externalKey: 'securityQuestions'}
+  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', externalKey: 'securityQuestions', onDelete: DeleteType.CASCADE}
 
 }, {
   rdfTypes: [':UserAccount'], name: 'userAccount'
