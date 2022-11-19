@@ -1,7 +1,7 @@
 const {findUserAccountByEmail, updateUserAccount, validateCredentials, updateUserPassword,
     findUserAccountById, isEmailExists
 } = require("./user");
-const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail} = require("../../utils");
+const {sendVerificationMail, sendResetPasswordEmail, sendUpdatePrimaryEmail, Server400Error} = require("../../utils");
 const {sign} = require("jsonwebtoken");
 const {jwtConfig} = require("../../config");
 const {GDBUserAccountModel} = require("../../models");
@@ -172,6 +172,18 @@ const fetchUsers = async (req, res, next) => {
     }
 }
 
+const deleteUser = async (req, res, next) => {
+    if (req.params.id === req.session.accountId) {
+        return next(new Server400Error("User cannot delete itself."))
+    }
+    try {
+        await GDBUserAccountModel.findAndDelete({_id: req.params.id});
+        return res.status(204);
+    } catch (e) {
+        next(e)
+    }
+}
+
 module.exports = {getCurrentUserProfile, updateProfile, checkCurrentPassword, saveNewPassword, updatePrimaryEmail,
-fetchUsers, getUserProfileById, updateUserForm};
+fetchUsers, getUserProfileById, updateUserForm, deleteUser};
 
