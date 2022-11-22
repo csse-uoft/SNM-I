@@ -85,7 +85,7 @@ function TopNavBar() {
               PaperProps={{
                 style: {
                   maxHeight: ITEM_HEIGHT * 7,
-                  width: 170,
+                  width: 280,
                 },
               }}
             >
