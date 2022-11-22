@@ -56,14 +56,18 @@ app.use('/api', needRoute);
 app.use('/api', needSatisfierRoute);
 app.use('/api', internalTypeRoute);
 
+(async function () {
+  await initUserAccounts();
 
-initUserAccounts();
-initFieldTypes().then(() => {
-  initPredefinedCharacteristics();
-  initPredefinedInternalType();
-});
-initStreetTypes();
-initStreetDirections();
+  // Make sure the initialization process is in order
+  await initFieldTypes();
+  await initPredefinedCharacteristics();
+  await initPredefinedInternalType();
+
+  await initStreetTypes();
+  await initStreetDirections();
+})()
+
 
 app.use(errorHandler);
 
