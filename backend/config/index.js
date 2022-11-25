@@ -20,7 +20,7 @@ const config = {
     'https://www.snmi.ca'],
 
   frontend: {
-    addr: isProduction ? 'https://www.mixedusebydesign.com' : 'http://localhost:3000'
+    addr: isProduction ? 'https://www.socialneedsmarketplace.ca' : 'http://localhost:3000'
   },
 
   // pbkdf2 configuration, ~70ms with this config
