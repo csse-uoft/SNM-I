@@ -1,11 +1,11 @@
-import { Container, IconButton, Typography } from "@mui/material";
+import {Box, Container, IconButton, Tooltip, Typography} from "@mui/material";
 import SelectField from "../shared/fields/SelectField";
-import React, { useState, useMemo, useEffect } from "react";
-import { allForms } from "../../constants/provider_fields";
-import { CustomToolbar, DataTable, Link } from "../shared";
-import { useParams, useNavigate } from "react-router-dom";
-import { deleteDynamicForm, getDynamicFormsByFormType } from "../../api/dynamicFormApi";
-import { Edit, Delete } from "@mui/icons-material";
+import React, {useState, useMemo, useEffect} from "react";
+import {allForms} from "../../constants/provider_fields";
+import {CustomToolbar, DataTable, Link} from "../shared";
+import {useParams, useNavigate} from "react-router-dom";
+import {deleteDynamicForm, getDynamicFormsByFormType} from "../../api/dynamicFormApi";
+import {Edit, Delete} from "@mui/icons-material";
 
 
 export default function ManageForms() {
@@ -42,7 +42,11 @@ export default function ManageForms() {
       },
       {
         label: 'Created By',
-        body: ({createdBy}) => createdBy
+        body: ({createdBy}) => {
+          const text = createdBy.familyName && createdBy.givenName && (createdBy.familyName + ', ' + createdBy.givenName)
+            || createdBy.primaryEmail;
+          return <Tooltip title={createdBy.primaryEmail || 'No Email'}><Box display={'inline'}>{text}</Box></Tooltip>
+        }
       },
       {
         label: 'Modified At',

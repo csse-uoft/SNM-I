@@ -14,7 +14,7 @@ const field2Checker = {
 function haveNoQuestionChecker(formStructure) {
   formStructure.map(step => {
     step.fields.map(field => {
-      if(field.type === 'question')
+      if (field.type === 'question')
         throw new Server400Error('Wrong information fields')
     })
   })
@@ -30,7 +30,7 @@ async function createDynamicForm(req, res, next) {
   const createdBy = currentUser.individualName;
 
   try {
-    if(field2Checker[formType])
+    if (field2Checker[formType])
       field2Checker[formType](formStructure);
     const form = new MDBDynamicFormModel({
       name, formType, formStructure, createdBy, modifiedAt
@@ -72,19 +72,62 @@ async function getDynamicForm(req, res, next) {
   });
 }
 
+async function getFormsWithUserInfo(forms) {
+  const userIds = forms.map(form => form.createdBy.split("_").slice(-1)[0]);
+  if (userIds.length === 0) {
+    return forms;
+  }
+  const users = await GDBUserAccountModel.find({_id: {$in: userIds}}, {populates: ['primaryContact']})
+  const userId2UserInstance = new Map();
+  for (const user of users) {
+    userId2UserInstance.set(user._id, user);
+  }
+
+  const formsObject = [];
+  for (const form of forms) {
+    const user = userId2UserInstance.get(form.createdBy.split("_").slice(-1)[0]);
+    if (!user) {
+      // user is deleted
+      formsObject.push({
+        ...form.toJSON(),
+        createdBy: {
+          displayName: 'Deleted Account',
+        }
+      });
+    } else {
+      formsObject.push({
+        ...form.toJSON(),
+        createdBy: {
+          primaryEmail: user.primaryEmail,
+          displayName: user.displayName,
+          familyName: user.primaryContact.familyName,
+          givenName: user.primaryContact.givenName,
+        }
+      })
+    }
+  }
+  return formsObject;
+}
+
 async function getAllDynamicForms(req, res, next) {
   const forms = await MDBDynamicFormModel.find({}, 'formType forOrganization createdBy modifiedAt name');
+
+  const formsWithUserInfo = await getFormsWithUserInfo(forms);
+
   res.json({
     success: true,
-    forms
+    forms: formsWithUserInfo
   });
 }
 
 async function getDynamicFormsByFormType(req, res, next) {
   const forms = await MDBDynamicFormModel.find({formType: req.params.formType}, 'forOrganization createdBy modifiedAt name');
+
+  const formsWithUserInfo = await getFormsWithUserInfo(forms);
+
   res.json({
     success: true,
-    forms
+    forms: formsWithUserInfo
   });
 }
 
