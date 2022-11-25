@@ -1,70 +1,42 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import React, {useCallback, useEffect, useState} from 'react';
+import {Autocomplete, TextField} from "@mui/material";
 
-import { UN_SET } from '../../../constants';
+export default function SelectField(props) {
+  // options is {labelValue1: label1, labelValue2: label2, ...}
+  let {options, label, value, onChange, helperText, required, error, onBlur, fullWidth, noDefaultStyle, controlled} = props;
 
-const useStyles = makeStyles(theme => ({
-  formControl: {
-    margin: '16px 0 0',
-    minWidth: 350,
-  },
-}));
+  if (Array.isArray(options)) {
+    const optionsArray = [...options];
+    options = {};
+    for (const optionValue of optionsArray) {
+      options[optionValue] = optionValue;
+    }
+  }
 
-/**
- *
- * @param label
- * @param InputLabelProps
- * @param className
- * @param options
- * @param noDefaultStyle
- * @param noEmpty
- * @param controlled {boolean=false} - Controlled by the parent component.
- *                                     Set it to true if you dynamically update options
- * @param defaultOptionTitle
- * @param onChange
- * @param formControlProps
- * @param helperText
- * @returns {*}
- * @constructor
- */
-export default function SelectField({
-                                      label, InputLabelProps, className, options, noDefaultStyle, noEmpty, controlled,
-                                      defaultOptionTitle = 'Not Set', onChange, formControlProps, helperText, ...props
-                                    }) {
-  const classes = useStyles();
-  const [value, setValue] = useState(noEmpty ? '' : UN_SET);
-  const handleChange = useCallback(e => {
-    const val = e.target.value;
-    setValue(val);
-    onChange({target: {value: val === UN_SET ? undefined : val}});
+  const handleChange = useCallback((e, value) => {
+    onChange({target: {value}});
   }, [onChange]);
 
-  useEffect(() => {
-    setValue(props.value === undefined ? UN_SET : props.value);
-  }, [props.value]);
-
   return (
-    <div>
-      <FormControl className={(noDefaultStyle || className) ? className : classes.formControl}
-                   error={props.error}
-                   required={props.required}
-                   {...formControlProps}>
-        {label && <InputLabel {...InputLabelProps}>{label}</InputLabel>}
-        <Select
-          margin="none"
+    <Autocomplete
+      sx={noDefaultStyle ? undefined : {mt: '16px'}}
+      options={Object.keys(options)}
+      onChange={handleChange}
+      getOptionLabel={labelValue => options[labelValue]}
+      defaultValue={controlled ? undefined : value}
+      value={controlled ? value : undefined}
+      onBlur={onBlur}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          fullWidth={fullWidth || false}
+          required={required}
           label={label}
-          {...props}
-          value={controlled ? props.value : value}
-          onChange={controlled ? onChange : handleChange}
-        >
-          {!noEmpty && <MenuItem key="key0" value={UN_SET}>{defaultOptionTitle}</MenuItem>}
-          {Array.isArray(options)
-            ? options.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)
-            : Object.entries(options).map(([key, label]) => <MenuItem key={label} value={key}>{label}</MenuItem>)}
-        </Select>
-        {helperText && <FormHelperText>{helperText}</FormHelperText>}
-      </FormControl>
-    </div>
-  );
+          sx={noDefaultStyle ? undefined : {minWidth: 350}}
+          helperText={helperText}
+          error={error}
+        />
+      )}
+    />
+  )
 }
