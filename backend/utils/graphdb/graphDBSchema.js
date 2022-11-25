@@ -100,7 +100,11 @@ function createGraphDBModel(schema, schemaOptions) {
 }
 
 function getGraphDBModel(name) {
-  return store[name];
+  if (!store[`:${name}`]) {
+    const availableModels = [...Object.keys(store)].map(key => key.slice(1)).join(', ');
+    throw new Error(`Model ${name} is not yet initialized. Please check your import/run order. Available models: ${availableModels}`);
+  }
+  return store[`:${name}`];
 }
 
 module.exports = {Types, DeleteType, regexBuilder, createGraphDBModel, getGraphDBModel}
