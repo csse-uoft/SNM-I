@@ -2,14 +2,14 @@
  * For how the drag and drop works, please check the library repository:
  * https://github.com/atlassian/react-beautiful-dnd
  */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import { allForms } from '../../constants/provider_fields.js'
-import { Button, Container, Grid, TextField, Typography, Divider, IconButton, Box, Paper } from "@mui/material";
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {useNavigate, useParams} from "react-router-dom";
+import {allForms} from '../../constants/provider_fields.js'
+import {Button, Container, Grid, TextField, Typography, Divider, IconButton, Box, Paper} from "@mui/material";
 import SelectField from "../shared/fields/SelectField";
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Close as Delete } from "@mui/icons-material";
-import { Loading } from "../shared";
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
+import {Close as Delete} from "@mui/icons-material";
+import {Loading} from "../shared";
 import AddFormDialog from "./components/AddFormDialog";
 import StepFields from "./components/StepFields";
 import {
@@ -18,9 +18,9 @@ import {
   getDynamicFormsByFormType,
   updateDynamicForm
 } from "../../api/dynamicFormApi";
-import { fetchCharacteristics } from "../../api/characteristicApi";
-import { Picker } from "./components/Pickers";
-import { fetchQuestions } from "../../api/questionApi";
+import {fetchCharacteristics} from "../../api/characteristicApi";
+import {Picker} from "./components/Pickers";
+import {fetchQuestions} from "../../api/questionApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 
 
@@ -51,8 +51,8 @@ export default function ManageFormFields() {
   const [usedInternalTypeIds, setUsedInternalTypeIds] = useState([]);
 
   const [state, setState] = useState({
-    stepToAdd: '',
-    selectedStep: '',
+    stepToAdd: undefined,
+    selectedStep: null,
   });
   const [errors, setErrors] = useState({});
   // {name: 'form name', formType: 'client', formStructure: [
@@ -310,41 +310,46 @@ export default function ManageFormFields() {
             onChange={handleChange('selectedStep')}
             options={form.formStructure.map(s => s.stepName)}
             noDefaultStyle
-            formControlProps={{fullWidth: true}}
-            noEmpty
             controlled
+            fullWidth
           />
         </Grid>
         <Grid item sm={9} xs={10}>
-          {Object.keys(characteristics).length > 0? <Picker
-            label={"characteristic"}
-            onChange={setSelectedCharacteristicId}
-            options={characteristicOptions}
-            usedOptionKeys={usedCharacteristicIds}
-            onAdd={handleAddCharacteristic}
-            disabledAdd={!selectedCharacteristicId || !state.selectedStep}
-          />: <div/>}
-          {Object.keys(questions).length > 0?
-            <Picker
-            label={"question"}
-            onChange={setSelectedQuestionId}
-            options={questionOptions}
-            usedOptionKeys={usedQuestionIds}
-            onAdd={handleAddQuestion}
-            disabledAdd={!selectedQuestionId || !state.selectedStep}
-          />:
-          <div/>}
-          {Object.keys(internalTypes).length > 0?
-            <Picker
-              label={"internal type"}
-              onChange={setSelectedInternalTypeId}
-              options={internalTypeOptions}
-              usedOptionKeys={usedInternalTypeIds}
-              onAdd={handleAddInternalType}
-              disabledAdd={!state.selectedStep || !selectedInternalTypeId}
-            />:
-            <div/>}
-
+          <Grid container direction={"column"} spacing={1}>
+            {Object.keys(characteristics).length > 0 ?
+              <Grid item>
+                <Picker
+                  label={"characteristic"}
+                  onChange={setSelectedCharacteristicId}
+                  options={characteristicOptions}
+                  usedOptionKeys={usedCharacteristicIds}
+                  onAdd={handleAddCharacteristic}
+                  disabledAdd={!selectedCharacteristicId || !state.selectedStep}
+                />
+              </Grid> : null}
+            {Object.keys(questions).length > 0 ?
+              <Grid item>
+                <Picker
+                  label={"question"}
+                  onChange={setSelectedQuestionId}
+                  options={questionOptions}
+                  usedOptionKeys={usedQuestionIds}
+                  onAdd={handleAddQuestion}
+                  disabledAdd={!selectedQuestionId || !state.selectedStep}
+                />
+              </Grid> : null}
+            {Object.keys(internalTypes).length > 0 ?
+              <Grid item>
+                <Picker
+                  label={"internal type"}
+                  onChange={setSelectedInternalTypeId}
+                  options={internalTypeOptions}
+                  usedOptionKeys={usedInternalTypeIds}
+                  onAdd={handleAddInternalType}
+                  disabledAdd={!state.selectedStep || !selectedInternalTypeId}
+                />
+              </Grid> : null}
+          </Grid>
         </Grid>
       </Grid>
     )

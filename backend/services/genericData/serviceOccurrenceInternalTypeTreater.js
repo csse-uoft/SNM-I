@@ -1,7 +1,6 @@
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
-const {linkedProperty} = require('./helper functions')
-const {genericType2Model} = require("./index");
+const {linkedProperty} = require('./helperFunctions')
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require('../../utils/graphdb/helpers');
 

@@ -27,7 +27,7 @@ const {noQuestion} = require('./checkers')
 const {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
 } = require("./serviceOccurrenceInternalTypeTreater");
-const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty} = require("./helper functions");
+const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty} = require("./helperFunctions");
 const {GDBReferralModel} = require("../../models/referral");
 const {serviceInternalTypeCreateTreater, serviceInternalTypeFetchTreater, serviceInternalTypeUpdateTreater} = require("./serviceInternalTypeTreater");
 const {referralInternalTypeCreateTreater, referralInternalTypeFetchTreater, referralInternalTypeUpdateTreater} = require("./referralInternalTypeTreater");

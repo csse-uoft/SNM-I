@@ -4,7 +4,7 @@ import { Grid, Button } from "@mui/material";
 
 export function Picker({onChange, options, usedOptionKeys, onAdd, disabledAdd, label}) {
 
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(null);
   const [displayOptions, setDisplayOptions] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function Picker({onChange, options, usedOptionKeys, onAdd, disabledAdd, l
   }, [onChange]);
 
   const handleAdd = useCallback(() => {
-    setValue('');
+    setValue(null);
     onAdd();
   }, [onAdd]);
 
@@ -33,9 +33,8 @@ export function Picker({onChange, options, usedOptionKeys, onAdd, disabledAdd, l
           onChange={handleChange}
           options={displayOptions}
           noDefaultStyle
-          formControlProps={{fullWidth: true}}
-          noEmpty
           controlled
+          fullWidth
         />
       </Grid>
       <Grid item sm={2}>
