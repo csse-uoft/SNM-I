@@ -1,4 +1,4 @@
-const {linkedProperty} = require("./helper functions");
+const {linkedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 const FORMTYPE = 'appointment'
