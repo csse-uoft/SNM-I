@@ -160,7 +160,34 @@ async function getIndividualsInClass(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
+async function getURILabel(req, res) {
+  const fullURI = req.params.uri.includes('://') ? req.params.uri : SPARQL.getFullURI(req.params.uri) ;
+  const query = `
+    ${SPARQL.getSPARQLPrefixes()}
+    select * 
+    where { 
+        BIND (<${fullURI}> as ?s).
+        OPTIONAL {?s rdfs:label ?label .}
+        OPTIONAL {?s :hasLabel ?label2 .}
+        OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider: organization
+        OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
+        OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client
+        OPTIONAL {?s :hasType ?type . } # for needSatisfier
+        FILTER (isIRI(?s))
+    }`;
+
+  let result = ''
+  await GraphDB.sendSelectQuery(query, false, ({s, label, label2, name, familyName, givenName, type, lastName}) => {
+    if (label?.value || label2?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
+      result = label?.value || label2?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+    } else {
+      result = SPARQL.getPrefixedURI(s.id) || s.id;
+    }
+  });
+  res.json({label: result});
+}
+
 module.exports = {
   createDynamicForm, getAllDynamicForms, getDynamicForm, deleteDynamicForm, updateDynamicForm, getDynamicFormsByFormType,
-  getIndividualsInClass
+  getIndividualsInClass, getURILabel
 }

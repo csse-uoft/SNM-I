@@ -23,5 +23,8 @@ router.get('/dynamicForms', dynamicFormService.getAllDynamicForms);
 
 router.get('/dynamicClassInstances/:class', dynamicFormService.getIndividualsInClass);
 
+// Get the label of a URI
+router.get('/label/:uri', dynamicFormService.getURILabel);
+
 
 module.exports = router;

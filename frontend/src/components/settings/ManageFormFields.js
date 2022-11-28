@@ -406,7 +406,6 @@ export default function ManageFormFields() {
             value={formType}
             onChange={(e) => navigate(`/settings/forms/${e.target.value}/new`)}
             options={allForms}
-            noEmpty
             disabled={!!formId}
           />
         </Grid>

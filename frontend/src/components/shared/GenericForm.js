@@ -168,7 +168,6 @@ export default function GenericForm({name, mainPage, isProvider}) {
         }}
         options={formOptions}
         sx={{mb: 2}}
-        noEmpty
       />
       <FormStepper
         getStepContent={getStepContent}

@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useNavigate, useParams} from "react-router-dom";
 import {defaultAddEditQuestionFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
-import {Chip, Button, Container, Paper, Typography, Divider, IconButton, Grid} from "@mui/material";
+import {Button, Container, Paper, Typography, Divider, IconButton, Grid} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
@@ -156,25 +156,17 @@ export default function AddEditCharacteristic() {
     }
   }
 
-  const displayDataTypeValue = () => {
-    if (form.fieldType === 'TextField') {
-      form.dataType = 'xsd:string'
-      return 'xsd:string'
-    } else if (form.fieldType === "NumberField") {
-      form.dataType = 'xsd:number'
-      return 'xsd:number'
-    } else if (form.fieldType === 'BooleanRadioField') {
-      form.dataType = 'xsd:boolean'
-      return 'xsd:boolean'
-    } else if (form.fieldType === 'DateField' || form.fieldType === 'DateTimeField' || form.fieldType === 'TimeField') {
-      form.dataType = 'xsd:datetimes'
-      return 'xsd:datetimes'
-    } else if (isSelected()) {
-      form.dataType = 'owl:NamedIndividual'
-      return 'owl:NamedIndividual'
-    } else if (form.fieldType === 'PhoneNumberField' || form.fieldType === 'AddressField') {
-      form.dataType = 'owl:NamedIndividual'
-      return 'owl:NamedIndividual'
+  const getDataTypeValue = (fieldType) => {
+    if (fieldType === 'TextField') {
+      return 'xsd:string';
+    } else if (fieldType === "NumberField") {
+      return 'xsd:number';
+    } else if (fieldType === 'BooleanRadioField') {
+      return 'xsd:boolean';
+    } else if (fieldType === 'DateField' || fieldType === 'DateTimeField' || fieldType === 'TimeField') {
+      return 'xsd:datetimes';
+    } else {
+      return 'owl:NamedIndividual';
     }
   }
 
@@ -260,12 +252,13 @@ export default function AddEditCharacteristic() {
         <SelectField
           key={"fieldType"}
           label={'Field Type'}
-          InputLabelProps={{id: 'FieldType',}}
           options={types.fieldTypes}
           value={form.fieldType}
-          noEmpty={true}
+          controlled
           required
-          onChange={e => setForm(form => ({...form, fieldType: e.target.value}))}
+          onChange={e => {
+            setForm(form => ({...form, fieldType: e.target.value, dataType: getDataTypeValue(e.target.value)}));
+          }}
           // onBlur={() => handleOnBlur(field, option)}
           error={!!errors.fieldType}
           helperText={errors.fieldType}
@@ -286,10 +279,9 @@ export default function AddEditCharacteristic() {
         <SelectField
           key={"dataType"}
           label={'Data Type'}
-          InputLabelProps={{id: 'dataType',}}
           options={types.dataTypes}
-          value={displayDataTypeValue()}
-          // noEmpty={true}
+          value={form.dataType}
+          controlled
           required
           onChange={e => form.dataType = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
@@ -316,10 +308,8 @@ export default function AddEditCharacteristic() {
         {isSelected() && form.classOrManually === 'class' ? <SelectField
           key={"optionsFromClass"}
           label={'Options From Class'}
-          InputLabelProps={{id: 'optionsFromClass',}}
           options={types.optionsFromClass}
           value={form.optionsFromClass}
-          noEmpty={true}
           required
           onChange={e => form.optionsFromClass = e.target.value}
           // onBlur={() => handleOnBlur(field, option)}
@@ -329,17 +319,15 @@ export default function AddEditCharacteristic() {
         /> : <div/>}
 
 
-
         {isSelected() && form.classOrManually === 'manually' ? <div>
           {/*<Button variant="contained" color="primary" className={classes.button} onClick={handleAdd}>*/}
           {/*  Add*/}
           {/*</Button>*/}
 
           {form.options.map((option, index) =>
-            <div>
+            <div key={option.key}>
               <Grid display={'flex'}>
                 <GeneralField
-                  key={option.key}
                   label={'Option Label ' + (index + 1)}
                   value={form.options[index].label}
                   required
@@ -362,13 +350,13 @@ export default function AddEditCharacteristic() {
                   size="large" className={classes.button}>
                   <DeleteIcon fontSize="small" color="secondary"/>
                 </IconButton>
-                {index === form.options.length - 1?
+                {index === form.options.length - 1 ?
                   <IconButton
                     onClick={handleAdd}
                     size="large" className={classes.button}>
                     <AddIcon fontSize="small" color="primary"/>
-                  </IconButton>:
-                <span/>}
+                  </IconButton> :
+                  <span/>}
 
               </Grid>
 
@@ -378,10 +366,9 @@ export default function AddEditCharacteristic() {
         </div> : <div/>}
 
 
-
-        {!state.locked? <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
+        {!state.locked ? <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
           submit
-        </Button>: <Button variant="contained" color="primary" className={classes.button} onClick={() => {
+        </Button> : <Button variant="contained" color="primary" className={classes.button} onClick={() => {
           navigate('/characteristics')
         }}>
           back
@@ -406,8 +393,8 @@ export default function AddEditCharacteristic() {
                      open={state.submitDialog && option === 'edit'}/>
 
 
-        <AlertDialog dialogContentText={option === 'add'? "You have successfully created a new characteristics":
-        'You have successfully update the characteristic'}
+        <AlertDialog dialogContentText={option === 'add' ? "You have successfully created a new characteristics" :
+          'You have successfully update the characteristic'}
                      dialogTitle={'Success'}
                      buttons={[<Button onClick={() => {
                        navigate('/characteristics')

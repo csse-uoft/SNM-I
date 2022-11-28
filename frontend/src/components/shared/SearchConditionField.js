@@ -70,7 +70,6 @@ export default function SearchConditionField({component, options, ...props}) {
       <SelectField
         options={options}
         {...props}
-        noEmpty
       />
     );
   } else if (component === 'MultiSelectField') {

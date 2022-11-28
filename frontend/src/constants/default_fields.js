@@ -30,10 +30,10 @@ export const defaultAddEditQuestionFields = {
   name:'',
   label: '', // Ex. address
   codes: [],
-  dataType: '', // Ex. string
-  fieldType: '', // Ex. address
+  dataType: null, // Ex. string
+  fieldType: null, // Ex. address
   // options: [{key: 0, label: ''}], // Ex.
-  optionsFromClass: '', // Ex. provider
+  optionsFromClass: null, // Ex. provider
   description: '', // Ex. the address of the user's home
   classOrManually: 'class'
 }

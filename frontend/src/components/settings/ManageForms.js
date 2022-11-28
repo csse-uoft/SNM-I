@@ -84,7 +84,7 @@ export default function ManageForms() {
 
   return (
     <Container maxWidth={"lg"} sx={{pt: 1}}>
-      <Typography variant="h5">
+      <Typography variant="h5" sx={{pb: 1}}>
         Manage Forms
       </Typography>
 
@@ -93,7 +93,6 @@ export default function ManageForms() {
         value={formType}
         onChange={e => navigate(`/settings/manage-forms/${e.target.value}`)}
         options={allForms}
-        noEmpty
         sx={{mb: 2}}
       />
 
