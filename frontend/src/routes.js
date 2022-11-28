@@ -37,7 +37,6 @@ import Appointments from "./components/Appointments";
 import AppointmentForm from "./components/appointments/AppointmentForm";
 import AdminLogs from './components/AdminLogs';
 import Eligibilities from './components/additionalFIelds/Eligibilities';
-import ManageFields from './components/settings/ManageFields';
 import ManageForms from './components/settings/ManageForms';
 import ManageFormFields from './components/settings/ManageFormFields';
 import UserFirstEntry from "./components/registration/UserFirstEntry";
@@ -166,9 +165,6 @@ const routes = (
     <Route path={'/needSatisfier/:id/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
     <Route path={'/needSatisfier/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
     <Route path={'/needSatisfiers'} element={<AdminRoute element={NeedSatisfiers}/>}/>
-
-
-    <Route path="/settings/manage-fields" element={<AdminRoute element={ManageFields}/>}/>
 
     <Route exact path="/settings/manage-forms/" element={<AdminRoute element={ManageForms}/>}/>
     <Route exact path="/settings/manage-forms/:formType" element={<AdminRoute element={ManageForms}/>}/>

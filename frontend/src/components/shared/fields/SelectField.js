@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {Autocomplete, TextField} from "@mui/material";
 
 export default function SelectField(props) {
   // options is {labelValue1: label1, labelValue2: label2, ...}
-  let {options, label, value, onChange, helperText, required, error, onBlur, fullWidth, noDefaultStyle, controlled} = props;
+  let {options, label, value, onChange, helperText, required, error, onBlur, fullWidth, noDefaultStyle, controlled, sx, ...others} = props;
 
   if (Array.isArray(options)) {
     const optionsArray = [...options];
@@ -19,13 +19,14 @@ export default function SelectField(props) {
 
   return (
     <Autocomplete
-      sx={noDefaultStyle ? undefined : {mt: '16px'}}
+      sx={noDefaultStyle ? sx : {mt: '16px', maxWidth: 350, ...sx}}
       options={Object.keys(options)}
       onChange={handleChange}
       getOptionLabel={labelValue => options[labelValue]}
       defaultValue={controlled ? undefined : value}
       value={controlled ? value : undefined}
       onBlur={onBlur}
+      {...others}
       renderInput={(params) => (
         <TextField
           {...params}
