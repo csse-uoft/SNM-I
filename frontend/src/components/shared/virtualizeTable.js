@@ -28,7 +28,7 @@ export default function VirtualizeTable({rows}) {
 
   return (
     <Paper sx={{width: '100%'}}>
-      <TableContainer>
+      <TableContainer sx={{height: '100%'}}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

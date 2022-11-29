@@ -2,7 +2,7 @@ import React, {useState, useEffect, useMemo} from "react";
 import {useParams} from "react-router-dom";
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
 import {
-  Box, Chip, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
+  Box, Chip, Container, Paper, Typography
 } from "@mui/material";
 import {Loading} from "./index";
 import {fetchSingleGeneric} from "../../api/genericDataApi";
@@ -68,7 +68,7 @@ export default function VisualizeGeneric({genericType,}) {
           const fieldType = characteristic.fetchData.fieldType;
           const isOption = typeof data === "string" && data.startsWith('http://snmi#option');
 
-          const label = characteristic.fetchData.label;
+          const label = <Typography>{characteristic.fetchData.label}</Typography>;
           let value;
 
           if (typeof data === "string" && data.includes('://') && !isOption) {
@@ -87,7 +87,7 @@ export default function VisualizeGeneric({genericType,}) {
               {`${data.unitNumber ? data.unitNumber + '-' : ''}${data.streetNumber ? data.streetNumber : ''} ${data.streetName} ${data.streetType ? streetTypes[data.streetType] : ''}
                 ${data.streetDirection ? streetDirections[data.streetDirection] : ''}, ${data.city}, ${states[data.state]}, ${data.postalCode}`}
             </Typography>;
-          } else if (['DateField', 'DateTimeField', 'TimeField'].includes(fieldType)){
+          } else if (['DateField', 'DateTimeField', 'TimeField'].includes(fieldType)) {
             value = <Typography>{new Date(data).toLocaleString()}</Typography>;
           } else if (typeof data === "boolean") {
             value = data ? <Typography>Yes</Typography> : <Typography>No</Typography>;
@@ -147,10 +147,7 @@ export default function VisualizeGeneric({genericType,}) {
 
   return (
     <Container>
-      <Paper
-        sx={{
-          paddingLeft: '20px'
-        }}>
+      <Paper sx={{pl: 2, pr: 2, pb: 2, mb: 2}}>
         <Typography
           sx={{marginTop: '20px', pt: 1, marginRight: '20px', fontSize: '150%'}}>
           {`Information for ${genericType} with ID: ` + id}
@@ -166,11 +163,7 @@ export default function VisualizeGeneric({genericType,}) {
           options={formOptions}
           sx={{mb: 2}}
         />
-
-        <Box sx={{height: '73vh'}}>
-          <VirtualizeTable rows={display}/>
-        </Box>
-
+        <VirtualizeTable rows={display}/>
       </Paper>
     </Container>
   );
