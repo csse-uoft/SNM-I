@@ -8,7 +8,7 @@ const GDBPersonModel = createGraphDBModel({
   middleName: {type: String, internalKey: 'foaf:middleName'},
   formalName: {type: String, internalKey: 'foaf:formalName'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
-  gender: {type: Types.NamedIndividual, internalKey: 'cwrc:Gender'},
+  gender: {type: Types.NamedIndividual, internalKey: 'cwrc:hasGender'},
   email: {type: String, internalKey: 'ic:hasEmail'},
   altEmail: {type: String, internalKey: 'ic:hasAltEmail'},
   telephone: {type: GDBPhoneNumberModel, internalKey: 'ic:hasTelephone', onDelete: DeleteType.CASCADE},
