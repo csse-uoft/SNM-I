@@ -20,7 +20,7 @@
 <a href="#install-dependencies" id="install-dependencies" style="color: inherit; text-decoration: none;">
   <h4>Install dependencies</h4>
 </a>
-<pre><code class="language-shell"><span class="hl-0">npm install -g yarn</span><br/><span class="hl-0">yarn install</span>
+<pre><code class="language-shell"><span class="hl-0">npm </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-1">-g</span><span class="hl-0"> </span><span class="hl-1">yarn</span><br/><span class="hl-0">yarn </span><span class="hl-1">install</span>
 </code></pre>
 
 <a href="#copy-env-to-backendenv" id="copy-env-to-backendenv" style="color: inherit; text-decoration: none;">
@@ -33,19 +33,19 @@
 <a href="#start-graphdb" id="start-graphdb" style="color: inherit; text-decoration: none;">
   <h4>Start GraphDB</h4>
 </a>
-<pre><code class="language-shell"><span class="hl-0"> docker run -p 7200:7200 -d --name graphdb --restart unless-stopped -t ontotext/graphdb:10.0.2 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000</span>
+<pre><code class="language-shell"><span class="hl-0"> docker </span><span class="hl-1">run</span><span class="hl-0"> </span><span class="hl-1">-p</span><span class="hl-0"> </span><span class="hl-2">7200</span><span class="hl-1">:</span><span class="hl-2">7200</span><span class="hl-0"> </span><span class="hl-1">-d</span><span class="hl-0"> </span><span class="hl-1">--name</span><span class="hl-0"> </span><span class="hl-1">graphdb</span><span class="hl-0"> </span><span class="hl-1">--restart</span><span class="hl-0"> </span><span class="hl-1">unless-stopped</span><span class="hl-0"> </span><span class="hl-1">-t</span><span class="hl-0"> </span><span class="hl-1">ontotext/graphdb:10.0.2</span><span class="hl-0"> </span><span class="hl-1">--GDB_HEAP_SIZE=6G</span><span class="hl-0"> </span><span class="hl-1">-Dgraphdb.workbench.maxUploadSize=2097152000</span>
 </code></pre>
 
 <a href="#start-mongodb" id="start-mongodb" style="color: inherit; text-decoration: none;">
   <h4>Start MongoDB</h4>
 </a>
-<pre><code class="language-shell"><span class="hl-0">docker run --name mongo -p 27017:27017 --restart unless-stopped -d mongo:latest</span>
+<pre><code class="language-shell"><span class="hl-0">docker </span><span class="hl-1">run</span><span class="hl-0"> </span><span class="hl-1">--name</span><span class="hl-0"> </span><span class="hl-1">mongo</span><span class="hl-0"> </span><span class="hl-1">-p</span><span class="hl-0"> </span><span class="hl-2">27017</span><span class="hl-1">:</span><span class="hl-2">27017</span><span class="hl-0"> </span><span class="hl-1">--restart</span><span class="hl-0"> </span><span class="hl-1">unless-stopped</span><span class="hl-0"> </span><span class="hl-1">-d</span><span class="hl-0"> </span><span class="hl-1">mongo:latest</span>
 </code></pre>
 
 <a href="#start-backend" id="start-backend" style="color: inherit; text-decoration: none;">
   <h4>Start Backend</h4>
 </a>
-<pre><code class="language-shell"><span class="hl-0">yarn start</span>
+<pre><code class="language-shell"><span class="hl-0">yarn </span><span class="hl-1">start</span>
 </code></pre>
 
 <a href="#allow-self-signed-localhost-certificate" id="allow-self-signed-localhost-certificate" style="color: inherit; text-decoration: none;">
