@@ -98,7 +98,7 @@ export default function ManageFormFields() {
         const options = {}
         for (const internalType of internalTypes) {
           dict[internalType._id] = internalType;
-          options[internalType._id] = internalType.name;
+          options[internalType._id] = internalType.implementation.label;
         }
         setInternalTypes(dict);
         setInternalTypeOptions(options);
