@@ -107,7 +107,7 @@ export default function ManageFormFields() {
       setLoading(false);
     });
 
-  }, []);
+  }, [formType]);
 
   useEffect(() => {
     form.formType = formType;
@@ -116,6 +116,11 @@ export default function ManageFormFields() {
   useEffect(() => {
     if (formId) {
       getDynamicForm(formId).then(({form}) => {
+        // Check if we are in the correct `formType` page
+        if (form.formType !== formType) {
+          navigate(`/settings/forms/${form.formType}/${method}/${formId}`);
+        }
+
         // Calculate used fields
         const usedQuestionsIds = [];
         const usedCharacteristicIds = [];
@@ -183,7 +188,7 @@ export default function ManageFormFields() {
 
       return {...form};
     });
-  }, []);
+  }, [formType]);
 
   const handleAddCharacteristic = useCallback(() => {
     setForm(form => {
@@ -193,7 +198,7 @@ export default function ManageFormFields() {
     });
     setUsedCharacteristicIds(used => [...used, selectedCharacteristicId])
 
-  }, [selectedCharacteristicId, characteristics, state.selectedStep]);
+  }, [formType, selectedCharacteristicId, characteristics, state.selectedStep]);
 
   const handleAddQuestion = useCallback(() => {
     setForm(form => {
@@ -203,7 +208,7 @@ export default function ManageFormFields() {
     });
     setUsedQuestionIds(used => [...used, selectedCharacteristicId])
 
-  }, [selectedQuestionId, questions, state.selectedStep]);
+  }, [formType, selectedQuestionId, questions, state.selectedStep]);
 
   const handleAddInternalType = useCallback(() => {
     setForm(form => {
@@ -213,7 +218,7 @@ export default function ManageFormFields() {
     });
     setUsedInternalTypeIds(used => [...used, selectedCharacteristicId])
 
-  }, [selectedInternalTypeId, internalTypes, state.selectedStep]);
+  }, [formType, selectedInternalTypeId, internalTypes, state.selectedStep]);
 
   const handleAddStep = useCallback(() => {
     const existedStepNames = form.formStructure.map(s => s.stepName);
@@ -234,14 +239,14 @@ export default function ManageFormFields() {
         }
       ]
     }));
-  }, [state.stepToAdd, form]);
+  }, [formType, state.stepToAdd, form]);
 
   const handleRemoveStep = useCallback((index, stepName) => () => {
     setForm(form => {
       form.formStructure.splice(index, 1)
       return {...form, formStructure: [...form.formStructure]};
     })
-  }, []);
+  }, [formType]);
 
   // a little function to help us with reordering the result
   const reorder = (list, startIndex, endIndex) => {
@@ -296,7 +301,7 @@ export default function ManageFormFields() {
         </Grid>
       </Grid>
     )
-  }, [state.stepToAdd, formType, handleChange, handleAddStep, errors]);
+  }, [formType, state.stepToAdd, formType, handleChange, handleAddStep, errors]);
 
   const getNewFieldComponent = useCallback(() => {
     console.log(!selectedInternalTypeId)
@@ -353,7 +358,7 @@ export default function ManageFormFields() {
         </Grid>
       </Grid>
     )
-  }, [state.fields, formType, handleChange, handleAddCharacteristic, state.selectedField, handleAddInternalType,
+  }, [formType, state.fields, formType, handleChange, handleAddCharacteristic, state.selectedField, handleAddInternalType,
     state.selectedStep, characteristicOptions, form.formStructure, usedCharacteristicIds, usedInternalTypeIds,
     internalTypeOptions, questionOptions, usedQuestionIds, selectedCharacteristicId, selectedQuestionId, selectedInternalTypeId]);
 
@@ -388,7 +393,7 @@ export default function ManageFormFields() {
         </Box>
       );
     });
-  }, [form, handleDeleteField, handleRemoveStep, formType]);
+  }, [formType, form, handleDeleteField, handleRemoveStep, formType]);
 
   if (loading)
     return <Loading/>

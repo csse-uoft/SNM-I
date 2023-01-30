@@ -71,7 +71,7 @@ export default function ManageForms() {
         },
       },
     ]
-  }, []);
+  }, [formType]);
 
   const tableOptions = useMemo(() => {
     return {
