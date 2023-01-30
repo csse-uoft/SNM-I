@@ -10,7 +10,9 @@ export function Picker({onChange, options, usedOptionKeys, onAdd, disabledAdd, l
   useEffect(() => {
     const displayOptions = {...options};
     usedOptionKeys.forEach(key => delete displayOptions[key]);
-    setDisplayOptions(displayOptions)
+    setDisplayOptions(displayOptions);
+    // Clear selected value after options changed
+    setValue(null);
   }, [options, usedOptionKeys])
 
   const handleChange = useCallback((e) => {

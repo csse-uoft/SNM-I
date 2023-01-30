@@ -358,7 +358,7 @@ export default function ManageFormFields() {
         </Grid>
       </Grid>
     )
-  }, [formType, state.fields, formType, handleChange, handleAddCharacteristic, state.selectedField, handleAddInternalType,
+  }, [formType, state.fields, formType, handleChange, handleAddCharacteristic, handleAddInternalType,
     state.selectedStep, characteristicOptions, form.formStructure, usedCharacteristicIds, usedInternalTypeIds,
     internalTypeOptions, questionOptions, usedQuestionIds, selectedCharacteristicId, selectedQuestionId, selectedInternalTypeId]);
 
@@ -409,7 +409,15 @@ export default function ManageFormFields() {
           <SelectField
             label="Form type"
             value={formType}
-            onChange={(e) => navigate(`/settings/forms/${e.target.value}/new`)}
+            onChange={(e) => {
+              // Clear states
+              setUsedCharacteristicIds([]);
+              setUsedQuestionIds([]);
+              setUsedInternalTypeIds([]);
+              setForm({formType, formStructure: []});
+              setState(state => ({...state, selectedStep: null}));
+              navigate(`/settings/forms/${e.target.value}/new`);
+            }}
             options={allForms}
             disabled={!!formId}
           />
