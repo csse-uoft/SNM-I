@@ -31,7 +31,16 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Datetime',
+    label: 'Start Date',
+    body: ({datetime}) => {
+      return new Date(datetime).toLocaleString();
+      // return  <Link color to={`/providers/${provider.id}`}>
+      //   {formatProvider({provider})}
+      // </Link>
+    }
+  },
+  {
+    label: 'End Date',
     body: ({datetime}) => {
       return new Date(datetime).toLocaleString();
       // return  <Link color to={`/providers/${provider.id}`}>
@@ -51,7 +60,7 @@ const columnsWithoutOptions = [
 
 export default function NeedOccurrences() {
 
-  const nameFormatter = appointment => appointment.name;
+  const nameFormatter = needOccurrence => needOccurrence._id;
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     return [];
@@ -66,23 +75,19 @@ export default function NeedOccurrences() {
   };
 
   const fetchData = async () => {
-    const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
     const data = [];
-    for (const appointment of appointmens) {
-      const appointmentData = {_id: appointment._id};
-      if (appointment.characteristicOccurrences)
-        for (const occ of appointment.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Appointment Name') {
-            appointmentData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Client') {
-            appointmentData.client = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Person') {
-            appointmentData.person = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Date and Time') {
-            appointmentData.datetime = occ.dataDateValue;
+    for (const needOccurrence of needOccurrences) {
+      const needOccurrenceData = {_id: needOccurrence._id};
+      if (needOccurrence.characteristicOccurrences)
+        for (const occ of needOccurrence.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Start Date') {
+            needOccurrenceData.name = occ.dataDateValue;
+          } else if (occ.occurrenceOf?.name === 'End Date') {
+            needOccurrenceData.client = occ.dataDateValue;
           }
         }
-      data.push(appointmentData);
+      data.push(needOccurrenceData);
     }
     return data;
   }

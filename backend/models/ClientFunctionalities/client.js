@@ -16,7 +16,7 @@ const GDBClientModel = createGraphDBModel({
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
   need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
   // If a need is added, need occurrence is automatically created and associated to the client.
-  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: 'hasNeedOccurrence', onDelete: DeleteType.CASCADE},
+  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
   note: {type: [String], internalKey: ':hasNote'},
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},

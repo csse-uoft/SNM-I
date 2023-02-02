@@ -42,6 +42,7 @@ const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
 const {serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
   serviceProvisionInternalTypeUpdateTreater
 } = require("./serviceProvision");
+const {clientInternalTypeCreateTreater, clientInternalTypeFetchTreater} = require("./clientInternalTypeTreater");
 
 
 const genericType2Model = {
@@ -74,6 +75,7 @@ const genericType2InternalTypeCreateTreater = {
   'serviceRegistration': serviceRegistrationInternalTypeCreateTreater,
   'appointment': appointmentInternalTypeCreateTreater,
   'serviceProvision': serviceProvisionInternalTypeCreateTreater,
+  'client': clientInternalTypeCreateTreater,
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -83,6 +85,7 @@ const genericType2InternalTypeFetchTreater = {
   'serviceRegistration': serviceRegistrationInternalTypeFetchTreater,
   'appointment': appointmentInternalTypeFetchTreater,
   'serviceProvision': serviceProvisionInternalTypeFetchTreater,
+  'client': clientInternalTypeFetchTreater
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -159,6 +162,7 @@ async function fetchSingleGenericHelper(genericType, id) {
     for (const qo of data.questionOccurrences) {
       result[qo.occurrenceOf.replace(':', '')] = qo.stringValue;
     }
+
 
   return result;
 }
