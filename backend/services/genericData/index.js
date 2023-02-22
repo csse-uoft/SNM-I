@@ -42,6 +42,10 @@ const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
 const {serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
   serviceProvisionInternalTypeUpdateTreater
 } = require("./serviceProvision");
+const {clientInternalTypeUpdateTreater, clientInternalTypeCreateTreater, clientInternalTypeFetchTreater
+} = require("./clientInternalTypeTreater");
+const {needOccurrenceInternalTypeUpdateTreater, needOccurrenceInternalTypeCreateTreater, needOccurrenceInternalTypeFetchTreater
+} = require("./needOccurrenceInternalTypeTreater");
 
 
 const genericType2Model = {
@@ -74,6 +78,8 @@ const genericType2InternalTypeCreateTreater = {
   'serviceRegistration': serviceRegistrationInternalTypeCreateTreater,
   'appointment': appointmentInternalTypeCreateTreater,
   'serviceProvision': serviceProvisionInternalTypeCreateTreater,
+  'client': clientInternalTypeCreateTreater,
+  'needOccurrence': needOccurrenceInternalTypeCreateTreater,
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -83,6 +89,8 @@ const genericType2InternalTypeFetchTreater = {
   'serviceRegistration': serviceRegistrationInternalTypeFetchTreater,
   'appointment': appointmentInternalTypeFetchTreater,
   'serviceProvision': serviceProvisionInternalTypeFetchTreater,
+  'client': clientInternalTypeFetchTreater,
+  'needOccurrence': needOccurrenceInternalTypeFetchTreater,
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -92,6 +100,8 @@ const genericType2InternalTypeUpdateTreater = {
   'serviceRegistration': serviceRegistrationInternalTypeUpdateTreater,
   'appointment': appointmentInternalTypeUpdateTreater,
   'serviceProvision': serviceProvisionInternalTypeUpdateTreater,
+  'client': clientInternalTypeUpdateTreater,
+  'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
 };
 
 
@@ -440,7 +450,11 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
     }
 
     if(type === 'internalType'){
-      await genericType2InternalTypeUpdateTreater[genericType](internalTypes[id],value,generic);
+      if (genericType2InternalTypeUpdateTreater[genericType]) {
+        await genericType2InternalTypeUpdateTreater[genericType](internalTypes[id],value,generic);
+      } else {
+        throw Error(`Cannot find internal type ${genericType}`)
+      }
     }
 
   }
