@@ -43,9 +43,9 @@ const {serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFe
   serviceProvisionInternalTypeUpdateTreater
 } = require("./serviceProvision");
 const {clientInternalTypeUpdateTreater, clientInternalTypeCreateTreater, clientInternalTypeFetchTreater
-} = require("./client");
+} = require("./clientInternalTypeTreater");
 const {needOccurrenceInternalTypeUpdateTreater, needOccurrenceInternalTypeCreateTreater, needOccurrenceInternalTypeFetchTreater
-} = require("./needOccurrence");
+} = require("./needOccurrenceInternalTypeTreater");
 
 
 const genericType2Model = {

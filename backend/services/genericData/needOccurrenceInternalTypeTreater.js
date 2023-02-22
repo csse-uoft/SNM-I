@@ -1,7 +1,6 @@
 const {linkedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
-const {GDBNeedModel} = require("../../models/need/need");
 
 const FORMTYPE = 'needOccurrence'
 
