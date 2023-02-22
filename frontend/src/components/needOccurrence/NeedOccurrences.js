@@ -33,7 +33,7 @@ const columnsWithoutOptions = [
   {
     label: 'Datetime',
     body: ({datetime}) => {
-      return new Date(datetime).toLocaleString();
+      return datetime && new Date(datetime).toLocaleString();
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
@@ -66,7 +66,7 @@ export default function NeedOccurrences() {
   };
 
   const fetchData = async () => {
-    const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const appointmens = (await fetchMultipleGeneric('needOccurrence')).data;
     const data = [];
     for (const appointment of appointmens) {
       const appointmentData = {_id: appointment._id};
