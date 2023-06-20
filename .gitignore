@@ -6,3 +6,8 @@ backend/.env
 backend/.DS_Store
 frontend/.idea/snm-client.iml
 .DS_Store
+yarn.lock
+backend/package-lock.json
+backend/package.json
+backend/yarn.lock
+node_modules/.yarn-integrity
