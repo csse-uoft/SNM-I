@@ -66,6 +66,8 @@ import ServiceProvisionForm from "./components/serviceProvision/serviceProvision
 import ServiceProvisions from "./components/serviceProvision/serviceProvisions";
 import NeedOccurrenceForm from "./components/needOccurrence/needOccurrenceForm";
 import NeedOccurrences from "./components/needOccurrence/NeedOccurrences";
+import ClientAssessment from './components/clientAssessment/ClientAssesment';
+import ClientAssessmentForm from './components/clientAssessment/ClientAssessmentForm';
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -90,6 +92,10 @@ const routes = (
     <Route path="/profile/:id" element={<PrivateRoute element={UserProfile}/>}/>
     <Route path="/users/reset-password/:id" element={<PrivateRoute element={ResetPassword}/>}/>
     <Route path="/users/reset-securityQuestions/:id" element={<PrivateRoute element={UserResetSecurityQuestions}/>}/>
+
+    <Route path="/clientAssessment/:id/edit" element={<PrivateRoute element={ClientAssessmentForm}/>}/>
+    <Route path="/clientAssessment/new" element={<PrivateRoute element={ClientAssessmentForm}/>}/>
+    <Route path="/clientAssessment" element={<PrivateRoute element={ClientAssessment}/>}/>
 
     <Route path="/users/:id/edit" element={<AdminRoute element={EditUserForm}/>}/>
     <Route path="/users/new" element={<AdminRoute element={UserForm}/>}/>

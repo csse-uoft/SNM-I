@@ -3,7 +3,7 @@ import {Link} from "../shared"
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
 
-const TYPE = 'serviceRegistrations';
+const TYPE = 'clientAssessment';
 
 const columnsWithoutOptions = [
   {
@@ -13,36 +13,19 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Type',
-    body: ({referralType}) =>{
-      return referralType
-      // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-      //   {serviceProvider}
-      // </Link>;
+    label: 'Client',
+    body: ({client}) => {
+      return client;
+      // return  <Link color to={`/providers/${provider.id}`}>
+      //   {formatProvider({provider})}
+      // </Link>
     }
   },
-  {
-    label: 'Status',
-    body: ({referralStatus}) =>{
-      return referralStatus
-      // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-      //   {serviceProvider}
-      // </Link>;
-    }
-  },
-  // {
-  //   label: 'Description',
-  //   body: ({desc}) => desc
-  // },
-  // {
-  //   label: 'Category',
-  //   body: ({category}) => category
-  // }
 ];
 
-export default function ServiceRegistrations() {
+export default function ClientAssessment() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = service => service.name; // ?
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     return [];
@@ -74,14 +57,14 @@ export default function ServiceRegistrations() {
     return data;
   };
 
-  const deleteServiceRegistration = (id) => deleteSingleGeneric('serviceRegistration', id);
+  const deleteClientAssessment = (id) => deleteSingleGeneric('clientAssessment', id);
 
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteServiceRegistration}
+      deleteItem={deleteClientAssessment}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{

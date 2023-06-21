@@ -96,6 +96,13 @@ function TopNavBar() {
                 <Typography variant="inherit">Clients</Typography>
               </MenuItem>
 
+              <MenuItem onClick={handleLink(`/clientAssessment`)}>
+                <ListItemIcon>
+                  <FamilyRestroomIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Client Assessment</Typography>
+              </MenuItem>
+
               <MenuItem onClick={handleLink(`/services`)}>
                 <ListItemIcon>
                   <LocationCityIcon fontSize="medium" sx={{color: 'black'}}/>
