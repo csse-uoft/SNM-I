@@ -8,7 +8,7 @@ const cors = require('cors');
 const {
   baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
   characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute,needRoute,
-  needSatisfierRoute, internalTypeRoute
+  needSatisfierRoute, internalTypeRoute, serviceProvisionRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -55,6 +55,7 @@ app.use('/api', serviceProviderRoute);
 app.use('/api', needRoute);
 app.use('/api', needSatisfierRoute);
 app.use('/api', internalTypeRoute);
+app.use('/api', serviceProvisionRoute);
 
 (async function () {
   await initUserAccounts();

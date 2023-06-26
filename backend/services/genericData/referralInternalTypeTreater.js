@@ -1,11 +1,11 @@
-const {linkedProperty} = require("./helperFunctions");
+const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 
 const FORMTYPE = 'referral'
 
 const referralInternalTypeCreateTreater = async (internalType, instanceData, value) => {
-  const property = linkedProperty(FORMTYPE, internalType);
+  const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'client' || property === 'referringServiceProvider' || property === 'referringServiceProvider' ||
   property === 'receivingServiceProvider' || property === 'needOccurrence' || property === 'service' ||
   property === 'serviceOccurrence'){

@@ -1,11 +1,11 @@
-const {linkedProperty} = require("./helperFunctions");
+const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 
 const FORMTYPE = 'needOccurrence'
 
 const needOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
-  const property = linkedProperty(FORMTYPE, internalType);
+  const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'occurrenceOf') {
     // should not update occurrenceOf
   }
