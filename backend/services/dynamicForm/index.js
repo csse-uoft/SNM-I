@@ -145,14 +145,15 @@ async function getIndividualsInClass(req, res) {
         OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
         OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client
         OPTIONAL {?s :hasType ?type . } # for needSatisfier
+        OPTIONAL {?s tove_org:hasName ?toveHasName . } # for tove_org:hasName property
         FILTER (isIRI(?s))
     }`;
   console.log(query)
 
   // todo: volunteer will only give last name
-  await GraphDB.sendSelectQuery(query, false, ({s, label, name, familyName, givenName, type, lastName}) => {
-    if (label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
-      instances[s.id] = label?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+  await GraphDB.sendSelectQuery(query, false, ({s, label, name, familyName, givenName, type, lastName, toveHasName}) => {
+    if (label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value) {
+      instances[s.id] = label?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
       instances[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
     }
