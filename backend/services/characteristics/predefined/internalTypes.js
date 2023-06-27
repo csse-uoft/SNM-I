@@ -71,7 +71,18 @@ module.exports = [
     }
   },
   {
-    name: 'needSatisifierOccurrenceForServiceProvision',
+    name: 'needSatisfierForServiceProvision',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'serviceProvision',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+  {
+    name: 'needSatisfierOccurrenceForServiceProvision',
     predefinedProperty: 'http://snmi#hasNeedSatisfierOccurrence',
     formType: 'serviceProvision',
     implementation: {
@@ -79,6 +90,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#NeedSatisfierOccurrence'
+    }
+  },
+  {
+    name: 'serviceForServiceProvision',
+    predefinedProperty: 'http://snmi#hasService',
+    formType: 'serviceProvision',
+    implementation: {
+      label: 'Service',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Service'
     }
   },
   {
@@ -227,6 +249,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Client'
+    }
+  },
+  {
+    name: 'needOccurrenceForServiceRegistration',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
+    formType: 'serviceRegistration',
+    implementation: {
+      label: 'Need Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedOccurrence'
     }
   },
   {

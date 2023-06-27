@@ -24,27 +24,50 @@ const {GDBAppointmentModel} = require("../../models/appointment");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {noQuestion} = require('./checkers')
-const {serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
+const {
+  serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
 } = require("./serviceOccurrenceInternalTypeTreater");
-const {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, linkedProperty} = require("./helperFunctions");
+const {
+  fetchCharacteristicQuestionsInternalTypesBasedOnForms,
+  implementCharacteristicOccurrence,
+  getPredefinedProperty
+} = require("./helperFunctions");
 const {GDBReferralModel} = require("../../models/referral");
-const {serviceInternalTypeCreateTreater, serviceInternalTypeFetchTreater, serviceInternalTypeUpdateTreater} = require("./serviceInternalTypeTreater");
-const {referralInternalTypeCreateTreater, referralInternalTypeFetchTreater, referralInternalTypeUpdateTreater} = require("./referralInternalTypeTreater");
+const {
+  serviceInternalTypeCreateTreater,
+  serviceInternalTypeFetchTreater,
+  serviceInternalTypeUpdateTreater
+} = require("./serviceInternalTypeTreater");
+const {
+  referralInternalTypeCreateTreater,
+  referralInternalTypeFetchTreater,
+  referralInternalTypeUpdateTreater
+} = require("./referralInternalTypeTreater");
 const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration");
-const {serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
+const {
+  serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
   serviceRegistrationInternalTypeUpdateTreater
 } = require("./serviceRegistration");
-const {appointmentInternalTypeCreateTreater, appointmentInternalTypeFetchTreater, appointmentInternalTypeUpdateTreater} = require("./appointment");
+const {
+  appointmentInternalTypeCreateTreater,
+  appointmentInternalTypeFetchTreater,
+  appointmentInternalTypeUpdateTreater
+} = require("./appointment");
 const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
-const {serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
+const {
+  serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
   serviceProvisionInternalTypeUpdateTreater
 } = require("./serviceProvision");
-const {clientInternalTypeUpdateTreater, clientInternalTypeCreateTreater, clientInternalTypeFetchTreater
+const {
+  clientInternalTypeUpdateTreater, clientInternalTypeCreateTreater, clientInternalTypeFetchTreater
 } = require("./clientInternalTypeTreater");
-const {needOccurrenceInternalTypeUpdateTreater, needOccurrenceInternalTypeCreateTreater, needOccurrenceInternalTypeFetchTreater
+const {
+  needOccurrenceInternalTypeUpdateTreater,
+  needOccurrenceInternalTypeCreateTreater,
+  needOccurrenceInternalTypeFetchTreater
 } = require("./needOccurrenceInternalTypeTreater");
 
 
@@ -61,6 +84,10 @@ const genericType2Model = {
   'serviceProvision': GDBServiceProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
   'needOccurrence': GDBNeedOccurrenceModel
+};
+
+const genericType2Populates = {
+  'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence']
 };
 
 const genericType2Checker = {
@@ -111,8 +138,6 @@ const specialField2Model = {
 };
 
 
-
-
 async function fetchSingleGenericHelper(genericType, id) {
 
   if (!genericType2Model[genericType]) {
@@ -127,8 +152,8 @@ async function fetchSingleGenericHelper(genericType, id) {
   const inter = await GDBInternalTypeModel.findById(1);
 
   let result = {}
-  if(genericType2InternalTypeFetchTreater[genericType])
-    result = await genericType2InternalTypeFetchTreater[genericType](data);
+  if (genericType2InternalTypeFetchTreater[genericType])
+    result = await genericType2InternalTypeFetchTreater[genericType](data) || {};
 
   // Copy the values to occurrence.value regardless of its type.
   if (data.characteristicOccurrences)
@@ -268,7 +293,7 @@ const createSingleGenericHelper = async (data, genericType) => {
       await addIdToUsage('characteristic', genericType, id);
 
       if (characteristic.isPredefined) {
-        const property = linkedProperty(genericType, characteristic);
+        const property = getPredefinedProperty(genericType, characteristic);
         if (property) {
           instanceData[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ??
             occurrence.dataDateValue ?? occurrence.objectValue;
@@ -282,7 +307,16 @@ const createSingleGenericHelper = async (data, genericType) => {
       await addIdToUsage('question', genericType, id);
       const occurrence = {occurrenceOf: questions[id], stringValue: value};
       instanceData.questionOccurrences.push(occurrence);
-    } else if (type === 'internalType') {
+    }
+  }
+
+  for (const [key, value] of Object.entries(data.fields)) {
+    if (!value)
+      continue;
+    const [type, id] = key.split('_');
+
+    if (type === 'internalType') {
+
       await addIdToUsage('internalType', genericType, id);
 
       const internalType = internalTypes[id];
@@ -381,7 +415,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
         generic.characteristicOccurrences.push(occurrence);
         // update the generic's property if needed
         if (characteristic.isPredefined) {
-          const property = linkedProperty(genericType, characteristic);
+          const property = getPredefinedProperty(genericType, characteristic);
           if (property) {
             generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
               ?? occurrence.objectValue;
@@ -392,7 +426,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
       } else if (existedCO && value) { // just add the value on existedCO
         await implementCharacteristicOccurrence(characteristic, existedCO, value);
         if (characteristic.isPredefined) {
-          const property = linkedProperty(genericType, characteristic);
+          const property = getPredefinedProperty(genericType, characteristic);
           if (property) {
             generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
               existedCO.objectValue;
@@ -448,15 +482,18 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
       }
 
     }
+  }
 
-    if(type === 'internalType'){
+  // TODO: Fix the issue where the new value is undefined, it never triggers the genericType2InternalTypeUpdateTreater()
+  for (const [key, value] of Object.entries(data.fields)) {
+    const [type, id] = key.split('_');
+    if (type === 'internalType') {
       if (genericType2InternalTypeUpdateTreater[genericType]) {
-        await genericType2InternalTypeUpdateTreater[genericType](internalTypes[id],value,generic);
+        await genericType2InternalTypeUpdateTreater[genericType](internalTypes[id], value, generic);
       } else {
         throw Error(`Cannot find internal type ${genericType}`)
       }
     }
-
   }
   return generic;
 }
@@ -538,10 +575,11 @@ async function deleteSingleGeneric(req, res, next) {
 const fetchGenericDatas = async (req, res, next) => {
   const {genericType} = req.params;
   try {
-    if(!genericType2Model[genericType])
+    if (!genericType2Model[genericType])
       return res.status(400).json({success: false, message: 'No such generic type'})
+    const extraPopulates = genericType2Populates[genericType] || [];
     const data = await genericType2Model[genericType].find({},
-      {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']});
+      {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
 
     return res.status(200).json({data, success: true});
 

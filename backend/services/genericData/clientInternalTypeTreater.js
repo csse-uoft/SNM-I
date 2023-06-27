@@ -1,11 +1,11 @@
-const {linkedProperty} = require("./helperFunctions");
+const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 
 const FORMTYPE = 'client'
 
 const clientInternalTypeCreateTreater = async (internalType, instanceData, value) => {
-  const property = linkedProperty(FORMTYPE, internalType);
+  const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'need') {
     instanceData.needs = value;
     instanceData.needOccurrences = [];
