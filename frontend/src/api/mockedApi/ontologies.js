@@ -9,6 +9,7 @@ const program = []  // TODO
 const categories = {
   languages,
   services,
+  program
 }
 
 export async function fetchOntologyCategories(category) {
