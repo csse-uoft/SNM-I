@@ -36,6 +36,8 @@ import Programs from './components/Programs';
 import Program from './components/programs/Program';
 // import ServiceForm from './components/services/ServiceForm'
 import ServiceForm from './components/services/ServiceForm2';
+// import ProgramForm from './components/programs/ProgramForm';
+import ProgramForm from './components/programs/ProgramForm2';
 import Appointments from "./components/Appointments";
 import AppointmentForm from "./components/appointments/AppointmentForm";
 import AdminLogs from './components/AdminLogs';
@@ -122,13 +124,9 @@ const routes = (
     <Route path="/providers/new/add-program" element={<PrivateRoute element={AddProgramPrompt}/>}/>
     <Route path="/providers/:formType/new" element={<PrivateRoute element={ProviderForm}/>}/>
     <Route path="/providers/:formType/:id" element={<PrivateRoute element={VisualizeServiceProvider}/>}/>
-    <Route path="/program-providers/:formType/:id" element={<PrivateRoute element={VisualizeProgramProvider}/>}/>
     <Route path="/providers/:formType/:id/edit/" element={<PrivateRoute element={ProviderForm}/>}/>
-    <Route path="/program-providers/:formType/:id/edit/" element={<PrivateRoute element={ProgramProviderForm}/>}/>
     <Route path="/providers/:id" element={<PrivateRoute element={ProviderProfile}/>}/>
-    <Route path="/program-providers/:id" element={<PrivateRoute element={ProgramProviderProfile}/>}/>
     <Route path="/providers" element={<PrivateRoute element={Providers}/>}/>
-    <Route path="/program-providers" element={<PrivateRoute element={ProgramProviders}/>}/>
 
     <Route path="/services/:id/edit" element={<PrivateRoute element={ServiceForm}/>}/>
     <Route path="/services/new" element={<PrivateRoute element={ServiceForm}/>}/>
