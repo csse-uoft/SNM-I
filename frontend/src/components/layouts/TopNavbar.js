@@ -135,14 +135,14 @@ function TopNavBar() {
                 <ListItemIcon>
                   <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
                 </ListItemIcon>
-                <Typography variant="inherit">Service Registrations</Typography>
+                <Typography variant="inherit">Program Registrations</Typography>
               </MenuItem>
 
               <MenuItem onClick={handleLink(`/programProvisions`)}>
                 <ListItemIcon>
                   <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
                 </ListItemIcon>
-                <Typography variant="inherit">Service Provisions</Typography>
+                <Typography variant="inherit">Program Provisions</Typography>
               </MenuItem>
 
               <MenuItem onClick={handleLink(`/serviceRegistrations`)}>
