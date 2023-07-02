@@ -11,6 +11,7 @@ import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import { createSingleGeneric, fetchSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
 import { createSingleProvider, fetchSingleProvider, updateSingleProvider } from "../../api/providersApi";
+import { set } from 'lodash';
 
 const contentStyle = {
   width: '80%',
@@ -25,6 +26,8 @@ export default function GenericForm({name, mainPage, isProvider}) {
 
   const [form, setForm] = useState({});
   const [allForms, setAllForms] = useState({});
+
+  const [step, setStep] = useState({});
 
   const [selectedFormId, setSelectedFormId] = useState('');
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
@@ -120,11 +123,29 @@ export default function GenericForm({name, mainPage, isProvider}) {
 
   const handleChange = typeAndId => (e) => {
     form.fields[typeAndId] = e?.target?.value || e;
-    // console.log(e?.target?.value || e);
+
+    // If the field is a client, auto fill the first name and last name
+    const id = typeAndId.split('_')[1];
+    const implementation = step.filter(field => field._id === id)[0].implementation;
+    if (implementation.label === 'Client') {
+      const fieldOptions = dynamicOptions[implementation.optionsFromClass];
+      const value = fieldOptions[e?.target?.value || e];
+      const firstName = value.split(',')[0];
+      const lastName = value.split(',')[1];
+      console.log('step', step);
+      step.forEach(field => {
+        if (field.implementation.label === 'First Name') {
+          form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = firstName;
+        } else if (field.implementation.label === 'Last Name') {
+          form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = lastName;
+        }
+      });
+    }
   };
 
   const getStepContent = stepIdx => {
     const step = dynamicForm.formStructure[stepIdx].fields;
+    setStep(step); 
     return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content, _id}, index) => {
 
@@ -138,13 +159,15 @@ export default function GenericForm({name, mainPage, isProvider}) {
           let fieldOptions;
           if (optionsFromClass) {
             fieldOptions = dynamicOptions[optionsFromClass] || {};
+            console.log('optionsFromClass', optionsFromClass);
+            console.log('fieldOptions', fieldOptions);
           } else if (implementation.options) {
             fieldOptions = {};
             implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
           }
 
           return <FieldGroup component={fieldType} key={id? `${type}_${id}`: `${type}_${_id}`} label={label} required={required}
-                             options={fieldOptions}
+                             options={fieldOptions} 
                              value={form.fields[id? `${type}_${id}`:`${type}_${_id}`]} onChange={handleChange(id? `${type}_${id}`:`${type}_${_id}`)}/>;
         }
       })}

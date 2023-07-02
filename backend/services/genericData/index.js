@@ -262,6 +262,7 @@ const createSingleGenericHelper = async (data, genericType) => {
     if (type === 'characteristic') {
       const characteristic = characteristics[id];
       const occurrence = {occurrenceOf: characteristic};
+      console.log('characteristic', characteristic);
       await implementCharacteristicOccurrence(characteristic, occurrence, value);
 
       // find the usage(given option and geneticType), create a new one if no such
@@ -300,7 +301,7 @@ const createSingleGeneric = async (req, res, next) => {
   const {genericType} = req.params;
 
   try {
-
+    console.log('createData',data);
     const instanceData = await createSingleGenericHelper(data, genericType);
     if (instanceData) {
       // the instance data is stored into graphdb
@@ -542,7 +543,11 @@ const fetchGenericDatas = async (req, res, next) => {
       return res.status(400).json({success: false, message: 'No such generic type'})
     const data = await genericType2Model[genericType].find({},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']});
-
+    // console.log('data',data[0].user);
+    // const userIds = forms.map(form => form.createdBy.split("_").slice(-1)[0]);
+    // const userIds = data.map(data => data.user.split("_").slice(-1)[0]);
+    // const users = await GDBUserAccountModel.find({_id: {$in: userIds}}, {populates: ['primaryContact']})
+    // console.log('users',users);
     return res.status(200).json({data, success: true});
 
   } catch (e) {

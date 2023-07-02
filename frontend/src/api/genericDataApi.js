@@ -36,7 +36,7 @@ export async function updateSingleGeneric(option, id, body) {
 
 /**
  * This function fetches all instances with the generic given type
- */
+ */ 
 export async function fetchMultipleGeneric(type) {
   return getJson(`/api/generics/${type}`);
 }

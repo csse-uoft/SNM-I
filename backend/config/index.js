@@ -6,21 +6,21 @@ if (isProduction)
 
 const config = {
   graphdb: {
-    addr: isProduction ? 'http://localhost:7200' : `http://${isDocker ? 'host.docker.internal' : 'localhost'}:7200`,
+    addr: isProduction ? 'http://127.0.0.1:7200' : `http://${isDocker ? 'host.docker.internal' : '127.0.0.1'}:7200`,
   },
   mongodb: {
-    addr: isProduction ? 'mongodb://localhost:27017/snmi' : `mongodb://localhost:27017/${process.env.test ? "snmiTest" : "snmi"}`
+    addr: isProduction ? 'mongodb://127.0.0.1:27017/snmi' : `mongodb://127.0.0.1:27017/${process.env.test ? "snmiTest" : "snmi"}`
   },
 
   allowedOrigins: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://localhost:3002',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:3002',
     'https://www.socialneedsmarketplace.ca',
     'https://www.snmi.ca'],
 
   frontend: {
-    addr: isProduction ? 'https://www.socialneedsmarketplace.ca' : 'http://localhost:3000'
+    addr: isProduction ? 'https://www.socialneedsmarketplace.ca' : 'http://127.0.0.1:3000'
   },
 
   // pbkdf2 configuration, ~70ms with this config

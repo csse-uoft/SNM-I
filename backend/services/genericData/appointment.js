@@ -12,7 +12,7 @@ const appointmentInternalTypeCreateTreater = async (internalType, instanceData, 
 
 const appointmentInternalTypeFetchTreater = async (data) => {
   const result = {};
-  const schema =  data.schema;
+  const schema =  data.schema; 
   for (const property in data) {
     if (property === 'client' || property === 'person' || property === 'user') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
@@ -26,5 +26,6 @@ const appointmentInternalTypeFetchTreater = async (data) => {
 const appointmentInternalTypeUpdateTreater = async (internalType, value, result) => {
   await appointmentInternalTypeCreateTreater(internalType, result, value);
 }
+
 
 module.exports = {appointmentInternalTypeCreateTreater, appointmentInternalTypeFetchTreater, appointmentInternalTypeUpdateTreater}

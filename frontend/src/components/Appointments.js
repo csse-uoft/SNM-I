@@ -32,8 +32,11 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Datetime',
-    body: ({datetime}) => {
-      return new Date(datetime).toLocaleString();
+    body: ({datetime, dateType}) => {
+      if (dateType === 'Date')
+        return new Date(datetime).toLocaleDateString();
+      else if (dateType === 'DateTime')
+        return new Date(datetime).toLocaleString();
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
@@ -64,24 +67,31 @@ export default function Appointments() {
       content: service.desc,
     })).filter(service => service.position.lat && service.position.lng);
   };
-
+ 
   const fetchData = async () => {
     const appointmens = (await fetchMultipleGeneric('appointment')).data;
     const data = [];
+    console.log(appointmens);
     for (const appointment of appointmens) {
       const appointmentData = {_id: appointment._id};
       if (appointment.characteristicOccurrences)
         for (const occ of appointment.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Appointment Name') {
             appointmentData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Client') {
-            appointmentData.client = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Person') {
-            appointmentData.person = occ.objectValue;
+          // } else if (occ.occurrenceOf?.name === 'Client') {
+          //   appointmentData.client = occ.objectValue;
+          // } else if (occ.occurrenceOf?.name === 'Person') {
+          //   appointmentData.person = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Date and Time') {
             appointmentData.datetime = occ.dataDateValue;
+            appointmentData.dateType = 'DateTime';
+          } else if (occ.occurrenceOf?.name === 'Date') {
+            appointmentData.datetime = occ.dataDateValue;
+            appointmentData.dateType = 'Date';
           }
         }
+        appointmentData.client = appointment.client;
+        appointmentData.person = appointment.person;
       data.push(appointmentData);
     }
     return data;

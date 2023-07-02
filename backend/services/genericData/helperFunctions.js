@@ -15,7 +15,8 @@ const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
  */
 const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
-
+  console.log('valueDataType', valueDataType);
+  console.log('value', value);
   // Storing value in the characteristic occurrence model.
   if (characteristic.implementation.valueDataType === 'xsd:string') {
     occurrence.dataStringValue = value + '';
@@ -23,7 +24,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     occurrence.dataNumberValue = Number(value);
   } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
     occurrence.dataBooleanValue = !!value;
-  } else if (characteristic.implementation.valueDataType === 'xsd:dateTimes') {
+  } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
     if (TIMEPATTERN.test(value)) {
       value = '1970-01-01 ' + value; // when the field is time field, add 1970 to make it be able to stored into the database
     }
