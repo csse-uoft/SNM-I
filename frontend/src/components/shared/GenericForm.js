@@ -1,17 +1,22 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import { useSnackbar } from 'notistack';
+import React, {useEffect, useMemo, useState} from 'react';
+import {useNavigate, useParams} from "react-router-dom";
+import {useSnackbar} from 'notistack';
 
 import FieldGroup from '../shared/FieldGroup';
 
-import { Box, Container, Typography } from '@mui/material';
-import { FormStepper, Loading } from "../shared";
-import { getDynamicForm, getDynamicFormsByFormType, getInstancesInClass } from "../../api/dynamicFormApi";
+import {Box, Container, Typography} from '@mui/material';
+import {FormStepper, Loading} from "../shared";
+import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
+<<<<<<< HEAD
 import { createSingleGeneric, fetchSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
 import { createSingleProvider, fetchSingleProvider, updateSingleProvider } from "../../api/providersApi";
 import { set } from 'lodash';
+=======
+import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
+import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
+>>>>>>> origin/master
 
 const contentStyle = {
   width: '80%',
@@ -19,7 +24,17 @@ const contentStyle = {
   paddingBottom: '10px'
 };
 
-export default function GenericForm({name, mainPage, isProvider}) {
+/**
+ *
+ * @param name
+ * @param mainPage
+ * @param isProvider
+ * @param {({required, id, type, implementation, content}, index: number, fields, handleChange: any) => boolean | void} [onRenderField]
+ *        called when rendering a field. Return the component if you want to override the default rendering logic.
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function GenericForm({name, mainPage, isProvider, onRenderField}) {
   const navigate = useNavigate();
   const {id} = useParams();
   const mode = id ? 'edit' : 'new';
@@ -122,6 +137,7 @@ export default function GenericForm({name, mainPage, isProvider}) {
   };
 
   const handleChange = typeAndId => (e) => {
+<<<<<<< HEAD
     form.fields[typeAndId] = e?.target?.value || e;
 
     // If the field is a client, auto fill the first name and last name
@@ -141,6 +157,10 @@ export default function GenericForm({name, mainPage, isProvider}) {
         }
       });
     }
+=======
+    form.fields[typeAndId] = e?.target ? e?.target?.value || undefined : e;
+    // console.log(e?.target?.value || e);
+>>>>>>> origin/master
   };
 
   const getStepContent = stepIdx => {
@@ -148,6 +168,13 @@ export default function GenericForm({name, mainPage, isProvider}) {
     setStep(step); 
     return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content, _id}, index) => {
+        // Prefer id over _id
+        id = id || _id;
+
+        // Check if there is an external rendering logic.
+        const Field = onRenderField && onRenderField({required, id, type, implementation, content},
+          index, form.fields, handleChange);
+        if (Field != null) return Field;
 
         if (type === 'question') {
           return <GeneralField key={index} label={content} value={form.fields[`${type}_${id}`]}
@@ -166,9 +193,15 @@ export default function GenericForm({name, mainPage, isProvider}) {
             implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
           }
 
+<<<<<<< HEAD
           return <FieldGroup component={fieldType} key={id? `${type}_${id}`: `${type}_${_id}`} label={label} required={required}
                              options={fieldOptions} 
                              value={form.fields[id? `${type}_${id}`:`${type}_${_id}`]} onChange={handleChange(id? `${type}_${id}`:`${type}_${_id}`)}/>;
+=======
+          return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required}
+                             options={fieldOptions}
+                             value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
+>>>>>>> origin/master
         }
       })}
     </Box>;
