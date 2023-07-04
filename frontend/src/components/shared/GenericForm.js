@@ -9,14 +9,8 @@ import {FormStepper, Loading} from "../shared";
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
-<<<<<<< HEAD
-import { createSingleGeneric, fetchSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
-import { createSingleProvider, fetchSingleProvider, updateSingleProvider } from "../../api/providersApi";
-import { set } from 'lodash';
-=======
 import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
 import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
->>>>>>> origin/master
 
 const contentStyle = {
   width: '80%',
@@ -137,30 +131,25 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   };
 
   const handleChange = typeAndId => (e) => {
-<<<<<<< HEAD
-    form.fields[typeAndId] = e?.target?.value || e;
-
-    // If the field is a client, auto fill the first name and last name
-    const id = typeAndId.split('_')[1];
-    const implementation = step.filter(field => field._id === id)[0].implementation;
-    if (implementation.label === 'Client') {
-      const fieldOptions = dynamicOptions[implementation.optionsFromClass];
-      const value = fieldOptions[e?.target?.value || e];
-      const firstName = value.split(',')[0];
-      const lastName = value.split(',')[1];
-      console.log('step', step);
-      step.forEach(field => {
-        if (field.implementation.label === 'First Name') {
-          form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = firstName;
-        } else if (field.implementation.label === 'Last Name') {
-          form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = lastName;
-        }
-      });
-    }
-=======
     form.fields[typeAndId] = e?.target ? e?.target?.value || undefined : e;
-    // console.log(e?.target?.value || e);
->>>>>>> origin/master
+    console.log(form.fields);
+    // // If the field is a client, auto fill the first name and last name
+    // const id = typeAndId.split('_')[1];
+    // const implementation = step.filter(field => field._id === id)[0].implementation;
+    // if (implementation.label === 'Client') {
+    //   const fieldOptions = dynamicOptions[implementation.optionsFromClass];
+    //   const value = fieldOptions[e?.target?.value || e];
+    //   const firstName = value.split(',')[0];
+    //   const lastName = value.split(',')[1];
+    //   console.log('step', step);
+    //   step.forEach(field => {
+    //     if (field.implementation.label === 'First Name') {
+    //       form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = firstName;
+    //     } else if (field.implementation.label === 'Last Name') {
+    //       form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = lastName;
+    //     }
+    //   });
+    // }
   };
 
   const getStepContent = stepIdx => {
@@ -173,7 +162,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
         // Check if there is an external rendering logic.
         const Field = onRenderField && onRenderField({required, id, type, implementation, content},
-          index, form.fields, handleChange);
+          index, form.fields, handleChange, step);
         if (Field != null) return Field;
 
         if (type === 'question') {
@@ -186,22 +175,16 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
           let fieldOptions;
           if (optionsFromClass) {
             fieldOptions = dynamicOptions[optionsFromClass] || {};
-            console.log('optionsFromClass', optionsFromClass);
-            console.log('fieldOptions', fieldOptions);
+            // console.log('optionsFromClass', optionsFromClass);
+            // console.log('fieldOptions', fieldOptions);
           } else if (implementation.options) {
             fieldOptions = {};
             implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
           }
 
-<<<<<<< HEAD
-          return <FieldGroup component={fieldType} key={id? `${type}_${id}`: `${type}_${_id}`} label={label} required={required}
-                             options={fieldOptions} 
-                             value={form.fields[id? `${type}_${id}`:`${type}_${_id}`]} onChange={handleChange(id? `${type}_${id}`:`${type}_${_id}`)}/>;
-=======
           return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required}
                              options={fieldOptions}
                              value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
->>>>>>> origin/master
         }
       })}
     </Box>;

@@ -333,9 +333,10 @@ const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
   // genericType will be 'client', 'serviceProvider',...
   const {genericType} = req.params;
-
+  
   try {
     console.log('createData',data);
+    console.log('genericType',genericType);
     const instanceData = await createSingleGenericHelper(data, genericType);
     if (instanceData) {
       // the instance data is stored into graphdb

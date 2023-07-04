@@ -79,10 +79,10 @@ const routes = (
     <Route path="/update-primary-email/:token" element={<changePrimaryEmail/>}/>
     <Route path="/dashboard" element={<PrivateRoute element={Dashboard}/>}/>
 
-    <Route path="/verify/:token" element={<UserFirstEntry/>}/>}/>
+    <Route path="/verify/:token" element={<UserFirstEntry/>}/>
     <Route path="/resetPassword/:token" element={<PrivateRoute element={ForgotPasswordResetPassword}/>}/>
 
-    <Route path="/clients/:id/edit" element={<ClientForm/>}/>}/>
+    <Route path="/clients/:id/edit" element={<ClientForm/>}/>
     {/*<PrivateRoute path='/clients/:id/needs/new' element={NeedForm}/>}/>*/}
     <Route path="/clients/new" element={<PrivateRoute element={ClientForm}/>}/>
     <Route path="/clients/advance-search" element={<PrivateRoute element={ClientSearch}/>}/>
