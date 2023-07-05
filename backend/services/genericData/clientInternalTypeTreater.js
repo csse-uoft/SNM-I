@@ -9,7 +9,7 @@ const clientInternalTypeCreateTreater = async (internalType, instanceData, value
   if (property === 'need') {
     instanceData.needs = value;
     instanceData.needOccurrences = [];
-    instanceData.markModified('needOccurrences');
+    // instanceData.markModified('needOccurrences');
     // Create/Delete Need satisfier based on need
     for (const needURI of value) {
       instanceData.needOccurrences.push({

@@ -4,6 +4,8 @@ import { getInstancesInClass } from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
 import { Box, Fade } from "@mui/material";
 import { TextField } from '@mui/material'
+import { fetchCharacteristics } from "../../api/characteristicApi";
+import { set } from "lodash";
 
 export function AppointmentClientField({
   fields,
@@ -20,15 +22,25 @@ export function AppointmentClientField({
   const clientKey = `internalType_${clientFieldId}`;
   const [selectedClient, setSelectedClient] = useState(undefined);
   const [dynamicOptions, setDynamicOptions] = useState({});
-  var firstName = false;
-  var lastName = false;
+  const firstNameInfo = {
+    name: 'First Name',
+    show: false,
+    value: undefined,
+  };
+  const lastNameInfo = {
+    name: 'Last Name',
+    show: false,
+    value: undefined,
+  };
+  const [nameKey, setNameKey] = useState({});
+  const [nameValue, setNameValue] = useState({});
 
   if (step) {
     step.map((s) => {
       if (s.name === 'First Name') {
-        firstName = true;
+        firstNameInfo.show = true;
       } else if (s.name === 'Last Name') {
-        lastName = true;
+        lastNameInfo.show = true;
       }
     });
   }
@@ -37,13 +49,42 @@ export function AppointmentClientField({
     console.log('AppointmentClientField', { key, e });
     console.log(dynamicOptions[":Client"][e.target.value]);
     const value = e.target.value;
+    if (firstNameInfo.show) {
+      try{
+        let firstName = dynamicOptions[":Client"][value].split(',')[1].trim();
+        console.log('firstName', { firstName });
+        setNameValue(prev => ({ ...prev, firstName: firstName }));
+        handleChange(nameKey.firstName)(firstName);
+      } catch (error) {
+        console.log('error', { error });
+      }
+    }
+    if (lastNameInfo.show) {
+      try{
+        let lastName = dynamicOptions[":Client"][value].split(',')[0].trim();
+        console.log('lastName', { lastName });
+        setNameValue(prev => ({ ...prev, lastName: lastName }));
+        handleChange(nameKey.lastName)(lastName);
+      } catch (error) {
+        console.log('error', { error });
+      }
+    }
     setSelectedClient(value);
     handleChange(key)(e);
   }
-
+ 
   useEffect(() => {
     getInstancesInClass(":Client")
       .then(options => setDynamicOptions(prev => ({ ...prev, ":Client": options })));
+    fetchCharacteristics().then((characteristics) => {
+      characteristics.data.map((c) => {
+        if (c.name === 'First Name') {
+          setNameKey(prev => ({ ...prev, firstName: `characteristic_${c.id}` }));
+        } else if (c.name === 'Last Name') {
+          setNameKey(prev => ({ ...prev, lastName: `characteristic_${c.id}` }));
+        }
+      });
+    });
   }, []);
 
   const showFadeContent = !!selectedClient;
@@ -52,28 +93,30 @@ export function AppointmentClientField({
     <SelectField key={clientKey} label="Client" value={dynamicOptions[":Client"]}
       options={dynamicOptions[":Client"] || {}} onChange={handleChangeClient(clientKey)} />
     {showFadeContent ?
-      <Fade in={firstName || lastName}>
+      <Fade in={firstNameInfo.show || lastNameInfo.show}>
         <div>
           {
-            firstName ?
+            firstNameInfo.show ?
               <div>
                 <TextField
                   label="First Name"
-                  disabled
+                  disabled = { nameValue.firstName ? true : false}
                   sx={{ mt: '16px', minWidth: 350 }}
-                  value={dynamicOptions[":Client"][selectedClient].split(',')[1].trim()}
+                  value={nameValue.firstName}
+                  onChange = {handleChange(nameKey.firstName)}
                 />
               </div>
               : null
           }
           {
-            lastName ?
+            lastNameInfo.show ?
               <div>
                 <TextField
                   label="Last Name"
-                  disabled
+                  disabled = { nameValue.lastName ? true : false}
                   sx={{ mt: '16px', minWidth: 350 }}
-                  value={dynamicOptions[":Client"][selectedClient].split(',')[0].trim()}
+                  onChange = {handleChange(nameKey.lastName)}
+                  value={nameValue.lastName}
                 />
               </div>
               : null

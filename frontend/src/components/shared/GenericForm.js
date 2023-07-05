@@ -133,23 +133,6 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   const handleChange = typeAndId => (e) => {
     form.fields[typeAndId] = e?.target ? e?.target?.value || undefined : e;
     console.log(form.fields);
-    // // If the field is a client, auto fill the first name and last name
-    // const id = typeAndId.split('_')[1];
-    // const implementation = step.filter(field => field._id === id)[0].implementation;
-    // if (implementation.label === 'Client') {
-    //   const fieldOptions = dynamicOptions[implementation.optionsFromClass];
-    //   const value = fieldOptions[e?.target?.value || e];
-    //   const firstName = value.split(',')[0];
-    //   const lastName = value.split(',')[1];
-    //   console.log('step', step);
-    //   step.forEach(field => {
-    //     if (field.implementation.label === 'First Name') {
-    //       form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = firstName;
-    //     } else if (field.implementation.label === 'Last Name') {
-    //       form.fields[id?`${field.type}_${field.id}`:`${field.type}_${field._id}`] = lastName;
-    //     }
-    //   });
-    // }
   };
 
   const getStepContent = stepIdx => {
