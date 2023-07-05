@@ -78,10 +78,10 @@ export default function Appointments() {
         for (const occ of appointment.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Appointment Name') {
             appointmentData.name = occ.dataStringValue;
-          // } else if (occ.occurrenceOf?.name === 'Client') {
-          //   appointmentData.client = occ.objectValue;
-          // } else if (occ.occurrenceOf?.name === 'Person') {
-          //   appointmentData.person = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Client') {
+            appointmentData.client = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Person') {
+            appointmentData.person = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Date and Time') {
             appointmentData.datetime = occ.dataDateValue;
             appointmentData.dateType = 'DateTime';
