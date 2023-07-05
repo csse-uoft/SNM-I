@@ -7,6 +7,7 @@ const FORMTYPE = 'client'
 const clientInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'need') {
+    console.log('instanceData', instanceData);
     instanceData.needs = value;
     instanceData.needOccurrences = [];
     instanceData.markModified('needOccurrences');
