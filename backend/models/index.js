@@ -3,6 +3,7 @@ module.exports = {
   ...require('./phoneNumber'),
   ...require('./person'),
   ...require('./serviceProvider'),
+  ...require('./programProvider'),
   ...require('./userAccount'),
   ...require('./ClientFunctionalities/characteristic'),
   ...require('./ClientFunctionalities/formItemImplementation'),
