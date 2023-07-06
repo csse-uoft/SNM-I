@@ -7,25 +7,21 @@ import { tr } from 'date-fns/locale';
 export default function AppointmentForm() {
   const formType = 'appointment';
   const [internalTypes, setInternalTypes] = useState({});
-  const name = { firstName: false, lastName: false }
   useEffect(() => {
     fetchInternalTypeByFormType(formType).then(({ internalTypes }) => {
       const data = {}
-      for (const { implementation, name } of internalTypes) {
-        data[name] = { implementation }
+      for (const { implementation, name, _id } of internalTypes) {
+        data[name] = { implementation, _id }
       }
-      console.log('appointment internalTypes', data);
       setInternalTypes(data);
     });
   }, []);
 
   const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange, step) => {
-    console.log('handleRenderField', { required, id, type, implementation, content, _id, index, fields, step });
     if (implementation.optionsFromClass === ":Client") {
-      console.log('handleRenderField', {required, id, type, implementation, content, _id});
       return <AppointmentClientField
         handleChange={handleChange} 
-        clientFieldId={internalTypes.clientForAppointment.implementation._id}
+        clientFieldId={internalTypes.clientForAppointment._id}
         step = {step}
       />
     }else if (implementation.label === "Last Name") {
@@ -34,6 +30,8 @@ export default function AppointmentForm() {
       return "";
     }
   }
+
+  
 
 
   return (

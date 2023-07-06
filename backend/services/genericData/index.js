@@ -317,11 +317,9 @@ const createSingleGenericHelper = async (data, genericType) => {
     const [type, id] = key.split('_');
 
     if (type === 'internalType') {
-      console.log('wkx', {type, id, value});
       await addIdToUsage('internalType', genericType, id);
 
       const internalType = internalTypes[id];
-      console.log('internalType', {internalType});
       await genericType2InternalTypeCreateTreater[genericType](internalType, instanceData, value);
     }
   }
@@ -336,10 +334,7 @@ const createSingleGeneric = async (req, res, next) => {
   const {genericType} = req.params;
   
   try {
-    console.log('createData',data);
-    console.log('genericType',genericType);
     const instanceData = await createSingleGenericHelper(data, genericType);
-    console.log('instanceData',instanceData);
     if (instanceData) {
       // the instance data is stored into graphdb
       await genericType2Model[genericType](instanceData).save();
@@ -584,12 +579,6 @@ const fetchGenericDatas = async (req, res, next) => {
     const extraPopulates = genericType2Populates[genericType] || [];
     const data = await genericType2Model[genericType].find({},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
-    // console.log('data',data[0].user);
-    // const userIds = forms.map(form => form.createdBy.split("_").slice(-1)[0]);
-    // const userIds = data.map(data => data.user.split("_").slice(-1)[0]);
-    // const users = await GDBUserAccountModel.find({_id: {$in: userIds}}, {populates: ['primaryContact']})
-    // console.log('users',users);
-    console.log('data', data);
     return res.status(200).json({data, success: true});
 
   } catch (e) {

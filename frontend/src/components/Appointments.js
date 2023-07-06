@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import {getInstancesInClass} from "../api/dynamicFormApi";
 
 const TYPE = 'appointments';
+
 
 const columnsWithoutOptions = [
   {
@@ -70,6 +72,21 @@ export default function Appointments() {
  
   const fetchData = async () => {
     const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const clients = {};
+    await getInstancesInClass(':Client').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const clientId = key.split('#')[1];
+        clients[clientId] = res[key];
+      }
+      );
+    });
+    const persons = {};
+    await getInstancesInClass('cids:Person').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const personId = key.split('#')[1];
+        persons[personId] = res[key];
+      });
+    });
     const data = [];
     console.log(appointmens);
     for (const appointment of appointmens) {
@@ -90,8 +107,16 @@ export default function Appointments() {
             appointmentData.dateType = 'Date';
           }
         }
-        appointmentData.client = appointment.client;
-        appointmentData.person = appointment.person;
+      if (appointment.client){
+        appointmentData.client = clients[appointment.client.slice(1)]
+      }
+      if (appointment.person){
+        appointmentData.person = persons[appointment.person.slice(1)]
+      } else if (appointment.user){
+        // const userData = await fetchSingleGeneric('user', appointment.user);
+        // console.log(userData);
+      }
+        
       data.push(appointmentData);
     }
     return data;

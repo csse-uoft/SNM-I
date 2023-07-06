@@ -132,11 +132,11 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
   const handleChange = typeAndId => (e) => {
     form.fields[typeAndId] = e?.target ? e?.target?.value || undefined : e;
-    console.log(form.fields);
   };
 
   const getStepContent = stepIdx => {
     const step = dynamicForm.formStructure[stepIdx].fields;
+    console.log('step', step);
     setStep(step); 
     return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content, _id}, index) => {
@@ -158,8 +158,6 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
           let fieldOptions;
           if (optionsFromClass) {
             fieldOptions = dynamicOptions[optionsFromClass] || {};
-            // console.log('optionsFromClass', optionsFromClass);
-            // console.log('fieldOptions', fieldOptions);
           } else if (implementation.options) {
             fieldOptions = {};
             implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
