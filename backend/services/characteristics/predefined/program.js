@@ -11,15 +11,5 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
-
-  {
-    name: 'Eligibility Condition',
-    description: 'Eligibility Condition of the service',
-    predefinedProperty: 'http://snmi#hasEligibilityCondition',
-    implementation: {
-      label: 'Eligibility Condition',
-      valueDataType: 'xsd:string',
-      fieldType: FieldTypes.TextField,
-    }
-  },
+  // TODO: Eligiblity Condition not predefined?
 ]

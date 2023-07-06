@@ -30,10 +30,6 @@ const {
   serviceOccurrenceInternalTypeUpdateTreater
 } = require("./serviceOccurrenceInternalTypeTreater");
 const {
-  programOccurrenceInternalTypeCreateTreater, programOccurrenceInternalTypeFetchTreater,
-  programOccurrenceInternalTypeUpdateTreater
-} = require("./programOccurrenceInternalTypeTreater");
-const {
   fetchCharacteristicQuestionsInternalTypesBasedOnForms,
   implementCharacteristicOccurrence,
   getPredefinedProperty

@@ -1,7 +1,7 @@
 const express = require('express');
 const {createSingleProgramProvider, fetchMultipleProgramProviders, fetchSingleProgramProvider,
   deleteSingleProgramProvider, updateProgramProvider
-} = require("../programs/genericData/programProvider");
+} = require("../services/genericData/programProvider");
 const router = express.Router();
 
 router.post('/providers', createSingleProgramProvider);

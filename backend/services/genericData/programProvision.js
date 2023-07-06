@@ -2,7 +2,7 @@ const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
-const {GDBProgramModel} = require("../../models/program/program");
+const {GDBProgramModel} = require("../../models/program");
 
 
 const FORMTYPE = 'programProvision'

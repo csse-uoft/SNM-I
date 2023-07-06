@@ -3,7 +3,7 @@ const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBServiceProviderModel} = require("./serviceProvider");
 const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 const {GDBServiceModel} = require("./service/service");
-const {GDBProgramModel} = require("./program/program");
+const {GDBProgramModel} = require("./program");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBServiceOccurrenceModel} = require("./service/serviceOccurrence");
 
