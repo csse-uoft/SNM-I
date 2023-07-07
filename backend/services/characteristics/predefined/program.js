@@ -11,5 +11,5 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
-  // TODO: Eligiblity Condition not predefined?
+  // TODO: Eligibility Condition not predefined?
 ]
