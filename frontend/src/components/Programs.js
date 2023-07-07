@@ -14,10 +14,10 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Provider',
-    body: ({programProvider}) =>{
-      return programProvider
-      return <Link color to={`/providers/${programProvider.split('_')[1]}`}>
-        {programProvider}
+    body: ({serviceProvider}) =>{
+      return serviceProvider
+      return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
+        {serviceProvider}
       </Link>;
     }
 
@@ -58,12 +58,12 @@ export default function Programs() {
         for (const occ of program.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Program Name') {
             programData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Program Provider') {
+          } else if (occ.occurrenceOf?.name === 'Service Provider') {
             programData.provider = occ.objectValue;
           }
         }
-      if(program.programProvider)
-        programData.programProvider = program.programProvider;
+      if(program.serviceProvider)
+        programData.serviceProvider = program.serviceProvider;
       data.push(programData);
     }
     return data;

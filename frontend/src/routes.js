@@ -56,7 +56,6 @@ import Questions from './components/questions/Questions';
 import VisualizeClient from './components/clients/VisualizeClient';
 import ClientSearch from "./components/clients/ClientSearch";
 import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
-import VisualizeProgramProvider from './components/programProviders/visualizaProgramProvider';
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeProgram from "./components/programs/visualizeProgram";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";

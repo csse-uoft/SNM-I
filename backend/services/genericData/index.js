@@ -1,7 +1,6 @@
 const {
   GDBClientModel,
   GDBServiceProviderModel,
-  GDBProgramProviderModel,
   GDBPhoneNumberModel,
   GDBCharacteristicModel,
   GDBAddressModel,
