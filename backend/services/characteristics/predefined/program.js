@@ -11,5 +11,15 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
-  // TODO: Eligibility Condition not predefined?
+//  {
+//    name: 'Service Provider',
+//    description: 'Service provider of the program',
+//    predefinedProperty: 'http://snmi#hasServiceProvider',
+//    implementation: {
+//      label: 'Service Provider',
+//      valueDataType: 'owl:NamedIndividual',
+//      fieldType: FieldTypes.SingleSelectField,
+//      optionsFromClass: 'http://snmi#ServiceProvider'
+//    }
+//  },
 ]

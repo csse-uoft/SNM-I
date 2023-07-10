@@ -5,13 +5,20 @@ const {SPARQL} = require("../../utils/graphdb/helpers");
 const FORMTYPE = 'program'
 const programInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  // TODO: nothing to do?
+  if (property === 'serviceProvider'){
+    instanceData[property] = value;
+  }
 }
 
 const programInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema =  data.schema;
-  // TODO: nothing to do?
+  for (const property in data) {
+    if (property === 'serviceProvider') {
+      const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
+      result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+    }
+  }
   return result;
 }
 
