@@ -6,7 +6,7 @@ import { getJson } from "../../api/index";
 /**
  * This function returns the name of the service provider for the given program/service.
  */
-export default async function getServiceProviderName(programOrService) {
+export async function getServiceProviderName(programOrService) {
   const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider.split('_')[1]}`));
   var organizationNameCharacteristicId;
   var volunteerFirstNameCharacteristicId;
@@ -34,4 +34,12 @@ export default async function getServiceProviderName(programOrService) {
   } else {
     return '#####'; // Should not happen.
   }
+}
+
+/**
+ * This function returns the type (organization/volunteer) of the service provider for the given program/service.
+ */
+export async function getServiceProviderType(programOrService) {
+  const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider.split('_')[1]}`));
+  return serviceProvider.provider.type;
 }

@@ -11,7 +11,7 @@ import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "../shared/virtualizeTable";
-import getServiceProviderName from "../shared/ServiceProviderNameHelper";
+import {getServiceProviderName, getServiceProviderType} from "../shared/ServiceProviderNameHelper";
 
 
 /**
@@ -41,7 +41,7 @@ export default function VisualizeServices() {
       for (const serviceData of allServices) {
         if (serviceData.program.split('_')[1] === id) {
           const label = <Link color to={`/services/${serviceData._id}`}>{serviceData.name}</Link>;
-          const value = <Link color to={`/providers/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData))}</Link>; // TODO: Not working because of extra /organization/ in middle of link
+          const value = <Link color to={`/providers/${await getServiceProviderType(serviceData)}/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData))}</Link>;
           information.push({label, value})
         }
       }
