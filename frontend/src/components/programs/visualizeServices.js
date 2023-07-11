@@ -15,7 +15,7 @@ import getServiceProviderName from "../shared/ServiceProviderNameHelper";
 
 
 /**
- * This function is the frontend for visualizing single generic TODO
+ * This function is the frontend for visualizing the services of a program.
  * @returns {JSX.Element}
  */
 export default function VisualizeServices() {
@@ -40,8 +40,9 @@ export default function VisualizeServices() {
       const information = [];
       for (const serviceData of allServices) {
         if (serviceData.program.split('_')[1] === id) {
-          const val = <Link color to={`/services/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData))}</Link>;
-          information.push({label: serviceData.name, value: val})
+          const label = <Link color to={`/services/${serviceData._id}`}>{serviceData.name}</Link>;
+          const value = <Link color to={`/providers/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData))}</Link>; // TODO: Not working because of extra /organization/ in middle of link
+          information.push({label, value})
         }
       }
 
