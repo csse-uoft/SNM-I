@@ -3,6 +3,8 @@ import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
 import { fetchSingleProvider } from "../api/providersApi";
+import { fetchForAdvancedSearch } from "../api/advancedSearchApi";
+import { getJson } from "../api/index";
 
 const TYPE = 'programs';
 
@@ -63,10 +65,34 @@ export default function Programs() {
             programData.provider = occ.objectValue;
           }
         }
-      if(program.serviceProvider) {
-        const serviceProvider = (await fetchSingleProvider('providers',
-                                  program.serviceProvider.split('_')[1])).data;
-        programData.serviceProvider = serviceProvider.characteristic_4;
+      if (program.serviceProvider) {
+        const serviceProvider = (await getJson(`/api/providers/${program.serviceProvider.split('_')[1]}`));
+        var organizationNameCharacteristicId;
+        var volunteerFirstNameCharacteristicId;
+        var volunteerLastNameCharacteristicId;
+        const orgCharacteristics = (await fetchForAdvancedSearch('organization', 'characteristic')).data;
+        for (const characteristic of orgCharacteristics) {
+	  if (characteristic.name === 'Organization Name') {
+            organizationNameCharacteristicId = characteristic._id;
+          }
+        }
+        const volCharacteristics = (await fetchForAdvancedSearch('volunteer', 'characteristic')).data;
+        for (const characteristic of volCharacteristics) {
+          if (characteristic.name === 'First Name') {
+            volunteerFirstNameCharacteristicId = characteristic._id;
+          } else if (characteristic.name === 'Last Name') {
+            volunteerLastNameCharacteristicId = characteristic._id;
+          }
+        }
+        if (serviceProvider.provider.type === 'organization') {
+          programData.serviceProvider = serviceProvider.provider.organization['characteristic_' + organizationNameCharacteristicId];
+	} else if (serviceProvider.provider.type === 'volunteer') {
+          const volunteerFirstName = serviceProvider.provider.volunteer['characteristic_' + volunteerFirstNameCharacteristicId];
+          const volunteerLastName = serviceProvider.provider.volunteer['characteristic_' + volunteerLastNameCharacteristicId];
+          programData.serviceProvider = volunteerLastName + ', ' + volunteerFirstName;
+	} else {
+          programData.serviceProvider = '#####'; // Should not happen.
+        }
       }
       data.push(programData);
     }
