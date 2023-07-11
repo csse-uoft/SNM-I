@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
-import {getServiceProviderName} from "./shared/ServiceProviderNameHelper";
+import {getServiceProviderName} from "./shared/ServiceProviderInformation";
 
 const TYPE = 'programs';
 

@@ -11,7 +11,7 @@ import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "../shared/virtualizeTable";
-import {getServiceProviderName, getServiceProviderType} from "../shared/ServiceProviderNameHelper";
+import {getServiceProviderName, getServiceProviderType} from "../shared/ServiceProviderInformation";
 
 
 /**
