@@ -59,6 +59,7 @@ import VisualizeServiceProvider from './components/serviceProviders/visualizaSer
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeProgram from "./components/programs/visualizeProgram";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
+import VisualizeServices from "./components/programs/visualizeServices";
 import Needs from "./components/need/needs";
 import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
@@ -136,6 +137,7 @@ const routes = (
     <Route path="/programs/new" element={<PrivateRoute element={ProgramForm}/>}/>
     <Route path="/programs/:id" element={<PrivateRoute element={VisualizeProgram}/>}/>
     <Route path="/programs" element={<PrivateRoute element={Programs}/>}/>
+    <Route path="/programs/:id/services" element={<PrivateRoute element={VisualizeServices}/>}/>
 
     <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
