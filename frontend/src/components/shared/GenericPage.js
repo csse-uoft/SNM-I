@@ -12,9 +12,9 @@ import { Container, Fade } from "@mui/material";
  */
 
 /**
- * A generic page component for clients, services, goods, providers.
+ * A generic page component for clients, services, programs, goods, providers.
  * @param props {{fetchData, deleteItem, generateMarkers: GenerateMarkers, tableOptions?: {},
- * type: ("clients", "services", "goods", "providers"), nameFormatter, columnsWithoutOptions}}
+ * type: ("clients", "services", "programs", "goods", "providers"), nameFormatter, columnsWithoutOptions}}
  */
 export default function GenericPage(props) {
   const {

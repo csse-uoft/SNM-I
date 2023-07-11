@@ -4,7 +4,7 @@ import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
 import {getServiceProviderName} from "./shared/ServiceProviderNameHelper";
 
-const TYPE = 'services';
+const TYPE = 'programs';
 
 const columnsWithoutOptions = [
   {
@@ -34,50 +34,50 @@ const columnsWithoutOptions = [
   // }
 ];
 
-export default function Services() {
+export default function Programs() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = program => program.name;
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     return [];
     // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
+    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
+    return currPagePrograms.map(program => ({
+      position: {lat: Number(program.location.lat), lng: Number(program.location.lng)},
+      title: program.name,
+      link: `/${TYPE}/${program.id}`,
+      content: program.desc,
+    })).filter(program => program.position.lat && program.position.lng);
   };
 
   const fetchData = async () => {
-    const services = (await fetchMultipleGeneric('service')).data;
+    const programs = (await fetchMultipleGeneric('program')).data;
     const data = [];
-    for (const service of services) {
-      const serviceData = {_id: service._id};
-      if (service.characteristicOccurrences)
-        for (const occ of service.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Service Name') {
-            serviceData.name = occ.dataStringValue;
+    for (const program of programs) {
+      const programData = {_id: program._id};
+      if (program.characteristicOccurrences)
+        for (const occ of program.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Program Name') {
+            programData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
-            serviceData.provider = occ.objectValue;
+            programData.provider = occ.objectValue;
           }
         }
-      if (service.serviceProvider)
-        serviceData.serviceProvider = (await getServiceProviderName(service));
-      data.push(serviceData);
+      if (program.serviceProvider)
+        programData.serviceProvider = (await getServiceProviderName(program));
+      data.push(programData);
     }
     return data;
   };
 
-  const deleteService = (id) => deleteSingleGeneric('service', id);
+  const deleteProgram = (id) => deleteSingleGeneric('program', id);
 
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteService}
+      deleteItem={deleteProgram}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{

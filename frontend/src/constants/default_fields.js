@@ -204,3 +204,7 @@ export const generateProviderFields = (providerType, providerCategory, provider)
 const generateServiceFields = (service) => {
 
 }
+
+const generateProgramFields = (program) => {
+
+}

@@ -8,12 +8,15 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
-const columns = [
-  {field: 'label', headerName: 'Label', minWidth: 150},
-  {field: 'value', headerName: 'Details', minWidth: 500},
-];
+export default function VirtualizeTable({rows, givenColumns}) {
+  let columns = [
+    {field: 'label', headerName: 'Label', minWidth: 150},
+    {field: 'value', headerName: 'Details', minWidth: 500},
+  ];
+  if (givenColumns) {
+    columns = givenColumns;
+  }
 
-export default function VirtualizeTable({rows}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

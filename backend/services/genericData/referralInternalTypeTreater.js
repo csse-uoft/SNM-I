@@ -8,7 +8,7 @@ const referralInternalTypeCreateTreater = async (internalType, instanceData, val
   const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'client' || property === 'referringServiceProvider' || property === 'referringServiceProvider' ||
   property === 'receivingServiceProvider' || property === 'needOccurrence' || property === 'service' ||
-  property === 'serviceOccurrence'){
+  property === 'serviceOccurrence' || property === 'program'){
     instanceData[property] = value;
   }
 };
@@ -19,7 +19,7 @@ const referralInternalTypeFetchTreater = async (data) => {
   for (const property in data) {
     if (property === 'client' || property === 'referringServiceProvider' || property === 'referringServiceProvider' ||
       property === 'receivingServiceProvider' || property === 'needOccurrence' || property === 'service' ||
-      property === 'serviceOccurrence') {
+      property === 'serviceOccurrence' || property === 'program') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
       result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
     }
