@@ -33,7 +33,7 @@ export default function VisualizeServices() {
       for (const serviceData of allServices) {
         if (serviceData.program.split('_')[1] === id) {
 //		(await fetchMultipleGeneric(serviceData.program.split('_')[1]));
-          information.push({name: serviceData.name, id: serviceData._id})
+          information.push({label: serviceData.name, value: serviceData.serviceProvider, id: serviceData._id})
         }
       }
 
