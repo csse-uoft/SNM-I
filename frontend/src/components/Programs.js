@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import {getServiceProviderName} from "./shared/ServiceProviderNameHelper";
 
 const TYPE = 'programs';
 
@@ -62,8 +63,8 @@ export default function Programs() {
             programData.provider = occ.objectValue;
           }
         }
-      if(program.serviceProvider)
-        programData.serviceProvider = program.serviceProvider;
+      if (program.serviceProvider)
+        programData.serviceProvider = (await getServiceProviderName(program));
       data.push(programData);
     }
     return data;

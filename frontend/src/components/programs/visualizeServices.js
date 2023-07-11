@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from "react";
-import {useParams} from "react-router-dom";
+import {useParams, Link} from "react-router-dom";
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
 import {
   Box, Chip, Container, Paper, Typography
@@ -11,16 +11,18 @@ import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "../shared/virtualizeTable";
+import {getServiceProviderName, getServiceProviderType} from "../shared/ServiceProviderNameHelper";
 
 
 /**
- * This function is the frontend for visualizing single generic TODO
+ * This function is the frontend for visualizing the services of a program.
  * @returns {JSX.Element}
  */
 export default function VisualizeServices() {
   const {id} = useParams();
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [information, setInformation] = useState([]);
 
   useEffect(() => {
@@ -29,11 +31,18 @@ export default function VisualizeServices() {
       const {data: genericData} = (await fetchSingleGeneric('program', id));
       const allServices = (await fetchMultipleGeneric('service')).data;
 
+      const columns = [
+        {field: 'label', headerName: 'Service', minWidth: 150},
+        {field: 'value', headerName: 'Provider', minWidth: 500},
+      ];
+      setColumns(columns);
+
       const information = [];
       for (const serviceData of allServices) {
         if (serviceData.program.split('_')[1] === id) {
-//		(await fetchMultipleGeneric(serviceData.program.split('_')[1]));
-          information.push({label: serviceData.name, value: serviceData.serviceProvider, id: serviceData._id})
+          const label = <Link color to={`/services/${serviceData._id}`}>{serviceData.name}</Link>;
+          const value = <Link color to={`/providers/${await getServiceProviderType(serviceData)}/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData))}</Link>;
+          information.push({label, value})
         }
       }
 
@@ -55,7 +64,7 @@ export default function VisualizeServices() {
           {`Services of program with ID: ` + id}
         </Typography>
 
-        <VirtualizeTable rows={display}/>
+        <VirtualizeTable rows={display} givenColumns={columns}/>
       </Paper>
     </Container>
   );
