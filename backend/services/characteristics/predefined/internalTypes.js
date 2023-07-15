@@ -319,20 +319,20 @@ module.exports = [
     implementation: {
       label: 'Client',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
+      fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Client'
       }
   },
   {
-    name: 'userForClientAssessment',
-    predefinedProperty: 'http://snmi#hasUser',
+    name: 'userAccountForClientAssessment',
+    predefinedProperty: 'http://snmi#withUser',
     formType: 'clientAssessment',
     implementation: {
       label: 'User',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
+      fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#UserAccount'
-      }
+    }
   },
   {
     name: 'outcomeForClientAssessment',
@@ -341,19 +341,19 @@ module.exports = [
     implementation: {
       label: 'Outcome',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
+      fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Outcome'
     }
   },
   {
-    name: 'userAccountForClientAssessment',
-    predefinedProperty: 'http://snmi#hasUserAccount',
+    name: 'personForClientAssessment',
+    predefinedProperty: 'http://snmi#hasPerson',
     formType: 'clientAssessment',
     implementation: {
-      label: 'User Account',
+      label: 'Person',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
-      optionsFromClass: 'http://snmi#UserAccount'
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Person'
     }
   },
 

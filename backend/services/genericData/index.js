@@ -57,6 +57,7 @@ const {
 const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
+const {GDBClientAssessmentModel} = require("../../models/clientAssessment");
 const {
   serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
   serviceProvisionInternalTypeUpdateTreater
@@ -70,6 +71,11 @@ const {
   needOccurrenceInternalTypeFetchTreater
 } = require("./needOccurrenceInternalTypeTreater");
 
+const {
+  clientAssessmentInternalTypeUpdateTreater,
+  clientAssessmentInternalTypeCreateTreater,
+  clientAssessmentInternalTypeFetchTreater
+} = require("./clientAssessmentInternalTypeTreater");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -83,7 +89,8 @@ const genericType2Model = {
   'serviceRegistration': GDBServiceRegistrationModel,
   'serviceProvision': GDBServiceProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
-  'needOccurrence': GDBNeedOccurrenceModel
+  'needOccurrence': GDBNeedOccurrenceModel,
+  'clientAssessment': GDBClientAssessmentModel
 };
 
 const genericType2Populates = {
@@ -107,6 +114,7 @@ const genericType2InternalTypeCreateTreater = {
   'serviceProvision': serviceProvisionInternalTypeCreateTreater,
   'client': clientInternalTypeCreateTreater,
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
+  'clientAssessment': clientAssessmentInternalTypeCreateTreater,
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -118,6 +126,7 @@ const genericType2InternalTypeFetchTreater = {
   'serviceProvision': serviceProvisionInternalTypeFetchTreater,
   'client': clientInternalTypeFetchTreater,
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
+  'clientAssessment': clientAssessmentInternalTypeFetchTreater,
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -129,6 +138,7 @@ const genericType2InternalTypeUpdateTreater = {
   'serviceProvision': serviceProvisionInternalTypeUpdateTreater,
   'client': clientInternalTypeUpdateTreater,
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
+  'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
 };
 
 
