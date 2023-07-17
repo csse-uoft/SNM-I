@@ -3,19 +3,69 @@ const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
 const {GDBProgramModel} = require("../../models/program");
+const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 
 
 const FORMTYPE = 'programProvision'
 
 const programProvisionInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  // TODO: Unused value
+  if (property === 'needOccurrence') {
+    instanceData[property] = value;
+  }
+  if (internalType.name === 'needSatisfierForProgramProvision') {
+    if (value) {
+      instanceData.needSatisfierOccurrence = {
+        occurrenceOf: value,
+        startDate: instanceData.startDate,
+        endDate: instanceData.endDate,
+      };
+    } else {
+      const _id = instanceData.needSatisfierOccurrence._id;
+
+      // TODO: Verify if the occurrence is deleted
+      if (_id) {
+        await GDBNeedSatisfierOccurrenceModel.findByIdAndDelete(_id);
+      }
+      delete instanceData.needSatisfierOccurrence;
+    }
+  }
 };
 
 const programProvisionInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema = data.schema;
-  // TODO: Unchanged value
+
+  if (data.needOccurrence) {
+    // Add client
+    const client = await GDBClientModel.findOne({needOccurrence: data.needOccurrence});
+    const internalType = await GDBInternalTypeModel.findOne({
+      name: 'clientForProgramProvision',
+      formType: FORMTYPE
+    });
+    result['internalType_' + internalType._id] = SPARQL.getFullURI(client.individualName);
+  }
+
+  if (data.needSatisfierOccurrence) {
+    // Add need satisfier
+    const id = data.needSatisfierOccurrence.split('_')[1];
+    const needSatisfierOcc = await GDBNeedSatisfierOccurrenceModel.findById(id);
+    const internalType = await GDBInternalTypeModel.findOne({
+      name: 'needSatisfierForProgramProvision',
+      formType: FORMTYPE
+    });
+    result['internalType_' + internalType._id] = SPARQL.getFullURI(needSatisfierOcc.occurrenceOf);
+  }
+
+  for (const property in data) {
+    if (property === 'needOccurrence' || property === 'needSatisfierOccurrence') {
+      const internalType = await GDBInternalTypeModel.findOne({
+        predefinedProperty: schema[property].internalKey,
+        formType: FORMTYPE
+      });
+      result['internalType_' + internalType._id] = SPARQL.getFullURI(data[property]);
+    }
+  }
   return result;
 };
 

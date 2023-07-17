@@ -12,15 +12,15 @@ const columnsWithoutOptions = [
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>
     }
   },
-  {
-    label: 'Program Occurrence',
-    body: ({programOccurrence}) => {
-      return programOccurrence;
+//  {
+//    label: 'Program Occurrence',
+//    body: ({programOccurrence}) => {
+//      return programOccurrence;
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
-    }
-  },
+//    }
+//  },
   {
     label: 'Start Date',
     body: ({startDate}) => {

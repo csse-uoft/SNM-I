@@ -141,6 +141,39 @@ module.exports = [
 
   // below are for program Provision
   {
+    name: 'needOccurrenceForProgramProvision',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Need Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedOccurrence'
+    }
+  },
+  {
+    name: 'needSatisfierForProgramProvision',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+  {
+    name: 'needSatisfierOccurrenceForProgramProvision',
+    predefinedProperty: 'http://snmi#hasNeedSatisfierOccurrence',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Need Satisfier Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfierOccurrence'
+    }
+  },
+  {
     name: 'programForProgramProvision',
     predefinedProperty: 'http://snmi#hasProgram',
     formType: 'programProvision',
@@ -149,6 +182,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Program'
+    }
+  },
+  {
+    name: 'clientForProgramProvision',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
     }
   },
 
@@ -354,6 +398,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Appointment'
+    }
+  },
+  {
+    name: 'programForProgramRegistration',
+    predefinedProperty: 'http://snmi#hasProgram',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Program',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Program'
     }
   },
 

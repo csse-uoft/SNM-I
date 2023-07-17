@@ -21,8 +21,12 @@ const columnsWithoutOptions = [
         {serviceProvider}
       </Link>;
     }
-
-
+  },
+  {
+    label: 'Services',
+    body: ({_id, name}) => {
+      return <Link color to={`/${TYPE}/${_id}/services`}>Services for {name}</Link>;
+    }
   },
   // {
   //   label: 'Description',
