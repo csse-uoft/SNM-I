@@ -89,8 +89,6 @@ function getPredefinedProperty(genericType, characteristic) {
   const {genericType2Model} = require('./index');
   const schema = genericType2Model[genericType].schema;
   for (let key in schema) {
-    console.log('schema', schema[key].internalKey);
-    console.log('characteristic', characteristic.predefinedProperty);
     if (schema[key].internalKey === characteristic.predefinedProperty)
       return key;
   }

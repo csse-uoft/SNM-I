@@ -84,8 +84,17 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
           for (const field of step.fields) {
             const className = field?.implementation?.optionsFromClass;
             if (className) {
-              await getInstancesInClass(className)
+              if (className == 'cp:CL-Gender'){
+                await getInstancesInClass(className)
+                .then(options => {
+                  Object.keys(options).map(key => options[key] = options[key].replace('cp:', ''));
+                  setDynamicOptions(prev => ({...prev, [className]: options}))
+                });
+              }
+              else {
+                await getInstancesInClass(className)
                 .then(options => setDynamicOptions(prev => ({...prev, [className]: options})));
+              }
             }
           }
         }
@@ -136,7 +145,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
   const getStepContent = stepIdx => {
     const step = dynamicForm.formStructure[stepIdx].fields;
-    console.log('step', step);
+    console.log(form);
     setStep(step); 
     return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content, _id}, index) => {

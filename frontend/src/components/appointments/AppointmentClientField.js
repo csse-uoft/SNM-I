@@ -18,11 +18,11 @@ export function AppointmentClientField({
   }
 
   const clientKey = `internalType_${clientFieldId}`;
-  const [selectedClient, setSelectedClient] = useState(undefined);
+  const [selectedClient, setSelectedClient] = useState(fields[clientKey]);
   const [dynamicOptions, setDynamicOptions] = useState({});
 
   const [nameKey, setNameKey] = useState({});
-  const [nameValue, setNameValue] = useState({firstName: '', lastName: ''});
+  const [nameValue, setNameValue] = useState({ firstName: null, lastName: null });
   const stepFields = {};
 
   step.map((s) => {
@@ -35,7 +35,7 @@ export function AppointmentClientField({
 
   const handleChangeClient = key => (e) => {
     const value = e.target.value;
-    setNameValue({firstName: '', lastName: ''});
+    setNameValue({firstName: null, lastName: null});
       try{
         let firstName = dynamicOptions[":Client"][value].split(',')[1].trim();
         setNameValue(prev => ({ ...prev, firstName: firstName }));
@@ -74,7 +74,7 @@ export function AppointmentClientField({
   const showFadeContent = stepFields.hasOwnProperty("firstName") || stepFields.hasOwnProperty("lastName");
 
   return <>
-    <SelectField key={clientKey} label="Client" value={dynamicOptions[":Client"]}
+    <SelectField key={clientKey} label="Client" value={fields[clientKey]}
       options={dynamicOptions[":Client"] || {}} onChange={handleChangeClient(clientKey)} />
     {showFadeContent ?
       <Fade in={showFadeContent}>
@@ -84,9 +84,9 @@ export function AppointmentClientField({
               <div>
                 <TextField
                   label="First Name"
-                  disabled = { nameValue.firstName ? true : false}
+                  disabled = { nameValue.firstName ||  fields[nameKey.firstName] ? true : false}
                   sx={{ mt: '16px', minWidth: 350 }}
-                  value={nameValue.firstName}
+                  value={nameValue.firstName? nameValue.firstName : fields[nameKey.firstName]?  fields[nameKey.firstName]: '' }
                   onChange = {handleChange(nameKey.firstName)}
                 />
               </div>
@@ -97,10 +97,10 @@ export function AppointmentClientField({
               <div>
                 <TextField
                   label="Last Name"
-                  disabled = { nameValue.lastName ? true : false}
+                  disabled = { nameValue.lastName  ||  fields[nameKey.lastName] ? true : false}
                   sx={{ mt: '16px', minWidth: 350 }}
                   onChange = {handleChange(nameKey.lastName)}
-                  value={nameValue.lastName}
+                  value={nameValue.lastName? nameValue.lastName : fields[nameKey.lastName]?  fields[nameKey.lastName]:  '' }
                 />
               </div>
               : null

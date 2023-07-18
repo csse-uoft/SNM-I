@@ -15,6 +15,7 @@ export default function AppointmentForm() {
       }
       setInternalTypes(data);
     });
+    
   }, []);
 
   const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange, step) => {
@@ -23,6 +24,7 @@ export default function AppointmentForm() {
         handleChange={handleChange} 
         clientFieldId={internalTypes.clientForAppointment._id}
         step = {step}
+        fields={fields}
       />
     }else if (implementation.label === "Last Name") {
       return "";

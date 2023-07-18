@@ -180,6 +180,13 @@ function TopNavBar() {
                 <Typography variant="inherit">Reporting</Typography>
               </MenuItem>
 
+              <MenuItem onClick={handleLink(`/person`)}>
+                <ListItemIcon>
+                  <GroupsIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Persons</Typography>
+              </MenuItem>
+
             </Menu>
           </div>
         ) : null}

@@ -68,6 +68,8 @@ import NeedOccurrenceForm from "./components/needOccurrence/needOccurrenceForm";
 import NeedOccurrences from "./components/needOccurrence/NeedOccurrences";
 import ClientAssessment from './components/clientAssessment/ClientAssesment';
 import ClientAssessmentForm from './components/clientAssessment/ClientAssessmentForm';
+import Person from './components/Person';
+import PersonForm from './components/person/PersonForm';
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -141,6 +143,10 @@ const routes = (
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
+
+    <Route path="/person" element={<PrivateRoute element={Person}/>}/>
+    <Route path="/person/new" element={<PrivateRoute element={PersonForm}/>}/>
+    <Route path="/person/:id/edit" element={<PrivateRoute element={PersonForm}/>}/>
 
     <Route path="/needOccurrences/:id/edit" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
     {/*<Route path="/needOccurrences/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
