@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
-import {getServiceProviderName} from "./shared/ServiceProviderInformation";
+import { getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
 
 const TYPE = 'programs';
 
@@ -16,16 +16,15 @@ const columnsWithoutOptions = [
   {
     label: 'Provider',
     body: ({serviceProvider}) =>{
-      return serviceProvider
-      return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-        {serviceProvider}
+      return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
+        {serviceProvider.name}
       </Link>;
     }
   },
   {
     label: 'Services',
     body: ({_id, name}) => {
-      return <Link color to={`/${TYPE}/${_id}/services`}>Services for {name}</Link>;
+      return <Link color to={`/${TYPE}/${_id}/services`}>Services</Link>;
     }
   },
   // {
@@ -68,7 +67,11 @@ export default function Programs() {
           }
         }
       if (program.serviceProvider)
-        programData.serviceProvider = (await getServiceProviderName(program));
+        programData.serviceProvider = {
+          _id: program.serviceProvider.split('_')[1],
+          name: (await getServiceProviderName(program)),
+          type: (await getServiceProviderType(program))
+        }
       data.push(programData);
     }
     return data;
