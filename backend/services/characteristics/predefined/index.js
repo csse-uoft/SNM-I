@@ -4,14 +4,13 @@ const service = require('./service');
 const program = require('./program');
 const appointment = require('./appointment');
 const serviceOccurrence = require('./serviceOccurrence');
-const programOccurrence = require('./programOccurrence');
 const internalTypes = require('./internalTypes');
 const general = require('./general')
 
 const allPredefinedCharacteristics = {};
 const allPredefinedInternalType = {};
 
-for (const characteristic of [...client, ...serviceProvider, ...service, ...serviceOccurrence, ...programOccurrence, ...program, ...appointment, ...general]) {
+for (const characteristic of [...client, ...serviceProvider, ...service, ...serviceOccurrence, ...program, ...appointment, ...general]) {
   if (allPredefinedCharacteristics[characteristic.name]) {
     throw Error(`Duplicated name in predefined characteristics: ${characteristic.name}`);
   } else {

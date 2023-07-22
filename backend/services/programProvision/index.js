@@ -24,7 +24,7 @@ async function getClientNeedOccurrenceByClient(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
-async function getServiceOccurrenceByService(req, res) {
+async function getProgramOccurrenceByProgram(req, res) {
   const instances = {};
 
   const programFullURI = req.params.program;
@@ -33,7 +33,7 @@ async function getServiceOccurrenceByService(req, res) {
     ${SPARQL.getSPARQLPrefixes()}
     select ?programOcc ?description where { 
         bind(<${programFullURI}> as ?program)
-        ?programOcc a :ServiceOccurrence, owl:NamedIndividual.
+        ?programOcc a :ProgramOccurrence, owl:NamedIndividual.
         ?programOcc :occurrenceOf ?program.
         # description
         optional { ?programOcc cids:hasDescription ?description. }
@@ -45,7 +45,7 @@ async function getServiceOccurrenceByService(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
-async function getNeedSatisfiersByServiceOccurrence(req, res) {
+async function getNeedSatisfiersByProgramOccurrence(req, res) {
   const instances = {};
 
   const programOccFullURI = req.params.programOccurrence;
@@ -56,7 +56,7 @@ async function getNeedSatisfiersByServiceOccurrence(req, res) {
         bind(<${programOccFullURI}> as ?programOcc)
         ?needSatisfier a :NeedSatisfier, owl:NamedIndividual.
         ?programOcc :hasNeedSatisfier ?needSatisfier.
-        ?programOcc a :ServiceOccurrence.
+        ?programOcc a :ProgramOccurrence.
         # description & name
         optional { ?needSatisfier cids:hasDescription ?description. }
         optional { ?needSatisfier :hasType ?type. }
@@ -68,7 +68,7 @@ async function getNeedSatisfiersByServiceOccurrence(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
-async function getNeedSatisfiersByService(req, res) {
+async function getNeedSatisfiersByProgram(req, res) {
   const instances = {};
 
   const programFullURI = req.params.program;
@@ -79,7 +79,7 @@ async function getNeedSatisfiersByService(req, res) {
         bind(<${programFullURI}> as ?program)
         ?needSatisfier a :NeedSatisfier, owl:NamedIndividual.
         ?program :hasNeedSatisfier ?needSatisfier.
-        ?program a :Service.
+        ?program a :Program.
         # description & name
         optional { ?needSatisfier cids:hasDescription ?description. }
         optional { ?needSatisfier :hasType ?type. }
@@ -94,7 +94,7 @@ async function getNeedSatisfiersByService(req, res) {
 
 module.exports = {
   getClientNeedOccurrenceByClient,
-  getServiceOccurrenceByService,
-  getNeedSatisfiersByServiceOccurrence,
-  getNeedSatisfiersByService,
+  getProgramOccurrenceByProgram,
+  getNeedSatisfiersByProgramOccurrence,
+  getNeedSatisfiersByProgram,
 }
