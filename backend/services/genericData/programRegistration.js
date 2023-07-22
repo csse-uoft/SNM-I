@@ -7,7 +7,7 @@ const FORMTYPE = 'programRegistration'
 const programRegistrationInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'client' || property === 'referral' || property === 'appointment' ||
-    property == 'program') {
+    property == 'programOccurrence') {
     instanceData[property] = value;
   }
 };
@@ -17,7 +17,7 @@ const programRegistrationInternalTypeFetchTreater = async (data) => {
   const schema = data.schema;
   for (const property in data) {
     if (property === 'client' || property === 'referral' || property === 'appointment' ||
-      property == 'program') {
+      property == 'programOccurrence') {
       const internalType = await GDBInternalTypeModel.findOne({
         predefinedProperty: schema[property].internalKey,
         formType: FORMTYPE

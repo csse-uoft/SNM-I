@@ -58,7 +58,42 @@ module.exports = [
     }
   },
 
+  // below are for program occurrence
+  {
+    name: 'programForProgramOccurrence',
+    predefinedProperty: 'http://snmi#occurrenceOf',
+    formType: 'programOccurrence',
+    implementation: {
+      label: 'Program',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Program'
+    }
+  },
+  {
+    name: 'needSatisfierForProgramOccurrence',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'programOccurrence',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+
   // below are for program
+  {
+    name: 'needSatisfierForProgram',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'program',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
   {
     name: 'serviceProviderForProgram',
     predefinedProperty: 'http://snmi#hasServiceProvider',
@@ -185,6 +220,17 @@ module.exports = [
     }
   },
   {
+    name: 'programOccurrenceForProgramProvision',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Program Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
+    }
+  },
+  {
     name: 'clientForProgramProvision',
     predefinedProperty: 'http://snmi#hasClient',
     formType: 'programProvision',
@@ -308,6 +354,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#ServiceOccurrence'
     }
   },
+  {
+    name: 'programOccurrenceForReferral',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'referral',
+    implementation: {
+      label: 'Program Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
+    }
+  },
 
   // below are for service registration
   {
@@ -367,6 +424,17 @@ module.exports = [
   },
 
   // below are for program registration
+  {
+    name: 'programOccurrenceForProgramRegistration',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Program Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
+    }
+  },
   {
     name: 'clientForProgramRegistration',
     predefinedProperty: 'http://snmi#hasClient',

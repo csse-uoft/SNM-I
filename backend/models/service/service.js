@@ -3,7 +3,7 @@ const {GDBAddressModel} = require('../address')
 const {GDBCOModel} = require("../ClientFunctionalities/characteristicOccurrence");
 const {GDBServiceProviderModel} = require("../serviceProvider");
 const {GDBNeedSatisfierModel} = require("../needSatisfier");
-const {GDBProgramModel} = require("../program");
+const {GDBProgramModel} = require("../program/program");
 
 const GDBServiceModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},

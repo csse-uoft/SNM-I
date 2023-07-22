@@ -16,18 +16,23 @@ const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicO
 const {MDBUsageModel} = require("../../models/usage");
 const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBServiceModel} = require("../../models/service/service");
-const {GDBProgramModel} = require("../../models/program");
+const {GDBProgramModel} = require("../../models/program/program");
 const {Server400Error} = require("../../utils");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBVolunteerModel} = require("../../models/volunteer");
 const {GDBAppointmentModel} = require("../../models/appointment");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
+const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {noQuestion} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
 } = require("./serviceOccurrenceInternalTypeTreater");
+const {
+  programOccurrenceInternalTypeCreateTreater, programOccurrenceInternalTypeFetchTreater,
+  programOccurrenceInternalTypeUpdateTreater
+} = require("./programOccurrenceInternalTypeTreater");
 const {
   fetchCharacteristicQuestionsInternalTypesBasedOnForms,
   implementCharacteristicOccurrence,
@@ -94,6 +99,7 @@ const genericType2Model = {
   'program': GDBProgramModel,
   'appointment': GDBAppointmentModel,
   'serviceOccurrence': GDBServiceOccurrenceModel,
+  'programOccurrence': GDBProgramOccurrenceModel,
   'referral': GDBReferralModel,
   'serviceRegistration': GDBServiceRegistrationModel,
   'serviceProvision': GDBServiceProvisionModel,
@@ -105,12 +111,13 @@ const genericType2Model = {
 
 const genericType2Populates = {
   'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
-  'programProvision' : []
+  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence']
 };
 
 const genericType2Checker = {
   'service': noQuestion,
   'serviceOccurrence': noQuestion,
+  'programOccurrence': noQuestion,
   'program' : noQuestion
 };
 
@@ -120,6 +127,7 @@ const genericType2Checker = {
 const genericType2InternalTypeCreateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeCreateTreater,
   'service': serviceInternalTypeCreateTreater,
+  'programOccurrence': programOccurrenceInternalTypeCreateTreater,
   'program': programInternalTypeCreateTreater,
   'referral': referralInternalTypeCreateTreater,
   'serviceRegistration': serviceRegistrationInternalTypeCreateTreater,
@@ -134,6 +142,7 @@ const genericType2InternalTypeCreateTreater = {
 const genericType2InternalTypeFetchTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeFetchTreater,
   'service': serviceInternalTypeFetchTreater,
+  'programOccurrence': programOccurrenceInternalTypeFetchTreater,
   'program': programInternalTypeFetchTreater,
   'referral': referralInternalTypeFetchTreater,
   'serviceRegistration': serviceRegistrationInternalTypeFetchTreater,
@@ -148,6 +157,7 @@ const genericType2InternalTypeFetchTreater = {
 const genericType2InternalTypeUpdateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeUpdateTreater,
   'service': serviceInternalTypeUpdateTreater,
+  'programOccurrence': programOccurrenceInternalTypeUpdateTreater,
   'program' : programInternalTypeUpdateTreater,
   'referral': referralInternalTypeUpdateTreater,
   'serviceRegistration': serviceRegistrationInternalTypeUpdateTreater,

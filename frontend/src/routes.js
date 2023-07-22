@@ -65,6 +65,8 @@ import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfie
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
 import ServiceOccurrences from "./components/ServiceOccurrences";
 import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
+import ProgramOccurrences from "./components/ProgramOccurrences";
+import ProgramOccurrenceForm from "./components/programOccurrence/ProgramOccurrence";
 import ReferralForm from "./components/referrals/ReferralForm";
 import Referrals from "./components/referrals/Referrals";
 import ServiceRegistrationForm from "./components/serviceRegistration/ServiceRegistrationForm";
@@ -157,6 +159,10 @@ const routes = (
     <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
     <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
     <Route path="/serviceOccurrence/:id/edit" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
+
+    <Route path="/programOccurrences" element={<PrivateRoute element={ProgramOccurrences}/>}/>
+    <Route path="/programOccurrence/new" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
+    <Route path="/programOccurrence/:id/edit" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
 
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
 

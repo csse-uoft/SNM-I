@@ -9,6 +9,7 @@ const field2Checker = {
   service: haveNoQuestionChecker,
   serviceOccurrence: haveNoQuestionChecker,
   program: haveNoQuestionChecker,
+  programOccurrence: haveNoQuestionChecker,
 }
 
 
