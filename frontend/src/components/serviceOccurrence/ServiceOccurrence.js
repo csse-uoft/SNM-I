@@ -14,9 +14,10 @@ export default function ServiceOccurrenceForm() {
         data[name] = {implementation, _id}
       }
       setInternalTypes(data);
+      console.log('serviceOccurrence internalTypes', data);
     });
   }, []);
-  const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
+  const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange,step) => {
     if (implementation.optionsFromClass === ":Service") {
       // Render Service & Service Occurrence & Need Satisfier
       return <ServiceAndNeedSatisfierField

@@ -21,6 +21,7 @@ const {Server400Error} = require("../../utils");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBVolunteerModel} = require("../../models/volunteer");
 const {GDBAppointmentModel} = require("../../models/appointment");
+const {GDBPersonModel} = require("../../models/person");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
@@ -89,7 +90,11 @@ const {
   needOccurrenceInternalTypeCreateTreater,
   needOccurrenceInternalTypeFetchTreater
 } = require("./needOccurrenceInternalTypeTreater");
-
+const {
+  personInternalTypeUpdateTreater,
+  personInternalTypeCreateTreater,
+  personInternalTypeFetchTreater
+} = require("./person");
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -106,7 +111,8 @@ const genericType2Model = {
   'programRegistration': GDBProgramRegistrationModel,
   'programProvision': GDBProgramProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
-  'needOccurrence': GDBNeedOccurrenceModel
+  'needOccurrence': GDBNeedOccurrenceModel,
+  'person': GDBPersonModel
 };
 
 const genericType2Populates = {
@@ -137,6 +143,7 @@ const genericType2InternalTypeCreateTreater = {
   'programProvision': programProvisionInternalTypeCreateTreater,
   'client': clientInternalTypeCreateTreater,
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
+  'person': personInternalTypeCreateTreater
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -152,6 +159,7 @@ const genericType2InternalTypeFetchTreater = {
   'programProvision': programProvisionInternalTypeFetchTreater,
   'client': clientInternalTypeFetchTreater,
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
+  'person': personInternalTypeFetchTreater
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -167,6 +175,7 @@ const genericType2InternalTypeUpdateTreater = {
   'programProvision': programProvisionInternalTypeUpdateTreater,
   'client': clientInternalTypeUpdateTreater,
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
+  'person': personInternalTypeUpdateTreater
 };
 
 
@@ -354,7 +363,6 @@ const createSingleGenericHelper = async (data, genericType) => {
     const [type, id] = key.split('_');
 
     if (type === 'internalType') {
-
       await addIdToUsage('internalType', genericType, id);
 
       const internalType = internalTypes[id];
@@ -370,10 +378,13 @@ const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
   // genericType will be 'client', 'serviceProvider',...
   const {genericType} = req.params;
-
+  
   try {
-
     const instanceData = await createSingleGenericHelper(data, genericType);
+    // add createDate to person
+    if (genericType == 'person'){
+      instanceData['createDate'] = new Date();
+    }
     if (instanceData) {
       // the instance data is stored into graphdb
       await genericType2Model[genericType](instanceData).save();
@@ -618,7 +629,6 @@ const fetchGenericDatas = async (req, res, next) => {
     const extraPopulates = genericType2Populates[genericType] || [];
     const data = await genericType2Model[genericType].find({},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
-
     return res.status(200).json({data, success: true});
 
   } catch (e) {
