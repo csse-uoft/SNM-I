@@ -3,10 +3,7 @@ const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 const FORMTYPE = 'appointment'
 
-const appointmentInternalTypeCreateTreater = async (internalType, instanceData, value) => {
-  console.log('internalType', {internalType, instanceData, value});
-  const property = getPredefinedProperty(FORMTYPE, internalType);
-  console.log('property', property);
+const appointmentInternalTypeCreateTreater = async (internalType, instanceData, value) => {  const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'client' || property === 'person' || property === 'user'){
     instanceData[property] = value;
   }

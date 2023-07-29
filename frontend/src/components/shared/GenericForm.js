@@ -145,7 +145,6 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
   const getStepContent = stepIdx => {
     const step = dynamicForm.formStructure[stepIdx].fields;
-    console.log(form);
     setStep(step); 
     return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content, _id}, index) => {

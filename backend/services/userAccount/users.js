@@ -160,7 +160,6 @@ const updatePrimaryEmail = async (req, res, next) => {
 const fetchUsers = async (req, res, next) => {
     try{
         const rawData = await GDBUserAccountModel.find({}, {populates: ['primaryContact.telephone',]});
-        console.log('rawData', rawData);
         const data = rawData.map((user) => {
             return {
                 email: user.primaryEmail, id: user._id, isSuperuser: user.role === 'admin',
