@@ -1,8 +1,8 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
 /**
- * This function fetches all clients
- * This is used now in frontend/src/Clients.js to fetch for clients.
+ * This function fetches all persons
+ * This is used now in frontend/src/Clients.js to fetch for persons.
  * @returns {Promise<*>}
  */
 export async function fetchPersons() {
@@ -10,7 +10,7 @@ export async function fetchPersons() {
 }
 
 /**
- * This function delete single client.
+ * This function delete single person.
  * @param id
  * @returns {Promise<*>}
  */

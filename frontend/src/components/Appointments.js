@@ -71,8 +71,10 @@ export default function Appointments() {
   };
  
   const fetchData = async () => {
+    // get all appointments data
     const appointmens = (await fetchMultipleGeneric('appointment')).data;
     const clients = {};
+    // get all clients data
     await getInstancesInClass(':Client').then((res) => {
       Object.keys(res).forEach((key) => {
         const clientId = key.split('#')[1];
@@ -81,6 +83,7 @@ export default function Appointments() {
       );
     });
     const persons = {};
+    // get all persons data
     await getInstancesInClass('cids:Person').then((res) => {
       Object.keys(res).forEach((key) => {
         const personId = key.split('#')[1];
@@ -88,8 +91,8 @@ export default function Appointments() {
       });
     });
     const data = [];
-    console.log(appointmens);
     for (const appointment of appointmens) {
+      //parse appointment data and assgin to corresponding fields
       const appointmentData = {_id: appointment._id};
       if (appointment.characteristicOccurrences)
         for (const occ of appointment.characteristicOccurrences) {
@@ -108,9 +111,11 @@ export default function Appointments() {
           }
         }
       if (appointment.client){
+        // get corresponding client data
         appointmentData.client = clients[appointment.client.slice(1)]
       }
       if (appointment.person){
+        // get corresponding person data
         appointmentData.person = persons[appointment.person.slice(1)]
       } else if (appointment.user){
         // const userData = await fetchSingleGeneric('user', appointment.user);

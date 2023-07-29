@@ -25,6 +25,7 @@ export function AppointmentClientField({
   const [nameValue, setNameValue] = useState({ firstName: null, lastName: null });
   const stepFields = {};
 
+  // check if the step has first name or last name, if yes then show the text field
   step.map((s) => {
     if (s.name === "First Name") {
       stepFields['firstName'] = true;
@@ -33,6 +34,11 @@ export function AppointmentClientField({
     }
   });
 
+  /*
+  * This function is used to handle the change of the client field
+  * It will set the nameValue and nameKey to the first name and last name of the client
+  * It will also set the selectedClient to the value of the client field
+  */
   const handleChangeClient = key => (e) => {
     const value = e.target.value;
     setNameValue({firstName: null, lastName: null});
@@ -43,7 +49,6 @@ export function AppointmentClientField({
       } catch (error) {
         console.log(error);
       }
-    
     
       try{
         let lastName = dynamicOptions[":Client"][value].split(',')[0].trim();
@@ -57,6 +62,11 @@ export function AppointmentClientField({
     handleChange(key)(e);
   }
  
+  /**
+   * This function is used to fetch the client options
+   * It will set the dynamicOptions to the client options
+   * It will also set the nameKey to the first name and last name of the client
+   */
   useEffect(() => {
     getInstancesInClass(":Client")
       .then(options => setDynamicOptions(prev => ({ ...prev, ":Client": options })));
@@ -71,6 +81,7 @@ export function AppointmentClientField({
     });
   }, []);
 
+  // check if the step has first name or last name, if yes then show the text field
   const showFadeContent = stepFields.hasOwnProperty("firstName") || stepFields.hasOwnProperty("lastName");
 
   return <>

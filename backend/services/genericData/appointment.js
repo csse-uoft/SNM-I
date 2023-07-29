@@ -3,7 +3,10 @@ const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
 const FORMTYPE = 'appointment'
 
-const appointmentInternalTypeCreateTreater = async (internalType, instanceData, value) => {  const property = getPredefinedProperty(FORMTYPE, internalType);
+const appointmentInternalTypeCreateTreater = async (internalType, instanceData, value) => { 
+  //get the property name from the internalType
+  const property = getPredefinedProperty(FORMTYPE, internalType);
+  //if the property is client, person or user, then set the value to the instanceData
   if (property === 'client' || property === 'person' || property === 'user'){
     instanceData[property] = value;
   }
@@ -12,6 +15,7 @@ const appointmentInternalTypeCreateTreater = async (internalType, instanceData, 
 const appointmentInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema =  data.schema; 
+  // for each property in data, if the property is client, person or user, then set the value to the result
   for (const property in data) {
     if (property === 'client' || property === 'person' || property === 'user') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});

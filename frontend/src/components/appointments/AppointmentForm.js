@@ -18,6 +18,11 @@ export default function AppointmentForm() {
     
   }, []);
 
+  /*
+  * This function is used to render the field
+  * It will check if the implementation is from client, if yes then it will render the AppointmentClientField
+  * It will also check if the implementation is last name or first name, if yes then it will not render the field (to make sure that the corresponding text field is not rendered)
+  */
   const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange, step) => {
     if (implementation.optionsFromClass === ":Client") {
       return <AppointmentClientField

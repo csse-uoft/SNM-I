@@ -85,6 +85,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
             const className = field?.implementation?.optionsFromClass;
             if (className) {
               if (className == 'cp:CL-Gender'){
+                // parse and transform the Gender field
                 await getInstancesInClass(className)
                 .then(options => {
                   Object.keys(options).map(key => options[key] = options[key].replace('cp:', ''));

@@ -61,6 +61,7 @@ export default function Person() {
         const persons = (await fetchPersons()).data;
         const data = [];
         for (const person of persons) {
+            // parse person data and assign to corresponding fields
             const personData = { _id: person._id };
             personData.firstName = person.firstName;
             personData.lastName = person.lastName;

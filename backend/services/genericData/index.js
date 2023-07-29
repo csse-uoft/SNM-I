@@ -343,6 +343,7 @@ const createSingleGeneric = async (req, res, next) => {
   
   try {
     const instanceData = await createSingleGenericHelper(data, genericType);
+    // add createDate to person
     if (genericType == 'person'){
       instanceData['createDate'] = new Date();
     }
