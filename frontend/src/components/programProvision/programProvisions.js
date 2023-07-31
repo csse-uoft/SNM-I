@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 
 const TYPE = 'programProvisions';
 
@@ -15,7 +15,7 @@ const columnsWithoutOptions = [
   {
     label: 'Program Occurrence',
     body: ({programOccurrence}) => {
-      return programOccurrence;
+      return <Link color to={`/programOccurrence/${JSON.stringify(programOccurrence)}/`}>programOccurrence.description</Link>;
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
@@ -78,6 +78,8 @@ export default function ProgramProvisions() {
             appointmentData.endDate = occ.dataDateValue;
           }
         }
+      if (appointment.programOccurrence)
+        appointmentData.programOccurrence = appointment.programOccurrence
       data.push(appointmentData);
     }
     return data;

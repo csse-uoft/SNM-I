@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
+import { fetchForAdvancedSearch } from "../api/advancedSearchApi";
 
 const TYPE = 'programOccurrence';
 
@@ -14,7 +15,9 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Program Name',
-    body: ({occurrenceOf}) => occurrenceOf
+    body: ({programName, programID}) => {
+      return <Link color to={`/programs/${programID}/`}>{programName}</Link>;
+    }
   },
   // {
   //   label: 'Category',
@@ -39,6 +42,14 @@ export default function ProgramOccurrences() {
   };
 
   const fetchData = async () => {
+    var programNameCharacteristicId;
+    const programCharacteristics = (await fetchForAdvancedSearch('program', 'characteristic')).data;
+    for (const programCharacteristic of programCharacteristics) {
+      if (programCharacteristic.name === 'Program Name') {
+        programNameCharacteristicId = programCharacteristic._id;
+      }
+    }
+ 
     const programOccurrences = (await fetchMultipleGeneric(TYPE)).data;
     console.log(programOccurrences)
     const data = [];
@@ -50,10 +61,14 @@ export default function ProgramOccurrences() {
       //       programOccurrenceData.description = occ.dataStringValue;
       //     }
       //   }
-      if(programOccurrence.description)
-        programOccurrenceData.description = programOccurrence.description
-      if(programOccurrence.occurrenceOf)
-        programOccurrenceData.occurrenceOf = programOccurrence.occurrenceOf
+      if (programOccurrence.description) {
+        programOccurrenceData.description = programOccurrence.description;
+      }
+      if (programOccurrence.occurrenceOf) {
+        programOccurrenceData.programID = programOccurrence.occurrenceOf.split('_')[1];
+        const programData = (await fetchSingleGeneric('program', programOccurrenceData.programID)).data;
+        programOccurrenceData.programName = programData['characteristic_' + programNameCharacteristicId];
+      }
       data.push(programOccurrenceData);
     }
     return data;
