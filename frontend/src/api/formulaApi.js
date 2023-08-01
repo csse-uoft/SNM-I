@@ -37,6 +37,7 @@ export async function fetchFormulaFields() {
       "primary_phone_number",
       "province",
       "service_set",
+      "program_set",
       "status_in_canada",
       "street_address"
     ],

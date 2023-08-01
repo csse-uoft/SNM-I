@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
 
 const TYPE = 'services';
 
@@ -15,9 +16,8 @@ const columnsWithoutOptions = [
   {
     label: 'Provider',
     body: ({serviceProvider}) =>{
-      return serviceProvider
-      return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-        {serviceProvider}
+      return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
+        {serviceProvider.name}
       </Link>;
     }
 
@@ -62,8 +62,12 @@ export default function Services() {
             serviceData.provider = occ.objectValue;
           }
         }
-      if(service.serviceProvider)
-        serviceData.serviceProvider = service.serviceProvider;
+      if (service.serviceProvider)
+        serviceData.serviceProvider = {
+          _id: service.serviceProvider.split('_')[1],
+          name: (await getServiceProviderName(service)),
+          type: (await getServiceProviderType(service))
+        }
       data.push(serviceData);
     }
     return data;

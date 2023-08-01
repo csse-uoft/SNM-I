@@ -16,18 +16,24 @@ const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicO
 const {MDBUsageModel} = require("../../models/usage");
 const {parsePhoneNumber, combinePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBServiceModel} = require("../../models/service/service");
-const {GDBProgramModel} = require("../../models/program");
+const {GDBProgramModel} = require("../../models/program/program");
 const {Server400Error} = require("../../utils");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBVolunteerModel} = require("../../models/volunteer");
 const {GDBAppointmentModel} = require("../../models/appointment");
+const {GDBPersonModel} = require("../../models/person");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
+const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {noQuestion} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
 } = require("./serviceOccurrenceInternalTypeTreater");
+const {
+  programOccurrenceInternalTypeCreateTreater, programOccurrenceInternalTypeFetchTreater,
+  programOccurrenceInternalTypeUpdateTreater
+} = require("./programOccurrenceInternalTypeTreater");
 const {
   fetchCharacteristicQuestionsInternalTypesBasedOnForms,
   implementCharacteristicOccurrence,
@@ -40,21 +46,32 @@ const {
   serviceInternalTypeUpdateTreater
 } = require("./serviceInternalTypeTreater");
 const {
+  programInternalTypeCreateTreater,
+  programInternalTypeFetchTreater,
+  programInternalTypeUpdateTreater
+} = require("./programInternalTypeTreater");
+const {
   referralInternalTypeCreateTreater,
   referralInternalTypeFetchTreater,
   referralInternalTypeUpdateTreater
 } = require("./referralInternalTypeTreater");
 const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration");
+const {GDBProgramRegistrationModel} = require("../../models/programRegistration");
 const {
   serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
   serviceRegistrationInternalTypeUpdateTreater
 } = require("./serviceRegistration");
+const {
+  programRegistrationInternalTypeCreateTreater, programRegistrationInternalTypeFetchTreater,
+  programRegistrationInternalTypeUpdateTreater
+} = require("./programRegistration");
 const {
   appointmentInternalTypeCreateTreater,
   appointmentInternalTypeFetchTreater,
   appointmentInternalTypeUpdateTreater
 } = require("./appointment");
 const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
+const {GDBProgramProvisionModel} = require("../../models/programProvision");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
 const {GDBClientAssessmentModel} = require("../../models/clientAssessment");
@@ -63,6 +80,10 @@ const {
   serviceProvisionInternalTypeUpdateTreater
 } = require("./serviceProvision");
 const {
+  programProvisionInternalTypeCreateTreater, programProvisionInternalTypeFetchTreater,
+  programProvisionInternalTypeUpdateTreater
+} = require("./programProvision");
+const {
   clientInternalTypeUpdateTreater, clientInternalTypeCreateTreater, clientInternalTypeFetchTreater
 } = require("./clientInternalTypeTreater");
 const {
@@ -70,13 +91,16 @@ const {
   needOccurrenceInternalTypeCreateTreater,
   needOccurrenceInternalTypeFetchTreater
 } = require("./needOccurrenceInternalTypeTreater");
-
 const {
   clientAssessmentInternalTypeUpdateTreater,
   clientAssessmentInternalTypeCreateTreater,
   clientAssessmentInternalTypeFetchTreater
 } = require("./clientAssessmentInternalTypeTreater");
-
+const {
+  personInternalTypeUpdateTreater,
+  personInternalTypeCreateTreater,
+  personInternalTypeFetchTreater
+} = require("./person");
 const genericType2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
@@ -85,21 +109,28 @@ const genericType2Model = {
   'program': GDBProgramModel,
   'appointment': GDBAppointmentModel,
   'serviceOccurrence': GDBServiceOccurrenceModel,
+  'programOccurrence': GDBProgramOccurrenceModel,
   'referral': GDBReferralModel,
   'serviceRegistration': GDBServiceRegistrationModel,
   'serviceProvision': GDBServiceProvisionModel,
+  'programRegistration': GDBProgramRegistrationModel,
+  'programProvision': GDBProgramProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
   'needOccurrence': GDBNeedOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel
+  'person': GDBPersonModel
 };
 
 const genericType2Populates = {
-  'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence']
+  'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
+  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence']
 };
 
 const genericType2Checker = {
   'service': noQuestion,
-  'serviceOccurrence': noQuestion
+  'serviceOccurrence': noQuestion,
+  'programOccurrence': noQuestion,
+  'program' : noQuestion
 };
 
 
@@ -108,37 +139,52 @@ const genericType2Checker = {
 const genericType2InternalTypeCreateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeCreateTreater,
   'service': serviceInternalTypeCreateTreater,
+  'programOccurrence': programOccurrenceInternalTypeCreateTreater,
+  'program': programInternalTypeCreateTreater,
   'referral': referralInternalTypeCreateTreater,
   'serviceRegistration': serviceRegistrationInternalTypeCreateTreater,
+  'programRegistration': programRegistrationInternalTypeCreateTreater,
   'appointment': appointmentInternalTypeCreateTreater,
   'serviceProvision': serviceProvisionInternalTypeCreateTreater,
+  'programProvision': programProvisionInternalTypeCreateTreater,
   'client': clientInternalTypeCreateTreater,
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
   'clientAssessment': clientAssessmentInternalTypeCreateTreater,
+  'person': personInternalTypeCreateTreater
 };
 
 const genericType2InternalTypeFetchTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeFetchTreater,
   'service': serviceInternalTypeFetchTreater,
+  'programOccurrence': programOccurrenceInternalTypeFetchTreater,
+  'program': programInternalTypeFetchTreater,
   'referral': referralInternalTypeFetchTreater,
   'serviceRegistration': serviceRegistrationInternalTypeFetchTreater,
+  'programRegistration': programRegistrationInternalTypeFetchTreater,
   'appointment': appointmentInternalTypeFetchTreater,
   'serviceProvision': serviceProvisionInternalTypeFetchTreater,
+  'programProvision': programProvisionInternalTypeFetchTreater,
   'client': clientInternalTypeFetchTreater,
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
   'clientAssessment': clientAssessmentInternalTypeFetchTreater,
+  'person': personInternalTypeFetchTreater
 };
 
 const genericType2InternalTypeUpdateTreater = {
   'serviceOccurrence': serviceOccurrenceInternalTypeUpdateTreater,
   'service': serviceInternalTypeUpdateTreater,
+  'programOccurrence': programOccurrenceInternalTypeUpdateTreater,
+  'program' : programInternalTypeUpdateTreater,
   'referral': referralInternalTypeUpdateTreater,
   'serviceRegistration': serviceRegistrationInternalTypeUpdateTreater,
+  'programRegistration': programRegistrationInternalTypeUpdateTreater,
   'appointment': appointmentInternalTypeUpdateTreater,
   'serviceProvision': serviceProvisionInternalTypeUpdateTreater,
+  'programProvision': programProvisionInternalTypeUpdateTreater,
   'client': clientInternalTypeUpdateTreater,
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
   'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
+  'person': personInternalTypeUpdateTreater
 };
 
 
@@ -326,7 +372,6 @@ const createSingleGenericHelper = async (data, genericType) => {
     const [type, id] = key.split('_');
 
     if (type === 'internalType') {
-
       await addIdToUsage('internalType', genericType, id);
 
       const internalType = internalTypes[id];
@@ -342,10 +387,13 @@ const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
   // genericType will be 'client', 'serviceProvider',...
   const {genericType} = req.params;
-
+  
   try {
-
     const instanceData = await createSingleGenericHelper(data, genericType);
+    // add createDate to person
+    if (genericType == 'person'){
+      instanceData['createDate'] = new Date();
+    }
     if (instanceData) {
       // the instance data is stored into graphdb
       await genericType2Model[genericType](instanceData).save();
@@ -590,7 +638,6 @@ const fetchGenericDatas = async (req, res, next) => {
     const extraPopulates = genericType2Populates[genericType] || [];
     const data = await genericType2Model[genericType].find({},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
-
     return res.status(200).json({data, success: true});
 
   } catch (e) {

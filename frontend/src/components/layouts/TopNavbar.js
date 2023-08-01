@@ -103,6 +103,20 @@ function TopNavBar() {
                 <Typography variant="inherit">Client Assessment</Typography>
               </MenuItem>
 
+              <MenuItem onClick={handleLink(`/programs`)}>
+                <ListItemIcon>
+                  <LocationCityIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Programs</Typography>
+              </MenuItem>
+
+              <MenuItem onClick={handleLink(`/programOccurrences`)}>
+                <ListItemIcon>
+                  <LocationCityIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Program Occurrences</Typography>
+              </MenuItem>
+
               <MenuItem onClick={handleLink(`/services`)}>
                 <ListItemIcon>
                   <LocationCityIcon fontSize="medium" sx={{color: 'black'}}/>
@@ -122,6 +136,20 @@ function TopNavBar() {
                   <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
                 </ListItemIcon>
                 <Typography variant="inherit">Appointments</Typography>
+              </MenuItem>
+
+              <MenuItem onClick={handleLink(`/programRegistrations`)}>
+                <ListItemIcon>
+                  <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Program Registrations</Typography>
+              </MenuItem>
+
+              <MenuItem onClick={handleLink(`/programProvisions`)}>
+                <ListItemIcon>
+                  <BusinessCenterIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Program Provisions</Typography>
               </MenuItem>
 
               <MenuItem onClick={handleLink(`/serviceRegistrations`)}>
@@ -178,6 +206,13 @@ function TopNavBar() {
                   <ReportIcon fontSize="medium" sx={{color: 'black'}}/>
                 </ListItemIcon>
                 <Typography variant="inherit">Reporting</Typography>
+              </MenuItem>
+
+              <MenuItem onClick={handleLink(`/person`)}>
+                <ListItemIcon>
+                  <GroupsIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Persons</Typography>
               </MenuItem>
 
             </Menu>

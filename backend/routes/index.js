@@ -14,4 +14,5 @@ module.exports = {
   needSatisfierRoute: require('./needSatisfier'),
   internalTypeRoute: require('./internalType'),
   serviceProvisionRoute: require('./serviceProvision'),
+  programProvisionRoute: require('./programProvision'),
 }

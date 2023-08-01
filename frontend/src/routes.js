@@ -26,13 +26,18 @@ import PrivateRoute from './components/routes/PrivateRoute';
 import AdminRoute from './components/routes/AdminRoute';
 import Providers from './components/Providers';
 import AddServicePrompt from './components/providers/AddServicePrompt';
+import AddProgramPrompt from './components/providers/AddProgramPrompt';
 import ProviderForm from './components/providers/ProviderForm2';
 import ProviderProfile from './components/providers/ProviderProfile';
 import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
 import Service from './components/services/Service';
+import Programs from './components/Programs';
+import Program from './components/programs/Program';
 // import ServiceForm from './components/services/ServiceForm'
 import ServiceForm from './components/services/ServiceForm2';
+// import ProgramForm from './components/programs/ProgramForm';
+import ProgramForm from './components/programs/ProgramForm2';
 import Appointments from "./components/Appointments";
 import AppointmentForm from "./components/appointments/AppointmentForm";
 import AdminLogs from './components/AdminLogs';
@@ -52,22 +57,32 @@ import VisualizeClient from './components/clients/VisualizeClient';
 import ClientSearch from "./components/clients/ClientSearch";
 import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
 import VisualizeService from "./components/services/visualizeService";
+import VisualizeProgram from "./components/programs/visualizeProgram";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
+import VisualizeServices from "./components/programs/visualizeServices";
 import Needs from "./components/need/needs";
 import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
 import ServiceOccurrences from "./components/ServiceOccurrences";
 import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
+import ProgramOccurrences from "./components/ProgramOccurrences";
+import ProgramOccurrenceForm from "./components/programOccurrence/ProgramOccurrence";
 import ReferralForm from "./components/referrals/ReferralForm";
 import Referrals from "./components/referrals/Referrals";
 import ServiceRegistrationForm from "./components/serviceRegistration/ServiceRegistrationForm";
 import ServiceRegistrations from "./components/serviceRegistration/ServiceRegistrations";
 import ServiceProvisionForm from "./components/serviceProvision/serviceProvisionForm";
 import ServiceProvisions from "./components/serviceProvision/serviceProvisions";
+import ProgramRegistrationForm from "./components/programRegistration/ProgramRegistrationForm";
+import ProgramRegistrations from "./components/programRegistration/ProgramRegistrations";
+import ProgramProvisionForm from "./components/programProvision/programProvisionForm";
+import ProgramProvisions from "./components/programProvision/programProvisions";
 import NeedOccurrenceForm from "./components/needOccurrence/needOccurrenceForm";
 import NeedOccurrences from "./components/needOccurrence/NeedOccurrences";
 import ClientAssessment from './components/clientAssessment/ClientAssesment';
 import ClientAssessmentForm from './components/clientAssessment/ClientAssessmentForm';
+import Person from './components/Person';
+import PersonForm from './components/person/PersonForm';
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -79,10 +94,10 @@ const routes = (
     <Route path="/update-primary-email/:token" element={<changePrimaryEmail/>}/>
     <Route path="/dashboard" element={<PrivateRoute element={Dashboard}/>}/>
 
-    <Route path="/verify/:token" element={<UserFirstEntry/>}/>}/>
+    <Route path="/verify/:token" element={<UserFirstEntry/>}/>
     <Route path="/resetPassword/:token" element={<PrivateRoute element={ForgotPasswordResetPassword}/>}/>
 
-    <Route path="/clients/:id/edit" element={<ClientForm/>}/>}/>
+    <Route path="/clients/:id/edit" element={<ClientForm/>}/>
     {/*<PrivateRoute path='/clients/:id/needs/new' element={NeedForm}/>}/>*/}
     <Route path="/clients/new" element={<PrivateRoute element={ClientForm}/>}/>
     <Route path="/clients/advance-search" element={<PrivateRoute element={ClientSearch}/>}/>
@@ -110,6 +125,7 @@ const routes = (
 
     <Route path="/providers/:id/rate" element={<PrivateRoute element={ProviderRatingForm}/>}/>
     <Route path="/providers/new/add-service" element={<PrivateRoute element={AddServicePrompt}/>}/>
+    <Route path="/providers/new/add-program" element={<PrivateRoute element={AddProgramPrompt}/>}/>
     <Route path="/providers/:formType/new" element={<PrivateRoute element={ProviderForm}/>}/>
     <Route path="/providers/:formType/:id" element={<PrivateRoute element={VisualizeServiceProvider}/>}/>
     <Route path="/providers/:formType/:id/edit/" element={<PrivateRoute element={ProviderForm}/>}/>
@@ -121,6 +137,12 @@ const routes = (
     <Route path="/services/:id" element={<PrivateRoute element={VisualizeService}/>}/>
     <Route path="/services" element={<PrivateRoute element={Services}/>}/>
 
+    <Route path="/programs/:id/edit" element={<PrivateRoute element={ProgramForm}/>}/>
+    <Route path="/programs/new" element={<PrivateRoute element={ProgramForm}/>}/>
+    <Route path="/programs/:id" element={<PrivateRoute element={VisualizeProgram}/>}/>
+    <Route path="/programs" element={<PrivateRoute element={Programs}/>}/>
+    <Route path="/programs/:id/services" element={<PrivateRoute element={VisualizeServices}/>}/>
+
     <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
     {/*<Route path="/referrals/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
@@ -131,16 +153,29 @@ const routes = (
     {/*<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
     <Route path="/serviceRegistrations" element={<PrivateRoute element={ServiceRegistrations}/>}/>
 
+    <Route path="/programRegistrations/:id/edit" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
+    <Route path="/programRegistrations/new" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
+    {/*<Route path="/programRegistrations/:id" element={<PrivateRoute element={VisualizeProgram}/>}/>*/}
+    <Route path="/programRegistrations" element={<PrivateRoute element={ProgramRegistrations}/>}/>
+
     <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
     <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
     <Route path="/serviceOccurrence/:id/edit" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
 
-    <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
+    <Route path="/programOccurrences" element={<PrivateRoute element={ProgramOccurrences}/>}/>
+    <Route path="/programOccurrence/new" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
+    <Route path="/programOccurrence/:id/edit" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
 
+    <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
+ 
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
+
+    <Route path="/person" element={<PrivateRoute element={Person}/>}/>
+    <Route path="/person/new" element={<PrivateRoute element={PersonForm}/>}/>
+    <Route path="/person/:id/edit" element={<PrivateRoute element={PersonForm}/>}/>
 
     <Route path="/needOccurrences/:id/edit" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
     {/*<Route path="/needOccurrences/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
@@ -151,6 +186,11 @@ const routes = (
     {/*<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
     <Route path="/serviceProvisions/new" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
     <Route path="/serviceProvisions" element={<PrivateRoute element={ServiceProvisions}/>}/>
+
+    <Route path="/programProvisions/:id/edit" element={<PrivateRoute element={ProgramProvisionForm}/>}/>
+    {/*<Route path="/programProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    <Route path="/programProvisions/new" element={<PrivateRoute element={ProgramProvisionForm}/>}/>
+    <Route path="/programProvisions" element={<PrivateRoute element={ProgramProvisions}/>}/>
 
     <Route path="/eligibility-criteria" element={<PrivateRoute element={Eligibilities}/>}/>
 

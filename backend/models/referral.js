@@ -3,8 +3,10 @@ const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBServiceProviderModel} = require("./serviceProvider");
 const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 const {GDBServiceModel} = require("./service/service");
+const {GDBProgramModel} = require("./program/program");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBServiceOccurrenceModel} = require("./service/serviceOccurrence");
+const {GDBProgramOccurrenceModel} = require("./program/programOccurrence");
 
 const GDBReferralModel = createGraphDBModel({
   referralType: {type: String, internalKey: ':hasType'},
@@ -18,6 +20,8 @@ const GDBReferralModel = createGraphDBModel({
   needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':hasNeedOccurrence'},
   service: {type: GDBServiceModel, internalKey: ':forService'},
   serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
+  program: {type: GDBProgramModel, internalKey: ':forProgram'},
+  programOccurrence: {type: GDBProgramOccurrenceModel, internalKey: ':hasProgramOccurrence'},
   characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':Referral'], name: 'referral'
