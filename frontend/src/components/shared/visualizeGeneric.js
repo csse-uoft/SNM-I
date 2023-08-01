@@ -73,6 +73,9 @@ export default function VisualizeGeneric({genericType,}) {
 
           if (typeof data === "string" && data.includes('://') && !isOption) {
             data = await getURILabel(data);
+            if (characteristic.fetchData.name === 'Gender') {
+              data = data.substring(data.lastIndexOf(':') + 1);
+            }
           } else if (isOption) {
             const id = data.match(/_(\d+)/)[1];
             data = characteristic.fetchData.options.find(option => option._id === id).label;

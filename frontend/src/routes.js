@@ -70,6 +70,7 @@ import ClientAssessment from './components/clientAssessment/ClientAssesment';
 import ClientAssessmentForm from './components/clientAssessment/ClientAssessmentForm';
 import Person from './components/Person';
 import PersonForm from './components/person/PersonForm';
+import VisualizePerson from './components/person/VisualizePerson';
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -147,6 +148,7 @@ const routes = (
     <Route path="/person" element={<PrivateRoute element={Person}/>}/>
     <Route path="/person/new" element={<PrivateRoute element={PersonForm}/>}/>
     <Route path="/person/:id/edit" element={<PrivateRoute element={PersonForm}/>}/>
+    <Route path="/person/:id" element={<PrivateRoute element={VisualizePerson}/>}/>
 
     <Route path="/needOccurrences/:id/edit" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
     {/*<Route path="/needOccurrences/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
