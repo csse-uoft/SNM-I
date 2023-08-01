@@ -117,7 +117,7 @@ const genericType2Model = {
   'programProvision': GDBProgramProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
   'needOccurrence': GDBNeedOccurrenceModel,
-  'clientAssessment': GDBClientAssessmentModel
+  'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel
 };
 
