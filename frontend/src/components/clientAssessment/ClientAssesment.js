@@ -29,30 +29,28 @@ export default function ClientAssessment() {
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
   };
 
   const fetchData = async () => {
-    const services = (await fetchMultipleGeneric('serviceRegistration')).data;
+    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
     const data = [];
-    for (const service of services) {
-      const serviceData = {_id: service._id};
-      if (service.characteristicOccurrences)
-        for (const occ of service.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Referral Type') {
-            serviceData.referralType = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Referral Status') {
-            serviceData.referralStatus = occ.objectValue;
+    for (const clientAssessment of clientAssessments) {
+      const clientAssessmentData = {_id: clientAssessment._id};
+
+      if (clientAssessment.characteristicOccurrences)
+        for (const occ of clientAssessment.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Client') {
+            clientAssessmentData.client = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Person') {
+            clientAssessmentData.person = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'UserAccount') {
+            clientAssessmentData.userAccount = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Outcome') {
+            clientAssessmentData.outcome = occ.objectValue;
           }
         }
-      data.push(serviceData);
+
+      data.push(clientAssessmentData);
     }
     return data;
   };
