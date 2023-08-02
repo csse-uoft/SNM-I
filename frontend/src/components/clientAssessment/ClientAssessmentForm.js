@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import GenericForm from "../shared/GenericForm";
 import { fetchInternalTypeByFormType } from "../../api/internalTypeApi";
+// Using the component from `Appointment` to render the client field
+// This simplifies the code and makes no difference in performance
 import { AppointmentClientField } from '../appointments/AppointmentClientField';
 
 export default function ClientAssessmentForm() {
@@ -19,6 +21,7 @@ export default function ClientAssessmentForm() {
 
   const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange, step) => {
     if (implementation.optionsFromClass === ":Client") {
+      // Using the component from `Appointment`
       return <AppointmentClientField
         handleChange={handleChange}
         clientFieldId={internalTypes.clientForClientAssessment._id}
