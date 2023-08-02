@@ -119,7 +119,6 @@ export default function Appointments() {
         appointmentData.person = persons[appointment.person.slice(1)]
       } else if (appointment.user){
         // const userData = await fetchSingleGeneric('user', appointment.user);
-        // console.log(userData);
       }
         
       data.push(appointmentData);

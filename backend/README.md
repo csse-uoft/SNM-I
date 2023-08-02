@@ -39,4 +39,4 @@ yarn start
   [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
   and reboot chrome.
 - **Firefox**: Go to Preferences --> Privacy & Security --> View Certificates
-  --> Servers --> Add Exception --> Add localhost:5000
+  --> Servers --> Add Exception --> Add localhost:5001
