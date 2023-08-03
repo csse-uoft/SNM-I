@@ -36,7 +36,7 @@ export default function ClientAssessmentForm() {
   }
 
   return (
-    <GenericForm name={formType} mainPage={'/appointments'} onRenderField={handleRenderField} />
+    <GenericForm name={formType} mainPage={'/clientAssessment'} onRenderField={handleRenderField} />
   );
 
 };

@@ -35,7 +35,7 @@ export default function ClientAssessment() {
   const fetchData = async () => {
     // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
     // using this function simplifies the code and makes no difference in performance
-    const clientAssessments = (await fetchMultipleGeneric('appointment')).data;
+    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
     const clients = {};
     await getInstancesInClass(':Client').then((res) => {
       Object.keys(res).forEach((key) => {
