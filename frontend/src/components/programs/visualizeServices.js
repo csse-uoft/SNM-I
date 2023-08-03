@@ -30,7 +30,7 @@ export default function VisualizeServices() {
 
       const {data: genericData} = (await fetchSingleGeneric('program', id));
       const allServices = (await fetchMultipleGeneric('service')).data;
-      characteristicIds = getServiceProviderNameCharacteristicIds();
+      const characteristicIds = (await getServiceProviderNameCharacteristicIds());
 
       const columns = [
         {field: 'label', headerName: 'Service', minWidth: 150},
