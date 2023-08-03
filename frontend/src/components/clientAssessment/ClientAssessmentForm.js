@@ -20,6 +20,10 @@ export default function ClientAssessmentForm() {
   }, []);
 
   const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange, step) => {
+    // If the field is not required and the user has not filled it, do not render it
+    if (implementation === undefined) {
+      return "";
+    }
     if (implementation.optionsFromClass === ":Client") {
       // Using the component from `Appointment`
       return <AppointmentClientField
