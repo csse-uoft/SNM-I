@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
-import { getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
+import { getServiceProviderNameCharacteristicIds, getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
 
 const TYPE = 'programs';
 
@@ -19,6 +19,13 @@ const columnsWithoutOptions = [
       return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
         {serviceProvider.name}
       </Link>;
+    }
+  },
+  {
+    label: 'Manager',
+    body: ({manager}) => {
+        return manager;
+//      return <Link color to={`/user/${manager._id}/edit`}>{manager.username}</Link>;
     }
   },
   {
@@ -55,6 +62,7 @@ export default function Programs() {
 
   const fetchData = async () => {
     const programs = (await fetchMultipleGeneric('program')).data;
+    const characteristicIds = (await getServiceProviderNameCharacteristicIds());
     const data = [];
     for (const program of programs) {
       const programData = {_id: program._id};
@@ -69,9 +77,11 @@ export default function Programs() {
       if (program.serviceProvider)
         programData.serviceProvider = {
           _id: program.serviceProvider.split('_')[1],
-          name: (await getServiceProviderName(program)),
+          name: (await getServiceProviderName(program, characteristicIds)),
           type: (await getServiceProviderType(program))
         }
+      if (program.manager)
+        programData.manager = await(fetchSingleGeneric('user', program.manager)).data;
       data.push(programData);
     }
     return data;

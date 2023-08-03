@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
-import { getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
+import { getServiceProviderNameCharacteristicIds, getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
 
 const TYPE = 'services';
 
@@ -51,6 +51,7 @@ export default function Services() {
 
   const fetchData = async () => {
     const services = (await fetchMultipleGeneric('service')).data;
+    const characteristicIds = (await getServiceProviderNameCharacteristicIds());
     const data = [];
     for (const service of services) {
       const serviceData = {_id: service._id};
@@ -65,7 +66,7 @@ export default function Services() {
       if (service.serviceProvider)
         serviceData.serviceProvider = {
           _id: service.serviceProvider.split('_')[1],
-          name: (await getServiceProviderName(service)),
+          name: (await getServiceProviderName(service, characteristicIds)),
           type: (await getServiceProviderType(service))
         }
       data.push(serviceData);
