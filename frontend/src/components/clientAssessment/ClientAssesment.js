@@ -1,6 +1,7 @@
 import React from 'react';
-import {Link} from "../shared"
+import { Link } from "../shared"
 import { GenericPage } from "../shared";
+import { getInstancesInClass } from "../../api/dynamicFormApi";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
 
 const TYPE = 'clientAssessment';
@@ -8,13 +9,13 @@ const TYPE = 'clientAssessment';
 const columnsWithoutOptions = [
   {
     label: 'ID',
-    body: ({_id}) => {
+    body: ({ _id }) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>;
     }
   },
   {
     label: 'Client',
-    body: ({client}) => {
+    body: ({ client }) => {
       return client;
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
@@ -32,10 +33,30 @@ export default function ClientAssessment() {
   };
 
   const fetchData = async () => {
+    // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
+    // using this function simplifies the code and makes no difference in performance
     const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
+    const clients = {};
+    await getInstancesInClass(':Client').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const clientId = key.split('#')[1];
+        clients[clientId] = res[key];
+      }
+      );
+    });
+    const persons = {};
+    // get all persons data
+    await getInstancesInClass('cids:Person').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const personId = key.split('#')[1];
+        persons[personId] = res[key];
+      });
+    });
+
+    // const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
     const data = [];
     for (const clientAssessment of clientAssessments) {
-      const clientAssessmentData = {_id: clientAssessment._id};
+      const clientAssessmentData = { _id: clientAssessment._id };
 
       if (clientAssessment.characteristicOccurrences)
         for (const occ of clientAssessment.characteristicOccurrences) {
@@ -49,6 +70,18 @@ export default function ClientAssessment() {
             clientAssessmentData.outcome = occ.objectValue;
           }
         }
+      if (clientAssessment.client) {
+        // get corresponding client data
+        clientAssessmentData.client = clients[clientAssessment.client.slice(1)]
+      }
+      if (clientAssessment.person) {
+        // get corresponding person data
+        clientAssessmentData.person = persons[clientAssessment.person.slice(1)]
+      }
+      if (clientAssessment.user) {
+        // const userData = await fetchSingleGeneric('user', appointment.user);
+        // console.log(userData);
+      }
 
       data.push(clientAssessmentData);
     }

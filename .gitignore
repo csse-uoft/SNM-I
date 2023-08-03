@@ -11,4 +11,4 @@ backend/package-lock.json
 backend/package.json
 backend/yarn.lock
 node_modules/.yarn-integrity
-.vscode/launch.json
+.vscode/
