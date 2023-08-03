@@ -15,7 +15,11 @@ const columnsWithoutOptions = [
   {
     label: 'Program Occurrence',
     body: ({programOccurrence}) => {
-      return <Link color to={`/programOccurrence/${JSON.stringify(programOccurrence)}/`}>programOccurrence.description</Link>;
+      if (programOccurrence) {
+        return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
+      } else {
+        return "";
+      }
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>

@@ -13,7 +13,9 @@ const GDBProgramModel = createGraphDBModel({
   serviceProvider: {type: GDBServiceProviderModel, internalKey: ':hasServiceProvider'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
-  needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'}
+  needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
+  startDate: {type: Date, internalKey: ':hasStartDate'},
+  endDate: {type: Date, internalKey: ':hasEndDate'}
 }, {
   rdfTypes: [':Program'], name: 'program'
 });

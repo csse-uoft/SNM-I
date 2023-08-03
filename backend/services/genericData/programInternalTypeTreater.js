@@ -7,6 +7,8 @@ const programInternalTypeCreateTreater = async (internalType, instanceData, valu
   const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'serviceProvider'){
     instanceData[property] = value;
+  } else if (property === 'needSatisfier') {
+    instanceData[property + 's'] = value;
   }
 }
 
@@ -17,6 +19,10 @@ const programInternalTypeFetchTreater = async (data) => {
     if (property === 'serviceProvider') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
       result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+    } else if (property === 'needSatisfiers') {
+      const propertyRemovedS = property.slice(0, -1);
+      const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[propertyRemovedS].internalKey, formType: FORMTYPE});
+      result[ 'internalType_'+ internalType._id] = data[property].map(SPARQL.getFullURI);
     }
   }
   return result;
