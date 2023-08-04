@@ -9,38 +9,39 @@ const columnsWithoutOptions = [
   {
     label: 'ID',
     body: ({_id}) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>
+      return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>;
     }
   },
   {
     label: 'Program Occurrence',
     body: ({programOccurrence}) => {
       if (programOccurrence) {
-        return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
+        return <Link color to={`/programOccurrence/${programOccurrence._id}/edit`}>{programOccurrence.description}</Link>;
       } else {
         return "";
       }
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     }
   },
   {
     label: 'Start Date',
     body: ({startDate}) => {
-      return new Date(startDate).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      const startDateObj = new Date(startDate);
+      if (isNaN(startDateObj)) {
+        return "";
+      } else {
+        return startDateObj.toLocaleString();
+      }
     }
   },
   {
     label: 'End Date',
     body: ({endDate}) => {
-      return new Date(endDate).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      const endDateObj = new Date(endDate);
+      if (isNaN(endDateObj)) {
+        return "";
+      } else {
+        return endDateObj.toLocaleString();
+      }
     }
   },
   // {
