@@ -105,6 +105,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#ServiceProvider'
     }
   },
+  {
+    name: 'managerForProgram',
+    predefinedProperty: 'http://snmi#hasManager',
+    formType: 'program',
+    implementation: {
+      label: 'Program Manager',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+    }
+  },
 
   // below are for service Provision
   {
@@ -548,7 +559,7 @@ module.exports = [
       label: 'Person',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Person'
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
     }
   },
 

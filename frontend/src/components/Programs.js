@@ -3,6 +3,7 @@ import { Link } from './shared';
 import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
 import { getServiceProviderNameCharacteristicIds, getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
+import { getPersonNameCharacteristicIds } from "./shared/PersonInformation";
 
 const TYPE = 'programs';
 
@@ -24,8 +25,19 @@ const columnsWithoutOptions = [
   {
     label: 'Manager',
     body: ({manager}) => {
-        return manager;
-//      return <Link color to={`/user/${manager._id}/edit`}>{manager.username}</Link>;
+      if (manager) {
+        if (manager.lastName && manager.firstName) {
+          return <Link color to={`/person/${manager._id}`}>{manager.lastName + ", " + manager.firstName}</Link>;
+        } else if (manager.lastName) {
+          return <Link color to={`/person/${manager._id}`}>{manager.lastName}</Link>;
+        } else if (manager.firstName) {
+          return <Link color to={`/person/${manager._id}`}>{manager.firstName}</Link>;
+        } else {
+          return <Link color to={`/person/${manager._id}`}>{manager._id}</Link>;
+        }
+      } else {
+        return "";
+      }
     }
   },
   {
@@ -62,7 +74,8 @@ export default function Programs() {
 
   const fetchData = async () => {
     const programs = (await fetchMultipleGeneric('program')).data;
-    const characteristicIds = (await getServiceProviderNameCharacteristicIds());
+    const serviceProviderCharacteristicIds = (await getServiceProviderNameCharacteristicIds());
+    const personCharacteristicIds = (await getPersonNameCharacteristicIds());
     const data = [];
     for (const program of programs) {
       const programData = {_id: program._id};
@@ -74,14 +87,21 @@ export default function Programs() {
             programData.provider = occ.objectValue;
           }
         }
-      if (program.serviceProvider)
+      if (program.serviceProvider) {
         programData.serviceProvider = {
           _id: program.serviceProvider.split('_')[1],
-          name: (await getServiceProviderName(program, characteristicIds)),
+          name: (await getServiceProviderName(program, serviceProviderCharacteristicIds)),
           type: (await getServiceProviderType(program))
         }
-      if (program.manager)
-        programData.manager = await(fetchSingleGeneric('user', program.manager)).data;
+      }
+      if (program.manager) {
+        const manager = (await fetchSingleGeneric('person', program.manager.split('_')[1])).data;
+        programData.manager = {
+          _id: program.manager.split('_')[1],
+          firstName: manager['characteristic_' + personCharacteristicIds.personFirstName],
+          lastName: manager['characteristic_' + personCharacteristicIds.personLastName]
+	}
+      }
       data.push(programData);
     }
     return data;
