@@ -171,6 +171,18 @@ class Program extends Component {
                   </Link>
                 </td>
               </tr>
+              <tr>
+                <td><b>Manager</b></td>
+                <td>
+                  <Link to={`/user/${program.manager._id}`}>
+                    {(program.manager.lastName && program.manager.firstName) ?
+                      `${program.manager.lastName}, ${program.manager.firstName}`
+                    :
+                      program.manager._id
+                    }
+                  </Link>
+                </td>
+              </tr>
             </tbody>
           </Table>
         }

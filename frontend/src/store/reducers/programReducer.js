@@ -44,6 +44,9 @@ export function programs(state = {index: [], filteredPrograms: [], programsLoade
       else if (action.sortType === "category") {
         sortedPrograms = [...state.index].sort((a, b) => (a.category? a.category:"").localeCompare(b.category?b.category:""));
       }
+      else if (action.sortType === "manager") {
+        sortedPrograms = [...state.index].sort((a, b) => (a.manager._id ? a.manager._id:"").localeCompare(b.manager._id ? b.manager._id:""));
+      }
 
       if (action.searchValue === '') {
         return {index: sortedPrograms, filteredPrograms: sortedPrograms, programsLoaded: true}
@@ -66,6 +69,10 @@ export function programs(state = {index: [], filteredPrograms: [], programsLoade
       }
       else if (action.searchType === "category") {
         programs = sortedPrograms.filter((program) => ((program.category).includes(action.searchValue) ));
+        return {index: [...state.index], filteredPrograms: programs, programsLoaded: true}
+      }
+      else if () {
+        programs = sortedPrograms.filter((program) => ((program.manager._id).includes(action.searchValue) ));
         return {index: [...state.index], filteredPrograms: programs, programsLoaded: true}
       }
       break;
