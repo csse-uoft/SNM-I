@@ -16,7 +16,7 @@ const columnsWithoutOptions = [
     label: 'Service Occurrence',
     body: ({serviceOccurrence}) => {
       if (serviceOccurrence) {
-        return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/edit`}>{serviceOccurrence.description}</Link>;
+        return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{serviceOccurrence.description}</Link>;
       } else {
         return "";
       }

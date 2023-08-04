@@ -58,6 +58,8 @@ import ClientSearch from "./components/clients/ClientSearch";
 import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeProgram from "./components/programs/visualizeProgram";
+import VisualizeServiceOccurrence from "./components/serviceOccurrence/visualizeServiceOccurrence";
+import VisualizeProgramOccurrence from "./components/programOccurrence/visualizeProgramOccurrence";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
 import VisualizeServices from "./components/programs/visualizeServices";
 import Needs from "./components/need/needs";
@@ -162,10 +164,12 @@ const routes = (
     <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
     <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
     <Route path="/serviceOccurrence/:id/edit" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
+    <Route path="/serviceOccurrence/:id" element={<PrivateRoute element={VisualizeServiceOccurrence}/>}/>
 
     <Route path="/programOccurrences" element={<PrivateRoute element={ProgramOccurrences}/>}/>
     <Route path="/programOccurrence/new" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
     <Route path="/programOccurrence/:id/edit" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
+    <Route path="/programOccurrence/:id" element={<PrivateRoute element={VisualizeProgramOccurrence}/>}/>
 
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
  

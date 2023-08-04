@@ -16,7 +16,7 @@ const columnsWithoutOptions = [
     label: 'Program Occurrence',
     body: ({programOccurrence}) => {
       if (programOccurrence) {
-        return <Link color to={`/programOccurrence/${programOccurrence._id}/edit`}>{programOccurrence.description}</Link>;
+        return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
       } else {
         return "";
       }
