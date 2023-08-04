@@ -113,7 +113,7 @@ module.exports = [
       label: 'Program Manager',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Person'
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
     }
   },
 
@@ -559,7 +559,7 @@ module.exports = [
       label: 'Person',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Person'
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
     }
   },
 
