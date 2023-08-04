@@ -25,7 +25,6 @@ const columnsWithoutOptions = [
     label: 'Manager',
     body: ({manager}) => {
       if (manager) {
-//        return JSON.stringify(manager);
         if (manager.lastName && manager.firstName) {
           return <Link color to={`/user/${manager._id}/edit`}>{manager.lastName + ", " + manager.firstName}</Link>;
         } else if (manager.lastName) {
