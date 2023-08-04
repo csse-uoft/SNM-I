@@ -60,6 +60,10 @@ import VisualizeService from "./components/services/visualizeService";
 import VisualizeProgram from "./components/programs/visualizeProgram";
 import VisualizeServiceOccurrence from "./components/serviceOccurrence/visualizeServiceOccurrence";
 import VisualizeProgramOccurrence from "./components/programOccurrence/visualizeProgramOccurrence";
+import VisualizeServiceRegistration from "./components/serviceRegistration/visualizeServiceRegistration";
+import VisualizeProgramRegistration from "./components/programRegistration/visualizeProgramRegistration";
+import VisualizeServiceProvision from "./components/serviceProvision/visualizeServiceProvision";
+import VisualizeProgramProvision from "./components/programProvision/visualizeProgramProvision";
 import VisualizeAppointment from "./components/appointment/visualizeAppointment";
 import VisualizeServices from "./components/programs/visualizeServices";
 import Needs from "./components/need/needs";
@@ -153,12 +157,12 @@ const routes = (
 
     <Route path="/serviceRegistrations/:id/edit" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
     <Route path="/serviceRegistrations/new" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
-    {/*<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
+    {<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeServiceRegistration}/>}/>}
     <Route path="/serviceRegistrations" element={<PrivateRoute element={ServiceRegistrations}/>}/>
 
     <Route path="/programRegistrations/:id/edit" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     <Route path="/programRegistrations/new" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
-    {/*<Route path="/programRegistrations/:id" element={<PrivateRoute element={VisualizeProgram}/>}/>*/}
+    {<Route path="/programRegistrations/:id" element={<PrivateRoute element={VisualizeProgramRegistration}/>}/>}
     <Route path="/programRegistrations" element={<PrivateRoute element={ProgramRegistrations}/>}/>
 
     <Route path="/serviceOccurrences" element={<PrivateRoute element={ServiceOccurrences}/>}/>
@@ -189,12 +193,12 @@ const routes = (
     <Route path="/needOccurrences" element={<PrivateRoute element={NeedOccurrences}/>}/>
 
     <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
-    {/*<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    {<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeServiceProvision}/>}/>}
     <Route path="/serviceProvisions/new" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
     <Route path="/serviceProvisions" element={<PrivateRoute element={ServiceProvisions}/>}/>
 
     <Route path="/programProvisions/:id/edit" element={<PrivateRoute element={ProgramProvisionForm}/>}/>
-    {/*<Route path="/programProvisions/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    {<Route path="/programProvisions/:id" element={<PrivateRoute element={VisualizeProgramProvision}/>}/>}
     <Route path="/programProvisions/new" element={<PrivateRoute element={ProgramProvisionForm}/>}/>
     <Route path="/programProvisions" element={<PrivateRoute element={ProgramProvisions}/>}/>
 
