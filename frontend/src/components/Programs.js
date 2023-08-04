@@ -24,8 +24,20 @@ const columnsWithoutOptions = [
   {
     label: 'Manager',
     body: ({manager}) => {
-        return manager;
-//      return <Link color to={`/user/${manager._id}/edit`}>{manager.username}</Link>;
+      if (manager) {
+//        return JSON.stringify(manager);
+        if (manager.lastName && manager.firstName) {
+          return <Link color to={`/user/${manager._id}/edit`}>{manager.lastName + ", " + manager.firstName}</Link>;
+        } else if (manager.lastName) {
+          return <Link color to={`/user/${manager._id}/edit`}>{manager.lastName}</Link>;
+        } else if (manager.firstName) {
+          return <Link color to={`/user/${manager._id}/edit`}>{manager.firstName}</Link>;
+        } else {
+          return <Link color to={`/user/${manager._id}/edit`}>{manager._id}</Link>;
+        }
+      } else {
+        return "";
+      }
     }
   },
   {
@@ -81,7 +93,7 @@ export default function Programs() {
           type: (await getServiceProviderType(program))
         }
       if (program.manager)
-        programData.manager = await(fetchSingleGeneric('user', program.manager)).data;
+        programData.manager = (await fetchSingleGeneric('person', program.manager)).data;
       data.push(programData);
     }
     return data;
