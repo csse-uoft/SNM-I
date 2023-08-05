@@ -123,7 +123,9 @@ const genericType2Model = {
 
 const genericType2Populates = {
   'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
-  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence']
+  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence'],
+  'serviceRegistration': ['needOccurrence', 'serviceOccurrence'],
+  'programRegistration' : ['needOccurrence', 'programOccurrence']
 };
 
 const genericType2Checker = {

@@ -24,16 +24,18 @@ export default function ProgramRegistrationForm() {
     if (implementation.optionsFromClass === ":Client") {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
-                                           clientFieldId={internalTypes.clientForProgramProvision._id}
-                                           needOccFieldId={internalTypes.needOccurrenceForProgramProvision._id}/>
+                                           clientFieldId={internalTypes.clientForProgramRegistration._id}
+                                           needOccFieldId={internalTypes.needOccurrenceForProgramRegistration._id}/>
     } else if (implementation.optionsFromClass === ":ProgramOccurrence") {
       // Render Program & Program Occurrence & Need Satisfier
       return <ProgramAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
-        programFieldId={internalTypes.programForProgramProvision._id}
-        programOccurrenceFieldId={internalTypes.programOccurrenceForProgramProvision._id}
-        needSatisfierFieldId={internalTypes.needSatisfierForProgramProvision._id}/>
+        programFieldId={internalTypes.programForProgramRegistration._id}
+        programOccurrenceFieldId={internalTypes.programOccurrenceForProgramRegistration._id}
+        needSatisfierFieldId={internalTypes.needSatisfierForProgramRegistration._id}/>
 
+    } else if (implementation.optionsFromClass === ':NeedOccurrence') {
+      return "";
     }
   }
 

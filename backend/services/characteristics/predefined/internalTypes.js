@@ -480,14 +480,14 @@ module.exports = [
     }
   },
   {
-    name: 'programForProgramRegistration',
-    predefinedProperty: 'http://snmi#hasProgram',
+    name: 'needOccurrenceForProgramRegistration',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
     formType: 'programRegistration',
     implementation: {
-      label: 'Program',
+      label: 'Need Occurrence',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Program'
+      optionsFromClass: 'http://snmi#NeedOccurrence'
     }
   },
 

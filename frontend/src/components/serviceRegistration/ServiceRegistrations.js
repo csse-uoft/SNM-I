@@ -16,18 +16,12 @@ const columnsWithoutOptions = [
     label: 'Type',
     body: ({referralType}) =>{
       return referralType
-      // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-      //   {serviceProvider}
-      // </Link>;
     }
   },
   {
     label: 'Status',
     body: ({referralStatus}) =>{
       return referralStatus
-      // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-      //   {serviceProvider}
-      // </Link>;
     }
   },
   // {
