@@ -10,6 +10,7 @@ const GDBOutcomeOccurrenceModel = createGraphDBModel({
   acuity: {type: String, internalKey: ':hasAcuity'},
   serviceMatch: {type: [GDBServiceModel], internalKey: ':hasServiceMatch'},
   characteristicOccurrence: {type: GDBCOModel, internalKey: ':hasCharacteristicOccurrence'},
+  client: {type: GDBClientModel, internalKey: ':hasClient'},
 }, {
   rdfTypes: [':OutcomeOccurrence'], name: 'outcomeOccurrence'
 });

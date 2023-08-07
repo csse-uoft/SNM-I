@@ -16,36 +16,24 @@ const columnsWithoutOptions = [
     label: 'Client',
     body: ({client}) => {
       return client;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     }
   },
   {
     label: 'Person',
     body: ({person}) => {
       return person;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     }
   },
   {
     label: 'Start Date',
     body: ({datetime}) => {
       return datetime && new Date(datetime).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     }
   },
   {
     label: 'End Date',
     body: ({datetime}) => {
       return datetime && new Date(datetime).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     }
   },
   // {

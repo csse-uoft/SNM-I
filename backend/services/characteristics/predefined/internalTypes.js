@@ -503,6 +503,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#Need'
     }
   },
+  {
+    name: 'clientForNeedOccurrence',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'needOccurrence',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
+    }
+  },
 
   // Outcome Occurrence
   {
@@ -514,6 +525,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Outcome'
+    }
+  },
+  {
+    name: 'clientForOutcomeOccurrence',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'outcomeOccurrence',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
     }
   },
 
