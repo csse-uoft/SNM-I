@@ -1,6 +1,7 @@
 const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("../../utils/graphdb/helpers");
+const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
 
 const FORMTYPE = 'outcomeOccurrence'
 

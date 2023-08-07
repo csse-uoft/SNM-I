@@ -2,6 +2,7 @@ const {createGraphDBModel, getGraphDBModel} = require("../../utils/graphdb");
 const {GDBNeedModel} = require("./need");
 const {GDBServiceModel} = require("../service/service");
 const {GDBCOModel} = require("../ClientFunctionalities/characteristicOccurrence");
+const {GDBClientModel} = require("../ClientFunctionalities/client");
 
 const GDBNeedOccurrenceModel = createGraphDBModel({
   occurrenceOf: {type: GDBNeedModel, internalKey: ':occurrenceOf'},
