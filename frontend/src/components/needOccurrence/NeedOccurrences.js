@@ -17,7 +17,7 @@ const columnsWithoutOptions = [
     label: 'Person',
     body: ({person}) => {
       if (person) {
-        return person;
+        return <Link color to={`/person/${person._id}/`}>{person.name}</Link>;
       } else {
         return "";
       }
@@ -94,9 +94,12 @@ export default function NeedOccurrences() {
             needOccurrenceData.person = occ.objectValue;
           }
         }
-      if (needOccurrenceData.person){
+      if (needOccurrence.person){
         // get corresponding person data
-        needOccurrenceData.person = persons[needOccurrence.person.slice(1)]
+        needOccurrenceData.person = {
+          name: persons[needOccurrence.person.slice(1)],
+          _id: needOccurrence.person.split('_')[1],
+	}
       }
       data.push(needOccurrenceData);
     }
