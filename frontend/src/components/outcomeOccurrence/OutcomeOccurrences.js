@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { getInstancesInClass } from "../../api/dynamicFormApi";
 
 const TYPE = 'outcomeOccurrences';
 
@@ -13,27 +14,35 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Client',
-    body: ({client}) => {
-      return client;
-    }
-  },
-  {
     label: 'Person',
     body: ({person}) => {
-      return person;
+      if (person) {
+        return person;
+      } else {
+        return "";
+      }
     }
   },
   {
     label: 'Start Date',
-    body: ({datetime}) => {
-      return datetime && new Date(datetime).toLocaleString();
+    body: ({startDate}) => {
+      const startDateObj = new Date(startDate);
+      if (isNaN(startDateObj)) {
+        return "";
+      } else {
+        return startDateObj.toLocaleString();
+      }
     }
   },
   {
     label: 'End Date',
-    body: ({datetime}) => {
-      return datetime && new Date(datetime).toLocaleString();
+    body: ({endDate}) => {
+      const endDateObj = new Date(endDate);
+      if (isNaN(endDateObj)) {
+        return "";
+      } else {
+        return endDateObj.toLocaleString();
+      }
     }
   },
   // {
@@ -64,17 +73,32 @@ export default function OutcomeOccurrences() {
 
   const fetchData = async () => {
     const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
+    const persons = {};
+    // get all persons data
+    await getInstancesInClass('cids:Person').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const personId = key.split('#')[1];
+        persons[personId] = res[key];
+      });
+    });
     const data = [];
     for (const outcomeOccurrence of outcomeOccurrences) {
       const outcomeOccurrenceData = {_id: outcomeOccurrence._id};
       if (outcomeOccurrence.characteristicOccurrences)
         for (const occ of outcomeOccurrence.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Start Date') {
-            outcomeOccurrenceData.name = occ.dataDateValue;
+            outcomeOccurrenceData.startDate = occ.dataDateValue;
           } else if (occ.occurrenceOf?.name === 'End Date') {
-            outcomeOccurrenceData.client = occ.dataDateValue;
+            outcomeOccurrenceData.endDate = occ.dataDateValue;
+          } else if (occ.occurrenceOf?.name === 'Person') {
+            outcomeOccurrenceData.person = occ.objectValue;
           }
         }
+      if (outcomeOccurrenceData.person){
+        // get corresponding person data
+        outcomeOccurrenceData.person = persons[outcomeOccurrence.person.slice(1)]
+      }
+
       data.push(outcomeOccurrenceData);
     }
     return data;
