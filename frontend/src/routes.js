@@ -20,6 +20,7 @@ import EmailConfirm from './components/emailConfirm';
 import UserProfile from './components/userProfile/Profile';
 import UpdateUserProfile from './components/userProfile/EditProfile';
 import AddEditNeed from "./components/need/addEditNeed";
+import AddEditOutcome from "./components/outcome/addEditOutcome";
 // import NeedForm from './components/client_needs/NeedForm'
 // import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute';
@@ -69,6 +70,7 @@ import VisualizeServices from "./components/programs/visualizeServices";
 import Needs from "./components/need/needs";
 import AddEditNeedSatisfier from "./components/needSatisfier/addEditNeedSatisfier";
 import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
+import Outcomes from "./components/outcome/outcomes";
 import ServiceOccurrences from "./components/ServiceOccurrences";
 import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
 import ProgramOccurrences from "./components/ProgramOccurrences";
@@ -85,6 +87,8 @@ import ProgramProvisionForm from "./components/programProvision/programProvision
 import ProgramProvisions from "./components/programProvision/programProvisions";
 import NeedOccurrenceForm from "./components/needOccurrence/needOccurrenceForm";
 import NeedOccurrences from "./components/needOccurrence/NeedOccurrences";
+import OutcomeOccurrenceForm from "./components/outcomeOccurrence/outcomeOccurrenceForm";
+import OutcomeOccurrences from "./components/outcomeOccurrence/OutcomeOccurrences";
 import ClientAssessment from './components/clientAssessment/ClientAssesment';
 import ClientAssessmentForm from './components/clientAssessment/ClientAssessmentForm';
 import Person from './components/Person';
@@ -192,6 +196,12 @@ const routes = (
     <Route path="/needOccurrences/new" element={<PrivateRoute element={NeedOccurrenceForm}/>}/>
     <Route path="/needOccurrences" element={<PrivateRoute element={NeedOccurrences}/>}/>
 
+    <Route path="/outcomeOccurrences/:id/edit" element={<PrivateRoute element={OutcomeOccurrenceForm}/>}/>
+    {/*<Route path="/outcomeOccurrences/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>*/}
+    <Route path="/outcomeOccurrences/new" element={<PrivateRoute element={OutcomeOccurrenceForm}/>}/>
+    <Route path="/outcomeOccurrences" element={<PrivateRoute element={OutcomeOccurrences}/>}/>
+
+
     <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
     {<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeServiceProvision}/>}/>}
     <Route path="/serviceProvisions/new" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
@@ -221,6 +231,10 @@ const routes = (
     <Route path={'/needSatisfier/:id/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
     <Route path={'/needSatisfier/:option'} element={<AdminRoute element={AddEditNeedSatisfier}/>}/>
     <Route path={'/needSatisfiers'} element={<AdminRoute element={NeedSatisfiers}/>}/>
+
+    <Route path={'/outcome/:id/:option'} element={<AdminRoute element={AddEditOutcome}/>}/>
+    <Route path={'/outcome/:option'} element={<AdminRoute element={AddEditOutcome}/>}/>
+    <Route path={'/outcomes'} element={<AdminRoute element={Outcomes}/>}/>
 
     <Route exact path="/settings/manage-forms/" element={<AdminRoute element={ManageForms}/>}/>
     <Route exact path="/settings/manage-forms/:formType" element={<AdminRoute element={ManageForms}/>}/>
