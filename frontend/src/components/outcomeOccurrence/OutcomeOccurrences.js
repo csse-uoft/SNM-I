@@ -14,6 +14,16 @@ const columnsWithoutOptions = [
     }
   },
   {
+    label: 'Outcome',
+    body: ({outcome}) => {
+      if (outcome) {
+        return <Link color to={`/outcome/${outcome._id}/edit`}>{outcome.name}</Link>;
+      } else {
+        return "";
+      }
+    }
+  },
+  {
     label: 'Person',
     body: ({person}) => {
       if (person) {
@@ -81,6 +91,14 @@ export default function OutcomeOccurrences() {
         persons[personId] = res[key];
       });
     });
+    const outcomes = {};
+    // get all outcomes data
+    await getInstancesInClass(':Outcome').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const outcomeId = key.split('#')[1];
+        outcomes[outcomeId] = res[key];
+      });
+    });
     const data = [];
     for (const outcomeOccurrence of outcomeOccurrences) {
       const outcomeOccurrenceData = {
@@ -100,6 +118,13 @@ export default function OutcomeOccurrences() {
           name: persons[outcomeOccurrence.person.slice(1)],
           _id: outcomeOccurrence.person.split('_')[1],
        }
+      }
+      if (outcomeOccurrence.occurrenceOf){
+        // get corresponding outcome data
+        outcomeOccurrenceData.outcome = {
+          name: outcomes[outcomeOccurrence.occurrenceOf.slice(1)],
+          _id: outcomeOccurrence.occurrenceOf.split('_')[1],
+        }
       }
       data.push(outcomeOccurrenceData);
     }

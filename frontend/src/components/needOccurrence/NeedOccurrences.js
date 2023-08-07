@@ -14,6 +14,16 @@ const columnsWithoutOptions = [
     }
   },
   {
+    label: 'Need',
+    body: ({need}) => {
+      if (need) {
+        return <Link color to={`/need/${need._id}/edit`}>{need.name}</Link>;
+      } else {
+        return "";
+      }
+    }
+  },
+  {
     label: 'Person',
     body: ({person}) => {
       if (person) {
@@ -81,6 +91,14 @@ export default function NeedOccurrences() {
         persons[personId] = res[key];
       });
     });
+    const needs = {};
+    // get all needs data
+    await getInstancesInClass(':Need').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const needId = key.split('#')[1];
+        needs[needId] = res[key];
+      });
+    });
     const data = [];
     for (const needOccurrence of needOccurrences) {
       const needOccurrenceData = {
@@ -100,6 +118,13 @@ export default function NeedOccurrences() {
           name: persons[needOccurrence.person.slice(1)],
           _id: needOccurrence.person.split('_')[1],
 	}
+      }
+      if (needOccurrence.occurrenceOf){
+        // get corresponding need data
+        needOccurrenceData.need = {
+          name: needs[needOccurrence.occurrenceOf.slice(1)],
+          _id: needOccurrence.occurrenceOf.split('_')[1],
+        }
       }
       data.push(needOccurrenceData);
     }
