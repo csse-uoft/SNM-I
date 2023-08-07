@@ -83,14 +83,14 @@ export default function NeedOccurrences() {
     });
     const data = [];
     for (const needOccurrence of needOccurrences) {
-      const needOccurrenceData = {_id: needOccurrence._id};
+      const needOccurrenceData = {
+              _id: needOccurrence._id,
+              startDate: needOccurrence.startDate,
+              endDate: needOccurrence.endDate
+      };
       if (needOccurrence.characteristicOccurrences)
         for (const occ of needOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Start Date') {
-            needOccurrenceData.startDate = occ.dataDateValue;
-          } else if (occ.occurrenceOf?.name === 'End Date') {
-            needOccurrenceData.endDate = occ.dataDateValue;
-          } else if (occ.occurrenceOf?.name === 'Person') {
+          if (occ.occurrenceOf?.name === 'Person') {
             needOccurrenceData.person = occ.objectValue;
           }
         }
@@ -98,7 +98,6 @@ export default function NeedOccurrences() {
         // get corresponding person data
         needOccurrenceData.person = persons[needOccurrence.person.slice(1)]
       }
-
       data.push(needOccurrenceData);
     }
     return data;

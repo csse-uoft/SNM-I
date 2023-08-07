@@ -83,14 +83,14 @@ export default function OutcomeOccurrences() {
     });
     const data = [];
     for (const outcomeOccurrence of outcomeOccurrences) {
-      const outcomeOccurrenceData = {_id: outcomeOccurrence._id};
+      const outcomeOccurrenceData = {
+              _id: outcomeOccurrence._id,
+              startDate: outcomeOccurrence.startDate,
+              endDate: outcomeOccurrence.endDate
+      };
       if (outcomeOccurrence.characteristicOccurrences)
         for (const occ of outcomeOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Start Date') {
-            outcomeOccurrenceData.startDate = occ.dataDateValue;
-          } else if (occ.occurrenceOf?.name === 'End Date') {
-            outcomeOccurrenceData.endDate = occ.dataDateValue;
-          } else if (occ.occurrenceOf?.name === 'Person') {
+          if (occ.occurrenceOf?.name === 'Person') {
             outcomeOccurrenceData.person = occ.objectValue;
           }
         }
@@ -98,7 +98,6 @@ export default function OutcomeOccurrences() {
         // get corresponding person data
         outcomeOccurrenceData.person = persons[outcomeOccurrence.person.slice(1)]
       }
-
       data.push(outcomeOccurrenceData);
     }
     return data;
