@@ -4,6 +4,8 @@ const {GDBCOModel} = require("./characteristicOccurrence");
 const {GDBNoteModel} = require("./note");
 const {GDBNeedModel} = require("../need/need");
 const {GDBNeedOccurrenceModel} = require("../need/needOccurrence");
+const {GDBOutcomeModel} = require("../outcome/outcome");
+const {GDBOutcomeOccurrenceModel} = require("../outcome/outcomeOccurrence");
 
 /**
  * This is a Client model.
@@ -17,6 +19,9 @@ const GDBClientModel = createGraphDBModel({
   need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
   // If a need is added, need occurrence is automatically created and associated to the client.
   needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
+  outcome: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
+  // If an outcoe is added, outcome occurrence is automatically created and associated to the client.
+  outcomeOccurrence: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence', onDelete: DeleteType.CASCADE},
   note: {type: [String], internalKey: ':hasNote'},
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},

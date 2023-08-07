@@ -4,7 +4,7 @@ import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
 
-const TYPE = 'needOccurrences';
+const TYPE = 'outcomeOccurrences';
 
 const columnsWithoutOptions = [
   {
@@ -14,10 +14,10 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Need',
-    body: ({need}) => {
-      if (need) {
-        return <Link color to={`/need/${need._id}/edit`}>{need.name}</Link>;
+    label: 'Outcome',
+    body: ({outcome}) => {
+      if (outcome) {
+        return <Link color to={`/outcome/${outcome._id}/edit`}>{outcome.name}</Link>;
       } else {
         return "";
       }
@@ -65,9 +65,9 @@ const columnsWithoutOptions = [
   // }
 ];
 
-export default function NeedOccurrences() {
+export default function OutcomeOccurrences() {
 
-  const nameFormatter = needOccurrence => needOccurrence._id;
+  const nameFormatter = outcomeOccurrence => outcomeOccurrence._id;
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     return [];
@@ -82,7 +82,7 @@ export default function NeedOccurrences() {
   };
 
   const fetchData = async () => {
-    const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
+    const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
     const persons = {};
     // get all persons data
     await getInstancesInClass('cids:Person').then((res) => {
@@ -91,54 +91,54 @@ export default function NeedOccurrences() {
         persons[personId] = res[key];
       });
     });
-    const needs = {};
-    // get all needs data
-    await getInstancesInClass(':Need').then((res) => {
+    const outcomes = {};
+    // get all outcomes data
+    await getInstancesInClass(':Outcome').then((res) => {
       Object.keys(res).forEach((key) => {
-        const needId = key.split('#')[1];
-        needs[needId] = res[key];
+        const outcomeId = key.split('#')[1];
+        outcomes[outcomeId] = res[key];
       });
     });
     const data = [];
-    for (const needOccurrence of needOccurrences) {
-      const needOccurrenceData = {
-              _id: needOccurrence._id,
-              startDate: needOccurrence.startDate,
-              endDate: needOccurrence.endDate
+    for (const outcomeOccurrence of outcomeOccurrences) {
+      const outcomeOccurrenceData = {
+              _id: outcomeOccurrence._id,
+              startDate: outcomeOccurrence.startDate,
+              endDate: outcomeOccurrence.endDate
       };
-      if (needOccurrence.characteristicOccurrences)
-        for (const occ of needOccurrence.characteristicOccurrences) {
+      if (outcomeOccurrence.characteristicOccurrences)
+        for (const occ of outcomeOccurrence.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Person') {
-            needOccurrenceData.person = occ.objectValue;
+            outcomeOccurrenceData.person = occ.objectValue;
           }
         }
-      if (needOccurrence.person){
+      if (outcomeOccurrence.person){
         // get corresponding person data
-        needOccurrenceData.person = {
-          name: persons[needOccurrence.person.slice(1)],
-          _id: needOccurrence.person.split('_')[1],
-	}
+        outcomeOccurrenceData.person = {
+          name: persons[outcomeOccurrence.person.slice(1)],
+          _id: outcomeOccurrence.person.split('_')[1],
+       }
       }
-      if (needOccurrence.occurrenceOf){
-        // get corresponding need data
-        needOccurrenceData.need = {
-          name: needs[needOccurrence.occurrenceOf.slice(1)],
-          _id: needOccurrence.occurrenceOf.split('_')[1],
+      if (outcomeOccurrence.occurrenceOf){
+        // get corresponding outcome data
+        outcomeOccurrenceData.outcome = {
+          name: outcomes[outcomeOccurrence.occurrenceOf.slice(1)],
+          _id: outcomeOccurrence.occurrenceOf.split('_')[1],
         }
       }
-      data.push(needOccurrenceData);
+      data.push(outcomeOccurrenceData);
     }
     return data;
   }
 
-  const deleteNeedOccurrence = (id) => deleteSingleGeneric('needOccurrence', id);
+  const deleteOutcomeOccurrence = (id) => deleteSingleGeneric('outcomeOccurrence', id);
 
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteNeedOccurrence}
+      deleteItem={deleteOutcomeOccurrence}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
       tableOptions={{

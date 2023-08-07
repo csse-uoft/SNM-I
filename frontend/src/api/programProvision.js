@@ -4,6 +4,10 @@ export async function getNeedOccurrencesByClient(clientFullURI) {
   return getJson('/api/needOccurrences/client/' + encodeURIComponent(clientFullURI));
 }
 
+export async function getOutcomeOccurrencesByClient(clientFullURI) {
+  return getJson('/api/outcomeOccurrences/client/' + encodeURIComponent(clientFullURI));
+}
+
 export async function getProgramOccurrencesByProgram(programFullURI) {
   return getJson('/api/programOccurrences/program/' + encodeURIComponent(programFullURI));
 }

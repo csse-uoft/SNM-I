@@ -74,6 +74,7 @@ const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
 const {GDBProgramProvisionModel} = require("../../models/programProvision");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
+const {GDBOutcomeOccurrenceModel} = require("../../models/outcome/outcomeOccurrence");
 const {GDBClientAssessmentModel} = require("../../models/clientAssessment");
 const {
   serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
@@ -91,6 +92,11 @@ const {
   needOccurrenceInternalTypeCreateTreater,
   needOccurrenceInternalTypeFetchTreater
 } = require("./needOccurrenceInternalTypeTreater");
+const {
+  outcomeOccurrenceInternalTypeUpdateTreater,
+  outcomeOccurrenceInternalTypeCreateTreater,
+  outcomeOccurrenceInternalTypeFetchTreater
+} = require("./outcomeOccurrenceInternalTypeTreater");
 const {
   clientAssessmentInternalTypeUpdateTreater,
   clientAssessmentInternalTypeCreateTreater,
@@ -117,6 +123,7 @@ const genericType2Model = {
   'programProvision': GDBProgramProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
   'needOccurrence': GDBNeedOccurrenceModel,
+  'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel
 };
@@ -151,6 +158,7 @@ const genericType2InternalTypeCreateTreater = {
   'programProvision': programProvisionInternalTypeCreateTreater,
   'client': clientInternalTypeCreateTreater,
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
+  'outcomeOccurrence': outcomeOccurrenceInternalTypeCreateTreater,
   'clientAssessment': clientAssessmentInternalTypeCreateTreater,
   'person': personInternalTypeCreateTreater
 };
@@ -168,6 +176,7 @@ const genericType2InternalTypeFetchTreater = {
   'programProvision': programProvisionInternalTypeFetchTreater,
   'client': clientInternalTypeFetchTreater,
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
+  'outcomeOccurrence': outcomeOccurrenceInternalTypeFetchTreater,
   'clientAssessment': clientAssessmentInternalTypeFetchTreater,
   'person': personInternalTypeFetchTreater
 };
@@ -185,6 +194,7 @@ const genericType2InternalTypeUpdateTreater = {
   'programProvision': programProvisionInternalTypeUpdateTreater,
   'client': clientInternalTypeUpdateTreater,
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
+  'outcomeOccurrence': outcomeOccurrenceInternalTypeUpdateTreater,
   'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
   'person': personInternalTypeUpdateTreater
 };

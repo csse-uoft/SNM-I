@@ -17,9 +17,13 @@ const columnsWithoutOptions = [
   {
     label: 'Provider',
     body: ({serviceProvider}) =>{
-      return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
-        {serviceProvider.name}
-      </Link>;
+      if (serviceProvider) {
+        return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
+          {serviceProvider.name}
+        </Link>;
+      } else {
+        return "";
+      }
     }
   },
   {

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { needs } from './reducers/needReducers.js';
+import { outcomes } from './reducers/outcomeReducers.js';
 import { ontology } from './reducers/ontologyReducers.js';
 import { clients } from './reducers/clientReducer.js';
 import { services } from './reducers/serviceReducer.js';
@@ -12,6 +13,7 @@ const appReducer = combineReducers({
   programs,
   clients,
   needs,
+  outcomes,
   providers,
   ontology,
 });

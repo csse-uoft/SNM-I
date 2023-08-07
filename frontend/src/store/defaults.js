@@ -226,6 +226,14 @@ const needStatusOptions = [
   'Unmatched'
 ]
 
+const outcomeStatusOptions = [
+  'Fulfilled',
+  'In Progress',
+  'Matched',
+  'Pending',
+  'Unmatched'
+]
+
 const serviceTypeOptions = [
   'External',
   'Internal',
@@ -300,6 +308,7 @@ module.exports = Object.freeze({
   matchStatusOptions: matchStatusOptions,
   familyRelationshipOptions: familyRelationshipOptions,
   needStatusOptions: needStatusOptions,
+  outcomeStatusOptions: outcomeStatusOptions,
   serviceTypeOptions: serviceTypeOptions,
   programTypeOptions: programTypeOptions,
   serviceSharedWithOptions: serviceSharedWithOptions,

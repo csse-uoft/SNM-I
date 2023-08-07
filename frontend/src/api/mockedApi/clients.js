@@ -22,6 +22,7 @@ export async function createClient(newClientData) {
   const newClient = {
     id: clientCnt.nextCnt,
     need_groups: [],
+    outcome_groups: [],
     appointments: [],
     ...newClientData
   };

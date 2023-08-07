@@ -46,6 +46,15 @@ export const defaultAddEditNeedFields = {
   characteristic: '',
   code: []
 }
+
+export const defaultAddEditOutcomeFields = {
+  type: '',
+  changeType: '',
+  description: '',
+  characteristic: '',
+  code: []
+}
+
 export const defaultInvitationFields = {
   isSuperuser: false,
   email: '',
