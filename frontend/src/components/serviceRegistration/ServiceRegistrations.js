@@ -13,12 +13,6 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Type',
-    body: ({referralType}) =>{
-      return referralType
-    }
-  },
-  {
     label: 'Status',
     body: ({referralStatus}) =>{
       return referralStatus
