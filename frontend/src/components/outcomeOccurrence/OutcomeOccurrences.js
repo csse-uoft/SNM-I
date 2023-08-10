@@ -24,16 +24,6 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Person',
-    body: ({person}) => {
-      if (person) {
-        return <Link color to={`/person/${person._id}/`}>{person.name}</Link>;
-      } else {
-        return "";
-      }
-    }
-  },
-  {
     label: 'Start Date',
     body: ({startDate}) => {
       const startDateObj = new Date(startDate);
@@ -83,14 +73,6 @@ export default function OutcomeOccurrences() {
 
   const fetchData = async () => {
     const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
-    const persons = {};
-    // get all persons data
-    await getInstancesInClass('cids:Person').then((res) => {
-      Object.keys(res).forEach((key) => {
-        const personId = key.split('#')[1];
-        persons[personId] = res[key];
-      });
-    });
     const outcomes = {};
     // get all outcomes data
     await getInstancesInClass(':Outcome').then((res) => {
@@ -106,19 +88,6 @@ export default function OutcomeOccurrences() {
               startDate: outcomeOccurrence.startDate,
               endDate: outcomeOccurrence.endDate
       };
-      if (outcomeOccurrence.characteristicOccurrences)
-        for (const occ of outcomeOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Person') {
-            outcomeOccurrenceData.person = occ.objectValue;
-          }
-        }
-      if (outcomeOccurrence.person){
-        // get corresponding person data
-        outcomeOccurrenceData.person = {
-          name: persons[outcomeOccurrence.person.slice(1)],
-          _id: outcomeOccurrence.person.split('_')[1],
-       }
-      }
       if (outcomeOccurrence.occurrenceOf){
         // get corresponding outcome data
         outcomeOccurrenceData.outcome = {

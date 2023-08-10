@@ -6,7 +6,7 @@ const FORMTYPE = 'needOccurrence'
 
 const needOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  if (property === 'occurrenceOf' || property === 'person') {
+  if (property === 'occurrenceOf') {
     instanceData[property] = value;
   }
 };
@@ -16,7 +16,7 @@ const needOccurrenceInternalTypeFetchTreater = async (data) => {
   const schema = data.schema;
 
   for (const property in data) {
-    if (property === 'occurrenceOf' || property === 'person') {
+    if (property === 'occurrenceOf') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: 'needOccurrence'});
       result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
     } else if (property === 'needSatisfiers') {
