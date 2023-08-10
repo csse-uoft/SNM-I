@@ -1,32 +1,32 @@
 import { serverHost } from '../defaults.js';
 
-export const RECEIVE_CLIENT_NEEDS = 'RECEIVE_CLIENT_NEEDS';
-export const RECEIVE_CLIENT_NEED = 'RECEIVE_CLIENT_NEED';
-export const REMOVE_CLIENT_NEED = 'REMOVE_CLIENT_NEED';
-export const REQUEST_NEED = 'REQUEST_NEED';
-export const REQUEST_NEEDS = 'REQUEST_NEEDS';
-export const RECEIVE_NEEDS = 'RECEIVE_NEEDS';
-export const RECEIVE_CLIENT_NEED_GROUP = 'RECEIVE_CLIENT_NEED_GROUP';
-export const RECEIVE_CLIENT_NEED_INFO = ' RECEIVE_CLIENT_NEED_INFO';
+export const RECEIVE_CLIENT_OUTCOMES = 'RECEIVE_CLIENT_OUTCOMES';
+export const RECEIVE_CLIENT_OUTCOME = 'RECEIVE_CLIENT_OUTCOME';
+export const REMOVE_CLIENT_OUTCOME = 'REMOVE_CLIENT_OUTCOME';
+export const REQUEST_OUTCOME = 'REQUEST_OUTCOME';
+export const REQUEST_OUTCOMES = 'REQUEST_OUTCOMES';
+export const RECEIVE_OUTCOMES = 'RECEIVE_OUTCOMES';
+export const RECEIVE_CLIENT_OUTCOME_GROUP = 'RECEIVE_CLIENT_OUTCOME_GROUP';
+export const RECEIVE_CLIENT_OUTCOME_INFO = ' RECEIVE_CLIENT_OUTCOME_INFO';
 export const ERROR = 'ERROR';
 
 function requestOutcomes(json) {
   return {
-    type: REQUEST_NEEDS,
+    type: REQUEST_OUTCOMES,
     outcomes: json
   }
 }
 
 function receiveOutcomes(json) {
   return {
-    type: RECEIVE_NEEDS,
+    type: RECEIVE_OUTCOMES,
     outcomes: json
   }
 }
 
 export function receiveClientOutcomes(clientId, json, outcomeGroups) {
   return {
-    type: RECEIVE_CLIENT_NEEDS,
+    type: RECEIVE_CLIENT_OUTCOMES,
     clientId: clientId,
     outcomes: json,
     outcomeGroups: outcomeGroups
@@ -35,7 +35,7 @@ export function receiveClientOutcomes(clientId, json, outcomeGroups) {
 
 function receiveClientOutcome(clientId, outcome, outcomeGroup) {
   return {
-    type: RECEIVE_CLIENT_NEED,
+    type: RECEIVE_CLIENT_OUTCOME,
     clientId: clientId,
     outcome: outcome,
     outcomeGroup: outcomeGroup
@@ -44,7 +44,7 @@ function receiveClientOutcome(clientId, outcome, outcomeGroup) {
 
 function receiveClientOutcomeInfo(clientId, outcomeId, outcome) {
   return {
-    type: RECEIVE_CLIENT_NEED_INFO,
+    type: RECEIVE_CLIENT_OUTCOME_INFO,
     clientId: clientId,
     outcomeId: outcomeId,
     outcome: outcome
@@ -53,7 +53,7 @@ function receiveClientOutcomeInfo(clientId, outcomeId, outcome) {
 
 function removeClientOutcome(clientId, outcomeId) {
   return {
-    type: REMOVE_CLIENT_NEED,
+    type: REMOVE_CLIENT_OUTCOME,
     clientId: clientId,
     outcomeId: outcomeId
   }
@@ -61,7 +61,7 @@ function removeClientOutcome(clientId, outcomeId) {
 
 function receiveClientOutcomeGroup(clientId, outcomeGroup) {
   return {
-    type: RECEIVE_CLIENT_NEED_GROUP,
+    type: RECEIVE_CLIENT_OUTCOME_GROUP,
     clientId: clientId,
     outcomeGroup: outcomeGroup
   }
@@ -69,7 +69,7 @@ function receiveClientOutcomeGroup(clientId, outcomeGroup) {
 
 function requestOutcome(id) {
   return {
-    type: REQUEST_NEED,
+    type: REQUEST_OUTCOME,
     outcomeId: id
   }
 }

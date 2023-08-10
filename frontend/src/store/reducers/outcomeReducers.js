@@ -1,22 +1,22 @@
-import { RECEIVE_CLIENT_NEEDS, RECEIVE_CLIENT_NEED, REQUEST_NEED, REQUEST_NEEDS, RECEIVE_NEEDS,
-         REMOVE_CLIENT_NEED, RECEIVE_CLIENT_NEED_GROUP, RECEIVE_CLIENT_NEED_INFO } from '../actions/outcomeActions.js';
+import { RECEIVE_CLIENT_OUTCOMES, RECEIVE_CLIENT_OUTCOME, REQUEST_OUTCOME, REQUEST_OUTCOMES, RECEIVE_OUTCOMES,
+         REMOVE_CLIENT_OUTCOME, RECEIVE_CLIENT_OUTCOME_GROUP, RECEIVE_CLIENT_OUTCOME_INFO } from '../actions/outcomeActions.js';
 import _ from 'lodash';
 
 export function outcomes(state = { byId: {}, outcomeGroups: [], clientId: null, loaded: false, outcomes: [] }, action) {
   let nextById, nextOutcomeGroup, outcomeGroupIndex;
   switch (action.type) {
-    case REQUEST_NEEDS:
+    case REQUEST_OUTCOMES:
       return {...state, loaded: false }
-    case RECEIVE_NEEDS:
+    case RECEIVE_OUTCOMES:
       return {...state, outcomes: action.outcomes, loaded: true }
-    case RECEIVE_CLIENT_NEEDS:
+    case RECEIVE_CLIENT_OUTCOMES:
       if (action.outcomes){
         nextById = _.keyBy(action.outcomes, outcome => outcome.id);
         return {...state, byId: nextById, outcomeGroups: action.outcomeGroups, loaded: true, clientId: action.clientId}
       } else {
         return {...state, outcomeGroups: action.outcomeGroups, loaded: true, clientId: action.clientId}
       }
-    case RECEIVE_CLIENT_NEED:
+    case RECEIVE_CLIENT_OUTCOME:
       nextById = {...state.byId, [action.outcome.id]: { ...action.outcome, loaded: true }}
       nextOutcomeGroup = _.clone(state.outcomeGroups)
       outcomeGroupIndex = nextOutcomeGroup.map(outcomeGroup => outcomeGroup.id).indexOf(action.outcomeGroup.id);
@@ -27,7 +27,7 @@ export function outcomes(state = { byId: {}, outcomeGroups: [], clientId: null, 
         nextOutcomeGroup = [...nextOutcomeGroup, action.outcomeGroup]
       }
       return {...state, outcomeGroups: nextOutcomeGroup, byId: nextById, clientId: action.clientId}
-    case RECEIVE_CLIENT_NEED_INFO:
+    case RECEIVE_CLIENT_OUTCOME_INFO:
       nextById = {...state.byId, [action.outcomeId]: { ...action.outcome, loaded: true }}
       nextOutcomeGroup = _.clone(state.outcomeGroups)
       outcomeGroupIndex = nextOutcomeGroup.map(outcomeGroup => outcomeGroup.id.toString()).indexOf(action.outcome.outcome_group_id);
@@ -37,7 +37,7 @@ export function outcomes(state = { byId: {}, outcomeGroups: [], clientId: null, 
         return {...state, outcomeGroups: nextOutcomeGroup, byId: nextById, clientId: action.clientId}
       }
       return {...state, byId: nextById, clientId: action.clientId}
-    case REMOVE_CLIENT_NEED:
+    case REMOVE_CLIENT_OUTCOME:
       const outcome = state.byId[action.outcomeId];
       nextById = _.clone(state.byId);
       delete nextById[action.outcomeId]
@@ -49,10 +49,10 @@ export function outcomes(state = { byId: {}, outcomeGroups: [], clientId: null, 
         nextOutcomeGroup.splice(outcomeGroupIndex, 1);
       }
       return { ...state, byId: nextById, outcomeGroups: nextOutcomeGroup }
-    case REQUEST_NEED:
+    case REQUEST_OUTCOME:
       nextById = {...state.byId, [action.outcomeId]: { ...action.outcome, loaded: false }}
       return {...state, byId: nextById }
-    case RECEIVE_CLIENT_NEED_GROUP:
+    case RECEIVE_CLIENT_OUTCOME_GROUP:
       nextOutcomeGroup = _.clone(state.outcomeGroups)
       outcomeGroupIndex = nextOutcomeGroup.map(outcomeGroup => outcomeGroup.id).indexOf(action.outcomeGroup.id);
       nextOutcomeGroup[outcomeGroupIndex] = action.outcomeGroup;

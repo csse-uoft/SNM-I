@@ -104,7 +104,7 @@ export default function Outcomes() {
       body: ({changeType}) => changeType
     },
     {
-      label: 'Dharacteristic',
+      label: 'Characteristic',
       body: ({characteristic}) => characteristic
     },
     {
