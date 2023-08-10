@@ -336,7 +336,7 @@ const updateClient = async (instanceData) => {
       if (!(clientDataFields[needTypeId])){
         clientDataFields[needTypeId] = [];
       }
-      for (const outcome of instanceData.needOccurrences) {
+      for (const need of instanceData.needOccurrences) {
         clientDataFields[needTypeId].push(need.occurrenceOf);
       }
     }

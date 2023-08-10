@@ -2,7 +2,6 @@ const {createGraphDBModel, DeleteType, Types} = require("../utils/graphdb");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBUserAccountModel} = require("./userAccount");
 const {GDBPersonModel} = require("./person");
-const {GDBNeedModel} = require("./need/need");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBOutcomeModel} = require("./outcome/outcome");
 const {GDBNeedModel} = require("./need/need");
