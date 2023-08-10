@@ -593,7 +593,7 @@ module.exports = [
     implementation: {
       label: 'Outcome',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.SingleSelectField,
+      fieldType: FieldTypes.MultiSelectField,
       optionsFromClass: 'http://snmi#Outcome'
     }
   },

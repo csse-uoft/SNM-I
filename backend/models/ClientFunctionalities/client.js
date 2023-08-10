@@ -20,7 +20,7 @@ const GDBClientModel = createGraphDBModel({
   // If a need is added, need occurrence is automatically created and associated to the client.
   needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
   outcome: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
-  // If an outcoe is added, outcome occurrence is automatically created and associated to the client.
+  // If an outcome is added, outcome occurrence is automatically created and associated to the client.
   outcomeOccurrence: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence', onDelete: DeleteType.CASCADE},
   note: {type: [String], internalKey: ':hasNote'},
   firstName: {type: String, internalKey: 'foaf:givenName'},

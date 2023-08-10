@@ -303,6 +303,33 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id) {
 
 }
 
+// Helper for createSingleGenericHelper for clientAssessments only
+// When a clientAssessment is saved for a client, any outcomeOccurrences created
+// are associated with the client, not the clientAssessment.
+const updateClient = async (instanceData) => {
+  if (instanceData.client && instanceData.outcomes) {
+    const clientId = instanceData.client.split('_')[1];
+    const clientDataFields = await fetchSingleGenericHelper('client', clientId);
+    const outcomeInternalType = await GDBInternalTypeModel.findOne({
+      name: 'outcomeForClient',
+      formType: 'client'
+    });
+    const outcomeTypeId = 'internalType_' + outcomeInternalType._id;
+
+    if (!(clientDataFields[outcomeTypeId])){
+      clientDataFields[outcomeTypeId] = [];
+    }
+    for (const outcome of instanceData.outcomeOccurrences) {
+      clientDataFields[outcomeTypeId].push(outcome.occurrenceOf);
+    }
+
+    const clientForm = await MDBDynamicFormModel.findOne({formType: 'client'}); // Get any form
+
+    // Update the client using a custom object for the client's new data (including any new outcomeOccurrences)
+    return await updateSingleGenericHelper(clientId, {formId: clientForm._id, fields: clientDataFields}, 'client');
+  }
+}
+
 const createSingleGenericHelper = async (data, genericType) => {
   // check the data package from frontend
   // check if a formId was sent
@@ -389,6 +416,10 @@ const createSingleGenericHelper = async (data, genericType) => {
       const internalType = internalTypes[id];
       await genericType2InternalTypeCreateTreater[genericType](internalType, instanceData, value);
     }
+  }
+  if (genericType === 'clientAssessment') {
+    const result = await updateClient(instanceData);
+    await result.save();
   }
 
   return instanceData;
@@ -553,7 +584,6 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
 
     }
   }
-
   // TODO: Fix the issue where the new value is undefined, it never triggers the genericType2InternalTypeUpdateTreater()
   for (const [key, value] of Object.entries(data.fields)) {
     const [type, id] = key.split('_');
@@ -564,6 +594,10 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
         throw Error(`Cannot find internal type ${genericType}`)
       }
     }
+  }
+  if (genericType === 'clientAssessment') {
+    const result = await updateClient(generic);
+    await result.save();
   }
   return generic;
 }

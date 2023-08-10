@@ -10,7 +10,6 @@ const GDBOutcomeOccurrenceModel = createGraphDBModel({
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
   description: {type: String, internalKey: 'cids:hasDescription'},
-  acuity: {type: String, internalKey: ':hasAcuity'},
   serviceMatch: {type: [GDBServiceModel], internalKey: ':hasServiceMatch'},
   characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
 }, {
