@@ -576,6 +576,17 @@ module.exports = [
     }
   },
   {
+    name: 'needForClientAssessment',
+    predefinedProperty: 'http://snmi#hasNeed',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Need',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Need'
+    }
+  },
+  {
     name: 'personForClientAssessment',
     predefinedProperty: 'http://snmi#hasPerson',
     formType: 'clientAssessment',

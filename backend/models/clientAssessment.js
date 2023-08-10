@@ -5,11 +5,13 @@ const {GDBPersonModel} = require("./person");
 const {GDBNeedModel} = require("./need/need");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBOutcomeModel} = require("./outcome/outcome");
+const {GDBNeedModel} = require("./need/need");
 
 const GDBClientAssessmentModel = createGraphDBModel({
   characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   description: {type: String, internalKey: ':hasDescription'},
   outcome: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
+  need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
   note: {type: String, internalKey: ':hasNote'},
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   userAccount: {type: GDBUserAccountModel, internalKey: ':withUser'},

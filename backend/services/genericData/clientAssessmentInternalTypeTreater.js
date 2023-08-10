@@ -24,6 +24,18 @@ const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceD
       });
     }
   }
+  if (property === 'need') {
+    instanceData.needs = value;
+
+    // These needOccurrences will not be stored in the ClientAssessment but
+    // rather in the Client (see ./index: updateClient)
+    instanceData.needOccurrences = [];
+    for (const needURI of value) {
+      instanceData.needOccurrences.push({
+        occurrenceOf: needURI,
+      });
+    }
+  }
 }
 
 const clientAssessmentInternalTypeFetchTreater = async (data) => {
@@ -36,6 +48,13 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
       formType: FORMTYPE
     });
     result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.getFullURI(outcome));
+  }
+  if (data.needs) {
+    const internalType = await GDBInternalTypeModel.findOne({
+      predefinedProperty: schema.need.internalKey,
+      formType: FORMTYPE
+    });
+    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.getFullURI(need));
   }
 
   for (const property in data) {

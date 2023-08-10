@@ -304,23 +304,41 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id) {
 }
 
 // Helper for createSingleGenericHelper for clientAssessments only
-// When a clientAssessment is saved for a client, any outcomeOccurrences created
-// are associated with the client, not the clientAssessment.
+// When a clientAssessment is saved for a client, any outcomeOccurrences and
+// needOccurrences created are associated with the client, not the clientAssessment.
 const updateClient = async (instanceData) => {
-  if (instanceData.client && instanceData.outcomes) {
+  if (instanceData.client) {
     const clientId = instanceData.client.split('_')[1];
     const clientDataFields = await fetchSingleGenericHelper('client', clientId);
-    const outcomeInternalType = await GDBInternalTypeModel.findOne({
-      name: 'outcomeForClient',
-      formType: 'client'
-    });
-    const outcomeTypeId = 'internalType_' + outcomeInternalType._id;
 
-    if (!(clientDataFields[outcomeTypeId])){
-      clientDataFields[outcomeTypeId] = [];
+    if (instanceData.outcomes) {
+      const outcomeInternalType = await GDBInternalTypeModel.findOne({
+        name: 'outcomeForClient',
+        formType: 'client'
+      });
+      const outcomeTypeId = 'internalType_' + outcomeInternalType._id;
+
+      if (!(clientDataFields[outcomeTypeId])){
+        clientDataFields[outcomeTypeId] = [];
+      }
+      for (const outcome of instanceData.outcomeOccurrences) {
+        clientDataFields[outcomeTypeId].push(outcome.occurrenceOf);
+      }
     }
-    for (const outcome of instanceData.outcomeOccurrences) {
-      clientDataFields[outcomeTypeId].push(outcome.occurrenceOf);
+
+    if (instanceData.needs) {
+      const needInternalType = await GDBInternalTypeModel.findOne({
+        name: 'needForClient',
+        formType: 'client'
+      });
+      const needTypeId = 'internalType_' + needInternalType._id;
+
+      if (!(clientDataFields[needTypeId])){
+        clientDataFields[needTypeId] = [];
+      }
+      for (const outcome of instanceData.needOccurrences) {
+        clientDataFields[needTypeId].push(need.occurrenceOf);
+      }
     }
 
     const clientForm = await MDBDynamicFormModel.findOne({formType: 'client'}); // Get any form
