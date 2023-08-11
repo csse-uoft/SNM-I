@@ -54,10 +54,8 @@ export async function getPersonNameCharacteristicIds() {
 export async function getAddressCharacteristicId() {
   var characteristicId;
   const characteristics = (await fetchCharacteristics()).data;
-	console.log(characteristics);
   for (const characteristic of characteristics) {
     if (characteristic.name === 'Address') {
-	    console.log("Success");
       characteristicId = characteristic.id;
     }
   }
