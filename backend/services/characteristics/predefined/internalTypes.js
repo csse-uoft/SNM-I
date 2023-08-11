@@ -105,6 +105,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#ServiceProvider'
     }
   },
+  {
+    name: 'managerForProgram',
+    predefinedProperty: 'http://snmi#hasManager',
+    formType: 'program',
+    implementation: {
+      label: 'Program Manager',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+    }
+  },
 
   // below are for service Provision
   {
@@ -469,14 +480,14 @@ module.exports = [
     }
   },
   {
-    name: 'programForProgramRegistration',
-    predefinedProperty: 'http://snmi#hasProgram',
+    name: 'needOccurrenceForProgramRegistration',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
     formType: 'programRegistration',
     implementation: {
-      label: 'Program',
+      label: 'Need Occurrence',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Program'
+      optionsFromClass: 'http://snmi#NeedOccurrence'
     }
   },
 
@@ -493,6 +504,19 @@ module.exports = [
     }
   },
 
+  // Outcome Occurrence
+  {
+    name: 'outcomeForOutcomeOccurrence',
+    predefinedProperty: 'http://snmi#occurrenceOf',
+    formType: 'outcomeOccurrence',
+    implementation: {
+      label: 'Outcome (occurrenceOf)',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Outcome'
+    }
+  },
+
   // Client
   {
     name: 'needForClient',
@@ -503,6 +527,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.MultiSelectField,
       optionsFromClass: 'http://snmi#Need'
+      }
+  },
+  {
+    name: 'outcomeForClient',
+    predefinedProperty: 'http://snmi#hasOutcome',
+    formType: 'client',
+    implementation: {
+      label: 'Outcome',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Outcome'
       }
   },
 
@@ -537,7 +572,40 @@ module.exports = [
       label: 'Person',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Person'
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+    }
+  },
+  {
+    name: 'outcomeForClientAssessment',
+    predefinedProperty: 'http://snmi#hasOutcome',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Outcome',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Outcome'
+    }
+  },
+  {
+    name: 'needForClientAssessment',
+    predefinedProperty: 'http://snmi#hasNeed',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Need',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Need'
+    }
+  },
+  {
+    name: 'questionForClientAssessment',
+    predefinedProperty: 'http://snmi#hasQuestion',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Question',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Question'
     }
   },
   {

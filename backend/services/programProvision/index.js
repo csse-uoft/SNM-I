@@ -24,6 +24,29 @@ async function getClientNeedOccurrenceByClient(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
+async function getClientOutcomeOccurrenceByClient(req, res) {
+  const instances = {};
+
+  const clientFullURI = req.params.client;
+
+  const query = `
+    ${SPARQL.getSPARQLPrefixes()}
+    select ?outcomeOcc ?description ?type where {
+        bind(<${clientFullURI}> as ?client)
+        ?outcomeOcc a :OutcomeOccurrence, owl:NamedIndividual.
+        ?outcomeOcc :occurrenceOf ?outcome.
+        ?client :hasOutcome ?outcome.
+        # description & name
+        optional { ?outcome cids:hasDescription ?description. }
+        optional { ?outcome :hasType ?type. }
+    }`;
+
+  await GraphDB.sendSelectQuery(query, false, ({outcomeOcc, description, type}) => {
+    instances[needOcc.id] = type?.value || description?.value || outcomeOcc.id;
+  });
+  res.json(sortObjectByKey(instances));
+}
+
 async function getProgramOccurrenceByProgram(req, res) {
   const instances = {};
 
@@ -94,6 +117,7 @@ async function getNeedSatisfiersByProgram(req, res) {
 
 module.exports = {
   getClientNeedOccurrenceByClient,
+  getClientOutcomeOccurrenceByClient,
   getProgramOccurrenceByProgram,
   getNeedSatisfiersByProgramOccurrence,
   getNeedSatisfiersByProgram,

@@ -2,6 +2,7 @@ const { getPredefinedProperty } = require("./helperFunctions");
 const { GDBInternalTypeModel } = require("../../models/internalType");
 const { SPARQL } = require("../../utils/graphdb/helpers");
 
+
 const FORMTYPE = 'clientAssessment'
 
 const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceData, value) => {
@@ -44,6 +45,22 @@ const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceD
 const clientAssessmentInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema = data.schema;
+
+  if (data.outcomes) {
+    const internalType = await GDBInternalTypeModel.findOne({
+      predefinedProperty: schema.outcome.internalKey,
+      formType: FORMTYPE
+    });
+    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.getFullURI(outcome));
+  }
+  if (data.needs) {
+    const internalType = await GDBInternalTypeModel.findOne({
+      predefinedProperty: schema.need.internalKey,
+      formType: FORMTYPE
+    });
+    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.getFullURI(need));
+  }
+
   for (const property in data) {
 
     if (property === 'client' || property === 'person' || property === 'userAccount') {

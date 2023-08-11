@@ -7,9 +7,9 @@ const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence")
 const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 
 const GDBServiceRegistrationModel = createGraphDBModel({
+  needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':forNeedOccurrence'},
   serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
   client: {type: GDBClientModel, internalKey: ':hasClient'},
-  needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':hasNeedOccurrence'},
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   appointment: {type: GDBAppointmentModel, internalKey: ':hasAppointment'},
   characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}

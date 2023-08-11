@@ -44,7 +44,7 @@ export default function UserResetPassword() {
     const [editNew, setEditNew] = useState(false);
     const [dialogConfirmed, setDialogConfirmed] = useState(false);
     const [loadingButton, setLoadingButton] = useState(false);
-    let history = useNavigate();
+    let navigate = useNavigate();
 
     /**
      * This validates the correctness of current password.

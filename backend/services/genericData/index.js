@@ -74,6 +74,7 @@ const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
 const {GDBProgramProvisionModel} = require("../../models/programProvision");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
+const {GDBOutcomeOccurrenceModel} = require("../../models/outcome/outcomeOccurrence");
 const {GDBClientAssessmentModel} = require("../../models/clientAssessment");
 const {
   serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
@@ -91,6 +92,11 @@ const {
   needOccurrenceInternalTypeCreateTreater,
   needOccurrenceInternalTypeFetchTreater
 } = require("./needOccurrenceInternalTypeTreater");
+const {
+  outcomeOccurrenceInternalTypeUpdateTreater,
+  outcomeOccurrenceInternalTypeCreateTreater,
+  outcomeOccurrenceInternalTypeFetchTreater
+} = require("./outcomeOccurrenceInternalTypeTreater");
 const {
   clientAssessmentInternalTypeUpdateTreater,
   clientAssessmentInternalTypeCreateTreater,
@@ -117,13 +123,16 @@ const genericType2Model = {
   'programProvision': GDBProgramProvisionModel,
   'needSatisfierOccurrence': GDBNeedSatisfierOccurrenceModel,
   'needOccurrence': GDBNeedOccurrenceModel,
+  'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel,
 };
 
 const genericType2Populates = {
   'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
-  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence']
+  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence'],
+  'serviceRegistration': ['needOccurrence', 'serviceOccurrence'],
+  'programRegistration' : ['needOccurrence', 'programOccurrence']
 };
 
 const genericType2Checker = {
@@ -149,6 +158,7 @@ const genericType2InternalTypeCreateTreater = {
   'programProvision': programProvisionInternalTypeCreateTreater,
   'client': clientInternalTypeCreateTreater,
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
+  'outcomeOccurrence': outcomeOccurrenceInternalTypeCreateTreater,
   'clientAssessment': clientAssessmentInternalTypeCreateTreater,
   'person': personInternalTypeCreateTreater
 };
@@ -166,6 +176,7 @@ const genericType2InternalTypeFetchTreater = {
   'programProvision': programProvisionInternalTypeFetchTreater,
   'client': clientInternalTypeFetchTreater,
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
+  'outcomeOccurrence': outcomeOccurrenceInternalTypeFetchTreater,
   'clientAssessment': clientAssessmentInternalTypeFetchTreater,
   'person': personInternalTypeFetchTreater
 };
@@ -183,6 +194,7 @@ const genericType2InternalTypeUpdateTreater = {
   'programProvision': programProvisionInternalTypeUpdateTreater,
   'client': clientInternalTypeUpdateTreater,
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
+  'outcomeOccurrence': outcomeOccurrenceInternalTypeUpdateTreater,
   'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
   'person': personInternalTypeUpdateTreater
 };
@@ -291,6 +303,51 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id) {
 
 }
 
+// Helper for createSingleGenericHelper for clientAssessments only
+// When a clientAssessment is saved for a client, any outcomeOccurrences and
+// needOccurrences created are associated with the client, not the clientAssessment.
+const updateClient = async (instanceData) => {
+  if (instanceData.client) {
+    const clientId = instanceData.client.split('_')[1];
+    const clientDataFields = await fetchSingleGenericHelper('client', clientId);
+
+    if (instanceData.outcomes) {
+      const outcomeInternalType = await GDBInternalTypeModel.findOne({
+        name: 'outcomeForClient',
+        formType: 'client'
+      });
+      const outcomeTypeId = 'internalType_' + outcomeInternalType._id;
+
+      if (!(clientDataFields[outcomeTypeId])){
+        clientDataFields[outcomeTypeId] = [];
+      }
+      for (const outcome of instanceData.outcomeOccurrences) {
+        clientDataFields[outcomeTypeId].push(outcome.occurrenceOf);
+      }
+    }
+
+    if (instanceData.needs) {
+      const needInternalType = await GDBInternalTypeModel.findOne({
+        name: 'needForClient',
+        formType: 'client'
+      });
+      const needTypeId = 'internalType_' + needInternalType._id;
+
+      if (!(clientDataFields[needTypeId])){
+        clientDataFields[needTypeId] = [];
+      }
+      for (const need of instanceData.needOccurrences) {
+        clientDataFields[needTypeId].push(need.occurrenceOf);
+      }
+    }
+
+    const clientForm = await MDBDynamicFormModel.findOne({formType: 'client'}); // Get any form
+
+    // Update the client using a custom object for the client's new data (including any new outcomeOccurrences)
+    return await updateSingleGenericHelper(clientId, {formId: clientForm._id, fields: clientDataFields}, 'client');
+  }
+}
+
 const createSingleGenericHelper = async (data, genericType) => {
   // check the data package from frontend
   // check if a formId was sent
@@ -377,6 +434,10 @@ const createSingleGenericHelper = async (data, genericType) => {
       const internalType = internalTypes[id];
       await genericType2InternalTypeCreateTreater[genericType](internalType, instanceData, value);
     }
+  }
+  if (genericType === 'clientAssessment') {
+    const result = await updateClient(instanceData);
+    await result.save();
   }
 
   return instanceData;
@@ -541,7 +602,6 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
 
     }
   }
-
   // TODO: Fix the issue where the new value is undefined, it never triggers the genericType2InternalTypeUpdateTreater()
   for (const [key, value] of Object.entries(data.fields)) {
     const [type, id] = key.split('_');
@@ -552,6 +612,10 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
         throw Error(`Cannot find internal type ${genericType}`)
       }
     }
+  }
+  if (genericType === 'clientAssessment') {
+    const result = await updateClient(generic);
+    await result.save();
   }
   return generic;
 }

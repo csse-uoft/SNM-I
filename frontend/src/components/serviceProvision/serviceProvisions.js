@@ -15,28 +15,33 @@ const columnsWithoutOptions = [
   {
     label: 'Service Occurrence',
     body: ({serviceOccurrence}) => {
-      return serviceOccurrence;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      if (serviceOccurrence) {
+        return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{serviceOccurrence.description}</Link>;
+      } else {
+        return "";
+      }
     }
   },
   {
     label: 'Start Date',
     body: ({startDate}) => {
-      return new Date(startDate).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      const startDateObj = new Date(startDate);
+      if (isNaN(startDateObj)) {
+        return "";
+      } else {
+        return startDateObj.toLocaleString();
+      }
     }
   },
   {
     label: 'End Date',
     body: ({endDate}) => {
-      return new Date(endDate).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      const endDateObj = new Date(endDate);
+      if (isNaN(endDateObj)) {
+        return "";
+      } else {
+        return endDateObj.toLocaleString();
+      }
     }
   },
   // {
@@ -78,6 +83,8 @@ export default function ServiceProvisions() {
             appointmentData.endDate = occ.dataDateValue;
           }
         }
+      if (appointment.serviceOccurrence)
+        appointmentData.serviceOccurrence = appointment.serviceOccurrence
       data.push(appointmentData);
     }
     return data;

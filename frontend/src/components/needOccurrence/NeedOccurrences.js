@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { getInstancesInClass } from "../../api/dynamicFormApi";
 
 const TYPE = 'needOccurrences';
 
@@ -13,39 +14,35 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'Client',
-    body: ({client}) => {
-      return client;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
-    }
-  },
-  {
-    label: 'Person',
-    body: ({person}) => {
-      return person;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+    label: 'Need',
+    body: ({need}) => {
+      if (need) {
+        return <Link color to={`/need/${need._id}/edit`}>{need.name}</Link>;
+      } else {
+        return "";
+      }
     }
   },
   {
     label: 'Start Date',
-    body: ({datetime}) => {
-      return datetime && new Date(datetime).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+    body: ({startDate}) => {
+      const startDateObj = new Date(startDate);
+      if (isNaN(startDateObj)) {
+        return "";
+      } else {
+        return startDateObj.toLocaleString();
+      }
     }
   },
   {
     label: 'End Date',
-    body: ({datetime}) => {
-      return datetime && new Date(datetime).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+    body: ({endDate}) => {
+      const endDateObj = new Date(endDate);
+      if (isNaN(endDateObj)) {
+        return "";
+      } else {
+        return endDateObj.toLocaleString();
+      }
     }
   },
   // {
@@ -76,17 +73,28 @@ export default function NeedOccurrences() {
 
   const fetchData = async () => {
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
+    const needs = {};
+    // get all needs data
+    await getInstancesInClass(':Need').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const needId = key.split('#')[1];
+        needs[needId] = res[key];
+      });
+    });
     const data = [];
     for (const needOccurrence of needOccurrences) {
-      const needOccurrenceData = {_id: needOccurrence._id};
-      if (needOccurrence.characteristicOccurrences)
-        for (const occ of needOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Start Date') {
-            needOccurrenceData.name = occ.dataDateValue;
-          } else if (occ.occurrenceOf?.name === 'End Date') {
-            needOccurrenceData.client = occ.dataDateValue;
-          }
+      const needOccurrenceData = {
+              _id: needOccurrence._id,
+              startDate: needOccurrence.startDate,
+              endDate: needOccurrence.endDate
+      };
+      if (needOccurrence.occurrenceOf){
+        // get corresponding need data
+        needOccurrenceData.need = {
+          name: needs[needOccurrence.occurrenceOf.slice(1)],
+          _id: needOccurrence.occurrenceOf.split('_')[1],
         }
+      }
       data.push(needOccurrenceData);
     }
     return data;

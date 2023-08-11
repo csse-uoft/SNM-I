@@ -4,6 +4,8 @@ import React from 'react';
 import { fetchClients, deleteClient } from '../api/clientApi'
 import { formatLocation } from '../helpers/location_helpers'
 import { GenericPage, Link } from "./shared";
+import { fetchSingleGeneric } from "../api/genericDataApi";
+import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
 
 const TYPE = 'clients';
 
@@ -54,13 +56,12 @@ export default function Clients() {
   };
 
   const generateMarkers = (clients, pageNumber, rowsPerPage) => {
-    return [];
     // TODO: verify this works as expected
     const currPageClients = clients.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageClients.map(client => ({
       position: {lat: Number(client.address.lat), lng: Number(client.address.lng)},
       title: nameFormatter(client),
-      link: `/${TYPE}/${client.id}`,
+      link: `/${TYPE}/${client._id}`,
       content: client.address && formatLocation(client.address),
     })).filter(client => client.position.lat && client.position.lng);
   };
@@ -70,10 +71,11 @@ export default function Clients() {
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
-    const clients = (await fetchClients()).data;
+    const clients = (await fetchClients()).data; // TODO: Does not contain address info
+    const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const data = [];
     for (const client of clients) {
-      const clientData = {_id: client._id};
+      const clientData = {_id: client._id, address: {}};
       if (client.characteristicOccurrences)
         for (const occ of client.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'First Name') {
@@ -82,8 +84,13 @@ export default function Clients() {
             clientData.lastName = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Email') {
             clientData.email = occ.dataStringValue;
-          }
-
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const clientObj = (await fetchSingleGeneric("client", client._id)).data; // TODO: inefficient!
+            clientData.address = {
+              lat: clientObj['characteristic_' + addressCharacteristicId].lat,
+              lng: clientObj['characteristic_' + addressCharacteristicId].lng,
+            };
+	  }
         }
       data.push(clientData);
     }

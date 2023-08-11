@@ -3,6 +3,9 @@ import { Link } from "../shared"
 import { GenericPage } from "../shared";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { fetchSingleGeneric } from "../../api/genericDataApi";
+import { getAddressCharacteristicId } from "../shared/CharacteristicIds";
+import { formatLocation } from '../../helpers/location_helpers'
 
 const TYPE = 'clientAssessment';
 
@@ -26,17 +29,25 @@ const columnsWithoutOptions = [
 
 export default function ClientAssessment() {
 
-  const nameFormatter = service => service.name; // ?
+  const nameFormatter = (assessment) => {return assessment._id;};
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
+    // TODO: verify this works as expected
+    const currPageData = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
+    return currPageData.map(obj => ({
+      position: {lat: Number(obj.address.lat), lng: Number(obj.address.lng)},
+      title: nameFormatter(obj),
+      link: `/${TYPE}/${obj._id}/edit`,
+      content: obj.address && formatLocation(obj.address),
+    })).filter(obj => obj.position.lat && obj.position.lng);
   };
 
   const fetchData = async () => {
     console.log('fetching data');
     // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
     // using this function simplifies the code and makes no difference in performance
-    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
+    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data; // TODO: Does not contain address info
+    const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const clients = {};
     await getInstancesInClass(':Client').then((res) => {
       Object.keys(res).forEach((key) => {
@@ -54,15 +65,23 @@ export default function ClientAssessment() {
       });
     });
 
-    // const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
     const data = [];
     for (const clientAssessment of clientAssessments) {
-      const clientAssessmentData = { _id: clientAssessment._id };
-
+      const clientAssessmentData = { _id: clientAssessment._id, address: {} };
       if (clientAssessment.characteristicOccurrences)
         for (const occ of clientAssessment.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Client') {
             clientAssessmentData.client = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Person') {
+            clientAssessmentData.person = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'UserAccount') {
+            clientAssessmentData.userAccount = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
+            clientAssessmentData.address = {
+              lat: obj['characteristic_' + addressCharacteristicId].lat,
+              lng: obj['characteristic_' + addressCharacteristicId].lng,
+            };
           }
         }
       if (clientAssessment.client) {

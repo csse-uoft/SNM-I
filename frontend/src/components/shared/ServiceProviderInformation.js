@@ -4,32 +4,17 @@ import { fetchForAdvancedSearch } from "../../api/advancedSearchApi";
 import { getJson } from "../../api/index";
 
 /**
- * This function returns the name of the service provider for the given program/service.
+ * This function returns the name of the service provider for the given
+ * program/service. characteristicIds is the object returned by
+ * getServiceProviderNameCharacteristicIds.
  */
-export async function getServiceProviderName(programOrService) {
+export async function getServiceProviderName(programOrService, characteristicIds) {
   const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider.split('_')[1]}`));
-  var organizationNameCharacteristicId;
-  var volunteerFirstNameCharacteristicId;
-  var volunteerLastNameCharacteristicId;
-  const orgCharacteristics = (await fetchForAdvancedSearch('organization', 'characteristic')).data;
-  for (const characteristic of orgCharacteristics) {
-    if (characteristic.name === 'Organization Name') {
-      organizationNameCharacteristicId = characteristic._id;
-    }
-  }
-  const volCharacteristics = (await fetchForAdvancedSearch('volunteer', 'characteristic')).data;
-  for (const characteristic of volCharacteristics) {
-    if (characteristic.name === 'First Name') {
-      volunteerFirstNameCharacteristicId = characteristic._id;
-    } else if (characteristic.name === 'Last Name') {
-      volunteerLastNameCharacteristicId = characteristic._id;
-    }
-  }
   if (serviceProvider.provider.type === 'organization') {
-    return serviceProvider.provider.organization['characteristic_' + organizationNameCharacteristicId];
+    return serviceProvider.provider.organization['characteristic_' + characteristicIds.organizationName];
   } else if (serviceProvider.provider.type === 'volunteer') {
-    const volunteerFirstName = serviceProvider.provider.volunteer['characteristic_' + volunteerFirstNameCharacteristicId];
-    const volunteerLastName = serviceProvider.provider.volunteer['characteristic_' + volunteerLastNameCharacteristicId];
+    const volunteerFirstName = serviceProvider.provider.volunteer['characteristic_' + characteristicIds.volunteerFirstName];
+    const volunteerLastName = serviceProvider.provider.volunteer['characteristic_' + characteristicIds.volunteerLastName];
     return volunteerLastName + ', ' + volunteerFirstName;
   } else {
     return '#####'; // Should not happen.

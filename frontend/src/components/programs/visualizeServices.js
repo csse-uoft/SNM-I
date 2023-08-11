@@ -12,6 +12,7 @@ import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "../shared/virtualizeTable";
 import {getServiceProviderName, getServiceProviderType} from "../shared/ServiceProviderInformation";
+import {getServiceProviderNameCharacteristicIds} from "../shared/CharacteristicIds";
 
 
 /**
@@ -30,6 +31,7 @@ export default function VisualizeServices() {
 
       const {data: genericData} = (await fetchSingleGeneric('program', id));
       const allServices = (await fetchMultipleGeneric('service')).data;
+      const characteristicIds = (await getServiceProviderNameCharacteristicIds());
 
       const columns = [
         {field: 'label', headerName: 'Service', minWidth: 150},
@@ -39,9 +41,9 @@ export default function VisualizeServices() {
 
       const information = [];
       for (const serviceData of allServices) {
-        if (serviceData.program.split('_')[1] === id) {
+        if (serviceData.program && serviceData.serviceProvider && (serviceData.program.split('_')[1] === id)) {
           const label = <Link color to={`/services/${serviceData._id}`}>{serviceData.name}</Link>;
-          const value = <Link color to={`/providers/${await getServiceProviderType(serviceData)}/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData))}</Link>;
+          const value = <Link color to={`/providers/${await getServiceProviderType(serviceData)}/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData, characteristicIds))}</Link>;
           information.push({label, value})
         }
       }
