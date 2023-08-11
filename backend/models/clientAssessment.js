@@ -4,6 +4,9 @@ const {GDBUserAccountModel} = require("./userAccount");
 const {GDBPersonModel} = require("./person");
 const {GDBNeedModel} = require("./need/need");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
+const {GDBQuestionModel} = require("./ClientFunctionalities/question");
+const {GDBOutcomeModel} = require("./outcome");
+const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 
 const GDBClientAssessmentModel = createGraphDBModel({
   characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
@@ -12,7 +15,10 @@ const GDBClientAssessmentModel = createGraphDBModel({
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   userAccount: {type: GDBUserAccountModel, internalKey: ':withUser'},
   person: {type: GDBPersonModel, internalKey: ':hasPerson'},
-  need: {type: GDBNeedModel, internalKey: ':hasNeed'},
+  need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
+  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence'},
+  // outcome: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
+  question: {type: [GDBQuestionModel], internalKey: ':hasQuestion'},
 }, {
   rdfTypes: [':ClientAssessment'], name: 'clientAssessment'
 });
