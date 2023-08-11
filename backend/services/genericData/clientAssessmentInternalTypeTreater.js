@@ -8,8 +8,8 @@ const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceD
   // get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
   // instantiate the property with the value
-  if (property === 'client' || property === 'person' || 
-      property === 'userAccount') {
+  if (property === 'client' || property === 'person' ||
+    property === 'userAccount') {
     instanceData[property] = value;
   }
   else if (property === 'need') {
@@ -53,7 +53,7 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
       });
       result['internalType_' + internalType._id] = SPARQL.getFullURI(data[property]);
     }
-    
+
     else if (property === 'needs') {
       const internalType = await GDBInternalTypeModel.findOne({
         predefinedProperty: schema.need.internalKey,
