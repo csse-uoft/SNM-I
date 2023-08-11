@@ -24,7 +24,7 @@ export default function changePrimaryEmail() {
   const classes = useStyles();
   const {token} = useParams();
   const [dialogConfirmed, setDialogConfirmed] = useState(false);
-  let history = useNavigate();
+  let navigate = useNavigate();
 
   const handleCheck = async () => {
     try {
