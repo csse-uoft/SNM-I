@@ -12,8 +12,24 @@ import { useNavigate } from "react-router-dom";
 const Google = window.google || {maps: {}};
 const {Map, Marker, InfoWindow, Size} = Google.maps;
 
+function ReactInfoWindow({marker, navigate}) {
+  const {title, link, content} = marker;
+  return (
+    <>
+      <Link style={{cursor: 'pointer'}} onClick={() => link ? navigate(link) : null}>
+        <Typography>
+          {title}
+        </Typography>
+      </Link>
+      <Typography color="textSecondary">
+        {content}
+      </Typography>
+    </>
+  );
+}
+
 // Mount a react component into uncontrolled component
-const createInfoWindow = (map, markerElement, marker, history, idx) => {
+const createInfoWindow = (map, markerElement, marker, navigate, idx) => {
   const infoWindow = new InfoWindow({
     content: `<div id="infoWindow-${idx}" />`,
     position: marker.position,
@@ -21,7 +37,7 @@ const createInfoWindow = (map, markerElement, marker, history, idx) => {
   });
   infoWindow.addListener('domready', e => {
     render(
-      <ReactInfoWindow history={history} marker={marker}/>,
+      <ReactInfoWindow navigate={navigate} marker={marker}/>,
       document.getElementById(`infoWindow-${idx}`))
   });
   // 'clicked' and 'show' act as an instance variable.
@@ -44,22 +60,6 @@ const createInfoWindow = (map, markerElement, marker, history, idx) => {
   });
   return infoWindow;
 };
-
-function ReactInfoWindow({marker, history}) {
-  const {title, link, content} = marker;
-  return (
-    <>
-      <Link style={{cursor: 'pointer'}} onClick={() => link ? navigate(link) : null}>
-        <Typography>
-          {title}
-        </Typography>
-      </Link>
-      <Typography color="textSecondary">
-        {content}
-      </Typography>
-    </>
-  );
-}
 
 let GoogleMap;
 
@@ -94,9 +94,9 @@ if (Map) {
         });
         // Info window is opened when mouse over the marker.
         // It also stays open after the marker is clicked.
-        createInfoWindow(map, currMarker, marker, history, i);
+        createInfoWindow(map, currMarker, marker, navigate, i);
       }
-    }, [markers, map, history]);
+    }, [markers, map, navigate]);
 
     return useMemo(() =>
         <Paper elevation={5} style={{width: '100%', height: '40vh', marginTop: 5}} id="map"/>

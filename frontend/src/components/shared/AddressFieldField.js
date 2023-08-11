@@ -157,6 +157,30 @@ export default function AddressField({value: defaultValue, required, onChange, l
                 disabled={disabled}
               />
             </Grid>
+            <Grid item xs={3}>
+              <TextField
+                sx={{mt: '16px'}}
+                fullWidth
+                label="Latitude"
+                type="text"
+                defaultValue={state.lat}
+                onChange={handleChange('lat')}
+                required={required}
+                disabled={disabled}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                sx={{mt: '16px'}}
+                fullWidth
+                label="Longitude"
+                type="text"
+                defaultValue={state.lng}
+                onChange={handleChange('lng')}
+                required={required}
+                disabled={disabled}
+              />
+            </Grid>
           </Grid>
         </>
       }
