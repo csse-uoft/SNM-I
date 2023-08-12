@@ -608,38 +608,5 @@ module.exports = [
       optionsFromClass: 'http://snmi#Question'
     }
   },
-  {
-    name: 'outcomeForClientAssessment',
-    predefinedProperty: 'http://snmi#hasOutcome',
-    formType: 'clientAssessment',
-    implementation: {
-      label: 'Outcome',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
-      optionsFromClass: 'http://snmi#Outcome'
-    }
-  },
-  {
-    name: 'needForClientAssessment',
-    predefinedProperty: 'http://snmi#hasNeed',
-    formType: 'clientAssessment',
-    implementation: {
-      label: 'Need',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
-      optionsFromClass: 'http://snmi#Need'
-    }
-  },
-  {
-    name: 'questionForClientAssessment',
-    predefinedProperty: 'http://snmi#hasQuestion',
-    formType: 'clientAssessment',
-    implementation: {
-      label: 'Question',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.MultiSelectField,
-      optionsFromClass: 'http://snmi#Question'
-    }
-  },
 
 ]
