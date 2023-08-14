@@ -8,6 +8,8 @@ const {Server400Error} = require('../../utils');
 const field2Checker = {
   service: haveNoQuestionChecker,
   serviceOccurrence: haveNoQuestionChecker,
+  program: haveNoQuestionChecker,
+  programOccurrence: haveNoQuestionChecker,
 }
 
 

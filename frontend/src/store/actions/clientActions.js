@@ -1,6 +1,7 @@
 import { serverHost, ACTION_SUCCESS, ACTION_ERROR } from '../defaults.js';
 
 import { receiveClientNeeds } from './needActions'
+import { receiveClientOutcomes } from './outcomeActions'
 
 export const REQUEST_CLIENT = 'REQUEST_CLIENT';
 export const RECEIVE_CLIENT = 'RECEIVE_CLIENT';
@@ -69,6 +70,7 @@ export function fetchClient(id) {
       .then(json => {
         dispatch(receiveClient(id, json));
         dispatch(receiveClientNeeds(id, json['needs'], json['need_groups']));
+        dispatch(receiveClientOutcomes(id, json['outcomes'], json['outcome_groups']));
         return json;
       });
   }

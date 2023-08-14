@@ -58,6 +58,65 @@ module.exports = [
     }
   },
 
+  // below are for program occurrence
+  {
+    name: 'programForProgramOccurrence',
+    predefinedProperty: 'http://snmi#occurrenceOf',
+    formType: 'programOccurrence',
+    implementation: {
+      label: 'Program',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Program'
+    }
+  },
+  {
+    name: 'needSatisfierForProgramOccurrence',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'programOccurrence',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+
+  // below are for program
+  {
+    name: 'needSatisfierForProgram',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'program',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+  {
+    name: 'serviceProviderForProgram',
+    predefinedProperty: 'http://snmi#hasServiceProvider',
+    formType: 'program',
+    implementation: {
+      label: 'Service Provider',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ServiceProvider'
+    }
+  },
+  {
+    name: 'managerForProgram',
+    predefinedProperty: 'http://snmi#hasManager',
+    formType: 'program',
+    implementation: {
+      label: 'Program Manager',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+    }
+  },
+
   // below are for service Provision
   {
     name: 'needOccurrenceForServiceProvision',
@@ -118,6 +177,74 @@ module.exports = [
     name: 'clientForServiceProvision',
     predefinedProperty: 'http://snmi#hasClient',
     formType: 'serviceProvision',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
+    }
+  },
+
+  // below are for program Provision
+  {
+    name: 'needOccurrenceForProgramProvision',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Need Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedOccurrence'
+    }
+  },
+  {
+    name: 'needSatisfierForProgramProvision',
+    predefinedProperty: 'http://snmi#hasNeedSatisfier',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Need Satisfier',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfier'
+    }
+  },
+  {
+    name: 'needSatisfierOccurrenceForProgramProvision',
+    predefinedProperty: 'http://snmi#hasNeedSatisfierOccurrence',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Need Satisfier Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedSatisfierOccurrence'
+    }
+  },
+  {
+    name: 'programForProgramProvision',
+    predefinedProperty: 'http://snmi#hasProgram',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Program',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Program'
+    }
+  },
+  {
+    name: 'programOccurrenceForProgramProvision',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'programProvision',
+    implementation: {
+      label: 'Program Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
+    }
+  },
+  {
+    name: 'clientForProgramProvision',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'programProvision',
     implementation: {
       label: 'Client',
       valueDataType: 'owl:NamedIndividual',
@@ -217,6 +344,17 @@ module.exports = [
     }
   },
   {
+    name: 'programForReferral',
+    predefinedProperty: 'http://snmi#forProgram',
+    formType: 'referral',
+    implementation: {
+      label: 'Program',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Program'
+    }
+  },
+  {
     name: 'serviceOccurrenceForReferral',
     predefinedProperty: 'http://snmi#hasServiceOccurrence',
     formType: 'referral',
@@ -225,6 +363,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#ServiceOccurrence'
+    }
+  },
+  {
+    name: 'programOccurrenceForReferral',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'referral',
+    implementation: {
+      label: 'Program Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
     }
   },
 
@@ -285,6 +434,63 @@ module.exports = [
     }
   },
 
+  // below are for program registration
+  {
+    name: 'programOccurrenceForProgramRegistration',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Program Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
+    }
+  },
+  {
+    name: 'clientForProgramRegistration',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
+    }
+  },
+  {
+    name: 'referralForProgramRegistration',
+    predefinedProperty: 'http://snmi#hasReferral',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Referral',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Referral'
+    }
+  },
+  {
+    name: 'appointmentForProgramRegistration',
+    predefinedProperty: 'http://snmi#hasAppointment',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Appointment',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Appointment'
+    }
+  },
+  {
+    name: 'needOccurrenceForProgramRegistration',
+    predefinedProperty: 'http://snmi#forNeedOccurrence',
+    formType: 'programRegistration',
+    implementation: {
+      label: 'Need Occurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#NeedOccurrence'
+    }
+  },
+
   // Need Occurrence
   {
     name: 'needForNeedOccurrence',
@@ -298,6 +504,19 @@ module.exports = [
     }
   },
 
+  // Outcome Occurrence
+  {
+    name: 'outcomeForOutcomeOccurrence',
+    predefinedProperty: 'http://snmi#occurrenceOf',
+    formType: 'outcomeOccurrence',
+    implementation: {
+      label: 'Outcome (occurrenceOf)',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Outcome'
+    }
+  },
+
   // Client
   {
     name: 'needForClient',
@@ -308,6 +527,74 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.MultiSelectField,
       optionsFromClass: 'http://snmi#Need'
+      }
+  },
+  {
+    name: 'outcomeForClient',
+    predefinedProperty: 'http://snmi#hasOutcome',
+    formType: 'client',
+    implementation: {
+      label: 'Outcome',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Outcome'
+      }
+  },
+
+  // Client Assessment
+  {
+    name: 'clientForClientAssessment',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
+      }
+  },
+  {
+    name: 'userAccountForClientAssessment',
+    predefinedProperty: 'http://snmi#withUser',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'User',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#UserAccount'
+    }
+  },
+  {
+    name: 'outcomeForClientAssessment',
+    predefinedProperty: 'http://snmi#hasOutcome',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Outcome',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Outcome'
+    }
+  },
+  {
+    name: 'needForClientAssessment',
+    predefinedProperty: 'http://snmi#hasNeed',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Need',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Need'
+    }
+  },
+  {
+    name: 'personForClientAssessment',
+    predefinedProperty: 'http://snmi#hasPerson',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Person',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
     }
   },
 

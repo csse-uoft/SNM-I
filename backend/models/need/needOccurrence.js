@@ -7,11 +7,10 @@ const GDBNeedOccurrenceModel = createGraphDBModel({
   occurrenceOf: {type: GDBNeedModel, internalKey: ':occurrenceOf'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
+  description: {type: String, internalKey: 'cids:hasDescription'},
   acuity: {type: String, internalKey: ':hasAcuity'},
   serviceMatch: {type: [GDBServiceModel], internalKey: ':hasServiceMatch'},
-  characteristicOccurrence: {type: GDBCOModel, internalKey: ':hasCharacteristicOccurrence'},
-  // serviceRegistration: {type: GDBServiceRegistrationModel, internalKey: 'hasServiceRegistration'},
-  // serviceProvision: {type: GDBServiceProvisionModel, internalKey: 'hasServiceProvision'},
+  characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
 }, {
   rdfTypes: [':NeedOccurrence'], name: 'needOccurrence'
 });

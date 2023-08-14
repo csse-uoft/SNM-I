@@ -6,6 +6,7 @@ import { Edit, Print } from '@mui/icons-material';
 import { Link } from '../shared'
 
 import ClientNeeds from '../ClientNeeds';
+import ClientOutcomes from '../ClientOutcomes';
 import ClientInfoTable from './client_table/ClientInfoTable';
 import AppointmentRow from '../appointments/AppointmentRow';
 
@@ -139,6 +140,20 @@ export default function Client() {
           <ClientNeeds
             clientId={client.id}
             needGroups={client.need_groups}
+          />
+          }
+
+          {/*TODO： client outcomes*/}
+          <Typography variant="h4" paddingY={2}>Outcomes</Typography>
+          <Link to={`/clients/${client.id}/outcomes/new`}>
+            <Button variant="contained">
+              Add outcome
+            </Button>
+          </Link>
+          { client && client.outcome_groups.length > 0 &&
+          <ClientOutcomes
+            clientId={client.id}
+            outcomeGroups={client.outcome_groups}
           />
           }
 

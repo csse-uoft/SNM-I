@@ -24,16 +24,18 @@ export default function ServiceRegistrationForm() {
     if (implementation.optionsFromClass === ":Client") {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
-                                           clientFieldId={internalTypes.clientForServiceProvision._id}
-                                           needOccFieldId={internalTypes.needOccurrenceForServiceProvision._id}/>
+                                           clientFieldId={internalTypes.clientForServiceRegistration._id}
+                                           needOccFieldId={internalTypes.needOccurrenceForServiceRegistration._id}/>
     } else if (implementation.optionsFromClass === ":ServiceOccurrence") {
       // Render Service & Service Occurrence & Need Satisfier
       return <ServiceAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
-        serviceFieldId={internalTypes.serviceForServiceProvision._id}
-        serviceOccurrenceFieldId={internalTypes.serviceOccurrenceForServiceProvision._id}
-        needSatisfierFieldId={internalTypes.needSatisfierForServiceProvision._id}/>
+        serviceFieldId={internalTypes.serviceForServiceRegistration._id}
+        serviceOccurrenceFieldId={internalTypes.serviceOccurrenceForServiceRegistration._id}
+        needSatisfierFieldId={internalTypes.needSatisfierForServiceRegistration._id}/>
 
+    } else if (implementation.optionsFromClass === ':NeedOccurrence') {
+      return "";
     }
   }
 

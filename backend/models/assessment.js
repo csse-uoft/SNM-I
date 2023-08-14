@@ -17,8 +17,8 @@ const GDBAssessmentModel = createGraphDBModel({
   needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrences'},
   description: {type: String, internalKey: 'cids:hasDescription'},
   note: {type: GDBNoteModel, internalKey: ':Note'},
-  outcomeOccurrence: {type: GDBOutcomeOccurrenceModel, internalKey: ':hasOutcomeOccurrence'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  outcomeOccurrence: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrences'},
+  // characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':Assessment'], name: 'assessment'
 });

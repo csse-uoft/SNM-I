@@ -14,13 +14,18 @@ export const allForms = {
   client: 'Client',
   clientAssessment: 'Client Assessment',
   service: 'Service',
+  program: 'Program',
   appointment: 'Appointment',
   referral: 'Referral',
   serviceOccurrence: 'Service Occurrence',
   serviceRegistration: 'Service Registration',
   serviceProvision: 'Service Provision',
+  programOccurrence: 'Program Occurrence',
+  programRegistration: 'Program Registration',
+  programProvision: 'Program Provision',
   needSatisfierOccurrence: 'Need Satisfier Occurrence',
   needOccurrence: 'Need Occurrence',
+  outcomeOccurrence: 'Outcome Occurrence',
   person: 'Person',
   ...providerFormTypes
 };

@@ -7,7 +7,7 @@ module.exports = [
     predefinedProperty: 'http://snmi#hasStartDate',
     implementation: {
       label: 'Start Date',
-      valueDataType: 'xsd:dateTimes',
+      valueDataType: 'xsd:datetimes',
       fieldType: FieldTypes.DateTimeField,
     },
   },
@@ -17,7 +17,7 @@ module.exports = [
     predefinedProperty: 'http://snmi#hasEndDate',
     implementation: {
       label: 'End Date',
-      valueDataType: 'xsd:dateTimes',
+      valueDataType: 'xsd:datetimes',
       fieldType: FieldTypes.DateTimeField,
     },
   },

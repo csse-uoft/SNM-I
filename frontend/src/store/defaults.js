@@ -233,6 +233,13 @@ const serviceTypeOptions = [
   'Volunteer based'
 ]
 
+const programTypeOptions = [ // TODO
+  'External',
+  'Internal',
+  'Professional/Community',
+  'Volunteer based'
+]
+
 const serviceSharedWithOptions = [
   "Children's Aid Society of Toronto",
   "Durham Children's Aid Society",
@@ -258,6 +265,11 @@ const serviceSharedWithOptions = [
   'Markham Food Bank',
   'Parkdale Community Food Bank',
   'Pediatric Oncology Group of Ontario',
+  'Private',
+  'Public'
+]
+
+const programSharedWithOptions = [ // TODO
   'Private',
   'Public'
 ]
@@ -289,7 +301,9 @@ module.exports = Object.freeze({
   familyRelationshipOptions: familyRelationshipOptions,
   needStatusOptions: needStatusOptions,
   serviceTypeOptions: serviceTypeOptions,
+  programTypeOptions: programTypeOptions,
   serviceSharedWithOptions: serviceSharedWithOptions,
+  programSharedWithOptions: programSharedWithOptions,
   provinceOptions: provinceOptions,
   ACTION_SUCCESS: ACTION_SUCCESS,
   ACTION_ERROR: ACTION_ERROR

@@ -10,11 +10,19 @@ const clientInternalTypeCreateTreater = async (internalType, instanceData, value
     console.log('instanceData', instanceData);
     instanceData.needs = value;
     instanceData.needOccurrences = [];
-    instanceData.markModified('needOccurrences');
     // Create/Delete Need satisfier based on need
     for (const needURI of value) {
       instanceData.needOccurrences.push({
         occurrenceOf: needURI,
+      });
+    }
+  }
+  if (property === 'outcome') {
+    instanceData.outcomes = value;
+    instanceData.outcomeOccurrences = [];
+    for (const outcomeURI of value) {
+      instanceData.outcomeOccurrences.push({
+        occurrenceOf: outcomeURI,
       });
     }
   }
@@ -29,6 +37,13 @@ const clientInternalTypeFetchTreater = async (data) => {
       formType: FORMTYPE
     });
     result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.getFullURI(need));
+  }
+  if (data.outcomes) {
+    const internalType = await GDBInternalTypeModel.findOne({
+      predefinedProperty: schema.outcome.internalKey,
+      formType: FORMTYPE
+    });
+    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.getFullURI(outcome));
   }
   return result;
 };

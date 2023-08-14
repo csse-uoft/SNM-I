@@ -1,20 +1,24 @@
 import React from 'react';
-import {Link} from "../shared"
+import { Link } from "../shared"
 import { GenericPage } from "../shared";
+import { getInstancesInClass } from "../../api/dynamicFormApi";
 import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { fetchSingleGeneric } from "../../api/genericDataApi";
+import { getAddressCharacteristicId } from "../shared/CharacteristicIds";
+import { formatLocation } from '../../helpers/location_helpers'
 
 const TYPE = 'clientAssessment';
 
 const columnsWithoutOptions = [
   {
     label: 'ID',
-    body: ({_id}) => {
+    body: ({ _id }) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>;
     }
   },
   {
     label: 'Client',
-    body: ({client}) => {
+    body: ({ client }) => {
       return client;
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
@@ -25,34 +29,75 @@ const columnsWithoutOptions = [
 
 export default function ClientAssessment() {
 
-  const nameFormatter = service => service.name; // ?
+  const nameFormatter = (assessment) => {return assessment._id;};
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
     // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
+    const currPageData = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
+    return currPageData.map(obj => ({
+      position: {lat: Number(obj.address.lat), lng: Number(obj.address.lng)},
+      title: nameFormatter(obj),
+      link: `/${TYPE}/${obj._id}/edit`,
+      content: obj.address && formatLocation(obj.address),
+    })).filter(obj => obj.position.lat && obj.position.lng);
   };
 
   const fetchData = async () => {
-    const services = (await fetchMultipleGeneric('serviceRegistration')).data;
+    // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
+    // using this function simplifies the code and makes no difference in performance
+    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data; // TODO: Does not contain address info
+    const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
+    const clients = {};
+    await getInstancesInClass(':Client').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const clientId = key.split('#')[1];
+        clients[clientId] = res[key];
+      }
+      );
+    });
+    const persons = {};
+    // get all persons data
+    await getInstancesInClass('cids:Person').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const personId = key.split('#')[1];
+        persons[personId] = res[key];
+      });
+    });
+
     const data = [];
-    for (const service of services) {
-      const serviceData = {_id: service._id};
-      if (service.characteristicOccurrences)
-        for (const occ of service.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Referral Type') {
-            serviceData.referralType = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Referral Status') {
-            serviceData.referralStatus = occ.objectValue;
+    for (const clientAssessment of clientAssessments) {
+      const clientAssessmentData = { _id: clientAssessment._id, address: {} };
+      if (clientAssessment.characteristicOccurrences)
+        for (const occ of clientAssessment.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Client') {
+            clientAssessmentData.client = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Person') {
+            clientAssessmentData.person = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'UserAccount') {
+            clientAssessmentData.userAccount = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Outcome') {
+            clientAssessmentData.outcome = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
+            clientAssessmentData.address = {
+              lat: obj['characteristic_' + addressCharacteristicId].lat,
+              lng: obj['characteristic_' + addressCharacteristicId].lng,
+            };
           }
         }
-      data.push(serviceData);
+      if (clientAssessment.client) {
+        // get corresponding client data
+        clientAssessmentData.client = clients[clientAssessment.client.slice(1)]
+      }
+      if (clientAssessment.person) {
+        // get corresponding person data
+        clientAssessmentData.person = persons[clientAssessment.person.slice(1)]
+      }
+      if (clientAssessment.user) {
+        // const userData = await fetchSingleGeneric('user', appointment.user);
+      }
+
+      data.push(clientAssessmentData);
     }
     return data;
   };
