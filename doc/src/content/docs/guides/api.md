@@ -56,8 +56,8 @@ Route | Method | Parameters | Action
 This section is for the [User-related functionality of the requirements](/reference/requirements/#user-related-functionality).
 Particularly the ability to reset the password.
 
-Route | Method | Parameters | Action
----|---|---|---
+Route | Method | Action
+---|---|---
 `forgotPassword/securityQuestions/fetch` | PUT |
 `forgotPassword/securityQuestions/check` | POST |
 `forgotPassword/sendVerificationEmail` | POST |
@@ -123,30 +123,40 @@ Route | Method | Action
 `advancedSearch/:genericType/:genericItemType` | PUT |
 
 ## serviceProviders
-Route | Method | Action
----|---|---
-`needOccurrences/client/:client` | GET |
-`serviceOccurrences/service/:service` | GET |
-`needSatisfiers/serviceOccurrence/:serviceOccurrence` | GET |
-`needSatisfiers/service/:service` | GET |
+Route | Method | Parameters | Action
+---|---|---|---
+`providers` | POST | Provider type<br>Service provider data | Create a service provider
+`providers` | GET || Fetch all service providers
+`providers/:id` | GET || Fetch the service provider with the specified ID
+`providers/:id` | DELETE || Delete the service provider with the specified ID
+`provider/:id` | PUT | Provider type<br>Service provider data | Update the service provider with the specified ID using the information in the given form
 
 ## need
-Route | Method | Action
----|---|---
-`need` | POST |
-`needs` | GET |
-`need/:id` | DELETE |
-`need/:id` | GET |
-`need/:id` | PUT |
+Route | Method | Parameters | Action
+---|---|---|---
+`need` | POST | Need form | Create a need
+`needs` | GET || Fetch all needs
+`need/:id` | DELETE || Delete the need with the specified ID
+`need/:id` | GET || Fetch the need with the specified ID
+`need/:id` | PUT | Need form | Update the need with the specified ID using the information in the given form
 
 ## needSatisfier
-Route | Method | Action
----|---|---
-`needSatisfier` | POST |
-`needSatisfiers` | GET |
-`needSatisfier/:id` | DELETE |
-`needSatisfier/:id` | GET |
-`needSatisfier/:id` | PUT |
+Route | Method | Parameters | Action
+---|---|---|---
+`needSatisfier` | POST | Need satisfier form | Create a need satisfier
+`needSatisfiers` | GET || Fetch all need satisfiers
+`needSatisfier/:id` | DELETE || Delete the need satisfier with the specified ID
+`needSatisfier/:id` | GET || Fetch the need satisfier with the specified ID
+`needSatisfier/:id` | PUT | Need satisfier form | Update the need satisfier with the specified ID using the information in the given form
+
+## outcome
+Route | Method | Parameters | Action
+---|---|---|---
+`outcome` | POST | Outcome form | Create an outcome
+`outcomes` | GET || Fetch all outcomes
+`outcome/:id` | DELETE || Delete the outcome with the specified ID
+`outcome/:id` | GET || Fetch the outcome with the specified ID
+`outcome/:id` | PUT | Outcome form | Update the outcome with the specified ID using the information in the given form
 
 ## internalType
 Route | Method | Action
