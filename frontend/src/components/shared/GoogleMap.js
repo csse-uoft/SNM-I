@@ -8,9 +8,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Paper, Typography, Link } from "@mui/material";
 import { render } from 'react-dom';
 import { useNavigate } from "react-router-dom";
+import { getInstancesInClass } from "../../api/dynamicFormApi";
 
 const Google = window.google || {maps: {}};
 const {Map, Marker, InfoWindow, Size} = Google.maps;
+let geocoder = new Google.maps.Geocoder();
 
 function ReactInfoWindow({marker, navigate}) {
   const {title, link, content} = marker;
@@ -85,16 +87,45 @@ if (Map) {
     }, [zoom, center]);
 
     useEffect(() => {
+      let streetTypes, streetDirections, states;
+      getInstancesInClass('ic:StreetType').then((data) => streetTypes = data);
+      getInstancesInClass('ic:StreetDirection').then((data) => streetDirections = data);
+      getInstancesInClass('schema:State').then((data) => states = data);
+
       for (let i = 0; i < markers.length; i++) {
         const marker = markers[i];
-        const currMarker = new Marker({
-          position: marker.position,
-          map: map,
-          title: marker.title,
+	      console.log(JSON.stringify(marker));
+        let addressText;
+        if (!marker.position) {
+          continue;
+        } else if (marker.position.lat && marker.position.lng) {
+          addressText = `${marker.position.lat}, ${marker.position.lng}`;
+        } else if (marker.position.streetName && marker.position.city) {
+          addressText = `${marker.position.unitNumber ? marker.position.unitNumber + '-' : ''}${marker.position.streetNumber ? marker.position.streetNumber : ''} ${marker.position.streetName} ${marker.position.streetType ? streetTypes[marker.position.streetType] : ''}${marker.position.streetDirection ? ' ' + streetDirections[marker.position.streetDirection] : ''}, ${marker.position.city}${marker.position.state ? ', ' + states[marker.position.state] : ''}${marker.position.postalCode ? ', ' + marker.position.postalCode : ''}`;
+        } else {
+          continue;
+        }
+
+        let position;
+        geocoder.geocode({'address': addressText}, function(results, status) {
+		console.log('Got here');
+		console.log(JSON.stringify(results[0].geometry.location));
+		console.log(JSON.stringify(status));
+          if (status === Google.maps.GeocoderStatus.OK) {
+                console.log('Got here x2!');
+            const currMarker = new Marker({
+              position: results[0].geometry.location,
+              map: map,
+              title: marker.title,
+            });
+
+            // Info window is opened when mouse over the marker.
+            // It also stays open after the marker is clicked.
+            createInfoWindow(map, currMarker, marker, navigate, i);
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
         });
-        // Info window is opened when mouse over the marker.
-        // It also stays open after the marker is clicked.
-        createInfoWindow(map, currMarker, marker, navigate, i);
       }
     }, [markers, map, navigate]);
 

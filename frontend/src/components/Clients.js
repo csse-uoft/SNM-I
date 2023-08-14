@@ -86,10 +86,7 @@ export default function Clients() {
             clientData.email = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Address') {
             const clientObj = (await fetchSingleGeneric("client", client._id)).data; // TODO: inefficient!
-            clientData.address = {
-              lat: clientObj['characteristic_' + addressCharacteristicId].lat,
-              lng: clientObj['characteristic_' + addressCharacteristicId].lng,
-            };
+            clientData.address = clientObj['characteristic_' + addressCharacteristicId];
 	  }
         }
       data.push(clientData);
