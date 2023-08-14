@@ -21,6 +21,7 @@ export const allForms = {
   serviceProvision: 'Service Provision',
   needSatisfierOccurrence: 'Need Satisfier Occurrence',
   needOccurrence: 'Need Occurrence',
+  person: 'Person',
   ...providerFormTypes
 };
 

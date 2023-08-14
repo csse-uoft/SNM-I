@@ -36,6 +36,8 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   const [form, setForm] = useState({});
   const [allForms, setAllForms] = useState({});
 
+  const [step, setStep] = useState({});
+
   const [selectedFormId, setSelectedFormId] = useState('');
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
   const [dynamicOptions, setDynamicOptions] = useState({});
@@ -82,8 +84,18 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
           for (const field of step.fields) {
             const className = field?.implementation?.optionsFromClass;
             if (className) {
-              await getInstancesInClass(className)
+              if (className == 'cp:CL-Gender'){
+                // parse and transform the Gender field
+                await getInstancesInClass(className)
+                .then(options => {
+                  Object.keys(options).map(key => options[key] = options[key].replace('cp:', ''));
+                  setDynamicOptions(prev => ({...prev, [className]: options}))
+                });
+              }
+              else {
+                await getInstancesInClass(className)
                 .then(options => setDynamicOptions(prev => ({...prev, [className]: options})));
+              }
             }
           }
         }
@@ -130,11 +142,11 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
   const handleChange = typeAndId => (e) => {
     form.fields[typeAndId] = e?.target ? e?.target?.value || undefined : e;
-    // console.log(e?.target?.value || e);
   };
 
   const getStepContent = stepIdx => {
     const step = dynamicForm.formStructure[stepIdx].fields;
+    setStep(step); 
     return <Box sx={contentStyle}>
       {step.map(({required, id, type, implementation, content, _id}, index) => {
         // Prefer id over _id
@@ -142,7 +154,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
         // Check if there is an external rendering logic.
         const Field = onRenderField && onRenderField({required, id, type, implementation, content},
-          index, form.fields, handleChange);
+          index, form.fields, handleChange, step);
         if (Field != null) return Field;
 
         if (type === 'question') {

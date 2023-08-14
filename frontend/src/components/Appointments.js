@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import {getInstancesInClass} from "../api/dynamicFormApi";
 
 const TYPE = 'appointments';
+
 
 const columnsWithoutOptions = [
   {
@@ -32,8 +34,11 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Datetime',
-    body: ({datetime}) => {
-      return new Date(datetime).toLocaleString();
+    body: ({datetime, dateType}) => {
+      if (dateType === 'Date')
+        return new Date(datetime).toLocaleDateString();
+      else if (dateType === 'DateTime')
+        return new Date(datetime).toLocaleString();
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
@@ -64,11 +69,30 @@ export default function Appointments() {
       content: service.desc,
     })).filter(service => service.position.lat && service.position.lng);
   };
-
+ 
   const fetchData = async () => {
+    // get all appointments data
     const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const clients = {};
+    // get all clients data
+    await getInstancesInClass(':Client').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const clientId = key.split('#')[1];
+        clients[clientId] = res[key];
+      }
+      );
+    });
+    const persons = {};
+    // get all persons data
+    await getInstancesInClass('cids:Person').then((res) => {
+      Object.keys(res).forEach((key) => {
+        const personId = key.split('#')[1];
+        persons[personId] = res[key];
+      });
+    });
     const data = [];
     for (const appointment of appointmens) {
+      //parse appointment data and assgin to corresponding fields
       const appointmentData = {_id: appointment._id};
       if (appointment.characteristicOccurrences)
         for (const occ of appointment.characteristicOccurrences) {
@@ -80,8 +104,23 @@ export default function Appointments() {
             appointmentData.person = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Date and Time') {
             appointmentData.datetime = occ.dataDateValue;
+            appointmentData.dateType = 'DateTime';
+          } else if (occ.occurrenceOf?.name === 'Date') {
+            appointmentData.datetime = occ.dataDateValue;
+            appointmentData.dateType = 'Date';
           }
         }
+      if (appointment.client){
+        // get corresponding client data
+        appointmentData.client = clients[appointment.client.slice(1)]
+      }
+      if (appointment.person){
+        // get corresponding person data
+        appointmentData.person = persons[appointment.person.slice(1)]
+      } else if (appointment.user){
+        // const userData = await fetchSingleGeneric('user', appointment.user);
+      }
+        
       data.push(appointmentData);
     }
     return data;
