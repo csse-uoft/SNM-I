@@ -4,7 +4,7 @@ title: Troubleshooting
 
 ## Common error messages
 ### Cannot connect to the Docker daemon
-The Docker daemon is required for running any docker image.
+The Docker daemon is required for running any docker container.
 If you get the following error,
 ```
 docker: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?.
@@ -64,12 +64,12 @@ or if the dropdown menus don't list all entries.
 This is a bug. To work around it, clear both GraphDB and MongoDB.
 - **GraphDB:** Go to http://localhost:7200 in your browser and find this button:
   ![clearing GraphDB](../../../assets/clear-graphdb.png)
-- **MongoDB:** One way is to re-create the entire docker image:
+- **MongoDB:** One way is to re-create the entire docker container:
 ```sh
 docker remove mongo
 docker run --name mongo -p 27017:27017 --restart unless-stopped -d mongo:latest
 ```
-where `mongo`s (not `mongo:latest`) are replaced with the name of your docker image.
+where `mongo`s (not `mongo:latest`) are replaced with the name of your docker container.
 
 ## Tips and tricks
 - Open the console in your browser to see the error messages

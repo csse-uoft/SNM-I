@@ -20,7 +20,7 @@ using the [GridFS](https://www.mongodb.com/docs/manual/core/gridfs/) API.
 
 ### Ontotext GraphDB
 We use GraphDB to store the rest of the data.
-The GraphDB interface can be accessed at http://localhost:7200 after you start the docker image.
+The GraphDB interface can be accessed at http://localhost:7200 after you start the docker container.
 You can use the interface to write SPARQL queries.
 There will be a tutorial for the interface the first time you launch it.
 

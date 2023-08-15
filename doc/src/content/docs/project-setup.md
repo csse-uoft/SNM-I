@@ -47,7 +47,7 @@ Place it inside of `backend/`.
   - **firefox:** Go to Preferences → Privacy & Security → View certificates →
     Servers → Add Exception → add `localhost:5000`
 
-5. Create the mongoDB and graphDB docker images.
+5. Create the mongoDB and graphDB docker containers.
 To do this, you need to first start the docker daemon.
 If you installed the docker desktop (eg. `brew install --cask docker`),
 this might be done for you already. Open the docker app to start the daemon.
@@ -60,7 +60,7 @@ systemctl start docker # if you use systemd, or
 sudo service docker start # if you use open-rc
 ```
 
-Then create the docker images with the following commands:
+Then create the docker containers with the following commands:
 ```sh
 docker create -p 127.0.0.1:7200:7200 --name graphdb --restart unless-stopped -t ontotext/graphdb:10.0.2 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000
 docker create --name mongo -p 27017:27017 ––restart unless-stopped -d mongo:latest
@@ -73,13 +73,13 @@ You can name them whatever you want!
 
 :::tip[For Apple M series users]
 The performance of GraphDB might be faster on the
-[ontotext client](https://www.ontotext.com/products/graphdb/graphdb-free/) instead of the docker image.
+[ontotext client](https://www.ontotext.com/products/graphdb/graphdb-free/) instead of the docker container.
 :::
 
 ## Running in production
 ### Backend
 1. Start the docker daemon (see above).
-2. Start the docker images, either through the desktop GUI or `docker start graphdb mongo` (use the names from earlier).
+2. Start the docker containers, either through the desktop GUI or `docker start graphdb mongo` (use the names from earlier).
 The graphdb interface should start on port 7200.
 3. Run `yarn start` in the `backend/` directory.
 The server should start on port 8080.
