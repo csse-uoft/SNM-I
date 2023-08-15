@@ -565,6 +565,17 @@ module.exports = [
     }
   },
   {
+    name: 'personForClientAssessment',
+    predefinedProperty: 'http://snmi#hasPerson',
+    formType: 'clientAssessment',
+    implementation: {
+      label: 'Person',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+    }
+  },
+  {
     name: 'outcomeForClientAssessment',
     predefinedProperty: 'http://snmi#hasOutcome',
     formType: 'clientAssessment',
@@ -587,14 +598,14 @@ module.exports = [
     }
   },
   {
-    name: 'personForClientAssessment',
-    predefinedProperty: 'http://snmi#hasPerson',
+    name: 'questionForClientAssessment',
+    predefinedProperty: 'http://snmi#hasQuestion',
     formType: 'clientAssessment',
     implementation: {
-      label: 'Person',
+      label: 'Question',
       valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Question'
     }
   },
 

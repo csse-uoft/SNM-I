@@ -125,7 +125,7 @@ const genericType2Model = {
   'needOccurrence': GDBNeedOccurrenceModel,
   'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
-  'person': GDBPersonModel
+  'person': GDBPersonModel,
 };
 
 const genericType2Populates = {

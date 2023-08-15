@@ -12,3 +12,4 @@ backend/package.json
 backend/yarn.lock
 node_modules/.yarn-integrity
 .vscode/
+docs/

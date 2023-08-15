@@ -43,6 +43,7 @@ export default function ClientAssessment() {
   };
 
   const fetchData = async () => {
+    console.log('fetching data');
     // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
     // using this function simplifies the code and makes no difference in performance
     const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data; // TODO: Does not contain address info
@@ -75,8 +76,6 @@ export default function ClientAssessment() {
             clientAssessmentData.person = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'UserAccount') {
             clientAssessmentData.userAccount = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Outcome') {
-            clientAssessmentData.outcome = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Address') {
             const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
             clientAssessmentData.address = {
@@ -88,13 +87,6 @@ export default function ClientAssessment() {
       if (clientAssessment.client) {
         // get corresponding client data
         clientAssessmentData.client = clients[clientAssessment.client.slice(1)]
-      }
-      if (clientAssessment.person) {
-        // get corresponding person data
-        clientAssessmentData.person = persons[clientAssessment.person.slice(1)]
-      }
-      if (clientAssessment.user) {
-        // const userData = await fetchSingleGeneric('user', appointment.user);
       }
 
       data.push(clientAssessmentData);
