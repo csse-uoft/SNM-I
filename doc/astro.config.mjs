@@ -7,10 +7,10 @@ export default defineConfig({
 		starlight({
 			title: 'SNM-I',
 			editLink: {
-				baseUrl: 'https://github.com/csse-uoft/SNM-I-doc/edit/main',
+				baseUrl: 'https://github.com/csse-uoft/SNM-I/edit/master/doc',
 			},
 			social: {
-				github: 'https://github.com/csse-uoft/SNM-I-doc',
+				github: 'https://github.com/csse-uoft/SNM-I',
 			},
 			sidebar: [
 				{

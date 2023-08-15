@@ -3,14 +3,13 @@ title: Business and functional requirements
 ---
 
 ## Business requirements
-Key business requirements for a social services decision support system include
-functionality that ensures or enhances service providers' ability to:
+Provide or improve service providers' ability to
 - intake and manage clients
   - collect and manage client information
   - assess client problems, goals and needs
   - connect clients with services
   - track client progress (via milestones and outcomes)
-- set-up and manage programs and services
+- setup and manage programs and services
   - assess program/service outcomes
   - identify program/services trends, bottlenecks, etc.
   - improve service delivery
@@ -27,61 +26,62 @@ functionality that ensures or enhances service providers' ability to:
 - intake and manage donors
 
 ## Functional requirements
-Key functional requirements for a social services decision support system
-include:
-- Case management: ability to manage information about an individual client
-  file including contact information, goals, needs, services accessed and
-  outcomes, manage and track referrals for individual clients as they move
+- Case management: ability to manage information about individual client
+  files including contact information, goals, needs, services accessed and
+  outcomes, and manage and track referrals for individual clients as they move
   through an agency's programs.
 - Program/Service management: ability to monitor and manage programs within an
   agency (access to 'live' information about workload, client volume, costs and
   budgets).
 - Assessment management: ability to produce up-to-date reports on client and
   program progress towards pre-defined outcomes, staff and volunteer
-  performance and service efficiency.
-- Reporting: ability to access standard reports and to build own
+  performance, and service efficiency.
+- Reporting: ability to access standard reports and to build new
   queries/reports using an intuitive interface.
 - Funder reporting: ability to submit reports to funders via email or web
   services.
 - Granular security/access management: ability to control the access to
   information available to staff, volunteers, external consultants, etc.
 - Customization: ability to add new fields/connections and interface
-  templates/forms in a manner that does not interfere with the core operation
-  of the system.
+  templates/forms without interfering with the core operation of the system.
 
-### User-related functionality
-- Register with the application (upon receiving an invitation from an admin)
-- Log into their account
-- Reset their password
-- Change their password at any time (requires log-in)
-- Edit their profile information at any time (requires log-in)
+### User
+- Register with the application through an invitation from an admin ([API](/guides/api/#register))
+- Log in and out ([API](/guides/api/#base))
+- Reset password ([API](/guides/api/#forgotpassword))
+- Change password ([API](/guides/api/#user))
+- Edit profile information ([API](/guides/api/#user))
 
-### Admin functionality
+### Admin
 - Account creation and management
-  - Create an account for an employee of the organization (and send an
-    invitation for the person to complete the registration)
+  - Create accounts for employees of the organization (and send invitations for
+    them to complete the registration)
+    ([API](/guides/api/#register))
     - Required information: person's first and last name, email, and role in
       the organization
-  - Activate account
-  - Automatic account deactivation
-  - Manual account deactivation
-  - Browse account / user profiles
-  - Search accounts (e.g., based on account name and user information)
+    - Activate account after they register ([API](/guides/api/#register))
+  - Automatically deactivate accounts
+  - Manually deactivate accounts ([API](/guides/api/#user))
+  - Search for specific accounts based on user information
+    ([API](/guides/api/#user))
+  - Browse all user profiles ([API](/guides/api/#users))
 - Authorization (access control) management
-  - Create and manage attributes (data attributes, user attributes, including roles, etc.)
+  - Create and manage attributes (eg. data, user, roles)
   - Create and manage functionality/resource access policies
-- Form-item (i.e. characteristics, questions, notes, etc.) management
-  - Create new characteristic / question for clients, services, referrals, etc.
-    - Required information: name and description of the item (i.e., characteristic, question, etc.), and item implementation information
-  - Create new generic goals
-  - Create new generic needs
-  - Create new generic need satisfiers
-  - Create new generic services
-  - Create new generic outcomes
+- Form-item (e.g. characteristics, questions, notes) management
+  - Create characteristic/question for clients, services, referrals, etc.
+    ([API 1](/guides/api/#characteristic); [API 2](/guides/api/#question))
+    - Required information: name and description of the item (e.g.
+      characteristic, question), and item implementation information
+  - Create generic goals
+  - Create generic needs ([API](/guides/api/#need))
+  - Create generic need satisfiers ([API](/guides/api/#needsatisfier))
+  - Create generic services ([API](/guides/api/#serviceproviders))
+  - Create generic outcomes ([API](/guides/api/#outcome))
     - Required information: description and implementation information
-- Form management
-  - Create new form by specifying what form items (e.g., characteristics,
-    questions, etc) to be included and whether they are mandatory or not.
+- Form management ([API](/guides/api/#dynamicform))
+  - Create forms by specifying what form items (e.g. characteristics,
+    questions) to be included and whether they are mandatory
     - client
     - assessment
     - service
@@ -91,14 +91,28 @@ include:
     - goods
 - Application log management
   - Browse log
-  - Manage log (change location, max size, overwriting rules, etc.
+  - Manage log (eg. change location, max size, overwriting rules)
   - Delete log
   - Generate audit reports to support regulatory compliance with HIPAA, GDPR,
     PCI DSS, etc.
 
-### Client management functionality
-Sample of relevant competency questions:
-- Is Jason in the […] system?
+### Client management
+- Create clients using one of the forms available in the system
+  - Required information: the information corresponding to the items in the
+    (client intake) form selected (e.g. client name, date of birth, email)
+- Browse existing clients (and sort results based on selected characteristics)
+- Visualize the profile of a selected client
+- Edit the profile of a selected client
+- Add/edit/delete client goals
+- Add/edit/delete client needs
+- Create appointments (with an application user) for a selected client
+- Create/edit/delete assessments for a selected client
+- Create internal/external referrals for a client
+- Search existing clients (based on selected characteristics)
+- Register client for service
+
+#### Sample questions
+- Is Jason in the [...] system?
 - What are Jason's current goals and things he is working on?
 - How can I edit or change this information later if needed?
 - How can I add a personal note to the file on Jason's behalf?
@@ -106,93 +120,71 @@ Sample of relevant competency questions:
 - Which programs and services has Jason previously connected with?
 - Which programs and services is Jason currently connected with?
 
-The system shall allow the user to:
-- Create a new client using one of the forms available in the system
-  - Required information: the information corresponding to the items in the
-    (client intake) form selected, e.g., client name, date of birth, email,
-    etc.
-- Browse existing clients (and sort results based on selected characteristics)
-- Visualize the profile of a selected client
-- Edit the profile of a selected client
-- Add / edit / delete client goals
-- Add / edit / delete client needs
-- Create an appointment (with an application user) for a selected client
-- Create / edit / delete assessments for a selected client
-- Create an internal/external referral for a client
-- Search existing clients (based on selected characteristics)
-- Register client for service
-
 ### Matching management
-Sample of relevant competency questions:
-- What services are available for affordable housing?
-- Which services match my mental health needs?
-
-The system shall allow the user to:
 - Manual match: browse existing services and match/link to client needs
 - Semi-automatic service-need match via recommendations provided by the system
 
-### Service provider management functionality
-Sample of relevant competency questions:
+#### Sample questions
+- What services are available for affordable housing?
+- Which services match my mental health needs?
+
+### Service provider management
+([API](/guides/api/#serviceproviders))
+- Create service providers (volunteer, external organization, independent
+  professional) using one of the forms available in the system
+  - Required information: the information corresponding to the items in the
+    form selected (e.g. organization name, description, primary contact
+    information, mission, values)
+- Browse existing providers (and sort results based on selected characteristics)
+- Visualize the profile of a selected provider
+- Edit/delete the profile of a selected provider
+- Search existing providers based on selected characteristics
+
+#### Sample questions
 - What service providers offer LINC language assessments?
 - What is the location of the providers that manage safe consumption sites in
   Vancouver?
 
-The system shall allow the user to:
-- Create a new service provider (volunteer, external organization, independent
-  professional) using one of the forms available in the system
-  - Required information: the information corresponding to the items in the
-    form selected, e.g., organization name, description, primary contact
-    information (first and last name, phone, email), mission, values, etc.
-- Browse existing providers (and sort results based on selected characteristics)
-- Visualize the profile of a selected provider
-- Edit / delete the profile of a selected provider
-- Search existing providers (based on selected characteristics)
-
-### Program/service management functionality
-- Create a new program/service using one of the service management forms
+### Program/service management
+- Create new programs/services using one of the service management forms
   available in the system
   - Required information: the information corresponding to the characteristics
-    in the form selected, e.g., service name, description, primary contact
-    information (first and last name, phone, email), description, eligibility
-    condition, service provider
+    in the form selected, e.g. service name, description, primary contact
+    information, description, eligibility condition, service provider
 - Browse existing programs/services (and sort results based on selected
   characteristics)
 - Visualize the profile of a selected program/service
-- Edit the profile of a selected program/service
-- Create an intake form for a selected service/program
-- Search for a program/service (based on selected characteristics), including
-  services from partner organizations.
+- Edit/delete the profile of a selected program/service
+- Create intake forms for a selected service/program
+- Search for programs/services based on selected characteristics, including
+  services from partner organizations
 
-### (Internal) Appointment management functionality
-- Create a new appointment using one of the forms available in the system
-  - Required information: e.g., client, user (account), service requested,
-    notes, etc.
+### [Internal] Appointment management
+- Create appointments using one of the forms available in the system
+  - Required information: e.g. client, user, service requested, notes
 - Browse appointments
 - Visualize the content of a selected appointment
 - Edit the content of a selected appointment
-- (Advanced) Search existing appointment (based on selected characteristics)
-- Send appointment reminders to client / user
+- [Advanced] Search existing appointments based on selected characteristics
+- Send appointment reminders to a client/user
 
-### Referral management functionality
-- Create a new referral using one of the referral forms available in the system
-  - Required information: e.g., client, organization referred to,
-    service/program referred to, etc.
+### Referral management
+- Create referrals using one of the referral forms available in the system
+  - Required information: e.g. client, organization, service/program
 - Browse incoming/outgoing referrals
 - Visualize the content of a selected referral
 - Edit the content of a selected in-coming referral
-- (Advanced) Search existing incoming/outgoing referrals (based on selected
-  characteristics)
+- [Advanced] Search existing incoming/outgoing referrals based on selected
+  characteristics
 
-### Assessment management functionality
-- Create a new assessment using one of the assessment forms available in the
-  system
-  - Required information: e.g., client, organization referred to,
-    service/program referred to, etc.
+### Assessment management
+- Create assessments using one of the assessment forms available in the system
+  - Required information: e.g. client, organization, service/program
 - Browse assessments
 - Visualize the content of a selected assessment
 - Edit the content of a selected assessment
-- (Advanced) Search existing assessment (based on selected characteristics)
+- [Advanced] Search existing assessment (based on selected characteristics)
 
-### Reporting functionality
-- Create a new report using one of the  forms available in the system
+### Reporting
+- Create reports using one of the forms available in the system
 - Browse existing reports

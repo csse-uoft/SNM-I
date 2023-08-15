@@ -17,7 +17,7 @@ The implementation should be in that module, which should be in `backend/service
 :::
 
 ## base
-This section is for the [User-related functionality of the requirements](/reference/requirements/#user-related-functionality).
+This section is for the [User section of the requirements](/reference/requirements/#user).
 Particularly the ability to log in and out of the application.
 
 Route | Method | Parameters | Action | Return
@@ -28,7 +28,7 @@ Route | Method | Parameters | Action | Return
 `logout` | POST | | Logs out of the session |
 
 ## register
-This section is for the [User-related functionality of the requirements](/reference/requirements/#user-related-functionality).
+This section is for the [User section of the requirements](/reference/requirements/#user).
 Particularly the ability to register with the application.
 
 Route | Method | Parameters | Action
@@ -38,7 +38,7 @@ Route | Method | Parameters | Action
 `register/firstEntry/update` | PUT | email<br>password<br>security questions | Update the user with the provided info and set the user from temporary to permanent
 
 ## user
-This section is for the [User-related functionality of the requirements](/reference/requirements/#user-related-functionality).
+This section is for the [User section of the requirements](/reference/requirements/#user).
 Particularly the ability to edit profile information, and to reset or edit the password.
 
 Route | Method | Parameters | Action
@@ -53,38 +53,42 @@ Route | Method | Parameters | Action
 `user/:id` | DELETE | user id | Delete the user (must be another user)
 
 ## forgotPassword
-This section is for the [User-related functionality of the requirements](/reference/requirements/#user-related-functionality).
+This section is for the [User section of the requirements](/reference/requirements/#user).
 Particularly the ability to reset the password.
 
-Route | Method | Action
----|---|---
-`forgotPassword/securityQuestions/fetch` | PUT |
-`forgotPassword/securityQuestions/check` | POST |
-`forgotPassword/sendVerificationEmail` | POST |
-`forgotPassword/resetPassword/verify` | POST |
-`forgotPassword/resetPassword/saveNewPassword` | POST |
+Route | Method
+---|---
+`forgotPassword/securityQuestions/fetch` | PUT
+`forgotPassword/securityQuestions/check` | POST
+`forgotPassword/sendVerificationEmail` | POST
+`forgotPassword/resetPassword/verify` | POST
+`forgotPassword/resetPassword/saveNewPassword` | POST
 
 ## users
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to browse all user profiles.
 Route | Method | Action
 ---|---|---
-`users` | GET |
-`users/getUserProfileById/:id/` | GET
+`users` | GET | Return all user profiles
+`users/getUserProfileById/:id/` | GET | Return the user profile of the specified user id
 
 ## characteristic
-Route | Method | Action
----|---|---
-`characteristic/fieldTypes` | GET |
-`characteristic/dataTypes` | GET |
-`characteristic/optionsFromClass` | GET |
-`characteristics/details` | GET |
-`characteristic/:id` | GET |
-`characteristics` | GET |
-`characteristic` | POST |
-`characteristic/:id` | PUT |
-`characteristic/delete/:id` | DELETE |
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to create/edit/delete characteristics.
+Route | Method
+---|---
+`characteristic/fieldTypes` | GET
+`characteristic/dataTypes` | GET
+`characteristic/optionsFromClass` | GET
+`characteristics/details` | GET
+`characteristic/:id` | GET
+`characteristics` | GET
+`characteristic` | POST
+`characteristic/:id` | PUT
+`characteristic/delete/:id` | DELETE
 
 ## dynamicForm
-This section is for the [Admin functionality of the requirements](/reference/requirements/#user-related-functionality).
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
 Particularly the ability to manage forms and form items.
 
 Route | Method | Action
@@ -99,30 +103,36 @@ Route | Method | Action
 `label/:uri` | GET | Get the label of a URI
 
 ## question
-Route | Method | Action
----|---|---
-`question/:id` | GET |
-`questions` | GET |
-`question` | POST |
-`question/:id` | PUT |
-`question/delete/:id` | DELETE |
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to create/edit/delete questions.
+Route | Method
+---|---
+`question/:id` | GET
+`questions` | GET
+`question` | POST
+`question/:id` | PUT
+`question/delete/:id` | DELETE
 
 ## genericData
-Route | Method | Action
----|---|---
-`generics/:genericType` | GET |
-`generic/:genericType/:id` | GET |
-`generic/:genericType` | POST |
-`generic/:genericType/:id` | PUT |
-`generic/:genericType/:id` | DELETE |
+Route | Method
+---|---
+`generics/:genericType` | GET
+`generic/:genericType/:id` | GET
+`generic/:genericType` | POST
+`generic/:genericType/:id` | PUT
+`generic/:genericType/:id` | DELETE
 
 ## advancedSearch
-Route | Method | Action
----|---|---
-`advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType` | GET |
-`advancedSearch/:genericType/:genericItemType` | PUT |
+Route | Method
+---|---
+`advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType` | GET
+`advancedSearch/:genericType/:genericItemType` | PUT
 
 ## serviceProviders
+This section is for the
+[Service provider management](/refere/cerequirements/#service-provider-management)
+and the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to create and manage needs.
 Route | Method | Parameters | Action
 ---|---|---|---
 `providers` | POST | Provider type<br>Service provider data | Create a service provider
@@ -132,6 +142,8 @@ Route | Method | Parameters | Action
 `provider/:id` | PUT | Provider type<br>Service provider data | Update the service provider with the specified ID using the information in the given form
 
 ## need
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to create and manage needs.
 Route | Method | Parameters | Action
 ---|---|---|---
 `need` | POST | Need form | Create a need
@@ -141,6 +153,8 @@ Route | Method | Parameters | Action
 `need/:id` | PUT | Need form | Update the need with the specified ID using the information in the given form
 
 ## needSatisfier
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to create and manage need satisfiers.
 Route | Method | Parameters | Action
 ---|---|---|---
 `needSatisfier` | POST | Need satisfier form | Create a need satisfier
@@ -150,6 +164,8 @@ Route | Method | Parameters | Action
 `needSatisfier/:id` | PUT | Need satisfier form | Update the need satisfier with the specified ID using the information in the given form
 
 ## outcome
+This section is for the [Admin section of the requirements](/reference/requirements/#admin).
+Particularly the ability to create and manage outcomes.
 Route | Method | Parameters | Action
 ---|---|---|---
 `outcome` | POST | Outcome form | Create an outcome
@@ -159,14 +175,14 @@ Route | Method | Parameters | Action
 `outcome/:id` | PUT | Outcome form | Update the outcome with the specified ID using the information in the given form
 
 ## internalType
-Route | Method | Action
----|---|---
-`internalTypes/:formType` | GET |
+Route | Method
+---|---
+`internalTypes/:formType` | GET
 
 ## serviceProvision
-Route | Method | Action
----|---|---
-`needOccurrences/client/:client` | GET |
-`serviceOccurrences/service/:service` | GET |
-`needSatisfiers/serviceOccurrence/:serviceOccurrence` | GET |
-`needSatisfiers/service/:service` | GET |
+Route | Method
+---|---
+`needOccurrences/client/:client` | GET
+`serviceOccurrences/service/:service` | GET
+`needSatisfiers/serviceOccurrence/:serviceOccurrence` | GET
+`needSatisfiers/service/:service` | GET
