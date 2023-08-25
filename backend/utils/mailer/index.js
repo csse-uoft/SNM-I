@@ -12,7 +12,7 @@ const sendVerificationMail = async (email, token) => {
     ...getVerificationTemplate(email, token)
   };
   await new Promise((resole, reject) => {
-    console.log("http://localhost:5000/register/" + token)
+    console.log("http://localhost:5001/register/" + token)
     transporter.sendMail(mailOptions, function (err) {
       if (err) {
         reject(err);
@@ -32,7 +32,7 @@ const sendResetPasswordEmail = async (email, token) => {
     ...getResetPasswordTemplate(email, token)
   };
   await new Promise((resole, reject) => {
-    console.log("http://localhost:5000/resetPassword/" + token)
+    console.log("http://localhost:5001/resetPassword/" + token)
     transporter.sendMail(mailOptions, function (err) {
       if (err) {
         reject(err);
