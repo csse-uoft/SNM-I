@@ -8,9 +8,9 @@ const GDBVolunteerModel = createGraphDBModel({
   lastName: {type: String, internalKey: 'foaf:familyName'},
   gender: {type: Types.NamedIndividual, internalKey: 'cp:hasGender'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
-  characteristicOccurrence: {type: [GDBCOModel],
+  characteristicOccurrences: {type: [GDBCOModel],
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
-  questionOccurrence: {type: [GDBQOModel],
+  questionOccurrences: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':Volunteer'], name: 'volunteer'

@@ -408,8 +408,7 @@ const createSingleGenericHelper = async (data, genericType) => {
         const property = getPredefinedProperty(genericType, characteristic);
         if (property) {
           instanceData[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ??
-            occurrence.dataDateValue ?? occurrence.objectValue;
-          instanceData[property + 's'] = occurrence.multipleObjectValue;
+            occurrence.dataDateValue ?? occurrence.objectValue ?? occurrence.multipleObjectValues;
         }
       }
 
@@ -451,7 +450,7 @@ const createSingleGeneric = async (req, res, next) => {
   try {
     const instanceData = await createSingleGenericHelper(data, genericType);
     // add createDate to person
-    if (genericType == 'person'){
+    if (genericType === 'person'){
       instanceData['createDate'] = new Date();
     }
     if (instanceData) {
@@ -536,9 +535,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
           const property = getPredefinedProperty(genericType, characteristic);
           if (property) {
             generic[property] = occurrence.dataStringValue ?? occurrence.dataNumberValue ?? occurrence.dataBooleanValue ?? occurrence.dataDateValue
-              ?? occurrence.objectValue;
-            if (occurrence.multipleObjectValue)
-              generic[property + 's'] = occurrence.multipleObjectValue;
+              ?? occurrence.objectValue ?? occurrence.multipleObjectValues;
           }
         }
       } else if (existedCO && value) { // just add the value on existedCO
@@ -547,10 +544,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
           const property = getPredefinedProperty(genericType, characteristic);
           if (property) {
             generic[property] = existedCO.dataStringValue ?? existedCO.dataNumberValue ?? existedCO.dataBooleanValue ?? existedCO.dataDateValue ??
-              existedCO.objectValue;
-            if (existedCO.multipleObjectValue)
-              generic[property + 's'] = existedCO.multipleObjectValue;
-
+              existedCO.objectValue ?? existedCO.multipleObjectValues;
           }
         }
       } else if (existedCO && !value) { // when the user wants to remove the occurrence

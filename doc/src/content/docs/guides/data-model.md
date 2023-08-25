@@ -102,7 +102,7 @@ const GDBServiceProviderModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},
   organization: {type: GDBOrganizationModel, internalKey: ':hasOrganization'},
   volunteer: {type: GDBVolunteerModel, internalKey: ':hasVolunteer'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':ServiceProvider'], name: 'serviceProvider'
 });
@@ -111,8 +111,8 @@ const GDBServiceProviderModel = createGraphDBModel({
 ## Hours of operation
 ```js
 const GDBHoursOfOperationModel = createGraphDBModel({
-  dateSchedule: {type: [GDBDateScheduleModel], internalKey: ':hasDateSchedule'},
-  weekSchedule: {type: [GDBWeekScheduleModel], internalKey: ':hasWeekSchedule'}
+  dateSchedules: {type: [GDBDateScheduleModel], internalKey: ':hasDateSchedule'},
+  weekSchedules: {type: [GDBWeekScheduleModel], internalKey: ':hasWeekSchedule'}
 }, {
   rdfTypes: [':HoursOfOperation'], name: 'hoursOfOperation'
 });
@@ -122,7 +122,7 @@ const GDBHoursOfOperationModel = createGraphDBModel({
 ```js
 const GDBDateScheduleModel = createGraphDBModel({
   hasDate: {type: Date, internalKey: 'hasDate'},
-  timeInterval: {type: [GDBTimeIntervalModel], internalKey: ':hasTimeInterval'}
+  timeIntervals: {type: [GDBTimeIntervalModel], internalKey: ':hasTimeInterval'}
 }, {
   rdfTypes: [':DateSchedule'], name: 'dateSchedule'
 });
@@ -201,7 +201,7 @@ const GDBSecurityQuestion = createGraphDBModel({
 const GDBCharacteristicModel = createGraphDBModel({
   description: {type: String, internalKey: 'cids:hasDescription'},
   name: {type: String, internalKey: ':hasName'},
-  code: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
+  codes: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
   // predefined characteristics (i.e. firstName, lastName) link to properties that already defined in compass Ontology.
   predefinedProperty: {type: Types.NamedIndividual, internalKey: ':hasPredefinedProperty'},
   isPredefined: {type: Boolean, internalKey: ':isPredefined'},
@@ -219,7 +219,7 @@ const GDBFIIModel = createGraphDBModel({
   valueDataType: {type: Types.NamedIndividual, internalKey: ':hasValueDataType'},
   fieldType: {type: GDBFieldTypeModel, internalKey: ':hasFieldType'},
   // store options as [{}, {}, {}]
-  option: {type: [GDBOptionModel], internalKey: ':hasOption', onDelete: DeleteType.CASCADE},
+  options: {type: [GDBOptionModel], internalKey: ':hasOption', onDelete: DeleteType.CASCADE},
   //required:{type: Boolean, internalKey: ':isRequired'},
   optionsFromClass: {type: Types.NamedIndividual, internalKey: ':hasOptionsFromClass'},
 }, {
@@ -258,13 +258,13 @@ const GDBQOModel = createGraphDBModel({
 ### Client
 ```js
 const GDBClientModel = createGraphDBModel({
-  characteristicOccurrence: {type: [GDBCOModel],
+  characteristicOccurrences: {type: [GDBCOModel],
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
-  questionOccurrence: {type: [GDBQOModel],
+  questionOccurrences: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
-  need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
+  needs: {type: [GDBNeedModel], internalKey: ':hasNeed'},
   // If a need is added, need occurrence is automatically created and associated to the client.
-  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
+  needOccurrences: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
   note: {type: [String], internalKey: ':hasNote'},
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},

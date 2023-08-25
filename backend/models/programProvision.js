@@ -11,7 +11,7 @@ const GDBProgramProvisionModel = createGraphDBModel({
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
   needSatisfierOccurrence: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
+  characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   client: {type: GDBClientModel, internalKey: ':hasClient'}
 }, {
   rdfTypes: [':ProgramProvision'], name: 'programProvision'

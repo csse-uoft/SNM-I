@@ -12,7 +12,7 @@ const GDBProgramRegistrationModel = createGraphDBModel({
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   appointment: {type: GDBAppointmentModel, internalKey: ':hasAppointment'},
-  characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':ProgramRegistration'], name: 'programRegistration'
 });

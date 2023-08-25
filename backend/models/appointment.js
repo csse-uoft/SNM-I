@@ -9,7 +9,7 @@ const GDBAppointmentModel = createGraphDBModel({
   datetime: {type: Date, internalKey: ':hasDatetime'},
   person: {type: GDBPersonModel, internalKey: ':hasPerson'},
   user: {type: GDBUserAccountModel, internalKey: ':withUser'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':Appointment'], name: 'appointment'
 });

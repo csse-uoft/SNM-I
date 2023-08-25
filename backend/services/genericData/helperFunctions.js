@@ -3,6 +3,7 @@ const {GDBPhoneNumberModel, GDBAddressModel, GDBCharacteristicModel} = require("
 const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBInternalTypeModel} = require("../../models/internalType");
+const {SPARQL} = require("graphdb-utils");
 
 // help to detect the time
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
@@ -15,28 +16,29 @@ const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
  */
 const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
-  console.log('valueDataType', valueDataType);
-  console.log('value', value);
+  const prefixedDataType = SPARQL.getPrefixedURI(characteristic.implementation.valueDataType);
   // Storing value in the characteristic occurrence model.
-  if (characteristic.implementation.valueDataType === 'xsd:string') {
+  if (prefixedDataType === 'xsd:string') {
     occurrence.dataStringValue = value + '';
-  } else if (characteristic.implementation.valueDataType === 'xsd:number') {
+  } else if (prefixedDataType === 'xsd:number') {
     occurrence.dataNumberValue = Number(value);
-  } else if (characteristic.implementation.valueDataType === 'xsd:boolean') {
+  } else if (prefixedDataType === 'xsd:boolean') {
     occurrence.dataBooleanValue = !!value;
-  } else if (characteristic.implementation.valueDataType === 'xsd:datetimes') {
+  } else if (prefixedDataType === 'xsd:datetimes') {
     if (TIMEPATTERN.test(value)) {
       value = '1970-01-01 ' + value; // when the field is time field, add 1970 to make it be able to stored into the database
     }
     occurrence.dataDateValue = new Date(value);
-  } else if (characteristic.implementation.valueDataType === "owl:NamedIndividual") {
-    if (fieldType === FieldTypes.SingleSelectField.individualName) {
+  } else if (prefixedDataType === "owl:NamedIndividual") {
+    const prefixedFieldType = SPARQL.getPrefixedURI(fieldType);
+
+    if (prefixedFieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
-    } else if (fieldType === FieldTypes.MultiSelectField.individualName) {
+    } else if (prefixedFieldType === FieldTypes.MultiSelectField.individualName) {
       occurrence.multipleObjectValues = value;
-    } else if (fieldType === FieldTypes.RadioSelectField.individualName) {
+    } else if (prefixedFieldType === FieldTypes.RadioSelectField.individualName) {
       occurrence.objectValue = value;
-    } else if (fieldType === FieldTypes.PhoneNumberField.individualName) {
+    } else if (prefixedFieldType === FieldTypes.PhoneNumberField.individualName) {
       if (occurrence.objectValue) {
         const [_, phoneNumberId] = occurrence.objectValue.split('_');
         await GDBPhoneNumberModel.findByIdAndDelete(phoneNumberId);
@@ -45,7 +47,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
       // save phoneNumber since it is stored in a separate model.
       await phoneNumber.save();
       occurrence.objectValue = phoneNumber.individualName;
-    } else if (fieldType === FieldTypes.AddressField.individualName) {
+    } else if (prefixedFieldType === FieldTypes.AddressField.individualName) {
       if (occurrence.objectValue) {
         const [_, addressId] = occurrence.objectValue.split('_');
         await GDBAddressModel.findByIdAndDelete(addressId);
@@ -89,10 +91,10 @@ function getPredefinedProperty(genericType, characteristic) {
   const {genericType2Model} = require('./index');
   const schema = genericType2Model[genericType].schema;
   for (let key in schema) {
-    if (schema[key].internalKey === characteristic.predefinedProperty)
+    if (SPARQL.getFullURI(schema[key].internalKey) === characteristic.predefinedProperty)
       return key;
   }
   return false;
-};
+}
 
 module.exports = {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, getPredefinedProperty}

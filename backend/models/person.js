@@ -14,7 +14,7 @@ const GDBPersonModel = createGraphDBModel({
   altEmail: {type: String, internalKey: 'ic:hasAltEmail'},
   telephone: {type: GDBPhoneNumberModel, internalKey: 'ic:hasTelephone', onDelete: DeleteType.CASCADE},
   createDate: {type: Date, internalKey: ':createDate'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
 }, {
   rdfTypes: ['cids:Person'], name: 'person'
 });

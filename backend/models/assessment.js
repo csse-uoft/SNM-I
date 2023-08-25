@@ -14,10 +14,10 @@ const GDBAssessmentModel = createGraphDBModel({
   person: {type: GDBPersonModel, internalKey: ':byPerson'},
   organization: {type: GDBOrganizationModel, internalKey: ':byOrganization'},
   user: {type: GDBUserAccountModel, internalKey: ':byUser'},
-  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrences'},
+  needOccurrences: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrences'},
   description: {type: String, internalKey: 'cids:hasDescription'},
   note: {type: GDBNoteModel, internalKey: ':Note'},
-  outcomeOccurrence: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrences'},
+  outcomeOccurrences: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrences'},
   // characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':Assessment'], name: 'assessment'

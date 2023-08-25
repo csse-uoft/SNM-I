@@ -149,7 +149,6 @@ async function getIndividualsInClass(req, res) {
         OPTIONAL {?s tove_org:hasName ?toveHasName . } # for tove_org:hasName property
         FILTER (isIRI(?s))
     }`;
-  console.log(query)
 
   // todo: volunteer will only give last name
   await GraphDB.sendSelectQuery(query, false, ({s, label, name, familyName, givenName, type, lastName, toveHasName}) => {

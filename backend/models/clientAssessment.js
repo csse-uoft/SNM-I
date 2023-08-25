@@ -10,18 +10,17 @@ const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 const {GDBQuestionModel} = require("./ClientFunctionalities/question");
 
 const GDBClientAssessmentModel = createGraphDBModel({
-  characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   description: {type: String, internalKey: ':hasDescription'},
-  need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
+  needs: {type: [GDBNeedModel], internalKey: ':hasNeed'},
   note: {type: String, internalKey: ':hasNote'},
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   userAccount: {type: GDBUserAccountModel, internalKey: ':withUser'},
   person: {type: GDBPersonModel, internalKey: ':hasPerson'},
-  outcome: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
-  outcomeOccurrence: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence'},
-  need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
-  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence'},
-  question: {type: [GDBQuestionModel], internalKey: ':hasQuestion'},
+  outcomes: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
+  outcomeOccurrences: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence'},
+  needOccurrences: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence'},
+  questions: {type: [GDBQuestionModel], internalKey: ':hasQuestion'},
 }, {
   rdfTypes: [':ClientAssessment'], name: 'clientAssessment'
 });

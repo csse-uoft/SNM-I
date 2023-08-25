@@ -6,7 +6,7 @@ const GDBOutcomeModel = createGraphDBModel({
   changeType: {type: String, internalKey: ':hasChangeType'},
   description: {type: String, internalKey: 'cids:hasDescription'},
   characteristic: {type: GDBCharacteristicModel, internalKey: ':forCharacteristic'},
-  code: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
+  codes: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
 }, {
   rdfTypes: [':Outcome'], name: 'outcome'
 });

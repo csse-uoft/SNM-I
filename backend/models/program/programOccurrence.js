@@ -12,10 +12,10 @@ const GDBProgramOccurrenceModel = createGraphDBModel({
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   hoursOfOperation: {type: Types.NamedIndividual, internalKey: ':hasOperatingHours', onDelete: DeleteType.CASCADE},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
-  needSatisfier: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
+  needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   // needSatisfierOccurrence: {type: [GDBNeedSatisfierOccurrenceModel], internalKey: ':hasNeedSatisfierOccurrence', onDelete: DeleteType.CASCADE},
   description: {type: String, internalKey: 'cids:hasDescription'},
-  characteristicOccurrence: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':ProgramOccurrence'], name: 'programOccurrence'
 });

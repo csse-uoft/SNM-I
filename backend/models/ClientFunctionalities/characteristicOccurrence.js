@@ -10,7 +10,7 @@ const GDBCOModel = createGraphDBModel({
   dataBooleanValue: {type: Boolean, internalKey: ':hasBooleanValue'},
   dataDateValue: {type: Date, internalKey: ':hasDateValue'},
   objectValue: {type: Types.NamedIndividual, internalKey: ':hasObjectValue'},
-  multipleObjectValue: {type: [Types.NamedIndividual], internalKey: ':hasMultipleObjectValue'},
+  multipleObjectValues: {type: [Types.NamedIndividual], internalKey: ':hasMultipleObjectValue'},
   occurrenceOf: {type: GDBCharacteristicModel, internalKey: ':occurrenceOf'},
 }, {
   rdfTypes: [':CharacteristicOccurrence'], name: 'characteristicOccurrence'

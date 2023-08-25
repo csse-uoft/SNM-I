@@ -9,7 +9,7 @@ const GDBNeedSatisfierOccurrenceModel = createGraphDBModel({
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
   description: {type: String, internalKey: 'cids:hasDescription'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':NeedSatisfierOccurrence'], name: 'needSatisfierOccurrence'
 });

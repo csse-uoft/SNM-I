@@ -11,17 +11,17 @@ const {GDBOutcomeOccurrenceModel} = require("../outcome/outcomeOccurrence");
  * This is a Client model.
  */
 const GDBClientModel = createGraphDBModel({
-  characteristicOccurrence: {type: [GDBCOModel],
+  characteristicOccurrences: {type: [GDBCOModel],
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
-  questionOccurrence: {type: [GDBQOModel],
+  questionOccurrences: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
-  need: {type: [GDBNeedModel], internalKey: ':hasNeed'},
+  needs: {type: [GDBNeedModel], internalKey: ':hasNeed'},
   // If a need is added, need occurrence is automatically created and associated to the client.
-  needOccurrence: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
-  outcome: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
+  needOccurrences: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence', onDelete: DeleteType.CASCADE},
+  outcomes: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
   // If an outcome is added, outcome occurrence is automatically created and associated to the client.
-  outcomeOccurrence: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence', onDelete: DeleteType.CASCADE},
-  note: {type: [String], internalKey: ':hasNote'},
+  outcomeOccurrences: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence', onDelete: DeleteType.CASCADE},
+  notes: {type: [String], internalKey: ':hasNote'},
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},
   gender: {type: Types.NamedIndividual, internalKey: 'cp:hasGender'},

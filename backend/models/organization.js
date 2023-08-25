@@ -6,9 +6,9 @@ const {GDBQOModel} = require("./ClientFunctionalities/questionOccurrence");
 const GDBOrganizationModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
-  characteristicOccurrence: {type: [GDBCOModel],
+  characteristicOccurrences: {type: [GDBCOModel],
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
-  questionOccurrence: {type: [GDBQOModel],
+  questionOccurrences: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':Organization'], name: 'organization'

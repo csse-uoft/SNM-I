@@ -4,7 +4,7 @@ const {GDBTimeIntervalModel} = require("./timeInterval");
 
 const GDBDayScheduleModel = createGraphDBModel({
   dayOfWeek: {type: Types.NamedIndividual, internalKey: 'hasDayOfWeek'},
-  timeInterval: {type: GDBTimeIntervalModel, internalKey: 'hasTimeInterval'}
+  timeIntervals: {type: GDBTimeIntervalModel, internalKey: 'hasTimeInterval'}
 }, {
   rdfTypes: [':DaySchedule'], name: 'daySchedule'
 });

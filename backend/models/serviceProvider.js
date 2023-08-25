@@ -7,7 +7,7 @@ const GDBServiceProviderModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},
   organization: {type: GDBOrganizationModel, internalKey: ':hasOrganization'},
   volunteer: {type: GDBVolunteerModel, internalKey: ':hasVolunteer'},
-  characteristicOccurrence : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':ServiceProvider'], name: 'serviceProvider'
 });

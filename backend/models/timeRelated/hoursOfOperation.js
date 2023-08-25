@@ -4,8 +4,8 @@ const {GDBWeekScheduleModel} = require("./weekSchedule");
 
 
 const GDBHoursOfOperationModel = createGraphDBModel({
-  dateSchedule: {type: [GDBDateScheduleModel], internalKey: ':hasDateSchedule'},
-  weekSchedule: {type: [GDBWeekScheduleModel], internalKey: ':hasWeekSchedule'}
+  dateSchedules: {type: [GDBDateScheduleModel], internalKey: ':hasDateSchedule'},
+  weekSchedules: {type: [GDBWeekScheduleModel], internalKey: ':hasWeekSchedule'}
 }, {
   rdfTypes: [':HoursOfOperation'], name: 'hoursOfOperation'
 });
