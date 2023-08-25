@@ -1,6 +1,6 @@
 services:
   server:
-    build: ./scripts/nodejs.Dockerfile
+    build: ./scripts/nodejs
     container_name: server
     working_dir: /code
     volumes:
