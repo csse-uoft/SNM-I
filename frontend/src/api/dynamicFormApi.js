@@ -25,7 +25,7 @@ export async function deleteDynamicForm(id) {
 }
 
 export async function getInstancesInClass(className) {
-  return getJson('/api/dynamicClassInstances/' + className);
+  return getJson('/api/dynamicClassInstances/' + encodeURIComponent(className));
 }
 
 export async function getURILabel(uri) {

@@ -213,8 +213,7 @@ async function fetchSingleGenericHelper(genericType, id) {
   }
 
   const data = await genericType2Model[genericType].findOne({_id: id},
-    {populates: ['characteristicOccurrences', 'questionOccurrences']});
-  // TODO: model.populate("characteristicOccurrences.occurrenceOf.implementation")
+    {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences']});
 
   const inter = await GDBInternalTypeModel.findById(1);
 
@@ -251,15 +250,17 @@ async function fetchSingleGenericHelper(genericType, id) {
       } else if (co.multipleObjectValues) {
         co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(value));
       }
-
-      result[co.occurrenceOf.individualName ? co.occurrenceOf.individualName.replace(':', '') : co.occurrenceOf.replace(':', '')] =
+      const coName = co.occurrenceOf.individualName
+        ? co.occurrenceOf.individualName.replace(':', '')
+        : SPARQL.getPrefixedURI(co.occurrenceOf).replace(':', '');
+      result[coName] =
         co.dataStringValue ?? co.dataNumberValue ?? co.dataBooleanValue ?? co.dataDateValue
         ?? co.objectValue ?? co.multipleObjectValues;
     }
 
   if (data.questionOccurrences)
     for (const qo of data.questionOccurrences) {
-      result[qo.occurrenceOf.replace(':', '')] = qo.stringValue;
+      result[SPARQL.getPrefixedURI(qo.occurrenceOf).replace(':', '')] = qo.stringValue;
     }
 
   return result;
@@ -446,7 +447,7 @@ const createSingleGeneric = async (req, res, next) => {
   const data = req.body;
   // genericType will be 'client', 'serviceProvider',...
   const {genericType} = req.params;
-  
+
   try {
     const instanceData = await createSingleGenericHelper(data, genericType);
     // add createDate to person

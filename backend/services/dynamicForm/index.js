@@ -135,12 +135,13 @@ async function getDynamicFormsByFormType(req, res, next) {
 
 async function getIndividualsInClass(req, res) {
   const instances = {};
+  const fullURI = req.params.class.includes('://') ? req.params.class : SPARQL.getFullURI(req.params.class) ;
 
   const query = `
     ${SPARQL.getSPARQLPrefixes()}
     select * 
     where { 
-        ?s a <${SPARQL.getFullURI(req.params.class)}>, owl:NamedIndividual.
+        ?s a <${fullURI}>, owl:NamedIndividual.
         OPTIONAL {?s rdfs:label ?label .}
         OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider: organization
         OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
