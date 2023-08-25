@@ -19,10 +19,7 @@ const columnsWithoutOptions = [
   {
     label: 'Client',
     body: ({ client }) => {
-      return client;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      return <Link color to={`/clients/${client.id}`}>{client.name}</Link>;
     }
   },
 ];
@@ -48,35 +45,13 @@ export default function ClientAssessment() {
     // using this function simplifies the code and makes no difference in performance
     const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data; // TODO: Does not contain address info
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
-    const clients = {};
-    await getInstancesInClass(':Client').then((res) => {
-      Object.keys(res).forEach((key) => {
-        const clientId = key.split('#')[1];
-        clients[clientId] = res[key];
-      }
-      );
-    });
-    const persons = {};
-    // get all persons data
-    await getInstancesInClass('cids:Person').then((res) => {
-      Object.keys(res).forEach((key) => {
-        const personId = key.split('#')[1];
-        persons[personId] = res[key];
-      });
-    });
 
     const data = [];
     for (const clientAssessment of clientAssessments) {
       const clientAssessmentData = { _id: clientAssessment._id, address: {} };
       if (clientAssessment.characteristicOccurrences)
         for (const occ of clientAssessment.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Client') {
-            clientAssessmentData.client = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Person') {
-            clientAssessmentData.person = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'UserAccount') {
-            clientAssessmentData.userAccount = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
+          if (occ.occurrenceOf?.name === 'Address') {
             const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
             clientAssessmentData.address = {
               lat: obj['characteristic_' + addressCharacteristicId].lat,
@@ -86,11 +61,15 @@ export default function ClientAssessment() {
         }
       if (clientAssessment.client) {
         // get corresponding client data
-        clientAssessmentData.client = clients[clientAssessment.client.slice(1)]
+        clientAssessmentData.client = {
+          name: clientAssessment.client.firstName + ' ' + clientAssessment.client.lastName,
+          id: clientAssessment.client._id
+        }
       }
 
       data.push(clientAssessmentData);
     }
+    console.log(data)
     return data;
   };
 
