@@ -1,6 +1,6 @@
 services:
   server:
-    image: node:16-slim
+    build: ./scripts/nodejs.Dockerfile
     container_name: server
     working_dir: /code
     volumes:
