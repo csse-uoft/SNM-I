@@ -3,11 +3,10 @@ const {
   findCharacteristicById, updateCharacteristicHelper,
   createCharacteristicHelper, updateOptions, updateFieldType
 } = require("./characteristicsHelper");
-const {SPARQL} = require('../../utils/graphdb/helpers');
+const {SPARQL, GraphDB} = require('graphdb-utils');
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBServiceProviderModel} = require("../../models");
 const {query} = require("express");
-const {GraphDB} = require("../../utils/graphdb");
 
 const option2Model = {
   'client': GDBClientModel,

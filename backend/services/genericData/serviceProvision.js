@@ -1,6 +1,6 @@
 const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {SPARQL} = require("../../utils/graphdb/helpers");
+const {SPARQL} = require("graphdb-utils");
 const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
 const {GDBServiceModel} = require("../../models/service/service");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");

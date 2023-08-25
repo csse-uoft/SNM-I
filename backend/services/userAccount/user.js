@@ -185,8 +185,8 @@ async function initUserAccounts() {
       status: "permanent",
       expirationDate: new Date('2999-1-1'),
       primaryContact: {
-        givenName: 'Super',
-        familyName: 'Admin',
+        firstName: 'Super',
+        lastName: 'Admin',
         telephone: {
           countryCode: 1,
           areaCode: 647,

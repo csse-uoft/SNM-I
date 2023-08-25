@@ -2,7 +2,7 @@ const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question"
 const {createQuestionHelper, updateQuestionHelper, findQuestionById} = require("./questionHelper");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBOrganizationModel} = require("../../models");
-const {GraphDB} = require("../../utils/graphdb");
+const {GraphDB} = require("graphdb-utils");
 
 
 const createQuestion = async (req, res, next) => {

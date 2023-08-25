@@ -1,5 +1,4 @@
-const {SPARQL, sortObjectByKey} = require("../../utils/graphdb/helpers");
-const {GraphDB} = require("../../utils/graphdb");
+const {SPARQL, sortObjectByKe, GraphDB} = require("graphdb-utils");
 
 async function getClientNeedOccurrenceByClient(req, res) {
   const instances = {};

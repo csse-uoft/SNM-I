@@ -1,4 +1,4 @@
-const {createGraphDBModel} = require("../../utils/graphdb");
+const {createGraphDBModel} = require("graphdb-utils");
 const {GDBDateScheduleModel} = require("./dateSchedule");
 const {GDBWeekScheduleModel} = require("./weekSchedule");
 

@@ -1,7 +1,6 @@
 const {MDBDynamicFormModel} = require('../../models/dynamicForm');
 const {GDBUserAccountModel} = require('../../models/userAccount')
-const {GraphDB} = require("../../utils/graphdb");
-const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
+const {GraphDB, SPARQL, sortObjectByKey} = require("graphdb-utils");
 const {Server400Error} = require('../../utils');
 
 // this object contains checkers for different type of generics

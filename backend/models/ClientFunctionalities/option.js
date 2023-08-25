@@ -1,8 +1,7 @@
-const {createGraphDBModel, Types} = require("../../utils/graphdb");
+const {createGraphDBModel, Types} = require("graphdb-utils");
 
 /**
  * This is the option Model.
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBOptionModel = createGraphDBModel({
   label: {type: String, internalKey: ':hasLabel'},

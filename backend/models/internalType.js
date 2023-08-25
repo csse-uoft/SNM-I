@@ -1,9 +1,8 @@
-const {createGraphDBModel, Types, DeleteType} = require("../utils/graphdb");
+const {createGraphDBModel, Types, DeleteType} = require("graphdb-utils");
 const {GDBFIIModel} = require("./ClientFunctionalities/formItemImplementation");
 
 /**
  * internalType Model in GraphDB
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBInternalTypeModel = createGraphDBModel({
   name: {type: String, internalKey: ':hasName'},

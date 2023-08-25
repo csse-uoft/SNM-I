@@ -1,5 +1,5 @@
 const {GDBAddressModel} = require('../address')
-const {createGraphDBModel, Types, DeleteType} = require("../../utils/graphdb");
+const {createGraphDBModel, Types, DeleteType} = require("graphdb-utils");
 const {GDBProgramModel} = require("./program");
 const {GDBCOModel} = require("../ClientFunctionalities/characteristicOccurrence");
 const {GDBNeedSatisfierOccurrenceModel} = require("../needSatisfierOccurrence");

@@ -1,7 +1,7 @@
 ## Find Examples
 
 ```js
-const {regexBuilder} = require('../../utils/graphdb');
+const {regexBuilder} = require('graphdb-utils');
 ```
 
 ### Find with `$and`

@@ -1,9 +1,8 @@
-const {createGraphDBModel, DeleteType} = require("../../utils/graphdb");
+const {createGraphDBModel, DeleteType} = require("graphdb-utils");
 const {GDBQuestionModel} = require("./question");
 
 /**
  * GDBQOModel stands for GDB - Question Occurrence - Model
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBQOModel = createGraphDBModel({
   stringValue: {type: String, internalKey: ':hasStringValue'},

@@ -4,6 +4,7 @@ const {sleep} = require('../utils')
 const mongoose = require('mongoose');
 const {createModel} = require('mongoose-gridfs');
 
+mongoose.set('strictQuery', true);
 mongoose.connect(config.mongodb.addr, {
   useNewUrlParser: true,
   useUnifiedTopology: true

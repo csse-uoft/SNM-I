@@ -1,4 +1,4 @@
-const {GraphDB, Types, createGraphDBModel, DeleteType} = require('../utils/graphdb');
+const {GraphDB, Types, createGraphDBModel, DeleteType} = require('graphdb-utils');
 
 const {GDBOrganizationModel} = require('./serviceProvider');
 const {GDBPersonModel} = require('./person');
@@ -34,7 +34,7 @@ const GDBUserAccountModel = createGraphDBModel({
   status: {type: String, internalKey: ':hasAccountStatus'},
 
   // Exact 3 questions, the answer should be case-insensitive.
-  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', externalKey: 'securityQuestions', onDelete: DeleteType.CASCADE}
+  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', onDelete: DeleteType.CASCADE}
 
 }, {
   rdfTypes: [':UserAccount'], name: 'userAccount'

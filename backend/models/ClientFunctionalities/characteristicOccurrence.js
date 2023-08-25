@@ -1,9 +1,8 @@
-const {createGraphDBModel, Types, DeleteType} = require("../../utils/graphdb");
+const {createGraphDBModel, Types, DeleteType} = require("graphdb-utils");
 const {GDBCharacteristicModel} = require("./characteristic");
 
 /**
  * GDBCOModel stands for GDB - Characteristic Occurrence - Model
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBCOModel = createGraphDBModel({
   dataStringValue: {type: String, internalKey: ':hasStringValue'},

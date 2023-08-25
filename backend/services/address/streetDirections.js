@@ -1,5 +1,5 @@
 const {GDBStreetType} = require('../../models/address');
-const {GraphDB} = require('../../utils/graphdb/graphDB')
+const {GraphDB} = require('graphdb-utils')
 
 
 // https://www150.statcan.gc.ca/n1/pub/92-500-g/2013001/tbl/tbl4-3-eng.htm

@@ -1,7 +1,6 @@
 const {GDBFieldTypeModel} = require('../../models/ClientFunctionalities/fieldType');
 const {GDBCharacteristicModel} = require('../../models/ClientFunctionalities/characteristic');
-const {GraphDB} = require('../../utils/graphdb');
-const {SPARQL, sortObjectByKey} = require('../../utils/graphdb/helpers');
+const {SPARQL, GraphDB, sortObjectByKey} = require('graphdb-utils');
 const {GDBInternalTypeModel} = require("../../models/internalType");
 
 const type2Label = {
@@ -65,10 +64,17 @@ async function initFieldTypes() {
 async function initPredefinedCharacteristics() {
   const {allPredefinedCharacteristics} = require('./predefined');
   const predefined = {...allPredefinedCharacteristics};
-  const existingPredefined = await GDBCharacteristicModel.find({isPredefined: true});
+  const existingPredefined = await GDBCharacteristicModel.find({isPredefined: true}, {populates: ["implementation.fieldType"]});
   for (const existingCharacteristic of existingPredefined) {
     if (Object.keys(predefined).includes(existingCharacteristic.name)) {
-      Object.assign(existingCharacteristic, predefined);
+      const predefinedCharacteristic = predefined[existingCharacteristic.name];
+
+      // // Check if the implementation.fieldType is changed.
+      //
+      // Object.assign(existingCharacteristic.implementation, predefined[existingCharacteristic.name].implementation);
+      // const predefinedWithoutImplementation = {...predefined[existingCharacteristic.name]};
+      // delete predefinedWithoutImplementation.implementation;
+      Object.assign(existingCharacteristic, predefinedCharacteristic);
 
       // This won't be triggered if the predefined characteristic is not changed.
       await existingCharacteristic.save();
@@ -89,7 +95,7 @@ async function initPredefinedInternalType() {
   const existingPredefined = await GDBInternalTypeModel.find({isPredefined: true});
   for (const existingInternalType of existingPredefined) {
     if (Object.keys(predefined).includes(existingInternalType.name)) {
-      Object.assign(existingInternalType, predefined);
+      Object.assign(existingInternalType, predefined[existingInternalType.name]);
 
       // This won't be triggered if the predefined characteristic is not changed.
       await existingInternalType.save();

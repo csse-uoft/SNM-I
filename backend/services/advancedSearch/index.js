@@ -1,7 +1,7 @@
 const {GDBCharacteristicModel, GDBClientModel, GDBServiceProviderModel} = require("../../models");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {MDBUsageModel} = require("../../models/usage");
-const {GraphDB, regexBuilder} = require("../../utils/graphdb");
+const {GraphDB, regexBuilder} = require("graphdb-utils");
 const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 
 

@@ -6,11 +6,10 @@ const {
   GDBAddressModel,
   GDBQOModel
 } = require("../../models");
-const {SPARQL} = require('../../utils/graphdb/helpers');
+const {SPARQL, GraphDB} = require('graphdb-utils');
 const {FieldTypes} = require("../characteristics");
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
-const {GraphDB} = require("../../utils/graphdb");
 const {GDBNoteModel} = require("../../models/ClientFunctionalities/note");
 const {GDBCOModel} = require("../../models/ClientFunctionalities/characteristicOccurrence");
 const {MDBUsageModel} = require("../../models/usage");

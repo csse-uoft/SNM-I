@@ -1,8 +1,7 @@
-const {createGraphDBModel} = require("../../utils/graphdb");
+const {createGraphDBModel} = require("graphdb-utils");
 
 /**
  * This is the Question Model
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBQuestionModel = createGraphDBModel({
   description: {type: String, internalKey: 'cids:hasDescription'},

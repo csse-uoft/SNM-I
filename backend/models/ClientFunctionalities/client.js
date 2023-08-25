@@ -1,4 +1,4 @@
-const {createGraphDBModel, DeleteType, Types} = require("../../utils/graphdb");
+const {createGraphDBModel, DeleteType, Types} = require("graphdb-utils");
 const {GDBQOModel} = require("./questionOccurrence");
 const {GDBCOModel} = require("./characteristicOccurrence");
 const {GDBNoteModel} = require("./note");
@@ -9,7 +9,6 @@ const {GDBOutcomeOccurrenceModel} = require("../outcome/outcomeOccurrence");
 
 /**
  * This is a Client model.
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 const GDBClientModel = createGraphDBModel({
   characteristicOccurrence: {type: [GDBCOModel],

@@ -2,14 +2,17 @@
 title: GraphDB utils
 ---
 
-The `backend/utils/graphdb` module consists of wrappers to create GraphDB
+> This document contains outdated information. Please see the latest documentation: https://github.com/csse-uoft/graphdb-utils
+
+
+The `graphdb-utils` module consists of wrappers to create GraphDB
 models and manipulate data in an object-oriented way without having to worry
 about the SPARQL queries. If you need to interact with GraphDB, you should
 import this internal module instead of writing SPARQL queries directly.
 
 ## Examples
 ### Creating model
-Use the GraphDBModel constructor defined in `backend/utils/graphDB/graphDBSchema.js`
+Use the GraphDBModel constructor defined [here](https://github.com/csse-uoft/graphdb-utils/blob/main/src/graphDBSchema.ts).
 ```js
 const PrimaryContactModel = createGraphDBModel({
   first_name: String,

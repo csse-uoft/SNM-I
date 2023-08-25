@@ -2,7 +2,7 @@ const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
 const {getPredefinedProperty} = require('./helperFunctions')
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {SPARQL} = require('../../utils/graphdb/helpers');
+const {SPARQL} = require('graphdb-utils');
 
 const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty('serviceOccurrence', internalType);

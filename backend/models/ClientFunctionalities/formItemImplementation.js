@@ -1,10 +1,9 @@
-const {createGraphDBModel, Types, DeleteType} = require("../../utils/graphdb");
+const {createGraphDBModel, Types, DeleteType} = require("graphdb-utils");
 const {GDBFieldTypeModel} = require("./fieldType");
 const {GDBOptionModel} = require("./option");
 
 /**
  * GDBCIModel stands for GDB - characteristics Implementation - Model
- * @type {GDBUtils.GraphDBModelConstructor}
  */
 
 const GDBFIIModel = createGraphDBModel({
