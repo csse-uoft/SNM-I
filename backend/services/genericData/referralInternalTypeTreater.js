@@ -21,7 +21,7 @@ const referralInternalTypeFetchTreater = async (data) => {
       property === 'receivingServiceProvider' || property === 'needOccurrence' || property === 'service' ||
       property === 'serviceOccurrence' || property === 'program' || property === 'programOccurrence') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
-      result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+      result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
     }
   }
   return result;

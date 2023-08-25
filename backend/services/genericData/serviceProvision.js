@@ -45,7 +45,7 @@ const serviceProvisionInternalTypeFetchTreater = async (data) => {
       name: 'clientForServiceProvision',
       formType: FORMTYPE
     });
-    result['internalType_' + internalType._id] = SPARQL.getFullURI(client.individualName);
+    result['internalType_' + internalType._id] = SPARQL.ensureFullURI(client.individualName);
   }
   if (data.serviceOccurrence) {
     // Add service
@@ -55,7 +55,7 @@ const serviceProvisionInternalTypeFetchTreater = async (data) => {
       name: 'serviceForServiceProvision',
       formType: FORMTYPE
     });
-    result['internalType_' + internalType._id] = SPARQL.getFullURI(serviceOcc.occurrenceOf);
+    result['internalType_' + internalType._id] = SPARQL.ensureFullURI(serviceOcc.occurrenceOf);
   }
 
   if (data.needSatisfierOccurrence) {
@@ -66,7 +66,7 @@ const serviceProvisionInternalTypeFetchTreater = async (data) => {
       name: 'needSatisfierForServiceProvision',
       formType: FORMTYPE
     });
-    result['internalType_' + internalType._id] = SPARQL.getFullURI(needSatisfierOcc.occurrenceOf);
+    result['internalType_' + internalType._id] = SPARQL.ensureFullURI(needSatisfierOcc.occurrenceOf);
   }
 
   for (const property in data) {
@@ -75,7 +75,7 @@ const serviceProvisionInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema[property].internalKey,
         formType: FORMTYPE
       });
-      result['internalType_' + internalType._id] = SPARQL.getFullURI(data[property]);
+      result['internalType_' + internalType._id] = SPARQL.ensureFullURI(data[property]);
     }
   }
   return result;

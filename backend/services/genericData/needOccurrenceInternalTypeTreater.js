@@ -18,11 +18,11 @@ const needOccurrenceInternalTypeFetchTreater = async (data) => {
   for (const property in data) {
     if (property === 'occurrenceOf') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: 'needOccurrence'});
-      result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+      result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
     } else if (property === 'needSatisfiers') {
       const propertyRemovedS = property.slice(0, -1);
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[propertyRemovedS].internalKey, formType: 'outcomeOccurrence'});
-      result[ 'internalType_'+ internalType._id] = data[property].map(SPARQL.getFullURI);
+      result[ 'internalType_'+ internalType._id] = data[property].map(SPARQL.ensureFullURI);
     }
   }
   return result;

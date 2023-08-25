@@ -94,9 +94,6 @@ const fetchCharacteristic = async (req, res, next) => {
     await GraphDB.sendSelectQuery(query, false, () => {
       isUsed = true
     });
-    if (characteristic.implementation?.optionsFromClass) {
-      characteristic.implementation.optionsFromClass = SPARQL.getFullURI(characteristic.implementation.optionsFromClass);
-    }
 
     const fetchData = {
       name: characteristic.name,
@@ -135,7 +132,7 @@ const fetchCharacteristics = async (req, res, next) => {
         characteristic.implementation.options = characteristic.implementation.options
           .map(option => {
             option = option.toJSON();
-            return {...option, iri: SPARQL.getFullURI(`:option_${option._id}`)};
+            return {...option, iri: SPARQL.ensureFullURI(`:option_${option._id}`)};
           });
       }
       characteristic.id = characteristic._id;

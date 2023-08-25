@@ -44,7 +44,7 @@ const programProvisionInternalTypeFetchTreater = async (data) => {
       name: 'clientForProgramProvision',
       formType: FORMTYPE
     });
-    result['internalType_' + internalType._id] = SPARQL.getFullURI(client.individualName);
+    result['internalType_' + internalType._id] = SPARQL.ensureFullURI(client.individualName);
   }
   if (data.programOccurrence) {
     // Add program
@@ -54,7 +54,7 @@ const programProvisionInternalTypeFetchTreater = async (data) => {
       name: 'programForProgramProvision',
       formType: FORMTYPE
     });
-    result['internalType_' + internalType._id] = SPARQL.getFullURI(programOcc.occurrenceOf);
+    result['internalType_' + internalType._id] = SPARQL.ensureFullURI(programOcc.occurrenceOf);
   }
 
   if (data.needSatisfierOccurrence) {
@@ -65,7 +65,7 @@ const programProvisionInternalTypeFetchTreater = async (data) => {
       name: 'needSatisfierForProgramProvision',
       formType: FORMTYPE
     });
-    result['internalType_' + internalType._id] = SPARQL.getFullURI(needSatisfierOcc.occurrenceOf);
+    result['internalType_' + internalType._id] = SPARQL.ensureFullURI(needSatisfierOcc.occurrenceOf);
   }
 
   for (const property in data) {
@@ -74,7 +74,7 @@ const programProvisionInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema[property].internalKey,
         formType: FORMTYPE
       });
-      result['internalType_' + internalType._id] = SPARQL.getFullURI(data[property]);
+      result['internalType_' + internalType._id] = SPARQL.ensureFullURI(data[property]);
     }
   }
   return result;

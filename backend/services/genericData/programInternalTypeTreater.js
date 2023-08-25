@@ -18,11 +18,11 @@ const programInternalTypeFetchTreater = async (data) => {
   for (const property in data) {
     if (property === 'serviceProvider' || property === 'manager') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
-      result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+      result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
     } else if (property === 'needSatisfiers') {
       const propertyRemovedS = property.slice(0, -1);
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[propertyRemovedS].internalKey, formType: FORMTYPE});
-      result[ 'internalType_'+ internalType._id] = data[property].map(SPARQL.getFullURI);
+      result[ 'internalType_'+ internalType._id] = data[property].map(SPARQL.ensureFullURI);
     }
   }
   return result;

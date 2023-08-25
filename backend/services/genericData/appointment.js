@@ -19,7 +19,7 @@ const appointmentInternalTypeFetchTreater = async (data) => {
   for (const property in data) {
     if (property === 'client' || property === 'person' || property === 'user') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
-      result[ 'internalType_'+ internalType._id] = SPARQL.getFullURI(data[property]);
+      result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
     }
   }
   return result;

@@ -51,14 +51,14 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
       predefinedProperty: schema.outcome.internalKey,
       formType: FORMTYPE
     });
-    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.getFullURI(outcome));
+    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.ensureFullURI(outcome));
   }
   if (data.needs) {
     const internalType = await GDBInternalTypeModel.findOne({
       predefinedProperty: schema.need.internalKey,
       formType: FORMTYPE
     });
-    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.getFullURI(need));
+    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.ensureFullURI(need));
   }
 
   for (const property in data) {
@@ -68,7 +68,7 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema[property].internalKey,
         formType: FORMTYPE
       });
-      result['internalType_' + internalType._id] = SPARQL.getFullURI(data[property]);
+      result['internalType_' + internalType._id] = SPARQL.ensureFullURI(data[property]);
     }
 
     else if (property === 'needs') {
@@ -76,7 +76,7 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema.need.internalKey,
         formType: FORMTYPE
       });
-      result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.getFullURI(need));
+      result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.ensureFullURI(need));
     }
 
     else if (property === 'outcomes') {
@@ -84,7 +84,7 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema.outcome.internalKey,
         formType: FORMTYPE
       });
-      result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.getFullURI(outcome));
+      result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.ensureFullURI(outcome));
     }
 
     else if (property === 'questions') {
@@ -92,7 +92,7 @@ const clientAssessmentInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema.question.internalKey,
         formType: FORMTYPE
       });
-      result[internalType.individualName.slice(1)] = data.questions.map(question => SPARQL.getFullURI(question));
+      result[internalType.individualName.slice(1)] = data.questions.map(question => SPARQL.ensureFullURI(question));
     }
   }
   return result;

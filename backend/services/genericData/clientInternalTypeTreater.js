@@ -36,14 +36,14 @@ const clientInternalTypeFetchTreater = async (data) => {
       predefinedProperty: schema.need.internalKey,
       formType: FORMTYPE
     });
-    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.getFullURI(need));
+    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.ensureFullURI(need));
   }
   if (data.outcomes) {
     const internalType = await GDBInternalTypeModel.findOne({
       predefinedProperty: schema.outcome.internalKey,
       formType: FORMTYPE
     });
-    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.getFullURI(outcome));
+    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.ensureFullURI(outcome));
   }
   return result;
 };

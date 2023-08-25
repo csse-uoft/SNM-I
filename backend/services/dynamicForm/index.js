@@ -135,7 +135,7 @@ async function getDynamicFormsByFormType(req, res, next) {
 
 async function getIndividualsInClass(req, res) {
   const instances = {};
-  const fullURI = req.params.class.includes('://') ? req.params.class : SPARQL.getFullURI(req.params.class) ;
+  const fullURI = SPARQL.ensureFullURI(req.params.class) ;
 
   const query = `
     ${SPARQL.getSPARQLPrefixes()}
@@ -156,14 +156,14 @@ async function getIndividualsInClass(req, res) {
     if (label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value) {
       instances[s.id] = label?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
-      instances[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
+      instances[s.id] = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
   });
   res.json(sortObjectByKey(instances));
 }
 
 async function getURILabel(req, res) {
-  const fullURI = req.params.uri.includes('://') ? req.params.uri : SPARQL.getFullURI(req.params.uri) ;
+  const fullURI = SPARQL.ensureFullURI(req.params.uri) ;
   const query = `
     ${SPARQL.getSPARQLPrefixes()}
     select * 
@@ -183,7 +183,7 @@ async function getURILabel(req, res) {
     if (label?.value || label2?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
       result = label?.value || label2?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
-      result = SPARQL.getPrefixedURI(s.id) || s.id;
+      result = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
   });
   res.json({label: result});

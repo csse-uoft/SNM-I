@@ -26,7 +26,7 @@ const programRegistrationInternalTypeFetchTreater = async (data) => {
         predefinedProperty: schema[property].internalKey,
         formType: FORMTYPE
       });
-      result['internalType_' + internalType._id] = SPARQL.getFullURI(data[property]);
+      result['internalType_' + internalType._id] = SPARQL.ensureFullURI(data[property]);
     }
   }
   return result;

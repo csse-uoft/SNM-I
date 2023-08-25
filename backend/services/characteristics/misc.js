@@ -144,9 +144,9 @@ async function getAllClasses(req, res) {
 
   await GraphDB.sendSelectQuery(query, false, ({s, label}) => {
     if (label?.value) {
-      classes[s.id] = `${SPARQL.getPrefixedURI(s.id)} (${label.value})`;
+      classes[s.id] = `${SPARQL.ensurePrefixedURI(s.id)} (${label.value})`;
     } else {
-      classes[s.id] = SPARQL.getPrefixedURI(s.id) || s.id;
+      classes[s.id] = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
 
   });

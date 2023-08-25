@@ -16,7 +16,7 @@ const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
  */
 const implementCharacteristicOccurrence = async (characteristic, occurrence, value) => {
   const {valueDataType, fieldType} = characteristic.implementation;
-  const prefixedDataType = SPARQL.getPrefixedURI(characteristic.implementation.valueDataType);
+  const prefixedDataType = SPARQL.ensurePrefixedURI(characteristic.implementation.valueDataType);
   // Storing value in the characteristic occurrence model.
   if (prefixedDataType === 'xsd:string') {
     occurrence.dataStringValue = value + '';
@@ -30,7 +30,7 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
     }
     occurrence.dataDateValue = new Date(value);
   } else if (prefixedDataType === "owl:NamedIndividual") {
-    const prefixedFieldType = SPARQL.getPrefixedURI(fieldType);
+    const prefixedFieldType = SPARQL.ensurePrefixedURI(fieldType);
 
     if (prefixedFieldType === FieldTypes.SingleSelectField.individualName) {
       occurrence.objectValue = value;
@@ -91,7 +91,7 @@ function getPredefinedProperty(genericType, characteristic) {
   const {genericType2Model} = require('./index');
   const schema = genericType2Model[genericType].schema;
   for (let key in schema) {
-    if (SPARQL.getFullURI(schema[key].internalKey) === characteristic.predefinedProperty)
+    if (SPARQL.ensureFullURI(schema[key].internalKey) === characteristic.predefinedProperty)
       return key;
   }
   return false;

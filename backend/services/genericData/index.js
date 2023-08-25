@@ -237,22 +237,20 @@ async function fetchSingleGenericHelper(genericType, id) {
           const address = (await GDBAddressModel.findOne({_id: id})).toJSON();
 
           // Get full URI
-          if (address.streetType) address.streetType = SPARQL.getFullURI(address.streetType);
-          if (address.streetDirection) address.streetDirection = SPARQL.getFullURI(address.streetDirection);
-          if (address.state) address.state = SPARQL.getFullURI(address.state);
+          if (address.streetType) address.streetType = SPARQL.ensureFullURI(address.streetType);
+          if (address.streetDirection) address.streetDirection = SPARQL.ensureFullURI(address.streetDirection);
+          if (address.state) address.state = SPARQL.ensureFullURI(address.state);
 
           co.objectValue = address;
 
-        } else {
-          co.objectValue = SPARQL.getFullURI(co.objectValue);
         }
 
       } else if (co.multipleObjectValues) {
-        co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.getFullURI(value));
+        co.multipleObjectValues = co.multipleObjectValues.map(value => SPARQL.ensureFullURI(value));
       }
       const coName = co.occurrenceOf.individualName
         ? co.occurrenceOf.individualName.replace(':', '')
-        : SPARQL.getPrefixedURI(co.occurrenceOf).replace(':', '');
+        : SPARQL.ensurePrefixedURI(co.occurrenceOf).replace(':', '');
       result[coName] =
         co.dataStringValue ?? co.dataNumberValue ?? co.dataBooleanValue ?? co.dataDateValue
         ?? co.objectValue ?? co.multipleObjectValues;
@@ -260,7 +258,7 @@ async function fetchSingleGenericHelper(genericType, id) {
 
   if (data.questionOccurrences)
     for (const qo of data.questionOccurrences) {
-      result[SPARQL.getPrefixedURI(qo.occurrenceOf).replace(':', '')] = qo.stringValue;
+      result[SPARQL.ensurePrefixedURI(qo.occurrenceOf).replace(':', '')] = qo.stringValue;
     }
 
   return result;
