@@ -133,7 +133,8 @@ const genericType2Populates = {
   'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
   'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence'],
   'serviceRegistration': ['needOccurrence', 'serviceOccurrence'],
-  'programRegistration' : ['needOccurrence', 'programOccurrence']
+  'programRegistration' : ['needOccurrence', 'programOccurrence'],
+  'needOccurrence': ['occurrenceOf', 'client']
 };
 
 const genericType2Checker = {

@@ -73,14 +73,6 @@ export default function NeedOccurrences() {
 
   const fetchData = async () => {
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
-    const needs = {};
-    // get all needs data
-    await getInstancesInClass(':Need').then((res) => {
-      Object.keys(res).forEach((key) => {
-        const needId = key.split('#')[1];
-        needs[needId] = res[key];
-      });
-    });
     const data = [];
     for (const needOccurrence of needOccurrences) {
       const needOccurrenceData = {
@@ -91,11 +83,12 @@ export default function NeedOccurrences() {
       if (needOccurrence.occurrenceOf){
         // get corresponding need data
         needOccurrenceData.need = {
-          name: needs[needOccurrence.occurrenceOf.slice(1)],
-          _id: needOccurrence.occurrenceOf.split('_')[1],
+          name: needOccurrence.occurrenceOf.description,
+          _id: needOccurrence.occurrenceOf._id,
         }
       }
       data.push(needOccurrenceData);
+      console.log(data)
     }
     return data;
   }
