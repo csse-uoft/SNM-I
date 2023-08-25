@@ -1,6 +1,6 @@
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
 const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
-const {getPredefinedProperty} = require('./helperFunctions')
+const {getPredefinedProperty, getInternalTypeValues} = require('./helperFunctions')
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require('graphdb-utils');
 
@@ -8,25 +8,13 @@ const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instance
   const property = getPredefinedProperty('serviceOccurrence', internalType);
   if (property === 'occurrenceOf') {
     instanceData[property] = value;
-  } else if (property === 'needSatisfier') {
+  } else if (property === 'needSatisfiers') {
     instanceData['needSatisfiers'] = value;
   }
 };
 
 const serviceOccurrenceInternalTypeFetchTreater = async (data) => {
-  const result = {};
-  const schema =  data.schema;
-  for (const property in data) {
-    if (property === 'occurrenceOf') {
-      const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: 'serviceOccurrence'});
-      result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
-    }else if(property === 'needSatisfiers'){
-      const propertyRemovedS = property.slice(0, -1);
-      const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[propertyRemovedS].internalKey, formType: 'serviceOccurrence'});
-      result[ 'internalType_'+ internalType._id] = data[property].map(SPARQL.ensureFullURI);
-    }
-  }
-  return result;
+  return getInternalTypeValues(['occurrenceOf', 'needSatisfiers'], data, FORMTYPE)
 };
 
 const serviceOccurrenceInternalTypeUpdateTreater = async (internalType, value, result) => {

@@ -44,7 +44,7 @@ export const defaultAddEditNeedFields = {
   description: '',
   needSatisfiers : [],
   characteristic: '',
-  code: []
+  codes: []
 }
 
 export const defaultAddEditOutcomeFields = {
@@ -52,7 +52,7 @@ export const defaultAddEditOutcomeFields = {
   changeType: '',
   description: '',
   characteristic: '',
-  code: []
+  codes: []
 }
 
 export const defaultInvitationFields = {

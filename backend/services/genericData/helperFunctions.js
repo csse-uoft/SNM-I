@@ -97,4 +97,27 @@ function getPredefinedProperty(genericType, characteristic) {
   return false;
 }
 
-module.exports = {fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence, getPredefinedProperty}
+async function getInternalTypeValues(properties, doc, FORMTYPE) {
+  const result = {};
+  const schema = doc.schema;
+
+  for (const property of properties) {
+    if (doc[property] != null) {
+      const internalType = await GDBInternalTypeModel.findOne({
+        predefinedProperty: schema[property].internalKey,
+        formType: FORMTYPE
+      });
+      if (Array.isArray(doc[property])) {
+        result['internalType_' + internalType._id] = doc[property].map(SPARQL.ensureFullURI);
+      } else {
+        result['internalType_' + internalType._id] = SPARQL.ensureFullURI(doc[property]);
+      }
+    }
+  }
+  return result;
+}
+
+module.exports = {
+  fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence,
+  getPredefinedProperty, getInternalTypeValues
+}

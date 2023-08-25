@@ -1,4 +1,4 @@
-const {getPredefinedProperty} = require("./helperFunctions");
+const {getPredefinedProperty, getInternalTypeValues} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
 
@@ -6,46 +6,16 @@ const FORMTYPE = 'client'
 
 const clientInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  if (property === 'need') {
-    console.log('instanceData', instanceData);
+  if (property === 'needs') {
     instanceData.needs = value;
-    instanceData.needOccurrences = [];
-    // Create/Delete Need satisfier based on need
-    for (const needURI of value) {
-      instanceData.needOccurrences.push({
-        occurrenceOf: needURI,
-      });
-    }
   }
-  if (property === 'outcome') {
+  if (property === 'outcomes') {
     instanceData.outcomes = value;
-    instanceData.outcomeOccurrences = [];
-    for (const outcomeURI of value) {
-      instanceData.outcomeOccurrences.push({
-        occurrenceOf: outcomeURI,
-      });
-    }
   }
 };
 
 const clientInternalTypeFetchTreater = async (data) => {
-  const result = {};
-  const schema = data.schema;
-  if (data.needs) {
-    const internalType = await GDBInternalTypeModel.findOne({
-      predefinedProperty: schema.need.internalKey,
-      formType: FORMTYPE
-    });
-    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.ensureFullURI(need));
-  }
-  if (data.outcomes) {
-    const internalType = await GDBInternalTypeModel.findOne({
-      predefinedProperty: schema.outcome.internalKey,
-      formType: FORMTYPE
-    });
-    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.ensureFullURI(outcome));
-  }
-  return result;
+  return getInternalTypeValues(['needs', 'outcomes'], data, FORMTYPE);
 };
 
 const clientInternalTypeUpdateTreater = async (internalType, value, result) => {

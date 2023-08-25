@@ -1,37 +1,74 @@
-const { getPredefinedProperty } = require("./helperFunctions");
+const { getPredefinedProperty, getInternalTypeValues } = require("./helperFunctions");
 const { GDBInternalTypeModel } = require("../../models/internalType");
 const { SPARQL } = require("graphdb-utils");
-
+const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
+const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
+const {GDBOutcomeOccurrenceModel} = require("../../models/outcome/outcomeOccurrence");
 
 const FORMTYPE = 'clientAssessment'
+
+const beforeCreateClientAssessment = async function (instanceData, internalTypes, fields) {
+
+  const clientInternalType = Object.values(internalTypes).find(internalType => getPredefinedProperty(FORMTYPE, internalType) === 'client');
+
+  // Get the client
+  if (fields['internalType_' + clientInternalType._id]) {
+    const clientURI = SPARQL.ensureFullURI(fields['internalType_' + clientInternalType._id]);
+    const client = await GDBClientModel.findOne({_uri: clientURI}, {populates: ['needOccurrences', 'outcomeOccurrences']});
+    if (client.needs == null) client.needs = [];
+    if (client.needOccurrences == null) client.needOccurrences = [];
+    if (client.outcomes == null) client.outcomes = [];
+    if (client.outcomeOccurrences == null) client.outcomeOccurrences = [];
+
+    instanceData.client = client;
+  }
+}
+
+const beforeUpdateClientAssessment = async function (instanceData, internalTypes, fields) {
+  // Get the client
+  if (instanceData.client) {
+    const client = await GDBClientModel.findOne({_uri: instanceData.client}, {populates: ['needOccurrences', 'outcomeOccurrences']});
+
+    if (client.needs == null) client.needs = [];
+    if (client.needOccurrences == null) client.needOccurrences = [];
+    if (client.outcomes == null) client.outcomes = [];
+    if (client.outcomeOccurrences == null) client.outcomeOccurrences = [];
+
+    instanceData.client = client;
+  }
+}
 
 const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   // get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
   // instantiate the property with the value
-  if (property === 'client' || property === 'person' ||
-    property === 'userAccount') {
+  if (property === 'person' || property === 'userAccount') {
     instanceData[property] = value;
   }
-  else if (property === 'need') {
+  else if (property === 'needs') {
     instanceData.needs = value;
-    instanceData.needOccurrences = [];
+    // Create need + need occurrence
+    instanceData.client.needs.push(...value);
+
     for (const needURI of value) {
-      instanceData.needOccurrences.push({
+      instanceData.client.needOccurrences.push(GDBNeedOccurrenceModel({
         occurrenceOf: needURI,
-      });
+        client: instanceData.client
+      }))
     }
   }
-  else if (property === 'outcome') {
+
+  else if (property === 'outcomes') {
     instanceData.outcomes = value;
-    instanceData.outcomeOccurrences = [];
+    instanceData.client.outcomes.push(...value);
+
     for (const outcomeURI of value) {
-      instanceData.outcomeOccurrences.push({
-        occurrenceOf: outcomeURI,
-      });
+      instanceData.client.outcomeOccurrences.push(GDBOutcomeOccurrenceModel({
+        occurrenceOf: outcomeURI
+      }))
     }
   }
-  else if (property === 'question') {
+  else if (property === 'questions') {
     instanceData.questions = value;
     instanceData.questionOccurrences = [];
     for (const questionURI of value) {
@@ -42,60 +79,8 @@ const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceD
   }
 }
 
-const clientAssessmentInternalTypeFetchTreater = async (data) => {
-  const result = {};
-  const schema = data.schema;
-
-  if (data.outcomes) {
-    const internalType = await GDBInternalTypeModel.findOne({
-      predefinedProperty: schema.outcome.internalKey,
-      formType: FORMTYPE
-    });
-    result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.ensureFullURI(outcome));
-  }
-  if (data.needs) {
-    const internalType = await GDBInternalTypeModel.findOne({
-      predefinedProperty: schema.need.internalKey,
-      formType: FORMTYPE
-    });
-    result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.ensureFullURI(need));
-  }
-
-  for (const property in data) {
-
-    if (property === 'client' || property === 'person' || property === 'userAccount') {
-      const internalType = await GDBInternalTypeModel.findOne({
-        predefinedProperty: schema[property].internalKey,
-        formType: FORMTYPE
-      });
-      result['internalType_' + internalType._id] = SPARQL.ensureFullURI(data[property]);
-    }
-
-    else if (property === 'needs') {
-      const internalType = await GDBInternalTypeModel.findOne({
-        predefinedProperty: schema.need.internalKey,
-        formType: FORMTYPE
-      });
-      result[internalType.individualName.slice(1)] = data.needs.map(need => SPARQL.ensureFullURI(need));
-    }
-
-    else if (property === 'outcomes') {
-      const internalType = await GDBInternalTypeModel.findOne({
-        predefinedProperty: schema.outcome.internalKey,
-        formType: FORMTYPE
-      });
-      result[internalType.individualName.slice(1)] = data.outcomes.map(outcome => SPARQL.ensureFullURI(outcome));
-    }
-
-    else if (property === 'questions') {
-      const internalType = await GDBInternalTypeModel.findOne({
-        predefinedProperty: schema.question.internalKey,
-        formType: FORMTYPE
-      });
-      result[internalType.individualName.slice(1)] = data.questions.map(question => SPARQL.ensureFullURI(question));
-    }
-  }
-  return result;
+const clientAssessmentInternalTypeFetchTreater = async (doc) => {
+  return getInternalTypeValues(['client', 'person', 'userAccount', 'outcomes', 'needs', 'questions'], doc, FORMTYPE)
 }
 
 const clientAssessmentInternalTypeUpdateTreater = async (internalType, value, result) => {
@@ -106,5 +91,7 @@ const clientAssessmentInternalTypeUpdateTreater = async (internalType, value, re
 module.exports = {
   clientAssessmentInternalTypeCreateTreater,
   clientAssessmentInternalTypeFetchTreater,
-  clientAssessmentInternalTypeUpdateTreater
+  clientAssessmentInternalTypeUpdateTreater,
+  beforeCreateClientAssessment,
+  beforeUpdateClientAssessment
 }
