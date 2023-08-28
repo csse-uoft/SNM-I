@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {fetchQuestions, updateQuestion, deleteQuestion, createQuestion} from '../../api/mockedApi/question';
 import {
-  Chip, Container, IconButton, Dialog, DialogActions, DialogTitle, DialogContent,
-  Button, Box
+  Chip, Container, IconButton, Button, Box
 } from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";

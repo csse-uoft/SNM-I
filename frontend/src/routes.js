@@ -8,7 +8,6 @@ import LoginPane from './components/login/LoginPane';
 import Dashboard from './components/Dashboard';
 import changePrimaryEmail from './components/userProfile/changePrimaryEmail';
 import Clients from './components/Clients';
-import Client from './components/clients/Client';
 import ClientForm from './components/clients/ClientForm';
 import Users from './components/Users';
 import User from './components/users/User';
@@ -21,20 +20,12 @@ import UserProfile from './components/userProfile/Profile';
 import UpdateUserProfile from './components/userProfile/EditProfile';
 import AddEditNeed from "./components/need/addEditNeed";
 import AddEditOutcome from "./components/outcome/addEditOutcome";
-// import NeedForm from './components/client_needs/NeedForm'
-// import Need from './components/client_needs/Need'
 import PrivateRoute from './components/routes/PrivateRoute';
 import AdminRoute from './components/routes/AdminRoute';
 import Providers from './components/Providers';
-import AddServicePrompt from './components/providers/AddServicePrompt';
-import AddProgramPrompt from './components/providers/AddProgramPrompt';
 import ProviderForm from './components/providers/ProviderForm2';
-import ProviderProfile from './components/providers/ProviderProfile';
-import ProviderRatingForm from './components/providers/ProviderRatingForm.js';
 import Services from './components/Services';
-import Service from './components/services/Service';
 import Programs from './components/Programs';
-import Program from './components/programs/Program';
 // import ServiceForm from './components/services/ServiceForm'
 import ServiceForm from './components/services/ServiceForm2';
 // import ProgramForm from './components/programs/ProgramForm';
@@ -56,7 +47,7 @@ import AddEditQuestion from "./components/questions/AddEditQuestion";
 import Questions from './components/questions/Questions';
 import VisualizeClient from './components/clients/VisualizeClient';
 import ClientSearch from "./components/clients/ClientSearch";
-import VisualizeServiceProvider from './components/serviceProviders/visualizaServiceProvider';
+import VisualizeServiceProvider from './components/providers/visualizaServiceProvider';
 import VisualizeService from "./components/services/visualizeService";
 import VisualizeProgram from "./components/programs/visualizeProgram";
 import VisualizeServiceOccurrence from "./components/serviceOccurrence/visualizeServiceOccurrence";
@@ -65,7 +56,7 @@ import VisualizeServiceRegistration from "./components/serviceRegistration/visua
 import VisualizeProgramRegistration from "./components/programRegistration/visualizeProgramRegistration";
 import VisualizeServiceProvision from "./components/serviceProvision/visualizeServiceProvision";
 import VisualizeProgramProvision from "./components/programProvision/visualizeProgramProvision";
-import VisualizeAppointment from "./components/appointment/visualizeAppointment";
+import VisualizeAppointment from "./components/appointments/visualizeAppointment";
 import VisualizeServices from "./components/programs/visualizeServices";
 import VisualizeNeedOccurrence from "./components/needOccurrence/visualizeNeedOccurrence";
 import VisualizeOutcomeOccurrence from "./components/outcomeOccurrence/visualizeOutcomeOccurrence";
@@ -136,13 +127,9 @@ const routes = (
     {/*<PrivateRoute path='/needs/:need_id/edit' element={NeedForm}/>}/>*/}
     {/*<PrivateRoute path='/needs/:need_id' element={Need}/>}/>*/}
 
-    <Route path="/providers/:id/rate" element={<PrivateRoute element={ProviderRatingForm}/>}/>
-    <Route path="/providers/new/add-service" element={<PrivateRoute element={AddServicePrompt}/>}/>
-    <Route path="/providers/new/add-program" element={<PrivateRoute element={AddProgramPrompt}/>}/>
     <Route path="/providers/:formType/new" element={<PrivateRoute element={ProviderForm}/>}/>
     <Route path="/providers/:formType/:id" element={<PrivateRoute element={VisualizeServiceProvider}/>}/>
     <Route path="/providers/:formType/:id/edit/" element={<PrivateRoute element={ProviderForm}/>}/>
-    <Route path="/providers/:id" element={<PrivateRoute element={ProviderProfile}/>}/>
     <Route path="/providers" element={<PrivateRoute element={Providers}/>}/>
 
     <Route path="/services/:id/edit" element={<PrivateRoute element={ServiceForm}/>}/>
