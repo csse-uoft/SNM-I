@@ -33,7 +33,6 @@ import ProgramForm from './components/programs/ProgramForm2';
 import Appointments from "./components/Appointments";
 import AppointmentForm from "./components/appointments/AppointmentForm";
 import AdminLogs from './components/AdminLogs';
-import Eligibilities from './components/additionalFIelds/Eligibilities';
 import ManageForms from './components/settings/ManageForms';
 import ManageFormFields from './components/settings/ManageFormFields';
 import UserFirstEntry from "./components/registration/UserFirstEntry";
@@ -200,8 +199,6 @@ const routes = (
     {<Route path="/programProvisions/:id" element={<PrivateRoute element={VisualizeProgramProvision}/>}/>}
     <Route path="/programProvisions/new" element={<PrivateRoute element={ProgramProvisionForm}/>}/>
     <Route path="/programProvisions" element={<PrivateRoute element={ProgramProvisions}/>}/>
-
-    <Route path="/eligibility-criteria" element={<PrivateRoute element={Eligibilities}/>}/>
 
     <Route path="/characteristics" element={<AdminRoute element={Characteristics}/>}/>
     {/*this for edit*/}
