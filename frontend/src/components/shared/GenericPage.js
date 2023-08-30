@@ -21,7 +21,9 @@ export default function GenericPage(props) {
     fetchData, deleteItem, generateMarkers, type,
     nameFormatter, columnsWithoutOptions
   } = props;
-  const title = type.charAt(0).toUpperCase() + type.slice(1);
+  let title = props.title;
+  if (!title)
+    title = type.charAt(0).toUpperCase() + type.slice(1);
 
   // react hooks
   const navigate = useNavigate();

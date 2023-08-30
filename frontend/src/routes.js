@@ -86,6 +86,7 @@ import ClientAssessmentForm from './components/clientAssessment/ClientAssessment
 import Person from './components/Person';
 import PersonForm from './components/person/PersonForm';
 import VisualizePerson from './components/person/VisualizePerson';
+import VisualizeClientAssessment from "./components/clientAssessment/VisualizeClientAssessment";
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -112,6 +113,7 @@ const routes = (
     <Route path="/users/reset-securityQuestions/:id" element={<PrivateRoute element={UserResetSecurityQuestions}/>}/>
 
     <Route path="/clientAssessment/:id/edit" element={<PrivateRoute element={ClientAssessmentForm}/>}/>
+    <Route path="/clientAssessment/:id" element={<PrivateRoute element={VisualizeClientAssessment}/>}/>
     <Route path="/clientAssessment/new" element={<PrivateRoute element={ClientAssessmentForm}/>}/>
     <Route path="/clientAssessment" element={<PrivateRoute element={ClientAssessment}/>}/>
 
@@ -168,7 +170,7 @@ const routes = (
     <Route path="/programOccurrence/:id" element={<PrivateRoute element={VisualizeProgramOccurrence}/>}/>
 
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
- 
+
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
