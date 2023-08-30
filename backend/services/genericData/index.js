@@ -307,8 +307,10 @@ async function deleteIdFromUsageAfterChecking(option, genericType, id) {
   if (x.length === 0) {
     // then we have to remove the id from the usage
     const usage = await MDBUsageModel.findOne({option: option, genericType: genericType});
-    usage.optionKeys = usage.optionKeys.filter((key) => (key !== id));
-    await usage.save();
+    if (usage) {
+      usage.optionKeys = usage.optionKeys.filter((key) => (key !== id));
+      await usage.save();
+    }
   }
 
 }
