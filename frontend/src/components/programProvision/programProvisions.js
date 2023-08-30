@@ -10,7 +10,8 @@ const columnsWithoutOptions = [
     label: 'ID',
     body: ({_id}) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>;
-    }
+    },
+    sortBy: ({_id}) => Number(_id),
   },
   {
     label: 'Program Occurrence',
@@ -20,7 +21,8 @@ const columnsWithoutOptions = [
       } else {
         return "";
       }
-    }
+    },
+    sortBy: ({programOccurrence}) => programOccurrence.description,
   },
   {
     label: 'Start Date',
@@ -31,7 +33,8 @@ const columnsWithoutOptions = [
       } else {
         return startDateObj.toLocaleString();
       }
-    }
+    },
+    sortBy: ({startDate}) => Number(new Date(startDate)),
   },
   {
     label: 'End Date',
@@ -42,7 +45,8 @@ const columnsWithoutOptions = [
       } else {
         return endDateObj.toLocaleString();
       }
-    }
+    },
+    sortBy: ({endDate}) => Number(new Date(endDate)),
   },
   // {
   //   label: 'Description',

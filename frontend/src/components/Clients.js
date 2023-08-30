@@ -16,7 +16,8 @@ const columnsWithoutOptions = [
     label: 'First Name',
     body: ({firstName, _id}) => {
       return <Link color to={`/${TYPE}/${_id}`}>{firstName}</Link>
-    }
+    },
+    sortBy: ({ firstName }) => firstName,
   },
   {
     label: 'Last Name',

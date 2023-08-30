@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from './shared';
-import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
-import { getServiceProviderName, getServiceProviderType } from "./shared/ServiceProviderInformation";
-import { getServiceProviderNameCharacteristicIds, getPersonNameCharacteristicIds } from "./shared/CharacteristicIds";
-import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
-import { formatLocation } from '../helpers/location_helpers'
+import {Link} from './shared';
+import {GenericPage} from "./shared";
+import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../api/genericDataApi";
+import {getServiceProviderName, getServiceProviderType} from "./shared/ServiceProviderInformation";
+import {getServiceProviderNameCharacteristicIds, getPersonNameCharacteristicIds} from "./shared/CharacteristicIds";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import {formatLocation} from '../helpers/location_helpers'
 
 const TYPE = 'programs';
 
@@ -14,11 +14,12 @@ const columnsWithoutOptions = [
     label: 'Name',
     body: ({_id, name}) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>;
-    }
+    },
+    sortBy: ({name}) => name,
   },
   {
     label: 'Provider',
-    body: ({serviceProvider}) =>{
+    body: ({serviceProvider}) => {
       if (serviceProvider) {
         return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
           {serviceProvider.name}
@@ -26,7 +27,8 @@ const columnsWithoutOptions = [
       } else {
         return "";
       }
-    }
+    },
+    sortBy: ({serviceProvider}) => serviceProvider?.name,
   },
   {
     label: 'Manager',
@@ -44,13 +46,25 @@ const columnsWithoutOptions = [
       } else {
         return "";
       }
+    },
+    sortBy: ({manager}) => {
+      if (manager) {
+        if (manager.lastName && manager.firstName) {
+          return manager.lastName + ", " + manager.firstName
+        } else if (manager.lastName) {
+          return manager.lastName;
+        } else if (manager.firstName) {
+          return manager.firstName;
+        }
+      } return "";
     }
   },
   {
     label: 'Services',
     body: ({_id, name}) => {
-      return <Link color to={`/${TYPE}/${_id}/services`}>Services</Link>;
-    }
+      return <Link color to={`/${TYPE}/${_id}/services`}>{name}</Link>;
+    },
+    sortBy: ({name}) => name,
   },
   // {
   //   label: 'Description',
@@ -64,7 +78,9 @@ const columnsWithoutOptions = [
 
 export default function Programs() {
 
-  const nameFormatter = (program) => {return program.name;};
+  const nameFormatter = (program) => {
+    return program.name;
+  };
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     // TODO: verify this works as expected
@@ -97,7 +113,7 @@ export default function Programs() {
               lat: obj['characteristic_' + addressCharacteristicId].lat,
               lng: obj['characteristic_' + addressCharacteristicId].lng,
             };
-           }
+          }
         }
       if (program.serviceProvider) {
         programData.serviceProvider = {
@@ -112,7 +128,7 @@ export default function Programs() {
           _id: program.manager.split('_')[1],
           firstName: manager['characteristic_' + personCharacteristicIds.personFirstName],
           lastName: manager['characteristic_' + personCharacteristicIds.personLastName]
-	}
+        }
       }
       data.push(programData);
     }

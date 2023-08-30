@@ -13,14 +13,16 @@ const columnsWithoutOptions = [
   {
     label: 'ID',
     body: ({ _id }) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>;
-    }
+      return <Link color to={`/${TYPE}/${_id}`}>{_id}</Link>;
+    },
+    sortBy: ({ _id }) => Number(_id),
   },
   {
     label: 'Client',
     body: ({ client }) => {
       return <Link color to={`/clients/${client.id}`}>{client.name}</Link>;
-    }
+    },
+    sortBy: ({ client }) => client.name,
   },
 ];
 
@@ -78,6 +80,7 @@ export default function ClientAssessment() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Client Assessment"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteClientAssessment}

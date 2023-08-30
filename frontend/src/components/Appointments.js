@@ -1,10 +1,11 @@
 import React from 'react'
-import { Link } from './shared';
-import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import {Link} from './shared';
+import {GenericPage} from "./shared";
+import {deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric} from "../api/genericDataApi";
 import {getInstancesInClass} from "../api/dynamicFormApi";
-import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
-import { formatLocation } from '../helpers/location_helpers'
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import {formatLocation} from '../helpers/location_helpers'
+
 const TYPE = 'appointments';
 
 
@@ -13,7 +14,8 @@ const columnsWithoutOptions = [
     label: 'ID',
     body: ({_id}) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>
-    }
+    },
+    sortBy: ({_id}) => Number(_id),
   },
   {
     label: 'Client',
@@ -43,7 +45,10 @@ const columnsWithoutOptions = [
       // return  <Link color to={`/providers/${provider.id}`}>
       //   {formatProvider({provider})}
       // </Link>
-    }
+    },
+    sortBy: ({datetime, dateType}) => {
+      return Number(new Date(datetime));
+    },
   },
   // {
   //   label: 'Description',
@@ -69,7 +74,7 @@ export default function Appointments() {
       content: appointment.address && formatLocation(appointment.address),
     })).filter(appointment => appointment.position.lat && appointment.position.lng);
   };
- 
+
   const fetchData = async () => {
     // get all appointments data
     const appointmens = (await fetchMultipleGeneric('appointment')).data;
@@ -78,9 +83,9 @@ export default function Appointments() {
     // get all clients data
     await getInstancesInClass(':Client').then((res) => {
       Object.keys(res).forEach((key) => {
-        const clientId = key.split('#')[1];
-        clients[clientId] = res[key];
-      }
+          const clientId = key.split('#')[1];
+          clients[clientId] = res[key];
+        }
       );
     });
     const persons = {};
@@ -115,19 +120,19 @@ export default function Appointments() {
               lat: clientObj['characteristic_' + addressCharacteristicId].lat,
               lng: clientObj['characteristic_' + addressCharacteristicId].lng,
             };
-	  }
+          }
         }
-      if (appointment.client){
+      if (appointment.client) {
         // get corresponding client data
         appointmentData.client = clients[appointment.client.slice(1)]
       }
-      if (appointment.person){
+      if (appointment.person) {
         // get corresponding person data
         appointmentData.person = persons[appointment.person.slice(1)]
-      } else if (appointment.user){
+      } else if (appointment.user) {
         // const userData = await fetchSingleGeneric('user', appointment.user);
       }
-        
+
       data.push(appointmentData);
     }
     return data;

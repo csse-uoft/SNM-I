@@ -93,7 +93,8 @@ export default function NeedSatisfiers() {
   const columns = [
     {
       label: 'Type',
-      body: ({type}) => <Box sx={{width: '60%'}}>{type}</Box>
+      body: ({type}) => <Box sx={{width: '60%'}}>{type}</Box>,
+      sortBy: ({type}) => type,
     },
 
     {

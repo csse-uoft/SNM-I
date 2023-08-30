@@ -10,7 +10,8 @@ const columnsWithoutOptions = [
     label: 'Description',
     body: ({_id, description}) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{description}</Link>;
-    }
+    },
+    sortBy: ({description}) => description,
   },
   {
     label: 'Service Name',

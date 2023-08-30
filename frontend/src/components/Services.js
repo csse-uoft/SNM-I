@@ -15,7 +15,8 @@ const columnsWithoutOptions = [
     label: 'Name',
     body: ({ _id, name }) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>;
-    }
+    },
+    sortBy: ({name}) => name,
   },
   {
     label: 'Provider',
@@ -23,7 +24,8 @@ const columnsWithoutOptions = [
       return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
         {serviceProvider.name}
       </Link>;
-    }
+    },
+    sortBy: ({serviceProvider}) => serviceProvider.name,
   },
   // {
   //   label: 'Description',

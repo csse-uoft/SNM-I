@@ -13,13 +13,15 @@ const columnsWithoutOptions = [
     label: 'Description',
     body: ({_id, description}) => {
       return <Link color to={`/${TYPE}/${_id}/edit`}>{description}</Link>;
-    }
+    },
+    sortBy: ({description}) => description,
   },
   {
     label: 'Program Name',
     body: ({programName, programID}) => {
       return <Link color to={`/programs/${programID}/`}>{programName}</Link>;
-    }
+    },
+    sortBy: ({programName}) => programName,
   },
   // {
   //   label: 'Category',

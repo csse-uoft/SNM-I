@@ -107,7 +107,8 @@ export default function Characteristics() {
   const columns = [
     {
       label: 'Name',
-      body: ({name}) => <Box sx={{width: '60%'}}>{name}</Box>
+      body: ({name}) => <Box sx={{width: '60%'}}>{name}</Box>,
+      sortBy: ({name}) => name,
     },
     {
       label: 'Label',

@@ -28,6 +28,7 @@ const columnsWithoutOptions = [
         {name || `${lastName || ''}, ${firstName || ''}`}
       </Link>
     },
+    sortBy: ({name, lastName, firstName}) => name || `${lastName || ''}, ${firstName || ''}`,
   },
   {
     label: 'Type',

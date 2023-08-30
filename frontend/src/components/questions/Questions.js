@@ -62,11 +62,14 @@ export default function Questions() {
   const columns = [
     {
       label: 'id',
-      body: ({id}) => <Box sx={{width: '60%'}}>{id}</Box>
+      body: ({id}) => <Box sx={{width: '60%'}}>{id}</Box>,
+      sortBy: ({id}) => id,
+
     },
     {
       label: 'Content',
-      body: ({content}) => <Box sx={{width: '60%'}}>{content}</Box>
+      body: ({content}) => <Box sx={{width: '60%'}}>{content}</Box>,
+      sortBy: ({content}) => content,
     },
     {
       label: 'Description',
