@@ -86,6 +86,7 @@ export default function ProgramOccurrences() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Program Occurrences"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgram}

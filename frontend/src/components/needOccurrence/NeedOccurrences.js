@@ -98,6 +98,7 @@ export default function NeedOccurrences() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Need Occurrences"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteNeedOccurrence}

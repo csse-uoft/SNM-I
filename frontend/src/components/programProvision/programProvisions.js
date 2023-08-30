@@ -99,6 +99,7 @@ export default function ProgramProvisions() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Program Provisions"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgramProvision}

@@ -65,6 +65,7 @@ export default function ServiceOccurrences() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Service Occurrences"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteService}

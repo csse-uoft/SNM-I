@@ -68,6 +68,7 @@ export default function ServiceRegistrations() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Service Registrations"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteServiceRegistration}

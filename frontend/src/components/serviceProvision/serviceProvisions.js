@@ -99,6 +99,7 @@ export default function ServiceProvisions() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Service Provisions"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteServiceProvision}

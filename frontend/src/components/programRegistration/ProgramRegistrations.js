@@ -68,6 +68,7 @@ export default function ProgramRegistrations() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Program Registrations"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgramRegistration}

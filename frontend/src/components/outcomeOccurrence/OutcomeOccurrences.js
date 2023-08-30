@@ -109,6 +109,7 @@ export default function OutcomeOccurrences() {
   return (
     <GenericPage
       type={TYPE}
+      title={"Outcome Occurrences"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteOutcomeOccurrence}
