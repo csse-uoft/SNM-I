@@ -21,6 +21,7 @@ const type2Label = {
 }
 
 const fieldTypeCache = {};
+const predefinedCharacteristicCache = {};
 
 const dataTypes = [
   {label: 'String', value: 'xsd:string'},
@@ -79,6 +80,9 @@ async function initPredefinedCharacteristics() {
       // This won't be triggered if the predefined characteristic is not changed.
       await existingCharacteristic.save();
       delete predefined[existingCharacteristic.name];
+
+      // Cache it
+      predefinedCharacteristicCache[existingCharacteristic.name] = existingCharacteristic;
     }
   }
 
@@ -156,5 +160,6 @@ async function getAllClasses(req, res) {
 
 module.exports = {
   initFieldTypes, getFieldTypes, getDataTypes, getAllClasses,
-  initPredefinedCharacteristics, FieldTypes: fieldTypeCache, initPredefinedInternalType
+  initPredefinedCharacteristics, FieldTypes: fieldTypeCache, initPredefinedInternalType,
+  PredefinedCharacteristics: predefinedCharacteristicCache
 }

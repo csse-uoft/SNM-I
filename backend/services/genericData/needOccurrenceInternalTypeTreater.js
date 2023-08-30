@@ -1,5 +1,6 @@
 const {getPredefinedProperty, getInternalTypeValues} = require("./helperFunctions");
-const {GDBInternalTypeModel} = require("../../models/internalType");
+const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
+
 const {SPARQL} = require("graphdb-utils");
 
 const FORMTYPE = 'needOccurrence'
@@ -19,4 +20,15 @@ const needOccurrenceInternalTypeUpdateTreater = async (internalType, value, resu
   await needOccurrenceInternalTypeCreateTreater(internalType, result, value);
 }
 
-module.exports = {needOccurrenceInternalTypeCreateTreater, needOccurrenceInternalTypeFetchTreater, needOccurrenceInternalTypeUpdateTreater}
+const beforeDeleteNeedOccurrence = async (instanceData) => {
+  // Delete client.needOccurrence
+  const client = await GDBClientModel.findByUri(instanceData.client);
+
+  if (client.needOccurrences) {
+    client.needOccurrences = client.needOccurrences.filter(needOcc => needOcc === instanceData._uri);
+    await client.save();
+  }
+}
+
+module.exports = {needOccurrenceInternalTypeCreateTreater, needOccurrenceInternalTypeFetchTreater,
+  needOccurrenceInternalTypeUpdateTreater, beforeDeleteNeedOccurrence}

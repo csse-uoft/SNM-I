@@ -89,7 +89,8 @@ const {
 const {
   needOccurrenceInternalTypeUpdateTreater,
   needOccurrenceInternalTypeCreateTreater,
-  needOccurrenceInternalTypeFetchTreater
+  needOccurrenceInternalTypeFetchTreater,
+  beforeDeleteNeedOccurrence
 } = require("./needOccurrenceInternalTypeTreater");
 const {
   outcomeOccurrenceInternalTypeUpdateTreater,
@@ -152,6 +153,10 @@ const genericType2BeforeCreateTreater = {
 
 const genericType2BeforeUpdateTreater = {
   'clientAssessment': beforeUpdateClientAssessment
+}
+
+const genericType2BeforeDeleteTreater = {
+  'needOccurrence': beforeDeleteNeedOccurrence
 }
 
 // this dict will be shared by all generic types with internal types as their properties
@@ -614,6 +619,9 @@ async function deleteSingleGenericHelper(genericType, id) {
     {populates: ['characteristicOccurrences', 'questionOccurrences']});
   if (!generic)
     throw new Server400Error('Invalid genericType or id');
+
+  if (genericType2BeforeDeleteTreater[genericType])
+    genericType2BeforeDeleteTreater[genericType](generic);
 
   const characteristicsOccurrences = generic.characteristicOccurrences;
   const questionsOccurrences = generic.questionOccurrences;
