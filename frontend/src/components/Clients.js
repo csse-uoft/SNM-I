@@ -1,7 +1,7 @@
 import React from 'react';
 
 // TODO: createClients  (CSV Upload)
-import { fetchClients, deleteClient } from '../api/clientApi'
+import { useClientAPIs } from '../api/clientApi'
 import { formatLocation } from '../helpers/location_helpers'
 import { GenericPage, Link } from "./shared";
 import { fetchSingleGeneric } from "../api/genericDataApi";
@@ -52,6 +52,7 @@ const columnsWithoutOptions = [
 
 export default function Clients() {
 
+  const {fetchClients, deleteClient} = useClientAPIs();
   const nameFormatter = (client) => {
     return client.firstName + ' ' + client.lastName;
   };

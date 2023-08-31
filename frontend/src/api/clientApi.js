@@ -1,19 +1,24 @@
-import { deleteJson, getJson, postJson, putJson } from "./index";
+import {deleteJson, getJson, postJson, putJson} from "./index";
+import {UserContext} from "../context";
+import {useContext} from 'react';
 
-/**
- * This function fetches all clients
- * This is used now in frontend/src/Clients.js to fetch for clients.
- * @returns {Promise<*>}
- */
-export async function fetchClients() {
-  return getJson('/api/generics/client');
-}
+export function useClientAPIs() {
+  const userContext = useContext(UserContext);
 
-/**
- * This function delete single client.
- * @param id
- * @returns {Promise<*>}
- */
-export async function deleteClient(id) {
-  return deleteJson('/api/generic/client/' + id);
+
+  return {
+    /**
+     * This function fetches all clients
+     * This is used now in frontend/src/Clients.js to fetch for clients.
+     */
+    fetchClients: async () => {
+      return getJson('/api/generics/client', userContext);
+    },
+    /**
+     * This function delete single client.
+     */
+    deleteClient: async (id) => {
+      return deleteJson('/api/generic/client/' + id, userContext);
+    }
+  }
 }

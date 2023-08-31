@@ -14,8 +14,6 @@ export function getUserSecurityQuestionsLogin(){
 }
 
 /**
- *
- * @param sessionExpired
  * @return {Promise<{success: boolean}>}
  */
 export async function logout() {

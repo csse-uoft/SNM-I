@@ -1,5 +1,5 @@
 import React, {useState, useContext, useCallback} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
 import {logout} from '../../api/auth';
@@ -15,6 +15,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LoginIcon from '@mui/icons-material/Login';
+import {useSnackbar} from "notistack";
 
 const ITEM_HEIGHT = 48;
 
@@ -25,6 +26,9 @@ const ITEM_HEIGHT = 48;
  */
 function TopNavBar() {
   const navigate = useNavigate();
+  const {pathname} = useLocation();
+  const {enqueueSnackbar} = useSnackbar();
+
   const userContext = useContext(UserContext);
   const id = userContext.id;
   const isLoggedin = !!userContext.email;
@@ -54,12 +58,12 @@ function TopNavBar() {
   }, []);
 
   const handleLogout = async () => {
-    if (isLoggedin)
-      await logout();
-    userContext.updateUser(defaultUserContext);
     setAnchorElLeft(null);
     setAnchorElRight(null);
+    enqueueSnackbar('logging out...');
+    await logout();
     navigate('/login');
+    userContext.updateUser(defaultUserContext);
   }
 
   return (
@@ -279,14 +283,16 @@ function TopNavBar() {
           </div>
         ) : (
           <div>
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <LoginIcon fontSize="medium" sx={{color: 'white'}}/>
-              </ListItemIcon>
-              <Typography variant="inherit">
-                {isLoggedin ? 'Log out' : 'Login'}
-              </Typography>
-            </MenuItem>
+            {pathname !== '/login' &&
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <LoginIcon fontSize="medium" sx={{color: 'white'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">
+                  Log out
+                </Typography>
+              </MenuItem>
+            }
           </div>
         )}
 
