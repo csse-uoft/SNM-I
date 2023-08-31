@@ -66,7 +66,7 @@ export default function VisualizeServices() {
           {`Services of program with ID: ` + id}
         </Typography>
 
-        <VirtualizeTable rows={display} givenColumns={columns}/>
+        <VirtualizeTable rows={display} columns={columns}/>
       </Paper>
     </Container>
   );

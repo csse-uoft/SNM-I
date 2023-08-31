@@ -11,6 +11,7 @@ import {fetchCharacteristic} from "../../api/characteristicApi";
 import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "./virtualizeTable";
+import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 
 
 async function getOptionLabels(uris, options) {
@@ -46,6 +47,13 @@ export default function VisualizeGeneric({genericType,}) {
 
   useEffect(() => {
     (async function () {
+      // Get internal types
+      const {internalTypes: result} = await fetchInternalTypeByFormType(genericType)
+      const internalTypes = {}
+      for (const {implementation, name, _id} of result) {
+        internalTypes[_id] = {implementation, name}
+      }
+
       let streetTypes, streetDirections, states;
       await Promise.all([
         getDynamicFormsByFormType(genericType).then(({forms}) => {
@@ -104,8 +112,26 @@ export default function VisualizeGeneric({genericType,}) {
         } else if (type === 'question') {
           const question = await fetchQuestion(id);
           information.push({
-            label: question.question.content, value, id: key
+            label: <Typography>{question.question.content}</Typography>,
+            value: <Typography>{data}</Typography>,
+            id: key
           });
+        } else if (type === 'internalType') {
+          let value;
+          if (Array.isArray(data)) {
+            value = [];
+            for (const [idx, uri] of data.entries()) {
+              const label = await getURILabel(uri);
+              value.push(<Chip key={idx} label={label} sx={{mr: 1}}/>)
+            }
+          } else {
+            value = await getURILabel(data)
+          }
+          information.push({
+            label: <Typography>{internalTypes[id].implementation.label}</Typography>,
+            value,
+            id: key
+          })
         }
       }
 
@@ -113,7 +139,7 @@ export default function VisualizeGeneric({genericType,}) {
 
       setLoading(false);
     })();
-  }, [id]);
+  }, [id, genericType]);
 
   useEffect(() => {
     if (selectedFormId === 'all') {
