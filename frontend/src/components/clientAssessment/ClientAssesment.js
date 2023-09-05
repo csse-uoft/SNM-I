@@ -6,6 +6,7 @@ import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericData
 import { fetchSingleGeneric } from "../../api/genericDataApi";
 import { getAddressCharacteristicId } from "../shared/CharacteristicIds";
 import { formatLocation } from '../../helpers/location_helpers'
+import {formatName} from "../../helpers/formatters";
 
 const TYPE = 'clientAssessment';
 
@@ -64,7 +65,7 @@ export default function ClientAssessment() {
       if (clientAssessment.client) {
         // get corresponding client data
         clientAssessmentData.client = {
-          name: clientAssessment.client.firstName + ' ' + clientAssessment.client.lastName,
+          name: formatName(clientAssessment.client.firstName, clientAssessment.client.lastName),
           id: clientAssessment.client._id
         }
       }

@@ -87,6 +87,7 @@ import Person from './components/Person';
 import PersonForm from './components/person/PersonForm';
 import VisualizePerson from './components/person/VisualizePerson';
 import VisualizeClientAssessment from "./components/clientAssessment/VisualizeClientAssessment";
+import VisualizeReferral from "./components/referrals/VisualizeReferral";
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -146,7 +147,7 @@ const routes = (
 
     <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
-    {/*<Route path="/referrals/:id" element={<PrivateRoute element={VisualizeService}/>}/>*/}
+    <Route path="/referrals/:id" element={<PrivateRoute element={VisualizeReferral}/>}/>
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
 
     <Route path="/serviceRegistrations/:id/edit" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>

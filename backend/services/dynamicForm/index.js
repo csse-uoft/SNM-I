@@ -142,7 +142,18 @@ async function getIndividualsInClass(req, res) {
     select * 
     where { 
         ?s a <${fullURI}>, owl:NamedIndividual.
-        OPTIONAL {?s rdfs:label ?label .}
+        OPTIONAL {
+            ?s rdfs:label ?labelEn .
+            FILTER(LANGMATCHES(LANG(?labelEn), "en"))
+        }
+        OPTIONAL {
+            ?s rdfs:label ?labelFr .
+            FILTER(LANGMATCHES(LANG(?labelFr), "fr"))
+        }
+        OPTIONAL {
+            ?s rdfs:label ?label .
+            FILTER(LANGMATCHES(LANG(?label), ""))
+        }
         OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider: organization
         OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
         OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client
@@ -152,9 +163,9 @@ async function getIndividualsInClass(req, res) {
     }`;
 
   // todo: volunteer will only give last name
-  await GraphDB.sendSelectQuery(query, false, ({s, label, name, familyName, givenName, type, lastName, toveHasName}) => {
-    if (label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value) {
-      instances[s.id] = label?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+  await GraphDB.sendSelectQuery(query, false, ({s, label, labelEn, labelFr, name, familyName, givenName, type, lastName, toveHasName}) => {
+    if (labelEn?.value || labelFr?.value || label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value) {
+      instances[s.id] = labelEn?.value || labelFr?.value || label?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
       instances[s.id] = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
@@ -169,7 +180,18 @@ async function getURILabel(req, res) {
     select * 
     where { 
         BIND (<${fullURI}> as ?s).
-        OPTIONAL {?s rdfs:label ?label .}
+        OPTIONAL {
+            ?s rdfs:label ?labelEn .
+            FILTER(LANGMATCHES(LANG(?labelEn), "en"))
+        }
+        OPTIONAL {
+            ?s rdfs:label ?labelFr .
+            FILTER(LANGMATCHES(LANG(?labelFr), "fr"))
+        }
+        OPTIONAL {
+            ?s rdfs:label ?label .
+            FILTER(LANGMATCHES(LANG(?label), ""))
+        }
         OPTIONAL {?s :hasLabel ?label2 .}
         OPTIONAL {?s :hasOrganization [tove_org:hasName ?name] .} # For Service Provider: organization
         OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
@@ -179,9 +201,9 @@ async function getURILabel(req, res) {
     }`;
 
   let result = ''
-  await GraphDB.sendSelectQuery(query, false, ({s, label, label2, name, familyName, givenName, type, lastName}) => {
-    if (label?.value || label2?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
-      result = label?.value || label2?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+  await GraphDB.sendSelectQuery(query, false, ({s, label, labelEn, labelFr, label2, name, familyName, givenName, type, lastName}) => {
+    if (labelEn?.value || labelFr?.value || label?.value || label2?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
+      result = labelEn?.value || labelFr?.value || label?.value || label2?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
       result = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }

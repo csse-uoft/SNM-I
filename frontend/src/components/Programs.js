@@ -2,9 +2,6 @@ import React from 'react';
 import {Link} from './shared';
 import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../api/genericDataApi";
-import {getServiceProviderName, getServiceProviderType} from "./shared/ServiceProviderInformation";
-import {getServiceProviderNameCharacteristicIds, getPersonNameCharacteristicIds} from "./shared/CharacteristicIds";
-import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 import {formatLocation} from '../helpers/location_helpers'
 
 const TYPE = 'programs';
@@ -13,7 +10,7 @@ const columnsWithoutOptions = [
   {
     label: 'Name',
     body: ({_id, name}) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{name}</Link>;
+      return <Link color to={`/${TYPE}/${_id}`}>{name}</Link>;
     },
     sortBy: ({name}) => name,
   },
@@ -56,7 +53,8 @@ const columnsWithoutOptions = [
         } else if (manager.firstName) {
           return manager.firstName;
         }
-      } return "";
+      }
+      return "";
     }
   },
   {
@@ -94,40 +92,33 @@ export default function Programs() {
   };
 
   const fetchData = async () => {
-    const programs = (await fetchMultipleGeneric('program')).data; // TODO: Does not contain address info
-    const serviceProviderCharacteristicIds = (await getServiceProviderNameCharacteristicIds());
-    const personCharacteristicIds = (await getPersonNameCharacteristicIds());
-    const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
+    const programs = (await fetchMultipleGeneric('program')).data;
     const data = [];
     for (const program of programs) {
       const programData = {_id: program._id, address: {}};
+      if (program.address?.lat && program.address?.lng) {
+        programData.address = {lat: program.address?.lat, lng: program.address?.lng}
+      }
       if (program.characteristicOccurrences)
         for (const occ of program.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Program Name') {
             programData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
             programData.provider = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("program", program._id)).data; // TODO: inefficient!
-            programData.address = {
-              lat: obj['characteristic_' + addressCharacteristicId].lat,
-              lng: obj['characteristic_' + addressCharacteristicId].lng,
-            };
           }
         }
       if (program.serviceProvider) {
         programData.serviceProvider = {
-          _id: program.serviceProvider.split('_')[1],
-          name: (await getServiceProviderName(program, serviceProviderCharacteristicIds)),
-          type: (await getServiceProviderType(program))
+          _id: program.serviceProvider._id,
+          name: program.serviceProvider.organization?.name || program.serviceProvider.volunteer?.name,
+          type: program.serviceProvider.type
         }
       }
       if (program.manager) {
-        const manager = (await fetchSingleGeneric('person', program.manager.split('_')[1])).data;
         programData.manager = {
-          _id: program.manager.split('_')[1],
-          firstName: manager['characteristic_' + personCharacteristicIds.personFirstName],
-          lastName: manager['characteristic_' + personCharacteristicIds.personLastName]
+          _id: program.manager._id,
+          firstName: program.manager.firstName,
+          lastName: program.manager.lastName,
         }
       }
       data.push(programData);

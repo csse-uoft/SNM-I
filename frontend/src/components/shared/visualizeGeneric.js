@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useMemo} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
 import {
-  Box, Chip, Container, Paper, Typography
+  Box, Button, Chip, Container, Grid, Paper, Typography
 } from "@mui/material";
 import {Loading} from "./index";
 import {fetchSingleGeneric} from "../../api/genericDataApi";
@@ -38,6 +38,7 @@ async function getOptionLabels(uris, options) {
  */
 export default function VisualizeGeneric({genericType,}) {
 
+  const navigate = useNavigate();
   const {id} = useParams();
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState([]);
@@ -182,16 +183,24 @@ export default function VisualizeGeneric({genericType,}) {
           {`Information for ${genericType} with ID: ` + id}
         </Typography>
 
-        <SelectField
-          label="Select a form"
-          value={selectedFormId}
-          controlled
-          onChange={e => {
-            setSelectedFormId(e.target.value);
-          }}
-          options={formOptions}
-          sx={{mb: 2}}
-        />
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <SelectField
+              label="Select a form"
+              value={selectedFormId}
+              controlled
+              onChange={e => {
+                setSelectedFormId(e.target.value);
+              }}
+              options={formOptions}
+              sx={{mb: 2}}
+            />
+          </Grid>
+          <Grid item>
+            <Button variant="outlined" onClick={() => navigate(`edit`)}>Edit</Button>
+          </Grid>
+        </Grid>
+
         <VirtualizeTable rows={display}/>
       </Paper>
     </Container>

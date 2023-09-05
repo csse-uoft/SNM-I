@@ -1,7 +1,8 @@
 import React from 'react';
 import {Link} from "../shared"
-import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import {GenericPage} from "../shared";
+import {deleteSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
+import {formatName} from "../../helpers/formatters";
 
 const TYPE = 'referrals';
 
@@ -9,13 +10,13 @@ const columnsWithoutOptions = [
   {
     label: 'ID',
     body: ({_id}) => {
-      return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>;
+      return <Link color to={`/${TYPE}/${_id}`}>{_id}</Link>;
     },
     sortBy: ({_id}) => Number(_id),
   },
   {
     label: 'Type',
-    body: ({referralType}) =>{
+    body: ({referralType}) => {
       return referralType
       // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
       //   {serviceProvider}
@@ -24,21 +25,20 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({referralStatus}) =>{
+    body: ({referralStatus}) => {
       return referralStatus
       // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
       //   {serviceProvider}
       // </Link>;
     }
   },
-  // {
-  //   label: 'Description',
-  //   body: ({desc}) => desc
-  // },
-  // {
-  //   label: 'Category',
-  //   body: ({category}) => category
-  // }
+  {
+    label: 'Client',
+    body: ({ client }) => {
+      return <Link color to={`/clients/${client.id}`}>{client.name}</Link>;
+    },
+    sortBy: ({ client }) => client.name,
+  }
 ];
 
 export default function Referrals() {
@@ -58,19 +58,19 @@ export default function Referrals() {
   };
 
   const fetchData = async () => {
-    const services = (await fetchMultipleGeneric('referral')).data;
+    const referrals = (await fetchMultipleGeneric('referral')).data;
     const data = [];
-    for (const service of services) {
-      const serviceData = {_id: service._id};
-      if (service.characteristicOccurrences)
-        for (const occ of service.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Referral Type') {
-            serviceData.referralType = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Referral Status') {
-            serviceData.referralStatus = occ.objectValue;
-          }
+    for (const referral of referrals) {
+      data.push({
+        _id: referral._id,
+        referralStatus: referral.referralStatus,
+        referralType: referral.referralType,
+        client: {
+          name: formatName(referral.client.firstName, referral.client.lastName),
+          id: referral.client._id
         }
-      data.push(serviceData);
+      });
+
     }
     return data;
   };

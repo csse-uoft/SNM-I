@@ -19,17 +19,5 @@ module.exports = [
       valueDataType: 'xsd:string',
       fieldType: FieldTypes.TextField,
     }
-  },
-  {
-    name: 'Gender',
-    description: 'Gender of a person',
-    predefinedProperty: 'http://helpseeker.co/compass#hasGender',
-    implementation: {
-      label: 'Gender',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://helpseeker.co/compass#CL-Gender'
-    }
-  },
-
+  }
 ]

@@ -46,16 +46,17 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
       const phoneNumber = GDBPhoneNumberModel(parsePhoneNumber(value));
       // save phoneNumber since it is stored in a separate model.
       await phoneNumber.save();
-      occurrence.objectValue = phoneNumber.individualName;
+      occurrence.objectValue = phoneNumber._uri;
     } else if (prefixedFieldType === FieldTypes.AddressField.individualName) {
       if (occurrence.objectValue) {
         const [_, addressId] = occurrence.objectValue.split('_');
         await GDBAddressModel.findByIdAndDelete(addressId);
       }
+      if (value._id) delete value._id;
       const address = GDBAddressModel(value);
       // save address since it is stored in a separate model.
       await address.save();
-      occurrence.objectValue = address.individualName;
+      occurrence.objectValue = address._uri;
 
     } else {
       throw Error(`Should not reach here. ${fieldType}`);

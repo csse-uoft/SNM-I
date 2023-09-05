@@ -136,7 +136,9 @@ const genericType2Populates = {
   'serviceRegistration': ['needOccurrence', 'serviceOccurrence'],
   'programRegistration' : ['needOccurrence', 'programOccurrence'],
   'needOccurrence': ['occurrenceOf', 'client'],
-  'clientAssessment': ['client']
+  'clientAssessment': ['client'],
+  'referral': ['client'],
+  'program': ['address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
 };
 
 const genericType2Checker = {
@@ -246,10 +248,10 @@ async function fetchSingleGenericHelper(genericType, id) {
       if (co.objectValue) {
         // when object is a phoneNumber
         await co.populate('occurrenceOf.implementation');
-        if (co.occurrenceOf.implementation.fieldType === FieldTypes.PhoneNumberField.individualName) {
+        if (co.occurrenceOf.implementation.fieldType === FieldTypes.PhoneNumberField._uri) {
           const id = co.objectValue.split('_')[1];
           co.objectValue = combinePhoneNumber(await GDBPhoneNumberModel.findOne({_id: id}));
-        } else if (co.occurrenceOf.implementation.fieldType === FieldTypes.AddressField.individualName) {
+        } else if (co.occurrenceOf.implementation.fieldType === FieldTypes.AddressField._uri) {
           const id = co.objectValue.split('_')[1];
           const address = (await GDBAddressModel.findOne({_id: id})).toJSON();
 
