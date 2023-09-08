@@ -19,3 +19,7 @@ export async function fetchNeedSatisfier(id) {
 export async function fetchNeedSatisfiers() {
   return getJson('/api/needSatisfiers');
 }
+
+export async function fetchConnectedNeedSatisfiers(startNodeURI) {
+  return getJson(`/api/needSatisfier/graph/${encodeURIComponent(startNodeURI)}`);
+}

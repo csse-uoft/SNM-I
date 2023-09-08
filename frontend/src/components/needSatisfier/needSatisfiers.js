@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";
-import {DeleteModal, Loading, DataTable} from "../shared";
+import {DeleteModal, Loading, DataTable, Link} from "../shared";
 import {useNavigate} from "react-router-dom";
 import {AlertDialog} from "../shared/Dialogs";
 import LoadingButton from "../shared/LoadingButton";
@@ -93,7 +93,7 @@ export default function NeedSatisfiers() {
   const columns = [
     {
       label: 'Type',
-      body: ({type}) => <Box sx={{width: '60%'}}>{type}</Box>,
+      body: ({type, id}) => <Link color to={`/needSatisfier/${id}/edit`}>{type}</Link>,
       sortBy: ({type}) => type,
     },
 

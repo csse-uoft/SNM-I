@@ -5,7 +5,8 @@ const GDBNeedSatisfierModel = createGraphDBModel({
   type: {type: String, internalKey: ':hasType'},
   codes: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
   characteristics: {type: [GDBCharacteristicModel], internalKey: ':forCharacteristic'},
-  description: {type: String, internalKey: 'cids:hasDescription'}
+  description: {type: String, internalKey: 'cids:hasDescription'},
+  kindOf: {type: [() => GDBNeedSatisfierModel], internalKey: ':kindOf'},
 }, {
   rdfTypes: [':NeedSatisfier'], name: 'needSatisfier'
 });

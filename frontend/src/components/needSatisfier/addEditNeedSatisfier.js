@@ -14,11 +14,12 @@ import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
 import {
-  createNeedSatisfier,
-  fetchNeedSatisfier,
+  createNeedSatisfier, fetchConnectedNeedSatisfiers,
+  fetchNeedSatisfier, fetchNeedSatisfiers,
   updateNeedSatisfier
 } from "../../api/needSatisfierApi";
 import {useSnackbar} from "notistack";
+import VisualizeNeedSatisfier from "./visualizeNeedSatisfier";
 
 
 const useStyles = makeStyles(() => ({
@@ -54,6 +55,7 @@ export default function AddEditNeedSatisfier() {
   )
 
   const [options, setOptions] = useState({});
+  const [kindOfOptions, setKindOfOptions] = useState({});
 
 
   const [form, setForm] = useState({
@@ -65,10 +67,18 @@ export default function AddEditNeedSatisfier() {
   useEffect(() => {
     Promise.all([
       // fetchAllCodes todo
+      fetchNeedSatisfiers().then(res => {
+        const options = {};
+        res.needSatisfiers.forEach(({_uri, _id, type, description}) => {
+          if (option === 'edit' && id === _id) return; // Skip current need satisfier
+          options[_uri] = `${type} (${description})`;
+        });
+        setKindOfOptions(options);
+      }),
       fetchCharacteristics().then(res => {
         const options = {};
-        res.data.map(characteristic => {
-          options[characteristic.id] = characteristic.name;
+        res.data.forEach(characteristic => {
+          options[characteristic._uri] = characteristic.name;
         });
         setOptions(options);
       })
@@ -77,7 +87,7 @@ export default function AddEditNeedSatisfier() {
         return fetchNeedSatisfier(id).then(res => {
           const needSatisfier = res.needSatisfier;
           needSatisfier.characteristics = needSatisfier.characteristics.map(characteristic => {
-            return characteristic._id;
+            return characteristic._uri;
           });
           setForm(needSatisfier);
         })
@@ -184,7 +194,6 @@ export default function AddEditNeedSatisfier() {
       <Paper sx={{p: 2}} variant={'outlined'}>
         <Typography variant={'h4'}> Need Satisfier </Typography>
         <GeneralField
-          key={'type'}
           label={'Type'}
           value={form.type}
           required
@@ -196,7 +205,6 @@ export default function AddEditNeedSatisfier() {
         />
 
         <GeneralField
-          key={'description'}
           label={'Description'}
           value={form.description}
           required
@@ -209,7 +217,6 @@ export default function AddEditNeedSatisfier() {
         />
 
         <Dropdown
-          key={'characteristics'}
           options={options}
           label={'Characteristics'}
           onBlur = {() => handleOnblur('characteristics')}
@@ -220,7 +227,15 @@ export default function AddEditNeedSatisfier() {
         />
 
         <Dropdown
-          key={'codes'}
+          options={kindOfOptions}
+          label={'Kind Of'}
+          value={form.kindOf}
+          onChange={e => form.kindOf = e.target.value}
+          error={!!errors.kindOf}
+          helperText={errors.kindOf}
+        />
+
+        <Dropdown
           options={[]}
           label={'Codes'}
           value={form.codes}
@@ -251,6 +266,8 @@ export default function AddEditNeedSatisfier() {
                                       onClick={handleConfirm} children='confirm' autoFocus/>]}
                      open={state.submitDialog && option === 'edit'}/>
       </Paper>
+
+      <VisualizeNeedSatisfier id={id} />
 
     </Container>
 
