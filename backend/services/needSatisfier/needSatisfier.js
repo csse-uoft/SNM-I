@@ -85,6 +85,10 @@ async function getConnectedNeedSatisfiers(req, res, next) {
         ?s :kindOf ?k.
         ?s2 :hasType ?type2.
         ?s2 :kindOf ?k2.
+        ?s3 :hasType ?type3.
+        ?s3 :kindOf ?k3.
+        ?s4 :hasType ?type4.
+        ?s4 :kindOf ?k4.
     } WHERE {
         ?s a :NeedSatisfier.
         ?s :hasType ?type.
@@ -92,12 +96,22 @@ async function getConnectedNeedSatisfiers(req, res, next) {
         ${startNodeURI ? `
         {
             ?s :kindOf* <${startNodeURI}>
+            OPTIONAL {
+              ?s :kindOf* ?s4.
+              ?s4 :hasType ?type4.
+              OPTIONAL {?s4 :kindOf ?k4.}
+        }
         } UNION {
             bind(<${startNodeURI}> as ?s)
             ?s :kindOf* ?s2.
     
             ?s2 :hasType ?type2.
-            OPTIONAL {?s2 :kindOf ?k2.}
+            OPTIONAL {
+              ?s2 :kindOf ?k2.
+              ?s3 :kindOf* ?k2.
+              ?s3 :hasType ?type3.
+              OPTIONAL {?s3 :kindOf ?k3.}
+            }
         }` : ''}}`;
   const result = {};
   await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
