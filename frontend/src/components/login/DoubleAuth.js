@@ -69,7 +69,7 @@ export default function DoubleAuth() {
         const answer = state.form[group][securityQuestionAnswer];
         const securityQuestion = 'securityQuestion' + state.group;
 
-        const {success, message, matched, userAccount} = await LoginCheckSecurityQuestion({
+        const {success, message, matched, userAccount, expiresAt} = await LoginCheckSecurityQuestion({
           email: state.email,
           question: state.form[group][securityQuestion], answer
         });
@@ -86,6 +86,7 @@ export default function DoubleAuth() {
             countryCode: userAccount.primaryContact?.telephone?.countryCode,
             areaCode: userAccount.primaryContact?.telephone?.areaCode,
             phoneNumber: userAccount.primaryContact?.telephone?.phoneNumber,
+            expiresAt: expiresAt
           });
 
           setState(state => ({...state, loadingButton: false}));

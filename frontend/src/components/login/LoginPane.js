@@ -42,11 +42,8 @@ function LoginPane() {
 
   const submit = async () => {
     try {
-      const {success, data} = await login(form.email, form.password);
-      console.log(form.email, form.password, success, data);
+      const {success} = await login(form.email, form.password);
       if (success) {
-        console.log('User email and password are correct');
-        console.log('successfully logged in:');
         navigate('/login/doubleAuth');
       }
     } catch (e) {

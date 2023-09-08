@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 // components
 import TopNavbar from './components/layouts/TopNavbar'
@@ -10,7 +10,7 @@ import routes from "./routes";
 import {UserContext, getUserContext, defaultUserContext} from './context';
 import {SnackbarProvider, useSnackbar} from 'notistack';
 import {logout} from "./api/auth";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -35,21 +35,32 @@ export default function App() {
 
 function MainComponent() {
   const navigate = useNavigate();
+  const location = useLocation();
   const {enqueueSnackbar} = useSnackbar();
+  const [logoutTimer, setLogoutTimer] = useState(0);
   const [userContext, setUserContext] = useState({
       ...getUserContext(),
       updateUser: (user) => {
         localStorage.setItem('userContext', JSON.stringify(user));
         setUserContext(state => ({...state, ...user}));
       },
-      logout: async () => {
-        enqueueSnackbar('logging out...');
+      logout: async (message, navigateToLogin = true) => {
+        enqueueSnackbar(message || 'logging out...');
         await logout();
         userContext.updateUser(defaultUserContext);
-        setTimeout(() => navigate('/login'));
+        if (logoutTimer) clearTimeout(logoutTimer);
+        setLogoutTimer(0);
+        if (location.pathname !== '/login' && navigateToLogin) setTimeout(() => navigate('/login'));
       }
     }
   );
+
+  if (!logoutTimer && userContext.expiresAt) {
+    setLogoutTimer(setTimeout(() => {
+      userContext.logout("Automatic logout due to session expired.", false);
+    }, userContext.expiresAt - new Date()));
+  }
+
   return <UserContext.Provider value={userContext}>
     <TopNavbar/>
     <div style={{paddingTop: 50, paddingBottom: 22}}>

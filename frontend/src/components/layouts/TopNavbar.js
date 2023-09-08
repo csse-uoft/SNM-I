@@ -283,13 +283,13 @@ function TopNavBar() {
           </div>
         ) : (
           <div>
-            {pathname !== '/login' &&
-              <MenuItem onClick={handleLogout}>
+            {pathname !== '/login' && pathname !== '/login/doubleAuth' &&
+              <MenuItem onClick={() => navigate('/login')}>
                 <ListItemIcon>
                   <LoginIcon fontSize="medium" sx={{color: 'white'}}/>
                 </ListItemIcon>
                 <Typography variant="inherit">
-                  Log out
+                  Log in
                 </Typography>
               </MenuItem>
             }

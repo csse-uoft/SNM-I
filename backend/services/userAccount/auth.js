@@ -1,5 +1,6 @@
 const {validateCredentials, userExpired, findUserAccountById, findUserAccountByEmail} = require('./user');
 const Hashing = require("../../utils/hashing");
+const {cookieSession} = require("../../config")
 
 const login = async (req, res, next) => {
   const {email, password} = req.body;
@@ -71,7 +72,7 @@ const checkUserSecurityQuestion = async (req, res, next) => {
           delete userAccount.salt;
           delete userAccount.hash;
           delete userAccount.securityQuestions;
-          return res.status(200).json({success: true, matched: true, message: 'matched', userAccount})
+          return res.status(200).json({success: true, matched: true, message: 'matched', userAccount, expiresAt: Number(new Date()) + cookieSession.maxAge})
         }else{
           return res.status(200).json({success: false, matched: false, message: 'incorrect'})
         }

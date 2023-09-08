@@ -12,6 +12,7 @@ export const defaultUserContext = {
   areaCode:null,
   phoneNumber:null,
   errorMessage:[],
+  expiresAt: 0,
 }
 
 export const getUserContext = () => {
@@ -21,7 +22,11 @@ export const getUserContext = () => {
   if (json) {
     Object.assign(context, JSON.parse(json));
   }
-  return context;
+  if (context.expiresAt <= new Date()) {
+    return defaultUserContext;
+  } else {
+    return context;
+  }
 }
 
 export const UserContext = React.createContext(defaultUserContext);

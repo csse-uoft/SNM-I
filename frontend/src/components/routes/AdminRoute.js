@@ -10,13 +10,10 @@ export default function AdminRoute({element: Component, ...rest}) {
 
   useEffect(() => {
     if (!userContext.email) {
+      enqueueSnackbar("You are not logged in.");
       navigate('/login');
     }
-  }, [userContext.email])
+  }, [userContext.email]);
 
-  if (!userContext.email) {
-    enqueueSnackbar("You are not logged in.")
-    return "Please wait..."
-  }
   return <Component {...rest}/>;
 }
