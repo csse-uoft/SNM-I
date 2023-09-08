@@ -89,6 +89,8 @@ async function getConnectedNeedSatisfiers(req, res, next) {
         ?s3 :kindOf ?k3.
         ?s4 :hasType ?type4.
         ?s4 :kindOf ?k4.
+        ?s5 :hasType ?type5.
+        ?s5 :kindOf ?k5.
     } WHERE {
         ?s a :NeedSatisfier.
         ?s :hasType ?type.
@@ -100,6 +102,11 @@ async function getConnectedNeedSatisfiers(req, res, next) {
               ?s :kindOf* ?s4.
               ?s4 :hasType ?type4.
               OPTIONAL {?s4 :kindOf ?k4.}
+              OPTIONAL {
+                ?s5 :kindOf* ?s4.
+                ?s5 :hasType ?type5.
+                OPTIONAL {?s5 :kindOf ?k5.}
+            }
         }
         } UNION {
             bind(<${startNodeURI}> as ?s)
