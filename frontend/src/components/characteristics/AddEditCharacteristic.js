@@ -9,14 +9,13 @@ import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import RadioField from "../shared/fields/RadioField";
 import {
-  createCharacteristic, fetchCharacteristic,
-  fetchCharacteristicFieldTypes,
-  fetchCharacteristicsDataTypes,
-  fetchCharacteristicsOptionsFromClass, updateCharacteristic
+  createCharacteristic, fetchCharacteristic, fetchCharacteristicFieldTypes, fetchCharacteristics,
+  fetchCharacteristicsDataTypes, fetchCharacteristicsOptionsFromClass, fetchConnectedCharacteristics,
+  updateCharacteristic
 } from "../../api/characteristicApi";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
-import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
+import VisualizeKindOfs from "../needSatisfier/VisualizeKindOfs";
 
 
 const useStyles = makeStyles(() => ({
@@ -57,15 +56,21 @@ export default function AddEditCharacteristic() {
     options: [{key: 0, label: ''}]
   })
 
-  const [types, setTypes] = useState({fieldTypes: {}, dataTypes: {}, optionsFromLabel: {}});
+  const [types, setTypes] = useState({fieldTypes: {}, dataTypes: {}, optionsFromLabel: {}, kindOf: {}});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const newTypes = {};
+    const newTypes = {kindOf: {}};
     Promise.all([
       fetchCharacteristicFieldTypes().then(fieldTypes => newTypes.fieldTypes = fieldTypes),
       fetchCharacteristicsDataTypes().then(dataTypes => newTypes.dataTypes = dataTypes),
-      fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
+      fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass),
+      fetchCharacteristics().then(characteristics => {
+        characteristics.data.forEach((characteristic) => {
+          if (option === 'edit' && id === characteristic._id) return; // Skip current need
+          newTypes.kindOf[characteristic._uri] = `${characteristic.name} (${characteristic.description})`;
+        });
+      }),
     ]).then(() => {
       if (option === 'edit' && id) {
         return fetchCharacteristic(id).then(res => {
@@ -232,6 +237,14 @@ export default function AddEditCharacteristic() {
           helperText={errors.description}
           multiline
           disabled={state.locked}
+        />
+        <Dropdown
+          options={types.kindOf}
+          label={'Kind Of'}
+          value={form.kindOf}
+          onChange={e => form.kindOf = e.target.value}
+          error={!!errors.kindOf}
+          helperText={errors.kindOf}
         />
         <Dropdown
           key={'codes'}
@@ -408,6 +421,10 @@ export default function AddEditCharacteristic() {
                      open={state.failDialog}/>
       </Paper>
 
+      <VisualizeKindOfs
+        id={id}
+        fetchAPI={async () => await fetchConnectedCharacteristics(`:characteristic_${id}`)}
+      />
     </Container>
 
   )

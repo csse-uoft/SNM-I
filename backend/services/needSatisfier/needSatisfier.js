@@ -1,5 +1,5 @@
 const {GDBNeedSatisfierModel} = require("../../models/needSatisfier");
-const {GraphDB, SPARQL} = require("graphdb-utils");
+const {getConnectedKindOfs} = require("../kindOf");
 
 const formFormatChecker = (form) => {
   return (!form || !form.type || !form.description || !form.characteristics ||
@@ -76,62 +76,10 @@ const updateNeedSatisfier = async (req, res, next) => {
 };
 
 async function getConnectedNeedSatisfiers(req, res, next) {
-  let startNodeURI = req.params.startNodeURI;
-  if (startNodeURI) startNodeURI = SPARQL.ensureFullURI(startNodeURI);
-  const query = `
-    PREFIX : <http://snmi#>
-    CONSTRUCT {
-        ?s :hasType ?type.
-        ?s :kindOf ?k.
-        ?s2 :hasType ?type2.
-        ?s2 :kindOf ?k2.
-        ?s3 :hasType ?type3.
-        ?s3 :kindOf ?k3.
-        ?s4 :hasType ?type4.
-        ?s4 :kindOf ?k4.
-        ?s5 :hasType ?type5.
-        ?s5 :kindOf ?k5.
-    } WHERE {
-        ?s a :NeedSatisfier.
-        ?s :hasType ?type.
-        OPTIONAL {?s :kindOf ?k.}
-        ${startNodeURI ? `
-        {
-            ?s :kindOf* <${startNodeURI}>
-            OPTIONAL {
-              ?s :kindOf* ?s4.
-              ?s4 :hasType ?type4.
-              OPTIONAL {?s4 :kindOf ?k4.}
-              OPTIONAL {
-                ?s5 :kindOf* ?s4.
-                ?s5 :hasType ?type5.
-                OPTIONAL {?s5 :kindOf ?k5.}
-            }
-        }
-        } UNION {
-            bind(<${startNodeURI}> as ?s)
-            ?s :kindOf* ?s2.
-    
-            ?s2 :hasType ?type2.
-            OPTIONAL {
-              ?s2 :kindOf ?k2.
-              ?s3 :kindOf* ?k2.
-              ?s3 :hasType ?type3.
-              OPTIONAL {?s3 :kindOf ?k3.}
-            }
-        }` : ''}}`;
-  const result = {};
-  await GraphDB.sendConstructQuery(query, ({subject, predicate, object}) => {
-    if (!result[subject.value]) {
-      result[subject.value] = {kindOf: []};
-    }
-    if (predicate.value === 'http://snmi#kindOf') {
-      result[subject.value].kindOf.push(object.value);
-    } else if (predicate.value === 'http://snmi#hasType') {
-      result[subject.value].type = object.value;
-    }
+  return res.status(200).json({
+    success: true,
+    data: await getConnectedKindOfs(req.params.startNodeURI, ':NeedSatisfier', ':hasType')
   });
-  return res.status(200).json({success: true, data: result});
 }
 
 

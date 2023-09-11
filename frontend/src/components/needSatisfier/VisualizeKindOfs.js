@@ -12,8 +12,7 @@ import ReactFlow, {
 import dagre from 'dagre';
 
 import 'reactflow/dist/style.css';
-import {fetchConnectedNeedSatisfiers} from "../../api/needSatisfierApi";
-import {Button, IconButton} from "@mui/material";
+import {IconButton} from "@mui/material";
 import {KeyboardDoubleArrowUp, KeyboardDoubleArrowLeft} from "@mui/icons-material";
 
 // const dagreGraph = new dagre.graphlib.Graph();
@@ -23,7 +22,7 @@ const nodeWidth = 160;
 const nodeHeight = 28;
 
 
-export default function VisualizeNeedSatisfier({id}) {
+export default function VisualizeKindOfs({id, fetchAPI}) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -69,14 +68,14 @@ export default function VisualizeNeedSatisfier({id}) {
   useEffect(() => {
     (async function () {
       if (id) {
-        const {data} = await fetchConnectedNeedSatisfiers(`:needSatisfier_${id}`);
+        const {data} = await fetchAPI();
         const newNodes = [];
         const newEdges = [];
-        for (const [uri, {type, kindOf}] of Object.entries(data)) {
+        for (const [uri, {label, kindOf}] of Object.entries(data)) {
           newNodes.push({
             id: uri,
             data: {
-              label: type
+              label
             },
             position: {x: 0, y: 0}
           });

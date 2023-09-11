@@ -7,6 +7,7 @@ const {SPARQL, GraphDB} = require('graphdb-utils');
 const {MDBDynamicFormModel} = require("../../models/dynamicForm");
 const {GDBClientModel, GDBServiceProviderModel} = require("../../models");
 const {query} = require("express");
+const {getConnectedKindOfs} = require("../kindOf");
 
 const option2Model = {
   'client': GDBClientModel,
@@ -39,7 +40,7 @@ const createCharacteristic = async (req, res, next) => {
 const updateCharacteristic = async (req, res, next) => {
   const id = req.params.id;
 
-  const {label, name, multipleValues, dataType, fieldType, options, optionsFromClass, description} = req.body;
+  const {label, name, multipleValues, dataType, fieldType, options, optionsFromClass, description, kindOf} = req.body;
   const updateData = {
     label,
     name,
@@ -49,6 +50,7 @@ const updateCharacteristic = async (req, res, next) => {
     options,
     optionsFromClass,
     description,
+    kindOf
   };
 
   try {
@@ -99,12 +101,12 @@ const fetchCharacteristic = async (req, res, next) => {
       name: characteristic.name,
       description: characteristic.description,
       codes: [],
+      kindOf: characteristic.kindOf,
       label: characteristic.implementation.label,
       dataType: characteristic.implementation.valueDataType,
       fieldType: characteristic.implementation.fieldType.type,
       options: characteristic.implementation.options,
       optionsFromClass: characteristic.implementation.optionsFromClass,
-
     }
     return res.status(200).json({fetchData, success: true, locked: forms.length !== 0 || isUsed || characteristic.isPredefined});
   } catch (e) {
@@ -175,25 +177,17 @@ const deleteCharacteristic = async (req, res, next) => {
 }
 
 
-async function fetchCharacteristicsByType(req, res, next){
-  try{
-    const {option} = req.params
-    if(!option)
-      return res.status(400).json({success: false, message: 'Option is not provided'})
-    if(!option2Model[option])
-      return res.status(400).json({success: false, message: 'Invalid option'})
-
-    const characteristics = GDBCharacteristicModel.find({_})
-    if(!Array.isArray(generics))
-      return res.status(400).json({success: false})
-
-  }catch (e){
-
-  }
+async function getConnectedCharacteristics(req, res, next) {
+  return res.status(200).json({
+    success: true,
+    data: await getConnectedKindOfs(req.params.startNodeURI, ':characteristics', ':hasName')
+  });
 }
+
 
 
 module.exports = {
   createCharacteristic, updateCharacteristic, fetchCharacteristic,
-  fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsWithDetails,fetchCharacteristicsByType
+  fetchCharacteristics, deleteCharacteristic, fetchCharacteristicsWithDetails,
+  getConnectedCharacteristics
 }

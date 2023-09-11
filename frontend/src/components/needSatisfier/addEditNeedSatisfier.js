@@ -19,7 +19,7 @@ import {
   updateNeedSatisfier
 } from "../../api/needSatisfierApi";
 import {useSnackbar} from "notistack";
-import VisualizeNeedSatisfier from "./visualizeNeedSatisfier";
+import VisualizeKindOfs from "./VisualizeKindOfs";
 
 
 const useStyles = makeStyles(() => ({
@@ -267,7 +267,10 @@ export default function AddEditNeedSatisfier() {
                      open={state.submitDialog && option === 'edit'}/>
       </Paper>
 
-      <VisualizeNeedSatisfier id={id} />
+      <VisualizeKindOfs
+        id={id}
+        fetchAPI={async () => await fetchConnectedNeedSatisfiers(`:needSatisfier_${id}`)}
+      />
 
     </Container>
 

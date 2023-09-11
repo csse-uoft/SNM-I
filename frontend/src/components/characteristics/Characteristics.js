@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon} from "@mui/icons-material";
-import {DeleteModal, Loading, DataTable} from "../shared";
+import {DeleteModal, Loading, DataTable, Link} from "../shared";
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {useNavigate} from "react-router-dom";
@@ -107,7 +107,7 @@ export default function Characteristics() {
   const columns = [
     {
       label: 'Name',
-      body: ({name}) => <Box sx={{width: '60%'}}>{name}</Box>,
+      body: ({name, id}) => <Link color to={`/characteristic/${id}/edit`}>{name}</Link>,
       sortBy: ({name}) => name,
     },
     {

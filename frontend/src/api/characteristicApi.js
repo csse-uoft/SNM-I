@@ -57,3 +57,7 @@ export async function fetchCharacteristicsDataTypes() {
 export async function fetchCharacteristicsOptionsFromClass() {
   return getJson('/api/characteristic/optionsFromClass');
 }
+
+export async function fetchConnectedCharacteristics(startNodeURI) {
+  return getJson(`/api/characteristic/graph/${encodeURIComponent(startNodeURI)}`);
+}

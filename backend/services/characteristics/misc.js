@@ -126,7 +126,7 @@ async function getFieldTypes(req, res) {
 async function getDataTypes(req, res) {
   const dataTypesObject = {};
   for (const {value, label} of Object.values(dataTypes)) {
-    dataTypesObject[value] = label;
+    dataTypesObject[SPARQL.ensureFullURI(value)] = label;
   }
   res.json(dataTypesObject);
 }

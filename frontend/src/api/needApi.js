@@ -19,3 +19,7 @@ export async function fetchNeed(id) {
 export async function fetchNeeds() {
   return getJson('/api/needs');
 }
+
+export async function fetchConnectedNeeds(startNodeURI) {
+  return getJson(`/api/need/graph/${encodeURIComponent(startNodeURI)}`);
+}

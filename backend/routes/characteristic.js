@@ -1,6 +1,10 @@
 const express = require('express');
-const {fetchCharacteristic, fetchCharacteristics, createCharacteristic, updateCharacteristic, deleteCharacteristic} = require("../services/characteristics/characteristics");
-const {getFieldTypes, getDataTypes, getAllClasses, fetchCharacteristicsWithDetails} = require("../services/characteristics");
+const {
+  getFieldTypes, getDataTypes, getAllClasses, fetchCharacteristicsWithDetails,
+  fetchCharacteristic, fetchCharacteristics, createCharacteristic, updateCharacteristic, deleteCharacteristic,
+  getConnectedCharacteristics
+} = require("../services/characteristics");
+
 const router = express.Router();
 
 
@@ -15,6 +19,7 @@ router.get('/characteristics', fetchCharacteristics);
 router.post('/characteristic', createCharacteristic);
 router.put('/characteristic/:id', updateCharacteristic);
 router.delete('/characteristic/delete/:id', deleteCharacteristic);
+router.get('/characteristic/graph/:startNodeURI', getConnectedCharacteristics);
 
 
 module.exports = router;

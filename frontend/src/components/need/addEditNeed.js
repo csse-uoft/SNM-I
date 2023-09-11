@@ -1,21 +1,19 @@
-import React, { useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@mui/styles";
 import {useNavigate, useParams} from "react-router-dom";
 import {defaultAddEditNeedFields} from "../../constants/default_fields";
 import {Loading} from "../shared";
-import {Chip, Button, Container, Paper, Typography, Divider, IconButton, Grid} from "@mui/material";
+import {Button, Container, Paper, Typography} from "@mui/material";
 import SelectField from '../shared/fields/SelectField.js'
 import Dropdown from "../shared/fields/MultiSelectField";
 import GeneralField from "../shared/fields/GeneralField";
-import RadioField from "../shared/fields/RadioField";
-import { fetchCharacteristics,
-} from "../../api/characteristicApi";
+import {fetchCharacteristics} from "../../api/characteristicApi";
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
-import {Add as AddIcon, Delete as DeleteIcon} from "@mui/icons-material";
-import {createNeedSatisfier, fetchNeedSatisfiers} from "../../api/needSatisfierApi";
-import {createNeed, fetchNeed, updateNeed} from "../../api/needApi";
+import {fetchNeedSatisfiers} from "../../api/needSatisfierApi";
+import {createNeed, fetchNeed, updateNeed, fetchNeeds, fetchConnectedNeeds} from "../../api/needApi";
 import {useSnackbar} from "notistack";
+import VisualizeKindOfs from "../needSatisfier/VisualizeKindOfs";
 
 
 const useStyles = makeStyles(() => ({
@@ -56,17 +54,26 @@ export default function AddEditNeed() {
   })
 
   const [options, setOptions] = useState({});
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const options = {characteristics: {}, needSatisfiers: {}};
+    const options = {characteristics: {}, needSatisfiers: {}, kindOf: {}};
     Promise.all([
       // fetchAllCodes todo
+      fetchNeeds().then(res => {
+        res.needs.forEach(({_uri, _id, type, description}) => {
+          if (option === 'edit' && id === _id) return; // Skip current need
+          options.kindOf[_uri] = `${type} (${description})`;
+        });
+      }),
       fetchCharacteristics().then(characteristics => {
-        characteristics.data.map((characteristic)=>{options.characteristics[characteristic.id] = characteristic.name});
+        characteristics.data.forEach((characteristic) => {
+          options.characteristics[characteristic._uri] = characteristic.name
+        });
       }),
       fetchNeedSatisfiers().then(res => {
-        res.needSatisfiers.map(needSatisfier => options.needSatisfiers[needSatisfier._id] = needSatisfier.type)
+        res.needSatisfiers.forEach(needSatisfier => options.needSatisfiers[needSatisfier._uri] = needSatisfier.type)
       })
       // fetchCharacteristicsOptionsFromClass().then(optionsFromClass => newTypes.optionsFromClass = optionsFromClass)
     ]).then(() => {
@@ -138,9 +145,9 @@ export default function AddEditNeed() {
       } else if (label === 'codes' && value.length === 0) {
         // errors[label] = 'This field cannot be empty'
       } else if (label === 'needSatisfiers') {
-        if(!Array.isArray(value))
+        if (!Array.isArray(value))
           errors[label] = 'Wrong format'
-        if(value.length === 0){
+        if (value.length === 0) {
           errors[label] = 'This field cannot be empty'
         }
       }
@@ -150,15 +157,15 @@ export default function AddEditNeed() {
   }
 
   const handleOnBlur = (label) => {
-    if(!form[label] || (Array.isArray(form[label]) && form[label].length === 0)){
+    if (!form[label] || (Array.isArray(form[label]) && form[label].length === 0)) {
       setErrors({...errors, [label]: 'This field cannot be empty'});
-    }else{
+    } else {
       setErrors({...errors, [label]: null});
     }
   }
 
   const keyPress = e => {
-    if(e.key === 'Enter')
+    if (e.key === 'Enter')
       handleSubmit();
   }
 
@@ -176,7 +183,7 @@ export default function AddEditNeed() {
           label={'Type'}
           value={form.type}
           required
-          onBlur={() => handleOnBlur( 'type')}
+          onBlur={() => handleOnBlur('type')}
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.type = e.target.value}
           error={!!errors.type}
@@ -189,7 +196,7 @@ export default function AddEditNeed() {
           required
           sx={{mt: '16px', minWidth: 350}}
           onChange={e => form.changeType = e.target.value}
-          onBlur={() => handleOnBlur( 'changeType')}
+          onBlur={() => handleOnBlur('changeType')}
           error={!!errors.changeType}
           helperText={errors.changeType}
         />
@@ -227,6 +234,15 @@ export default function AddEditNeed() {
         />
 
         <Dropdown
+          options={options.kindOf}
+          label={'Kind Of'}
+          value={form.kindOf}
+          onChange={e => form.kindOf = e.target.value}
+          error={!!errors.kindOf}
+          helperText={errors.kindOf}
+        />
+
+        <Dropdown
           key={'codes'}
           options={[]}
           label={'Codes'}
@@ -259,6 +275,10 @@ export default function AddEditNeed() {
                      open={state.submitDialog && option === 'edit'}/>
       </Paper>
 
+      <VisualizeKindOfs
+        id={id}
+        fetchAPI={async () => await fetchConnectedNeeds(`:need_${id}`)}
+      />
     </Container>
 
   )

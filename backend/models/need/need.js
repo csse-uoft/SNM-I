@@ -9,6 +9,7 @@ const GDBNeedModel = createGraphDBModel({
   description: {type: String, internalKey: 'cids:hasDescription'},
   characteristic: {type: GDBCharacteristicModel, internalKey: ':forCharacteristic'},
   codes: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
+  kindOf: {type: [() => GDBNeedModel], internalKey: ':kindOf'},
 }, {
   rdfTypes: [':Need'], name: 'need'
 });

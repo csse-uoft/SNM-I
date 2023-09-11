@@ -12,6 +12,7 @@ const GDBCharacteristicModel = createGraphDBModel({
   predefinedProperty: {type: Types.NamedIndividual, internalKey: ':hasPredefinedProperty'},
   isPredefined: {type: Boolean, internalKey: ':isPredefined'},
   implementation: {type: GDBFIIModel, internalKey: ':hasFormItemImplementation', onDelete: DeleteType.CASCADE},
+  kindOf: {type: [() => GDBCharacteristicModel], internalKey: ':kindOf'},
 }, {
   rdfTypes: [':characteristics'], name: 'characteristic'
 });

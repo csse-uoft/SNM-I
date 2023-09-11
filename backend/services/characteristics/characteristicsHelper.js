@@ -10,11 +10,12 @@ async function findCharacteristicById(id) {
 }
 
 async function createCharacteristicHelper(data) {
-  const {label, name, multipleValues, dataType, codes, fieldType, options, optionsFromClass, description} = data;
+  const {label, name, multipleValues, dataType, codes, fieldType, options, optionsFromClass, description, kindOf} = data;
   const characteristic = GDBCharacteristicModel({
     description,
     name,
     codes,
+    kindOf
   });
 
 
@@ -89,6 +90,8 @@ async function updateCharacteristicHelper(id, updateData) {
   } else {
     characteristic.implementation.optionsFromClass = undefined;
   }
+
+  characteristic.kindOf = updateData.kindOf;
 
   await characteristic.save();
   return characteristic;
