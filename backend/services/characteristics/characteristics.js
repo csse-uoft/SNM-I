@@ -15,7 +15,7 @@ const option2Model = {
 }
 
 const createCharacteristic = async (req, res, next) => {
-  const {label, name, codes, multipleValues, dataType, fieldType, options, optionsFromClass, description} = req.body;
+  const {label, name, codes, multipleValues, dataType, fieldType, options, optionsFromClass, description, kindOf} = req.body;
   const data = {
     label,
     name,
@@ -26,6 +26,7 @@ const createCharacteristic = async (req, res, next) => {
     options,
     optionsFromClass,
     description,
+    kindOf
   };
 
   try {
