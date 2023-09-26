@@ -19,6 +19,10 @@ export function useClientAPIs() {
      */
     deleteClient: async (id) => {
       return deleteJson('/api/generic/client/' + id, userContext);
+    },
+
+    matchFromClient: async (id) => {
+      return getJson('/api/matching/client/' + id, userContext);
     }
   }
 }

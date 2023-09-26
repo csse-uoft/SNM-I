@@ -177,7 +177,7 @@ export default function VisualizeGeneric({genericType,}) {
 
   return (
     <Container>
-      <Paper sx={{pl: 2, pr: 2, pb: 2, mb: 2}}>
+      <Paper sx={{pl: 2, pr: 2, pb: 2, mb: 2}} elevation={5}>
         <Typography
           sx={{marginTop: '20px', pt: 1, marginRight: '20px', fontSize: '150%'}}>
           {`Information for ${genericType} with ID: ` + id}

@@ -16,4 +16,5 @@ module.exports = {
   internalTypeRoute: require('./internalType'),
   serviceProvisionRoute: require('./serviceProvision'),
   programProvisionRoute: require('./programProvision'),
+  matchingRoute: require('./matching'),
 }
