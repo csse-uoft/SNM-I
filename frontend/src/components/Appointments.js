@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from './shared';
 import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric} from "../api/genericDataApi";
+import {getUserProfileById} from "../api/userApi";
 import {getInstancesInClass} from "../api/dynamicFormApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
@@ -29,6 +30,14 @@ const columnsWithoutOptions = [
     body: ({person}) => {
       if (person) {
         return <Link color to={`/person/${person._id.split('_')[1]}`}>{person.name || ':' + person._id}</Link>;
+      }
+    }
+  },
+  {
+    label: 'User',
+    body: ({user}) => {
+      if (user) {
+        return <Link color to={`/users/${user._id.split('_')[1]}`}>{user.name || ':' + user._id}</Link>;
       }
     }
   },
@@ -131,8 +140,15 @@ export default function Appointments() {
           name: persons[appointment.person.split('#')[1]
                 || ':' + appointment.person.split('#')[1]]
         };
-      } else if (appointment.user) {
-        // const userData = await fetchSingleGeneric('user', appointment.user);
+      }
+      if (appointment.user) {
+        const userData = await getUserProfileById(appointment.user.split('_')[1]);
+        appointmentData.user = {
+          _id: appointment.user.split('#')[1],
+          name: userData.primaryContact
+                ? userData.primaryContact.lastName + ', ' + userData.primaryContact.firstName
+                : ':' + appointment.user.split('#')[1],
+        };
       }
 
       data.push(appointmentData);
