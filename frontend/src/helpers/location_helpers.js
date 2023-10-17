@@ -1,20 +1,32 @@
-export function formatLocation(location) {
+export function formatLocation(location, addressInfo) {
   if (Object.keys(location).length === 1) {
     return "Not Provided"
   }
 
   let format_location = ''
-  if (location.unitNumber !== undefined){
+  if (location.unitNumber) {
     format_location += `${location.unitNumber}-`
   }
-  if (location.street_address !== undefined){
-    format_location += `${location.street_address}, `
+  if (location.streetNumber) {
+    format_location += `${location.streetNumber} `
   }
-  if (location.city !== undefined)
-    format_location += `${location.city}, `
-  if (location.province !== undefined)
-    format_location += `${location.province}, `
-  if (location.postal_code !== undefined)
-    format_location += `${location.postal_code}`
+  if (location.streetName) {
+    format_location += `${location.streetName}`
+  }
+  if (location.streetType && addressInfo?.streetTypes) {
+    format_location += ` ${addressInfo.streetTypes[location.streetType]}`
+  }
+  if (location.streetDirection && addressInfo?.streetDirections) {
+    format_location += ` ${addressInfo.streetDirections[location.streetDirection]}`
+  }
+  if (location.city) {
+    format_location += `, ${location.city}, `
+  }
+  if (location.state && addressInfo?.states) {
+    format_location += `${addressInfo.states[location.state]} `
+  }
+  if (location.postalCode) {
+    format_location += `${location.postalCode}`
+  }
   return format_location
 }
