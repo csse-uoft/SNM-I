@@ -85,7 +85,7 @@ if (Map) {
       markers = [],
     } = props;
     const [map, setMap] = useState(null);
-    const [addressInfo, setAddressInfo] = useState(null);
+    const [addressInfo, setAddressInfo] = useState();
 
     useEffect(() => {
       setMap(new Map(document.getElementById('map'), {
@@ -137,7 +137,6 @@ if (Map) {
             // Info window is opened when mouse over the marker.
             // It also stays open after the marker is clicked.
             createInfoWindow(map, currMarker, marker, navigate, i, addressInfo);
-            console.log(JSON.stringify(addressInfo));
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
