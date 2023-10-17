@@ -4,7 +4,6 @@ import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
 import { fetchForAdvancedSearch } from "../api/advancedSearchApi";
 import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
-import { formatLocation } from '../helpers/location_helpers'
 
 const TYPE = 'programOccurrence';
 
@@ -34,14 +33,14 @@ export default function ProgramOccurrences() {
   const nameFormatter = (programOccurrence) => {return programOccurrence.description;};
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
     const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: {lat: Number(program.address.lat), lng: Number(program.address.lng)},
-      title: nameFormatter(program),
-      link: `/${TYPE}/${program._id}`,
-      content: program.address && formatLocation(program.address),
-    })).filter(program => program.position.lat && program.position.lng);
+    return currPagePrograms.map(programOccurrence => ({
+      position: (programOccurrence.address?.lat && programOccurrence.address?.lng)
+        ? {lat: Number(programOccurrence.address.lat), lng: Number(programOccurrence.address.lng)}
+        : {...programOccurrence.address},
+      title: nameFormatter(programOccurrence),
+      link: `/${TYPE}/${programOccurrence._id}`,
+    })).filter(programOccurrence => (programOccurrence.position?.lat && programOccurrence.position?.lng) || (programOccurrence.position?.streetName && programOccurrence.position?.city))
   };
 
   const fetchData = async () => {
@@ -62,10 +61,7 @@ export default function ProgramOccurrences() {
          for (const occ of programOccurrence.characteristicOccurrences) {
            if (occ.occurrenceOf?.name === 'Address') {
              const obj = (await fetchSingleGeneric("programOccurrence", programOccurrence._id)).data; // TODO: inefficient!
-             programOccurrenceData.address = {
-               lat: obj['characteristic_' + addressCharacteristicId].lat,
-               lng: obj['characteristic_' + addressCharacteristicId].lng,
-             };
+             programOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
             }
          }
       if (programOccurrence.description) {

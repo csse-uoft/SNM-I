@@ -57,7 +57,6 @@ export default function Clients() {
   };
 
   const generateMarkers = (clients, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
     const currPageClients = clients.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageClients.map(client => ({
       position: (client.address?.lat && client.address?.lng)

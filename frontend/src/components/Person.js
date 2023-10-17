@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {fetchPersons, deletePerson} from '../api/personApi'
-
-import {formatLocation} from '../helpers/location_helpers'
+import {fetchSingleGeneric} from "../api/genericDataApi";
 import {GenericPage, Link} from "./shared";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'person';
 
@@ -41,15 +41,14 @@ export default function Person() {
   };
 
   const generateMarkers = (persons, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
     const currPagePersons = persons.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPagePersons.map(person => ({
-      position: {lat: Number(person.address.lat), lng: Number(person.address.lng)},
+      position: (person.address?.lat && person.address?.lng)
+        ? {lat: Number(person.address.lat), lng: Number(person.address.lng)}
+        : {...person.address},
       title: nameFormatter(person),
       link: `/${TYPE}/${person.id}`,
-      content: person.address && formatLocation(person.address),
-    })).filter(person => person.position.lat && person.position.lng);
+    })).filter(person => (person.position?.lat && person.position?.lng) || (person.position?.streetName && person.position?.city))
   };
 
 
@@ -58,11 +57,19 @@ export default function Person() {
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const persons = (await fetchPersons()).data;
     const data = [];
     for (const person of persons) {
       // parse person data and assign to corresponding fields
       const personData = {_id: person._id};
+      if (person.characteristicOccurrences)
+        for (const occ of person.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Address') {
+            const personObj = (await fetchSingleGeneric("person", person._id)).data; // TODO: inefficient!
+            personData.address = personObj['characteristic_' + addressCharacteristicId];
+          }
+        }
       personData.firstName = person.firstName;
       personData.lastName = person.lastName;
       personData.createDate = person.createDate;

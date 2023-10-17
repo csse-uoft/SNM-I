@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from './shared';
 import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../api/genericDataApi";
-import {formatLocation} from '../helpers/location_helpers'
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'programs';
 
@@ -81,17 +81,18 @@ export default function Programs() {
   };
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
     const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPagePrograms.map(program => ({
-      position: {lat: Number(program.address.lat), lng: Number(program.address.lng)},
+      position: (program.address?.lat && program.address?.lng)
+        ? {lat: Number(program.address.lat), lng: Number(program.address.lng)}
+        : {...program.address},
       title: nameFormatter(program),
       link: `/${TYPE}/${program._id}`,
-      content: program.address && formatLocation(program.address),
-    })).filter(program => program.position.lat && program.position.lng);
+    })).filter(program => (program.position?.lat && program.position?.lng) || (program.position?.streetName && program.position?.city))
   };
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const programs = (await fetchMultipleGeneric('program')).data;
     const data = [];
     for (const program of programs) {
@@ -105,6 +106,9 @@ export default function Programs() {
             programData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
             programData.provider = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("program", program._id)).data; // TODO: inefficient!
+            programData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (program.serviceProvider) {
