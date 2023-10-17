@@ -20,13 +20,13 @@ export function formatLocation(location, addressInfo) {
     format_location += ` ${addressInfo.streetDirections[location.streetDirection]}`
   }
   if (location.city) {
-    format_location += `, ${location.city}, `
+    format_location += `, ${location.city}`
   }
   if (location.state && addressInfo?.states) {
-    format_location += `${addressInfo.states[location.state]} `
+    format_location += `, ${addressInfo.states[location.state]}`
   }
   if (location.postalCode) {
-    format_location += `${location.postalCode}`
+    format_location += ` ${location.postalCode}`
   }
   return format_location
 }
