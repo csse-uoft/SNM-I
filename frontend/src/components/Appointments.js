@@ -4,7 +4,6 @@ import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric} from "../api/genericDataApi";
 import {getInstancesInClass} from "../api/dynamicFormApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
-import {formatLocation} from '../helpers/location_helpers'
 
 const TYPE = 'appointments';
 
@@ -68,16 +67,17 @@ export default function Appointments() {
     // TODO: verify this works as expected 
     const currPageAppointments = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageAppointments.map(appointment => ({
-      position: {lat: Number(appointment.address.lat), lng: Number(appointment.address.lng)},
-      title: 'appointment ' + appointment._id,
+      position: (appointment.address?.lat && appointment.address?.lng)
+        ? {lat: Number(appointment.address.lat), lng: Number(appointment.address.lng)}
+        : {...appointment.address},
+      title: 'Appointment ' + appointment._id,
       link: `/${TYPE}/${appointment._id}`,
-      content: appointment.address && formatLocation(appointment.address),
-    })).filter(appointment => appointment.position.lat && appointment.position.lng);
+    })).filter(appointment => (appointment.position?.lat && appointment.position?.lng) || (appointment.position?.streetName && appointment.position?.city))
   };
 
   const fetchData = async () => {
     // get all appointments data
-    const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const appointments = (await fetchMultipleGeneric('appointment')).data;
     const addressCharacteristicId = await getAddressCharacteristicId();
     const clients = {};
     // get all clients data
@@ -97,7 +97,7 @@ export default function Appointments() {
       });
     });
     const data = [];
-    for (const appointment of appointmens) {
+    for (const appointment of appointments) {
       //parse appointment data and assgin to corresponding fields
       const appointmentData = {_id: appointment._id, address: {}};
       if (appointment.characteristicOccurrences)
@@ -115,20 +115,17 @@ export default function Appointments() {
             appointmentData.datetime = occ.dataDateValue;
             appointmentData.dateType = 'Date';
           } else if (occ.occurrenceOf?.name === 'Address') {
-            const clientObj = (await fetchSingleGeneric("appointment", appointment._id)).data; // TODO: inefficient!
-            appointmentData.address = {
-              lat: clientObj['characteristic_' + addressCharacteristicId].lat,
-              lng: clientObj['characteristic_' + addressCharacteristicId].lng,
-            };
+            const appointmentObj = (await fetchSingleGeneric("appointment", appointment._id)).data; // TODO: inefficient!
+            appointmentData.address = appointmentObj['characteristic_' + addressCharacteristicId];
           }
         }
       if (appointment.client) {
         // get corresponding client data
-        appointmentData.client = clients[appointment.client.slice(1)]
+        appointmentData.client = clients[appointment.client.split('#')[1]]
       }
       if (appointment.person) {
         // get corresponding person data
-        appointmentData.person = persons[appointment.person.slice(1)]
+        appointmentData.person = persons[appointment.person.split('#')[1]]
       } else if (appointment.user) {
         // const userData = await fetchSingleGeneric('user', appointment.user);
       }

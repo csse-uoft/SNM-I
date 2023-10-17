@@ -2,7 +2,6 @@ import React from 'react';
 
 // TODO: createClients  (CSV Upload)
 import { useClientAPIs } from '../api/clientApi'
-import { formatLocation } from '../helpers/location_helpers'
 import { GenericPage, Link } from "./shared";
 import { fetchSingleGeneric } from "../api/genericDataApi";
 import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
@@ -61,11 +60,12 @@ export default function Clients() {
     // TODO: verify this works as expected
     const currPageClients = clients.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageClients.map(client => ({
-      position: {lat: Number(client.address.lat), lng: Number(client.address.lng)},
+      position: (client.address?.lat && client.address?.lng)
+        ? {lat: Number(client.address.lat), lng: Number(client.address.lng)}
+        : {...client.address},
       title: nameFormatter(client),
       link: `/${TYPE}/${client._id}`,
-      content: client.address && formatLocation(client.address),
-    })).filter(client => client.position.lat && client.position.lng);
+    })).filter(client => (client.position?.lat && client.position?.lng) || (client.position?.streetName && client.position?.city));
   };
 
   /**
@@ -93,8 +93,8 @@ export default function Clients() {
         }
       data.push(clientData);
     }
-    return data;
 
+    return data;
   }
 
   return (

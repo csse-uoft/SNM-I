@@ -116,6 +116,7 @@ export default function GenericPage(props) {
   // This also filters out providers without lat / lng.
   const markers = useMemo(() => generateMarkers(state.data, state.pageNumber, state.rowsPerPage),
     [generateMarkers, state.data, state.pageNumber, state.rowsPerPage]);
+	console.log(JSON.stringify(markers));
 
   if (state.loading)
     return <Loading message={`Loading ${title}...`}/>;
