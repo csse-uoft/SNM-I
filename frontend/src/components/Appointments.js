@@ -19,19 +19,17 @@ const columnsWithoutOptions = [
   {
     label: 'Client',
     body: ({client}) => {
-      return client;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      if (client) {
+        return <Link color to={`/clients/${client._id.split('_')[1]}`}>{client.name || ':' + client._id}</Link>;
+      }
     }
   },
   {
     label: 'Person',
     body: ({person}) => {
-      return person;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      if (person) {
+        return <Link color to={`/person/${person._id.split('_')[1]}`}>{person.name || ':' + person._id}</Link>;
+      }
     }
   },
   {
@@ -120,11 +118,19 @@ export default function Appointments() {
         }
       if (appointment.client) {
         // get corresponding client data
-        appointmentData.client = clients[appointment.client.split('#')[1]]
+        appointmentData.client = {
+          _id: appointment.client.split('#')[1],
+          name: clients[appointment.client.split('#')[1]
+                || ':' + appointment.client.split('#')[1]]
+        };
       }
       if (appointment.person) {
         // get corresponding person data
-        appointmentData.person = persons[appointment.person.split('#')[1]]
+        appointmentData.person = {
+          _id: appointment.person.split('#')[1],
+          name: persons[appointment.person.split('#')[1]
+                || ':' + appointment.person.split('#')[1]]
+        };
       } else if (appointment.user) {
         // const userData = await fetchSingleGeneric('user', appointment.user);
       }
