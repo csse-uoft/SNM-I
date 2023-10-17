@@ -64,7 +64,6 @@ export default function Appointments() {
   const nameFormatter = appointment => appointment.name;
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected 
     const currPageAppointments = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageAppointments.map(appointment => ({
       position: (appointment.address?.lat && appointment.address?.lng)

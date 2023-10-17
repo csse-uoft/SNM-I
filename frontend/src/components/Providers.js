@@ -1,21 +1,16 @@
 import React from 'react';
 // TODO: createProviderWithCSV  (CSV Upload)
 
-import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
 
 import { GenericPage, Link } from "./shared";
-import { fetchMultipleGeneric } from "../api/genericDataApi";
-import { deleteSingleProvider, fetchMultipleProviders } from "../api/providersApi";
+import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders } from "../api/providersApi";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'providers';
 
 const formatProviderName = provider => {
-  const {profile} = provider;
-  if (provider.type === 'Individual')
-    return profile && profile.first_name + " " + profile.last_name;
-  else
-    return provider.company;
+  return provider.name || `${provider.lastName || ''}, ${provider.firstName || ''}`;
 };
 
 // mui-table column configurations
@@ -60,15 +55,15 @@ const columnsWithoutOptions = [
 export default function Providers() {
 
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
     // TODO: verify this works as expected
     const currPageProviders = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageProviders.map(provider => ({
-      position: {lat: Number(provider.main_address.lat), lng: Number(provider.main_address.lng)},
+      position: (provider.address?.lat && provider.address?.lng)
+        ? {lat: Number(provider.address.lat), lng: Number(provider.address.lng)}
+        : {...provider.address},
       title: formatProviderName(provider),
-      link: `/${TYPE}/${provider.id}`,
-      content: provider.main_address && formatLocation(provider.main_address),
-    })).filter(provider => provider.position.lat && provider.position.lng);
+      link: `/${TYPE}/${provider.type.toLowerCase()}/${provider._id}`,
+    })).filter(provider => (provider.position?.lat && provider.position?.lng) || (provider.position?.streetName && provider.position?.city))
   };
 
   /**
@@ -76,6 +71,7 @@ export default function Providers() {
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
@@ -94,8 +90,10 @@ export default function Providers() {
             providerData.firstName = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Last Name') {
             providerData.lastName = occ.dataStringValue;
-          }
-
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleProvider(provider.type, provider._id)).data; // TODO: inefficient!
+            providerData.address = obj['characteristic_' + addressCharacteristicId];
+           }
         }
       data.push(providerData);
     }

@@ -92,7 +92,7 @@ if (Map) {
         center: center,
         zoom: zoom
       }));
-    }, [zoom, center]);
+    }, [zoom, center, addressInfo]);
 
     useEffect(() => {
       const fetchAddressInfo = async () => {
@@ -142,7 +142,7 @@ if (Map) {
           }
         });
       }
-    }, [markers, map, navigate, addressInfo]);
+    }, [markers, map, navigate]);
 
     return useMemo(() =>
         <Paper elevation={5} style={{width: '100%', height: '40vh', marginTop: 5}} id="map"/>
