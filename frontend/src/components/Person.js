@@ -40,17 +40,7 @@ export default function Person() {
     return person.firstName + ' ' + person.lastName;
   };
 
-  const generateMarkers = (persons, pageNumber, rowsPerPage) => {
-    const currPagePersons = persons.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePersons.map(person => ({
-      position: (person.address?.lat && person.address?.lng)
-        ? {lat: Number(person.address.lat), lng: Number(person.address.lng)}
-        : {...person.address},
-      title: nameFormatter(person),
-      link: `/${TYPE}/${person.id}`,
-    })).filter(person => (person.position?.lat && person.position?.lng) || (person.position?.streetName && person.position?.city))
-  };
-
+  const linkFormatter = person => `/${TYPE}/${person.id}`;
 
   /**
    * Fetch and transform data
@@ -85,8 +75,8 @@ export default function Person() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deletePerson}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

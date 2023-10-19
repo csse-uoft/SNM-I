@@ -70,16 +70,7 @@ export default function Appointments() {
 
   const nameFormatter = appointment => appointment.name;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    const currPageAppointments = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageAppointments.map(appointment => ({
-      position: (appointment.address?.lat && appointment.address?.lng)
-        ? {lat: Number(appointment.address.lat), lng: Number(appointment.address.lng)}
-        : {...appointment.address},
-      title: 'Appointment ' + appointment._id,
-      link: `/${TYPE}/${appointment._id}`,
-    })).filter(appointment => (appointment.position?.lat && appointment.position?.lng) || (appointment.position?.streetName && appointment.position?.city))
-  };
+  const linkFormatter = appointment => `/${TYPE}/${appointment._id}`;
 
   const fetchData = async () => {
     // get all appointments data
@@ -164,8 +155,8 @@ export default function Appointments() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteAppointment}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

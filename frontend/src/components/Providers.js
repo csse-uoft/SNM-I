@@ -13,6 +13,10 @@ const formatProviderName = provider => {
   return provider.name || `${provider.lastName || ''}, ${provider.firstName || ''}`;
 };
 
+const formatProviderLink = provider => {
+  return `/${TYPE}/${provider.type.toLowerCase()}/${provider._id}`;
+};
+
 // mui-table column configurations
 // TODO: Add custom print function for address
 const columnsWithoutOptions = [
@@ -53,18 +57,6 @@ const columnsWithoutOptions = [
 ];
 
 export default function Providers() {
-
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
-    const currPageProviders = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageProviders.map(provider => ({
-      position: (provider.address?.lat && provider.address?.lng)
-        ? {lat: Number(provider.address.lat), lng: Number(provider.address.lng)}
-        : {...provider.address},
-      title: formatProviderName(provider),
-      link: `/${TYPE}/${provider.type.toLowerCase()}/${provider._id}`,
-    })).filter(provider => (provider.position?.lat && provider.position?.lng) || (provider.position?.streetName && provider.position?.city))
-  };
 
   /**
    * Fetch and transform data
@@ -107,8 +99,8 @@ export default function Providers() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteSingleProvider}
-      generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
+      linkFormatter={formatProviderLink}
       tableOptions={{
         idField: '_id'
       }}

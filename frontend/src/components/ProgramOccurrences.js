@@ -32,16 +32,7 @@ export default function ProgramOccurrences() {
 
   const nameFormatter = (programOccurrence) => {return programOccurrence.description;};
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(programOccurrence => ({
-      position: (programOccurrence.address?.lat && programOccurrence.address?.lng)
-        ? {lat: Number(programOccurrence.address.lat), lng: Number(programOccurrence.address.lng)}
-        : {...programOccurrence.address},
-      title: nameFormatter(programOccurrence),
-      link: `/${TYPE}/${programOccurrence._id}`,
-    })).filter(programOccurrence => (programOccurrence.position?.lat && programOccurrence.position?.lng) || (programOccurrence.position?.streetName && programOccurrence.position?.city))
-  };
+  const linkFormatter = (programOccurrence) => {return `/${TYPE}/${programOccurrence._id}`;};
 
   const fetchData = async () => {
     var programNameCharacteristicId;
@@ -86,8 +77,8 @@ export default function ProgramOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgram}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

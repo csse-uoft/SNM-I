@@ -13,13 +13,13 @@ import { Container, Fade } from "@mui/material";
 
 /**
  * A generic page component for clients, services, programs, goods, providers.
- * @param props {{fetchData, deleteItem, generateMarkers: GenerateMarkers, tableOptions?: {},
- * type: ("clients", "services", "programs", "goods", "providers"), nameFormatter, columnsWithoutOptions}}
+ * @param props {{fetchData, deleteItem, tableOptions?: {},
+ * type: ("clients", "services", "programs", "goods", "providers"), nameFormatter, linkFormatter, columnsWithoutOptions}}
  */
 export default function GenericPage(props) {
   const {
-    fetchData, deleteItem, generateMarkers, type,
-    nameFormatter, columnsWithoutOptions
+    fetchData, deleteItem, type,
+    nameFormatter, linkFormatter, columnsWithoutOptions
   } = props;
   let title = props.title;
   if (!title)
@@ -113,9 +113,20 @@ export default function GenericPage(props) {
     ...props.tableOptions,
   };
 
+  const generateMarkers = (data, pageNumber, rowsPerPage) => {
+    const currPageItems = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
+    return currPageItems.map(item => ({
+      position: (item.address?.lat && item.address?.lng)
+        ? {lat: Number(item.address.lat), lng: Number(item.address.lng)}
+        : {...item.address},
+      title: nameFormatter(item),
+      link: linkFormatter(item),
+      })).filter(item => (item.position?.lat && item.position?.lng) || (item.position?.streetName && item.position?.city))
+  };
+
   // This also filters out providers without lat / lng.
   const markers = useMemo(() => generateMarkers(state.data, state.pageNumber, state.rowsPerPage),
-    [generateMarkers, state.data, state.pageNumber, state.rowsPerPage]);
+    [state.data, state.pageNumber, state.rowsPerPage]);
 
   if (state.loading)
     return <Loading message={`Loading ${title}...`}/>;

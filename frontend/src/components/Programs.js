@@ -80,15 +80,8 @@ export default function Programs() {
     return program.name;
   };
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: (program.address?.lat && program.address?.lng)
-        ? {lat: Number(program.address.lat), lng: Number(program.address.lng)}
-        : {...program.address},
-      title: nameFormatter(program),
-      link: `/${TYPE}/${program._id}`,
-    })).filter(program => (program.position?.lat && program.position?.lng) || (program.position?.streetName && program.position?.city))
+  const linkFormatter = (program) => {
+    return `/${TYPE}/${program._id}`;
   };
 
   const fetchData = async () => {
@@ -138,8 +131,8 @@ export default function Programs() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgram}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

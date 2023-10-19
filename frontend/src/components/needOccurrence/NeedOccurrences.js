@@ -59,17 +59,7 @@ export default function NeedOccurrences() {
 
   const nameFormatter = needOccurrence => needOccurrence._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence.id}`;
 
   const fetchData = async () => {
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
@@ -102,8 +92,8 @@ export default function NeedOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteNeedOccurrence}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

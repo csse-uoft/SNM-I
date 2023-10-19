@@ -27,17 +27,7 @@ export default function ServiceOccurrences() {
 
   const nameFormatter = serviceOccurrence => serviceOccurrence._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = serviceOccurrence => `/${TYPE}/${serviceOccurrence.id}`;
 
   const fetchData = async () => {
     const serviceOccurrences = (await fetchMultipleGeneric(TYPE)).data;
@@ -69,8 +59,8 @@ export default function ServiceOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteService}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}
