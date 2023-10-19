@@ -6,7 +6,6 @@ import {getServiceProviderName, getServiceProviderType} from "./shared/ServicePr
 import {getServiceProviderNameCharacteristicIds} from "./shared/CharacteristicIds";
 import {fetchSingleGeneric} from "../api/genericDataApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
-import {formatLocation} from '../helpers/location_helpers'
 
 const TYPE = 'services';
 
@@ -45,11 +44,12 @@ export default function Services() {
   const generateMarkers = (data, pageNumber, rowsPerPage) => {
     const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
     return currPageServices.map(service => ({
-      position: {lat: Number(service.address.lat), lng: Number(service.address.lng)},
-      title: 'service ' + service._id,
+      position: (service.address?.lat && service.address?.lng)
+        ? {lat: Number(service.address.lat), lng: Number(service.address.lng)}
+        : {...service.address},
+      title: service.name,
       link: `/${TYPE}/${service._id}`,
-      content: service.address && formatLocation(service.address),
-    })).filter(service => service.position.lat && service.position.lng);
+      })).filter(service => (service.position?.lat && service.position?.lng) || (service.position?.streetName && service.position?.city))
   };
 
   const fetchData = async () => {
@@ -66,11 +66,8 @@ export default function Services() {
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
             serviceData.provider = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Address') {
-            const serviceObj = (await fetchSingleGeneric("service", service._id)).data; // TODO: inefficient!
-            serviceData.address = {
-              lat: serviceObj['characteristic_' + addressCharacteristicId].lat,
-              lng: serviceObj['characteristic_' + addressCharacteristicId].lng,
-            };
+            const obj = (await fetchSingleGeneric("service", service._id)).data; // TODO: inefficient!
+            serviceData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (service.serviceProvider)

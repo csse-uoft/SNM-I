@@ -28,5 +28,11 @@ export function formatLocation(location, addressInfo) {
   if (location.postalCode) {
     format_location += ` ${location.postalCode}`
   }
+
+  if (format_location === '') {
+    if (location.lat && location.lng) {
+      format_location += `(${location.lat}, ${location.lng})`
+    }
+  }
   return format_location
 }
