@@ -79,20 +79,19 @@ if (Map) {
   GoogleMap = function (props) {
     const navigate = useNavigate();
     const defaultCenter = useMemo(() => ({lat: 43.6870, lng: -79.4132}), []);
-    const {
-      zoom = 11,
-      center = defaultCenter, // Toronto
-      markers = [],
-    } = props;
     const [map, setMap] = useState(null);
     const [addressInfo, setAddressInfo] = useState();
+    const [zoom, setZoom] = useState(11);
+    const [center, setCenter] = useState(defaultCenter);
+    const [markers, setMarkers] = useState(props.markers);
 
     useEffect(() => {
+      setMarkers(props.markers);
       setMap(new Map(document.getElementById('map'), {
         center: center,
         zoom: zoom
       }));
-    }, [zoom, center, addressInfo]);
+    }, [zoom, center, addressInfo, props.markers]);
 
     useEffect(() => {
       const fetchAddressInfo = async () => {
@@ -142,7 +141,7 @@ if (Map) {
           }
         });
       }
-    }, [markers, map, navigate]);
+    }, [map, navigate]);
 
     return useMemo(() =>
         <Paper elevation={5} style={{width: '100%', height: '40vh', marginTop: 5}} id="map"/>
