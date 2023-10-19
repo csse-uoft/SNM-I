@@ -64,7 +64,7 @@ export default function OutcomeOccurrences() {
 
   const nameFormatter = outcomeOccurrence => outcomeOccurrence._id;
 
-  const linkFormatter = outcomeOccurrence => `/${TYPE}/${outcomeOccurrence.id}`;
+  const linkFormatter = outcomeOccurrence => `/${TYPE}/${outcomeOccurrence._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

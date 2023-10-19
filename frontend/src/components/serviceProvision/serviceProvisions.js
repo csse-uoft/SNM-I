@@ -63,7 +63,7 @@ export default function ServiceProvisions() {
 
   const nameFormatter = service => service._id;
 
-  const linkFormatter = service => `/${TYPE}/${service.id}`;
+  const linkFormatter = service => `/${TYPE}/${service._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

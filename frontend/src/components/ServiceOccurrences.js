@@ -28,7 +28,7 @@ export default function ServiceOccurrences() {
 
   const nameFormatter = serviceOccurrence => serviceOccurrence.description;
 
-  const linkFormatter = serviceOccurrence => `/${TYPE}/${serviceOccurrence.id}`;
+  const linkFormatter = serviceOccurrence => `/${TYPE}/${serviceOccurrence._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
