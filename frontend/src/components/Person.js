@@ -40,7 +40,7 @@ export default function Person() {
     return person.firstName + ' ' + person.lastName;
   };
 
-  const linkFormatter = person => `/${TYPE}/${person.id}`;
+  const linkFormatter = person => `/${TYPE}/${person._id}`;
 
   /**
    * Fetch and transform data

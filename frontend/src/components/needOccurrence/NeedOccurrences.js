@@ -60,7 +60,7 @@ export default function NeedOccurrences() {
 
   const nameFormatter = needOccurrence => needOccurrence._id;
 
-  const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence.id}`;
+  const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

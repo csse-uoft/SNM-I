@@ -46,7 +46,7 @@ export default function Referrals() {
 
   const nameFormatter = service => service._id;
 
-  const linkFormatter = service => `/${TYPE}/${service.id}`;
+  const linkFormatter = service => `/${TYPE}/${service._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
@@ -65,7 +65,7 @@ export default function Referrals() {
       if (referral.characteristicOccurrences)
         for (const occ of referral.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("referral", program._id)).data; // TODO: inefficient!
+            const obj = (await fetchSingleGeneric("referral", referral._id)).data; // TODO: inefficient!
             referralData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }

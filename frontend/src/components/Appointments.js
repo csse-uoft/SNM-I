@@ -48,9 +48,6 @@ const columnsWithoutOptions = [
         return new Date(datetime).toLocaleDateString();
       else if (dateType === 'DateTime')
         return new Date(datetime).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     },
     sortBy: ({datetime, dateType}) => {
       return Number(new Date(datetime));

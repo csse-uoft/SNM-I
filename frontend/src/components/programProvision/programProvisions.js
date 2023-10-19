@@ -63,7 +63,7 @@ export default function ProgramProvisions() {
 
   const nameFormatter = program => program._id;
 
-  const linkFormatter = program => `/${TYPE}/${program.id}`;
+  const linkFormatter = program => `/${TYPE}/${program._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
