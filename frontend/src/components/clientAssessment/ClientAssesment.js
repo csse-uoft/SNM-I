@@ -2,10 +2,8 @@ import React from 'react';
 import { Link } from "../shared"
 import { GenericPage } from "../shared";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
-import { fetchSingleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../../api/genericDataApi";
 import { getAddressCharacteristicId } from "../shared/CharacteristicIds";
-import { formatLocation } from '../../helpers/location_helpers'
 import {formatName} from "../../helpers/formatters";
 
 const TYPE = 'clientAssessment';
@@ -47,10 +45,7 @@ export default function ClientAssessment() {
         for (const occ of clientAssessment.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Address') {
             const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
-            clientAssessmentData.address = {
-              lat: obj['characteristic_' + addressCharacteristicId].lat,
-              lng: obj['characteristic_' + addressCharacteristicId].lng,
-            };
+            clientAssessmentData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (clientAssessment.client) {

@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'serviceProvisions';
 
@@ -60,11 +61,12 @@ const columnsWithoutOptions = [
 
 export default function ServiceProvisions() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = service => service._id;
 
   const linkFormatter = service => `/${TYPE}/${service.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const appointmens = (await fetchMultipleGeneric('serviceProvision')).data;
     const data = [];
     for (const appointment of appointmens) {
@@ -75,6 +77,9 @@ export default function ServiceProvisions() {
             appointmentData.startDate = occ.dataDateValue;
           } else if (occ.occurrenceOf?.name === 'End Date') {
             appointmentData.endDate = occ.dataDateValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("serviceProvision", appointment._id)).data; // TODO: inefficient!
+            appointmentData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (appointment.serviceOccurrence)

@@ -68,7 +68,7 @@ const columnsWithoutOptions = [
 
 export default function Appointments() {
 
-  const nameFormatter = appointment => appointment.name;
+  const nameFormatter = appointment => 'Appointment ' + appointment._id;
 
   const linkFormatter = appointment => `/${TYPE}/${appointment._id}`;
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'programProvisions';
 
@@ -60,11 +61,12 @@ const columnsWithoutOptions = [
 
 export default function ProgramProvisions() {
 
-  const nameFormatter = program => program.name;
+  const nameFormatter = program => program._id;
 
   const linkFormatter = program => `/${TYPE}/${program.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const appointmens = (await fetchMultipleGeneric('programProvision')).data;
     const data = [];
     for (const appointment of appointmens) {
@@ -75,6 +77,9 @@ export default function ProgramProvisions() {
             appointmentData.startDate = occ.dataDateValue;
           } else if (occ.occurrenceOf?.name === 'End Date') {
             appointmentData.endDate = occ.dataDateValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("programProvision", appointment._id)).data; // TODO: inefficient!
+            appointmentData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (appointment.programOccurrence)
