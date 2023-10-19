@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'serviceOccurrence';
 
@@ -25,11 +26,12 @@ const columnsWithoutOptions = [
 
 export default function ServiceOccurrences() {
 
-  const nameFormatter = serviceOccurrence => serviceOccurrence._id;
+  const nameFormatter = serviceOccurrence => serviceOccurrence.description;
 
   const linkFormatter = serviceOccurrence => `/${TYPE}/${serviceOccurrence.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const serviceOccurrences = (await fetchMultipleGeneric(TYPE)).data;
     console.log(serviceOccurrences)
     const data = [];
@@ -45,6 +47,13 @@ export default function ServiceOccurrences() {
         serviceOccurrenceData.description = serviceOccurrence.description
       if(serviceOccurrence.occurrenceOf)
         serviceOccurrenceData.occurrenceOf = serviceOccurrence.occurrenceOf
+      if (serviceOccurrence.characteristicOccurrences)
+        for (const occ of serviceOccurrence.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("serviceOccurrence", serviceOccurrence._id)).data; // TODO: inefficient!
+            serviceOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
+          }
+        }
       data.push(serviceOccurrenceData);
     }
     return data;

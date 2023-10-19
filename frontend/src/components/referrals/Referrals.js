@@ -1,8 +1,9 @@
 import React from 'react';
 import {Link} from "../shared"
 import {GenericPage} from "../shared";
-import {deleteSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
+import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../../api/genericDataApi";
 import {formatName} from "../../helpers/formatters";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'referrals';
 
@@ -43,15 +44,16 @@ const columnsWithoutOptions = [
 
 export default function Referrals() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = service => service._id;
 
   const linkFormatter = service => `/${TYPE}/${service.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const referrals = (await fetchMultipleGeneric('referral')).data;
     const data = [];
     for (const referral of referrals) {
-      data.push({
+      const referralData = {
         _id: referral._id,
         referralStatus: referral.referralStatus,
         referralType: referral.referralType,
@@ -59,7 +61,15 @@ export default function Referrals() {
           name: formatName(referral.client.firstName, referral.client.lastName),
           id: referral.client._id
         }
-      });
+      };
+      if (referral.characteristicOccurrences)
+        for (const occ of referral.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("referral", program._id)).data; // TODO: inefficient!
+            referralData.address = obj['characteristic_' + addressCharacteristicId];
+          }
+        }
+      data.push(referralData);
 
     }
     return data;

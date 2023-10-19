@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'outcomeOccurrences';
 
@@ -66,6 +67,7 @@ export default function OutcomeOccurrences() {
   const linkFormatter = outcomeOccurrence => `/${TYPE}/${outcomeOccurrence.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
     const outcomes = {};
     // get all outcomes data
@@ -89,6 +91,13 @@ export default function OutcomeOccurrences() {
           _id: outcomeOccurrence.occurrenceOf.split('_')[1],
         }
       }
+      if (outcomeOccurrence.characteristicOccurrences)
+        for (const occ of outcomeOccurrence.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("outcomeOccurrence", outcomeOccurrence._id)).data; // TODO: inefficient!
+            outcomeOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
+          }
+        }
       data.push(outcomeOccurrenceData);
     }
     return data;

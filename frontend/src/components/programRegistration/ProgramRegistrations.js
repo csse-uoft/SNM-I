@@ -1,7 +1,8 @@
 import React from 'react';
 import {Link} from "../shared"
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'programRegistrations';
 
@@ -31,11 +32,12 @@ const columnsWithoutOptions = [
 
 export default function ProgramRegistrations() {
 
-  const nameFormatter = program => program.name;
+  const nameFormatter = program => program._id;
 
-  const linkFormatter = program => `/${TYPE}/${program.id}`;
+  const linkFormatter = program => `/${TYPE}/${program._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const programs = (await fetchMultipleGeneric('programRegistration')).data;
     const data = [];
     for (const program of programs) {
@@ -46,6 +48,9 @@ export default function ProgramRegistrations() {
             programData.referralType = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Referral Status') {
             programData.referralStatus = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("programRegistration", program._id)).data; // TODO: inefficient!
+            programData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       data.push(programData);

@@ -1,7 +1,8 @@
 import React from 'react';
 import {Link} from "../shared"
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'serviceRegistrations';
 
@@ -31,11 +32,12 @@ const columnsWithoutOptions = [
 
 export default function ServiceRegistrations() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = service => service._id;
 
   const linkFormatter = service => `/${TYPE}/${service.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const services = (await fetchMultipleGeneric('serviceRegistration')).data;
     const data = [];
     for (const service of services) {
@@ -46,6 +48,9 @@ export default function ServiceRegistrations() {
             serviceData.referralType = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Referral Status') {
             serviceData.referralStatus = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("serviceRegistration", service._id)).data; // TODO: inefficient!
+            serviceData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       data.push(serviceData);

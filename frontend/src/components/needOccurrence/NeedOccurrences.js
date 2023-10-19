@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'needOccurrences';
 
@@ -62,6 +63,7 @@ export default function NeedOccurrences() {
   const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence.id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
     const data = [];
     for (const needOccurrence of needOccurrences) {
@@ -77,6 +79,13 @@ export default function NeedOccurrences() {
           _id: needOccurrence.occurrenceOf._id,
         }
       }
+      if (needOccurrence.characteristicOccurrences)
+        for (const occ of needOccurrence.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Address') {
+            const obj = (await fetchSingleGeneric("needOccurrence", needOccurrence._id)).data; // TODO: inefficient!
+            needOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
+          }
+        }
       data.push(needOccurrenceData);
       console.log(data)
     }
