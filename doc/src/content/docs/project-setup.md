@@ -38,6 +38,8 @@ yarn install
 cd ../backend
 yarn install
 ```
+You might see multiple warnings while installing the `frontend/` dependencies.
+Do not attempt to resolve these warnings.
 
 3. You should receive a `.env` file with the server credentials.
 Place it inside of `backend/`.
