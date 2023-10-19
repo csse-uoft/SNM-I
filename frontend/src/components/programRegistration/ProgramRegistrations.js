@@ -33,17 +33,7 @@ export default function ProgramRegistrations() {
 
   const nameFormatter = program => program.name;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: {lat: Number(program.location.lat), lng: Number(program.location.lng)},
-      title: program.name,
-      link: `/${TYPE}/${program.id}`,
-      content: program.desc,
-    })).filter(program => program.position.lat && program.position.lng);
-  };
+  const linkFormatter = program => `/${TYPE}/${program.id}`;
 
   const fetchData = async () => {
     const programs = (await fetchMultipleGeneric('programRegistration')).data;
@@ -72,8 +62,8 @@ export default function ProgramRegistrations() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgramRegistration}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

@@ -31,16 +31,7 @@ export default function ClientAssessment() {
 
   const nameFormatter = (assessment) => {return assessment._id;};
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
-    const currPageData = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageData.map(obj => ({
-      position: {lat: Number(obj.address.lat), lng: Number(obj.address.lng)},
-      title: nameFormatter(obj),
-      link: `/${TYPE}/${obj._id}/edit`,
-      content: obj.address && formatLocation(obj.address),
-    })).filter(obj => obj.position.lat && obj.position.lng);
-  };
+  const linkFormatter = (assessment) => {return `/${TYPE}/${assessment._id}/edit`;};
 
   const fetchData = async () => {
     console.log('fetching data');
@@ -85,8 +76,8 @@ export default function ClientAssessment() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteClientAssessment}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

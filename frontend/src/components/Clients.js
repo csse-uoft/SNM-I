@@ -56,16 +56,7 @@ export default function Clients() {
     return client.firstName + ' ' + client.lastName;
   };
 
-  const generateMarkers = (clients, pageNumber, rowsPerPage) => {
-    const currPageClients = clients.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageClients.map(client => ({
-      position: (client.address?.lat && client.address?.lng)
-        ? {lat: Number(client.address.lat), lng: Number(client.address.lng)}
-        : {...client.address},
-      title: nameFormatter(client),
-      link: `/${TYPE}/${client._id}`,
-    })).filter(client => (client.position?.lat && client.position?.lng) || (client.position?.streetName && client.position?.city));
-  };
+  const linkFormatter = client => `/${TYPE}/${client._id}`;
 
   /**
    * Fetch and transform data
@@ -102,8 +93,8 @@ export default function Clients() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteClient}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

@@ -41,16 +41,7 @@ export default function Services() {
 
   const nameFormatter = service => service.name;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: (service.address?.lat && service.address?.lng)
-        ? {lat: Number(service.address.lat), lng: Number(service.address.lng)}
-        : {...service.address},
-      title: service.name,
-      link: `/${TYPE}/${service._id}`,
-      })).filter(service => (service.position?.lat && service.position?.lng) || (service.position?.streetName && service.position?.city))
-  };
+  const linkFormatter = service => `/${TYPE}/${service._id}`;
 
   const fetchData = async () => {
     const services = (await fetchMultipleGeneric('service')).data;
@@ -89,8 +80,8 @@ export default function Services() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteService}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}
