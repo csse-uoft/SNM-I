@@ -32,9 +32,9 @@ const columnsWithoutOptions = [
 
 export default function ServiceRegistrations() {
 
-  const nameFormatter = service => service._id;
+  const nameFormatter = serviceRegistration => 'Service Registration ' + serviceRegistration._id;
 
-  const linkFormatter = service => `/${TYPE}/${service._id}`;
+  const linkFormatter = serviceRegistration => `/${TYPE}/${serviceRegistration._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

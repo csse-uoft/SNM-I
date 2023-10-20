@@ -77,7 +77,11 @@ const columnsWithoutOptions = [
 export default function Programs() {
 
   const nameFormatter = (program) => {
-    return program.name;
+    if (program.name) {
+      return program.name;
+    } else {
+      return 'Program ' + program._id;
+    }
   };
 
   const linkFormatter = (program) => {

@@ -37,7 +37,11 @@ const columnsWithoutOptions = [
 export default function Person() {
 
   const nameFormatter = (person) => {
-    return person.firstName + ' ' + person.lastName;
+    if (person.firstName && person.lastName) {
+      return person.firstName + ' ' + person.lastName;
+    } else {
+      return 'Person ' + person._id;
+    }
   };
 
   const linkFormatter = person => `/${TYPE}/${person._id}`;

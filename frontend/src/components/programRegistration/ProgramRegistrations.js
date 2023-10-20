@@ -32,9 +32,9 @@ const columnsWithoutOptions = [
 
 export default function ProgramRegistrations() {
 
-  const nameFormatter = program => program._id;
+  const nameFormatter = programRegistration => 'Program Registration ' + programRegistration._id;
 
-  const linkFormatter = program => `/${TYPE}/${program._id}`;
+  const linkFormatter = programRegistration => `/${TYPE}/${programRegistration._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

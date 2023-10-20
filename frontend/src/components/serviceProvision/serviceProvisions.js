@@ -18,7 +18,11 @@ const columnsWithoutOptions = [
     label: 'Service Occurrence',
     body: ({serviceOccurrence}) => {
       if (serviceOccurrence) {
-        return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{serviceOccurrence.description}</Link>;
+        if (serviceOccurrence.description) {
+          return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{serviceOccurrence.description}</Link>;
+        } else {
+          return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{'Service Occurrence ' + serviceOccurrence._id}</Link>;
+        }
       } else {
         return "";
       }
@@ -61,9 +65,9 @@ const columnsWithoutOptions = [
 
 export default function ServiceProvisions() {
 
-  const nameFormatter = service => service._id;
+  const nameFormatter = serviceProvision => 'Service Provision ' + serviceProvision._id;
 
-  const linkFormatter = service => `/${TYPE}/${service._id}`;
+  const linkFormatter = serviceProvision => `/${TYPE}/${serviceProvision._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

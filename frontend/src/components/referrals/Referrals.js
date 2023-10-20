@@ -44,9 +44,9 @@ const columnsWithoutOptions = [
 
 export default function Referrals() {
 
-  const nameFormatter = service => service._id;
+  const nameFormatter = referral => 'Referral ' + referral._id;
 
-  const linkFormatter = service => `/${TYPE}/${service._id}`;
+  const linkFormatter = referral => `/${TYPE}/${referral._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
@@ -58,7 +58,7 @@ export default function Referrals() {
         referralStatus: referral.referralStatus,
         referralType: referral.referralType,
         client: {
-          name: formatName(referral.client.firstName, referral.client.lastName),
+          name: formatName(referral.client.firstName, referral.client.lastName, 'client',  referral.client._id),
           id: referral.client._id
         }
       };

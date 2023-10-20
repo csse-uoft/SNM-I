@@ -53,7 +53,11 @@ export default function Clients() {
 
   const {fetchClients, deleteClient} = useClientAPIs();
   const nameFormatter = (client) => {
-    return client.firstName + ' ' + client.lastName;
+    if (client.firstName && client.lastName) {
+      return client.firstName + ' ' + client.lastName;
+    } else {
+      return 'Client ' + client._id;
+    }
   };
 
   const linkFormatter = client => `/${TYPE}/${client._id}`;
