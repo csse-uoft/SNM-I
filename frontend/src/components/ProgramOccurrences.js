@@ -30,7 +30,13 @@ const columnsWithoutOptions = [
 
 export default function ProgramOccurrences() {
 
-  const nameFormatter = (programOccurrence) => {return programOccurrence.description;};
+  const nameFormatter = (programOccurrence) => {
+    if (programOccurrence.description) {
+      return programOccurrence.description;
+    } else {
+      return 'Program Occurrence ' + programOccurrence._id;
+    }
+  };
 
   const linkFormatter = (programOccurrence) => {return `/${TYPE}/${programOccurrence._id}`;};
 

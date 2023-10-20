@@ -58,7 +58,7 @@ const columnsWithoutOptions = [
 
 export default function NeedOccurrences() {
 
-  const nameFormatter = needOccurrence => needOccurrence._id;
+  const nameFormatter = needOccurrence => 'Need Occurrence ' + needOccurrence._id;
 
   const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence._id}`;
 

@@ -10,7 +10,17 @@ import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 const TYPE = 'providers';
 
 const formatProviderName = provider => {
-  return provider.name || `${provider.lastName || ''}, ${provider.firstName || ''}`;
+  if (typeof provider === 'undefined') {
+    return '';
+  } else if (provider.name) {
+    return provider.name;
+  } else if (provider.lastName || provider.firstName) {
+    return `${provider.lastName || ''}, ${provider.firstName || ''}`;
+  } else if (provider.type === 'organization') {
+    return 'Organization ' + provider._id;
+  } else {
+    return 'Volunteer ' + provider._id;
+  }
 };
 
 const formatProviderLink = provider => {
@@ -23,11 +33,11 @@ const columnsWithoutOptions = [
   {
     label: 'Name',
     body: ({_id, name, type, lastName, firstName}) => {
-      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}/edit`}>
-        {name || `${lastName || ''}, ${firstName || ''}`}
+      return <Link color to={formatProviderLink({_id, name, type, lastName, firstName}) + `/edit`}>
+        {formatProviderName({_id, name, type, lastName, firstName})}
       </Link>
     },
-    sortBy: ({name, lastName, firstName}) => name || `${lastName || ''}, ${firstName || ''}`,
+    sortBy: ({_id, name, type, lastName, firstName}) => formatProviderName({_id, name, type, lastName, firstName}),
   },
   {
     label: 'Type',
@@ -74,8 +84,6 @@ export default function Providers() {
         for (const occ of innerData.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Organization Name') {
             providerData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Organization Address') {
-            providerData.address = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Email') {
             providerData.email = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'First Name') {

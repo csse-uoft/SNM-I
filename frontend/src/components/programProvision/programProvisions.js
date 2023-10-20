@@ -18,7 +18,11 @@ const columnsWithoutOptions = [
     label: 'Program Occurrence',
     body: ({programOccurrence}) => {
       if (programOccurrence) {
-        return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
+        if (programOccurrence.description) {
+          return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
+        } else {
+          return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{'Program Occurrence ' + programOccurrence._id}</Link>;
+        }
       } else {
         return "";
       }
@@ -61,9 +65,9 @@ const columnsWithoutOptions = [
 
 export default function ProgramProvisions() {
 
-  const nameFormatter = program => program._id;
+  const nameFormatter = programProvision => 'Program Provision ' + programProvision._id;
 
-  const linkFormatter = program => `/${TYPE}/${program._id}`;
+  const linkFormatter = programProvision => `/${TYPE}/${programProvision._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();

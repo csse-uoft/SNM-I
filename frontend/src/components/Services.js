@@ -38,7 +38,13 @@ const columnsWithoutOptions = [
 
 export default function Services() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = service => {
+    if (service.name) {
+      return service.name;
+    } else {
+      return 'Service ' + service._id;
+    }
+  }
 
   const linkFormatter = service => `/${TYPE}/${service._id}`;
 

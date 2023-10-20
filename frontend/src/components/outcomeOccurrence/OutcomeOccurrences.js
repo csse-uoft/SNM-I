@@ -62,7 +62,7 @@ const columnsWithoutOptions = [
 
 export default function OutcomeOccurrences() {
 
-  const nameFormatter = outcomeOccurrence => outcomeOccurrence._id;
+  const nameFormatter = outcomeOccurrence => 'Outcome Occurrence ' + outcomeOccurrence._id;
 
   const linkFormatter = outcomeOccurrence => `/${TYPE}/${outcomeOccurrence._id}`;
 

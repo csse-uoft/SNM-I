@@ -26,7 +26,13 @@ const columnsWithoutOptions = [
 
 export default function ServiceOccurrences() {
 
-  const nameFormatter = serviceOccurrence => serviceOccurrence.description;
+  const nameFormatter = serviceOccurrence => {
+    if (serviceOccurrence.description) {
+      return serviceOccurrence.description;
+    } else {
+      return 'Service Occurrence ' + serviceOccurrence._id;
+    }
+  }
 
   const linkFormatter = serviceOccurrence => `/${TYPE}/${serviceOccurrence._id}`;
 

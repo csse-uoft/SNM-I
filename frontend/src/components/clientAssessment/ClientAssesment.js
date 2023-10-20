@@ -4,7 +4,7 @@ import { GenericPage } from "../shared";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../../api/genericDataApi";
 import { getAddressCharacteristicId } from "../shared/CharacteristicIds";
-import {formatName} from "../../helpers/formatters";
+import { formatName } from "../../helpers/formatters";
 
 const TYPE = 'clientAssessment';
 
@@ -27,7 +27,7 @@ const columnsWithoutOptions = [
 
 export default function ClientAssessment() {
 
-  const nameFormatter = (assessment) => {return assessment._id;};
+  const nameFormatter = (assessment) => {return 'Client Assessment ' + assessment._id;};
 
   const linkFormatter = (assessment) => {return `/${TYPE}/${assessment._id}/edit`;};
 
@@ -51,7 +51,7 @@ export default function ClientAssessment() {
       if (clientAssessment.client) {
         // get corresponding client data
         clientAssessmentData.client = {
-          name: formatName(clientAssessment.client.firstName, clientAssessment.client.lastName),
+          name: formatName(clientAssessment.client.firstName, clientAssessment.client.lastName, 'client', clientAssessment.client._id),
           id: clientAssessment.client._id
         }
       }

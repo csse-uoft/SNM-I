@@ -1,4 +1,4 @@
-export function formatName(firstName, lastName) {
+export function formatName(firstName, lastName, type, _id) {
   if (firstName && lastName) {
     return lastName + ', ' + firstName;
   } else if (firstName) {
@@ -6,6 +6,6 @@ export function formatName(firstName, lastName) {
   } else if (lastName) {
     return lastName;
   } else {
-    return 'Unknown Name';
+    return ':' + type + '_' + _id;
   }
 }
