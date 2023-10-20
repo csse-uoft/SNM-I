@@ -10,7 +10,7 @@ const GDBServiceProvisionModel = createGraphDBModel({
   serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
-  needSatisfierOccurrences: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
+  needSatisfierOccurrence: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
   characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   client: {type: GDBClientModel, internalKey: ':hasClient'}
 }, {
