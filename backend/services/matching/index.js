@@ -29,6 +29,13 @@ async function matchFromClientHandler(req, res, next) {
 async function matchFromClient(clientId) {
   const graph = new WeightedDirectedGraph();
   const client = await GDBClientModel.findById(clientId);
+  if (client.needs == null) {
+    return {
+      matches: [],
+      program2Name: new Map(),
+      services2Name: new Map(),
+    }
+  }
 
   client.needs.forEach(need => graph.addEdge(client._uri, need, 0));
 

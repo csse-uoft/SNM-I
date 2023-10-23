@@ -48,6 +48,10 @@ class WeightedDirectedGraph {
    * @returns {{distance: number, path: string[]}[]}
    */
   findShortestPath(source, targets) {
+    if (this.adjacentList.get(source) == null) {
+      return [];
+    }
+
     // uri -> {distance: number, path: string[]}
     const cache = new Map([[source, {distance: 0, path: [source]}]]);
 
@@ -56,8 +60,10 @@ class WeightedDirectedGraph {
     while (nextNodes.size > 0) {
       for (const path of nextNodes) {
         const source = path[path.length - 1];
-        const destinations = this.adjacentList.get(source).entries();
-        for (const [destination, distance] of destinations) {
+        const destinations = this.adjacentList.get(source);
+        if (destinations == null) continue;
+
+        for (const [destination, distance] of destinations.entries()) {
           const newPath = [...path, destination];
           const newDistance = cache.get(source).distance + distance;
 
