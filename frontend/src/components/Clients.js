@@ -67,7 +67,7 @@ export default function Clients() {
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
-    const clients = (await fetchClients()).data; // TODO: Does not contain address info
+    const clients = (await fetchClients()).data;
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const data = [];
     for (const client of clients) {

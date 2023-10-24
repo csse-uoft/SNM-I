@@ -131,14 +131,22 @@ const genericType2Model = {
 };
 
 const genericType2Populates = {
-  'serviceProvision': ['needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
-  'programProvision' : ['needOccurrence', 'programOccurrence', 'needSatisfierOccurrence'],
-  'serviceRegistration': ['needOccurrence', 'serviceOccurrence'],
-  'programRegistration' : ['needOccurrence', 'programOccurrence'],
-  'needOccurrence': ['occurrenceOf', 'client'],
-  'clientAssessment': ['client'],
-  'referral': ['client'],
-  'program': ['address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
+  'serviceProvision': ['address', 'needOccurrence', 'serviceOccurrence', 'needSatisfierOccurrence'],
+  'programProvision' : ['address', 'needOccurrence', 'programOccurrence', 'needSatisfierOccurrence'],
+  'serviceRegistration': ['address', 'needOccurrence', 'serviceOccurrence'],
+  'programRegistration' : ['address', 'needOccurrence', 'programOccurrence'],
+  'needOccurrence': ['address', 'occurrenceOf', 'client'],
+  'outcomeOccurrence': ['address'],
+  'needSatisfierOccurrence': ['address'],
+  'clientAssessment': ['address', 'client'],
+  'referral': ['address', 'client'],
+  'service': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address'],
+  'program': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
+  'serviceOccurrence': ['address'],
+  'programOccurrence': ['address'],
+  'client': ['address'],
+  'appointment': ['address'],
+  'person': ['address'],   
 };
 
 const genericType2Checker = {

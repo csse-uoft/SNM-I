@@ -79,13 +79,8 @@ export default function NeedOccurrences() {
           _id: needOccurrence.occurrenceOf._id,
         }
       }
-      if (needOccurrence.characteristicOccurrences)
-        for (const occ of needOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("needOccurrence", needOccurrence._id)).data; // TODO: inefficient!
-            needOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
-          }
-        }
+      if (needOccurrence.address)
+        needOccurrenceData.address = needOccurrence.address;
       data.push(needOccurrenceData);
       console.log(data)
     }

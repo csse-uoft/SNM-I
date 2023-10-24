@@ -108,9 +108,6 @@ export default function Appointments() {
           } else if (occ.occurrenceOf?.name === 'Date') {
             appointmentData.datetime = occ.dataDateValue;
             appointmentData.dateType = 'Date';
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const appointmentObj = (await fetchSingleGeneric("appointment", appointment._id)).data; // TODO: inefficient!
-            appointmentData.address = appointmentObj['characteristic_' + addressCharacteristicId];
           }
         }
       if (appointment.client) {
@@ -137,6 +134,9 @@ export default function Appointments() {
                 ? userData.primaryContact.lastName + ', ' + userData.primaryContact.firstName
                 : ':' + appointment.user.split('#')[1],
         };
+      }
+      if (appointment.address) {
+        appointmentData.address = appointment.address;
       }
 
       data.push(appointmentData);

@@ -4,6 +4,7 @@ const {GDBProgramOccurrenceModel} = require("./program/programOccurrence");
 const {GDBNeedSatisfierOccurrenceModel} = require("./needSatisfierOccurrence");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
+const {GDBAddressModel} = require('./address');
 
 const GDBProgramProvisionModel = createGraphDBModel({
   needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':forNeedOccurrence'},
@@ -12,7 +13,8 @@ const GDBProgramProvisionModel = createGraphDBModel({
   endDate: {type: Date, internalKey: ':hasEndDate'},
   needSatisfierOccurrence: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
   characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
-  client: {type: GDBClientModel, internalKey: ':hasClient'}
+  client: {type: GDBClientModel, internalKey: ':hasClient'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
 }, {
   rdfTypes: [':ProgramProvision'], name: 'programProvision'
 });

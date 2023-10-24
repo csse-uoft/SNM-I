@@ -6,6 +6,7 @@ const {GDBNeedModel} = require("../need/need");
 const {GDBNeedOccurrenceModel} = require("../need/needOccurrence");
 const {GDBOutcomeModel} = require("../outcome/outcome");
 const {GDBOutcomeOccurrenceModel} = require("../outcome/outcomeOccurrence");
+const {GDBAddressModel} = require('../address');
 
 /**
  * This is a Client model.
@@ -25,6 +26,7 @@ const GDBClientModel = createGraphDBModel({
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},
   gender: {type: Types.NamedIndividual, internalKey: 'cp:hasGender'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
 }, {
   rdfTypes: [':Client'], name: 'client'
 });

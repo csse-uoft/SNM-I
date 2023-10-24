@@ -35,19 +35,15 @@ export default function ClientAssessment() {
     console.log('fetching data');
     // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
     // using this function simplifies the code and makes no difference in performance
-    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data; // TODO: Does not contain address info
+    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
 
     const data = [];
     for (const clientAssessment of clientAssessments) {
       const clientAssessmentData = { _id: clientAssessment._id, address: {} };
-      if (clientAssessment.characteristicOccurrences)
-        for (const occ of clientAssessment.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
-            clientAssessmentData.address = obj['characteristic_' + addressCharacteristicId];
-          }
-        }
+      if (clientAssessment.address) {
+        clientAssessmentData.address = clientAssessment.address;
+      }
       if (clientAssessment.client) {
         // get corresponding client data
         clientAssessmentData.client = {

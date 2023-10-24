@@ -49,17 +49,12 @@ export default function ServiceOccurrences() {
       //       serviceOccurrenceData.description = occ.dataStringValue;
       //     }
       //   }
-      if(serviceOccurrence.description)
+      if (serviceOccurrence.description)
         serviceOccurrenceData.description = serviceOccurrence.description
-      if(serviceOccurrence.occurrenceOf)
+      if (serviceOccurrence.occurrenceOf)
         serviceOccurrenceData.occurrenceOf = serviceOccurrence.occurrenceOf
-      if (serviceOccurrence.characteristicOccurrences)
-        for (const occ of serviceOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("serviceOccurrence", serviceOccurrence._id)).data; // TODO: inefficient!
-            serviceOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
-          }
-        }
+      if (serviceOccurrence.address)
+        serviceOccurrenceData.address = serviceOccurrence.address;
       data.push(serviceOccurrenceData);
     }
     return data;

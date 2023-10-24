@@ -3,6 +3,7 @@ import {Link} from './shared';
 import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../api/genericDataApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import {formatProviderName} from "./Providers";
 
 const TYPE = 'programs';
 
@@ -19,13 +20,13 @@ const columnsWithoutOptions = [
     body: ({serviceProvider}) => {
       if (serviceProvider) {
         return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
-          {serviceProvider.name}
+          {formatProviderName(serviceProvider)}
         </Link>;
       } else {
         return "";
       }
     },
-    sortBy: ({serviceProvider}) => serviceProvider?.name,
+    sortBy: ({serviceProvider}) => serviceProvider ? formatProviderName(serviceProvider) : '',
   },
   {
     label: 'Manager',
@@ -103,15 +104,14 @@ export default function Programs() {
             programData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
             programData.provider = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("program", program._id)).data; // TODO: inefficient!
-            programData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (program.serviceProvider) {
         programData.serviceProvider = {
           _id: program.serviceProvider._id,
-          name: program.serviceProvider.organization?.name || program.serviceProvider.volunteer?.name,
+          name: program.serviceProvider.organization?.name,
+          lastName: program.serviceProvider.volunteer?.lastName,
+          firstName: program.serviceProvider.volunteer?.firstName,
           type: program.serviceProvider.type
         }
       }
@@ -121,6 +121,11 @@ export default function Programs() {
           firstName: program.manager.firstName,
           lastName: program.manager.lastName,
         }
+      }
+      if (program.serviceProvider?.organization?.address) {
+        programData.address = program.serviceProvider.organization.address;
+      } else if (program.serviceProvider?.volunteer?.address) {
+        programData.address = program.serviceProvider.volunteer.address;
       }
       data.push(programData);
     }
