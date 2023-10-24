@@ -48,11 +48,10 @@ export default function ProgramRegistrations() {
             programData.referralType = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Referral Status') {
             programData.referralStatus = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("programRegistration", program._id)).data; // TODO: inefficient!
-            programData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
+      if (program.address)
+        programData.address = program.address;
       data.push(programData);
     }
     return data;

@@ -5,6 +5,7 @@ import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../
 import {getServiceProviderName, getServiceProviderType} from "./shared/ServiceProviderInformation";
 import {getServiceProviderNameCharacteristicIds} from "./shared/CharacteristicIds";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import {formatProviderName} from "./Providers";
 
 const TYPE = 'services';
 
@@ -21,10 +22,10 @@ const columnsWithoutOptions = [
     body: ({serviceProvider}) => {
       if (serviceProvider)
         return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
-          {serviceProvider.name}
+          {formatProviderName(serviceProvider)}
         </Link>;
     },
-    sortBy: ({serviceProvider}) => serviceProvider.name,
+    sortBy: ({serviceProvider}) => serviceProvider ? formatProviderName(serviceProvider) : '',
   },
   // {
   //   label: 'Description',
@@ -61,17 +62,22 @@ export default function Services() {
             serviceData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
             serviceData.provider = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("service", service._id)).data; // TODO: inefficient!
-            serviceData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (service.serviceProvider)
+        console.log(JSON.stringify(service.serviceProvider));
         serviceData.serviceProvider = {
-          _id: service.serviceProvider.split('_')[1],
-          name: (await getServiceProviderName(service, characteristicIds)),
-          type: (await getServiceProviderType(service))
+          _id: service.serviceProvider._id,
+          name: service.serviceProvider.organization?.name,
+          lastName: service.serviceProvider.volunteer?.lastName,
+          firstName: service.serviceProvider.volunteer?.firstName,
+          type: service.serviceProvider.type
         }
+      if (service.serviceProvider?.organization?.address) {
+        serviceData.address = service.serviceProvider.organization.address;
+      } else if (service.serviceProvider?.volunteer?.address) {
+        serviceData.address = service.serviceProvider.volunteer.address;
+      }
       data.push(serviceData);
     }
     return data;

@@ -81,13 +81,12 @@ export default function ProgramProvisions() {
             appointmentData.startDate = occ.dataDateValue;
           } else if (occ.occurrenceOf?.name === 'End Date') {
             appointmentData.endDate = occ.dataDateValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("programProvision", appointment._id)).data; // TODO: inefficient!
-            appointmentData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
       if (appointment.programOccurrence)
         appointmentData.programOccurrence = appointment.programOccurrence
+      if (appointment.address)
+        appointmentData.address = appointment.address;
       data.push(appointmentData);
     }
     return data;

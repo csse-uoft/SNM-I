@@ -49,18 +49,11 @@ export default function ProgramOccurrences() {
       }
     }
  
-    const programOccurrences = (await fetchMultipleGeneric(TYPE)).data; // TODO: Does not contain address info
+    const programOccurrences = (await fetchMultipleGeneric(TYPE)).data;
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const data = [];
     for (const programOccurrence of programOccurrences) {
       const programOccurrenceData = {_id: programOccurrence._id, address: {}};
-       if (programOccurrence.characteristicOccurrences)
-         for (const occ of programOccurrence.characteristicOccurrences) {
-           if (occ.occurrenceOf?.name === 'Address') {
-             const obj = (await fetchSingleGeneric("programOccurrence", programOccurrence._id)).data; // TODO: inefficient!
-             programOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
-            }
-         }
       if (programOccurrence.description) {
         programOccurrenceData.description = programOccurrence.description;
       }
@@ -68,6 +61,9 @@ export default function ProgramOccurrences() {
         programOccurrenceData.programID = programOccurrence.occurrenceOf.split('_')[1];
         const programData = (await fetchSingleGeneric('program', programOccurrenceData.programID)).data;
         programOccurrenceData.programName = programData['characteristic_' + programNameCharacteristicId];
+      }
+      if (programOccurrence.address) {
+        programOccurrenceData.address = programOccurrence.address;
       }
       data.push(programOccurrenceData);
     }

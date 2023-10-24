@@ -48,11 +48,10 @@ export default function ServiceRegistrations() {
             serviceData.referralType = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Referral Status') {
             serviceData.referralStatus = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("serviceRegistration", service._id)).data; // TODO: inefficient!
-            serviceData.address = obj['characteristic_' + addressCharacteristicId];
           }
         }
+      if (service.address)
+        serviceData.address = service.address;
       data.push(serviceData);
     }
     return data;

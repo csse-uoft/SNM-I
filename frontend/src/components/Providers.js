@@ -9,7 +9,7 @@ import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'providers';
 
-const formatProviderName = provider => {
+export const formatProviderName = provider => {
   if (typeof provider === 'undefined') {
     return '';
   } else if (provider.name) {
@@ -23,7 +23,7 @@ const formatProviderName = provider => {
   }
 };
 
-const formatProviderLink = provider => {
+export const formatProviderLink = provider => {
   return `/${TYPE}/${provider.type.toLowerCase()}/${provider._id}`;
 };
 
@@ -90,15 +90,13 @@ export default function Providers() {
             providerData.firstName = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Last Name') {
             providerData.lastName = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleProvider(provider.type, provider._id)).data; // TODO: inefficient!
-            providerData.address = obj['characteristic_' + addressCharacteristicId];
-           }
+          }
         }
+      if (innerData.address)
+        providerData.address = innerData.address;
       data.push(providerData);
     }
     return data;
-
   }
 
   return (

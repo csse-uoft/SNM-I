@@ -57,13 +57,9 @@ export default function Person() {
     for (const person of persons) {
       // parse person data and assign to corresponding fields
       const personData = {_id: person._id};
-      if (person.characteristicOccurrences)
-        for (const occ of person.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const personObj = (await fetchSingleGeneric("person", person._id)).data; // TODO: inefficient!
-            personData.address = personObj['characteristic_' + addressCharacteristicId];
-          }
-        }
+      if (person.address) {
+        personData.address = person.address;
+      }
       personData.firstName = person.firstName;
       personData.lastName = person.lastName;
       personData.createDate = person.createDate;

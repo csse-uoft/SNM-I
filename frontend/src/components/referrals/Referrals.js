@@ -62,13 +62,9 @@ export default function Referrals() {
           id: referral.client._id
         }
       };
-      if (referral.characteristicOccurrences)
-        for (const occ of referral.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("referral", referral._id)).data; // TODO: inefficient!
-            referralData.address = obj['characteristic_' + addressCharacteristicId];
-          }
-        }
+      if (referral.address) {
+        referralData.address = referral.address;
+      }
       data.push(referralData);
 
     }

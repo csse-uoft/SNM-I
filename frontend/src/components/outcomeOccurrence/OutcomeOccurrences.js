@@ -91,13 +91,9 @@ export default function OutcomeOccurrences() {
           _id: outcomeOccurrence.occurrenceOf.split('_')[1],
         }
       }
-      if (outcomeOccurrence.characteristicOccurrences)
-        for (const occ of outcomeOccurrence.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("outcomeOccurrence", outcomeOccurrence._id)).data; // TODO: inefficient!
-            outcomeOccurrenceData.address = obj['characteristic_' + addressCharacteristicId];
-          }
-        }
+      if (outcomeOccurrence.address) {
+        outcomeOccurrenceData.address = outcomeOccurrence.address;
+      }
       data.push(outcomeOccurrenceData);
     }
     return data;
