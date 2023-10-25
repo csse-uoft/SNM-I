@@ -4,6 +4,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {DataTable, Link} from "../shared";
 import {useClientAPIs} from "../../api/clientApi";
 import {ArrowRight} from "@mui/icons-material";
+import MatchingDropdownMenu from "./MatchingDropdownMenu";
 
 export default function Matching({}) {
   const navigate = useNavigate();
@@ -54,6 +55,14 @@ export default function Matching({}) {
             }
           }
           return <Box sx={{display: 'flex'}}>{renderedPath}</Box>;
+        }
+      },
+      {
+        label: ' ',
+        body: ({type}) => {
+//          const uri = path[path.length - 1];
+//          const _id = uri.split('_')[1];
+          return <MatchingDropdownMenu type={type}/>
         }
       }
     ]
