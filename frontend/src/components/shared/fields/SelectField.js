@@ -20,7 +20,7 @@ export default function SelectField(props) {
   return (
     <Autocomplete
       sx={noDefaultStyle ? sx : {mt: '16px', maxWidth: 350, ...sx}}
-      options={Object.keys(options)}
+      options={Object.keys(options).sort((a, b) => options[a].localeCompare(options[b]))}
       onChange={handleChange}
       getOptionLabel={labelValue => options[labelValue]}
       defaultValue={controlled ? undefined : value}

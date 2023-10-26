@@ -1,53 +1,55 @@
 ---
 title: Introduction
 ---
-The focus of this project is on finding a more efficient and effective ways of
-providing goods and services to vulnerable populations, such as those who live
-below the poverty line, are infirm, or are seniors. Being vulnerable means
-doing without goods and services due to lack of funds, lack of social support
-networks or limited mobility.
 
-Our approach is to develop an online marketplace called the Social Needs
-Marketplace (SNM). It will provide a more efficient means of redistributing new
-and used goods and services by enabling the “demand” side to make known their
-needs, and the “supply” side to make known what they have available.
 
-Using Artificial Intelligence methods such as ontologies, constraint-based
-reasoning and machine learning, the SNM will discover what people have and need
-and suggest matches. The SNM will also address the logistical problem of
-transporting goods from the supplier to the consumer within the time windows
-the people are available. It will provide a volunteer/agency supported
-logistical system utilizing an Uber-like volunteer network. Thirdly, the SNM
-will enable more efficient use of NGOs by virtually combining and focusing
-their resources to achieve better outcomes.
+The objective of the Social Needs Marketplace - Impact (SNM-I) is to find efficient
+and effective ways to provide goods and services to vunlerable populations.
+This includes sernios, the infirm, and those below the poverty line. In the
+scope of this project "vulnerable populations" refers to those who cannot
+acquire goods and services due to limited mobility, lack of funds, or 
+lack of social support networks.
+
+The SNM-I project serves as an efficient tool to redistribute goods and services
+that allows the "demand" side to declare their needs, while the "supply" side
+declares what is available.
+
+Using artificial intelligence methods such as ontologies, constraint-based
+reasoning and machine learning, the SNM-I will consider both resource needs
+and availability to suggest possible matches. The SNM-I will also aid in coordinating
+time windows for the delivery of goods, addressing logistical issues between
+suppliers and consumer availability. Additionally, the SNM-I will provide a 
+volunteer/agency-supported logistical system utilizing an Uber-like network.
+The SNM-I will also enhance the efficient use of NGOs by virtually merging and 
+concentrating their resources to attain improved outcomes. 
 
 ## Benefits of SNM-I
-Clients, service providers, funders and policy makers are the stakeholders and
-beneficiaries of this system.
+Clients, service providers, funders, and policy makers are the stakeholders and
+beneficiaries of the SNM-I project:
 
-A major benefit of this project is the impact it will have on the quality of
-life of the vulnerable. The flexible and nimble provisioning of basic needs
-reduces the stress of many segments of our population. Reducing stress provides
-a better quality of life.  A better quality of life results in better workplace
-performance and productivity.
-- **Clients:** SNM-I can benefit clients by helping to shape and support an
-  efficient and effective service delivery system. SNM-I can assist by
-  facilitating expedited intakes, client problem and goal elicitation, need
-  assessment and service planning, making and tracking referrals.
-- **Service Providers:** SNM-I can help providers quantify and qualify what
-  they do. It can be a tool to easily access information on who is seeking
-  services, clients served, services provided, needs met as well as and help
-  find out determinants of client success and what aspects of each program and
-  service are most fruitful. Perhaps programs are doing better with a
-  particular sub-population and this may be an opportunity to better cater
-  services toward another sub-population they are already serving; or perhaps a
-  significant percentage of people who receive a certain type of service
-  management in terms of identifying worker case loads and frequency of worker
-  interaction with clients. SNM-I can expedite program intakes and help monitor
-  progress and completion, while ensuring critical data is captured that can be
-  used to shape the delivery system and better best clients.
-- **Funders and Policy Makers:** Data captured via SNM-I deployments can be
-  used to quantify and qualify what a community is doing to reduce the
-  incidence, duration and prevalence of social issues over time. It can help
-  identify the success of prevention strategies, perform service gaps analysis,
-  and conduct Point-in-Time-Counts.
+
+* **Clients:** The SNM-I benefits clients by enhancing the efficiency and efficacy 
+of acquiring aid as they are able to find resources tailored to their needs
+more easily. The project can also assest in facilitating expedited intakes, client problem
+and goal elicitation, needs assessments, service planning, and making or tracking referrals.
+
+
+* **Service Providers:** The SNM-I allows providers to easily quantify and qualify
+the extent of their services. The project serves as a tool to easily determine
+clients seeking services, clients served, and provided services. The SNM-I may also 
+help in determining factors in client success, and what aspects of each program or service
+is most effective. For example, consider a program that is more effective or used more
+frequently by a sub-population. By using data collected from the SNM-I, providers
+can aim their program to further gear their services to that specific sub-population.
+Additionally, the SNM-I can aid in service management, as worker case loads and frequency
+of client interaction are considered. The SNM-I can expedite program intakes, and aid in 
+monitoring program progress and completion, all while ensuring that critical data is captured 
+to further improve the delivery system and better serve frequent clients.
+
+
+
+* **Funders and Policy Makers:** Data captured by the SNM-I can be used to quantify
+and qualify how a community is working to reduce incidence, duration, and prevalence
+of social issues over time. Ths project can identify possible success factors in
+prevention strategies, perform analysis on potential service gaps, and conduct 
+Point-in-Time-Counts.

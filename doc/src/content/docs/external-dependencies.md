@@ -3,13 +3,13 @@ title: External dependencies
 ---
 
 ## Node packages
-- The frontend is built in [React.js](https://react.dev/).
-  You may find the [reference on react hooks](https://react.dev/reference/react) helpful.
-- The forntend components use [Material UI](https://mui.com/).
+- The frontend application is built with [React.js](https://react.dev/).
+  You may find this [reference on react hooks](https://react.dev/reference/react) helpful.
+- The frontend components use [Material UI](https://mui.com/).
   You may find the "Components" and "Component API" section of the
   [documentation](https://mui.com/material-ui/getting-started/) helpful.
-- We use [Express.js](https://expressjs.com/) to serve the backend APIs.
-  You may find the [routing guide](https://expressjs.com/en/guide/routing.html) helpful.
+- [Express.js](https://expressjs.com/) is used to serve the backend APIs.
+  You may find this [routing guide](https://expressjs.com/en/guide/routing.html) helpful.
 
 ## Data storage technologies
 ### MongoDB
