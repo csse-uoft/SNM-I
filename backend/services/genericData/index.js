@@ -109,6 +109,7 @@ const {
   personInternalTypeCreateTreater,
   personInternalTypeFetchTreater
 } = require("./person");
+const {GDBEligibilityModel} = require("../../models/eligibility");
 const genericType2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
@@ -270,6 +271,10 @@ async function fetchSingleGenericHelper(genericType, id) {
 
           co.objectValue = address;
 
+        } else if (co.occurrenceOf.implementation.fieldType === FieldTypes.EligibilityField._uri) {
+          const id = co.objectValue.split('_')[1];
+          co.objectValue = (await GDBEligibilityModel.findOne({_id: id})).toJSON();
+          if (co.objectValue.formulaJSON) co.objectValue.formulaJSON = JSON.parse(co.objectValue.formulaJSON);
         }
 
       } else if (co.multipleObjectValues) {

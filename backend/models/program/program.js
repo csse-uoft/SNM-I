@@ -17,7 +17,9 @@ const GDBProgramModel = createGraphDBModel({
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
-  endDate: {type: Date, internalKey: ':hasEndDate'}
+  endDate: {type: Date, internalKey: ':hasEndDate'},
+  eligibility: {type: () => require('../eligibility').GDBEligibilityModel,
+    internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE}
 }, {
   rdfTypes: [':Program'], name: 'program'
 });

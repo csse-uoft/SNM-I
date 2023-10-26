@@ -18,6 +18,7 @@ const type2Label = {
 
   PhoneNumberField: 'Phone Number Field',
   AddressField: 'Address Field',
+  EligibilityField: 'Eligibility Field',
 }
 
 const fieldTypeCache = {};

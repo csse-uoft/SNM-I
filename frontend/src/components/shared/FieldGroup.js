@@ -7,6 +7,7 @@ import CheckboxField from './fields/CheckboxField';
 import MultiSelectField from './fields/MultiSelectField';
 import { objectFlip } from "../../helpers";
 import AddressField from "./AddressFieldField";
+import EligibilityField from "./fields/EligibilityField";
 
 export default function FieldGroup({component, options, ...props}) {
   if (component === 'GeneralField' || component === 'TextField') {
@@ -102,6 +103,12 @@ export default function FieldGroup({component, options, ...props}) {
     return (
       <CheckboxField
         options={options}
+        {...props}
+      />
+    );
+  } else if (component === 'EligibilityField') {
+    return (
+      <EligibilityField
         {...props}
       />
     );

@@ -21,7 +21,7 @@ router.get('/dynamicForms/:formType', dynamicFormService.getDynamicFormsByFormTy
 // Get all forms
 router.get('/dynamicForms', dynamicFormService.getAllDynamicForms);
 
-router.get('/dynamicClassInstances/:class', dynamicFormService.getIndividualsInClass);
+router.get('/dynamicClassInstances/:class', dynamicFormService.getIndividualsInClassHandler);
 
 // Get the label of a URI
 router.get('/label/:uri', dynamicFormService.getURILabel);

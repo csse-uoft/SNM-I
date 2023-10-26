@@ -16,6 +16,7 @@ import {
 import LoadingButton from "../shared/LoadingButton";
 import {AlertDialog} from "../shared/Dialogs";
 import VisualizeKindOfs from "../needSatisfier/VisualizeKindOfs";
+import {Delete as DeleteIcon, Add as AddIcon} from "@mui/icons-material";
 
 
 const useStyles = makeStyles(() => ({
@@ -163,15 +164,15 @@ export default function AddEditCharacteristic() {
 
   const getDataTypeValue = (fieldType) => {
     if (fieldType === 'TextField') {
-      return 'xsd:string';
+      return 'http://www.w3.org/2001/XMLSchema#string';
     } else if (fieldType === "NumberField") {
-      return 'xsd:number';
+      return 'http://www.w3.org/2001/XMLSchema#number';
     } else if (fieldType === 'BooleanRadioField') {
-      return 'xsd:boolean';
+      return 'http://www.w3.org/2001/XMLSchema#boolean';
     } else if (fieldType === 'DateField' || fieldType === 'DateTimeField' || fieldType === 'TimeField') {
-      return 'xsd:datetimes';
+      return 'http://www.w3.org/2001/XMLSchema#datetimes';
     } else {
-      return 'owl:NamedIndividual';
+      return 'http://www.w3.org/2002/07/owl#NamedIndividual';
     }
   }
 

@@ -4,6 +4,7 @@ const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
+const {GDBEligibilityModel} = require("../../models/eligibility");
 
 // help to detect the time
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
@@ -57,6 +58,21 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
       // save address since it is stored in a separate model.
       await address.save();
       occurrence.objectValue = address._uri;
+
+    } else if (prefixedFieldType === FieldTypes.EligibilityField.individualName) {
+      let eligibility;
+      if (value.formulaJSON) value.formulaJSON = JSON.stringify(value.formulaJSON);
+      delete value._id;
+      // Reuse the existing instance
+      if (occurrence.objectValue) {
+        const [_, id] = occurrence.objectValue.split('_');
+        eligibility = await GDBEligibilityModel.findById(id)
+        Object.assign(eligibility, value);
+      } else {
+        eligibility = GDBEligibilityModel(value)
+      }
+      await eligibility.save();
+      occurrence.objectValue = eligibility._uri;
 
     } else {
       throw Error(`Should not reach here. ${fieldType}`);
