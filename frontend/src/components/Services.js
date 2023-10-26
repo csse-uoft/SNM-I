@@ -1,12 +1,11 @@
 import React from 'react';
 import {Link} from './shared';
 import {GenericPage} from "./shared";
-import {deleteSingleGeneric, fetchMultipleGeneric} from "../api/genericDataApi";
+import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../api/genericDataApi";
 import {getServiceProviderName, getServiceProviderType} from "./shared/ServiceProviderInformation";
 import {getServiceProviderNameCharacteristicIds} from "./shared/CharacteristicIds";
-import {fetchSingleGeneric} from "../api/genericDataApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
-import {formatLocation} from '../helpers/location_helpers'
+import {formatProviderName} from "./Providers";
 
 const TYPE = 'services';
 
@@ -23,10 +22,10 @@ const columnsWithoutOptions = [
     body: ({serviceProvider}) => {
       if (serviceProvider)
         return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
-          {serviceProvider.name}
+          {formatProviderName(serviceProvider)}
         </Link>;
     },
-    sortBy: ({serviceProvider}) => serviceProvider.name,
+    sortBy: ({serviceProvider}) => serviceProvider ? formatProviderName(serviceProvider) : '',
   },
   // {
   //   label: 'Description',
@@ -40,17 +39,15 @@ const columnsWithoutOptions = [
 
 export default function Services() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = service => {
+    if (service.name) {
+      return service.name;
+    } else {
+      return 'Service ' + service._id;
+    }
+  }
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.address.lat), lng: Number(service.address.lng)},
-      title: 'service ' + service._id,
-      link: `/${TYPE}/${service._id}`,
-      content: service.address && formatLocation(service.address),
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = service => `/${TYPE}/${service._id}`;
 
   const fetchData = async () => {
     const services = (await fetchMultipleGeneric('service')).data;
@@ -65,20 +62,22 @@ export default function Services() {
             serviceData.name = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'Service Provider') {
             serviceData.provider = occ.objectValue;
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const serviceObj = (await fetchSingleGeneric("service", service._id)).data; // TODO: inefficient!
-            serviceData.address = {
-              lat: serviceObj['characteristic_' + addressCharacteristicId].lat,
-              lng: serviceObj['characteristic_' + addressCharacteristicId].lng,
-            };
           }
         }
       if (service.serviceProvider)
+        console.log(JSON.stringify(service.serviceProvider));
         serviceData.serviceProvider = {
-          _id: service.serviceProvider.split('_')[1],
-          name: (await getServiceProviderName(service, characteristicIds)),
-          type: (await getServiceProviderType(service))
+          _id: service.serviceProvider._id,
+          name: service.serviceProvider.organization?.name,
+          lastName: service.serviceProvider.volunteer?.lastName,
+          firstName: service.serviceProvider.volunteer?.firstName,
+          type: service.serviceProvider.type
         }
+      if (service.serviceProvider?.organization?.address) {
+        serviceData.address = service.serviceProvider.organization.address;
+      } else if (service.serviceProvider?.volunteer?.address) {
+        serviceData.address = service.serviceProvider.volunteer.address;
+      }
       data.push(serviceData);
     }
     return data;
@@ -92,8 +91,8 @@ export default function Services() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteService}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

@@ -2,11 +2,9 @@ import React from 'react';
 import { Link } from "../shared"
 import { GenericPage } from "../shared";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
-import { fetchSingleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../../api/genericDataApi";
 import { getAddressCharacteristicId } from "../shared/CharacteristicIds";
-import { formatLocation } from '../../helpers/location_helpers'
-import {formatName} from "../../helpers/formatters";
+import { formatName } from "../../helpers/formatters";
 
 const TYPE = 'clientAssessment';
 
@@ -29,43 +27,27 @@ const columnsWithoutOptions = [
 
 export default function ClientAssessment() {
 
-  const nameFormatter = (assessment) => {return assessment._id;};
+  const nameFormatter = (assessment) => {return 'Client Assessment ' + assessment._id;};
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
-    const currPageData = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageData.map(obj => ({
-      position: {lat: Number(obj.address.lat), lng: Number(obj.address.lng)},
-      title: nameFormatter(obj),
-      link: `/${TYPE}/${obj._id}/edit`,
-      content: obj.address && formatLocation(obj.address),
-    })).filter(obj => obj.position.lat && obj.position.lng);
-  };
+  const linkFormatter = (assessment) => {return `/${TYPE}/${assessment._id}/edit`;};
 
   const fetchData = async () => {
     console.log('fetching data');
     // get all clients data using function `VisualizeAppointment()` from `VisualizeAppointment.js`
     // using this function simplifies the code and makes no difference in performance
-    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data; // TODO: Does not contain address info
+    const clientAssessments = (await fetchMultipleGeneric('clientAssessment')).data;
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
 
     const data = [];
     for (const clientAssessment of clientAssessments) {
       const clientAssessmentData = { _id: clientAssessment._id, address: {} };
-      if (clientAssessment.characteristicOccurrences)
-        for (const occ of clientAssessment.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Address') {
-            const obj = (await fetchSingleGeneric("clientAssessment", clientAssessment._id)).data; // TODO: inefficient!
-            clientAssessmentData.address = {
-              lat: obj['characteristic_' + addressCharacteristicId].lat,
-              lng: obj['characteristic_' + addressCharacteristicId].lng,
-            };
-          }
-        }
+      if (clientAssessment.address) {
+        clientAssessmentData.address = clientAssessment.address;
+      }
       if (clientAssessment.client) {
         // get corresponding client data
         clientAssessmentData.client = {
-          name: formatName(clientAssessment.client.firstName, clientAssessment.client.lastName),
+          name: formatName(clientAssessment.client.firstName, clientAssessment.client.lastName, 'client', clientAssessment.client._id),
           id: clientAssessment.client._id
         }
       }
@@ -85,8 +67,8 @@ export default function ClientAssessment() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteClientAssessment}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

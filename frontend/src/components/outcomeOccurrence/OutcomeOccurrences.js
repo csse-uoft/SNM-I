@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'outcomeOccurrences';
 
@@ -61,21 +62,12 @@ const columnsWithoutOptions = [
 
 export default function OutcomeOccurrences() {
 
-  const nameFormatter = outcomeOccurrence => outcomeOccurrence._id;
+  const nameFormatter = outcomeOccurrence => 'Outcome Occurrence ' + outcomeOccurrence._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = outcomeOccurrence => `/${TYPE}/${outcomeOccurrence._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
     const outcomes = {};
     // get all outcomes data
@@ -99,6 +91,9 @@ export default function OutcomeOccurrences() {
           _id: outcomeOccurrence.occurrenceOf.split('_')[1],
         }
       }
+      if (outcomeOccurrence.address) {
+        outcomeOccurrenceData.address = outcomeOccurrence.address;
+      }
       data.push(outcomeOccurrenceData);
     }
     return data;
@@ -113,8 +108,8 @@ export default function OutcomeOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteOutcomeOccurrence}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

@@ -4,15 +4,17 @@ const {GDBServiceOccurrenceModel} = require("./service/serviceOccurrence");
 const {GDBNeedSatisfierOccurrenceModel} = require("./needSatisfierOccurrence");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
+const {GDBAddressModel} = require('./address');
 
 const GDBServiceProvisionModel = createGraphDBModel({
   needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':forNeedOccurrence'},
   serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
-  needSatisfierOccurrences: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
+  needSatisfierOccurrence: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
   characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
-  client: {type: GDBClientModel, internalKey: ':hasClient'}
+  client: {type: GDBClientModel, internalKey: ':hasClient'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
 }, {
   rdfTypes: [':ServiceProvision'], name: 'serviceProvision'
 });

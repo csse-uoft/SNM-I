@@ -14,7 +14,7 @@ const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instance
 };
 
 const serviceOccurrenceInternalTypeFetchTreater = async (data) => {
-  return getInternalTypeValues(['occurrenceOf', 'needSatisfiers'], data, FORMTYPE)
+  return getInternalTypeValues(['occurrenceOf', 'needSatisfiers'], data, 'serviceOccurrence')
 };
 
 const serviceOccurrenceInternalTypeUpdateTreater = async (internalType, value, result) => {

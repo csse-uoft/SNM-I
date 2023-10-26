@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'serviceProvisions';
 
@@ -17,7 +18,11 @@ const columnsWithoutOptions = [
     label: 'Service Occurrence',
     body: ({serviceOccurrence}) => {
       if (serviceOccurrence) {
-        return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{serviceOccurrence.description}</Link>;
+        if (serviceOccurrence.description) {
+          return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{serviceOccurrence.description}</Link>;
+        } else {
+          return <Link color to={`/serviceOccurrence/${serviceOccurrence._id}/`}>{'Service Occurrence ' + serviceOccurrence._id}</Link>;
+        }
       } else {
         return "";
       }
@@ -60,21 +65,12 @@ const columnsWithoutOptions = [
 
 export default function ServiceProvisions() {
 
-  const nameFormatter = appointment => appointment.name;
+  const nameFormatter = serviceProvision => 'Service Provision ' + serviceProvision._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = serviceProvision => `/${TYPE}/${serviceProvision._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const appointmens = (await fetchMultipleGeneric('serviceProvision')).data;
     const data = [];
     for (const appointment of appointmens) {
@@ -89,6 +85,8 @@ export default function ServiceProvisions() {
         }
       if (appointment.serviceOccurrence)
         appointmentData.serviceOccurrence = appointment.serviceOccurrence
+      if (appointment.address)
+        appointmentData.address = appointment.address;
       data.push(appointmentData);
     }
     return data;
@@ -103,8 +101,8 @@ export default function ServiceProvisions() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteServiceProvision}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

@@ -2,6 +2,7 @@ const {createGraphDBModel, getGraphDBModel} = require("graphdb-utils");
 const {GDBNeedModel} = require("./need");
 const {GDBServiceModel} = require("../service/service");
 const {GDBCOModel} = require("../ClientFunctionalities/characteristicOccurrence");
+const {GDBAddressModel} = require('../address');
 
 const GDBNeedOccurrenceModel = createGraphDBModel({
   occurrenceOf: {type: GDBNeedModel, internalKey: ':occurrenceOf'},
@@ -12,6 +13,7 @@ const GDBNeedOccurrenceModel = createGraphDBModel({
   serviceMatches: {type: [GDBServiceModel], internalKey: ':hasServiceMatch'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   client: {type: () => require("../ClientFunctionalities/client").GDBClientModel, internalKey: ':hasClient'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
   // serviceRegistration: {type: GDBServiceRegistrationModel, internalKey: 'hasServiceRegistration'},
   // serviceProvision: {type: GDBServiceProvisionModel, internalKey: 'hasServiceProvision'},
 }, {

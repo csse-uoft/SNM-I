@@ -1,9 +1,9 @@
 import React from 'react';
 
 import {fetchPersons, deletePerson} from '../api/personApi'
-
-import {formatLocation} from '../helpers/location_helpers'
+import {fetchSingleGeneric} from "../api/genericDataApi";
 import {GenericPage, Link} from "./shared";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'person';
 
@@ -13,9 +13,9 @@ const columnsWithoutOptions = [
   {
     label: 'First Name',
     body: ({firstName, _id}) => {
-      //   return <Link color to={`/${TYPE}/${_id}`}>{firstName}</Link>
-      return firstName;
-    }
+      return <Link color to={`/${TYPE}/${_id}`}>{firstName}</Link>
+    },
+    sortBy: ({firstName}) => firstName,
   },
   {
     label: 'Last Name',
@@ -37,32 +37,29 @@ const columnsWithoutOptions = [
 export default function Person() {
 
   const nameFormatter = (person) => {
-    return person.firstName + ' ' + person.lastName;
+    if (person.firstName && person.lastName) {
+      return person.firstName + ' ' + person.lastName;
+    } else {
+      return 'Person ' + person._id;
+    }
   };
 
-  const generateMarkers = (persons, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPagePersons = persons.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePersons.map(person => ({
-      position: {lat: Number(person.address.lat), lng: Number(person.address.lng)},
-      title: nameFormatter(person),
-      link: `/${TYPE}/${person.id}`,
-      content: person.address && formatLocation(person.address),
-    })).filter(person => person.position.lat && person.position.lng);
-  };
-
+  const linkFormatter = person => `/${TYPE}/${person._id}`;
 
   /**
    * Fetch and transform data
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const persons = (await fetchPersons()).data;
     const data = [];
     for (const person of persons) {
       // parse person data and assign to corresponding fields
       const personData = {_id: person._id};
+      if (person.address) {
+        personData.address = person.address;
+      }
       personData.firstName = person.firstName;
       personData.lastName = person.lastName;
       personData.createDate = person.createDate;
@@ -78,8 +75,8 @@ export default function Person() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deletePerson}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

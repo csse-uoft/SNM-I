@@ -1,8 +1,9 @@
 import React from 'react';
 import {Link} from "../shared"
 import {GenericPage} from "../shared";
-import {deleteSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
+import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../../api/genericDataApi";
 import {formatName} from "../../helpers/formatters";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'referrals';
 
@@ -43,33 +44,28 @@ const columnsWithoutOptions = [
 
 export default function Referrals() {
 
-  const nameFormatter = service => service.name;
+  const nameFormatter = referral => 'Referral ' + referral._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = referral => `/${TYPE}/${referral._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const referrals = (await fetchMultipleGeneric('referral')).data;
     const data = [];
     for (const referral of referrals) {
-      data.push({
+      const referralData = {
         _id: referral._id,
         referralStatus: referral.referralStatus,
         referralType: referral.referralType,
         client: {
-          name: formatName(referral.client.firstName, referral.client.lastName),
+          name: formatName(referral.client.firstName, referral.client.lastName, 'client',  referral.client._id),
           id: referral.client._id
         }
-      });
+      };
+      if (referral.address) {
+        referralData.address = referral.address;
+      }
+      data.push(referralData);
 
     }
     return data;
@@ -83,8 +79,8 @@ export default function Referrals() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteReferral}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

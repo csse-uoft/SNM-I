@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'needOccurrences';
 
@@ -57,21 +58,12 @@ const columnsWithoutOptions = [
 
 export default function NeedOccurrences() {
 
-  const nameFormatter = needOccurrence => needOccurrence._id;
+  const nameFormatter = needOccurrence => 'Need Occurrence ' + needOccurrence._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
     const data = [];
     for (const needOccurrence of needOccurrences) {
@@ -87,6 +79,8 @@ export default function NeedOccurrences() {
           _id: needOccurrence.occurrenceOf._id,
         }
       }
+      if (needOccurrence.address)
+        needOccurrenceData.address = needOccurrence.address;
       data.push(needOccurrenceData);
       console.log(data)
     }
@@ -102,8 +96,8 @@ export default function NeedOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteNeedOccurrence}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}
