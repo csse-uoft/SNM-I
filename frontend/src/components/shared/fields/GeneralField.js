@@ -63,7 +63,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
           <Picker
             value={value}
             onChange={onChangeDate}
-            onAccept={() => props.onBlur()}
+            onAccept={() => props.onBlur && props.onBlur()}
             renderInput={(params) =>
               <TextField {...params}
                          sx={{minWidth: 350}}
