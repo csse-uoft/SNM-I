@@ -40,6 +40,6 @@ export default function ProgramRegistrationForm() {
   }
 
   return (
-    <GenericForm name={'programRegistration'} mainPage={'/programRegistrations'}/>
+    <GenericForm name={'programRegistration'} mainPage={'/programRegistrations'} onRenderField={handleRenderField}/>
   );
 };
