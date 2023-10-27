@@ -165,7 +165,7 @@ export default function EligibilityField({value: defaultValue, required, onChang
   /**
    * @type {[{condition_clauses: [field_name, clauses: [{left_operand, right_operand, operator}]]}]}
    **/
-  const [value, setValue] = useState(defaultValue.formulaJSON || []);
+  const [value, setValue] = useState(defaultValue?.formulaJSON || []);
   const [description, setDescription] = useState(defaultValue?.description || '');
   const [fields, setFields] = useState({});
   const [loading, setLoading] = useState(true);
