@@ -22,7 +22,7 @@ async function createCharacteristicHelper(data) {
   if (label || dataType || fieldType || optionsFromClass || options) {
     characteristic.implementation = {
       label: label,
-      options: options,
+      options: options.map(option => ({label: option.label})),
       valueDataType: dataType,
       optionsFromClass: optionsFromClass,
       fieldType: await GDBFieldTypeModel.findOne({type: fieldType}),

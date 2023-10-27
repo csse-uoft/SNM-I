@@ -133,9 +133,9 @@ async function getDynamicFormsByFormType(req, res, next) {
 }
 
 
-async function getIndividualsInClass(req, res) {
+async function getIndividualsInClass(className) {
   const instances = {};
-  const fullURI = SPARQL.ensureFullURI(req.params.class) ;
+  const fullURI = SPARQL.ensureFullURI(className) ;
 
   const query = `
     ${SPARQL.getSPARQLPrefixes()}
@@ -170,7 +170,12 @@ async function getIndividualsInClass(req, res) {
       instances[s.id] = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
   });
-  res.json(sortObjectByKey(instances));
+  return instances;
+}
+
+
+async function getIndividualsInClassHandler(req, res) {
+  res.json(sortObjectByKey(await getIndividualsInClass(req.params.class)));
 }
 
 async function getURILabel(req, res) {
@@ -213,5 +218,5 @@ async function getURILabel(req, res) {
 
 module.exports = {
   createDynamicForm, getAllDynamicForms, getDynamicForm, deleteDynamicForm, updateDynamicForm, getDynamicFormsByFormType,
-  getIndividualsInClass, getURILabel
+  getIndividualsInClass, getIndividualsInClassHandler, getURILabel
 }

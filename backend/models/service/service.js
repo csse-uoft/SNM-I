@@ -15,7 +15,9 @@ const GDBServiceModel = createGraphDBModel({
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
-  program: {type: GDBProgramModel, internalKey: ':hasProgram'}
+  program: {type: GDBProgramModel, internalKey: ':hasProgram'},
+  eligibility: {type: () => require('../eligibility').GDBEligibilityModel,
+    internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE}
 }, {
   rdfTypes: [':Service'], name: 'service'
 });

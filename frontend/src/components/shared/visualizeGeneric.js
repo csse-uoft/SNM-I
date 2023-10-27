@@ -104,6 +104,9 @@ export default function VisualizeGeneric({genericType,}) {
             value = <Typography>{new Date(data).toLocaleString()}</Typography>;
           } else if (typeof data === "boolean") {
             value = data ? <Typography>Yes</Typography> : <Typography>No</Typography>;
+          } else if (fieldType === 'EligibilityField') {
+            if (!data.formula) continue;
+            value = data.formula;
           } else {
             value = <Typography>{data}</Typography>;
           }

@@ -24,7 +24,7 @@ const columnsWithoutOptions = [
           return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{'Program Occurrence ' + programOccurrence._id}</Link>;
         }
       } else {
-        return "";
+        return "Unavailable";
       }
     },
     sortBy: ({programOccurrence}) => programOccurrence.description,
@@ -34,7 +34,7 @@ const columnsWithoutOptions = [
     body: ({startDate}) => {
       const startDateObj = new Date(startDate);
       if (isNaN(startDateObj)) {
-        return "";
+        return "Unspecified";
       } else {
         return startDateObj.toLocaleString();
       }
@@ -46,7 +46,7 @@ const columnsWithoutOptions = [
     body: ({endDate}) => {
       const endDateObj = new Date(endDate);
       if (isNaN(endDateObj)) {
-        return "";
+        return "Unspecified";
       } else {
         return endDateObj.toLocaleString();
       }

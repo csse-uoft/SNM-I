@@ -51,4 +51,14 @@ module.exports = [{
       fieldType: FieldTypes.TextField,
     }
   },
+  {
+    name: 'Eligibility',
+    description: 'The eligibility of a program or a service.',
+    predefinedProperty: 'http://snmi#hasEligibility',
+    implementation: {
+      label: 'Eligibility',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.EligibilityField,
+    }
+  },
 ]
