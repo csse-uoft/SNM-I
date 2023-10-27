@@ -116,11 +116,10 @@ if (Map) {
         let addressText;
         if (!marker.position) {
           continue;
-        } else if (marker.position.lat && marker.position.lng) {
-          addressText = `${marker.position.lat}, ${marker.position.lng}`;
-        } else if (marker.position.streetName && marker.position.city) {
-          addressText = `${marker.position.unitNumber ? marker.position.unitNumber + '-' : ''}${marker.position.streetNumber ? marker.position.streetNumber : ''} ${marker.position.streetName} ${marker.position.streetType ? addressInfo?.streetTypes[marker.position.streetType] : ''}${marker.position.streetDirection ? ' ' + addressInfo?.streetDirections[marker.position.streetDirection] : ''}, ${marker.position.city}${marker.position.state ? ', ' + addressInfo?.states[marker.position.state] : ''}${marker.position.postalCode ? ', ' + marker.position.postalCode : ''}`;
         } else {
+          addressText = formatLocation(marker.position, addressInfo);
+        }
+        if (addressText === '') {
           continue;
         }
 
