@@ -5,7 +5,7 @@ import { MoreVert as MoreVertIcon, Edit, Delete, OpenInBrowser, Event as EventIc
 
 const ITEM_HEIGHT = 48;
 
-export default function MatchingDropdownMenu({type}) {
+export default function MatchingDropdownMenu({type, clientId, needId, serviceOrProgramId}) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -43,21 +43,21 @@ export default function MatchingDropdownMenu({type}) {
           },
         }}
       >
-        <MenuItem onClick={handleLink(`/appointments/new`)}>
+        <MenuItem onClick={handleLink(`/appointments/new/${clientId}/`)}>
           <ListItemIcon>
             <EventIcon fontSize="small" color="primary"/>
           </ListItemIcon>
           <Typography variant="inherit">Book an appointment</Typography>
         </MenuItem>
 
-        <MenuItem onClick={handleLink(`/${type}Registrations/new`)}>
+        <MenuItem onClick={handleLink(`/${type}Registrations/new/${clientId}/${serviceOrProgramId}/`)}>
           <ListItemIcon>
             <HowToReg fontSize="small" color="primary"/>
           </ListItemIcon>
           <Typography variant="inherit">Register</Typography>
         </MenuItem>
 
-        <MenuItem onClick={handleLink(`/referrals/new`)}>
+        <MenuItem onClick={handleLink(`/referrals/new/${clientId}/${needId}/${type}/${serviceOrProgramId}/`)}>
           <ListItemIcon>
             <GroupAdd fontSize="small" color="secondary"/>
           </ListItemIcon>
