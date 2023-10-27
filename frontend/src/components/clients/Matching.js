@@ -59,10 +59,20 @@ export default function Matching({}) {
       },
       {
         label: ' ',
-        body: ({type}) => {
-//          const uri = path[path.length - 1];
-//          const _id = uri.split('_')[1];
-          return <MatchingDropdownMenu type={type}/>
+        body: ({type, path}) => {
+          const serviceOrProgramId = path[path.length - 1].split('_')[1];
+
+          let needId;
+          const path_slice = path.slice(1, path.length - 1);
+          for (const [idx, uri] of path_slice.entries()) {
+            const type = uri.split('#')[1].split('_')[0];
+            if (type === 'need') {
+              needId = uri.split('_')[1];
+              break;
+            }
+          }
+
+          return <MatchingDropdownMenu type={type} clientId={id} needId={needId} serviceOrProgramId={serviceOrProgramId}/>
         }
       }
     ]

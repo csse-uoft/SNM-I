@@ -11,6 +11,7 @@ import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
 import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
+import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 
 const contentStyle = {
   width: '80%',
@@ -30,7 +31,7 @@ const contentStyle = {
  */
 export default function GenericForm({name, mainPage, isProvider, onRenderField}) {
   const navigate = useNavigate();
-  const {id} = useParams();
+  const {id, clientId, needId, serviceOrProgramType, serviceOrProgramId} = useParams();
   const mode = id ? 'edit' : 'new';
 
   const [form, setForm] = useState({});
@@ -100,9 +101,26 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
           }
         }
 
-        // Get data
-        if (id) {
+        if (mode === 'edit') {
+          // Get data
           const {data} = await (isProvider ? fetchSingleProvider : fetchSingleGeneric)(name, id);
+          setForm(form => ({...form, fields: data}));
+        } else {
+          // Prefill form with any given attributes
+          const {internalTypes} = await fetchInternalTypeByFormType(name);
+          const capitalizedType = serviceOrProgramType?.charAt(0).toUpperCase() + serviceOrProgramType?.substring(1);
+          const data = {};
+          for (const internalType of internalTypes) {
+            if (internalType.implementation?.optionsFromClass === 'http://snmi#Client' && clientId) {
+              data[internalType._uri.split('#')[1]] = "http://snmi#client_" + clientId;
+            } else if (internalType.implementation?.optionsFromClass === 'http://snmi#Need' && needId) {
+              data[internalType._uri.split('#')[1]] = "http://snmi#need_" + needId;
+            } else if (internalType.implementation?.optionsFromClass === 'http://snmi#' + capitalizedType && serviceOrProgramId) {
+              data[internalType._uri.split('#')[1]] = "http://snmi#" + serviceOrProgramType + '_' + serviceOrProgramId;
+              // TODO: Add receivingServiceProvider
+              // TODO: Add serviceorProgramOccurrence
+            }
+          }
           setForm(form => ({...form, fields: data}));
         }
 
