@@ -19,26 +19,29 @@ export default function ServiceRegistrationForm() {
       setInternalTypes(data);
     });
   }, []);
-  const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
+  const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
     console.log(implementation)
-    if (implementation.optionsFromClass === ":Client") {
+    if (implementation.optionsFromClass?.endsWith("Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForServiceRegistration._id}
                                            needOccFieldId={internalTypes.needOccurrenceForServiceRegistration._id}/>
-    } else if (implementation.optionsFromClass === ":ServiceOccurrence") {
+    } else if (implementation.optionsFromClass?.endsWith("ServiceOccurrence")) {
+      const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForServiceRegistration._id;
+
+      if (!serviceOccurrenceFieldId) {
+        return <Box minWidth={"350px"}><Loading message=""/></Box>;
+      }
+
       // Render Service & Service Occurrence & Need Satisfier
       return <ServiceAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
-        serviceFieldId={internalTypes.serviceForServiceRegistration._id}
-        serviceOccurrenceFieldId={internalTypes.serviceOccurrenceForServiceRegistration._id}
-        needSatisfierFieldId={internalTypes.needSatisfierForServiceRegistration._id}/>
-
-    } else if (implementation.optionsFromClass === ':NeedOccurrence') {
+        serviceOccurrenceFieldId={serviceOccurrenceFieldId}
+        fixedService={'http://snmi#service_' + serviceOrProgramId}/>
+    } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
       return "";
     }
   }
-
   return (
     <GenericForm name={'serviceRegistration'} mainPage={'/serviceRegistrations'} onRenderField={handleRenderField}/>
   );
