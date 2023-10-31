@@ -13,18 +13,17 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
                                             programFieldId,
                                             programOccurrenceFieldId,
                                             needSatisfierFieldId,
-                                            handleChange
+                                            handleChange,
+                                            fixedProgram // full URI of the program which all shown occurrences must be of, if given
                                           }) {
-  if (!programFieldId || !programOccurrenceFieldId || !needSatisfierFieldId) {
-    return <Box minWidth={"350px"}><Loading message=""/></Box>;
-  }
-  const programKey = `internalType_${programFieldId}`;
+  const programKey = programFieldId ? `internalType_${programFieldId}` : null;
   const programOccKey = `internalType_${programOccurrenceFieldId}`;
-  const needSatisfierKey = `internalType_${needSatisfierFieldId}`;
+  const needSatisfierKey = needSatisfierFieldId ? `internalType_${needSatisfierFieldId}` : null;
 
-  const [selectedProgram, setSelectedProgram] = useState(fields[programKey]);
+  const [selectedProgram, setSelectedProgram] = useState(fixedProgram ? fixedProgram : fields[programKey]);
   const [selectedProgramOcc, setSelectedProgramOcc] = useState(fields[programOccKey]);
   const [dynamicOptions, setDynamicOptions] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const handleChangeProgram = key => (e) => {
     const value = e.target.value;
@@ -40,7 +39,8 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
 
   useEffect(() => {
     getInstancesInClass(":Program")
-      .then(options => setDynamicOptions(prev => ({...prev, ":Program": options})));
+      .then(options => setDynamicOptions(prev => ({...prev, ":Program": options})))
+      .then(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -59,12 +59,20 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
     }
   }, [selectedProgramOcc]);
 
-  const showProgramOcc = !!selectedProgram;
-  const showNeedSatisfier = showProgramOcc && !!selectedProgramOcc;
+  const showProgram = !!programKey;
+  const showProgramOcc = !!selectedProgram || (!programKey && !!programOccKey);
+  const showNeedSatisfier = showProgramOcc && !!selectedProgramOcc && !!needSatisfierKey;
+
+  if (loading) {
+    return <Loading />
+  }
 
   return <>
-    <SelectField key={programKey} label="Program" required value={fields[programKey]}
-                 options={dynamicOptions[":Program"] || {}} onChange={handleChangeProgram(programKey)}/>
+    {showProgram ?
+      <SelectField key={programKey} label="Program" required value={fields[programKey]}
+                   options={dynamicOptions[":Program"] || {}} onChange={handleChangeProgram(programKey)}/>
+      : null
+    }
     {showProgramOcc ?
       <Fade in={showProgramOcc}>
         <div>

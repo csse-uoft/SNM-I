@@ -147,16 +147,19 @@ const routes = (
 
     <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
+    <Route path="/referrals/new/:clientId/:needId/:serviceOrProgramType/:serviceOrProgramId/" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/:id" element={<PrivateRoute element={VisualizeReferral}/>}/>
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
 
     <Route path="/serviceRegistrations/:id/edit" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
     <Route path="/serviceRegistrations/new" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
+    <Route path="/serviceRegistrations/new/:clientId/:serviceOrProgramId/" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
     {<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeServiceRegistration}/>}/>}
     <Route path="/serviceRegistrations" element={<PrivateRoute element={ServiceRegistrations}/>}/>
 
     <Route path="/programRegistrations/:id/edit" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     <Route path="/programRegistrations/new" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
+    <Route path="/programRegistrations/new/:clientId/:serviceOrProgramId/" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     {<Route path="/programRegistrations/:id" element={<PrivateRoute element={VisualizeProgramRegistration}/>}/>}
     <Route path="/programRegistrations" element={<PrivateRoute element={ProgramRegistrations}/>}/>
 
@@ -175,6 +178,7 @@ const routes = (
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
+    <Route path="/appointments/new/:clientId/" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
 
     <Route path="/person" element={<PrivateRoute element={Person}/>}/>

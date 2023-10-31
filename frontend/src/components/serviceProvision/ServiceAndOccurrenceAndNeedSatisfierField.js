@@ -13,16 +13,14 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
                                             serviceFieldId,
                                             serviceOccurrenceFieldId,
                                             needSatisfierFieldId,
-                                            handleChange
+                                            handleChange,
+                                            fixedService // full URI of the service which all shown occurrences must be of, if given
                                           }) {
-  if (!serviceFieldId || !serviceOccurrenceFieldId || !needSatisfierFieldId) {
-    return <Box minWidth={"350px"}><Loading message=""/></Box>;
-  }
-  const serviceKey = `internalType_${serviceFieldId}`;
+  const serviceKey = serviceFieldId ? `internalType_${serviceFieldId}` : null;
   const serviceOccKey = `internalType_${serviceOccurrenceFieldId}`;
-  const needSatisfierKey = `internalType_${needSatisfierFieldId}`;
+  const needSatisfierKey = needSatisfierFieldId ? `internalType_${needSatisfierFieldId}` : null;
 
-  const [selectedService, setSelectedService] = useState(fields[serviceKey]);
+  const [selectedService, setSelectedService] = useState(fixedService ? fixedService : fields[serviceKey]);
   const [selectedServiceOcc, setSelectedServiceOcc] = useState(fields[serviceOccKey]);
   const [dynamicOptions, setDynamicOptions] = useState({});
 
@@ -59,12 +57,16 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     }
   }, [selectedServiceOcc]);
 
-  const showServiceOcc = !!selectedService;
-  const showNeedSatisfier = showServiceOcc && !!selectedServiceOcc;
+  const showService = !!serviceKey;
+  const showServiceOcc = !!selectedService || (!serviceKey && !!serviceOccKey);
+  const showNeedSatisfier = showServiceOcc && !!selectedServiceOcc && !!needSatisfierKey;
 
   return <>
-    <SelectField key={serviceKey} label="Service" required value={fields[serviceKey]}
-                 options={dynamicOptions[":Service"] || {}} onChange={handleChangeService(serviceKey)}/>
+    {showService ?
+      <SelectField key={serviceKey} label="Service" required value={fields[serviceKey]}
+                   options={dynamicOptions[":Service"] || {}} onChange={handleChangeService(serviceKey)}/>
+      : null
+    }
     {showServiceOcc ?
       <Fade in={showServiceOcc}>
         <div>

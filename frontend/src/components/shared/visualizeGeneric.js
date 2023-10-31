@@ -12,6 +12,7 @@ import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "./virtualizeTable";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
+import {formatLocation} from "../../helpers/location_helpers";
 
 
 async function getOptionLabels(uris, options) {
@@ -64,6 +65,7 @@ export default function VisualizeGeneric({genericType,}) {
         getInstancesInClass('ic:StreetDirection').then((data) => streetDirections = data),
         getInstancesInClass('schema:State').then((data) => states = data),
       ]);
+      const addressInfo = {streetTypes, streetDirections, states};
 
       const {data: genericData} = (genericType === 'organization' || genericType === 'volunteer')
         ? await fetchSingleProvider(genericType, id)
@@ -96,8 +98,7 @@ export default function VisualizeGeneric({genericType,}) {
             });
           } else if (fieldType === 'AddressField') {
             value = <Typography>
-              {`${data.unitNumber ? data.unitNumber + '-' : ''}${data.streetNumber ? data.streetNumber : ''} ${data.streetName} ${data.streetType ? streetTypes[data.streetType] : ''}
-                ${data.streetDirection ? streetDirections[data.streetDirection] : ''}, ${data.city}, ${states[data.state]}, ${data.postalCode}`}
+            {formatLocation(data, addressInfo)}
             </Typography>;
           } else if (['DateField', 'DateTimeField', 'TimeField'].includes(fieldType)) {
             value = <Typography>{new Date(data).toLocaleString()}</Typography>;
