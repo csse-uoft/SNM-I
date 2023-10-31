@@ -159,7 +159,7 @@ const routes = (
 
     <Route path="/programRegistrations/:id/edit" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     <Route path="/programRegistrations/new" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
-    <Route path="/programRegistrations/new/:clientId/:programId/" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
+    <Route path="/programRegistrations/new/:clientId/:serviceOrProgramId/" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     {<Route path="/programRegistrations/:id" element={<PrivateRoute element={VisualizeProgramRegistration}/>}/>}
     <Route path="/programRegistrations" element={<PrivateRoute element={ProgramRegistrations}/>}/>
 

@@ -27,12 +27,20 @@ export default function ProgramProvisionForm() {
                                            clientFieldId={internalTypes.clientForProgramProvision._id}
                                            needOccFieldId={internalTypes.needOccurrenceForProgramProvision._id}/>
     } else if (implementation.optionsFromClass === ":Program") {
+      const programFieldId = internalTypes.programForProgramProvision._id;
+      const programOccurrenceFieldId = internalTypes.programOccurrenceForProgramProvision._id
+      const needSatisfierFieldId = internalTypes.needSatisfierForProgramProvision._id;
+
+      if (!programFieldId || !programOccurrenceFieldId || !needSatisfierFieldId) {
+        return <Box minWidth={"350px"}><Loading message=""/></Box>;
+      }
+
       // Render Program & Program Occurrence & Need Satisfier
       return <ProgramAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
-        programFieldId={internalTypes.programForProgramProvision._id}
-        programOccurrenceFieldId={internalTypes.programOccurrenceForProgramProvision._id}
-        needSatisfierFieldId={internalTypes.needSatisfierForProgramProvision._id}/>
+        programFieldId={programFieldId}
+        programOccurrenceFieldId={programOccurrenceFieldId}
+        needSatisfierFieldId={needSatisfierFieldId}/>
 
     } else if (implementation.optionsFromClass === ':NeedOccurrence') {
       return "";

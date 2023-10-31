@@ -171,8 +171,8 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         id = id || _id;
 
         // Check if there is an external rendering logic.
-        const Field = onRenderField && onRenderField({required, id, type, implementation, content},
-          index, form.fields, handleChange, step);
+        const Field = onRenderField && onRenderField({required, id, type, implementation, content, serviceOrProgramId},
+          index, form.fields, handleChange);
         if (Field != null) return Field;
 
         if (type === 'question') {

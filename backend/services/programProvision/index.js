@@ -1,50 +1,4 @@
-const {SPARQL, sortObjectByKe, GraphDB} = require("graphdb-utils");
-
-async function getClientNeedOccurrenceByClient(req, res) {
-  const instances = {};
-
-  const clientFullURI = req.params.client;
-
-  const query = `
-    ${SPARQL.getSPARQLPrefixes()}
-    select ?needOcc ?description ?type where { 
-        bind(<${clientFullURI}> as ?client)
-        ?needOcc a :NeedOccurrence, owl:NamedIndividual.
-        ?needOcc :occurrenceOf ?need.
-        ?client :hasNeed ?need.
-        # description & name
-        optional { ?need cids:hasDescription ?description. }
-        optional { ?need :hasType ?type. }
-    }`;
-
-  await GraphDB.sendSelectQuery(query, false, ({needOcc, description, type}) => {
-    instances[needOcc.id] = type?.value || description?.value || needOcc.id;
-  });
-  res.json(sortObjectByKey(instances));
-}
-
-async function getClientOutcomeOccurrenceByClient(req, res) {
-  const instances = {};
-
-  const clientFullURI = req.params.client;
-
-  const query = `
-    ${SPARQL.getSPARQLPrefixes()}
-    select ?outcomeOcc ?description ?type where {
-        bind(<${clientFullURI}> as ?client)
-        ?outcomeOcc a :OutcomeOccurrence, owl:NamedIndividual.
-        ?outcomeOcc :occurrenceOf ?outcome.
-        ?client :hasOutcome ?outcome.
-        # description & name
-        optional { ?outcome cids:hasDescription ?description. }
-        optional { ?outcome :hasType ?type. }
-    }`;
-
-  await GraphDB.sendSelectQuery(query, false, ({outcomeOcc, description, type}) => {
-    instances[needOcc.id] = type?.value || description?.value || outcomeOcc.id;
-  });
-  res.json(sortObjectByKey(instances));
-}
+const {SPARQL, sortObjectByKey, GraphDB} = require("graphdb-utils");
 
 async function getProgramOccurrenceByProgram(req, res) {
   const instances = {};
@@ -115,8 +69,6 @@ async function getNeedSatisfiersByProgram(req, res) {
 
 
 module.exports = {
-  getClientNeedOccurrenceByClient,
-  getClientOutcomeOccurrenceByClient,
   getProgramOccurrenceByProgram,
   getNeedSatisfiersByProgramOccurrence,
   getNeedSatisfiersByProgram,
