@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from "@mui/material";
 import { MoreVert as MoreVertIcon, Edit, Delete, OpenInBrowser, Event as EventIcon, GroupAdd, HowToReg } from '@mui/icons-material';
+import { getProgramOccurrencesByProgram } from "../../api/programProvision";
+import { getServiceOccurrencesByService } from "../../api/serviceProvision";
 
 const ITEM_HEIGHT = 48;
 
@@ -9,6 +11,7 @@ export default function MatchingDropdownMenu({type, clientId, needId, serviceOrP
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [anyOccurrences, setAnyOccurrences] = useState(false);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -21,6 +24,18 @@ export default function MatchingDropdownMenu({type, clientId, needId, serviceOrP
   const handleLink = link => () => {
     navigate(link);
   };
+
+  useEffect(() => {
+    if (type === 'program') {
+      getProgramOccurrencesByProgram('http://snmi#program_' + serviceOrProgramId).then(occurrences => {
+        setAnyOccurrences(Object.keys(occurrences).length > 0);
+      });
+    } else {
+      getServiceOccurrencesByService('http://snmi#service_' + serviceOrProgramId).then(occurrences => {
+        setAnyOccurrences(Object.keys(occurrences).length > 0);
+      });
+    }
+  }, [type, serviceOrProgramId]);
 
   return (
     <div>
@@ -50,7 +65,7 @@ export default function MatchingDropdownMenu({type, clientId, needId, serviceOrP
           <Typography variant="inherit">Book an appointment</Typography>
         </MenuItem>
 
-        <MenuItem onClick={handleLink(`/${type}Registrations/new/${clientId}/${serviceOrProgramId}/`)}>
+        <MenuItem onClick={handleLink(`/${type}Registrations/new/${clientId}/${serviceOrProgramId}/`)} disabled={!anyOccurrences}>
           <ListItemIcon>
             <HowToReg fontSize="small" color="primary"/>
           </ListItemIcon>
