@@ -14,16 +14,20 @@ export function ClientAndNeedOccurrenceField({fields, clientFieldId, needOccFiel
 
   const [selectedClient, setSelectedClient] = useState(fields[clientKey]);
   const [dynamicOptions, setDynamicOptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [loadingNeedOcc, setLoadingNeedOcc] = useState(true)
 
   const handleChangeClient = key => (e) => {
     const value = e.target.value;
     setSelectedClient(value);
+    setLoadingNeedOcc(true);
     handleChange(key)(e);
   }
 
   useEffect(() => {
     getInstancesInClass(":Client")
-      .then(options => setDynamicOptions(prev => ({...prev, ":Client": options})));
+      .then(options => setDynamicOptions(prev => ({...prev, ":Client": options})))
+      .then(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -31,11 +35,16 @@ export function ClientAndNeedOccurrenceField({fields, clientFieldId, needOccFiel
       console.log(selectedClient)
       getNeedOccurrencesByClient(selectedClient).then(options => {
         setDynamicOptions(prev => ({...prev, ":NeedOccurrence": options}));
+        setLoadingNeedOcc(false);
       });
     }
   }, [selectedClient]);
 
   const showNeedOcc = !!selectedClient;
+
+  if (loading) {
+    return <Loading />
+  }
 
   return <>
     <SelectField key={clientKey} label="Client" required value={fields[clientKey]}
@@ -44,6 +53,7 @@ export function ClientAndNeedOccurrenceField({fields, clientFieldId, needOccFiel
       <Fade in={showNeedOcc}>
         <div>
           <SelectField key={needOccKey} label="Client Need Occurrence" required value={fields[needOccKey]}
+                       loading={loadingNeedOcc}
                        options={dynamicOptions[":NeedOccurrence"] || {}} onChange={handleChange(needOccKey)}/>
         </div>
       </Fade>
