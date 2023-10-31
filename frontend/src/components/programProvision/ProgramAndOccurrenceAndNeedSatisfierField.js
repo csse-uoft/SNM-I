@@ -23,6 +23,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
   const [selectedProgram, setSelectedProgram] = useState(fixedProgram ? fixedProgram : fields[programKey]);
   const [selectedProgramOcc, setSelectedProgramOcc] = useState(fields[programOccKey]);
   const [dynamicOptions, setDynamicOptions] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const handleChangeProgram = key => (e) => {
     const value = e.target.value;
@@ -38,7 +39,8 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
 
   useEffect(() => {
     getInstancesInClass(":Program")
-      .then(options => setDynamicOptions(prev => ({...prev, ":Program": options})));
+      .then(options => setDynamicOptions(prev => ({...prev, ":Program": options})))
+      .then(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -60,6 +62,10 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
   const showProgram = !!programKey;
   const showProgramOcc = !!selectedProgram || (!programKey && !!programOccKey);
   const showNeedSatisfier = showProgramOcc && !!selectedProgramOcc && !!needSatisfierKey;
+
+  if (loading) {
+    return <Loading />
+  }
 
   return <>
     {showProgram ?
