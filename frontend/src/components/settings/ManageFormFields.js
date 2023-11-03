@@ -148,6 +148,22 @@ export default function ManageFormFields() {
       setErrors(errors => ({...errors, formName: 'Form name is required.'}));
       return;
     }
+    //check for empty steps in the form which should not exist.
+    let empty_step = false;
+    //go through each step and see if there are any fields in it,
+    //if this is not the case, then the error message is displayed and the form
+    //is not created/updated
+    form.formStructure.forEach(step => {
+      if (step.fields.length <= 0){
+        setErrors(errors => ({...errors, formName: 'Blank step detected.'}));
+        empty_step = true;
+        return;
+      }
+    });
+    if (empty_step){
+      return;
+    }
+
 
     try {
       if (method === 'new') {
