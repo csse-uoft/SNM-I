@@ -42,6 +42,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
 
   const handleChangeProgram = key => (e) => {
     setLoadingProgramOcc(true);
+    firstProgram.current = false;
     const value = e.target.value;
     setSelectedProgram(value);
     handleChange(key)(e);
@@ -61,9 +62,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
 
   const handleGetProgramOccs = () => {
     // unset program occurrence after another program is selected
-    if (firstProgram.current) {
-      firstProgram.current = false;
-    } else {
+    if (!firstProgram.current) {
       setSelectedProgramOcc(null);
       handleChange(programOccKey)(null);
     }
@@ -75,17 +74,6 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
       getProgramOccurrencesByProgram(selectedProgram)
         .then(options => setDynamicOptions(prev => ({...prev, ":ProgramOccurrence": options})))
         .then(() => handleGetProgramOccs());
-    } else if (selectedProgramOcc) {
-      fetchSingleGeneric('programOccurrence', selectedProgramOcc.split('_')[1])
-        .then(occ => {
-          const programInternalTypeId = programOccurrenceInternalTypes?.programForProgramOccurrence?._id;
-          if (programInternalTypeId) {
-            const programURI = occ.data['internalType_' + programInternalTypeId];
-            getProgramOccurrencesByProgram(programURI)
-              .then(options => setDynamicOptions(prev => ({...prev, ":ProgramOccurrence": options})))
-              .then(() => handleGetProgramOccs());
-          }
-        })
     } else {
       // fetch all program occurrences
       fetchMultipleGeneric('programOccurrence')

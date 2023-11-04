@@ -42,6 +42,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
 
   const handleChangeService = key => (e) => {
     setLoadingServiceOcc(true);
+    firstService.current = false;
     const value = e.target.value;
     setSelectedService(value);
     handleChange(key)(e);
@@ -61,9 +62,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
 
   const handleGetServiceOccs = () => {
     // unset service occurrence after another service is selected
-    if (firstService.current) {
-      firstService.current = false;
-    } else {
+    if (!firstService.current) {
       setSelectedServiceOcc(null);
       handleChange(serviceOccKey)(null);
     }
@@ -75,17 +74,6 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
       getServiceOccurrencesByService(selectedService)
         .then(options => setDynamicOptions(prev => ({...prev, ":ServiceOccurrence": options})))
         .then(() => handleGetServiceOccs());
-    } else if (selectedServiceOcc) {
-      fetchSingleGeneric('serviceOccurrence', selectedServiceOcc.split('_')[1])
-        .then(occ => {
-          const serviceInternalTypeId = serviceOccurrenceInternalTypes?.serviceForServiceOccurrence?._id;
-          if (serviceInternalTypeId) {
-            const serviceURI = occ.data['internalType_' + serviceInternalTypeId];
-            getServiceOccurrencesByService(serviceURI)
-              .then(options => setDynamicOptions(prev => ({...prev, ":ServiceOccurrence": options})))
-              .then(() => handleGetServiceOccs());
-          }
-        })
     } else {
       // fetch all service occurrences
       fetchMultipleGeneric('serviceOccurrence')
