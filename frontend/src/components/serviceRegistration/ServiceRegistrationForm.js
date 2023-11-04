@@ -37,7 +37,7 @@ export default function ServiceRegistrationForm() {
       return <ServiceAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
         serviceOccurrenceFieldId={serviceOccurrenceFieldId}
-        fixedService={'http://snmi#service_' + serviceOrProgramId}/>
+        fixedServiceId={serviceOrProgramId}/>
     } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
       return "";
     }

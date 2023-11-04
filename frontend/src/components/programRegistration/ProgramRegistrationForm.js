@@ -37,7 +37,7 @@ export default function ProgramRegistrationForm() {
       return <ProgramAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
         programOccurrenceFieldId={programOccurrenceFieldId}
-        fixedProgram={'http://snmi#program_' + serviceOrProgramId}/>
+        fixedProgramId={serviceOrProgramId}/>
     } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
       return "";
     }
