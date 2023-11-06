@@ -83,6 +83,7 @@ Place it inside of `backend/`.
   * **Google Chrome:** enable `chrome://flags/#temporary-unexpire-flags-m118` and then `chrome://flags/#allow-insecure-localhost`
   * **Mozilla Firefox:** Go to Preferences → Privacy & Security → View certificates →
     Servers → Add Exception → add `localhost:5000`
+  * If the `#allow-insecure-localhost` flag is not available to you, please follow the instructions [here](https://github.com/csse-uoft/SNM-I/tree/master/backend/config)
 
 5. Create the mongoDB and graphDB Docker containers:
 
