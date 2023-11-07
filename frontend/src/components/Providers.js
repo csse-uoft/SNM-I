@@ -94,6 +94,13 @@ export default function Providers() {
         }
       if (innerData.address)
         providerData.address = innerData.address;
+      if (innerData.partner) {
+        providerData.partner = innerData.partner;
+        if (innerData.endpointUrl)
+          providerData.endpointUrl = innerData.endpointUrl;
+        if (innerData.endpointPort)
+          providerData.endpointPort = innerData.endpointPort;
+      }
       data.push(providerData);
     }
     return data;
