@@ -28,7 +28,8 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
       {
         populates: ['organization.characteristicOccurrences.occurrenceOf',
           'organization.questionOccurrence', 'volunteer.characteristicOccurrences.occurrenceOf',
-          'volunteer.questionOccurrence', 'organization.address', 'volunteer.address',]
+          'volunteer.questionOccurrence', 'organization.address', 'volunteer.address',
+          'organization.partner', 'organization.endpointUrl', 'organization.endpointPort',]
       });
     return res.status(200).json({success: true, data});
   } catch (e) {
