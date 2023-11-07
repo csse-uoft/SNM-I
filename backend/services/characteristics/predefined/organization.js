@@ -41,4 +41,14 @@ module.exports = [
       fieldType: FieldTypes.NumberField,
     },
   },
+  {
+    name: 'API Key',
+    description: 'API key for accessing the partner organization\'s deployment',
+    predefinedProperty: 'http://snmi#hasApiKey',
+    implementation: {
+      label: 'API Key',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.TextField,
+    },
+  },
 ]

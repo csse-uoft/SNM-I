@@ -100,6 +100,8 @@ export default function Providers() {
           providerData.endpointUrl = innerData.endpointUrl;
         if (innerData.endpointPort)
           providerData.endpointPort = innerData.endpointPort;
+        if (innerData.apiKey)
+          providerData.apiKey = innerData.apiKey;
       }
       data.push(providerData);
     }

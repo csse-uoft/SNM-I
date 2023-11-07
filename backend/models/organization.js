@@ -13,6 +13,7 @@ const GDBOrganizationModel = createGraphDBModel({
   partner: {type: Boolean, internalKey: ':isPartner'},
   endpointUrl: {type: String, internalKey: ':hasEndpointUrl'},
   endpointPort: {type: Number, internalKey: ':hasEndpointNumber'},
+  apiKey: {type: String, internalKey: ':hasApiKey'},
 }, {
   rdfTypes: [':Organization'], name: 'organization'
 });
