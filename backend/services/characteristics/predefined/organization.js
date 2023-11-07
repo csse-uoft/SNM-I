@@ -12,7 +12,7 @@ module.exports = [
     },
   },
   {
-    name: 'Is Partner Organization',
+    name: 'Partner Organization?',
     description: 'Whether the organization is a partner of this organization',
     predefinedProperty: 'http://snmi#isPartner',
     implementation: {
