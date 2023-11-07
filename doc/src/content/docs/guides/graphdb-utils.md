@@ -2,8 +2,9 @@
 title: GraphDB utils
 ---
 
-> This document contains outdated information. Please see the latest documentation: https://github.com/csse-uoft/graphdb-utils
-
+:::caution
+This document contains outdated information. Please see the latest documentation: https://github.com/csse-uoft/graphdb-utils
+:::
 
 The `graphdb-utils` module consists of wrappers to create GraphDB
 models and manipulate data in an object-oriented way without having to worry
