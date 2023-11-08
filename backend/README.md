@@ -23,7 +23,7 @@ If you had manually started `dockerd`, you need to run the following commands
 as root using `sudo` or `doas`. Otherwise, run them as they are:
 ```shell
 # GraphDB
-docker run -p 7200:7200 -d --name graphdb --restart unless-stopped -t ontotext/graphdb:10.0.2 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000
+docker run -p 7200:7200 -d --name graphdb --restart unless-stopped -t ontotext/graphdb:10.4.0 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000
 
 # MongoDB
 docker run --name mongo -p 27017:27017 --restart unless-stopped -d mongo:latest
