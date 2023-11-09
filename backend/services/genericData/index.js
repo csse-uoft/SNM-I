@@ -517,7 +517,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
 
       const characteristic = characteristics[id];
 
-      if (!existedCO && value) { // have to create a new CO and add the characteristic's id to the usage
+      if (!existedCO && value != null) { // have to create a new CO and add the characteristic's id to the usage
         await addIdToUsage('characteristic', genericType, id);
         const occurrence = {occurrenceOf: characteristic};
         await implementCharacteristicOccurrence(characteristic, occurrence, value);

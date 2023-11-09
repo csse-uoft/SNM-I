@@ -10,6 +10,10 @@ const GDBOrganizationModel = createGraphDBModel({
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
   questionOccurrences: {type: [GDBQOModel],
     internalKey: ':hasQuestionOccurrence', onDelete: DeleteType.CASCADE},
+  partner: {type: Boolean, internalKey: ':isPartner'},
+  endpointUrl: {type: String, internalKey: ':hasEndpointUrl'},
+  endpointPort: {type: Number, internalKey: ':hasEndpointNumber'},
+  apiKey: {type: String, internalKey: ':hasApiKey'},
 }, {
   rdfTypes: [':Organization'], name: 'organization'
 });
