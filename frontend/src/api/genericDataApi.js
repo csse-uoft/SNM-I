@@ -41,6 +41,11 @@ export async function fetchMultipleGeneric(type) {
   return getJson(`/api/generics/${type}`);
 }
 
+export async function fetchSearchGeneric(type, searchitem) {
+  return getJson(`/api/generics/${type}?searchitem=${searchitem}`);
+}
+
+
 /**
  * This function delete single generic instance.
  */

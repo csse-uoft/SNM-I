@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, MenuItem, CircularProgress, Typography, Chip } from '@mui/material';
+import {Menu, MenuItem, CircularProgress, Typography, Chip, TextField, Button} from '@mui/material';
 import { makeStyles } from "@mui/styles";
 import { Link as DomLink, useNavigate } from 'react-router-dom';
 import { Add as AddIcon, CloudUpload as UploadIcon } from '@mui/icons-material';
@@ -50,7 +50,7 @@ export function Link({className = '', color, ...props}) {
  * @returns {*}
  * @constructor
  */
-export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
+export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
   const navigate = useNavigate();
   const classes = useStyles();
 
@@ -69,8 +69,27 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
     navigate(link);
   };
 
+  const [searchItem, setSearchItem] = useState("");
+
+  const handleInputChange = (event) => {
+    setSearchItem(event.target.value);
+  };
+
+
+
   return (
     <>
+      <TextField
+          label="Search"
+          variant="outlined"
+          // value={searchItem}
+          onChange={handleInputChange}
+      />
+
+      <button onClick={() => handleSearch(searchItem)}>Search</button>
+
+
+      {/*handleDelete*/}
       {handleUpload && <Chip onClick={handleUpload}
             color="default"
             icon={<UploadIcon/>}

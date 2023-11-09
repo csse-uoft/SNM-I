@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
-import { Container, Fade } from "@mui/material";
+import {Container, Fade, TextField} from "@mui/material";
 
 /**
  * Generate markers on google map.
@@ -18,7 +18,7 @@ import { Container, Fade } from "@mui/material";
  */
 export default function GenericPage(props) {
   const {
-    fetchData, deleteItem, generateMarkers, type,
+    fetchData, searchData, deleteItem, generateMarkers, type,
     nameFormatter, columnsWithoutOptions
   } = props;
   let title = props.title;
@@ -93,13 +93,19 @@ export default function GenericPage(props) {
     ]
   }, [showDeleteDialog, columnsWithoutOptions, type]);
 
+  const reloadDataAndRefreshPage = (searchitem) => {
+    searchData(searchitem).then(data => setState(state => ({...state, data, loading: false})));
+    // setState({data: []});
+  }
+
   const tableOptions = {
     customToolbar:
       <CustomToolbar
         type={type}
         handleAdd={() => navigate(`/${type}/new`)}
-        handleSearch={() => navigate(`/${type}/advance-search`)}
+        handleSearch={reloadDataAndRefreshPage}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
+        // handleDelete={reloadDataAndRefreshPage}
       />,
     onDelete: async (ids) => {
       // TODO: Lester 8/30/2021
