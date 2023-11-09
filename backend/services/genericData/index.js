@@ -672,11 +672,13 @@ async function deleteSingleGeneric(req, res, next) {
 
 const fetchGenericDatas = async (req, res, next) => {
   const {genericType} = req.params;
+  const array = await sendSearchQuery(req.query.searchitem);
+
   try {
     if (!genericType2Model[genericType])
       return res.status(400).json({success: false, message: 'No such generic type'})
     const extraPopulates = genericType2Populates[genericType] || [];
-    const data = await genericType2Model[genericType].find({},
+    const data = await genericType2Model[genericType].find({_id: {$in: array}},
       {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
     return res.status(200).json({data, success: true});
 
