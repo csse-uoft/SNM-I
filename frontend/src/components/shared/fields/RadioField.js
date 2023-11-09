@@ -43,7 +43,7 @@ export default function RadioField({
 
   return (
     <div>
-      <FormControl className={row ? classes.formControlRow : classes.formControl} error={props.error}>
+      <FormControl className={row ? classes.formControlRow : classes.formControl} error={props.error} sx={{mb: '16px'}}>
         <FormLabel className={row && classes.labelRow} required={required && !noStar}
                    component="legend">{label}</FormLabel>
         <RadioGroup value={value} onChange={handleChange} row>
