@@ -5,6 +5,7 @@ import {
   Button, Grid
 } from "@mui/material";
 import {fetchCharacteristic} from "../../api/characteristicApi";
+import {refreshPartnerOrganization} from "../../api/partnerNetworkApi";
 
 /**
  * This function is the frontend for visualizing single client
@@ -13,7 +14,7 @@ import {fetchCharacteristic} from "../../api/characteristicApi";
 export default function visualizeServiceProvider(){
   const {formType, id} = useParams();
 
-  const getButtons = async function (genericType, genericData) {
+  const getButtons = async function (genericType, genericData, enqueueSnackbar) {
     if (!!genericData) {
       for (let [key, data] of Object.entries(genericData)) {
         const [type, key_id] = key.split('_');
@@ -22,7 +23,14 @@ export default function visualizeServiceProvider(){
           if (characteristic.fetchData.name === 'Partner Organization?' && data) {
             return (
               <Grid item>
-                <Button variant="outlined" onClick={() => {return;}}>Refresh</Button>
+                <Button variant="outlined" onClick={async () => {
+                  try {
+                    await refreshPartnerOrganization(id);
+                    enqueueSnackbar(`Organization with ID ${id} updated`, {variant: 'success'});
+                  } catch (e) {
+                    enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json.message, {variant: 'error'});
+                  }
+                }}>Refresh</Button>
               </Grid>
             );
           }

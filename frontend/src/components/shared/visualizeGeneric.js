@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useMemo} from "react";
 import {useNavigate, useParams} from "react-router-dom";
+import {useSnackbar} from 'notistack';
+
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
 import {
   Box, Button, Chip, Container, Grid, Paper, Typography
@@ -48,6 +50,7 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
   const [selectedFormId, setSelectedFormId] = useState('all'); // the id of the selected form
   const [genericData, setGenericData] = useState({});
   const [additionalButtons, setAdditionalButtons] = useState({});
+  const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
     (async function () {
@@ -180,9 +183,9 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
   }, [selectedFormId, information]);
 
   useEffect(() => {
-    getAdditionalButtons(genericType, genericData)
+    getAdditionalButtons(genericType, genericData, enqueueSnackbar)
       .then(buttons => setAdditionalButtons(buttons));
-  }, [genericType, genericData]);
+  }, [genericType, genericData, enqueueSnackbar]);
 
   const formOptions = useMemo(() => {
     const options = {'all': 'Display All'};
