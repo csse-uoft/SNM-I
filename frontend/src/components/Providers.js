@@ -43,6 +43,10 @@ const columnsWithoutOptions = [
     label: 'Type',
     body: ({type}) => type,
   },
+  {
+    label: 'Partner?',
+    body: ({partner}) => partner ? 'Yes' : 'No',
+  },
   // {
   //   label: 'Email',
   //   body: ({profile}) => profile?.email,
