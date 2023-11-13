@@ -183,8 +183,9 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
   }, [selectedFormId, information]);
 
   useEffect(() => {
-    getAdditionalButtons(genericType, genericData, enqueueSnackbar)
-      .then(buttons => setAdditionalButtons(buttons));
+    if (getAdditionalButtons)
+      getAdditionalButtons(genericType, genericData, enqueueSnackbar)
+        .then(buttons => setAdditionalButtons(buttons));
   }, [genericType, genericData, enqueueSnackbar]);
 
   const formOptions = useMemo(() => {
@@ -220,7 +221,7 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
           <Grid item>
             <Button variant="outlined" onClick={() => navigate(`edit`)}>Edit</Button>
           </Grid>
-          {additionalButtons}
+            {additionalButtons && Object.keys(additionalButtons).length && additionalButtons}
         </Grid>
 
         <VirtualizeTable rows={display}/>
