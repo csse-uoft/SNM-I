@@ -95,7 +95,11 @@ export default function GenericPage(props) {
 
   const reloadDataAndRefreshPage = (searchitem) => {
     searchData(searchitem).then(data => setState(state => ({...state, data, loading: false})));
-    // setState({data: []});
+
+    // it's possible that data is entered in the search bar
+    // and the search bar sent it to the backend
+    // but when no entity like this is found, it will return all possibility
+    // so we need to remove that possibility
   }
 
   const tableOptions = {

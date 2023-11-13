@@ -82,12 +82,12 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
       <TextField
           label="Search"
           variant="outlined"
+          size="small"
           // value={searchItem}
           onChange={handleInputChange}
       />
 
-      <button onClick={() => handleSearch(searchItem)}>Search</button>
-
+      <Button size="small" onClick={() => handleSearch(searchItem)} >Search</Button>
 
       {/*handleDelete*/}
       {handleUpload && <Chip onClick={handleUpload}
