@@ -40,7 +40,7 @@ export default function ReferralForm() {
         handleChange={handleChange} fields={fields}
         serviceFieldId={serviceFieldId}
         serviceOccurrenceFieldId={serviceOccurrenceFieldId}
-        fixedService={'http://snmi#service_' + serviceOrProgramId}/>
+        fixedServiceId={serviceOrProgramId}/>
     } else if (implementation.optionsFromClass?.endsWith("Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
@@ -59,7 +59,7 @@ export default function ReferralForm() {
         handleChange={handleChange} fields={fields}
         programFieldId={programFieldId}
         programOccurrenceFieldId={programOccurrenceFieldId}
-        fixedProgram={'http://snmi#program_' + serviceOrProgramId}/>
+        fixedProgramId={serviceOrProgramId}/>
     } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
       return "";
     } else if (implementation.optionsFromClass?.endsWith("ServiceOccurrence")) {
