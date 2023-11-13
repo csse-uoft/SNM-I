@@ -4,7 +4,7 @@ import GenericForm from "../shared/GenericForm";
 import {fetchCharacteristics} from "../../api/characteristicApi";
 import {Box} from "@mui/material";
 import {useParams} from "react-router-dom";
-import {PartnerOrganizationField} from "./PartnerOrganizationField";
+import {HomeAndPartnerOrganizationField} from "./HomeAndPartnerOrganizationField";
 
 export default function ProviderForm() {
   const {formType} = useParams();
@@ -23,22 +23,25 @@ export default function ProviderForm() {
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
     console.log(implementation)
     if (formType === 'organization') {
-      if (implementation.label === "Partner Organization?") {
+      if (implementation.label === "Home Organization?") {
+        const isHomeFieldId = characteristics['Home Organization?']?._id;
         const isPartnerFieldId = characteristics['Partner Organization?']?._id;
         const endpointUrlFieldId = characteristics['Endpoint URL']?._id;
         const endpointPortFieldId = characteristics['Endpoint Port Number']?._id;
         const apiKeyFieldId = characteristics['API Key']?._id;
 
-        if (!isPartnerFieldId || !endpointUrlFieldId || !endpointPortFieldId || !apiKeyFieldId) {
+        if (!isHomeFieldId || !isPartnerFieldId || !endpointUrlFieldId
+            || !endpointPortFieldId || !apiKeyFieldId) {
           return <Box minWidth={"350px"}><Loading message=""/></Box>;
         }
 
-        return <PartnerOrganizationField handleChange={handleChange} fields={fields}
-                                         isPartnerFieldId={isPartnerFieldId}
-                                         endpointUrlFieldId={endpointUrlFieldId}
-                                         endpointPortFieldId={endpointPortFieldId}
-                                         apiKeyFieldId={apiKeyFieldId}/>;
-      } else if (["Endpoint URL", "Endpoint Port Number", "API Key"].includes(implementation.label)) {
+        return <HomeAndPartnerOrganizationField handleChange={handleChange} fields={fields}
+                                                isHomeFieldId={isHomeFieldId}
+                                                isPartnerFieldId={isPartnerFieldId}
+                                                endpointUrlFieldId={endpointUrlFieldId}
+                                                endpointPortFieldId={endpointPortFieldId}
+                                                apiKeyFieldId={apiKeyFieldId}/>;
+      } else if (["Partner Organization?", "Endpoint URL", "Endpoint Port Number", "API Key"].includes(implementation.label)) {
         return "";
       }
     }

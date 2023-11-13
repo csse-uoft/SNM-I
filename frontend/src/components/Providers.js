@@ -44,8 +44,8 @@ const columnsWithoutOptions = [
     body: ({type}) => type,
   },
   {
-    label: 'Partner?',
-    body: ({partner}) => partner ? 'Yes' : 'No',
+    label: 'Status',
+    body: ({home, partner}) => home ? 'Home' : partner ? 'Partner' : '',
   },
   // {
   //   label: 'Email',
@@ -98,7 +98,9 @@ export default function Providers() {
         }
       if (innerData.address)
         providerData.address = innerData.address;
-      if (innerData.partner) {
+      if (innerData.home) {
+        providerData.home = innerData.home;
+      } else if (innerData.partner) {
         providerData.partner = innerData.partner;
         if (innerData.endpointUrl)
           providerData.endpointUrl = innerData.endpointUrl;
