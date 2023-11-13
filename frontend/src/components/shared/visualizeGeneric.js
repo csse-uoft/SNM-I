@@ -49,7 +49,7 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
   const [allForms, setAllForms] = useState({}); // a list with all forms
   const [selectedFormId, setSelectedFormId] = useState('all'); // the id of the selected form
   const [genericData, setGenericData] = useState({});
-  const [additionalButtons, setAdditionalButtons] = useState({});
+  const [additionalButtons, setAdditionalButtons] = useState(null);
   const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
@@ -221,7 +221,7 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
           <Grid item>
             <Button variant="outlined" onClick={() => navigate(`edit`)}>Edit</Button>
           </Grid>
-            {additionalButtons && Object.keys(additionalButtons).length && additionalButtons}
+            {additionalButtons}
         </Grid>
 
         <VirtualizeTable rows={display}/>
