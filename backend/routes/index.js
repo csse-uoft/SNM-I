@@ -18,4 +18,5 @@ module.exports = {
   programProvisionRoute: require('./programProvision'),
   matchingRoute: require('./matching'),
   partnerNetworkRoute: require('./partnerNetwork'),
+  partnerOrganizationRoute: require('./partnerOrganization'),
 }

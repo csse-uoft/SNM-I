@@ -137,6 +137,9 @@ export default function Programs() {
 
       if (program.shareability) {
         programData.shareability = program.shareability;
+        if (program.partnerOrganizations) {
+          programData.partnerOrganizations = program.partnerOrganizations;
+        }
       }
 
       data.push(programData);

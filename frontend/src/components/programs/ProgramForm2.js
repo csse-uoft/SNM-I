@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import GenericForm from "../shared/GenericForm";
 import {fetchCharacteristics} from "../../api/characteristicApi";
+import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ShareabilityField} from "../programs/ShareabilityField";
 
 export default function ProviderForm() {
@@ -17,18 +18,30 @@ export default function ProviderForm() {
     });
   }, []);
 
+  const [internalTypes, setInternalTypes] = useState({});
+  useEffect(() => {
+    fetchInternalTypeByFormType(formType).then(({internalTypes}) => {
+      const data = {}
+      for (const {implementation, name, _id} of internalTypes) {
+        data[name] = {implementation, _id}
+      }
+      setInternalTypes(data);
+    });
+  }, []);
+
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
     console.log(implementation)
-    console.log(fields)
     if (implementation.label === "Shareability") {
       const shareabilityFieldId = characteristics['Shareability']?._id;
+      const partnerOrganizationsFieldId = internalTypes.partnerOrganizationForProgram._id;
 
-      if (!shareabilityFieldId) {
+      if (!shareabilityFieldId || !partnerOrganizationsFieldId) {
         return <Box minWidth={"350px"}><Loading message=""/></Box>;
       }
 
       return <ShareabilityField handleChange={handleChange} fields={fields}
-                                shareabilityFieldId={shareabilityFieldId}/>;
+                                shareabilityFieldId={shareabilityFieldId}
+                                partnerOrganizationsFieldId={partnerOrganizationsFieldId}/>;
     }
   }
 

@@ -116,6 +116,17 @@ module.exports = [
       optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
     }
   },
+  {
+    name: 'partnerOrganizationForProgram',
+    predefinedProperty: 'http://snmi#hasPartnerOrganization',
+    formType: 'program',
+    implementation: {
+      label: 'Partner Organization',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Organization'
+    }
+  },
 
   // below are for service Provision
   {

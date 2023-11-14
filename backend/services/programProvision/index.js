@@ -67,9 +67,31 @@ async function getNeedSatisfiersByProgram(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
+async function getPartnerOrganizationsByProgram(req, res) {
+  const instances = {};
+
+  const programFullURI = req.params.program;
+
+  const query = `
+    ${SPARQL.getSPARQLPrefixes()}
+    select ?partnerOrg ?name where {
+        bind(<${programFullURI}> as ?program)
+        ?partnerOrg a :Organization, owl:NamedIndividual.
+        ?program :hasPartnerOrganization ?partnerOrg.
+        # name
+        optional { ?partnerOrg tove_org:hasName ?name. }
+    }`;
+
+  await GraphDB.sendSelectQuery(query, false, ({partnerOrg, name}) => {
+    instances[partnerOrg.id] = name?.value || partnerOrg.id;
+  });
+  res.json(sortObjectByKey(instances));
+}
+
 
 module.exports = {
   getProgramOccurrenceByProgram,
   getNeedSatisfiersByProgramOccurrence,
   getNeedSatisfiersByProgram,
+  getPartnerOrganizationsByProgram,
 }

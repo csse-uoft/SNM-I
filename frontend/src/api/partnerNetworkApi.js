@@ -1,7 +1,7 @@
 import { deleteJson, getJson, postJson, putJson } from "./index";
 
 /**
- * This function fetches the partner organization with the given id.
+ * This function requests an update from the partner organization with the given id.
  * @param id
  * @returns {Promise<any>}
  */
