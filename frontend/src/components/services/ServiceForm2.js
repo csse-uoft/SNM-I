@@ -42,6 +42,8 @@ export default function ProviderForm() {
       return <ShareabilityField handleChange={handleChange} fields={fields}
                                 shareabilityFieldId={shareabilityFieldId}
                                 partnerOrganizationsFieldId={partnerOrganizationsFieldId}/>;
+    } else if (implementation.label === "Partner Organization") {
+      return "";
     }
   }
 
