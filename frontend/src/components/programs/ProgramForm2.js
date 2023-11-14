@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import GenericForm from "../shared/GenericForm";
 import {fetchCharacteristics} from "../../api/characteristicApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
-import {ShareabilityField} from "../programs/ShareabilityField";
+import {ShareabilityField} from "../shared/ShareabilityField";
 
 export default function ProviderForm() {
   const formType = 'program';

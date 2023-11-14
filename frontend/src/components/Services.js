@@ -18,6 +18,13 @@ const columnsWithoutOptions = [
     sortBy: ({name}) => name,
   },
   {
+    label: 'Shareability',
+    body: ({shareability}) => {
+      return shareability;
+    },
+    sortBy: ({shareability}) => shareability,
+  },
+  {
     label: 'Provider',
     body: ({serviceProvider}) => {
       if (serviceProvider)
@@ -77,6 +84,13 @@ export default function Services() {
         serviceData.address = service.serviceProvider.organization.address;
       } else if (service.serviceProvider?.volunteer?.address) {
         serviceData.address = service.serviceProvider.volunteer.address;
+      }
+
+      if (service.shareability) {
+        serviceData.shareability = service.shareability;
+        if (service.partnerOrganization) {
+          serviceData.partnerOrganizations = service.partnerOrganization;
+        }
       }
       data.push(serviceData);
     }
