@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import VisualizeGeneric from '../shared/visualizeGeneric'
 import {
   Button, Grid
 } from "@mui/material";
+import {getDynamicFormsByFormType} from "../../api/dynamicFormApi";
+import {updateSingleProvider} from "../../api/providersApi";
 import {fetchCharacteristic} from "../../api/characteristicApi";
 import {refreshPartnerOrganization} from "../../api/partnerNetworkApi";
 
@@ -12,7 +14,18 @@ import {refreshPartnerOrganization} from "../../api/partnerNetworkApi";
  * @returns {JSX.Element}
  */
 export default function visualizeServiceProvider(){
+  const name = 'organization';
   const {formType, id} = useParams();
+  const [formId, setFormId] = useState(null);
+
+  useEffect(() => {
+    getDynamicFormsByFormType(name).then(({forms}) => {
+      if (forms.length > 0) {
+        // Select the first form
+        setFormId(forms[0]._id);
+      }
+    });
+  }, [id]);
 
   const getButtons = async function (genericType, genericData, enqueueSnackbar) {
     if (!!genericData) {
@@ -24,12 +37,29 @@ export default function visualizeServiceProvider(){
             return (
               <Grid item>
                 <Button variant="outlined" onClick={async () => {
+                  let partnerData;
                   try {
-                    await refreshPartnerOrganization(id);
-                    enqueueSnackbar(`Organization with ID ${id} updated`, {variant: 'success'});
+                    partnerData = await refreshPartnerOrganization(id);
                   } catch (e) {
                     enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json.message, {variant: 'error'});
+                    return;
                   }
+
+                  if (formId) {
+                    partnerData.formId = formId;
+                  } else {
+                    enqueueSnackbar(`Failed to refresh organization with ID ${id}: No form loaded`);
+                    return;
+                  }
+
+                  try {
+                    await updateSingleProvider('organization', id, partnerData);
+                  } catch (e) {
+                    enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json?.message || e.message, {variant: 'error'});
+                    return;
+                  }
+
+                  enqueueSnackbar(`Organization with ID ${id} updated`, {variant: 'success'});
                 }}>Refresh</Button>
               </Grid>
             );
