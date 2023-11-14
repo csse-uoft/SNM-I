@@ -16,6 +16,13 @@ const columnsWithoutOptions = [
     sortBy: ({name}) => name,
   },
   {
+    label: 'Shareability',
+    body: ({shareability}) => {
+      return shareability;
+    },
+    sortBy: ({shareability}) => shareability,
+  },
+  {
     label: 'Provider',
     body: ({serviceProvider}) => {
       if (serviceProvider) {
@@ -127,6 +134,11 @@ export default function Programs() {
       } else if (program.serviceProvider?.volunteer?.address) {
         programData.address = program.serviceProvider.volunteer.address;
       }
+
+      if (program.shareability) {
+        programData.shareability = program.shareability;
+      }
+
       data.push(programData);
     }
     return data;

@@ -11,6 +11,16 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
+  {
+    name: 'Shareability',
+    description: 'Shareability',
+    predefinedProperty: 'http://snmi#hasShareability',
+    implementation: {
+      label: 'Shareability',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.SingleSelectField,  // requires custom field
+    },
+  },
 //  {
 //    name: 'Service Provider',
 //    description: 'Service provider of the program',
