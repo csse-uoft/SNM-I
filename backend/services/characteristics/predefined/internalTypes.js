@@ -57,6 +57,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#Program'
     }
   },
+  {
+    name: 'partnerOrganizationForService',
+    predefinedProperty: 'http://snmi#hasPartnerOrganization',
+    formType: 'service',
+    implementation: {
+      label: 'Partner Organization',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Organization'
+    }
+  },
 
   // below are for program occurrence
   {
