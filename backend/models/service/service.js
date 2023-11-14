@@ -18,7 +18,7 @@ const GDBServiceModel = createGraphDBModel({
   needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   program: {type: GDBProgramModel, internalKey: ':hasProgram'},
   eligibility: {type: () => require('../eligibility').GDBEligibilityModel,
-    internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE}
+    internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE},
 
   shareability: {type: String, internalKey: ':hasShareability'},
   partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'}

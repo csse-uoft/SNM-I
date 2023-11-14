@@ -113,27 +113,6 @@ async function getNeedSatisfiersByService(req, res) {
   res.json(sortObjectByKey(instances));
 }
 
-async function getPartnerOrganizationsByService(req, res) {
-  const instances = {};
-
-  const serviceFullURI = req.params.service;
-
-  const query = `
-    ${SPARQL.getSPARQLPrefixes()}
-    select ?partnerOrg ?name where {
-        bind(<${serviceFullURI}> as ?service)
-        ?partnerOrg a :Organization, owl:NamedIndividual.
-        ?service :hasPartnerOrganization ?partnerOrg.
-        # name
-        optional { ?partnerOrg tove_org:hasName ?name. }
-    }`;
-
-  await GraphDB.sendSelectQuery(query, false, ({partnerOrg, name}) => {
-    instances[partnerOrg.id] = name?.value || partnerOrg.id;
-  });
-  res.json(sortObjectByKey(instances));
-}
-
 
 module.exports = {
   getClientNeedOccurrenceByClient,
@@ -141,5 +120,4 @@ module.exports = {
   getServiceOccurrenceByService,
   getNeedSatisfiersByServiceOccurrence,
   getNeedSatisfiersByService,
-  getPartnerOrganizationsByService,
 }
