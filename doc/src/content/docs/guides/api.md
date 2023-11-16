@@ -122,6 +122,119 @@ Route | Method
 `generic/:genericType/:id` | PUT
 `generic/:genericType/:id` | DELETE
 
+## Search
+The genericType GET routes are used for getting all the generic items of a certain type.
+If we pass another parameter, searchitem, we can search for a specific string.
+
+Route | Method
+---|---
+`genericSearch/:genericType?searchitem=item` | GET
+
+Example
+`/api/generics/program?searchitem=AAA` can be used to search program that contains 'AAA' or 
+program that have a attribute that contains 'AAA'.
+
+The query are down below. It uses FTS GraphDB searching function and 
+Lucene Connector searching function. We use both of them in case one of them misses some data.
+
+Services:
+```sparql
+PREFIX onto: <http://www.ontotext.com/>
+PREFIX tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
+PREFIX : <http://snmi#>
+
+PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
+PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct ?e0
+where 
+{
+    BIND("Ben" AS ?searchitem)
+    
+    # Search for rdf such that entity is the type of :Service
+    {
+        ?e0 ?p0 ?o0 .
+        ?e0 rdf:type :Service .
+    }.
+    
+    # The FTS function searching part
+    {
+        ?o0 onto:fts ?searchitem .
+    }
+    UNION
+	{   
+        ?o0 ?p1 ?o1 .
+    	?o1 onto:fts ?searchitem .
+	}
+    # The connector searching part
+    UNION
+    {?search a luc-index:service_connector ;
+      luc:query ?searchitem ;
+      luc:entities ?e0 .
+    }
+    UNION
+    {?search a luc-index:characteristicoccurrence_connector ;
+      luc:query ?searchitem ;
+      luc:entities ?o0 .
+    }
+    UNION
+
+    {?search a luc-index:address_connector ;
+      luc:query ?searchitem ;
+      luc:entities ?o0 .
+    }
+}
+```
+
+Programs:
+```sparql
+PREFIX onto: <http://www.ontotext.com/>
+PREFIX tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
+PREFIX : <http://snmi#>
+
+PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
+PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct ?e0
+where 
+{
+    BIND("S5*" AS ?searchitem)
+    
+    # Search for rdf such that entity is the type of :Service
+    {
+        ?e0 ?p0 ?o0 .
+        ?e0 rdf:type :Program .
+    }.
+        # The FTS function searching part
+    {
+        ?o0 onto:fts ?searchitem .
+    }
+    UNION
+	{   
+        ?o0 ?p1 ?o1 .
+    	?o1 onto:fts ?searchitem .
+	}
+    # The connector searching part
+    UNION
+    {?search a luc-index:program_connector ;
+      luc:query ?searchitem ;
+      luc:entities ?e0 .
+    }
+    UNION
+    {?search a luc-index:characteristicoccurrence_connector ;
+      luc:query ?searchitem ;
+      luc:entities ?o0 .
+    }
+    UNION
+    {?search a luc-index:address_connector ;
+      luc:query ?searchitem ;
+      luc:entities ?o0 .
+    }
+}
+```
+
 ## advancedSearch
 Route | Method
 ---|---
