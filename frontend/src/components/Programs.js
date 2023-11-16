@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from './shared';
 import {GenericPage} from "./shared";
-import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../api/genericDataApi";
+import {deleteSingleGeneric, fetchMultipleGeneric, fetchSearchGeneric, fetchSingleGeneric} from "../api/genericDataApi";
 import {formatLocation} from '../helpers/location_helpers'
 
 const TYPE = 'programs';
@@ -126,6 +126,42 @@ export default function Programs() {
     return data;
   };
 
+  const searchData = async (searchitem) => {
+    const programs = (await fetchSearchGeneric('program', searchitem)).data;
+    const data = [];
+    for (const program of programs) {
+      const programData = {_id: program._id, address: {}};
+      if (program.address?.lat && program.address?.lng) {
+        programData.address = {lat: program.address?.lat, lng: program.address?.lng}
+      }
+      if (program.characteristicOccurrences)
+        for (const occ of program.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Program Name') {
+            programData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Service Provider') {
+            programData.provider = occ.objectValue;
+          }
+        }
+      if (program.serviceProvider) {
+        programData.serviceProvider = {
+          _id: program.serviceProvider._id,
+          name: program.serviceProvider.organization?.name || program.serviceProvider.volunteer?.name,
+          type: program.serviceProvider.type
+        }
+      }
+      if (program.manager) {
+        programData.manager = {
+          _id: program.manager._id,
+          firstName: program.manager.firstName,
+          lastName: program.manager.lastName,
+        }
+      }
+      data.push(programData);
+    }
+    return data;
+  };
+
+
   const deleteProgram = (id) => deleteSingleGeneric('program', id);
 
   return (
@@ -133,6 +169,7 @@ export default function Programs() {
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
+      searchData={searchData}
       deleteItem={deleteProgram}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
