@@ -9,9 +9,11 @@ import { getJson } from "../../api/index";
  * getServiceProviderNameCharacteristicIds.
  */
 export async function getServiceProviderName(programOrService, characteristicIds) {
-  const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider.split('_')[1]}`));
+  const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider._uri.split('_')[1]}`));
   if (serviceProvider.provider.type === 'organization') {
-    return serviceProvider.provider.organization['characteristic_' + characteristicIds.organizationName];
+    const organization = serviceProvider.provider.organization;
+    return organization['characteristic_' + characteristicIds.organizationName]
+      || 'Organization ' + serviceProvider.provider._id;
   } else if (serviceProvider.provider.type === 'volunteer') {
     const volunteerFirstName = serviceProvider.provider.volunteer['characteristic_' + characteristicIds.volunteerFirstName];
     const volunteerLastName = serviceProvider.provider.volunteer['characteristic_' + characteristicIds.volunteerLastName];
@@ -25,6 +27,6 @@ export async function getServiceProviderName(programOrService, characteristicIds
  * This function returns the type (organization/volunteer) of the service provider for the given program/service.
  */
 export async function getServiceProviderType(programOrService) {
-  const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider.split('_')[1]}`));
+  const serviceProvider = (await getJson(`/api/providers/${programOrService.serviceProvider._uri.split('_')[1]}`));
   return serviceProvider.provider.type;
 }

@@ -17,6 +17,7 @@ module.exports = {
   serviceProvisionRoute: require('./serviceProvision'),
   programProvisionRoute: require('./programProvision'),
   matchingRoute: require('./matching'),
-  partnerNetworkRoute: require('./partnerNetwork'),
+  partnerNetworkApiRoute: require('./partnerNetworkApi'),
+  partnerNetworkPublicRoute: require('./partnerNetworkPublic'),
   partnerOrganizationRoute: require('./partnerOrganization'),
 }

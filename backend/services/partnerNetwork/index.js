@@ -68,6 +68,60 @@ async function refreshOrganization(req, res, next) {
   }
 }
 
+async function sendOrganization(req, res, next) {
+  try {
+    const {id} = req.params;
+
+    let organizationGeneric;
+    try {
+      organizationGeneric = await fetchSingleGenericHelper('organization', id);
+    } catch (e) {
+      return res.status(404).json({message: 'Organization not found'});
+    }
+
+    const apiKey = req.header('X-API-KEY');
+
+    const organization = {};
+    organization.partner = true;  // since this is being accessed by a partner
+    organization.home = false;
+    for (let [key, data] of Object.entries(organizationGeneric)) {
+      const [type, key_id] = key.split('_');
+      if (type === 'characteristic') {
+        const characteristic = await findCharacteristicById(key_id);
+
+        if (typeof data === 'string') {
+          if (characteristic.name === 'Endpoint URL') {
+            organization.endpointUrl = data;
+          } else if (characteristic.name === 'API Key') {
+            if (apiKey !== data) {
+              return res.status(403).json({message: 'API key is incorrect'});
+            }
+          } else if (characteristic.name === 'Organization Name') {
+            organization.organizationName = data;
+          } else if (characteristic.name === 'Description') {
+            organization.description = data;
+          }
+        } else if (typeof data === 'number') {
+          if (characteristic.name === 'Endpoint Port Number') {
+            organization.endpointPort = data;
+          }
+        } else if (typeof data === 'object') {
+          if (characteristic.name === 'Address') {
+            organization.address = data;
+          }
+        }
+      }
+    }
+
+    organization.programs = [];
+
+    return res.status(200).json({organization, success: true});
+  } catch (e) {
+    return res.status(400).json({message: e?.message});
+  }
+}
+
 module.exports = {
-  refreshOrganization
+  refreshOrganization,
+  sendOrganization
 };
