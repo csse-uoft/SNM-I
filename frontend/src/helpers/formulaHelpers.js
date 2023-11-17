@@ -57,7 +57,7 @@ export const transformToBackendType = data => {
  * @returns {*}
  */
 export function escapeString(string) {
-  return '"' + string.replace(/[\\"]/g, '\\$&') + '"'; // $& means the whole matched string
+  return '"' + string + '"'; // $& means the whole matched string
 }
 
 /**
@@ -71,6 +71,10 @@ export function unescapeString(string) {
 
 export function escapeList(list) {
   return JSON.stringify(list);
+}
+
+export function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 export function unescapeList(string) {

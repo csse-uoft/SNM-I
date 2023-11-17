@@ -4,7 +4,7 @@ const {matchFromClientHandler} = require("../services/matching");
 const {getEligibilityConfigHandler} = require("../services/eligibility");
 const router = express.Router();
 
-router.get('/matching/client/:clientId', matchFromClientHandler);
+router.get('/matching/client/:clientId/:needId', matchFromClientHandler);
 
 router.get('/eligibility/config', getEligibilityConfigHandler)
 
