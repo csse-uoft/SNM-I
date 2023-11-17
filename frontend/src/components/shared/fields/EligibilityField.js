@@ -6,6 +6,7 @@ import Dropdown from "./MultiSelectField";
 import {escapeString, unescapeString} from "../../../helpers/formulaHelpers";
 import {useEligibilityAPIs} from "../../../api/eligibilityApi";
 import FieldGroup from "../FieldGroup";
+import {useDebounceEffect} from "../hooks/useDebounce";
 
 const FieldTypes = {
   TextField: 'TextField',
@@ -172,7 +173,7 @@ export default function EligibilityField({value: defaultValue, required, onChang
 
   const {fetchEligibilityConfig} = useEligibilityAPIs();
 
-  useEffect(() => {
+  useDebounceEffect(() => {
     if (loading) {
       return;
     }
@@ -195,7 +196,7 @@ export default function EligibilityField({value: defaultValue, required, onChang
     eligibility.formula = formula.join(' || ');
     console.log(eligibility)
     onChange({target: {value: eligibility}});
-  }, [value]);
+  }, [value], 200);
 
   useEffect(() => {
     fetchEligibilityConfig().then(({data}) => {
@@ -205,9 +206,10 @@ export default function EligibilityField({value: defaultValue, required, onChang
   }, []);
 
   const handleFieldChange = clause => ({leftOperand, operator, rightOperand}) => {
-    clause[0] = leftOperand || clause[0];
-    clause[1] = operator === undefined ? clause[1] : operator;
-    clause[2] = rightOperand || clause[2];
+    clause[0] = leftOperand ?? clause[0];
+    clause[1] = operator ?? clause[1];
+    clause[2] = rightOperand ?? clause[2];
+    setValue(value => ([...value]));
   };
 
   const handleAddField = idx => () => {
