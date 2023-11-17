@@ -57,8 +57,11 @@ export default function Matching({}) {
       },
       {
         label: 'Eligibility',
-        body: ({eligibilityMatched}) => eligibilityMatched ? <YesIcon color="primary"/> : <NoIcon color="secondary"/>,
-        sortBy: ({eligibilityMatched}) => eligibilityMatched ? 0 : 1
+        body: ({eligibilityMatched}) => {
+          if (eligibilityMatched == null) return;
+          return eligibilityMatched ? <YesIcon color="primary"/> : <NoIcon color="secondary"/>
+        },
+        sortBy: ({eligibilityMatched}) => eligibilityMatched ? 0 : (eligibilityMatched == null ? 2 : 1)
       },
       {
         label: 'Path',
