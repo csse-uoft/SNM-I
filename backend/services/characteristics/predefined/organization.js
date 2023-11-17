@@ -12,23 +12,13 @@ module.exports = [
     },
   },
   {
-    name: 'Home Organization?',
-    description: 'Whether the organization is a home organization',
-    predefinedProperty: 'http://snmi#isHome',
+    name: 'Organization Status',
+    description: 'Organization status',
+    predefinedProperty: 'http://snmi#hasStatus',
     implementation: {
-      label: 'Home Organization?',
-      valueDataType: 'xsd:boolean',
-      fieldType: FieldTypes.BooleanRadioField,
-    },
-  },
-  {
-    name: 'Partner Organization?',
-    description: 'Whether the organization is a partner of this organization',
-    predefinedProperty: 'http://snmi#isPartner',
-    implementation: {
-      label: 'Partner Organization?',
-      valueDataType: 'xsd:boolean',
-      fieldType: FieldTypes.BooleanRadioField,
+      label: 'Organization Status',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.SingleSelectField,
     },
   },
   {

@@ -113,7 +113,7 @@ async function sendOrganization(req, res, next) {
       }
     }
 
-    organization.programs = [];
+    organization.programs = [];  // TODO
 
     return res.status(200).json({organization, success: true});
   } catch (e) {

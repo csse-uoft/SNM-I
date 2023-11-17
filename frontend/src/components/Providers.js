@@ -45,7 +45,7 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({home, partner}) => home ? 'Home' : partner ? 'Partner' : '',
+    body: ({status}) => status,
   },
   // {
   //   label: 'Email',
@@ -98,17 +98,14 @@ export default function Providers() {
         }
       if (innerData.address)
         providerData.address = innerData.address;
-      if (innerData.home) {
-        providerData.home = innerData.home;
-      } else if (innerData.partner) {
-        providerData.partner = innerData.partner;
-        if (innerData.endpointUrl)
-          providerData.endpointUrl = innerData.endpointUrl;
-        if (innerData.endpointPort)
-          providerData.endpointPort = innerData.endpointPort;
-        if (innerData.apiKey)
-          providerData.apiKey = innerData.apiKey;
-      }
+      if (innerData.status)
+        providerData.status = innerData.status;
+      if (innerData.endpointUrl)
+        providerData.endpointUrl = innerData.endpointUrl;
+      if (innerData.endpointPort)
+        providerData.endpointPort = innerData.endpointPort;
+      if (innerData.apiKey)
+        providerData.apiKey = innerData.apiKey;
       data.push(providerData);
     }
     return data;
