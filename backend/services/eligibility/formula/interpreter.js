@@ -1,4 +1,5 @@
 const {getParser} = require("./parser");
+const {builtInFunctions} = require("./functions");
 
 // ----------------- Interpreter -----------------
 async function getInterpreter() {
@@ -151,10 +152,20 @@ async function getInterpreter() {
       } else if (ctx.NumberLiteral) {
         // If a key exists on the ctx, at least one element is guaranteed
         return parseInt(ctx.NumberLiteral[0].image, 10);
+      } else if (ctx.StringLiteral) {
+        // If a key exists on the ctx, at least one element is guaranteed
+        const value = ctx.StringLiteral[0].image;
+        return value.slice(1, value.length - 1);
+      } else if (ctx.BooleanLiteral) {
+        // If a key exists on the ctx, at least one element is guaranteed
+        const value = ctx.BooleanLiteral[0].image;
+        return value === 'true';
       } else if (ctx.Variable) {
         return this.globals[ctx.Variable[0].image];
       } else if (ctx.functionExpression) {
         return this.visit(ctx.functionExpression);
+      } else if (ctx.arrayExpression) {
+        return this.visit(ctx.arrayExpression);
       }
     }
     parenthesisExpression(ctx) {
@@ -170,6 +181,20 @@ async function getInterpreter() {
         throw new Error(`Function '${functionName}' does not exist.`)
       }
       return this.globals[functionName](...args);
+    }
+
+    arrayExpression(ctx) {
+      let result = [];
+
+      // "rhs" key may be undefined as the grammar defines it as optional (MANY === zero or more).
+      if (ctx.values) {
+        ctx.values.forEach((value) => {
+          // there will be one operator for each rhs operand
+          let rhsValue = this.visit(value);
+          result.push(rhsValue);
+        });
+      }
+      return result;
     }
 
     argumentsExpression(ctx) {
@@ -209,7 +234,7 @@ async function getEligibilityFormulaEvaluator() {
 
     constructor(globals) {
       this.parser = new parser([], { outputCst: true });
-      this.visitor = new visitor(globals);
+      this.visitor = new visitor({...builtInFunctions, ...globals});
       this.globals = globals;
 
     }
@@ -219,6 +244,17 @@ async function getEligibilityFormulaEvaluator() {
      */
     evaluateFormula(inputText) {
       const lexResult = lexer.tokenize(inputText);
+
+      if (lexResult.errors.length > 0) {
+        const error = lexResult.errors[0];
+        const line = error.line, column = error.column;
+        let msg = '\n' + inputText.split('\n')[line - 1] + '\n';
+        msg += Array(column - 1).fill(' ').join('') + '^\n';
+        error.message = msg + `Error at position ${line}:${column}\n` + error.message;
+        error.errorLocation = {line, column};
+        throw Error(error.message, error);
+      }
+
       this.parser.input = lexResult.tokens;
 
       // Automatic CST created when parsing
@@ -245,3 +281,7 @@ async function getEligibilityFormulaEvaluator() {
   const evaluator = new EligibilityFormulaEvaluator({a: 123, ab: (a, b) => a * b});
   console.log(evaluator.evaluateFormula('a+1 + ab(1,2)'))
 })();
+
+module.exports = {
+  getEligibilityFormulaEvaluator
+}
