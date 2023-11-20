@@ -19,7 +19,13 @@ const columnsWithoutOptions = [
   {
     label: 'Client',
     body: ({ client }) => {
-      return <Link color to={`/clients/${client.id}`}>{client.name}</Link>;
+      if (client && client.id && client.name) {
+        return <Link color to={`/clients/${client.id}`}>{client.name}</Link>;
+      } else {
+        // Handle the case where 'client' or its properties are undefined
+        return <span>[NULL]</span>;
+      }
+      
     },
     sortBy: ({ client }) => client.name,
   },
