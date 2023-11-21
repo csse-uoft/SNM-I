@@ -31,9 +31,9 @@ export default function visualizeServiceProvider(){
     if (!!genericData) {
       for (let [key, data] of Object.entries(genericData)) {
         const [type, key_id] = key.split('_');
-        if (typeof data === 'boolean') {
+        if (typeof data === 'string') {
           const characteristic = await fetchCharacteristic(key_id);
-          if (characteristic.fetchData.name === 'Partner Organization?' && data) {
+          if (characteristic.fetchData.name === 'Organization Status' && data === 'Partner') {
             return (
               <Grid item>
                 <Button variant="outlined" onClick={async () => {

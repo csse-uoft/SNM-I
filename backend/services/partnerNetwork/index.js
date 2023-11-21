@@ -21,11 +21,10 @@ async function refreshOrganization(req, res, next) {
       if (type != 'characteristic') continue;
       const characteristic = await findCharacteristicById(key_id);
 
-      if (typeof data === 'boolean') {
-        if (characteristic.name === 'Partner Organization?')
-          organization.partner = data;
-      } else if (typeof data === 'string') {
-        if (characteristic.name === 'Endpoint URL') {
+      if (typeof data === 'string') {
+        if (characteristic.name === 'Organization Status') {
+          organization.status = data;
+        } else if (characteristic.name === 'Endpoint URL') {
           organization.endpointUrl = data;
         } else if (characteristic.name === 'API Key') {
           organization.apiKey = data;
@@ -37,7 +36,7 @@ async function refreshOrganization(req, res, next) {
       }
     }
 
-    if (organization.partner) {
+    if (organization.status === 'Partner') {
       if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
         const url = new URL(organization.endpointUrl);
         url.port = organization.endpointPort;
