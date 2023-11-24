@@ -104,5 +104,5 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 
 module.exports = {
   createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
-  updateServiceProvider
+  updateServiceProvider, getProviderById
 };

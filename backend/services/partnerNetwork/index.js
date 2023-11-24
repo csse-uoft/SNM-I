@@ -3,6 +3,7 @@ const {
 } = require("../../models");
 const {fetchSingleGenericHelper} = require("../genericData");
 const {findCharacteristicById} = require("../characteristics");
+const {getProviderById} = require("../genericData/serviceProvider");
 
 async function refreshOrganization(req, res, next) {
   try {
@@ -73,16 +74,20 @@ async function sendOrganization(req, res, next) {
 
     let organizationGeneric;
     try {
-      organizationGeneric = await fetchSingleGenericHelper('organization', id);
+      const provider = await getProviderById(id);
+      const providerType = provider.type;
+      if (providerType !== 'organization') {
+        throw new Error('Provider is not an organization');
+      }
+      const genericId = provider[providerType]._id;
+      organizationGeneric = await fetchSingleGenericHelper(providerType, genericId);
     } catch (e) {
-      return res.status(404).json({message: 'Organization not found'});
+      return res.status(404).json({message: 'Organization not found' + e.message ? ': ' + e.message : null});
     }
 
     const apiKey = req.header('X-API-KEY');
 
     const organization = {};
-    organization.partner = true;  // since this is being accessed by a partner
-    organization.home = false;
     for (let [key, data] of Object.entries(organizationGeneric)) {
       const [type, key_id] = key.split('_');
       if (type === 'characteristic') {
