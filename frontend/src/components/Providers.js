@@ -45,7 +45,22 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({status}) => status,
+    body: ({type, status, organization}) => {
+      if (type === 'organization') {
+        return status;
+      } else if (organization) {
+        organization = {...organization, type: 'organization'}
+        return <p>
+          From <Link color to={formatProviderLink(organization)}>{organization.status}</Link>
+        </p>;
+      } else {
+        return 'Unaffiliated';
+      }
+    },
+  },
+  {
+    label: 'Shareability',
+    body: ({shareability}) => shareability,
   },
   // {
   //   label: 'Email',
@@ -106,6 +121,12 @@ export default function Providers() {
         providerData.endpointPort = innerData.endpointPort;
       if (innerData.apiKey)
         providerData.apiKey = innerData.apiKey;
+      if (innerData.shareability)
+        providerData.shareability = innerData.shareability;
+      if (innerData.organization)
+        providerData.organization = innerData.organization;
+      if (innerData.partnerOrganizations)
+        providerData.partnerOrganizations = innerData.partnerOrganizations;
       data.push(providerData);
     }
     return data;

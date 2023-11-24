@@ -109,6 +109,11 @@ const {
   personInternalTypeCreateTreater,
   personInternalTypeFetchTreater
 } = require("./person");
+const {
+  volunteerInternalTypeCreateTreater,
+  volunteerInternalTypeFetchTreater,
+  volunteerInternalTypeUpdateTreater
+} = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const genericType2Model = {
   'client': GDBClientModel,
@@ -129,6 +134,7 @@ const genericType2Model = {
   'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel,
+  'volunteer': GDBVolunteerModel,
 };
 
 const genericType2Populates = {
@@ -147,7 +153,8 @@ const genericType2Populates = {
   'programOccurrence': ['address'],
   'client': ['address'],
   'appointment': ['address'],
-  'person': ['address'],   
+  'person': ['address'],
+  'volunteer': ['partnerOrganizations', 'organization'],
 };
 
 const genericType2Checker = {
@@ -187,7 +194,8 @@ const genericType2InternalTypeCreateTreater = {
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
   'outcomeOccurrence': outcomeOccurrenceInternalTypeCreateTreater,
   'clientAssessment': clientAssessmentInternalTypeCreateTreater,
-  'person': personInternalTypeCreateTreater
+  'person': personInternalTypeCreateTreater,
+  'volunteer': volunteerInternalTypeCreateTreater
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -205,7 +213,8 @@ const genericType2InternalTypeFetchTreater = {
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
   'outcomeOccurrence': outcomeOccurrenceInternalTypeFetchTreater,
   'clientAssessment': clientAssessmentInternalTypeFetchTreater,
-  'person': personInternalTypeFetchTreater
+  'person': personInternalTypeFetchTreater,
+  'volunteer': volunteerInternalTypeFetchTreater
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -223,7 +232,8 @@ const genericType2InternalTypeUpdateTreater = {
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
   'outcomeOccurrence': outcomeOccurrenceInternalTypeUpdateTreater,
   'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
-  'person': personInternalTypeUpdateTreater
+  'person': personInternalTypeUpdateTreater,
+  'volunteer': volunteerInternalTypeUpdateTreater
 };
 
 
@@ -242,6 +252,10 @@ async function fetchSingleGenericHelper(genericType, id) {
 
   const data = await genericType2Model[genericType].findOne({_id: id},
     {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences']});
+
+  if (!data) {
+    throw new Server400Error('Generic not found.');
+  }
 
   const inter = await GDBInternalTypeModel.findById(1);
 
