@@ -15,15 +15,15 @@ export function OrganizationStatusField({
   const endpointPortFieldKey = `characteristic_${endpointPortFieldId}`;
   const apiKeyFieldKey = `characteristic_${apiKeyFieldId}`;
 
-  const [status, setStatus] = useState(fields[statusFieldKey] === undefined ? "Home" : fields[statusFieldKey]);
+  const [status, setStatus] = useState(fields[statusFieldKey] === undefined ? null : fields[statusFieldKey]);
 
   const handleChangeStatus = key => (e) => {
     const value = e.target.value;
     setStatus(value);
     handleChange(key)(e);
 
-    // if the new status value is not 'Partner', unset the three inner fields
-    if (value !== "Partner") {
+    // if the new status value is not 'Partner' or 'Home', unset the three inner fields
+    if (!(["Partner", "Home"].includes(value))) {
       handleChange(endpointUrlFieldKey)({target: {value: ''}});
       handleChange(endpointPortFieldKey)({target: {value: ''}});
       handleChange(apiKeyFieldKey)({target: {value: ''}});
@@ -47,6 +47,14 @@ export function OrganizationStatusField({
         <FieldGroup component={'NumberField'} key={endpointPortFieldKey}
                     label="Endpoint Port Number" required value={fields[endpointPortFieldKey]}
                     onChange={handleChange(endpointPortFieldKey)}/>
+        <FieldGroup component={'TextField'} key={apiKeyFieldKey}
+                    label="API Key" required value={fields[apiKeyFieldKey]}
+                    onChange={handleChange(apiKeyFieldKey)}/>
+      </div>
+      : null
+    }
+    {fields[statusFieldKey] === "Home" ?
+      <div>
         <FieldGroup component={'TextField'} key={apiKeyFieldKey}
                     label="API Key" required value={fields[apiKeyFieldKey]}
                     onChange={handleChange(apiKeyFieldKey)}/>
