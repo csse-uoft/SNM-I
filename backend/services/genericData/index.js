@@ -688,6 +688,8 @@ const fetchGenericDatas = async (req, res, next) => {
       } else {
           const array = await sendSearchQuery(genericType ,req.query.searchitem + "*");
 
+          console.log("The array is " + array)
+
           // something is entered in the search bar
           // Note: if the array is empty, then find() will return all the object
           // Therefore we add a branch here
@@ -714,6 +716,7 @@ const fetchGenericDatas = async (req, res, next) => {
 async function sendSearchQuery(searchtype, searchitem) {
     // send the query
     let query = "";
+    console.log("The searchtype is " + searchtype)
     if (searchtype === 'service') {
          query = "http://localhost:7200/repositories/snmi?query=PREFIX%20%20%3A%20%20%20%20%20%3Chttp%3A%2F%2Fsnmi%23%3E%20PREFIX%20%20rdf%3A%20%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%20PREFIX%20%20luc-index%3A%20%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20PREFIX%20%20tove_org%3A%20%3Chttp%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Forganization%23%3E%20PREFIX%20%20luc%3A%20%20%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20%20onto%3A%20%3Chttp%3A%2F%2Fwww.ontotext.com%2F%3E%20%20SELECT%20DISTINCT%20%20%3Fe0%20WHERE%20%20%20%7B%20BIND(%22" + searchitem + "%22%20AS%20%3Fsearchitem)%20%20%20%20%20%7B%20%3Fe0%20%20%3Fp0%20%20%20%20%20%20%20%3Fo0%20%3B%20%20%20%20%20%20%20%20%20%20%20%20rdf%3Atype%20%20%3AService%20%20%20%20%20%7D%20%20%20%20%20%20%20%7B%20%3Fo0%20%20onto%3Afts%20%20%3Fsearchitem%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fo0%20%20%3Fp1%20%20%20%20%20%20%20%3Fo1%20.%20%20%20%20%20%20%20%20%20%3Fo1%20%20onto%3Afts%20%20%3Fsearchitem%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Aservice_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fe0%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Acharacteristicoccurrence_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fo0%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Aaddress_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fo0%20%20%20%20%20%20%20%7D%20%20%20%7D"
     }
@@ -721,6 +724,11 @@ async function sendSearchQuery(searchtype, searchitem) {
          query =
              "http://localhost:7200/repositories/snmi?query=PREFIX%20%20%3A%20%20%20%20%20%3Chttp%3A%2F%2Fsnmi%23%3E%20PREFIX%20%20rdf%3A%20%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%20PREFIX%20%20luc-index%3A%20%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20PREFIX%20%20tove_org%3A%20%3Chttp%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Forganization%23%3E%20PREFIX%20%20luc%3A%20%20%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20%20onto%3A%20%3Chttp%3A%2F%2Fwww.ontotext.com%2F%3E%20%20SELECT%20DISTINCT%20%20%3Fe0%20WHERE%20%20%20%7B%20BIND(%22" + searchitem + "%22%20AS%20%3Fsearchitem)%20%20%20%20%20%7B%20%3Fe0%20%20%3Fp0%20%20%20%20%20%20%20%3Fo0%20%3B%20%20%20%20%20%20%20%20%20%20%20%20rdf%3Atype%20%20%3AProgram%20%20%20%20%20%7D%20%20%20%20%20%20%20%7B%20%3Fo0%20%20onto%3Afts%20%20%3Fsearchitem%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fo0%20%20%3Fp1%20%20%20%20%20%20%20%3Fo1%20.%20%20%20%20%20%20%20%20%20%3Fo1%20%20onto%3Afts%20%20%3Fsearchitem%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Aprogram_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fe0%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Acharacteristicoccurrence_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fo0%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Aaddress_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fo0%20%20%20%20%20%20%20%7D%20%20%20%7D"
     }
+    else if (searchtype === 'serviceProvision'){
+        query =
+            "http://localhost:7200/repositories/snmi?query=PREFIX%20%20%3A%20%20%20%20%20%3Chttp%3A%2F%2Fsnmi%23%3E%20PREFIX%20%20rdf%3A%20%20%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%20PREFIX%20%20luc-index%3A%20%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20PREFIX%20%20tove_org%3A%20%3Chttp%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Forganization%23%3E%20PREFIX%20%20luc%3A%20%20%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20%20onto%3A%20%3Chttp%3A%2F%2Fwww.ontotext.com%2F%3E%20%20SELECT%20DISTINCT%20%20%3Fe0%20WHERE%20%20%20%7B%20BIND(%22" + searchitem + "%22%20AS%20%3Fsearchitem)%20%20%20%20%20%7B%20%3Fe0%20%20%3Fp0%20%20%20%20%20%20%20%3Fo0%20%3B%20%20%20%20%20%20%20%20%20%20%20%20rdf%3Atype%20%20%3AServiceProvision%20%20%20%20%20%7D%20%20%20%20%20%20%20%7B%20%3Fo0%20%20onto%3Afts%20%20%3Fsearchitem%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fo0%20%20%3Fp1%20%20%20%20%20%20%20%3Fo1%20.%20%20%20%20%20%20%20%20%20%3Fo1%20%20onto%3Afts%20%20%3Fsearchitem%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Acharacteristicoccurrence_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fo0%20%20%20%20%20%20%20%7D%20%20%20%20%20UNION%20%20%20%20%20%20%20%7B%20%3Fsearch%20%20rdf%3Atype%20%20%20%20%20%20luc-index%3Aaddress_connector%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aquery%20%20%20%20%20%3Fsearchitem%20%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20luc%3Aentities%20%20%3Fo0%20%20%20%20%20%20%20%7D%20%20%20%7D"
+    }
+
     const response = await fetch(query);
 
     const text = await response.text()
@@ -736,6 +744,8 @@ function extractAllIndexes(searchtype, inputString) {
         regex = /#service_(\d+)/g;
     } else if (searchtype === 'program'){
         regex = /#program_(\d+)/g;
+    } else if (searchtype === 'serviceProvision'){
+        regex = /#serviceProvision_(\d+)/g;
     }
     const allIndexes = [];
     let match;
