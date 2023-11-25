@@ -16,26 +16,7 @@ async function refreshOrganization(req, res, next) {
       return res.status(404).json({message: 'Partner organization not found'});
     }
 
-    const organization = {};
-    for (let [key, data] of Object.entries(organizationGeneric)) {
-      const [type, key_id] = key.split('_');
-      if (type != 'characteristic') continue;
-      const characteristic = await findCharacteristicById(key_id);
-
-      if (typeof data === 'string') {
-        if (characteristic.name === 'Organization Status') {
-          organization.status = data;
-        } else if (characteristic.name === 'Endpoint URL') {
-          organization.endpointUrl = data;
-        } else if (characteristic.name === 'API Key') {
-          organization.apiKey = data;
-        }
-      } else if (typeof data === 'number') {
-        if (characteristic.name === 'Endpoint Port Number') {
-          organization.endpointPort = data;
-        }
-      }
-    }
+    const organization = await getOrganization(organizationGeneric);
 
     if (organization.status === 'Partner') {
       if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
@@ -76,7 +57,9 @@ async function getOrganization(organizationGeneric) {
       const characteristic = await findCharacteristicById(key_id);
 
       if (typeof data === 'string') {
-        if (characteristic.name === 'Endpoint URL') {
+        if (characteristic.name === 'Organization Status') {
+          organization.status = data;
+        } else if (characteristic.name === 'Endpoint URL') {
           organization.endpointUrl = data;
         } else if (characteristic.name === 'API Key') {
           organization.apiKey = data;
