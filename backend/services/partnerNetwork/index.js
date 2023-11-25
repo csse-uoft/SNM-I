@@ -1,11 +1,12 @@
 const {
   GDBOrganizationModel
 } = require("../../models");
-const {fetchSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
-const {findCharacteristicById} = require("../characteristics");
+const {fetchSingleGenericHelper, updateSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
+const {findCharacteristicById, PredefinedCharacteristics} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
+const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
 
-async function refreshOrganization(req, res, next) {
+async function fetchOrganization(req, res, next) {
   try {
     const {id} = req.params;
 
@@ -44,6 +45,61 @@ async function refreshOrganization(req, res, next) {
     } else {
       return res.status(400).json({message: 'The entity to refresh is not a partner organization'});
     }
+  } catch (e) {
+    return res.status(400).json({message: e?.message});
+  }
+}
+
+async function updateOrganization(req, res, next) {
+  try {
+    const partnerData = req.body;
+    const {id} = req.params;
+
+    const organizationForms = await getDynamicFormsByFormTypeHelper('organization');
+    if (organizationForms.length > 0) {
+      var organizationFormId = organizationForms[0]._id; // Select the first form
+    } else {
+      return res.status(400).json({message: 'No organization form available'});
+    }
+
+    const programForms = await getDynamicFormsByFormTypeHelper('program');
+    if (programForms.length > 0) {
+      var programFormId = programForms[0]._id; // Select the first form
+    } else {
+      return res.status(400).json({message: 'No program form available'});
+    }
+
+    const serviceForms = await getDynamicFormsByFormTypeHelper('service');
+    if (serviceForms.length > 0) {
+      var serviceFormId = serviceForms[0]._id; // Select the first form
+    } else {
+      return res.status(400).json({message: 'No service form available'});
+    }
+
+    const volunteerForms = await getDynamicFormsByFormTypeHelper('volunteer');
+    if (volunteerForms.length > 0) {
+      var volunteerFormId = volunteerForms[0]._id; // Select the first form
+    } else {
+      return res.status(400).json({message: 'No volunteer form available'});
+    }
+
+    const organization = {fields: {}};
+    organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.organizationName;
+    organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
+    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address;
+    organization.formId = organizationFormId;
+    console.log(organization)
+    await (await updateSingleGenericHelper(id, organization, 'organization')).save();
+
+    for (programData of partnerData.organization.programs) {
+      const program = {fields: {}};
+      program.fields[PredefinedCharacteristics['Program Name']._uri.split('#')[1]] = programData.programName;
+      program.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = programData.description;
+      program.formId = programFormId;
+      console.log(program);
+      // TODO await (await updateSingleGenericHelper(id, program, 'program')).save();
+    }
+    return res.status(200).json({success: true});
   } catch (e) {
     return res.status(400).json({message: e?.message});
   }
@@ -210,6 +266,7 @@ async function sendOrganization(req, res, next) {
 }
 
 module.exports = {
-  refreshOrganization,
+  fetchOrganization,
+  updateOrganization,
   sendOrganization
 };

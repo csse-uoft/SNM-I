@@ -7,7 +7,7 @@ import {
 import {getDynamicFormsByFormType} from "../../api/dynamicFormApi";
 import {updateSingleProvider} from "../../api/providersApi";
 import {fetchCharacteristic} from "../../api/characteristicApi";
-import {refreshPartnerOrganization} from "../../api/partnerNetworkApi";
+import {fetchPartnerOrganization, updatePartnerOrganization} from "../../api/partnerNetworkApi";
 
 /**
  * This function is the frontend for visualizing single client
@@ -39,7 +39,7 @@ export default function visualizeServiceProvider(){
                 <Button variant="outlined" onClick={async () => {
                   let partnerData;
                   try {
-                    partnerData = await refreshPartnerOrganization(id);
+                    partnerData = await fetchPartnerOrganization(id);
                   } catch (e) {
                     enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json.message, {variant: 'error'});
                     return;
@@ -53,7 +53,7 @@ export default function visualizeServiceProvider(){
                   }
 
                   try {
-                    await updateSingleProvider('organization', id, partnerData);
+                    await updatePartnerOrganization(id, partnerData);
                   } catch (e) {
                     enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json?.message || e.message, {variant: 'error'});
                     return;
