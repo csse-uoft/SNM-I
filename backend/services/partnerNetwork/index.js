@@ -86,7 +86,7 @@ async function updateOrganization(req, res, next) {
     const organization = {fields: {}};
     organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.organizationName;
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
-    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address;
+    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
     console.log(organization)
     await (await updateSingleGenericHelper(id, organization, 'organization')).save();
@@ -99,6 +99,26 @@ async function updateOrganization(req, res, next) {
       console.log(program);
       // TODO await (await updateSingleGenericHelper(id, program, 'program')).save();
     }
+
+    for (serviceData of partnerData.organization.services) {
+      const service = {fields: {}};
+      service.fields[PredefinedCharacteristics['Service Name']._uri.split('#')[1]] = serviceData.serviceName;
+      service.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = serviceData.description;
+      service.formId = serviceFormId;
+      console.log(service);
+      // TODO await (await updateSingleGenericHelper(id, service, 'service')).save();
+    }
+
+    for (volunteerData of partnerData.organization.volunteers) {
+      const volunteer = {fields: {}};
+      volunteer.fields[PredefinedCharacteristics['First Name']._uri.split('#')[1]] = volunteerData.firstName;
+      volunteer.fields[PredefinedCharacteristics['Last Name']._uri.split('#')[1]] = volunteerData.lastName;
+      volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = volunteerData.address;
+      volunteer.formId = volunteerFormId;
+      console.log(volunteer);
+      // TODO await (await updateSingleGenericHelper(id, volunteer, 'volunteer')).save();
+    }
+
     return res.status(200).json({success: true});
   } catch (e) {
     return res.status(400).json({message: e?.message});
@@ -129,7 +149,7 @@ async function getOrganization(organizationGeneric) {
           organization.endpointPort = data;
         }
       } else if (typeof data === 'object') {
-        if (characteristic.name === 'Address') {
+        if (characteristic.name === 'Address') { // TODO
           organization.address = data;
         }
       }

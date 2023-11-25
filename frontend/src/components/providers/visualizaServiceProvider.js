@@ -40,19 +40,6 @@ export default function visualizeServiceProvider(){
                   let partnerData;
                   try {
                     partnerData = await fetchPartnerOrganization(id);
-                  } catch (e) {
-                    enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json.message, {variant: 'error'});
-                    return;
-                  }
-
-                  if (formId) {
-                    partnerData.formId = formId;
-                  } else {
-                    enqueueSnackbar(`Failed to refresh organization with ID ${id}: No form loaded`);
-                    return;
-                  }
-
-                  try {
                     await updatePartnerOrganization(id, partnerData);
                   } catch (e) {
                     enqueueSnackbar(`Failed to refresh organization with ID ${id}: ` + e.json?.message || e.message, {variant: 'error'});
