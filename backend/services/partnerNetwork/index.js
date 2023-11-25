@@ -1,8 +1,10 @@
 const {
   GDBOrganizationModel
 } = require("../../models");
-const {fetchSingleGenericHelper, updateSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
-const {findCharacteristicById, PredefinedCharacteristics} = require("../characteristics");
+const {GDBProgramModel} = require("../../models/program/program");
+const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
+  deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
+const {findCharacteristicById, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
 
@@ -88,16 +90,39 @@ async function updateOrganization(req, res, next) {
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
     organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
-    console.log(organization)
-    await (await updateSingleGenericHelper(id, organization, 'organization')).save();
+    console.log(organization);
+    const organizationObj = await updateSingleGenericHelper(id, organization, 'organization');
+    await organizationObj.save();
 
+    let programs = await fetchGenericDatasHelper('program');
+    programs = programs.filter(program => program.serviceProvider?.organization?._id === id);
+
+    programLoop:
     for (programData of partnerData.organization.programs) {
       const program = {fields: {}};
       program.fields[PredefinedCharacteristics['Program Name']._uri.split('#')[1]] = programData.programName;
       program.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = programData.description;
+      program.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = programData.id;
+      program.fields[PredefinedInternalTypes['serviceProviderForProgram']._uri.split('#')[1]] = organizationObj._uri;
       program.formId = programFormId;
       console.log(program);
-      // TODO await (await updateSingleGenericHelper(id, program, 'program')).save();
+
+      for (programIndex in programs) {
+        const programGeneric = programs[programIndex];
+        if (programGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] === programData.id) {
+          await (await updateSingleGenericHelper(programGeneric._id, program, 'program')).save();
+          programs.splice(programIndex, 1);
+          continue programLoop;
+        }
+      }
+
+      // If we reach this point, then programData is a new program in the partner deployment
+      await GDBProgramModel(await createSingleGenericHelper(program, 'program')).save();
+    }
+
+    // Local programs associated with this organization still left in this array are to be deleted
+    for (program of programs) {
+      await deleteSingleGenericHelper('program', program._id);
     }
 
     for (serviceData of partnerData.organization.services) {

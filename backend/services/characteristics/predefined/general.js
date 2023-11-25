@@ -61,4 +61,24 @@ module.exports = [{
       fieldType: FieldTypes.EligibilityField,
     }
   },
+  {
+    name: 'Shareability',
+    description: 'Shareability',
+    predefinedProperty: 'http://snmi#hasShareability',
+    implementation: {
+      label: 'Shareability',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.SingleSelectField,
+    },
+  },
+  {
+    name: 'ID in Partner Deployment',
+    description: 'ID in Partner Deployment',
+    predefinedProperty: 'http://snmi#hasIdInPartnerDeployment',
+    implementation: {
+      label: 'ID in Partner Deployment',
+      valueDataType: 'xsd:number',
+      fieldType: FieldTypes.NumberField,
+    },
+  },
 ]
