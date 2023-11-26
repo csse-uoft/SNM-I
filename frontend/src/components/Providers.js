@@ -6,7 +6,7 @@ import { formatPhoneNumber } from '../helpers/phone_number_helpers'
 
 import { GenericPage, Link } from "./shared";
 import {fetchMultipleGeneric, fetchSearchGeneric} from "../api/genericDataApi";
-import { deleteSingleProvider, fetchMultipleProviders } from "../api/providersApi";
+import {deleteSingleProvider, fetchMultipleProviders, searchMultipleProviders} from "../api/providersApi";
 
 const TYPE = 'providers';
 
@@ -103,8 +103,8 @@ export default function Providers() {
 
   }
 
-  const searchData = async () => {
-    const providers = (await fetchSearchGeneric()).data;
+  const searchData = async (searchitem) => {
+    const providers = (await searchMultipleProviders(searchitem)).data;
     const data = [];
     for (const provider of providers) {
       const providerData = {_id: provider._id, type: provider.type};
@@ -137,6 +137,7 @@ export default function Providers() {
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
+      searchData={searchData}
       deleteItem={deleteSingleProvider}
       generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
