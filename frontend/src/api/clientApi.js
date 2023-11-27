@@ -14,6 +14,12 @@ export function useClientAPIs() {
     fetchClients: async () => {
       return getJson('/api/generics/client', userContext);
     },
+
+    searchClients: async (searchitem) => {
+      return getJson(`/api/generics/client?searchitem=${searchitem}`, userContext);
+    },
+
+
     /**
      * This function delete single client.
      */
