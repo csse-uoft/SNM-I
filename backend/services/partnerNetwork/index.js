@@ -14,9 +14,15 @@ async function fetchOrganization(req, res, next) {
 
     let organizationGeneric;
     try {
-      organizationGeneric = await fetchSingleGenericHelper('organization', id);
+      const provider = await getProviderById(id);
+      const providerType = provider.type;
+      if (providerType !== 'organization') {
+        throw new Error('Provider is not an organization');
+      }
+      const genericId = provider[providerType]._id;
+      organizationGeneric = await fetchSingleGenericHelper(providerType, genericId);
     } catch (e) {
-      return res.status(404).json({message: 'Partner organization not found'});
+      return res.status(404).json({message: 'Partner organization not found' + e.message ? ': ' + e.message : null});
     }
 
     const organization = await getOrganization(organizationGeneric);
@@ -91,11 +97,19 @@ async function updateOrganization(req, res, next) {
     organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
     console.log(organization);
-    const organizationObj = await updateSingleGenericHelper(id, organization, 'organization');
-    await organizationObj.save();
+
+    const provider = await getProviderById(id);
+    const providerType = provider.type;
+    if (providerType !== 'organization') {
+      throw new Error('Provider is not an organization');
+    }
+    const genericId = provider[providerType]._id;
+    const organizationObj = await updateSingleGenericHelper(genericId, organization, 'organization');
+    provider['organization'] = organizationObj;
+    await provider.save();
 
     let programs = await fetchGenericDatasHelper('program');
-    programs = programs.filter(program => program.serviceProvider?.organization?._id === id);
+    programs = programs.filter(program => program.serviceProvider?._id === genericId);
 
     programLoop:
     for (programData of partnerData.organization.programs) {
@@ -131,7 +145,7 @@ async function updateOrganization(req, res, next) {
       service.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = serviceData.description;
       service.formId = serviceFormId;
       console.log(service);
-      // TODO await (await updateSingleGenericHelper(id, service, 'service')).save();
+      // TODO await (await updateSingleGenericHelper([id], service, 'service')).save();
     }
 
     for (volunteerData of partnerData.organization.volunteers) {
@@ -141,7 +155,7 @@ async function updateOrganization(req, res, next) {
       volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = volunteerData.address;
       volunteer.formId = volunteerFormId;
       console.log(volunteer);
-      // TODO await (await updateSingleGenericHelper(id, volunteer, 'volunteer')).save();
+      // TODO await (await updateSingleGenericHelper([id], volunteer, 'volunteer')).save();
     }
 
     return res.status(200).json({success: true});
