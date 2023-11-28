@@ -117,7 +117,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
         'volunteer.questionOccurrence', 'organization.address', 'volunteer.address',
         'volunteer.organization',]
     });
-  providers = providers.filter(provider => provider.volunteer?.serviceProvider?._id === organizationGenericId);
+  providers = providers.filter(provider => provider.volunteer?.organization?._id === organizationGenericId);
 
   providerLoop:
   for (volunteerData of partnerData.organization['volunteers']) {
@@ -221,6 +221,7 @@ async function updateOrganization(req, res, next) {
     await updateOrganizationVolunteers(genericId, partnerData, {
         'First Name': 'firstName',
         'Last Name': 'lastName',
+        'ID in Partner Deployment': 'id',
         //'Address': 'address' TODO
       }, {
         'organizationForVolunteer': () => provider[providerType]._uri

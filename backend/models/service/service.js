@@ -21,7 +21,8 @@ const GDBServiceModel = createGraphDBModel({
   eligibility: {type: GDBEligibilityModel, internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE},
 
   shareability: {type: String, internalKey: ':hasShareability'},
-  partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'}
+  partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'},
+  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Service'], name: 'service'
 });
