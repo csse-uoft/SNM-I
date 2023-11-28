@@ -266,14 +266,15 @@ async function getOrganization(organizationGeneric) {
   return organization;
 }
 
-async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations) {
+async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations, programs) {
   let assets = await fetchGenericDatasHelper(assetType);
   assets = assets.filter(asset => (
     (asset.serviceProvider?._id === organizationId || asset.organization?._id === organizationId)
       && (asset.shareability === 'Shareable with all organizations'
         || (asset.shareability === 'Shareable with partner organizations'
           && (asset.partnerOrganizations.some(org => partnerOrganizations.includes(org))
-            || asset.partnerOrganizations.map(org => org._uri).some(org => partnerOrganizations.includes(org)))))
+            || asset.partnerOrganizations.map(org => org._uri).some(org => partnerOrganizations.includes(org))))
+        || (assetType === 'service' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
   ));
 
   const assetList = [];
@@ -326,11 +327,6 @@ async function sendOrganization(req, res, next) {
       .filter(organization => organization.status === 'Partner' && organization.apiKey === yourApiKey)
       .map(organization => organization._uri);
 
-    let programs = await fetchGenericDatasHelper('program');
-    programs = programs.filter(program =>
-      ((program.serviceProvider?._id === id) && (program.shareability !== 'Not shareable'))
-    );
-
     organization.programs = await getOrganizationAssets(id, 'program', {
         'Program Name': 'programName',
         'Description': 'description',
@@ -341,7 +337,7 @@ async function sendOrganization(req, res, next) {
         {key: 'manager', value: 'manager'},
         {key: 'serviceProvider', value: 'serviceProvider'}
       ], partnerOrganizations);
-    organization.services = await getOrganizationAssets(id, 'service', { // TODO also services of shared programs
+    organization.services = await getOrganizationAssets(id, 'service', {
         'Service Name': 'serviceName',
         'Description': 'description',
         'Shareability': 'shareability',
@@ -351,7 +347,7 @@ async function sendOrganization(req, res, next) {
         {key: 'manager', value: 'manager'},
         {key: 'serviceProvider', value: 'serviceProvider'},
         {key: 'program', value: 'program'}
-      ], partnerOrganizations);
+      ], partnerOrganizations, organization.programs);
     organization.volunteers = await getOrganizationAssets(genericId, 'volunteer', {
         'First Name': 'firstName',
         'Last Name': 'lastName',
