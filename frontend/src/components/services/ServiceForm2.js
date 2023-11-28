@@ -44,7 +44,7 @@ export default function ProviderForm() {
         <ShareabilityField handleChange={handleChange} fields={fields}
                            shareabilityFieldId={shareabilityFieldId}
                            partnerOrganizationsFieldId={partnerOrganizationsFieldId}/>
-        <Alert severity="info">{"Shareability is overridden by this service's program."}</Alert>
+        <Alert severity="info">{"If shareability is set to 'Not shareable', it will be overridden by this service's program."}</Alert>
         </>;
     } else if (implementation.label === "Partner Organization") {
       return "";
