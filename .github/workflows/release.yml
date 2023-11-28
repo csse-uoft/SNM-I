@@ -55,4 +55,4 @@ jobs:
         run: rsync -rvz -e "ssh -p ${{vars.RELEASE_SSH_PORT}}" --progress --delete ./scripts ${{vars.RELEASE_SSH_USER}}@${{vars.RELEASE_SSH_HOST}}:/home/ubuntu/SNM-I/
 
       - name: Update & Restart Backend
-        run: ssh ${{vars.SSH_USER}}@${{vars.RELEASE_SSH_HOST}} -p ${{vars.RELEASE_SSH_PORT}} "cd SNM-I && ./scripts/redeploy.sh"
+        run: ssh ${{vars.RELEASE_SSH_USER}}@${{vars.RELEASE_SSH_HOST}} -p ${{vars.RELEASE_SSH_PORT}} "cd SNM-I && ./scripts/redeploy.sh"
