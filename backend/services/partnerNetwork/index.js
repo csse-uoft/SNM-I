@@ -268,9 +268,10 @@ async function getOrganization(organizationGeneric) {
 
 async function getOrganizationAssets(organizationId, assetType, characteristics, types) {
   let assets = await fetchGenericDatasHelper(assetType);
-  assets = assets.filter(asset =>
-    ((asset.serviceProvider?._id === organizationId) && (asset.shareability !== 'Not shareable'))
-  );
+  assets = assets.filter(asset => (
+    (asset.serviceProvider?._id === organizationId || asset.organization?._id === organizationId)
+      && (asset.shareability !== 'Not shareable')
+  ));
 
   const assetList = [];
   for (assetGeneric of assets) {
@@ -289,35 +290,6 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
     assetList.push(asset);
   }
   return assetList;
-}
-
-async function getOrganizationVolunteers(organizationId) {
-  let volunteers = await fetchGenericDatasHelper('volunteer');
-  volunteers = volunteers.filter(volunteer =>
-    ((volunteer.organization?._id === organizationId) && (volunteer.shareability !== 'Not shareable'))
-  );
-
-  const volunteersList = [];
-  for (volunteerGeneric of volunteers) {
-    const volunteer = {id: volunteerGeneric._id, organization: volunteerGeneric.organization, address: volunteerGeneric.address};
-    for (let [key, data] of Object.entries(volunteerGeneric)) {
-      if (key === 'characteristicOccurrences') {
-        for (object of data) {
-          if (object.occurrenceOf?.name === 'First Name') {
-            volunteer.firstName = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Last Name') {
-            volunteer.lastName = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Description') {
-            volunteer.description = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Shareability') {
-            volunteer.shareability = object.dataStringValue;
-          }
-        }
-      }
-    }
-    volunteersList.push(volunteer);
-  }
-  return volunteersList;
 }
 
 async function sendOrganization(req, res, next) {
@@ -371,7 +343,16 @@ async function sendOrganization(req, res, next) {
         {key: 'serviceProvider', value: 'serviceProvider'},
         {key: 'program', value: 'program'}
       ]);
-    organization.volunteers = await getOrganizationVolunteers(genericId);
+    organization.volunteers = await getOrganizationAssets(genericId, 'volunteer', {
+        'First Name': 'firstName',
+        'Last Name': 'lastName',
+        'Description': 'description',
+        'Shareability': 'shareability',
+      }, [
+        {key: 'id', value: '_id'},
+        {key: 'organization', value: 'organization'},
+        {key: 'address', value: 'address'}
+      ]);
 
     return res.status(200).json({organization, success: true});
   } catch (e) {
