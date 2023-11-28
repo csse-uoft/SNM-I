@@ -2,6 +2,7 @@ const {
   GDBOrganizationModel
 } = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
+const {GDBServiceModel} = require("../../models/service/service");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
   deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
 const {findCharacteristicById, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
@@ -58,6 +59,49 @@ async function fetchOrganization(req, res, next) {
   }
 }
 
+// Returns a mapping from local asset ID to partner asset ID
+async function updateOrganizationAssets(organizationGenericId, partnerData, assetType,
+    characteristics, internalTypes, model) {
+  const forms = await getDynamicFormsByFormTypeHelper(assetType);
+  if (forms.length > 0) {
+    var formId = forms[0]._id; // Select the first form
+  } else {
+    return res.status(400).json({message: `No ${assetType} form available`});
+  }
+
+  let assets = await fetchGenericDatasHelper(assetType);
+  assets = assets.filter(asset => asset.serviceProvider?._id === organizationGenericId);
+
+  assetLoop:
+  for (assetData of partnerData.organization[assetType + 's']) {
+    const asset = {fields: {}};
+    for (characteristic in characteristics) {
+      asset.fields[PredefinedCharacteristics[characteristic]._uri.split('#')[1]] = assetData[characteristics[characteristic]];
+    }
+    for (internalType in internalTypes) {
+      asset.fields[PredefinedInternalTypes[internalType]._uri.split('#')[1]] = internalTypes[internalType](assetData.program?.split('_')[1]);
+    }
+    asset.formId = formId;
+
+    for (assetIndex in assets) {
+      const assetGeneric = assets[assetIndex];
+      if (assetGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] === assetData.id) {
+        await (await updateSingleGenericHelper(assetGeneric._id, asset, assetType)).save();
+        assets.splice(assetIndex, 1);
+        continue assetLoop;
+      }
+    }
+
+    // If we reach this point, then assetData is a new asset in the partner deployment
+    const newAsset = await model(await createSingleGenericHelper(asset, assetType)).save();
+  }
+
+  // Local assets associated with this organization still left in this array are to be deleted
+  for (asset of assets) {
+    await deleteSingleGenericHelper(assetType, asset._id);
+  }
+}
+
 async function updateOrganization(req, res, next) {
   try {
     const partnerData = req.body;
@@ -68,13 +112,6 @@ async function updateOrganization(req, res, next) {
       var organizationFormId = organizationForms[0]._id; // Select the first form
     } else {
       return res.status(400).json({message: 'No organization form available'});
-    }
-
-    const programForms = await getDynamicFormsByFormTypeHelper('program');
-    if (programForms.length > 0) {
-      var programFormId = programForms[0]._id; // Select the first form
-    } else {
-      return res.status(400).json({message: 'No program form available'});
     }
 
     const serviceForms = await getDynamicFormsByFormTypeHelper('service');
@@ -92,6 +129,7 @@ async function updateOrganization(req, res, next) {
     }
 
     const organization = {fields: {}};
+    console.log(JSON.stringify(PredefinedCharacteristics));
     organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.organizationName;
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
     organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
@@ -108,45 +146,34 @@ async function updateOrganization(req, res, next) {
     provider['organization'] = organizationObj;
     await provider.save();
 
+    await updateOrganizationAssets(genericId, partnerData, 'program', {
+        'Program Name': 'programName',
+        'Description': 'description',
+        'ID in Partner Deployment': 'id',
+      }, {
+        'serviceProviderForProgram': () => provider._uri
+      }, GDBProgramModel);
+
+    const partnerProgramIds = {}; // mapping from local program IDs to IDs of programs in the partner deployment
     let programs = await fetchGenericDatasHelper('program');
     programs = programs.filter(program => program.serviceProvider?._id === genericId);
-
-    programLoop:
-    for (programData of partnerData.organization.programs) {
-      const program = {fields: {}};
-      program.fields[PredefinedCharacteristics['Program Name']._uri.split('#')[1]] = programData.programName;
-      program.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = programData.description;
-      program.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = programData.id;
-      program.fields[PredefinedInternalTypes['serviceProviderForProgram']._uri.split('#')[1]] = organizationObj._uri;
-      program.formId = programFormId;
-      console.log(program);
-
+    for (programData of partnerData.organization['programs']) {
       for (programIndex in programs) {
         const programGeneric = programs[programIndex];
-        if (programGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] === programData.id) {
-          await (await updateSingleGenericHelper(programGeneric._id, program, 'program')).save();
-          programs.splice(programIndex, 1);
-          continue programLoop;
+        if (programGeneric.idInPartnerDeployment == programData.id) {
+          partnerProgramIds[programData.id] = programGeneric._uri;
         }
       }
-
-      // If we reach this point, then programData is a new program in the partner deployment
-      await GDBProgramModel(await createSingleGenericHelper(program, 'program')).save();
     }
 
-    // Local programs associated with this organization still left in this array are to be deleted
-    for (program of programs) {
-      await deleteSingleGenericHelper('program', program._id);
-    }
-
-    for (serviceData of partnerData.organization.services) {
-      const service = {fields: {}};
-      service.fields[PredefinedCharacteristics['Service Name']._uri.split('#')[1]] = serviceData.serviceName;
-      service.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = serviceData.description;
-      service.formId = serviceFormId;
-      console.log(service);
-      // TODO await (await updateSingleGenericHelper([id], service, 'service')).save();
-    }
+    await updateOrganizationAssets(genericId, partnerData, 'service', {
+        'Service Name': 'serviceName',
+        'Description': 'description',
+        'ID in Partner Deployment': 'id',
+      }, {
+        'serviceProviderForService': () => provider._uri,
+        'programForService': (partnerDeploymentProgramId) => partnerProgramIds[partnerDeploymentProgramId]
+      }, GDBServiceModel);
 
     for (volunteerData of partnerData.organization.volunteers) {
       const volunteer = {fields: {}};
@@ -160,6 +187,7 @@ async function updateOrganization(req, res, next) {
 
     return res.status(200).json({success: true});
   } catch (e) {
+    console.log(e);
     return res.status(400).json({message: e?.message});
   }
 }
