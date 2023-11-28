@@ -3,6 +3,7 @@ import GenericForm from "../shared/GenericForm";
 import {fetchCharacteristics} from "../../api/characteristicApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ShareabilityField} from "../shared/ShareabilityField";
+import {Alert} from "@mui/material";
 
 export default function ProviderForm() {
   const formType = 'service';
@@ -39,9 +40,12 @@ export default function ProviderForm() {
         return <Box minWidth={"350px"}><Loading message=""/></Box>;
       }
 
-      return <ShareabilityField handleChange={handleChange} fields={fields}
-                                shareabilityFieldId={shareabilityFieldId}
-                                partnerOrganizationsFieldId={partnerOrganizationsFieldId}/>;
+      return <>
+        <ShareabilityField handleChange={handleChange} fields={fields}
+                           shareabilityFieldId={shareabilityFieldId}
+                           partnerOrganizationsFieldId={partnerOrganizationsFieldId}/>
+        <Alert severity="info">{"Shareability is overridden by this service's program."}</Alert>
+        </>;
     } else if (implementation.label === "Partner Organization") {
       return "";
     }
