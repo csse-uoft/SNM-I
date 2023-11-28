@@ -21,8 +21,8 @@ const {initStreetTypes, initStreetDirections} = require('../services/address');
 
 const app = express();
 
-// Trust our reverse proxy
-app.set('trust proxy', ['::ffff:172.31.12.233', '172.31.12.233']);
+// Trust the first proxy
+app.set('trust proxy', 1);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use(cors({
   credentials: true,
   origin: config.allowedOrigins
 }));
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(cookieSession(config.cookieSession));
 
 // Public routes

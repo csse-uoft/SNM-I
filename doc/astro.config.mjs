@@ -31,6 +31,7 @@ export default defineConfig({
 						{ label: 'GraphDB utils', link: '/guides/graphdb-utils' },
 						{ label: 'Data model', link: '/guides/data-model' },
 						{ label: 'Troubleshooting', link: '/guides/troubleshooting' },
+						{ label: 'Deployment', link: '/guides/deployment' },
 					],
 				},
 				{

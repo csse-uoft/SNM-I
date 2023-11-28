@@ -17,6 +17,7 @@ const config = {
     'http://localhost:3001',
     'http://localhost:3002',
     'https://www.socialneedsmarketplace.ca',
+    'https://beta.socialneedsmarketplace.ca',
     'https://www.snmi.ca'],
 
   frontend: {
@@ -70,5 +71,8 @@ if (process.env.GRAPHDB_PASSWORD)
   config.graphdb.password = process.env.GRAPHDB_PASSWORD;
 if (process.env.MONGODB_ADDRESS)
   config.mongodb.addr = process.env.MONGODB_ADDRESS;
+
+if (process.env.FRONTEND_ADDRESS)
+  config.frontend.addr = process.env.FRONTEND_ADDRESS;
 
 module.exports = config
