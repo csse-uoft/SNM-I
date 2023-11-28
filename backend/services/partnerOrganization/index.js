@@ -9,7 +9,7 @@ async function getPartnerOrganizations(req, res) {
     select ?s
     where {
         ?s a <${fullURI}>, owl:NamedIndividual.
-        ?s :isPartner true.
+        ?s :hasStatus "Partner".
         FILTER (isIRI(?s))
     }`;
 

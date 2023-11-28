@@ -266,11 +266,14 @@ async function getOrganization(organizationGeneric) {
   return organization;
 }
 
-async function getOrganizationAssets(organizationId, assetType, characteristics, types) {
+async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations) {
   let assets = await fetchGenericDatasHelper(assetType);
   assets = assets.filter(asset => (
     (asset.serviceProvider?._id === organizationId || asset.organization?._id === organizationId)
-      && (asset.shareability !== 'Not shareable')
+      && (asset.shareability === 'Shareable with all organizations'
+        || (asset.shareability === 'Shareable with partner organizations'
+          && (asset.partnerOrganizations.some(org => partnerOrganizations.includes(org))
+            || asset.partnerOrganizations.map(org => org._uri).some(org => partnerOrganizations.includes(org)))))
   ));
 
   const assetList = [];
@@ -310,12 +313,18 @@ async function sendOrganization(req, res, next) {
       return res.status(404).json({message: 'Organization not found' + e.message ? ': ' + e.message : null});
     }
 
-    const apiKey = req.header('X-API-KEY');
+    const myApiKey = req.header('X-MY-API-KEY');
+    const yourApiKey = req.header('X-YOUR-API-KEY');
 
     const organization = await getOrganization(organizationGeneric);
-    if (apiKey !== organization.apiKey) {
+    if (myApiKey !== organization.apiKey) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
+
+    var partnerOrganizations = await fetchGenericDatasHelper('organization')
+    partnerOrganizations = partnerOrganizations
+      .filter(organization => organization.status === 'Partner' && organization.apiKey === yourApiKey)
+      .map(organization => organization._uri);
 
     let programs = await fetchGenericDatasHelper('program');
     programs = programs.filter(program =>
@@ -331,7 +340,7 @@ async function sendOrganization(req, res, next) {
         {key: 'id', value: '_id'},
         {key: 'manager', value: 'manager'},
         {key: 'serviceProvider', value: 'serviceProvider'}
-      ]);
+      ], partnerOrganizations);
     organization.services = await getOrganizationAssets(id, 'service', { // TODO also services of shared programs
         'Service Name': 'serviceName',
         'Description': 'description',
@@ -342,7 +351,7 @@ async function sendOrganization(req, res, next) {
         {key: 'manager', value: 'manager'},
         {key: 'serviceProvider', value: 'serviceProvider'},
         {key: 'program', value: 'program'}
-      ]);
+      ], partnerOrganizations);
     organization.volunteers = await getOrganizationAssets(genericId, 'volunteer', {
         'First Name': 'firstName',
         'Last Name': 'lastName',
@@ -352,7 +361,7 @@ async function sendOrganization(req, res, next) {
         {key: 'id', value: '_id'},
         {key: 'organization', value: 'organization'},
         {key: 'address', value: 'address'}
-      ]);
+      ], partnerOrganizations);
 
     return res.status(200).json({organization, success: true});
   } catch (e) {
