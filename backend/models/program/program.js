@@ -6,6 +6,7 @@ const {GDBNeedSatisfierModel} = require("../needSatisfier");
 const {GDBServiceProviderModel} = require("../serviceProvider");
 const {GDBPersonModel} = require("../person");
 const {GDBOrganizationModel} = require("../organization");
+const {GDBEligibilityModel} = require('../eligibility');
 
 const GDBProgramModel = createGraphDBModel({
   name: {type: String, internalKey: 'tove_org:hasName'},
@@ -19,8 +20,7 @@ const GDBProgramModel = createGraphDBModel({
   needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
-  eligibility: {type: () => require('../eligibility').GDBEligibilityModel,
-    internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE},
+  eligibility: {type: GDBEligibilityModel, internalKey: ':hasEligibility', onDelete: DeleteType.CASCADE},
 
   shareability: {type: String, internalKey: ':hasShareability'},
   partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'},
