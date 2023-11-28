@@ -5,7 +5,7 @@ const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
   deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
-const {findCharacteristicById, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
+const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
 
@@ -84,7 +84,7 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
 
     for (assetIndex in assets) {
       const assetGeneric = assets[assetIndex];
-      if (assetGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] === assetData.id) {
+      if (assetGeneric.idInPartnerDeployment == assetData.id) {
         await (await updateSingleGenericHelper(assetGeneric._id, asset, assetType)).save();
         assets.splice(assetIndex, 1);
         continue assetLoop;
@@ -132,7 +132,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
 
     for (providerIndex in providers) {
       const provider = providers[providerIndex];
-      if (provider.volunteer[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] === volunteerData.id) {
+      if (provider.volunteer.idInPartnerDeployment == volunteerData.id) {
         const generic = await updateSingleGenericHelper(provider.volunteer._id, volunteer, 'volunteer');
         provider.volunteer = generic;
         await provider.save();
@@ -172,6 +172,9 @@ async function updateOrganization(req, res, next) {
     }
 
     const organization = {fields: {}};
+    if (Object.keys(PredefinedCharacteristics).length == 0) {
+      await initPredefinedCharacteristics();
+    }
     console.log(JSON.stringify(PredefinedCharacteristics));
     organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.organizationName;
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
