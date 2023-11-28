@@ -1,13 +1,20 @@
 const {GDBServiceProviderModel} = require("../../models");
+const {GDBOrganizationModel} = require("../../models/organization");
 const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper} = require("./index");
 const {Server400Error} = require("../../utils");
-
+const {PredefinedCharacteristics} = require("../characteristics");
 
 const createSingleServiceProvider = async (req, res, next) => {
   const {providerType, data} = req.body;
   if (!providerType || !data)
     return res.status(400).json({message: 'Type or data is not given'});
   try {
+    const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
+    if (!!homeOrganization && providerType === 'organization'
+        && data.fields[PredefinedCharacteristics['Organization Status']?._uri.split('#')[1]] === 'Home') {
+      return res.status(400).json({message: 'Cannot create more than one home organization'});
+    }
+
     const provider = await GDBServiceProviderModel({type: providerType});
     provider[providerType] = await createSingleGenericHelper(data, providerType);
     if (provider[providerType]) {
@@ -46,6 +53,13 @@ const updateServiceProvider = async (req, res, next) => {
     const provider = await getProviderById(id);
     const providerType = provider.type;
     const genericId = provider[providerType]._id;
+
+    const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
+    const homeServiceProvider = await GDBServiceProviderModel.findOne({'organization': homeOrganization}, {populates: ['organization']});
+    if (!!homeOrganization && homeServiceProvider._id != id && providerType === 'organization'
+        && data.fields[PredefinedCharacteristics['Organization Status']?._uri.split('#')[1]] === 'Home') {
+      return res.status(400).json({message: 'Cannot create more than one home organization'});
+    }
 
     const generic = await updateSingleGenericHelper(genericId, data, providerType);
     provider[providerType] = generic;
