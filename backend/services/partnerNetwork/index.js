@@ -266,62 +266,29 @@ async function getOrganization(organizationGeneric) {
   return organization;
 }
 
-async function getOrganizationPrograms(organizationId) {
-  let programs = await fetchGenericDatasHelper('program');
-  programs = programs.filter(program =>
-    ((program.serviceProvider?._id === organizationId) && (program.shareability !== 'Not shareable'))
+async function getOrganizationAssets(organizationId, assetType, characteristics, types) {
+  let assets = await fetchGenericDatasHelper(assetType);
+  assets = assets.filter(asset =>
+    ((asset.serviceProvider?._id === organizationId) && (asset.shareability !== 'Not shareable'))
   );
 
-  const programsList = [];
-  for (programGeneric of programs) {
-    const program = {id: programGeneric._id, manager: programGeneric.manager, serviceProvider: programGeneric.serviceProvider};
-    for (let [key, data] of Object.entries(programGeneric)) {
+  const assetList = [];
+  for (assetGeneric of assets) {
+    const asset = types.reduce((accumulator, current) => (accumulator[current.key] = assetGeneric[current.value], accumulator), {}); // comma operator
+    for (let [key, data] of Object.entries(assetGeneric)) {
       if (key === 'characteristicOccurrences') {
         for (object of data) {
-          if (object.occurrenceOf?.name === 'Program Name') {
-            program.programName = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Description') {
-            program.description = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Shareability') {
-            program.shareability = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Address') {
-            program.address = object.dataStringValue;
+          for (characteristic in characteristics) {
+            if (object.occurrenceOf?.name === characteristic) {
+              asset[characteristics[characteristic]] = object.dataStringValue;
+            }
           }
         }
       }
     }
-    programsList.push(program);
+    assetList.push(asset);
   }
-  return programsList;
-}
-
-async function getOrganizationServices(organizationId) { // TODO: Also services of shared programs
-  let services = await fetchGenericDatasHelper('service');
-  services = services.filter(service =>
-    ((service.serviceProvider?._id === organizationId) && (service.shareability !== 'Not shareable'))
-  );
-
-  const servicesList = [];
-  for (serviceGeneric of services) {
-    const service = {id: serviceGeneric._id, manager: serviceGeneric.manager, serviceProvider: serviceGeneric.serviceProvider, program: serviceGeneric.program};
-    for (let [key, data] of Object.entries(serviceGeneric)) {
-      if (key === 'characteristicOccurrences') {
-        for (object of data) {
-          if (object.occurrenceOf?.name === 'Service Name') {
-            service.serviceName = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Description') {
-            service.description = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Shareability') {
-            service.shareability = object.dataStringValue;
-          } else if (object.occurrenceOf?.name === 'Address') {
-            service.address = object.dataStringValue;
-          }
-        }
-      }
-    }
-    servicesList.push(service);
-  }
-  return servicesList;
+  return assetList;
 }
 
 async function getOrganizationVolunteers(organizationId) {
@@ -383,8 +350,27 @@ async function sendOrganization(req, res, next) {
       ((program.serviceProvider?._id === id) && (program.shareability !== 'Not shareable'))
     );
 
-    organization.programs = await getOrganizationPrograms(id);
-    organization.services = await getOrganizationServices(id);
+    organization.programs = await getOrganizationAssets(id, 'program', {
+        'Program Name': 'programName',
+        'Description': 'description',
+        'Shareability': 'shareability',
+        'Address': 'address'
+      }, [
+        {key: 'id', value: '_id'},
+        {key: 'manager', value: 'manager'},
+        {key: 'serviceProvider', value: 'serviceProvider'}
+      ]);
+    organization.services = await getOrganizationAssets(id, 'service', { // TODO also services of shared programs
+        'Service Name': 'serviceName',
+        'Description': 'description',
+        'Shareability': 'shareability',
+        'Address': 'address'
+      }, [
+        {key: 'id', value: '_id'},
+        {key: 'manager', value: 'manager'},
+        {key: 'serviceProvider', value: 'serviceProvider'},
+        {key: 'program', value: 'program'}
+      ]);
     organization.volunteers = await getOrganizationVolunteers(genericId);
 
     return res.status(200).json({organization, success: true});
