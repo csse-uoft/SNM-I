@@ -691,13 +691,13 @@ const fetchGenericDatas = async (req, res, next) => {
             // merge the two arrays
             let array = [...new Set([...fts_search_result, ...connector_search_result])];
 
-            // something is entered in the search bar
-            // Note: if the array is empty, then find() will return all the object
-            // Therefore we add a branch here
             if (array.length !== 0) {
-                // something is found and will be shown
-                data = await genericType2Model[genericType].find({_id: {$in: array}},
-                    {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
+                let data_array = [];
+                for (let i = 0; i < array.length; i++) {
+                    data_array.push(await genericType2Model[genericType].find({_uri: array[i]},
+                        {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]}));
+                }
+                data = data_array.flat();
             }
 
         }
@@ -773,7 +773,6 @@ async function fts_search(searchtype, searchitem) {
         `;
 
     query = baseURI + encodeURIComponent(sparqlQuery);
-    console.log(query)
 
     const response = await fetch(query);
     const text = await response.text();
@@ -853,8 +852,6 @@ async function connector_search(searchtype, searchitem) {
         `;
 
     query = baseURI + encodeURIComponent(sparqlQuery);
-    console.log("Query:")
-    console.log(query)
 
     const response = await fetch(query);
     const text = await response.text();
@@ -865,21 +862,11 @@ async function connector_search(searchtype, searchitem) {
 
 
 function extractAllIndexes(searchtype, inputString) {
-    let regex = / /;
-    if (searchtype === 'service') {
-        regex = /#service_(\d+)/g;
-    } else if (searchtype === 'program') {
-        regex = /#program_(\d+)/g;
-    } else if (searchtype === 'serviceProvision') {
-        regex = /#serviceProvision_(\d+)/g;
-    } else if (searchtype === 'client') {
-        regex = /#client_(\d+)/g;
-    }
     const allIndexes = [];
-    let match;
 
-    while ((match = regex.exec(inputString)) !== null) {
-        allIndexes.push(parseInt(match[1]));
+    let lines = inputString.split(/\r?\n/);
+    for (let i = 1; i < lines.length - 1; i++) {
+        allIndexes.push(lines[i])
     }
 
     return allIndexes;
