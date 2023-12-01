@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import {Menu, MenuItem, CircularProgress, Typography, Chip, TextField, Button, Popover, Popper} from '@mui/material';
+import {
+    Menu,
+    MenuItem,
+    CircularProgress,
+    Typography,
+    Chip,
+    TextField,
+    Button,
+    Popover,
+    Popper,
+    Box
+} from '@mui/material';
 import { makeStyles } from "@mui/styles";
 import { Link as DomLink, useNavigate } from 'react-router-dom';
 import { Add as AddIcon, CloudUpload as UploadIcon } from '@mui/icons-material';
@@ -54,16 +65,26 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
   const navigate = useNavigate();
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl_provider, setAnchorEl_provider] = useState(null);
+  const [anchorEl_search, setAnchorEl_search] = useState(null);
+  const open_add_provider = Boolean(anchorEl_provider);
+  const open_search = Boolean(anchorEl_search);
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+  const handleProviderAddClick = event => {
+      setAnchorEl_provider(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleAdvanceSearchClick = event => {
+      setAnchorEl_search(event.currentTarget);
+  }
+
+  const handleProviderClose = () => {
+      setAnchorEl_provider(null);
   };
+
+  const handleAdvanceSearchClose = () => {
+      setAnchorEl_search(null);
+  }
 
   const handleLink = link => () => {
     navigate(link);
@@ -98,7 +119,7 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
             className={classes.chipButton}
       />}
 
-      <Chip onClick={handleClick}
+      <Chip onClick={handleAdvanceSearchClick}
             color="primary"
             icon={<SearchIcon/>}
             label="Advance Search"
@@ -106,11 +127,15 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
             className={classes.chipButton}
       />
 
-      <Popper open={true} anchorEl={anchorEl} keepMounted={true} style={{zIndex:2}} >
-           SSS
+      <Popper open={open_search} anchorEl={anchorEl_search} keepMounted={true} style={{zIndex:2}} >
+           <Box>
+
+               <Button onClick={handleAdvanceSearchClose}>Close</Button>
+
+           </Box>
       </Popper>
 
-      <Chip onClick={type === 'providers' ? handleClick : handleAdd}
+      <Chip onClick={type === 'providers' ? handleProviderAddClick : handleAdd}
             color="primary"
             icon={<AddIcon/>}
             label="Add"
@@ -122,10 +147,10 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
       {type === 'providers' &&
       <Menu
         id="long-menu"
-        anchorEl={anchorEl}
+        anchorEl={anchorEl_provider}
         keepMounted
-        open={open}
-        onClose={handleClose}
+        open={open_add_provider}
+        onClose={handleProviderClose}
       >
         {Object.entries(providerFormTypes).map(([value, formType]) =>
           <MenuItem disabled={formType !== 'Organization' && formType !== 'Volunteer'} key={formType} onClick={handleLink(`/providers/${value}/new`)}>
