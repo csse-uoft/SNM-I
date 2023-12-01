@@ -41,7 +41,10 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
                         'volunteer.questionOccurrence',]
                 });
         } else {
-            const array = await fts_provider_search(req.query.searchitem + "*");
+            fts_search_result = await fts_provider_search(req.query.searchitem + '*');
+            connector_search_result = await connector_provider_search(req.query.searchitem + '*');
+
+            let array = [...new Set([...fts_search_result, ...connector_search_result])];
             if (array.length !== 0) {
                 let data_array = [];
                 for (let i = 0; i < array.length; i++) {
@@ -119,6 +122,67 @@ async function fts_provider_search(searchitem) {
     return extractAllIndexes(text);
 
 }
+
+async function connector_provider_search(searchitem) {
+    console.log("Seachitem", searchitem);
+    const baseURI = "http://localhost:7200/repositories/snmi?query=";
+
+    const sparqlQuery =
+        `
+            PREFIX  :     <http://snmi#>
+            PREFIX  luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+            PREFIX  luc:  <http://www.ontotext.com/connectors/lucene#>
+            PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX  onto: <http://www.ontotext.com/>
+            
+            SELECT DISTINCT  ?e0 
+            WHERE
+              { 
+                { ?e0  ?p0       ?o0 ;
+                       rdf:type  :ServiceProvider
+                }
+                  { ?o0  rdf:type  :Organization
+                    { ?search  rdf:type      luc-index:organization_connector ;
+                               luc:query     "${searchitem}" ;
+                               luc:entities  ?o0
+                    }
+                  }
+                UNION
+                  { ?o0  rdf:type  :Volunteer
+                    { ?search  rdf:type      luc-index:volunteer_connector ;
+                               luc:query     "${searchitem}" ;
+                               luc:entities  ?o0
+                    }
+                  }
+                UNION
+                  { ?o0  ?p1  ?o1
+                      { ?o0  rdf:type  :Organization }
+                    UNION
+                      { ?o0  rdf:type  :Volunteer }
+                      { ?o1      rdf:type      :CharacteristicOccurrence .
+                        ?search  rdf:type      luc-index:characteristicoccurrence_connector ;
+                                 luc:query     "${searchitem}" ;
+                                 luc:entities  ?o1
+                      }
+                    UNION
+                      { ?o1      rdf:type      :Address .
+                        ?search  rdf:type      luc-index:address_connector ;
+                                 luc:query     "${searchitem}" ;
+                                 luc:entities  ?o1
+                      }
+                  }
+              }      
+        `
+
+    let query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(text);
+
+}
+
+
 
 function extractAllIndexes(inputString) {
     const allIndexes = [];
