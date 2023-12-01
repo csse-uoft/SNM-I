@@ -799,7 +799,6 @@ async function connector_search(searchtype, searchitem) {
     const sparqlQuery =
         `
             PREFIX onto: <http://www.ontotext.com/>
-            PREFIX tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
             PREFIX : <http://snmi#>
             
             PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
@@ -808,9 +807,7 @@ async function connector_search(searchtype, searchitem) {
             
             select distinct ?e0
             where 
-            {
-                BIND("${searchitem}" AS ?searchitem)
-                
+            {                
                 # Search :Service objects
                 {
                     ?e0 ?p0 ?o0 .
@@ -819,31 +816,31 @@ async function connector_search(searchtype, searchitem) {
                 
                 {
                     ?search a luc-index:service_connector ;
-                    luc:query ?searchitem ;
+                    luc:query "${searchitem}" ;
                     luc:entities ?e0 .
                 }
                 UNION
                 {
                     ?search a luc-index:program_connector ;
-                    luc:query ?searchitem ;
+                    luc:query "${searchitem}" ;
                     luc:entities ?e0 .
                 }
                 UNION
                 {
                     ?search a luc-index:client_connector ;
-                    luc:query ?searchitem ;
+                    luc:query "${searchitem}" ;
                     luc:entities ?e0 .
                 }
                 UNION
                 {
                     ?search a luc-index:characteristicoccurrence_connector ;
-                    luc:query ?searchitem ;
+                    luc:query "${searchitem}" ;
                     luc:entities ?o0 .
                 }
                 UNION
                 {
                     ?search a luc-index:address_connector ;
-                    luc:query ?searchitem ;
+                    luc:query "${searchitem}" ;
                     luc:entities ?o0 .
                 }
             }        
