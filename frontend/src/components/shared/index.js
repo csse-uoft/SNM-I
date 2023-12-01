@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Menu, MenuItem, CircularProgress, Typography, Chip, TextField, Button} from '@mui/material';
+import {Menu, MenuItem, CircularProgress, Typography, Chip, TextField, Button, Popover, Popper} from '@mui/material';
 import { makeStyles } from "@mui/styles";
 import { Link as DomLink, useNavigate } from 'react-router-dom';
 import { Add as AddIcon, CloudUpload as UploadIcon } from '@mui/icons-material';
@@ -98,13 +98,18 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch,  type}) {
             className={classes.chipButton}
       />}
 
-      <Chip onClick={type === 'providers' ? handleClick : handleSearch}
+      <Chip onClick={handleClick}
             color="primary"
             icon={<SearchIcon/>}
             label="Advance Search"
             variant="outlined"
             className={classes.chipButton}
       />
+
+      <Popper open={true} anchorEl={anchorEl} keepMounted={true} style={{zIndex:2}} >
+           SSS
+      </Popper>
+
       <Chip onClick={type === 'providers' ? handleClick : handleAdd}
             color="primary"
             icon={<AddIcon/>}
