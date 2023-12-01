@@ -673,6 +673,8 @@ async function deleteSingleGeneric(req, res, next) {
 const fetchGenericDatas = async (req, res, next) => {
     const {genericType} = req.params;
 
+    let connector_search_result;
+    let fts_search_result;
     try {
         if (!genericType2Model[genericType])
             return res.status(400).json({success: false, message: 'No such generic type'})
@@ -733,11 +735,7 @@ async function fts_search(searchtype, searchitem) {
     const sparqlQuery =
         `
             PREFIX onto: <http://www.ontotext.com/>
-            PREFIX tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
             PREFIX : <http://snmi#>
-            
-            PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
-            PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             
             select distinct ?e0
