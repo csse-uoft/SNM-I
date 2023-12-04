@@ -270,17 +270,15 @@ async function getOrganization(organizationGeneric) {
   return organization;
 }
 
-async function getGenericAsset(assetGenerics, types, characteristics) {
+async function getGenericAsset(assetGenerics, characteristics, types) {
   const assets = [];
   for (assetGeneric of assetGenerics) {
     const asset = types.reduce((accumulator, current) => (accumulator[current.key] = assetGeneric[current.value], accumulator), {}); // comma operator
     for (let [key, data] of Object.entries(assetGeneric)) {
       if (key === 'characteristicOccurrences') {
         for (object of data) {
-          for (characteristic in characteristics) {
-            if (object.occurrenceOf?.name === characteristic) {
-              asset[characteristics[characteristic]] = object.dataStringValue;
-            }
+          if (object.occurrenceOf?.name in characteristics) {
+            asset[characteristics[object.occurrenceOf?.name]] = object.dataStringValue || object.dataNumberValue || object;
           }
         }
       }
@@ -301,7 +299,7 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
         || (assetType === 'service' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
   ));
 
-  return getGenericAsset(assets, types, characteristics);
+  return getGenericAsset(assets, characteristics, types);
 }
 
 async function sendOrganization(req, res, next) {
@@ -376,5 +374,6 @@ async function sendOrganization(req, res, next) {
 module.exports = {
   fetchOrganization,
   updateOrganization,
+  getGenericAsset,
   sendOrganization
 };

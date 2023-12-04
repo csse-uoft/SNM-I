@@ -8,22 +8,39 @@ const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericH
 const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
+const {getGenericAsset} = require("./index");
 
-async function populateReferral(referralGeneric) {
+async function populateReferral(referralGeneric, receiverId) {
   const referral = {};
 
   const programId = parseInt(referralGeneric[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]]?.split('_')[1]);
   if (!!programId) {
-    // TODO: ensure only sending programs that belong to the receiver
-    // TODO: correct keys of program obj
-    const programGeneric = await fetchSingleGenericHelper('program', programId);
-    referral.program = programGeneric;
+    const programGeneric = await GDBProgramModel.findOne({_id: programId},
+      {populates: ['characteristicOccurrences.occurrenceOf']});
+    if (programGeneric.serviceProvider?.split('_')[1] == receiverId) {
+      referral.program = (await getGenericAsset([programGeneric], {
+          'ID in Partner Deployment': 'id',
+          'Program Name': 'programName',
+          'Description': 'description',
+          'Shareability': 'shareability',
+          'Address': 'address'
+        }, []))[0];
+    }
   }
 
   const serviceId = parseInt(referralGeneric[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]]?.split('_')[1]);
   if (!!serviceId) {
-    // TODO: see program TODOs
-    referral.service = await fetchSingleGenericHelper('service', serviceId);
+    const serviceGeneric = await GDBServiceModel.findOne({_id: serviceId},
+      {populates: ['characteristicOccurrences.occurrenceOf']});
+    if (serviceGeneric.serviceProvider?.split('_')[1] == receiverId) {
+      referral.service = (await getGenericAsset([serviceGeneric], {
+          'ID in Partner Deployment': 'id',
+          'Service Name': 'serviceName',
+          'Description': 'description',
+          'Shareability': 'shareability',
+          'Address': 'address'
+        }, []))[0];
+    }
   }
 
   // Client: TODO
@@ -41,12 +58,13 @@ async function sendReferral(req, res, next) {
     } catch (e) {
       return res.status(404).json({message: 'Referral not found' + e.message ? ': ' + e.message : null});
     }
-    const referral = await populateReferral(referralGeneric);
 
     const receiverId = parseInt(referralGeneric[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]]?.split('_')[1]);
     if (!receiverId || isNaN(receiverId)) {
       return res.status(404).json({message: 'Receiving service provider for referral not found' + e.message ? ': ' + e.message : null});
     }
+
+    const referral = await populateReferral(referralGeneric, receiverId);
 
     let receiverGeneric;
     try {
