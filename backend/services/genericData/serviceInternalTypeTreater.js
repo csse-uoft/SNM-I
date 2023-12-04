@@ -7,13 +7,15 @@ const serviceInternalTypeCreateTreater = async (internalType, instanceData, valu
   const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'serviceProvider' || property === 'program'){
     instanceData[property] = value;
-  } else if(property === 'needSatisfiers'){
+  } else if (property === 'needSatisfiers') {
     instanceData['needSatisfiers'] = value;
+  } else if (property === 'partnerOrganizations') {
+    instanceData['partnerOrganizations'] = value;
   }
 }
 
 const serviceInternalTypeFetchTreater = async (data) => {
-  return getInternalTypeValues(['serviceProvider', 'program', 'needSatisfiers'], data, FORMTYPE)
+  return getInternalTypeValues(['serviceProvider', 'program', 'needSatisfiers', 'partnerOrganizations'], data, FORMTYPE)
 }
 
 const serviceInternalTypeUpdateTreater = async (internalType, value, result) => {

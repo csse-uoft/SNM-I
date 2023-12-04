@@ -43,6 +43,25 @@ const columnsWithoutOptions = [
     label: 'Type',
     body: ({type}) => type,
   },
+  {
+    label: 'Status',
+    body: ({type, status, organization}) => {
+      if (type === 'organization') {
+        return status;
+      } else if (organization) {
+        organization = {...organization, type: 'organization'}
+        return <p>
+          From <Link color to={formatProviderLink(organization)}>{organization.status}</Link>
+        </p>;
+      } else {
+        return 'Unaffiliated';
+      }
+    },
+  },
+  {
+    label: 'Shareability',
+    body: ({shareability}) => shareability,
+  },
   // {
   //   label: 'Email',
   //   body: ({profile}) => profile?.email,
@@ -94,15 +113,20 @@ export default function Providers() {
         }
       if (innerData.address)
         providerData.address = innerData.address;
-      if (innerData.partner) {
-        providerData.partner = innerData.partner;
-        if (innerData.endpointUrl)
-          providerData.endpointUrl = innerData.endpointUrl;
-        if (innerData.endpointPort)
-          providerData.endpointPort = innerData.endpointPort;
-        if (innerData.apiKey)
-          providerData.apiKey = innerData.apiKey;
-      }
+      if (innerData.status)
+        providerData.status = innerData.status;
+      if (innerData.endpointUrl)
+        providerData.endpointUrl = innerData.endpointUrl;
+      if (innerData.endpointPort)
+        providerData.endpointPort = innerData.endpointPort;
+      if (innerData.apiKey)
+        providerData.apiKey = innerData.apiKey;
+      if (innerData.shareability)
+        providerData.shareability = innerData.shareability;
+      if (innerData.organization)
+        providerData.organization = innerData.organization;
+      if (innerData.partnerOrganizations)
+        providerData.partnerOrganizations = innerData.partnerOrganizations;
       data.push(providerData);
     }
     return data;

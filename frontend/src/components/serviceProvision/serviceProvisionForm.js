@@ -19,6 +19,7 @@ export default function ServiceProvisionForm() {
       setInternalTypes(data);
     });
   }, []);
+
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
     console.log(implementation)
     if (implementation.optionsFromClass === ":Client") {
@@ -28,7 +29,7 @@ export default function ServiceProvisionForm() {
                                            needOccFieldId={internalTypes.needOccurrenceForServiceProvision._id}/>
     } else if (implementation.optionsFromClass === ":Service") {
       const serviceFieldId = internalTypes.serviceForServiceProvision._id;
-      const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForServiceProvision._id
+      const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForServiceProvision._id;
       const needSatisfierFieldId = internalTypes.needSatisfierForServiceProvision._id;
 
       if (!serviceFieldId || !serviceOccurrenceFieldId || !needSatisfierFieldId) {

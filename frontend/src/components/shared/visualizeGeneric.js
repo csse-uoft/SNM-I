@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useMemo} from "react";
 import {useNavigate, useParams} from "react-router-dom";
+import {useSnackbar} from 'notistack';
+
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
 import {
   Box, Button, Chip, Container, Grid, Paper, Typography
@@ -37,7 +39,7 @@ async function getOptionLabels(uris, options) {
  * This function is the frontend for visualizing single generic
  * @returns {JSX.Element}
  */
-export default function VisualizeGeneric({genericType,}) {
+export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
 
   const navigate = useNavigate();
   const {id} = useParams();
@@ -46,6 +48,19 @@ export default function VisualizeGeneric({genericType,}) {
   const [information, setInformation] = useState([]);
   const [allForms, setAllForms] = useState({}); // a list with all forms
   const [selectedFormId, setSelectedFormId] = useState('all'); // the id of the selected form
+  const [genericData, setGenericData] = useState({});
+  const [additionalButtons, setAdditionalButtons] = useState(null);
+  const {enqueueSnackbar} = useSnackbar();
+
+  useEffect(() => {
+    (async function () {
+      setGenericData(
+        (genericType === 'organization' || genericType === 'volunteer')
+        ? (await fetchSingleProvider(genericType, id)).data
+        : (await fetchSingleGeneric(genericType, id)).data
+      );
+    })();
+  }, [id, genericType]);
 
   useEffect(() => {
     (async function () {
@@ -67,9 +82,7 @@ export default function VisualizeGeneric({genericType,}) {
       ]);
       const addressInfo = {streetTypes, streetDirections, states};
 
-      const {data: genericData} = (genericType === 'organization' || genericType === 'volunteer')
-        ? await fetchSingleProvider(genericType, id)
-        : await fetchSingleGeneric(genericType, id);
+      if (!genericData) return;
 
       const information = [];
       for (let [key, data] of Object.entries(genericData)) {
@@ -152,7 +165,7 @@ export default function VisualizeGeneric({genericType,}) {
 
       setLoading(false);
     })();
-  }, [id, genericType]);
+  }, [genericData]);
 
   useEffect(() => {
     if (selectedFormId === 'all') {
@@ -177,6 +190,11 @@ export default function VisualizeGeneric({genericType,}) {
 
   }, [selectedFormId, information]);
 
+  useEffect(() => {
+    if (getAdditionalButtons)
+      getAdditionalButtons(genericType, genericData, enqueueSnackbar)
+        .then(buttons => setAdditionalButtons(buttons));
+  }, [genericType, genericData, enqueueSnackbar]);
 
   const formOptions = useMemo(() => {
     const options = {'all': 'Display All'};
@@ -211,6 +229,7 @@ export default function VisualizeGeneric({genericType,}) {
           <Grid item>
             <Button variant="outlined" onClick={() => navigate(`edit`)}>Edit</Button>
           </Grid>
+            {additionalButtons}
         </Grid>
 
         <VirtualizeTable rows={display}/>

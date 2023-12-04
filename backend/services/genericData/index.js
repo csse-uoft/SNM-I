@@ -109,6 +109,11 @@ const {
   personInternalTypeCreateTreater,
   personInternalTypeFetchTreater
 } = require("./person");
+const {
+  volunteerInternalTypeCreateTreater,
+  volunteerInternalTypeFetchTreater,
+  volunteerInternalTypeUpdateTreater
+} = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const genericType2Model = {
   'client': GDBClientModel,
@@ -129,6 +134,7 @@ const genericType2Model = {
   'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel,
+  'volunteer': GDBVolunteerModel,
 };
 
 const genericType2Populates = {
@@ -147,7 +153,8 @@ const genericType2Populates = {
   'programOccurrence': ['address'],
   'client': ['address'],
   'appointment': ['address'],
-  'person': ['address'],   
+  'person': ['address'],
+  'volunteer': ['partnerOrganizations', 'organization'],
 };
 
 const genericType2Checker = {
@@ -187,7 +194,8 @@ const genericType2InternalTypeCreateTreater = {
   'needOccurrence': needOccurrenceInternalTypeCreateTreater,
   'outcomeOccurrence': outcomeOccurrenceInternalTypeCreateTreater,
   'clientAssessment': clientAssessmentInternalTypeCreateTreater,
-  'person': personInternalTypeCreateTreater
+  'person': personInternalTypeCreateTreater,
+  'volunteer': volunteerInternalTypeCreateTreater
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -205,7 +213,8 @@ const genericType2InternalTypeFetchTreater = {
   'needOccurrence': needOccurrenceInternalTypeFetchTreater,
   'outcomeOccurrence': outcomeOccurrenceInternalTypeFetchTreater,
   'clientAssessment': clientAssessmentInternalTypeFetchTreater,
-  'person': personInternalTypeFetchTreater
+  'person': personInternalTypeFetchTreater,
+  'volunteer': volunteerInternalTypeFetchTreater
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -223,7 +232,8 @@ const genericType2InternalTypeUpdateTreater = {
   'needOccurrence': needOccurrenceInternalTypeUpdateTreater,
   'outcomeOccurrence': outcomeOccurrenceInternalTypeUpdateTreater,
   'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
-  'person': personInternalTypeUpdateTreater
+  'person': personInternalTypeUpdateTreater,
+  'volunteer': volunteerInternalTypeUpdateTreater
 };
 
 
@@ -242,6 +252,10 @@ async function fetchSingleGenericHelper(genericType, id) {
 
   const data = await genericType2Model[genericType].findOne({_id: id},
     {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences']});
+
+  if (!data) {
+    throw new Server400Error('Generic not found.');
+  }
 
   const inter = await GDBInternalTypeModel.findById(1);
 
@@ -380,7 +394,7 @@ const createSingleGenericHelper = async (data, genericType) => {
   const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
   // iterating over all fields and create occurrences and store them into instanceData
   for (const [key, value] of Object.entries(data.fields)) {
-    if (!value)
+    if (value == null)
       continue;
     const [type, id] = key.split('_');
 
@@ -413,7 +427,7 @@ const createSingleGenericHelper = async (data, genericType) => {
     await genericType2BeforeCreateTreater[genericType](instanceData, internalTypes, data.fields);
 
   for (const [key, value] of Object.entries(data.fields)) {
-    if (!value)
+    if (value == null)
       continue;
     const [type, id] = key.split('_');
 
@@ -530,7 +544,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
               ?? occurrence.objectValue ?? occurrence.multipleObjectValues;
           }
         }
-      } else if (existedCO && value) { // just add the value on existedCO
+      } else if (existedCO && value != null) { // just add the value on existedCO
         await implementCharacteristicOccurrence(characteristic, existedCO, value);
         if (characteristic.isPredefined) {
           const property = getPredefinedProperty(genericType, characteristic);
@@ -539,7 +553,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
               existedCO.objectValue ?? existedCO.multipleObjectValues;
           }
         }
-      } else if (existedCO && !value) { // when the user wants to remove the occurrence
+      } else if (existedCO && value == null) { // when the user wants to remove the occurrence
         await existedCO.populate('occurrenceOf');
         if (existedCO.objectValue) { // remove the objectValue if necessary
           const [fieldType, id] = existedCO.objectValue.split('_');
@@ -683,16 +697,23 @@ async function deleteSingleGeneric(req, res, next) {
   }
 }
 
+async function fetchGenericDatasHelper(genericType) {
+  if (!genericType2Model[genericType])
+    return null;
+  const extraPopulates = genericType2Populates[genericType] || [];
+  const data = await genericType2Model[genericType].find({},
+    {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
+  return data;
+}
+
 const fetchGenericDatas = async (req, res, next) => {
   const {genericType} = req.params;
   try {
-    if (!genericType2Model[genericType])
-      return res.status(400).json({success: false, message: 'No such generic type'})
-    const extraPopulates = genericType2Populates[genericType] || [];
-    const data = await genericType2Model[genericType].find({},
-      {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
-    return res.status(200).json({data, success: true});
-
+    const result = await fetchGenericDatasHelper(genericType);
+    if (!result) {
+      return res.status(400).json({success: false, message: 'No such generic type'});
+    }
+    return res.status(200).json({data: result, success: true});
   } catch (e) {
     next(e);
   }
@@ -702,5 +723,6 @@ const fetchGenericDatas = async (req, res, next) => {
 module.exports = {
   genericType2Model,
   fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
-  createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper
+  createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper,
+  fetchGenericDatasHelper
 };

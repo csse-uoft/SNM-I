@@ -43,7 +43,7 @@ export default function VisualizeServices() {
       for (const serviceData of allServices) {
         if (serviceData.program && serviceData.serviceProvider && (serviceData.program.split('_')[1] === id)) {
           const label = <Link color to={`/services/${serviceData._id}`}>{serviceData.name}</Link>;
-          const value = <Link color to={`/providers/${await getServiceProviderType(serviceData)}/${serviceData.serviceProvider.split('_')[1]}`}>{(await getServiceProviderName(serviceData, characteristicIds))}</Link>;
+          const value = <Link color to={`/providers/${await getServiceProviderType(serviceData)}/${serviceData.serviceProvider._uri.split('_')[1]}`}>{(await getServiceProviderName(serviceData, characteristicIds))}</Link>;
           information.push({label, value})
         }
       }

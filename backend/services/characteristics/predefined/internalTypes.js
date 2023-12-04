@@ -57,6 +57,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#Program'
     }
   },
+  {
+    name: 'partnerOrganizationForService',
+    predefinedProperty: 'http://snmi#hasPartnerOrganization',
+    formType: 'service',
+    implementation: {
+      label: 'Partner Organization',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Organization'
+    }
+  },
 
   // below are for program occurrence
   {
@@ -114,6 +125,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
+    }
+  },
+  {
+    name: 'partnerOrganizationForProgram',
+    predefinedProperty: 'http://snmi#hasPartnerOrganization',
+    formType: 'program',
+    implementation: {
+      label: 'Partner Organization',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Organization'
     }
   },
 
@@ -606,6 +628,30 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.MultiSelectField,
       optionsFromClass: 'http://snmi#Question'
+    }
+  },
+
+  // Volunteer
+  {
+    name: 'organizationForVolunteer',
+    predefinedProperty: 'http://snmi#hasOrganization',
+    formType: 'volunteer',
+    implementation: {
+      label: 'Organization',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Organization'
+    }
+  },
+  {
+    name: 'partnerOrganizationForVolunteer',
+    predefinedProperty: 'http://snmi#hasPartnerOrganization',
+    formType: 'volunteer',
+    implementation: {
+      label: 'Partner Organization',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#Organization'
     }
   },
 

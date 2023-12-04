@@ -121,10 +121,15 @@ async function getAllDynamicForms(req, res, next) {
   });
 }
 
-async function getDynamicFormsByFormType(req, res, next) {
-  const forms = await MDBDynamicFormModel.find({formType: req.params.formType}, 'forOrganization createdBy modifiedAt name');
+async function getDynamicFormsByFormTypeHelper(formType) {
+  const forms = await MDBDynamicFormModel.find({formType}, 'forOrganization createdBy modifiedAt name');
 
   const formsWithUserInfo = await getFormsWithUserInfo(forms);
+  return formsWithUserInfo;
+}
+
+async function getDynamicFormsByFormType(req, res, next) {
+  const formsWithUserInfo = await getDynamicFormsByFormTypeHelper(req.params.formType);
 
   res.json({
     success: true,
@@ -218,5 +223,5 @@ async function getURILabel(req, res) {
 
 module.exports = {
   createDynamicForm, getAllDynamicForms, getDynamicForm, deleteDynamicForm, updateDynamicForm, getDynamicFormsByFormType,
-  getIndividualsInClass, getIndividualsInClassHandler, getURILabel
+  getIndividualsInClass, getIndividualsInClassHandler, getURILabel, getDynamicFormsByFormTypeHelper
 }

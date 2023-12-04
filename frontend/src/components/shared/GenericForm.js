@@ -144,7 +144,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         enqueueSnackbar(name + ' created', {variant: 'success'});
       } catch (e) {
         console.log(e);
-        enqueueSnackbar(`Failed to create ${name}: ` + e.message, {variant: 'error'});
+        enqueueSnackbar(`Failed to create ${name}: ` + e.json?.message || e.message, {variant: 'error'});
       }
 
     } else {
