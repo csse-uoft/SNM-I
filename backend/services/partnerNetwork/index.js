@@ -270,19 +270,9 @@ async function getOrganization(organizationGeneric) {
   return organization;
 }
 
-async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations, programs) {
-  let assets = await fetchGenericDatasHelper(assetType);
-  assets = assets.filter(asset => (
-    (asset.serviceProvider?._id === organizationId || asset.organization?._id === organizationId)
-      && (asset.shareability === 'Shareable with all organizations'
-        || (asset.shareability === 'Shareable with partner organizations'
-          && (asset.partnerOrganizations.some(org => partnerOrganizations.includes(org))
-            || asset.partnerOrganizations.map(org => org._uri).some(org => partnerOrganizations.includes(org))))
-        || (assetType === 'service' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
-  ));
-
-  const assetList = [];
-  for (assetGeneric of assets) {
+async function getGenericAsset(assetGenerics, types, characteristics) {
+  const assets = [];
+  for (assetGeneric of assetGenerics) {
     const asset = types.reduce((accumulator, current) => (accumulator[current.key] = assetGeneric[current.value], accumulator), {}); // comma operator
     for (let [key, data] of Object.entries(assetGeneric)) {
       if (key === 'characteristicOccurrences') {
@@ -295,9 +285,23 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
         }
       }
     }
-    assetList.push(asset);
+    assets.push(asset);
   }
-  return assetList;
+  return assets;
+}
+
+async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations, programs) {
+  let assets = await fetchGenericDatasHelper(assetType);
+  assets = assets.filter(asset => (
+    (asset.serviceProvider?._id === organizationId || asset.organization?._id === organizationId)
+      && (asset.shareability === 'Shareable with all organizations'
+        || (asset.shareability === 'Shareable with partner organizations'
+          && (asset.partnerOrganizations.some(org => partnerOrganizations.includes(org))
+            || asset.partnerOrganizations.map(org => org._uri).some(org => partnerOrganizations.includes(org))))
+        || (assetType === 'service' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
+  ));
+
+  return getGenericAsset(assets, types, characteristics);
 }
 
 async function sendOrganization(req, res, next) {
