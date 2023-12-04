@@ -1546,10 +1546,10 @@ google-libphonenumber@>=3.2.22:
 
 "graphdb-utils@git+https://github.com/csse-uoft/graphdb-utils.git":
   version "1.0.0"
-  resolved "git+https://github.com/csse-uoft/graphdb-utils.git#e61275303bac0bb11638e6764ce18148fa0eb544"
+  resolved "git+https://github.com/csse-uoft/graphdb-utils.git#d8fe3e946ec4c80914429a9f5f7c6384fda39607"
   dependencies:
     form-data "^4.0.0"
-    graphdb "^3.0.0"
+    graphdb "^3.0.1"
     mongoose "^6.9.0"
     node-fetch "^3.3.0"
     redis "^4.6.4"
@@ -1572,7 +1572,7 @@ graphdb@^2.0.0:
     sparqlxml-parse "^1.4.0"
     uuid "^3.4.0"
 
-graphdb@^3.0.0:
+graphdb@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/graphdb/-/graphdb-3.0.1.tgz#783b5c3f2dc578aab700f93fc0ab89dc75d2e73e"
   integrity sha512-pG1f5XGD7oxpP8Nexeszo86SdOhdGhiTF+gKxJ7Ctix1nl/6o19IK6EO4ivUvutFJ2JlilOFJrRsxLqw2wYtgw==
