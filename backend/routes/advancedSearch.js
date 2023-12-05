@@ -7,9 +7,9 @@ const router = express.Router();
 
 // genericItemType: characteristic, question, ...
 // genericType: client, organization, ...
-router.get('/advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType', fetchForAdvancedSearch);
-router.put('/advancedSearch/:genericType/:genericItemType', advancedSearchGeneric);
+// router.get('/advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType', fetchForAdvancedSearch);
+// router.put('/advancedSearch/:genericType/:genericItemType', advancedSearchGeneric);
 
-
+router.post('/advancedSearch/service', fetchForAdvancedSearch);
 
 module.exports = router;
