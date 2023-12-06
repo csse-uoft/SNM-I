@@ -1,8 +1,9 @@
 const {
-  GDBOrganizationModel, GDBServiceProviderModel
+  GDBServiceProviderModel
 } = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
+const {GDBOrganizationModel} = require("../../models/organization");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
   deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
 const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
@@ -30,7 +31,7 @@ async function fetchOrganization(req, res, next) {
 
     if (organization.status === 'Partner') {
       if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
-        const url = new URL(organization.endpointUrl);
+        const url = new URL('/public/partnerNetwork/organization/', organization.endpointUrl);
         url.port = organization.endpointPort;
 
         const controller = new AbortController();
@@ -291,7 +292,7 @@ async function getGenericAsset(assetGenerics, characteristics, types) {
 async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations, programs) {
   let assets = await fetchGenericDatasHelper(assetType);
   assets = assets.filter(asset => (
-    (asset.serviceProvider?._id === organizationId || asset.organization?._id === organizationId)
+    (asset.serviceProvider?.organization?._id === organizationId || asset.organization?._id === organizationId)
       && (asset.shareability === 'Shareable with all organizations'
         || (asset.shareability === 'Shareable with partner organizations'
           && (asset.partnerOrganizations.some(org => partnerOrganizations.includes(org))
@@ -304,36 +305,24 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
 
 async function sendOrganization(req, res, next) {
   try {
-    const {id} = req.params;
-
-    let genericId;
-    let organizationGeneric;
-    try {
-      const provider = await getProviderById(id);
-      const providerType = provider.type;
-      if (providerType !== 'organization') {
-        throw new Error('Provider is not an organization');
-      }
-      genericId = provider[providerType]._id;
-      organizationGeneric = await fetchSingleGenericHelper(providerType, genericId);
-    } catch (e) {
-      return res.status(404).json({message: 'Organization not found' + e.message ? ': ' + e.message : null});
+    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
+    if (!organization) {
+      throw new Error('This deployment has no home organization');
     }
+    const genericId = organization._id;
 
     const myApiKey = req.header('X-MY-API-KEY');
     const yourApiKey = req.header('X-YOUR-API-KEY');
-
-    const organization = await getOrganization(organizationGeneric);
     if (myApiKey !== organization.apiKey) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
 
     var partnerOrganizations = await fetchGenericDatasHelper('organization')
     partnerOrganizations = partnerOrganizations
-      .filter(organization => organization.status === 'Partner' && organization.apiKey === yourApiKey)
-      .map(organization => organization._uri);
+      .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === yourApiKey)
+      .map(organizationObj => organizationObj._uri);
 
-    organization.programs = await getOrganizationAssets(id, 'program', {
+    organization.programs = await getOrganizationAssets(genericId, 'program', {
         'Program Name': 'programName',
         'Description': 'description',
         'Shareability': 'shareability',
@@ -343,7 +332,7 @@ async function sendOrganization(req, res, next) {
         {key: 'manager', value: 'manager'},
         {key: 'serviceProvider', value: 'serviceProvider'}
       ], partnerOrganizations);
-    organization.services = await getOrganizationAssets(id, 'service', {
+    organization.services = await getOrganizationAssets(genericId, 'service', {
         'Service Name': 'serviceName',
         'Description': 'description',
         'Shareability': 'shareability',
