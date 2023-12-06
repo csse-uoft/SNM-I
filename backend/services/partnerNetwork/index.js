@@ -39,7 +39,7 @@ async function fetchOrganization(req, res, next) {
           signal: controller.signal,
           method: 'GET',
           headers: {
-            'X-API-KEY': organization.apiKey,
+            'X-MY-API-KEY': organization.apiKey,
           },
         });
         clearTimeout(timeout);
