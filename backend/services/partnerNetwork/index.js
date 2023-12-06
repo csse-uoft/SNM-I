@@ -45,7 +45,8 @@ async function fetchOrganization(req, res, next) {
         clearTimeout(timeout);
 
         if (response.status >= 400 && response.status < 600) {
-          return res.status(404).json({message: 'Bad response from partner: ' + response.status});
+          const json = await response.json();
+          return res.status(404).json({message: 'Bad response from partner: ' + response.status + ': ' + json.message || JSON.stringify(json)});
         }
         return res.json(await response.json());
       } else {
