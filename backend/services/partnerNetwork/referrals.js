@@ -1,5 +1,5 @@
 const {
-  GDBOrganizationModel, GDBServiceProviderModel
+  GDBClientModel, GDBServiceProviderModel
 } = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
@@ -43,7 +43,17 @@ async function populateReferral(referralGeneric, receiverId) {
     }
   }
 
-  // Client: TODO
+  const clientId = parseInt(referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]]?.split('_')[1]);
+  if (!!clientId) {
+    const clientGeneric = await GDBClientModel.findOne({_id: clientId},
+      {populates: ['characteristicOccurrences.occurrenceOf']});
+    referral.client = (await getGenericAsset([clientGeneric], {
+        'First Name': 'firstName',
+        'Last Name': 'lastName',
+        'Description': 'description',
+        'Address': 'address'
+      }, []))[0];
+  }
 
   return referral;
 }
@@ -56,12 +66,12 @@ async function sendReferral(req, res, next) {
     try {
       referralGeneric = await fetchSingleGenericHelper('referral', id);
     } catch (e) {
-      return res.status(404).json({message: 'Referral not found' + e.message ? ': ' + e.message : null});
+      return res.status(404).json({message: 'Referral not found' + (e.message ? ': ' + e.message : null)});
     }
 
     const receiverId = parseInt(referralGeneric[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]]?.split('_')[1]);
     if (!receiverId || isNaN(receiverId)) {
-      return res.status(404).json({message: 'Receiving service provider for referral not found' + e.message ? ': ' + e.message : null});
+      return res.status(404).json({message: 'Receiving service provider for referral not found' + (e.message ? ': ' + e.message : null)});
     }
 
     const referral = await populateReferral(referralGeneric, receiverId);
@@ -76,7 +86,7 @@ async function sendReferral(req, res, next) {
       const genericId = provider[providerType]._id;
       receiverGeneric = await fetchSingleGenericHelper(providerType, genericId);
     } catch (e) {
-      return res.status(404).json({message: 'Receiving organization not found' + e.message ? ': ' + e.message : null});
+      return res.status(404).json({message: 'Receiving organization not found' + (e.message ? ': ' + e.message : null)});
     }
 
     const url = new URL(receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]]);
