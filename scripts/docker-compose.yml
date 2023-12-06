@@ -26,6 +26,25 @@ services:
     environment:
       - TZ=America/New_York
     restart: always
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "3"
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./scripts/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./frontend-build:/srv
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    logging:
+      options:
+        max-size: "5m"
+        max-file: "3"
+
 volumes:
   server_node_modules:
   mongodb_data:

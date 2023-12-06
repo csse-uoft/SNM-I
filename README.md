@@ -2,7 +2,12 @@
 
 ### Deployemnts
 
-[//]: # (- `Master` Branch: https://beta.socialneedsmarketplace.ca)
+#### `master` Branch
+- URL: https://beta.socialneedsmarketplace.ca
 
-[//]: # (- `Deploy` Branch: https://socialneedsmarketplace.ca)
-- Docs: https://www.socialneedsmarketplace.ca/docs
+[//]: # (- Docs: https://beta.socialneedsmarketplace.ca/docs/)
+
+#### `release` Branch
+- URL: https://socialneedsmarketplace.ca
+
+[//]: # (- Docs: https://www.socialneedsmarketplace.ca/docs/)

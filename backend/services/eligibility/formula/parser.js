@@ -75,8 +75,11 @@ async function getParser() {
           // in the "lowest" leaf in the expression ParseTree.
           {ALT: () => $.SUBRULE($.parenthesisExpression)},
           {ALT: () => $.CONSUME(allTokens.NumberLiteral)},
+          {ALT: () => $.CONSUME(allTokens.StringLiteral)},
+          {ALT: () => $.CONSUME(allTokens.BooleanLiteral)},
           {ALT: () => $.CONSUME(allTokens.Variable)},
           {ALT: () => $.SUBRULE($.functionExpression)},
+          {ALT: () => $.SUBRULE($.arrayExpression)},
         ])
       );
 
@@ -84,6 +87,17 @@ async function getParser() {
         $.CONSUME(allTokens.LParen);
         $.SUBRULE($.expression);
         $.CONSUME(allTokens.RParen);
+      });
+
+      $.RULE("arrayExpression", () => {
+        $.CONSUME(allTokens.LSquare);
+        $.MANY_SEP({
+          SEP: allTokens.Comma,
+          DEF: () => {
+            $.SUBRULE($.expression, {LABEL: 'values'})
+          },
+        });
+        $.CONSUME(allTokens.RSquare);
       });
 
       $.RULE('functionExpression', () => {

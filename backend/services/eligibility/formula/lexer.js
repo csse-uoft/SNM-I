@@ -37,10 +37,24 @@ async function getLexer() {
 
   const LParen = createToken({name: "LParen", pattern: /\(/});
   const RParen = createToken({name: "RParen", pattern: /\)/});
+  const LSquare = createToken({ name: "LSquare", pattern: /\[/ });
+  const RSquare = createToken({ name: "RSquare", pattern: /]/ });
+
   const NumberLiteral = createToken({
     name: "NumberLiteral",
-    pattern: /[1-9]\d*/,
+    pattern: /[0-9]+[.]?[0-9]*([eE][+\-][0-9]+)?/,
   });
+
+  const StringLiteral = createToken({
+    name: 'StringLiteral',
+    pattern: /"(\\"|[^"])*"/
+  });
+
+  const BooleanLiteral = createToken({
+    name: 'BooleanLiteral',
+    pattern: /true|false/
+  });
+
 
   const Power = createToken({name: "PowerFunc", pattern: /\*\*/});
   const Comma = createToken({name: "Comma", pattern: /,/});
@@ -86,7 +100,11 @@ async function getLexer() {
     Gte, Lte, Gt, Lt, Eq, Ne,
     LParen,
     RParen,
+    LSquare,
+    RSquare,
     NumberLiteral,
+    StringLiteral,
+    BooleanLiteral,
     AdditionOperator,
     MultiplicationOperator,
     ComparisonOperator,

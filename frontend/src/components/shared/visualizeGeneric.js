@@ -86,9 +86,9 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
 
       const information = [];
       for (let [key, data] of Object.entries(genericData)) {
-        const [type, id] = key.split('_');
+        const [type, instanceId] = key.split('_');
         if (type === 'characteristic') {
-          const characteristic = await fetchCharacteristic(id);
+          const characteristic = await fetchCharacteristic(instanceId);
           const fieldType = characteristic.fetchData.fieldType;
           const isOption = typeof data === "string" && data.startsWith('http://snmi#option');
 
@@ -111,7 +111,7 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
             });
           } else if (fieldType === 'AddressField') {
             value = <Typography>
-            {formatLocation(data, addressInfo)}
+              {formatLocation(data, addressInfo)}
             </Typography>;
           } else if (['DateField', 'DateTimeField', 'TimeField'].includes(fieldType)) {
             value = <Typography>{new Date(data).toLocaleString()}</Typography>;
@@ -128,7 +128,7 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
           })
 
         } else if (type === 'question') {
-          const question = await fetchQuestion(id);
+          const question = await fetchQuestion(instanceId);
           information.push({
             label: <Typography>{question.question.content}</Typography>,
             value: <Typography>{data}</Typography>,
@@ -140,13 +140,21 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
             value = [];
             for (const [idx, uri] of data.entries()) {
               const label = await getURILabel(uri);
-              value.push(<Chip key={idx} label={label} sx={{mr: 1}}/>)
+              // Render clickable needs
+              if (genericType === 'client' && internalTypes[instanceId].implementation.label === 'Need') {
+                const needId = uri.split('_')[1];
+                value.push(<Button sx={{textTransform: 'none', mr: 1}}
+                                   variant="outlined" key={idx} color="success"
+                                   onClick={() => navigate(`/clients/${id}/match/${needId}`)}>{label}</Button>)
+              } else {
+                value.push(<Chip key={idx} label={label} sx={{mr: 1}}/>)
+              }
             }
           } else {
             value = await getURILabel(data)
           }
           information.push({
-            label: <Typography>{internalTypes[id].implementation.label}</Typography>,
+            label: <Typography>{internalTypes[instanceId].implementation.label}</Typography>,
             value,
             id: key
           })

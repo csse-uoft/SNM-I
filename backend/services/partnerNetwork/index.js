@@ -1,6 +1,7 @@
 const {
   GDBServiceProviderModel
 } = require("../../models");
+const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
 const {GDBOrganizationModel} = require("../../models/organization");
@@ -24,7 +25,7 @@ async function fetchOrganization(req, res, next) {
       const genericId = provider[providerType]._id;
       organizationGeneric = await fetchSingleGenericHelper(providerType, genericId);
     } catch (e) {
-      return res.status(404).json({message: 'Partner organization not found' + e.message ? ': ' + e.message : null});
+      return res.status(404).json({message: 'Partner organization not found' + (e.message ? ': ' + e.message : null)});
     }
 
     const organization = await getOrganization(organizationGeneric);
@@ -34,19 +35,27 @@ async function fetchOrganization(req, res, next) {
         const url = new URL('/public/partnerNetwork/organization/', organization.endpointUrl);
         url.port = organization.endpointPort;
 
+        const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
+        let yourApiKey = null;
+        if (!!homeOrganization) {
+          yourApiKey = homeOrganization.apiKey;
+        }
+
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 5000);
         const response = await fetch(url, {
           signal: controller.signal,
           method: 'GET',
           headers: {
-            'X-API-KEY': organization.apiKey,
+            'X-MY-API-KEY': organization.apiKey,
+            ...(!!yourApiKey && {'X-YOUR-API-KEY': yourApiKey}),
           },
         });
         clearTimeout(timeout);
 
         if (response.status >= 400 && response.status < 600) {
-          return res.status(response.status).json({message: 'Bad response from partner: ' + response.status});
+          const json = await response.json();
+          return res.status(404).json({message: 'Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json))});
         }
         return res.json(await response.json());
       } else {
