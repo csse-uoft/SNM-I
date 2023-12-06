@@ -80,7 +80,7 @@ async function sendReferral(req, res, next) {
       return res.status(404).json({message: 'Receiving organization not found' + (e.message ? ': ' + e.message : null)});
     }
 
-    const url = new URL(receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]]);
+    const url = new URL('/public/partnerNetwork/referral/', receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]]);
     url.port = receiverGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
     const controller = new AbortController();
@@ -104,6 +104,20 @@ async function sendReferral(req, res, next) {
   }
 }
 
+async function createClient(partnerClientData) {
+  const clientForms = await getDynamicFormsByFormTypeHelper('client');
+  if (clientForms.length > 0) {
+    var clientFormId = clientForms[0]._id; // Select the first form
+  } else {
+    throw new Error('No client form available');
+  }
+
+  const client = {fields: {}, formId: clientFormId};
+  client.fields[PredefinedCharacteristics['First Name']._uri.split('#')[1]] = partnerClientData.firstName;
+  client.fields[PredefinedCharacteristics['Last Name']._uri.split('#')[1]] = partnerClientData.lastName;
+  return GDBClientModel(await createSingleGenericHelper(client, 'client'));
+}
+
 async function receiveReferral(req, res, next) {
   try {
     const partnerData = req.body;
@@ -123,6 +137,7 @@ async function receiveReferral(req, res, next) {
     const referral = {fields: {}, formId: referralFormId};
     referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = 'http://snmi#program_' + partnerData.program.id;
     referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = 'http://snmi#service_' + partnerData.service.id;
+    referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] = await createClient(partnerData.client);
     await GDBReferralModel(await createSingleGenericHelper(referral, 'referral')).save();
 
     return res.status(200).json({success: true});
