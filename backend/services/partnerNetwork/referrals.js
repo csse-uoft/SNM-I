@@ -3,6 +3,7 @@ const {
 } = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
+const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBReferralModel} = require("../../models/referral");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
   deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
@@ -134,7 +135,25 @@ async function receiveReferral(req, res, next) {
     }
     console.log(JSON.stringify(PredefinedCharacteristics));
 
+    const referrer = await GDBOrganizationModel.findOne({endpointUrl: req.headers.host});
+    if (!referrer) {
+      throw new Error("Could not find partner organization with the same endpoint URL as the referrer");
+    }
+
+    const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
+    if (!homeOrganization) {
+      throw new Error('This deployment has no home organization');
+    }
+    const homeOrgGenericId = homeOrganization._id;
+
+    const myApiKey = req.header('X-MY-API-KEY');
+    if (myApiKey !== homeOrganization.apiKey) {
+      return res.status(403).json({message: 'API key is incorrect'});
+    }
+
     const referral = {fields: {}, formId: referralFormId};
+    referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = homeOrganization._uri;
+    referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = referrer._uri;
     referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = 'http://snmi#program_' + partnerData.program.id;
     referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = 'http://snmi#service_' + partnerData.service.id;
     referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] = await createClient(partnerData.client);

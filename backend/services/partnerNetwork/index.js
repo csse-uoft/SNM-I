@@ -1,7 +1,6 @@
 const {
   GDBServiceProviderModel
 } = require("../../models");
-const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
 const {GDBOrganizationModel} = require("../../models/organization");
