@@ -3,6 +3,7 @@ const {
 } = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
+const {GDBReferralModel} = require("../../models/referral");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
   deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
 const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
@@ -20,10 +21,6 @@ async function populateReferral(referralGeneric, receiverId) {
     if (programGeneric.serviceProvider?.split('_')[1] == receiverId) {
       referral.program = (await getGenericAsset([programGeneric], {
           'ID in Partner Deployment': 'id',
-          'Program Name': 'programName',
-          'Description': 'description',
-          'Shareability': 'shareability',
-          'Address': 'address'
         }, []))[0];
     }
   }
@@ -35,10 +32,6 @@ async function populateReferral(referralGeneric, receiverId) {
     if (serviceGeneric.serviceProvider?.split('_')[1] == receiverId) {
       referral.service = (await getGenericAsset([serviceGeneric], {
           'ID in Partner Deployment': 'id',
-          'Service Name': 'serviceName',
-          'Description': 'description',
-          'Shareability': 'shareability',
-          'Address': 'address'
         }, []))[0];
     }
   }
@@ -49,9 +42,7 @@ async function populateReferral(referralGeneric, receiverId) {
       {populates: ['characteristicOccurrences.occurrenceOf']});
     referral.client = (await getGenericAsset([clientGeneric], {
         'First Name': 'firstName',
-        'Last Name': 'lastName',
-        'Description': 'description',
-        'Address': 'address'
+        'Last Name': 'lastName'
       }, []))[0];
   }
 
@@ -113,6 +104,35 @@ async function sendReferral(req, res, next) {
   }
 }
 
+async function receiveReferral(req, res, next) {
+  try {
+    const partnerData = req.body;
+
+    const referralForms = await getDynamicFormsByFormTypeHelper('referral');
+    if (referralForms.length > 0) {
+      var referralFormId = referralForms[0]._id; // Select the first form
+    } else {
+      return res.status(400).json({message: 'No referral form available'});
+    }
+
+    if (Object.keys(PredefinedCharacteristics).length == 0) {
+      await initPredefinedCharacteristics();
+    }
+    console.log(JSON.stringify(PredefinedCharacteristics));
+
+    const referral = {fields: {}, formId: referralFormId};
+    referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = 'http://snmi#program_' + partnerData.program.id;
+    referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = 'http://snmi#service_' + partnerData.service.id;
+    await GDBReferralModel(await createSingleGenericHelper(referral, 'referral')).save();
+
+    return res.status(200).json({success: true});
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({message: e?.message});
+  }
+}
+
 module.exports = {
   sendReferral,
+  receiveReferral,
 };
