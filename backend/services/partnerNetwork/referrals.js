@@ -101,7 +101,7 @@ async function sendReferral(req, res, next) {
       signal: controller.signal,
       method: req.method,
       headers: {
-        'X-API-KEY': receiverGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        'X-MY-API-KEY': receiverGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
         'Referer': req.headers.host,
       },
       body: JSON.stringify(referral),
