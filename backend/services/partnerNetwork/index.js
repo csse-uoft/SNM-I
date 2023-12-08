@@ -24,7 +24,7 @@ async function fetchOrganization(req, res, next) {
       const genericId = provider[providerType]._id;
       organizationGeneric = await fetchSingleGenericHelper(providerType, genericId);
     } catch (e) {
-      return res.status(404).json({message: 'Partner organization not found' + (e.message ? ': ' + e.message : null)});
+      return res.status(404).json({message: 'Partner organization not found' + (e.message ? ': ' + e.message : '')});
     }
 
     const organization = await getOrganization(organizationGeneric);
@@ -186,8 +186,8 @@ async function updateOrganization(req, res, next) {
       await initPredefinedCharacteristics();
     }
     console.log(JSON.stringify(PredefinedCharacteristics));
-    organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.name;
-    organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
+    organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.name || '';
+    organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description || '';
 //    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
     console.log(organization);

@@ -60,7 +60,7 @@ async function sendReferral(req, res, next) {
       try {
         referralGeneric = await fetchSingleGenericHelper('referral', id);
       } catch (e) {
-        return res.status(404).json({message: 'Referral not found' + (e.message ? ': ' + e.message : null)});
+        return res.status(404).json({message: 'Referral not found' + (e.message ? ': ' + e.message : '')});
       }
     } else {
       return res.status(400).json({message: 'No id provided'});
@@ -85,7 +85,7 @@ async function sendReferral(req, res, next) {
         return res.status(200).json({success: true, message: 'Receiving service provider is not a partner organization'});
       }
     } catch (e) {
-      return res.status(404).json({message: 'Receiving organization not found' + (e.message ? ': ' + e.message : null)});
+      return res.status(404).json({message: 'Receiving organization not found' + (e.message ? ': ' + e.message : '')});
     }
 
     const referral = await populateReferral(referralGeneric, receiverId);
@@ -109,7 +109,7 @@ async function sendReferral(req, res, next) {
     clearTimeout(timeout);
 
     if (response.status >= 400 && response.status < 600) {
-      return res.status(response.status).json({message: 'Bad response from receiver: ' + response.status + (response.message ? ': ' + response.message : null)});
+      return res.status(response.status).json({message: 'Bad response from receiver: ' + response.status + (response.message ? ': ' + response.message : '')});
     }
     return res.status(202).json({success: true, message: `Successfully created and sent a referral`});
   } catch (e) {
