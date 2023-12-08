@@ -25,6 +25,7 @@ const GDBReferralModel = createGraphDBModel({
   programOccurrence: {type: GDBProgramOccurrenceModel, internalKey: ':hasProgramOccurrence'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Referral'], name: 'referral'
 });

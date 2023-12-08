@@ -5,5 +5,6 @@ const router = express.Router();
 router.get('/partnerNetwork/organization/', sendOrganization);
 
 router.post('/partnerNetwork/referral/', receiveReferral);
+router.put('/partnerNetwork/referral/', receiveReferral);
 
 module.exports = router;
