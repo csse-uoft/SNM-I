@@ -31,7 +31,8 @@ async function fetchOrganization(req, res, next) {
 
     if (organization.status === 'Partner') {
       if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
-        const url = new URL('/public/partnerNetwork/organization/', organization.endpointUrl);
+        const endpointUrl = organization.endpointUrl;
+        const url = new URL('/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl : 'https://' + endpointUrl);
         url.port = organization.endpointPort;
 
         const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});

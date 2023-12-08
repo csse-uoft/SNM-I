@@ -91,7 +91,8 @@ async function sendReferral(req, res, next) {
     const referral = await populateReferral(referralGeneric, receiverId);
     referral.id = id;
 
-    const url = new URL('/public/partnerNetwork/referral/', receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]]);
+    const endpointUrl = receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
+    const url = new URL('/public/partnerNetwork/referral/', endpointUrl.startsWith('http') ? endpointUrl : 'https://' + endpointUrl);
     url.port = receiverGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
     const controller = new AbortController();
@@ -101,6 +102,7 @@ async function sendReferral(req, res, next) {
       method: req.method,
       headers: {
         'X-API-KEY': receiverGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        'Referer': req.headers.host,
       },
       body: JSON.stringify(referral),
     });
@@ -151,7 +153,7 @@ async function receiveReferral(req, res, next) {
     }
     console.log(JSON.stringify(PredefinedCharacteristics));
 
-    const referrer = await GDBOrganizationModel.findOne({endpointUrl: req.headers.host});
+    const referrer = await GDBOrganizationModel.findOne({endpointUrl: req.headers.referer});
     if (!referrer) {
       throw new Error("Could not find partner organization with the same endpoint URL as the referrer");
     }
