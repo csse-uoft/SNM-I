@@ -186,7 +186,7 @@ async function updateOrganization(req, res, next) {
       await initPredefinedCharacteristics();
     }
     console.log(JSON.stringify(PredefinedCharacteristics));
-    organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.organizationName;
+    organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.name;
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
 //    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
