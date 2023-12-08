@@ -20,3 +20,23 @@ export async function fetchPartnerOrganization(id) {
 export async function updatePartnerOrganization(id, body) {
   return putJson(`/api/partnerNetwork/${id}`, body);
 }
+
+/**
+ * This function sends the referral with the given ID to the receiving service
+ * provider if it is in a partner deployment.
+ * @param id
+ * @returns {Promise<Response|any>}
+ */
+export async function sendPartnerReferral(id, body) {
+  return postJson(`/api/partnerNetwork/referral/${id}`, body);
+}
+
+/**
+ * This function updates the referral with the given ID in the receiving service
+ * provider's deployment.
+ * @param id
+ * @returns {Promise<Response|any>}
+ */
+export async function updatePartnerReferral(id, body) {
+  return putJson(`/api/partnerNetwork/referral/${id}`, body);
+}

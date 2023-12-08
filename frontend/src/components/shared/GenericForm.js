@@ -12,6 +12,7 @@ import GeneralField from "../shared/fields/GeneralField";
 import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
 import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
+import {sendPartnerReferral, updatePartnerReferral} from "../../api/partnerNetworkApi";
 
 const contentStyle = {
   width: '80%',
@@ -140,19 +141,44 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
     console.log(form);
     if (mode === 'new') {
       try {
-        await (isProvider ? createSingleProvider : createSingleGeneric)(name, form).then(() => navigate(mainPage));
-        enqueueSnackbar(name + ' created', {variant: 'success'});
+        await (isProvider ? createSingleProvider : createSingleGeneric)(name, form)
+          .then(async (response) => {
+            enqueueSnackbar(name + ' created', {variant: 'success'});
+            if (name === 'referral') {
+              try {
+                await sendPartnerReferral(response.createdId);
+                navigate(mainPage);
+              } catch (e) {
+                console.log(e)
+                enqueueSnackbar(`Failed to send ${name}: ` + e.json?.message || e.message, {variant: 'error'});
+              }
+            } else {
+              navigate(mainPage);
+            }
+          });
       } catch (e) {
-        console.log(e);
         enqueueSnackbar(`Failed to create ${name}: ` + e.json?.message || e.message, {variant: 'error'});
       }
 
     } else {
       try {
-        await (isProvider ? updateSingleProvider : updateSingleGeneric)(name, id, form).then(() => navigate(mainPage));
-        enqueueSnackbar(`${name} updated`, {variant: 'success'});
+        await (isProvider ? updateSingleProvider : updateSingleGeneric)(name, id, form)
+          .then(async () => {
+            enqueueSnackbar(name + ' updated', {variant: 'success'});
+            if (name === 'referral') {
+              try {
+                await updatePartnerReferral(id);
+                navigate(mainPage);
+              } catch (e) {
+                console.log(e)
+                enqueueSnackbar(`Failed to send ${name}: ` + e.json?.message || e.message, {variant: 'error'});
+              }
+            } else {
+              navigate(mainPage);
+            }
+          });
       } catch (e) {
-        enqueueSnackbar(`Failed to update ${name}: ` + e.message, {variant: 'error'});
+        enqueueSnackbar(`Failed to update ${name}: ` + e.json?.message || e.message, {variant: 'error'});
       }
     }
 

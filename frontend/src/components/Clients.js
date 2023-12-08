@@ -53,10 +53,10 @@ export default function Clients() {
 
   const {fetchClients, deleteClient} = useClientAPIs();
   const nameFormatter = (client) => {
-    if (client.firstName && client.lastName) {
-      return client.firstName + ' ' + client.lastName;
+    if (client?.firstName && client?.lastName) {
+      return client?.firstName + ' ' + client?.lastName;
     } else {
-      return 'Client ' + client._id;
+      return 'Client ' + client?._id;
     }
   };
 

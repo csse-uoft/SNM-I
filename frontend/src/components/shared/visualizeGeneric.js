@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, Link} from "react-router-dom";
 import {useSnackbar} from 'notistack';
 
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
@@ -151,7 +151,26 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
               }
             }
           } else {
-            value = await getURILabel(data)
+            const dataGenericType = data.split('#')[1].split('_')[0];
+            const dataGenericId = data.split('#')[1].split('_')[1];
+            if (['program', 'service'].includes(dataGenericType)) {
+              try {
+                const dataGeneric = (await fetchSingleGeneric(dataGenericType, dataGenericId)).data;
+                for (let [innerKey, innerData] of Object.entries(dataGeneric)) {
+                  if (innerKey.split('_')[0] === 'characteristic') {
+                    const innerCharacteristic = await fetchCharacteristic(innerKey.split('_')[1]);
+                    if (['Program Name', 'Service Name'].includes(innerCharacteristic.fetchData.name)) {
+                      value = <Link to={`/${dataGenericType}s/${dataGenericId}/`}>{innerData}</Link>;
+                    }
+                  }
+                }
+              } catch (e) {
+                value = await getURILabel(data)
+              }
+            }
+            if (!value) {
+              value = await getURILabel(data);
+            }
           }
           information.push({
             label: <Typography>{internalTypes[instanceId].implementation.label}</Typography>,

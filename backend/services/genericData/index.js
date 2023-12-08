@@ -461,8 +461,9 @@ const createSingleGeneric = async (req, res, next) => {
     }
     if (instanceData) {
       // the instance data is stored into graphdb
-      await genericType2Model[genericType](instanceData).save();
-      return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`});
+      const newGeneric = genericType2Model[genericType](instanceData);
+      await newGeneric.save();
+      return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`, createdId: newGeneric._id});
     }
 
   } catch (e) {
