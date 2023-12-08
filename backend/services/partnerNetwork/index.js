@@ -188,7 +188,7 @@ async function updateOrganization(req, res, next) {
     console.log(JSON.stringify(PredefinedCharacteristics));
     organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.organizationName;
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description;
-    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
+//    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
     console.log(organization);
 
@@ -271,9 +271,9 @@ async function getOrganization(organizationGeneric) {
           organization.endpointPort = data;
         }
       } else if (typeof data === 'object') {
-        if (characteristic.name === 'Address') { // TODO
-          organization.address = data;
-        }
+        // if (characteristic.name === 'Address') { // TODO
+        //   organization.address = data;
+        // }
       }
     }
   }
@@ -335,7 +335,7 @@ async function sendOrganization(req, res, next) {
         'Program Name': 'programName',
         'Description': 'description',
         'Shareability': 'shareability',
-        'Address': 'address'
+        // 'Address': 'address'
       }, [
         {key: 'id', value: '_id'},
         {key: 'manager', value: 'manager'},
@@ -345,7 +345,7 @@ async function sendOrganization(req, res, next) {
         'Service Name': 'serviceName',
         'Description': 'description',
         'Shareability': 'shareability',
-        'Address': 'address'
+        // 'Address': 'address'
       }, [
         {key: 'id', value: '_id'},
         {key: 'manager', value: 'manager'},
@@ -360,7 +360,7 @@ async function sendOrganization(req, res, next) {
       }, [
         {key: 'id', value: '_id'},
         {key: 'organization', value: 'organization'},
-        {key: 'address', value: 'address'}
+        // {key: 'address', value: 'address'}
       ], partnerOrganizations);
 
     return res.status(200).json({organization, success: true});
