@@ -1,13 +1,12 @@
 const {
-  GDBClientModel, GDBServiceProviderModel
+  GDBClientModel
 } = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBReferralModel} = require("../../models/referral");
-const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper,
-  deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
-const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
+const {createSingleGenericHelper, fetchSingleGenericHelper} = require("../genericData");
+const {initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
 const {getGenericAsset} = require("./index");
@@ -15,7 +14,7 @@ const {getGenericAsset} = require("./index");
 async function populateReferral(referralGeneric, receiverId) {
   const referral = {};
 
-  const programId = parseInt(referralGeneric[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]]?.split('_')[1]);
+  const programId = parseInt((referralGeneric[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] || referralGeneric.program)?.split('_')[1]);
   if (!!programId) {
     const programGeneric = await GDBProgramModel.findOne({_id: programId},
       {populates: ['characteristicOccurrences.occurrenceOf']});
@@ -26,7 +25,7 @@ async function populateReferral(referralGeneric, receiverId) {
     }
   }
 
-  const serviceId = parseInt(referralGeneric[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]]?.split('_')[1]);
+  const serviceId = parseInt((referralGeneric[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] || referralGeneric.service)?.split('_')[1]);
   if (!!serviceId) {
     const serviceGeneric = await GDBServiceModel.findOne({_id: serviceId},
       {populates: ['characteristicOccurrences.occurrenceOf']});
@@ -37,7 +36,7 @@ async function populateReferral(referralGeneric, receiverId) {
     }
   }
 
-  const clientId = parseInt(referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]]?.split('_')[1]);
+  const clientId = parseInt((referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] || referralGeneric.client)?.split('_')[1]);
   if (!!clientId) {
     const clientGeneric = await GDBClientModel.findOne({_id: clientId},
       {populates: ['characteristicOccurrences.occurrenceOf']});
@@ -52,21 +51,24 @@ async function populateReferral(referralGeneric, receiverId) {
 
 async function sendReferral(req, res, next) {
   try {
-    const {id} = req.params;
+    const id = req.params.id;
+    const givenReferral = req.body;
 
     let referralGeneric;
-    try {
-      referralGeneric = await fetchSingleGenericHelper('referral', id);
-    } catch (e) {
-      return res.status(404).json({message: 'Referral not found' + (e.message ? ': ' + e.message : null)});
+    if (!!id) {
+      try {
+        referralGeneric = await fetchSingleGenericHelper('referral', id);
+      } catch (e) {
+        return res.status(404).json({message: 'Referral not found' + (e.message ? ': ' + e.message : null)});
+      }
+    } else {
+      referralGeneric = givenReferral;
     }
 
-    const receiverId = parseInt(referralGeneric[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]]?.split('_')[1]);
+    const receiverId = parseInt((referralGeneric[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] || referralGeneric.receivingServiceProvider)?.split('_')[1]);
     if (!receiverId || isNaN(receiverId)) {
-      return res.status(404).json({message: 'Receiving service provider for referral not found' + (e.message ? ': ' + e.message : null)});
+      return res.status(404).json({message: 'Receiving service provider for referral not found'});
     }
-
-    const referral = await populateReferral(referralGeneric, receiverId);
 
     let receiverGeneric;
     try {
@@ -77,9 +79,15 @@ async function sendReferral(req, res, next) {
       }
       const genericId = provider[providerType]._id;
       receiverGeneric = await fetchSingleGenericHelper(providerType, genericId);
+
+      if (receiverGeneric[PredefinedCharacteristics['Organization Status']._uri.split('#')[1]] !== 'Partner') {
+        return res.status(200).json({success: true});
+      }
     } catch (e) {
       return res.status(404).json({message: 'Receiving organization not found' + (e.message ? ': ' + e.message : null)});
     }
+
+    const referral = await populateReferral(referralGeneric, receiverId);
 
     const url = new URL('/public/partnerNetwork/referral/', receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]]);
     url.port = receiverGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
@@ -99,7 +107,7 @@ async function sendReferral(req, res, next) {
     if (response.status >= 400 && response.status < 600) {
       return res.status(response.status).json({message: 'Bad response from receiver: ' + response.status});
     }
-    return res.json(await response.json());
+    return res.status(202).json({success: true, message: `Successfully created and sent a referral`});
   } catch (e) {
     return res.status(400).json({message: e?.message});
   }

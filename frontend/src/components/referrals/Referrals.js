@@ -36,7 +36,7 @@ const columnsWithoutOptions = [
   {
     label: 'Client',
     body: ({ client }) => {
-      return <Link color to={`/clients/${client.id}`}>{client.name}</Link>;
+      return <Link color to={`/clients/${client?.id}`}>{client?.name}</Link>;
     },
     sortBy: ({ client }) => client.name,
   }
@@ -58,8 +58,8 @@ export default function Referrals() {
         referralStatus: referral.referralStatus,
         referralType: referral.referralType,
         client: {
-          name: formatName(referral.client.firstName, referral.client.lastName, 'client',  referral.client._id),
-          id: referral.client._id
+          name: formatName(referral.client?.firstName, referral.client?.lastName, 'client',  referral.client?._id),
+          id: referral.client?._id
         }
       };
       if (referral.address) {

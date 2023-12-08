@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/partnerNetwork/:id', fetchOrganization);
 router.put('/partnerNetwork/:id', updateOrganization);
 
-router.post('/partnerNetwork/referral/:id', sendReferral);
+router.post('/partnerNetwork/referral/:id?', sendReferral);
 
 module.exports = router;
