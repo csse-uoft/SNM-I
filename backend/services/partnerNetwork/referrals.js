@@ -109,7 +109,8 @@ async function sendReferral(req, res, next) {
     clearTimeout(timeout);
 
     if (response.status >= 400 && response.status < 600) {
-      return res.status(response.status).json({message: 'Bad response from receiver: ' + response.status + (response.message ? ': ' + response.message : '')});
+      const json = await response.json();
+      return res.status(400).json({message: 'Bad response from receiver: ' + response.status + ': ' + (json.message || JSON.stringify(json))});
     }
     return res.status(202).json({success: true, message: `Successfully created and sent a referral`});
   } catch (e) {
