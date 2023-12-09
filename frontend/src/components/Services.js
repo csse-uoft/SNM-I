@@ -7,6 +7,7 @@ import {getServiceProviderNameCharacteristicIds} from "./shared/CharacteristicId
 import {fetchSingleGeneric} from "../api/genericDataApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 import {formatLocation} from '../helpers/location_helpers'
+import {advancedSearchService} from "../api/advancedSearchApi";
 
 const TYPE = 'services';
 
@@ -125,6 +126,7 @@ export default function Services() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       searchData = {searchData}
+      advancedSearch = {advancedSearchService}
       deleteItem={deleteService}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}

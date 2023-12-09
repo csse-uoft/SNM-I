@@ -18,7 +18,7 @@ import {Container, Fade, TextField} from "@mui/material";
  */
 export default function GenericPage(props) {
   const {
-    fetchData, searchData, deleteItem, generateMarkers, type,
+    fetchData, searchData, deleteItem, generateMarkers, advancedSearch, type,
     nameFormatter, columnsWithoutOptions
   } = props;
   let title = props.title;
@@ -102,6 +102,11 @@ export default function GenericPage(props) {
     // so we need to remove that possibility
   }
 
+  const advancedSearchAndRefreshPage = (searchitems) => {
+    // searchitems must be a dictionary
+    advancedSearch(searchitems).then(data => setState(state => ({...state, data, loading: false})));
+  }
+
   const tableOptions = {
     customToolbar:
       <CustomToolbar
@@ -109,6 +114,7 @@ export default function GenericPage(props) {
         handleAdd={() => navigate(`/${type}/new`)}
         handleSearch={reloadDataAndRefreshPage}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
+        handleAdvancedSearch={advancedSearchAndRefreshPage}
         // handleDelete={reloadDataAndRefreshPage}
       />,
     onDelete: async (ids) => {

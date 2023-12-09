@@ -83,7 +83,7 @@ const renderFormFields = () => {
  * @returns {*}
  * @constructor
  */
-export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
+export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdvancedSearch, type}) {
     const navigate = useNavigate();
     const classes = useStyles();
 
@@ -155,7 +155,7 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
                     {renderFormFields()}
                     <Container >
                         <Button onClick={handleAdvanceSearchClose}>Close</Button>
-                        <Button>Search</Button>
+                        <Button onClick={handleAdvancedSearch}>Search</Button>
 
                     </Container>
                 </Container>

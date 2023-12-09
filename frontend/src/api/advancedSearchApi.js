@@ -25,3 +25,7 @@ export async function fetchForAdvancedSearch(genericType, genericItemType) {
 export async function advancedSearchGeneric(genericType, genericItemType, body) {
   return putJson(`/api/advancedSearch/${genericType}/${genericItemType}`, body)
 }
+
+export async function advancedSearchService(genericType, genericItemType, body) {
+  return putJson(`/api/advancedSearch/service/${genericItemType}`, body)
+}
