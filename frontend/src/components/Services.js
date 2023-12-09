@@ -71,7 +71,7 @@ export default function Services() {
             serviceData.provider = occ.objectValue;
           }
         }
-      if (service.serviceProvider)
+      if (service.serviceProvider) {
         console.log(JSON.stringify(service.serviceProvider));
         serviceData.serviceProvider = {
           _id: service.serviceProvider._id,
@@ -80,6 +80,7 @@ export default function Services() {
           firstName: service.serviceProvider.volunteer?.firstName,
           type: service.serviceProvider.type
         }
+      }
       if (service.serviceProvider?.organization?.address) {
         serviceData.address = service.serviceProvider.organization.address;
       } else if (service.serviceProvider?.volunteer?.address) {
