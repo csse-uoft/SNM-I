@@ -25,6 +25,7 @@ import OtherLocationsFields from "./OtherLocationsFields";
 import SearchIcon from '@mui/icons-material/Search';
 
 import {providerFormTypes} from '../../constants/provider_fields.js'
+import AdvancedSearchBar from "../advancesearch/advancesearchbar";
 
 const useStyles = makeStyles((theme) => ({
     link: {
@@ -54,28 +55,6 @@ export function Link({className = '', color, ...props}) {
     const classes = useStyles();
     return <DomLink {...props} className={color ? classes.linkWithHover : classes.link + ' ' + className}/>
 }
-
-const formFields = {
-    fieldName1: "name",
-    fieldName2: "eligibilityCondition",
-    fieldName3: "Display Name 3",
-    fieldName4: "Display Name 4",
-    // Add more fields as needed
-};
-
-const renderFormFields = (handleFormChange) => {
-    return Object.entries(formFields).map(([fieldName, displayName]) => (
-        <TextField
-            key={fieldName}
-            label={displayName}
-            variant="standard"
-            size="small"
-            style={{marginBottom: 10}}
-            onChange = {(event) => handleFormChange(displayName, event.target.value)}
-            // You can add more props or customize as needed
-        />
-    ));
-};
 
 
 /**
@@ -119,11 +98,7 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdva
         setSearchItem(event.target.value);
     };
 
-    const [formData, setFormData] = useState({});
 
-    const handleFormChange = (fieldName, value) => {
-        setFormData((prevData) => ({ ...prevData, [fieldName]: value }));
-    };
 
 
     return (
@@ -157,20 +132,7 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdva
 
             <Popper open={open_search} anchorEl={anchorEl_search} keepMounted={true}
                     sx={{zIndex: 2}}>
-                <Container style={{display: 'flex', flexDirection: 'column'}}
-                           sx={{bgcolor: 'background.paper', border: 1, borderRadius: 5, marginTop: 1}}>
-                    {renderFormFields(handleFormChange)}
-                    <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc' }}>
-                        <h2>Debug Form Data:</h2>
-                        <pre>{JSON.stringify(formData, null, 2)}</pre>
-                    </div>
-
-                    <Container >
-                        <Button onClick={handleAdvanceSearchClose}>Close</Button>
-                        <Button onClick={() => handleAdvancedSearch(formData)}>Search</Button>
-
-                    </Container>
-                </Container>
+                <AdvancedSearchBar handleAdvanceSearchClose={handleAdvanceSearchClose} handleAdvancedSearch={handleAdvancedSearch} />
             </Popper>
 
             <Chip onClick={type === 'providers' ? handleProviderAddClick : handleAdd}

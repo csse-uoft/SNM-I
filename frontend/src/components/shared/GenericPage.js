@@ -98,7 +98,6 @@ export default function GenericPage(props) {
   }
 
   const advancedSearchAndRefreshPage = (searchitems) => {
-    console.log("SearchResult:", advancedSearch(searchitems))
     advancedSearch(searchitems).then(data => setState(state => ({...state, data, loading: false})));
   }
 
