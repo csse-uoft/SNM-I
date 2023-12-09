@@ -26,6 +26,13 @@ export async function advancedSearchGeneric(genericType, genericItemType, body) 
   return putJson(`/api/advancedSearch/${genericType}/${genericItemType}`, body)
 }
 
-export async function advancedSearchService(genericType, genericItemType, body) {
-  return putJson(`/api/advancedSearch/service/${genericItemType}`, body)
+export async function fetchForServiceAdvancedSearch(body) {
+  const jsonData = {
+    name: 'Ben',
+    eligibilityCondition: 'Alex',
+    // ... other key-value pairs
+  };
+
+  console.log("JsonData: ", jsonData)
+  return postJson(`/api/advancedSearch/service/`, jsonData)
 }

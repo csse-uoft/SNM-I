@@ -7,7 +7,7 @@ import {getServiceProviderNameCharacteristicIds} from "./shared/CharacteristicId
 import {fetchSingleGeneric} from "../api/genericDataApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 import {formatLocation} from '../helpers/location_helpers'
-import {advancedSearchService} from "../api/advancedSearchApi";
+import {fetchForServiceAdvancedSearch} from "../api/advancedSearchApi";
 
 const TYPE = 'services';
 
@@ -119,6 +119,39 @@ export default function Services() {
   }
 
   const deleteService = (id) => deleteSingleGeneric('service', id);
+
+  const advancedSearchService = async (searchitems) => {
+    const services = (await fetchForServiceAdvancedSearch()).data;
+    const addressCharacteristicId = await getAddressCharacteristicId();
+    const characteristicIds = (await getServiceProviderNameCharacteristicIds());
+    const data = [];
+    for (const service of services) {
+      const serviceData = {_id: service._id, address: {}};
+      if (service.characteristicOccurrences)
+        for (const occ of service.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Service Name') {
+            serviceData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Service Provider') {
+            serviceData.provider = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const serviceObj = (await fetchSingleGeneric("service", service._id)).data; // TODO: inefficient!
+            serviceData.address = {
+              lat: serviceObj['characteristic_' + addressCharacteristicId].lat,
+              lng: serviceObj['characteristic_' + addressCharacteristicId].lng,
+            };
+          }
+        }
+      if (service.serviceProvider)
+        serviceData.serviceProvider = {
+          _id: service.serviceProvider.split('_')[1],
+          name: (await getServiceProviderName(service, characteristicIds)),
+          type: (await getServiceProviderType(service))
+        }
+      data.push(serviceData);
+    }
+    return data;
+
+  }
 
   return (
     <GenericPage

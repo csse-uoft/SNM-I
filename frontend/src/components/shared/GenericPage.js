@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
-import {Container, Fade, TextField} from "@mui/material";
+import {Container, Fade} from "@mui/material";
 
 /**
  * Generate markers on google map.
@@ -93,17 +93,12 @@ export default function GenericPage(props) {
     ]
   }, [showDeleteDialog, columnsWithoutOptions, type]);
 
-  const reloadDataAndRefreshPage = (searchitem) => {
+  const fulltextSearchAndRefreshPage = (searchitem) => {
     searchData(searchitem).then(data => setState(state => ({...state, data, loading: false})));
-
-    // it's possible that data is entered in the search bar
-    // and the search bar sent it to the backend
-    // but when no entity like this is found, it will return all possibility
-    // so we need to remove that possibility
   }
 
   const advancedSearchAndRefreshPage = (searchitems) => {
-    // searchitems must be a dictionary
+    console.log("SearchResult:", advancedSearch(searchitems))
     advancedSearch(searchitems).then(data => setState(state => ({...state, data, loading: false})));
   }
 
@@ -112,10 +107,10 @@ export default function GenericPage(props) {
       <CustomToolbar
         type={type}
         handleAdd={() => navigate(`/${type}/new`)}
-        handleSearch={reloadDataAndRefreshPage}
+        handleSearch={fulltextSearchAndRefreshPage}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
         handleAdvancedSearch={advancedSearchAndRefreshPage}
-        // handleDelete={reloadDataAndRefreshPage}
+        // handleDelete={fulltextSearchAndRefreshPage}
       />,
     onDelete: async (ids) => {
       // TODO: Lester 8/30/2021

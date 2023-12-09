@@ -56,14 +56,14 @@ export function Link({className = '', color, ...props}) {
 }
 
 const formFields = {
-    fieldName1: "Display Name 1",
-    fieldName2: "Display Name 2",
+    fieldName1: "name",
+    fieldName2: "eligibilityCondition",
     fieldName3: "Display Name 3",
     fieldName4: "Display Name 4",
     // Add more fields as needed
 };
 
-const renderFormFields = () => {
+const renderFormFields = (handleFormChange) => {
     return Object.entries(formFields).map(([fieldName, displayName]) => (
         <TextField
             key={fieldName}
@@ -71,6 +71,7 @@ const renderFormFields = () => {
             variant="standard"
             size="small"
             style={{marginBottom: 10}}
+            onChange = {(event) => handleFormChange(displayName, event.target.value)}
             // You can add more props or customize as needed
         />
     ));
@@ -118,6 +119,12 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdva
         setSearchItem(event.target.value);
     };
 
+    const [formData, setFormData] = useState({});
+
+    const handleFormChange = (fieldName, value) => {
+        setFormData((prevData) => ({ ...prevData, [fieldName]: value }));
+    };
+
 
     return (
         <>
@@ -152,10 +159,15 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdva
                     sx={{zIndex: 2}}>
                 <Container style={{display: 'flex', flexDirection: 'column'}}
                            sx={{bgcolor: 'background.paper', border: 1, borderRadius: 5, marginTop: 1}}>
-                    {renderFormFields()}
+                    {renderFormFields(handleFormChange)}
+                    <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc' }}>
+                        <h2>Debug Form Data:</h2>
+                        <pre>{JSON.stringify(formData, null, 2)}</pre>
+                    </div>
+
                     <Container >
                         <Button onClick={handleAdvanceSearchClose}>Close</Button>
-                        <Button onClick={handleAdvancedSearch}>Search</Button>
+                        <Button onClick={() => handleAdvancedSearch(formData)}>Search</Button>
 
                     </Container>
                 </Container>
