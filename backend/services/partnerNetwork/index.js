@@ -187,7 +187,7 @@ async function updateOrganization(req, res, next) {
     }
     console.log(JSON.stringify(PredefinedCharacteristics));
     organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.name || '';
-    organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description || '';
+    organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description || partnerData.organization.Description || '';
 //    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
     organization.formId = organizationFormId;
     console.log(organization);
@@ -314,7 +314,7 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
 
 async function sendOrganization(req, res, next) {
   try {
-    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf', 'description']});
+    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
     if (!organization) {
       throw new Error('This deployment has no home organization');
     }
@@ -330,6 +330,16 @@ async function sendOrganization(req, res, next) {
     partnerOrganizations = partnerOrganizations
       .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === yourApiKey)
       .map(organizationObj => organizationObj._uri);
+    
+    for (characteristicOccurrence of organization.characteristicOccurrences) {
+      if ('occurrenceOf' in characteristicOccurrence) {
+        if ('dataStringValue' in characteristicOccurrence) {
+          organization[characteristicOccurrence.occurrenceOf.description.split(' ').join('_')] = characteristicOccurrence.dataStringValue;
+        } else if ('dataNumberValue' in characteristicOccurrence) {
+          organization[characteristicOccurrence.occurrenceOf.description.split(' ').join('_')] = organization[characteristicOccurrence.dataNumberValue]
+        }
+      }
+    }
 
     organization.programs = await getOrganizationAssets(genericId, 'program', {
         'Program Name': 'programName',
