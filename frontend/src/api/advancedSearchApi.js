@@ -27,12 +27,6 @@ export async function advancedSearchGeneric(genericType, genericItemType, body) 
 }
 
 export async function fetchForServiceAdvancedSearch(body) {
-  const jsonData = {
-    name: 'Ben',
-    eligibilityCondition: 'Alex',
-    // ... other key-value pairs
-  };
 
-  console.log("JsonData: ", jsonData)
-  return postJson(`/api/advancedSearch/service/`, jsonData)
+  return postJson(`/api/advancedSearch/service/`, body)
 }

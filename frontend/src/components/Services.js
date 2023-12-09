@@ -121,7 +121,7 @@ export default function Services() {
   const deleteService = (id) => deleteSingleGeneric('service', id);
 
   const advancedSearchService = async (searchitems) => {
-    const services = (await fetchForServiceAdvancedSearch()).data;
+    const services = (await fetchForServiceAdvancedSearch(searchitems)).data;
     const addressCharacteristicId = await getAddressCharacteristicId();
     const characteristicIds = (await getServiceProviderNameCharacteristicIds());
     const data = [];
