@@ -190,7 +190,7 @@ async function receiveReferral(req, res, next) {
     return res.status(200).json({success: true});
   } catch (e) {
     console.log(e);
-    return res.status(400).json({message: e?.message});
+    return res.status(400).json({message: JSON.stringify(req.body)});
   }
 }
 
