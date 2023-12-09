@@ -174,6 +174,7 @@ async function receiveReferral(req, res, next) {
 
     const referral = {fields: {}, formId: referralFormId};
     referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id;
+    referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = 'Pending acceptance';
     referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = homeServiceProvider._uri;
     referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = referrerServiceProvider._uri;
     referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = partnerData.program ? 'http://snmi#program_' + partnerData.program?.id : null;

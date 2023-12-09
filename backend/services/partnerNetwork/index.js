@@ -305,7 +305,7 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
       && (asset.shareability === 'Shareable with all organizations'
         || (asset.shareability === 'Shareable with partner organizations'
           && (asset.partnerOrganizations?.some(org => partnerOrganizations.includes(org))
-            || asset.partnerOrganizations.map(org => org._uri).some(org => partnerOrganizations.includes(org))))
+            || asset.partnerOrganizations?.map(org => org._uri).some(org => partnerOrganizations.includes(org))))
         || (assetType === 'service' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
   ));
 
@@ -314,7 +314,7 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
 
 async function sendOrganization(req, res, next) {
   try {
-    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
+    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf', 'description']});
     if (!organization) {
       throw new Error('This deployment has no home organization');
     }
