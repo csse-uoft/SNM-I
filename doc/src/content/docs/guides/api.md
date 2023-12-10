@@ -137,109 +137,31 @@ program that have a attribute that contains 'AAA'.
 The query are down below. It uses FTS GraphDB searching function and 
 Lucene Connector searching function. We use both of them in case one of them misses some data.
 
-Services:
-```sparql
-PREFIX onto: <http://www.ontotext.com/>
-PREFIX tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
-PREFIX : <http://snmi#>
+The current design support limited ability of blurring search. \
+eg. searching for "B" will contain "Ben".
 
-PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
-PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-select distinct ?e0
-where 
-{
-    BIND("Ben" AS ?searchitem)
-    
-    # Search for rdf such that entity is the type of :Service
-    {
-        ?e0 ?p0 ?o0 .
-        ?e0 rdf:type :Service .
-    }.
-    
-    # The FTS function searching part
-    {
-        ?o0 onto:fts ?searchitem .
-    }
-    UNION
-	{   
-        ?o0 ?p1 ?o1 .
-    	?o1 onto:fts ?searchitem .
-	}
-    # The connector searching part
-    UNION
-    {?search a luc-index:service_connector ;
-      luc:query ?searchitem ;
-      luc:entities ?e0 .
-    }
-    UNION
-    {?search a luc-index:characteristicoccurrence_connector ;
-      luc:query ?searchitem ;
-      luc:entities ?o0 .
-    }
-    UNION
-
-    {?search a luc-index:address_connector ;
-      luc:query ?searchitem ;
-      luc:entities ?o0 .
-    }
-}
-```
-
-Programs:
-```sparql
-PREFIX onto: <http://www.ontotext.com/>
-PREFIX tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
-PREFIX : <http://snmi#>
-
-PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
-PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-select distinct ?e0
-where 
-{
-    BIND("S5*" AS ?searchitem)
-    
-    # Search for rdf such that entity is the type of :Service
-    {
-        ?e0 ?p0 ?o0 .
-        ?e0 rdf:type :Program .
-    }.
-        # The FTS function searching part
-    {
-        ?o0 onto:fts ?searchitem .
-    }
-    UNION
-	{   
-        ?o0 ?p1 ?o1 .
-    	?o1 onto:fts ?searchitem .
-	}
-    # The connector searching part
-    UNION
-    {?search a luc-index:program_connector ;
-      luc:query ?searchitem ;
-      luc:entities ?e0 .
-    }
-    UNION
-    {?search a luc-index:characteristicoccurrence_connector ;
-      luc:query ?searchitem ;
-      luc:entities ?o0 .
-    }
-    UNION
-    {?search a luc-index:address_connector ;
-      luc:query ?searchitem ;
-      luc:entities ?o0 .
-    }
-}
-```
 
 ## advancedSearch
 Route | Method
 ---|---
 `advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType` | GET
 `advancedSearch/:genericType/:genericItemType` | PUT
+`advancedSearch/service`| POST
+
+### service
+The advanced search over service is the first advanced search function completed.
+The advanced search function for different types are not completed yet, therefore service searching will be independent from other types so far.
+
+The advanced search function for service required POST calls with a JSON format body sent to the backend.
+With the attributed include "Name" and "Eligibility Condition" (So far).  
+
+The JSON format is as below:
+```
+{
+    "Name": "Service Name",
+    "Eligibility Condition": "Eligibility Condition"
+}
+```
 
 ## serviceProviders
 This section is for the
