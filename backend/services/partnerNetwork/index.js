@@ -79,7 +79,9 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
   }
 
   let assets = await fetchGenericDatasHelper(assetType);
-  assets = assets.filter(asset => asset.serviceProvider?._id === organizationGenericId);
+console.log(JSON.stringify(assets))
+console.log(organizationGenericId)
+  assets = assets.filter(asset => asset.serviceProvider?.organization?._id === organizationGenericId);
 
   assetLoop:
   for (assetData of partnerData.organization[assetType + 's']) {
@@ -91,9 +93,12 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
       asset.fields[PredefinedInternalTypes[internalType]._uri.split('#')[1]] = internalTypes[internalType](assetData.program?.split('_')[1]);
     }
     asset.formId = formId;
-
+console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+console.log(JSON.stringify(assetData))
+console.log(JSON.stringify(assets))
     for (assetIndex in assets) {
       const assetGeneric = assets[assetIndex];
+console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 console.log(assetGeneric.idInPartnerDeployment)
 console.log(assetData.id)
       if (assetGeneric.idInPartnerDeployment == assetData.id) {
