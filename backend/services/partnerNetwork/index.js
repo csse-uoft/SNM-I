@@ -94,6 +94,8 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
 
     for (assetIndex in assets) {
       const assetGeneric = assets[assetIndex];
+console.log(assetGeneric.idInPartnerDeployment)
+console.log(assetData.id)
       if (assetGeneric.idInPartnerDeployment == assetData.id) {
         await (await updateSingleGenericHelper(assetGeneric._id, asset, assetType)).save();
         assets.splice(assetIndex, 1);
