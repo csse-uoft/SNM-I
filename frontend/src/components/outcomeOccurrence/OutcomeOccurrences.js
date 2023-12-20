@@ -87,7 +87,7 @@ export default function OutcomeOccurrences() {
       if (outcomeOccurrence.occurrenceOf){
         // get corresponding outcome data
         outcomeOccurrenceData.outcome = {
-          name: outcomes[outcomeOccurrence.occurrenceOf.slice(1)],
+          name: outcomes[outcomeOccurrence.occurrenceOf.split('#')[1]],
           _id: outcomeOccurrence.occurrenceOf.split('_')[1],
         }
       }

@@ -15,6 +15,7 @@ import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "./virtualizeTable";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {formatLocation} from "../../helpers/location_helpers";
+import {ListClientOutcomeOccurrences} from "../outcomeOccurrence/ListClientOutcomeOccurrences";
 
 
 async function getOptionLabels(uris, options) {
@@ -146,6 +147,16 @@ export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
                 value.push(<Button sx={{textTransform: 'none', mr: 1}}
                                    variant="outlined" key={idx} color="success"
                                    onClick={() => navigate(`/clients/${id}/match/${needId}`)}>{label}</Button>)
+              } else if (genericType === 'client' && internalTypes[instanceId].implementation.label === 'Outcome') {
+                const outcomeId = uri.split('_')[1];
+                value.push(<div key={idx}>
+                  <Button sx={{textTransform: 'none'}}
+                      variant="outlined" key={idx} color="success"
+                      onClick={() => navigate(`/clients/${id}/match/${outcomeId}`)}>
+                    {label}
+                  </Button>
+                  <ListClientOutcomeOccurrences clientId={id} outcomeId={outcomeId} />
+                </div>);
               } else {
                 value.push(<Chip key={idx} label={label} sx={{mr: 1}}/>)
               }
