@@ -4,8 +4,6 @@ import React, {useState} from "react";
 const formFields = {
     fieldName1: "name",
     fieldName2: "eligibilityCondition",
-    fieldName3: "Display Name 3",
-    fieldName4: "Display Name 4",
     // Add more fields as needed
 };
 

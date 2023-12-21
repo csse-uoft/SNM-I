@@ -30,3 +30,8 @@ export async function fetchForServiceAdvancedSearch(body) {
 
   return postJson(`/api/advancedSearch/service/`, body)
 }
+
+export async function fetchForProgramAdvancedSearch(body) {
+
+  return postJson(`/api/advancedSearch/program/`, body)
+}

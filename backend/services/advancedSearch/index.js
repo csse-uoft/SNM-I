@@ -4,6 +4,7 @@ const {MDBUsageModel} = require("../../models/usage");
 const {GraphDB, regexBuilder} = require("graphdb-utils");
 const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBServiceModel} = require("../../models/service/service");
+const {GDBProgramModel} = require("../../models/program/program");
 
 
 const genericType2Model = {
@@ -114,6 +115,45 @@ const fetchForServiceAdvancedSearch = async (req, res, next) => {
 
 };
 
+const fetchForProgramAdvancedSearch = async (req, res, next) => {
+  const {genericType} = req.params;
+
+  let connector_search_result;
+  let fts_search_result;
+
+  try {
+    let data = [];
+
+    if (req.body){
+      let array = await fts_program_search(req.body);
+      if (array.length !== 0) {
+        let data_array = [];
+        for (let i = 0; i < array.length; i++) {
+          data_array.push(await GDBProgramModel.find({_uri: array[i]},
+              {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']}));
+        }
+        data = data_array.flat();
+      }
+    } else {
+      let array = await fts_program_search(req.body);
+      if (array.length !== 0) {
+        let data_array = [];
+        data_array.push(await GDBProgramModel.find({},
+            {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']}));
+        data = data_array.flat();
+      }
+
+    }
+
+    return res.status(200).json({data, success: true});
+
+  } catch (e) {
+    next(e);
+  }
+
+};
+
+
 async function fts_service_search(searchitems) {
   // The initial query sent to the database
   const baseURI = "http://localhost:7200/repositories/snmi?query=";
@@ -159,6 +199,44 @@ async function fts_service_search(searchitems) {
 
 }
 
+async function fts_program_search(searchitems) {
+  // The initial query sent to the database
+  const baseURI = "http://localhost:7200/repositories/snmi?query=";
+
+  let name_query_fragment = "";
+  if (searchitems.name && searchitems.name.trim() !== '') {
+    // Concatenate the query related to 'name'
+    name_query_fragment +=
+        `{ ?e0  tove_org:hasName  ?o0 . ?o0  onto:fts "${searchitems.name}" }`;
+  }
+
+  // FTS search part
+  const sparqlQuery =
+      `
+      PREFIX  :     <http://snmi#>
+      PREFIX  tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
+      PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX  onto: <http://www.ontotext.com/>
+      
+      SELECT DISTINCT  ?e0
+      WHERE
+      { 
+            ?e0 rdf:type :Program
+            
+            ${name_query_fragment}
+            
+      }
+      `;
+
+  let query = baseURI + encodeURIComponent(sparqlQuery);
+
+  const response = await fetch(query);
+  const text = await response.text();
+  return extractAllIndexes(text);
+
+}
+
+
 function extractAllIndexes(inputString) {
   const allIndexes = [];
 
@@ -173,5 +251,5 @@ function extractAllIndexes(inputString) {
 
 
 module.exports = {
-  fetchForAdvancedSearch, advancedSearchGeneric, fetchForServiceAdvancedSearch
+  fetchForAdvancedSearch, advancedSearchGeneric, fetchForServiceAdvancedSearch, fetchForProgramAdvancedSearch
 };

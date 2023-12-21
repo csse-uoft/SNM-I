@@ -2,12 +2,13 @@
 // TODO: look up commenting styles for file headers.
 
 const express = require('express');
-const {fetchForAdvancedSearch, advancedSearchGeneric, fetchForServiceAdvancedSearch} = require("../services/advancedSearch");
+const {fetchForAdvancedSearch, advancedSearchGeneric, fetchForServiceAdvancedSearch, fetchForProgramAdvancedSearch} = require("../services/advancedSearch");
 const router = express.Router();
 
 // genericItemType: characteristic, question, ...
 // genericType: client, organization, ...
 router.post('/advancedSearch/service', fetchForServiceAdvancedSearch);
+router.post('/advancedSearch/program', fetchForProgramAdvancedSearch)
 
 
 router.get('/advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType', fetchForAdvancedSearch);
