@@ -132,7 +132,7 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdva
 
             <Popper open={open_search} anchorEl={anchorEl_search} keepMounted={true}
                     sx={{zIndex: 2}}>
-                <AdvancedSearchBar handleAdvanceSearchClose={handleAdvanceSearchClose} handleAdvancedSearch={handleAdvancedSearch} />
+                <AdvancedSearchBar handleAdvanceSearchClose={handleAdvanceSearchClose} handleAdvancedSearch={handleAdvancedSearch} type={type} />
             </Popper>
 
             <Chip onClick={type === 'providers' ? handleProviderAddClick : handleAdd}

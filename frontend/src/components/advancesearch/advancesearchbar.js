@@ -2,18 +2,25 @@ import {Button, Container, TextField} from "@mui/material";
 import React, {useState} from "react";
 
 const formFields = {
-    fieldName1: "name",
-    fieldName2: "eligibilityCondition",
-    // Add more fields as needed
+    services: {
+        fieldName1: "name",
+        fieldName2: "eligibilityCondition",
+        // Add more fields as needed
+    },
+    programs: {
+        fieldName1: "name",
+    }
+
+
 };
 
-export default function AdvancedSearchBar({ handleAdvanceSearchClose, handleAdvancedSearch}) {
+export default function AdvancedSearchBar({ handleAdvanceSearchClose, handleAdvancedSearch, type}) {
     const [formData, setFormData] = useState({});
 
     return (
         <Container style={{display: 'flex', flexDirection: 'column'}}
                        sx={{bgcolor: 'background.paper', border: 1, borderRadius: 5, marginTop: 1}}>
-            {Object.entries(formFields).map(([fieldName, displayName]) => (
+            {Object.entries(formFields[type]).map(([fieldName, displayName]) => (
                 <TextField
                     key={fieldName}
                     label={displayName}
