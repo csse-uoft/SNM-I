@@ -11,7 +11,7 @@ export function ListClientOutcomeOccurrences({clientId, outcomeId}) {
   useEffect(() => {
     fetchMultipleGeneric('outcomeOccurrence')
       .then(options => {
-        const data = options.data.filter(outcomeOccurrence => outcomeOccurrence.occurrenceOf.split('_')[1] == outcomeId)
+        const data = options.data.filter(outcomeOccurrence => (outcomeOccurrence.occurrenceOf._id == outcomeId) && (outcomeOccurrence.client?._id == clientId));
         setOutcomeOccurrences(data)
       })
       .then(() => setLoading(false));

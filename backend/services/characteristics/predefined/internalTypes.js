@@ -538,6 +538,17 @@ module.exports = [
       optionsFromClass: 'http://snmi#Outcome'
     }
   },
+  {
+    name: 'clientForOutcomeOccurrence',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'outcomeOccurrence',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
+    }
+  },
 
   // Client
   {

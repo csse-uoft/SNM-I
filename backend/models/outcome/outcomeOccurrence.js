@@ -6,6 +6,7 @@ const {GDBAddressModel} = require('../address');
 
 const GDBOutcomeOccurrenceModel = createGraphDBModel({
   occurrenceOf: {type: GDBOutcomeModel, internalKey: ':occurrenceOf'},
+  client: {type: () => require("../ClientFunctionalities/client").GDBClientModel, internalKey: ':hasClient'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
   endDate: {type: Date, internalKey: ':hasEndDate'},
   description: {type: String, internalKey: 'cids:hasDescription'},

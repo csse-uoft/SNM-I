@@ -19,4 +19,16 @@ const outcomeOccurrenceInternalTypeUpdateTreater = async (internalType, value, r
   await outcomeOccurrenceInternalTypeCreateTreater(internalType, result, value);
 }
 
-module.exports = {outcomeOccurrenceInternalTypeCreateTreater, outcomeOccurrenceInternalTypeFetchTreater, outcomeOccurrenceInternalTypeUpdateTreater}
+
+const beforeDeleteOutcomeOccurrence = async (instanceData) => {
+  // Delete client.outcomeOccurrence
+  const client = await GDBClientModel.findByUri(instanceData.client);
+
+  if (client.outcomeOccurrences) {
+    client.outcomeOccurrences = client.outcomeOccurrences.filter(outcomeOcc => outcomeOcc === instanceData._uri);
+    await client.save();
+  }
+}
+
+module.exports = {outcomeOccurrenceInternalTypeCreateTreater, outcomeOccurrenceInternalTypeFetchTreater,
+  outcomeOccurrenceInternalTypeUpdateTreater, beforeDeleteOutcomeOccurrence}

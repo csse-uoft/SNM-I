@@ -95,7 +95,8 @@ const {
 const {
   outcomeOccurrenceInternalTypeUpdateTreater,
   outcomeOccurrenceInternalTypeCreateTreater,
-  outcomeOccurrenceInternalTypeFetchTreater
+  outcomeOccurrenceInternalTypeFetchTreater,
+  beforeDeleteOutcomeOccurrence
 } = require("./outcomeOccurrenceInternalTypeTreater");
 const {
   clientAssessmentInternalTypeUpdateTreater,
@@ -143,7 +144,7 @@ const genericType2Populates = {
   'serviceRegistration': ['address', 'needOccurrence', 'serviceOccurrence'],
   'programRegistration' : ['address', 'needOccurrence', 'programOccurrence'],
   'needOccurrence': ['address', 'occurrenceOf', 'client'],
-  'outcomeOccurrence': ['address'],
+  'outcomeOccurrence': ['address', 'occurrenceOf', 'client'],
   'needSatisfierOccurrence': ['address'],
   'clientAssessment': ['address', 'client'],
   'referral': ['address', 'client'],
@@ -174,7 +175,8 @@ const genericType2BeforeUpdateTreater = {
 }
 
 const genericType2BeforeDeleteTreater = {
-  'needOccurrence': beforeDeleteNeedOccurrence
+  'needOccurrence': beforeDeleteNeedOccurrence,
+  'outcomeOccurrence': beforeDeleteOutcomeOccurrence
 }
 
 // this dict will be shared by all generic types with internal types as their properties
