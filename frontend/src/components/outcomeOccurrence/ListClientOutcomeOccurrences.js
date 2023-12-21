@@ -21,12 +21,14 @@ export function ListClientOutcomeOccurrences({clientId, outcomeId}) {
     return <Loading />
   }
 
-  return <List sx={{ml: 4}}>
-    {outcomeOccurrences.map((outcomeOccurrence, idx) => {
-      return <Button key={idx} sx={{textTransform: 'none'}}
-          variant="outlined">
-        Outcome Occurrence {outcomeOccurrence._id}
-      </Button>;
-    })}
-  </List>
+  return <>{outcomeOccurrences.length === 0
+    ? ''
+    : <List sx={{ml: 4}}>
+      {outcomeOccurrences.map((outcomeOccurrence, idx) => {
+        return <Button key={idx} sx={{textTransform: 'none', mr: 1, mb: 1}}
+            variant="outlined">
+          Outcome Occurrence {outcomeOccurrence._id}
+        </Button>;
+      })}
+    </List>}</>;
 }
