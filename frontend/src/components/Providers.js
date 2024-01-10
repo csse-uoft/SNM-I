@@ -45,13 +45,13 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({type, status, organization}) => {
+    body: ({type, status, organizationProvider}) => {
       if (type === 'organization') {
         return status;
-      } else if (organization) {
-        organization = {...organization, type: 'organization'}
+      } else if (organizationProvider) {
+        organizationProvider = {...organizationProvider, type: 'organization'}
         return <p>
-          From <Link color to={formatProviderLink(organization)}>{organization.status}</Link>
+          From <Link color to={formatProviderLink(organizationProvider)}>{organizationProvider.organization.status}</Link>
         </p>;
       } else {
         return 'Unaffiliated';
@@ -124,7 +124,7 @@ export default function Providers() {
       if (innerData.shareability)
         providerData.shareability = innerData.shareability;
       if (innerData.organization)
-        providerData.organization = innerData.organization;
+        providerData.organizationProvider = providers.find(obj => obj.organization?._id === innerData.organization._id);
       if (innerData.partnerOrganizations)
         providerData.partnerOrganizations = innerData.partnerOrganizations;
       data.push(providerData);
