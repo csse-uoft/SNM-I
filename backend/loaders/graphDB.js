@@ -3,7 +3,7 @@ const {UpdateQueryPayload} = require('graphdb').query;
 const {graphdb, mongodb} = require('../config');
 const {sleep} = require('../utils');
 const {namespaces} = require('./namespaces');
-const {initGraphDB, MongoDBIdGenerator, importRepositorySnapshot} = require("graphdb-utils");
+const {initGraphDB, UUIDGenerator, importRepositorySnapshot} = require("graphdb-utils");
 
 let repository;
 
@@ -35,7 +35,7 @@ async function cleanup() {
 
 async function load() {
   // ID Generator for creating new instances
-  const idGenerator = new MongoDBIdGenerator(mongodb.addr);
+  const idGenerator = new UUIDGenerator();
 
   const result = await initGraphDB({
     idGenerator,
