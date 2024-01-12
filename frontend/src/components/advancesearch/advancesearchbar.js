@@ -9,7 +9,10 @@ const formFields = {
     },
     programs: {
         fieldName1: "name",
-    }
+    },
+    providers: {
+        fieldName1: "name",
+    },
 
 
 };
@@ -20,17 +23,21 @@ export default function AdvancedSearchBar({ handleAdvanceSearchClose, handleAdva
     return (
         <Container style={{display: 'flex', flexDirection: 'column'}}
                        sx={{bgcolor: 'background.paper', border: 1, borderRadius: 5, marginTop: 1}}>
-            {Object.entries(formFields[type]).map(([fieldName, displayName]) => (
-                <TextField
-                    key={fieldName}
-                    label={displayName}
-                    variant="standard"
-                    size="small"
-                    style={{ marginBottom: 10 }}
-                    onChange = {(event) => setFormData({...formData, [displayName]: event.target.value})}
-                    // You can add more props or customize as needed
-                />
-            ))}
+            {formFields[type] &&
+                (<>
+                {Object.entries(formFields[type]).map(([fieldName, displayName]) => (
+                    <TextField
+                        key={fieldName}
+                        label={displayName}
+                        variant="standard"
+                        size="small"
+                        style={{ marginBottom: 10 }}
+                        onChange = {(event) => setFormData({...formData, [displayName]: event.target.value})}
+                        // You can add more props or customize as needed
+                    />
+                ))}
+                </>)
+            }
 
             <div style={{marginTop: '20px', padding: '10px', border: '1px solid #ccc'}}>
                 <h2>Debug Form Data:</h2>
