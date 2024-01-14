@@ -311,16 +311,6 @@ async function fts_program_search(searchitems) {
 
 async function fts_serviceprovider_search(searchitems) {
 
-  // The initial query sent to the database
-  const baseURI = "http://localhost:7200/repositories/snmi?query=";
-
-  let name_query_fragment = "";
-  // if (searchitems.name && searchitems.name.trim() !== '') {
-  //   // Concatenate the query related to 'name'
-  //   name_query_fragment +=
-  //       `{ ?e0  tove_org:hasName  ?o0 . ?o0  onto:fts "${searchitems.name}" }`;
-  // }
-
   // FTS search part
   const sparqlQuery =
       `
@@ -329,26 +319,24 @@ async function fts_serviceprovider_search(searchitems) {
       PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX  onto: <http://www.ontotext.com/>
       
-      SELECT DISTINCT  ?e0
+      SELECT DISTINCT  ?serviceprovider
       WHERE
       { 
-            ?e0 rdf:type :ServiceProvider
+            ?serviceprovider rdf:type :ServiceProvider
             
             {
-                ?e0 :hasOrganization ?e1 .
+                ?serviceprovider :hasOrganization ?provider .
             }
             UNION
             {
-                ?e0 :hasVolunteer ?e1 .
+                ?serviceprovider :hasVolunteer ?provider .
             }
             
-            BIND(?e1 AS ?cO_searchitem)
+            BIND(?provider AS ?c0_searchitem)
 
             
             ${characteristicOccurrenceQueryGenerator(searchitems)}
 
-            
-            
       }
       `;
 

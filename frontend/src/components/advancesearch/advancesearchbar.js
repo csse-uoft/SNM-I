@@ -12,9 +12,9 @@ const formFields = {
     , "Program Name", "Appointment Name", "Description", "Note", "Referral Type", "Referral Status",
     "Hours of Operation"]
   ,
-  providers: {
-    fieldName1: "name",
-  }
+  providers: ["First Name", "Last Name", "Organization Name", "Service Name", "Eligibility Condition"
+    , "Program Name", "Appointment Name", "Description", "Note", "Referral Type", "Referral Status",
+    "Hours of Operation"]
 
 
 };
