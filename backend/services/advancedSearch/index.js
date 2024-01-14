@@ -186,11 +186,11 @@ function characteristicOccurrenceQueryGenerator(searchitems) {
       query +=
         `
           {
-              ?cO_searchitem :hasCharacteristicOccurrence ?serviceCharacteristicOccurrence_${count} .
-              ?serviceCharacteristicOccurrence_${count} :occurrenceOf ?characteristic_${count} .
+              ?c0_searchitem :hasCharacteristicOccurrence ?characteristicOccurrence_${count} .
+              ?characteristicOccurrence_${count} :occurrenceOf ?characteristic_${count} .
               ?characteristic_${count} :hasName "${key}" .
               
-              ?serviceCharacteristicOccurrence_${count} :hasStringValue "${searchitems[key]}" .
+              ?characteristicOccurrence_${count} :hasStringValue "${searchitems[key]}" .
           }
         `
       count++;
@@ -199,11 +199,11 @@ function characteristicOccurrenceQueryGenerator(searchitems) {
       query +=
           `
             {
-                ?cO_searchitem :hasCharacteristicOccurrence ?serviceCharacteristicOccurrence_${count} .
-                ?serviceCharacteristicOccurrence_${count} :occurrenceOf ?characteristic_${count} .
+                ?c0_searchitem :hasCharacteristicOccurrence ?characteristicOccurrence_${count} .
+                ?characteristicOccurrence_${count} :occurrenceOf ?characteristic_${count} .
                 ?characteristic_${count} :hasName "${key}" .
                 
-                ?serviceCharacteristicOccurrence_${count} :hasNumberValue ${searchitems[key]} .
+                ?characteristicOccurrence_${count} :hasNumberValue ${searchitems[key]} .
             }
           `
       count++;
@@ -251,12 +251,12 @@ async function fts_service_search(searchitems) {
       PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX  onto: <http://www.ontotext.com/>
       
-      SELECT DISTINCT  ?e0
+      SELECT DISTINCT  ?service
       WHERE
       { 
             ?service rdf:type :Service
             
-            BIND(?service AS ?cO_searchitem)
+            BIND(?service AS ?c0_searchitem)
                         
             ${characteristicOccurrenceQueryGenerator(searchitems)}
       }
@@ -288,15 +288,20 @@ async function fts_program_search(searchitems) {
       PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX  onto: <http://www.ontotext.com/>
       
-      SELECT DISTINCT  ?e0
+      SELECT DISTINCT  ?program
       WHERE
       { 
-            ?e0 rdf:type :Program
-                        
+            ?program rdf:type :Program
+            
+            BIND(?program AS ?c0_searchitem)
+            
+            ${characteristicOccurrenceQueryGenerator(searchitems)}
+                       
       }
       `;
 
   let query = baseURI + encodeURIComponent(sparqlQuery);
+  console.log("SPARQL QUERY: " + sparqlQuery)
 
   const response = await fetch(query);
   const text = await response.text();
@@ -305,7 +310,6 @@ async function fts_program_search(searchitems) {
 }
 
 async function fts_serviceprovider_search(searchitems) {
-  console.log("searchitems: " + searchitems)
 
   // The initial query sent to the database
   const baseURI = "http://localhost:7200/repositories/snmi?query=";

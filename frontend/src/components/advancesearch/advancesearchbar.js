@@ -8,12 +8,13 @@ const formFields = {
         "Hours of Operation"]
   // Add more fields as needed
   ,
-  programs: {
-    fieldName1: "name",
-  },
+  programs: ["First Name", "Last Name", "Organization Name", "Service Name", "Eligibility Condition"
+    , "Program Name", "Appointment Name", "Description", "Note", "Referral Type", "Referral Status",
+    "Hours of Operation"]
+  ,
   providers: {
     fieldName1: "name",
-  },
+  }
 
 
 };
