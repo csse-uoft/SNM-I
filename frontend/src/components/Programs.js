@@ -166,7 +166,7 @@ export default function Programs() {
   const deleteProgram = (id) => deleteSingleGeneric('program', id);
 
 
-  const advancedProgramService = async (searchitem) => {
+  const advancedProgramSearch = async (searchitem) => {
     const programs = (await fetchForProgramAdvancedSearch(searchitem)).data;
     const data = [];
     for (const program of programs) {
@@ -208,7 +208,7 @@ export default function Programs() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       searchData={searchData}
-      advancedSearch={advancedProgramService}
+      advancedSearch={advancedProgramSearch}
       deleteItem={deleteProgram}
       generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
