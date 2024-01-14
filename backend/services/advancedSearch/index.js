@@ -18,6 +18,8 @@ const genericItemType2Model = {
 
 };
 
+const baseURI = "http://localhost:7200/repositories/snmi?query=";
+
 // ex. return all characteristics associated with client
 async function fetchForAdvancedSearch(req, res, next) {
   try {
@@ -79,10 +81,6 @@ async function advancedSearchGeneric(req, res, next) {
 
 
 const fetchForServiceAdvancedSearch = async (req, res, next) => {
-    const {genericType} = req.params;
-
-    let connector_search_result;
-    let fts_search_result;
     try {
         let data = [];
 
@@ -97,14 +95,10 @@ const fetchForServiceAdvancedSearch = async (req, res, next) => {
             data = data_array.flat();
           }
         } else {
-          let array = await fts_service_search(req.body);
-          if (array.length !== 0) {
             let data_array = [];
             data_array.push(await GDBServiceModel.find({},
                   {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']}));
             data = data_array.flat();
-          }
-
         }
 
         return res.status(200).json({data, success: true});
@@ -115,11 +109,38 @@ const fetchForServiceAdvancedSearch = async (req, res, next) => {
 
 };
 
-const fetchForProgramAdvancedSearch = async (req, res, next) => {
-  const {genericType} = req.params;
+const fetchForServiceProviderAdvancedSearch = async (req, res, next) => {
 
-  let connector_search_result;
-  let fts_search_result;
+  try {
+    let data = [];
+
+    if (req.body){
+      let array = await fts_serviceprovider_search(req.body);
+      if (array.length !== 0) {
+        let data_array = [];
+        for (let i = 0; i < array.length; i++) {
+          data_array.push(await GDBServiceProviderModel.find({_uri: array[i]},
+              {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']}));
+        }
+        data = data_array.flat();
+      }
+
+    } else {
+        let data_array = [];
+        data_array.push(await GDBServiceProviderModel.find({},
+            {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']}));
+        data = data_array.flat();
+    }
+
+    return res.status(200).json({data, success: true});
+
+  } catch (e) {
+    next(e);
+  }
+
+};
+
+const fetchForProgramAdvancedSearch = async (req, res, next) => {
 
   try {
     let data = [];
@@ -135,14 +156,10 @@ const fetchForProgramAdvancedSearch = async (req, res, next) => {
         data = data_array.flat();
       }
     } else {
-      let array = await fts_program_search(req.body);
-      if (array.length !== 0) {
         let data_array = [];
         data_array.push(await GDBProgramModel.find({},
             {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence']}));
         data = data_array.flat();
-      }
-
     }
 
     return res.status(200).json({data, success: true});
@@ -153,24 +170,78 @@ const fetchForProgramAdvancedSearch = async (req, res, next) => {
 
 };
 
+function characteristicOccurrenceQueryGenerator(searchitems) {
+  let query = "";
+
+  var string_sets = new Set(["First Name", "Last Name", "Organization Name", "Service Name", "Eligibility Condition"
+                                              , "Program Name", "Appointment Name", "Description", "Note", "Referral Type", "Referral Status"]);
+  var number_sets = new Set(["Hours of Operation"])
+  var date_sets = new Set(["Start Date", "End Date", "Date and Time", "Date"])
+  var object_sets = new Set(["Gender", "Address"])
+
+
+  let count = 1;
+  for (var key in searchitems) {
+    if (string_sets.has(key) && searchitems[key] && searchitems[key].trim() !== ''){
+      query +=
+        `
+          {
+              ?cO_searchitem :hasCharacteristicOccurrence ?serviceCharacteristicOccurrence_${count} .
+              ?serviceCharacteristicOccurrence_${count} :occurrenceOf ?characteristic_${count} .
+              ?characteristic_${count} :hasName "${key}" .
+              
+              ?serviceCharacteristicOccurrence_${count} :hasStringValue "${searchitems[key]}" .
+          }
+        `
+      count++;
+    }
+    else if (number_sets.has(key) && searchitems[key] && searchitems[key].trim() !== ''){
+      query +=
+          `
+            {
+                ?cO_searchitem :hasCharacteristicOccurrence ?serviceCharacteristicOccurrence_${count} .
+                ?serviceCharacteristicOccurrence_${count} :occurrenceOf ?characteristic_${count} .
+                ?characteristic_${count} :hasName "${key}" .
+                
+                ?serviceCharacteristicOccurrence_${count} :hasNumberValue ${searchitems[key]} .
+            }
+          `
+      count++;
+    }
+
+  }
+
+  return query
+
+}
+
+
 
 async function fts_service_search(searchitems) {
   // The initial query sent to the database
-  const baseURI = "http://localhost:7200/repositories/snmi?query=";
-
-  let name_query_fragment = "";
-  if (searchitems.name && searchitems.name.trim() !== '') {
-    // Concatenate the query related to 'name'
-    name_query_fragment +=
-        `{ ?e0  tove_org:hasName  ?o0 . ?o0  onto:fts "${searchitems.name}" }`;
-  }
-
-  let eligibility_query_fragment = "";
-  if (searchitems.eligibilityCondition && searchitems.eligibilityCondition.trim() !== '') {
-    // Concatenate the query related to 'eligibilityCondition'
-    eligibility_query_fragment += `{ ?e0  :hasEligibilityCondition  ?o1 . ?o1  onto:fts "${searchitems.eligibilityCondition}" }`;
-  }
-
+  // let name_query_fragment = "";
+  // if (searchitems.name && searchitems.name.trim() !== '') {
+  //   // Concatenate the query related to 'name'
+  //   name_query_fragment +=
+  //       `
+  //         {
+  //             ?service  tove_org:hasName  ?serviceName .
+  //             ?serviceName  onto:fts "${searchitems.name}"
+  //         }
+  //       `
+  // }
+  //
+  // let eligibility_query_fragment = "";
+  // if (searchitems.eligibilityCondition && searchitems.eligibilityCondition.trim() !== '') {
+  //   // Concatenate the query related to 'eligibilityCondition'
+  //   eligibility_query_fragment +=
+  //       `
+  //         {
+  //             ?service  :hasEligibilityCondition  ?serviceEligibilityCondition .
+  //             ?serviceEligibilityCondition  onto:fts "${searchitems.eligibilityCondition}"
+  //         }
+  //       `
+  // }
 
   // FTS search part
   const sparqlQuery =
@@ -183,15 +254,16 @@ async function fts_service_search(searchitems) {
       SELECT DISTINCT  ?e0
       WHERE
       { 
-            ?e0 rdf:type :Service
+            ?service rdf:type :Service
             
-            ${name_query_fragment}
-            
-            ${eligibility_query_fragment}
+            BIND(?service AS ?cO_searchitem)
+                        
+            ${characteristicOccurrenceQueryGenerator(searchitems)}
       }
       `;
 
   let query = baseURI + encodeURIComponent(sparqlQuery);
+  console.log("SPARQL QUERY: " + sparqlQuery)
 
   const response = await fetch(query);
   const text = await response.text();
@@ -200,15 +272,13 @@ async function fts_service_search(searchitems) {
 }
 
 async function fts_program_search(searchitems) {
-  // The initial query sent to the database
-  const baseURI = "http://localhost:7200/repositories/snmi?query=";
 
-  let name_query_fragment = "";
-  if (searchitems.name && searchitems.name.trim() !== '') {
-    // Concatenate the query related to 'name'
-    name_query_fragment +=
-        `{ ?e0  tove_org:hasName  ?o0 . ?o0  onto:fts "${searchitems.name}" }`;
-  }
+  // let name_query_fragment = "";
+  // if (searchitems.name && searchitems.name.trim() !== '') {
+  //   // Concatenate the query related to 'name'
+  //   name_query_fragment +=
+  //       `{ ?e0  tove_org:hasName  ?o0 . ?o0  onto:fts "${searchitems.name}" }`;
+  // }
 
   // FTS search part
   const sparqlQuery =
@@ -222,9 +292,7 @@ async function fts_program_search(searchitems) {
       WHERE
       { 
             ?e0 rdf:type :Program
-            
-            ${name_query_fragment}
-            
+                        
       }
       `;
 
@@ -235,6 +303,61 @@ async function fts_program_search(searchitems) {
   return extractAllIndexes(text);
 
 }
+
+async function fts_serviceprovider_search(searchitems) {
+  console.log("searchitems: " + searchitems)
+
+  // The initial query sent to the database
+  const baseURI = "http://localhost:7200/repositories/snmi?query=";
+
+  let name_query_fragment = "";
+  // if (searchitems.name && searchitems.name.trim() !== '') {
+  //   // Concatenate the query related to 'name'
+  //   name_query_fragment +=
+  //       `{ ?e0  tove_org:hasName  ?o0 . ?o0  onto:fts "${searchitems.name}" }`;
+  // }
+
+  // FTS search part
+  const sparqlQuery =
+      `
+      PREFIX  :     <http://snmi#>
+      PREFIX  tove_org: <http://ontology.eil.utoronto.ca/tove/organization#>
+      PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX  onto: <http://www.ontotext.com/>
+      
+      SELECT DISTINCT  ?e0
+      WHERE
+      { 
+            ?e0 rdf:type :ServiceProvider
+            
+            {
+                ?e0 :hasOrganization ?e1 .
+            }
+            UNION
+            {
+                ?e0 :hasVolunteer ?e1 .
+            }
+            
+            BIND(?e1 AS ?cO_searchitem)
+
+            
+            ${characteristicOccurrenceQueryGenerator(searchitems)}
+
+            
+            
+      }
+      `;
+
+  console.log("SPARQL QUERY: " + sparqlQuery)
+
+  let query = baseURI + encodeURIComponent(sparqlQuery);
+
+  const response = await fetch(query);
+  const text = await response.text();
+  return extractAllIndexes(text);
+
+}
+
 
 
 function extractAllIndexes(inputString) {
@@ -251,5 +374,5 @@ function extractAllIndexes(inputString) {
 
 
 module.exports = {
-  fetchForAdvancedSearch, advancedSearchGeneric, fetchForServiceAdvancedSearch, fetchForProgramAdvancedSearch
+  fetchForAdvancedSearch, advancedSearchGeneric, fetchForServiceAdvancedSearch, fetchForProgramAdvancedSearch, fetchForServiceProviderAdvancedSearch,
 };
