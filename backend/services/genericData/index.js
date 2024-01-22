@@ -40,7 +40,10 @@ const {GDBReferralModel} = require("../../models/referral");
 const {
   serviceInternalTypeCreateTreater,
   serviceInternalTypeFetchTreater,
-  serviceInternalTypeUpdateTreater
+  serviceInternalTypeUpdateTreater,
+  afterCreateService,
+  afterUpdateService,
+  afterDeleteService
 } = require("./serviceInternalTypeTreater");
 const {
   programInternalTypeCreateTreater,
@@ -241,19 +244,19 @@ const genericType2InternalTypeUpdateTreater = {
 
 const genericType2AfterCreateTreater = {
   'program': afterCreateProgram,
-  // 'service': ,
+  'service': afterCreateService,
   // 'volunteer': 
 }
 
 const genericType2AfterUpdateTreater = {
   'program': afterUpdateProgram,
-  // 'service': ,
+  'service': afterUpdateService,
   // 'volunteer': 
 }
 
 const genericType2AfterDeleteTreater = {
   'program': afterDeleteProgram,
-  // 'service': ,
+  'service': afterDeleteService,
   // 'volunteer': 
 }
 
