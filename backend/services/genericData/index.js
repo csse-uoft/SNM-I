@@ -117,7 +117,10 @@ const {
 const {
   volunteerInternalTypeCreateTreater,
   volunteerInternalTypeFetchTreater,
-  volunteerInternalTypeUpdateTreater
+  volunteerInternalTypeUpdateTreater,
+  afterCreateVolunteer,
+  afterUpdateVolunteer,
+  afterDeleteVolunteer
 } = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const genericType2Model = {
@@ -245,19 +248,19 @@ const genericType2InternalTypeUpdateTreater = {
 const genericType2AfterCreateTreater = {
   'program': afterCreateProgram,
   'service': afterCreateService,
-  // 'volunteer': 
+  'volunteer': afterCreateVolunteer
 }
 
 const genericType2AfterUpdateTreater = {
   'program': afterUpdateProgram,
   'service': afterUpdateService,
-  // 'volunteer': 
+  'volunteer': afterUpdateVolunteer
 }
 
 const genericType2AfterDeleteTreater = {
   'program': afterDeleteProgram,
   'service': afterDeleteService,
-  // 'volunteer': 
+  'volunteer': afterDeleteVolunteer
 }
 
 
