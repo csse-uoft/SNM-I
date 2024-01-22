@@ -1,4 +1,6 @@
-const { getPredefinedProperty, getInternalTypeValues } = require("./helperFunctions");
+const { sendPartnerUpdateNotification } = require("../partnerNetwork/update");
+const { getGenericPartners } = require("../partnerOrganization");
+const { getPredefinedProperty, getInternalTypeValues, isPartnerUpdateNeeded } = require("./helperFunctions");
 
 const FORMTYPE = 'service'
 const serviceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
