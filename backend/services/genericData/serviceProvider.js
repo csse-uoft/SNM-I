@@ -61,7 +61,7 @@ const updateServiceProvider = async (req, res, next) => {
       return res.status(400).json({message: 'Cannot create more than one home organization'});
     }
 
-    const generic = await updateSingleGenericHelper(genericId, data, providerType);
+    const { generic } = await updateSingleGenericHelper(genericId, data, providerType);
     provider[providerType] = generic;
     await provider.save();
     return res.status(200).json({success: true});

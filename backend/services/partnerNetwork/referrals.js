@@ -134,7 +134,8 @@ async function getClient(partnerClientData, method, originalId) {
   if (method === 'POST') {
     return GDBClientModel(await createSingleGenericHelper(client, 'client'));
   } else {
-    await (await updateSingleGenericHelper(originalId, client, 'client')).save();
+    const { generic } = await updateSingleGenericHelper(originalId, client, 'client');
+    await generic.save();
     return null;
   }
 }
@@ -186,7 +187,8 @@ async function receiveReferral(req, res, next) {
       const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
         {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences']});
       await getClient(partnerData.client, req.method, originalReferral.client?.split('_')[1]);
-      await (await updateSingleGenericHelper(originalReferral._id, referral, 'referral')).save();
+      const { generic } = await updateSingleGenericHelper(originalReferral._id, referral, 'referral');
+      await generic.save();
     }
 
     return res.status(200).json({success: true});
