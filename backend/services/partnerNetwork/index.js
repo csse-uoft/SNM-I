@@ -86,7 +86,7 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
   assets = assets.filter(asset => asset.serviceProvider?.organization?._id === organizationGenericId);
 
   assetLoop:
-  for (assetData of partnerData.organization[assetType + 's']) {
+  for (assetData of partnerData.organization[assetType + 's'] || []) {
     const asset = {fields: {}};
     for (characteristic in characteristics) {
       asset.fields[PredefinedCharacteristics[characteristic]._uri.split('#')[1]] = assetData[characteristics[characteristic]];
@@ -134,7 +134,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
   providers = providers.filter(provider => provider.volunteer?.organization?._id === organizationGenericId);
 
   providerLoop:
-  for (volunteerData of partnerData.organization['volunteers']) {
+  for (volunteerData of partnerData.organization['volunteers'] || []) {
     const volunteer = {fields: {}};
     for (characteristic in characteristics) {
       volunteer.fields[PredefinedCharacteristics[characteristic]._uri.split('#')[1]] = volunteerData[characteristics[characteristic]];
@@ -185,7 +185,7 @@ async function updateOrganizationHelper(providerId, partnerData) {
   if (Object.keys(PredefinedCharacteristics).length == 0) {
     await initPredefinedCharacteristics();
   }
-  console.log(JSON.stringify(PredefinedCharacteristics));
+
   organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.name || '';
   organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description || partnerData.organization.Description || '';
 //    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
@@ -241,13 +241,36 @@ async function updateOrganizationHelper(providerId, partnerData) {
     });
 }
 
+async function deleteOrganizationHelper(providerId, partnerData) {
+  const provider = await getProviderById(providerId);
+  const providerType = provider.type;
+  if (providerType !== 'organization') {
+    throw new Error('Provider is not an organization');
+  }
+  const genericId = provider[providerType]._id;
+
+  await updateOrganizationGenericAssets(genericId, partnerData, 'program', {}, {}, GDBProgramModel);
+  await updateOrganizationGenericAssets(genericId, partnerData, 'service', {}, {}, GDBServiceModel);
+  await updateOrganizationVolunteers(genericId, partnerData, {}, {});
+  
+  await deleteSingleGenericHelper('organization', genericId);
+  await GDBServiceProviderModel.findByIdAndDelete(providerId);
+}
+
 async function updateOrganization(req, res, next) {
   try {
     const partnerData = req.body;
     const {id} = req.params;
 
-    await updateOrganizationHelper(id, partnerData);
-    return res.status(200).json({success: true});
+    if (!partnerData.organization) {
+      return res.status(400).json({message: 'No organization provided'});
+    } else if (Object.keys(partnerData.organization).length === 0) {
+      await deleteOrganizationHelper(id, partnerData);
+      return res.status(204);
+    } else {
+      await updateOrganizationHelper(id, partnerData);
+      return res.status(200).json({success: true});
+    }
   } catch (e) {
     console.log(e);
     return res.status(400).json({message: e?.message});
@@ -323,7 +346,8 @@ async function sendOrganization(req, res, next) {
   try {
     const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
     if (!organization) {
-      throw new Error('This deployment has no home organization');
+      // Will delete the copy of the organization in the partner deployment if it exists
+      return res.status(200).json({organization: {}, success: true});
     }
     const genericId = organization._id;
 
@@ -391,6 +415,7 @@ module.exports = {
   fetchOrganizationHelper,
   updateOrganization,
   updateOrganizationHelper,
+  deleteOrganizationHelper,
   getGenericAsset,
   sendOrganization,
   getOrganization

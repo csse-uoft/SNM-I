@@ -49,7 +49,7 @@ async function sendPartnerUpdateNotification(partnerId) {
 }
 
 async function receivePartnerUpdateNotification(req, res, next) {
-  const { fetchOrganizationHelper, updateOrganizationHelper } = require(".");
+  const { fetchOrganizationHelper, deleteOrganizationHelper, updateOrganizationHelper } = require(".");
   try {
     const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' }, { populates: ['characteristicOccurrences.occurrenceOf'] });
     if (!homeOrganization) {
@@ -67,8 +67,13 @@ async function receivePartnerUpdateNotification(req, res, next) {
       const partnerData = await fetchOrganizationHelper(partnerOrganization._id);
 
       const partnerServiceProvider = await GDBServiceProviderModel.findOne({organization: {_id: partnerOrganization._id}});
-      await updateOrganizationHelper(partnerServiceProvider._id, partnerData);
-      return res.status(200).json({success: true});
+      if (!partnerData.organization || Object.keys(partnerData.organization).length === 0) {
+        await deleteOrganizationHelper(partnerServiceProvider._id, partnerData);
+        return res.status(204).send();
+      } else {
+        await updateOrganizationHelper(partnerServiceProvider._id, partnerData);
+        return res.status(200).json({success: true});
+      }
     } else {
       return res.status(404).json({ message: 'Your API key does not match any partner\'s API key' });
     }

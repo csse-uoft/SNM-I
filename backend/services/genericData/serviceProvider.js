@@ -4,6 +4,7 @@ const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericH
 const {Server400Error} = require("../../utils");
 const {PredefinedCharacteristics} = require("../characteristics");
 const { afterCreateVolunteer, afterUpdateVolunteer, afterDeleteVolunteer } = require("./volunteerInternalTypeTreater");
+const { afterUpdateOrganization, afterDeleteOrganization } = require("./organizationInternalTypeTreater");
 
 const createSingleServiceProvider = async (req, res, next) => {
   const {providerType, data} = req.body;
@@ -73,6 +74,8 @@ const updateServiceProvider = async (req, res, next) => {
 
     if (providerType === 'volunteer') {
       await afterUpdateVolunteer(data, oldGeneric);
+    } else {
+      await afterUpdateOrganization(data, oldGeneric);
     }
 
     return res.status(200).json({success: true});
@@ -122,6 +125,8 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 
     if (providerType === 'volunteer') {
       await afterDeleteVolunteer(oldGeneric);
+    } else {
+      await afterDeleteOrganization(oldGeneric);
     }
 
     return res.status(200).json({success: true});
