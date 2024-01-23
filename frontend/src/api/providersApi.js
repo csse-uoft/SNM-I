@@ -22,3 +22,7 @@ export async function fetchMultipleProviders() {
 export async function deleteSingleProvider(id) {
   return deleteJson(`/api/providers/${id}`);
 }
+
+export async function fetchHomeServiceProvider() {
+  return getJson(`/api/providers/home`);
+}

@@ -156,7 +156,7 @@ async function receiveReferral(req, res, next) {
     console.log(JSON.stringify(PredefinedCharacteristics));
 
     const referrer = await GDBOrganizationModel.findOne({endpointUrl: req.headers.referer});
-    if (!referrer) {
+    if (!referrer || referrer.endpointUrl !== req.headers.referer) {
       throw new Error("Could not find partner organization with the same endpoint URL as the referrer");
     }
     const referrerServiceProvider = await GDBServiceProviderModel.findOne({organization: referrer});
