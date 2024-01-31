@@ -14,6 +14,9 @@ const {getGenericAsset} = require("./index");
 async function populateReferral(referralGeneric, receiverId) {
   const referral = {};
 
+  referral.idInPartnerDeployment = referralGeneric.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
+  referral.status = referralGeneric.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]];
+
   const programId = parseInt((referralGeneric[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] || referralGeneric.program)?.split('_')[1]);
   if (!!programId) {
     const programGeneric = await GDBProgramModel.findOne({_id: programId},
@@ -71,29 +74,49 @@ async function sendReferral(req, res, next) {
       return res.status(200).json({success: true, message: 'Receiving service provider for referral not found'});
     }
 
+    const referrerId = parseInt((referralGeneric[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] || referralGeneric.referringServiceProvider)?.split('_')[1]);
+    if (!referrerId || isNaN(referrerId)) {
+      return res.status(200).json({success: true, message: 'Referring service provider for referral not found'});
+    }
+
     let receiverGeneric;
+    let referrerGeneric;
+    let partnerGeneric;
     try {
-      const provider = await getProviderById(receiverId);
-      const providerType = provider.type;
-      if (providerType !== 'organization') {
+      const receivingProvider = await getProviderById(receiverId);
+      const receivingProviderType = receivingProvider.type;
+      if (receivingProviderType !== 'organization') {
         return res.status(200).json({success: true, message: 'Receiving service provider is not an organization'});
       }
-      const genericId = provider[providerType]._id;
-      receiverGeneric = await fetchSingleGenericHelper(providerType, genericId);
+      const receiverGenericId = receivingProvider[receivingProviderType]._id;
+      receiverGeneric = await fetchSingleGenericHelper(receivingProviderType, receiverGenericId);
 
-      if (receiverGeneric[PredefinedCharacteristics['Organization Status']._uri.split('#')[1]] !== 'Partner') {
-        return res.status(200).json({success: true, message: 'Receiving service provider is not a partner organization'});
+      const referringProvider = await getProviderById(referrerId);
+      const referringProviderType = referringProvider.type;
+      if (referringProviderType !== 'organization') {
+        return res.status(200).json({success: true, message: 'Referring service provider is not an organization'});
+      }
+      const referrerGenericId = referringProvider[referringProviderType]._id;
+      referrerGeneric = await fetchSingleGenericHelper(referringProviderType, referrerGenericId);
+
+      if (receiverGeneric[PredefinedCharacteristics['Organization Status']._uri.split('#')[1]] === 'Partner') {
+        partnerGeneric = {...receiverGeneric, isReceiver: true};
+      } else if (referrerGeneric[PredefinedCharacteristics['Organization Status']._uri.split('#')[1]] === 'Partner') {
+        partnerGeneric = {...referrerGeneric, isReceiver: false};
+      } else {
+        return res.status(200).json({success: true, message: 'Neither receiving nor referring service provider is a partner organization'});
       }
     } catch (e) {
-      return res.status(404).json({message: 'Receiving organization not found' + (e.message ? ': ' + e.message : '')});
+      return res.status(404).json({message: 'Service provider for referral not found' + (e.message ? ': ' + e.message : '')});
     }
 
     const referral = await populateReferral(referralGeneric, receiverId);
     referral.id = id;
+    referral.partnerIsReceiver = partnerGeneric.isReceiver;
 
-    const endpointUrl = receiverGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
+    const endpointUrl = partnerGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
     const url = new URL('/public/partnerNetwork/referral/', endpointUrl.startsWith('http') ? endpointUrl : 'https://' + endpointUrl);
-    url.port = receiverGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
+    url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -102,7 +125,7 @@ async function sendReferral(req, res, next) {
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
-        'X-MY-API-KEY': receiverGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        'X-MY-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
         'Referer': req.headers.host,
       },
       body: JSON.stringify(referral),
@@ -111,9 +134,15 @@ async function sendReferral(req, res, next) {
 
     if (response.status >= 400 && response.status < 600) {
       const json = await response.json();
-      return res.status(400).json({message: 'Bad response from receiver: ' + response.status + ': ' + (json.message || JSON.stringify(json))});
+      return res.status(400).json({message: 'Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json))});
+    } else if (response.status === 201) {
+      // This was a successful POST request
+      const newId = response.json().newId;
+      referralGeneric.idInPartnerDeployment = newId;
+      await (await updateSingleGenericHelper(id, referralGeneric, 'referral')).save();
     }
-    return res.status(202).json({success: true, message: `Successfully created and sent a referral`});
+
+    return res.status(202).json({success: true, message: `Successfully sent a referral`});
   } catch (e) {
     return res.status(400).json({message: e?.message});
   }
@@ -155,11 +184,11 @@ async function receiveReferral(req, res, next) {
     }
     console.log(JSON.stringify(PredefinedCharacteristics));
 
-    const referrer = await GDBOrganizationModel.findOne({endpointUrl: req.headers.referer});
-    if (!referrer) {
-      throw new Error("Could not find partner organization with the same endpoint URL as the referrer");
+    const partner = await GDBOrganizationModel.findOne({endpointUrl: req.headers.referer});
+    if (!partner || partner.endpointUrl !== req.headers.referer) {
+      throw new Error("Could not find partner organization with the same endpoint URL as the sender");
     }
-    const referrerServiceProvider = await GDBServiceProviderModel.findOne({organization: referrer});
+    const partnerServiceProvider = await GDBServiceProviderModel.findOne({organization: partner});
 
     const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
     if (!homeOrganization) {
@@ -172,24 +201,40 @@ async function receiveReferral(req, res, next) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
 
+    // Determine which of the partner and home organizations is the receiver and which is the referrer
+    var receivingServiceProvider = partnerData.partnerIsReceiver ? homeServiceProvider : partnerServiceProvider;
+    var referringServiceProvider = partnerData.partnerIsReceiver ? partnerServiceProvider : homeServiceProvider;
+
     const referral = {fields: {}, formId: referralFormId};
     referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id;
-    referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = 'Pending acceptance';
-    referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = homeServiceProvider._uri;
-    referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = referrerServiceProvider._uri;
-    referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = partnerData.program ? 'http://snmi#program_' + partnerData.program?.id : null;
-    referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = partnerData.service ? 'http://snmi#service_' + partnerData.service?.id : null;
+    referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = partnerData.status || 'Pending';
+    if (partnerData.partnerIsReceiver) {
+      referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = receivingServiceProvider._uri;
+      referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = referringServiceProvider._uri;
+      referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = partnerData.program ? 'http://snmi#program_' + partnerData.program?.id : null;
+      referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = partnerData.service ? 'http://snmi#service_' + partnerData.service?.id : null;
+    }
     if (req.method === 'POST') {
       referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] = await getClient(partnerData.client, req.method);
-      await GDBReferralModel(await createSingleGenericHelper(referral, 'referral')).save();
+      const newReferral = GDBReferralModel(await createSingleGenericHelper(referral, 'referral'));
+      await newReferral.save();
+
+      return res.status(201).json({success: true, newId: newReferral._id});
     } else {
       const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
         {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences']});
-      await getClient(partnerData.client, req.method, originalReferral.client?.split('_')[1]);
+      if (partnerData.partnerIsReceiver) {
+        await getClient(partnerData.client, req.method, originalReferral.client?.split('_')[1]);
+      } else {
+        referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.receivingServiceProviderForReferral;
+        referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.referringServiceProviderForReferral;
+        referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = originalReferral.programForReferral;
+        referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = originalReferral.serviceForReferral;
+      }
       await (await updateSingleGenericHelper(originalReferral._id, referral, 'referral')).save();
-    }
 
-    return res.status(200).json({success: true});
+      return res.status(200).json({success: true});
+    }
   } catch (e) {
     console.log(e);
     return res.status(400).json({message: e?.message});
