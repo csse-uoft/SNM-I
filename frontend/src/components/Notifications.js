@@ -4,6 +4,7 @@ import { fetchNotifications, updateNotification } from '../api/notificationApi';
 import { Container, Fade, Tooltip } from '@mui/material';
 import { MarkEmailRead, MarkEmailUnread } from '@mui/icons-material';
 import { UserContext } from '../context';
+import { updateNavbarNotificationIcon } from '../helpers/notification';
 
 const TYPE = 'notifications';
 
@@ -34,17 +35,13 @@ const columnsWithoutOptions = [
 ];
 
 export default function Notifications() {
-  const userContext = useContext(UserContext);
+const userContext = useContext(UserContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const title = 'Notifications';
 
   const fetchData = async () => {
     const notifications = (await fetchNotifications()).notifications;
-    userContext.updateUser({
-      ...userContext,
-      anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0
-    });
 
     const data = [];
     for (const notification of notifications) {
@@ -74,6 +71,7 @@ export default function Notifications() {
     const notification = data.find(notification => notification._id == _id);
     await updateNotification(_id, {...notification, isRead: !notification.isRead});
     fetchData().then(data => setData(data));
+    updateNavbarNotificationIcon(userContext);
   }
 
   const columns = useMemo(() => {

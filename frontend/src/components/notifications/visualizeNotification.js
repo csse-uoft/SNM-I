@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Container, Grid, Paper, Typography } from "@mui/material";
-import { fetchNotification, fetchNotifications, updateNotification } from "../../api/notificationApi";
+import { fetchNotification, updateNotification } from "../../api/notificationApi";
 import { Loading } from "../shared";
 import VirtualizeTable from "../shared/virtualizeTable";
 import { UserContext } from "../../context";
+import { updateNavbarNotificationIcon } from "../../helpers/notification";
 
 export default function VisualizeNotification() {
   const userContext = useContext(UserContext);
@@ -18,14 +19,7 @@ export default function VisualizeNotification() {
       const notification = (await fetchNotification(id)).notification;
       setNotificationData({ ...notification, isRead: true });
       await updateNotification(id, notificationData); // Mark as read
-      fetchNotifications()
-        .then(data => data.notifications)
-        .then(notifications => {
-          userContext.updateUser({
-            ...userContext,
-            anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0
-          });
-        });
+      updateNavbarNotificationIcon(userContext);
     })();
   }, [id]);
 
@@ -60,14 +54,7 @@ export default function VisualizeNotification() {
             <Button variant="outlined" onClick={async () => {
               await updateNotification(id, { ...notificationData, isRead: !notificationData.isRead });
               setNotificationData((await fetchNotification(id)).notification);
-              fetchNotifications()
-                .then(data => data.notifications)
-                .then(notifications => {
-                  userContext.updateUser({
-                    ...userContext,
-                    anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0
-                  });
-                });
+              updateNavbarNotificationIcon(userContext);
             }}>Mark as {notificationData.isRead ? 'unread' : 'read'}</Button>
           </Grid>
         </Grid>

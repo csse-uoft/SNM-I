@@ -16,8 +16,8 @@ import LocationCityIcon from '@mui/icons-material/LocationCity';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LoginIcon from '@mui/icons-material/Login';
 import {useSnackbar} from "notistack";
-import { fetchNotifications } from '../../api/notificationApi';
 import { NotificationsNoneSharp, NotificationsSharp } from '@mui/icons-material';
+import { updateNavbarNotificationIcon } from '../../helpers/notification';
 
 const ITEM_HEIGHT = 48;
 
@@ -73,14 +73,7 @@ function TopNavBar() {
   }
 
   useEffect(() => {
-    fetchNotifications()
-      .then(data => data.notifications)
-      .then(notifications => {
-        userContext.updateUser({
-          ...userContext,
-          anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0
-        });
-      });
+    updateNavbarNotificationIcon(userContext);
   }, [])
 
   return (
