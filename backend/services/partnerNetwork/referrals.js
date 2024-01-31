@@ -132,11 +132,12 @@ async function sendReferral(req, res, next) {
     });
     clearTimeout(timeout);
 
-    const json = await response.json();
-
     if (response.status >= 400 && response.status < 600) {
+      const json = await response.json();
       return res.status(400).json({message: 'Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json))});
     } else if (response.status === 201) {
+      const json = await response.json();
+
       // This was a successful POST request
       const newId = json.newId;
       referralGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = newId;
@@ -232,15 +233,15 @@ async function receiveReferral(req, res, next) {
       return res.status(201).json({success: true, newId: newReferral._id});
     } else {
       const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
-        {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences']});
+        {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences', 'receivingServiceProvider', 'referringServiceProvider', 'program', 'service']});
       if (partnerData.partnerIsReceiver) {
         await getClient(partnerData.client, req.method, originalReferral.client?.split('_')[1]);
       } else {
-        // Only the ID in Partner Deployment and Referral Status are taken from the partner
-        referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.receivingServiceProviderForReferral;
-        referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.referringServiceProviderForReferral;
-        referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = originalReferral.programForReferral;
-        referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = originalReferral.serviceForReferral;
+        // Only the ID in Partner Deployment and Referral Status are taken from the partner; other fields stay the same
+        referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.receivingServiceProvider;
+        referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.referringServiceProvider;
+        referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = originalReferral.program;
+        referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = originalReferral.service;
       }
       await (await updateSingleGenericHelper(originalReferral._id, referral, 'referral')).save();
 
