@@ -6,7 +6,7 @@ const cookieSession = require('cookie-session');
 const cors = require('cors');
 
 const {
-  baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
+  baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, notificationRoute, clientsRoute,
   characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute,needRoute,
   needSatisfierRoute, outcomeRoute, internalTypeRoute, serviceProvisionRoute, programProvisionRoute,
   matchingRoute, partnerNetworkApiRoute, partnerNetworkPublicRoute, partnerOrganizationRoute
@@ -47,6 +47,7 @@ app.use('/api', authMiddleware('Authentication Required'));
 // Private routes
 app.use('/api', userRoute);
 app.use('/api', usersRoute);
+app.use('/api', notificationRoute);
 app.use('/api', characteristicRoute);
 app.use('/api', questionRoute);
 app.use('/api', dynamicFormRoute);

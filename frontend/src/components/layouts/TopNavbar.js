@@ -1,4 +1,4 @@
-import React, {useState, useContext, useCallback} from 'react';
+import React, {useState, useContext, useCallback, useEffect} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/material';
 import {IconButton} from "@mui/material";
@@ -16,6 +16,8 @@ import LocationCityIcon from '@mui/icons-material/LocationCity';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LoginIcon from '@mui/icons-material/Login';
 import {useSnackbar} from "notistack";
+import { fetchNotifications } from '../../api/notificationApi';
+import { NotificationsNoneSharp, NotificationsSharp } from '@mui/icons-material';
 
 const ITEM_HEIGHT = 48;
 
@@ -65,6 +67,21 @@ function TopNavBar() {
     navigate('/login');
     userContext.updateUser(defaultUserContext);
   }
+
+  const handleClickNotifications = () => {
+    navigate('/notifications');
+  }
+
+  useEffect(() => {
+    fetchNotifications()
+      .then(data => data.notifications)
+      .then(notifications => {
+        userContext.updateUser({
+          ...userContext,
+          anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0
+        });
+      });
+  }, [])
 
   return (
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
@@ -237,6 +254,13 @@ function TopNavBar() {
         {/*The profile button containing dashboard, profile, logout/login*/}
         {isLoggedin ? (
           <div>
+            <IconButton
+              onClick={handleClickNotifications}
+              size="small"
+              style={{color: 'white'}}
+            >
+              {userContext.anyUnreadNotifications ? <NotificationsSharp/> : <NotificationsNoneSharp/>}
+            </IconButton>
             <IconButton
               onClick={handleClickRight}
               size="small"
