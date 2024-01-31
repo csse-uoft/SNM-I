@@ -14,8 +14,8 @@ const {getGenericAsset} = require("./index");
 async function populateReferral(referralGeneric, receiverId) {
   const referral = {};
 
-  referral.idInPartnerDeployment = referralGeneric.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
-  referral.status = referralGeneric.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]];
+  referral.idInPartnerDeployment = referralGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
+  referral.status = referralGeneric[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]];
 
   const programId = parseInt((referralGeneric[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] || referralGeneric.program)?.split('_')[1]);
   if (!!programId) {
@@ -132,14 +132,23 @@ async function sendReferral(req, res, next) {
     });
     clearTimeout(timeout);
 
+    const json = await response.json();
+
     if (response.status >= 400 && response.status < 600) {
-      const json = await response.json();
       return res.status(400).json({message: 'Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json))});
     } else if (response.status === 201) {
       // This was a successful POST request
-      const newId = response.json().newId;
-      referralGeneric.idInPartnerDeployment = newId;
-      await (await updateSingleGenericHelper(id, referralGeneric, 'referral')).save();
+      const newId = json.newId;
+      referralGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = newId;
+
+      const referralForms = await getDynamicFormsByFormTypeHelper('referral');
+      if (referralForms.length > 0) {
+        var referralFormId = referralForms[0]._id; // Select the first form
+      } else {
+        return res.status(400).json({message: 'No referral form available'});
+      }
+
+      await (await updateSingleGenericHelper(id, {fields: referralGeneric, formId: referralFormId}, 'referral')).save();
     }
 
     return res.status(202).json({success: true, message: `Successfully sent a referral`});
@@ -214,7 +223,8 @@ async function receiveReferral(req, res, next) {
       referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = partnerData.program ? 'http://snmi#program_' + partnerData.program?.id : null;
       referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = partnerData.service ? 'http://snmi#service_' + partnerData.service?.id : null;
     }
-    if (req.method === 'POST') {
+
+    if (req.method === 'POST') { // partnerData.partnerIsReceiver must be true here
       referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] = await getClient(partnerData.client, req.method);
       const newReferral = GDBReferralModel(await createSingleGenericHelper(referral, 'referral'));
       await newReferral.save();
@@ -226,6 +236,7 @@ async function receiveReferral(req, res, next) {
       if (partnerData.partnerIsReceiver) {
         await getClient(partnerData.client, req.method, originalReferral.client?.split('_')[1]);
       } else {
+        // Only the ID in Partner Deployment and Referral Status are taken from the partner
         referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.receivingServiceProviderForReferral;
         referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.referringServiceProviderForReferral;
         referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = originalReferral.programForReferral;
