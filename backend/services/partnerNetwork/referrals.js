@@ -256,4 +256,5 @@ async function receiveReferral(req, res, next) {
 module.exports = {
   sendReferral,
   receiveReferral,
+  getClient,
 };
