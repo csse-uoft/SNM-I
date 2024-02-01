@@ -47,6 +47,7 @@ async function load() {
     namespaces,
     // The repository name, a new repository will be created if it does not exist.
     repositoryName: process.env.test ? "snmiTest" : "snmi",
+    debug: false
   });
 
   repository = result.repository;
