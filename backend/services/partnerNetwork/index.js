@@ -36,10 +36,7 @@ async function fetchOrganization(req, res, next) {
         url.port = organization.endpointPort;
 
         const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
-        let senderApiKey = null;
-        if (!!homeOrganization) {
-          senderApiKey = homeOrganization.apiKey;
-        }
+        const senderApiKey = !!homeOrganization ? homeOrganization.apiKey : null;
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 5000);
@@ -49,6 +46,7 @@ async function fetchOrganization(req, res, next) {
           headers: {
             'X-RECEIVER-API-KEY': organization.apiKey,
             ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
+            'Referer': req.headers.host,
           },
         });
         clearTimeout(timeout);
@@ -335,7 +333,7 @@ async function sendOrganization(req, res, next) {
 
     var partnerOrganizations = await fetchGenericDatasHelper('organization')
     partnerOrganizations = partnerOrganizations
-      .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey)
+      .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey && organizationObj.endpointUrl === req.headers.referer)
       .map(organizationObj => organizationObj._uri);
     
     for (characteristicOccurrence of organization.characteristicOccurrences) {
