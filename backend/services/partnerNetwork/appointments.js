@@ -21,11 +21,9 @@ async function populateAppointment(appointmentGeneric, receiverId) {
   if (!!referralId) {
     const referralGeneric = await GDBReferralModel.findOne({ _id: referralId },
       { populates: ['characteristicOccurrences.occurrenceOf'] });
-    if (referralGeneric.serviceProvider?.split('_')[1] == receiverId) {
-      appointment.referral = (await getGenericAsset([referralGeneric], {
-        'ID in Partner Deployment': 'id',
-      }, []))[0];
-    }
+    appointment.referral = (await getGenericAsset([referralGeneric], {
+      'ID in Partner Deployment': 'id',
+    }, []))[0];
   }
 
   const clientId = parseInt((appointmentGeneric[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]] || appointmentGeneric.client)?.split('_')[1]);
@@ -181,10 +179,6 @@ async function receiveAppointment(req, res, next) {
       return res.status(403).json({ message: 'API key is incorrect' });
     }
 
-    if (!(partnerData.referral?.id)) {
-      return res.status(400).json({ message: "No referral ID provided" });
-    }
-
     const originalAppointment = await GDBAppointmentModel.findOne({ idInPartnerDeployment: partnerData.id },
       { populates: ['characteristicOccurrences', 'questionOccurrences'] });
     const originalAppointmentJson = originalAppointment?.toJSON() || {};
@@ -200,6 +194,9 @@ async function receiveAppointment(req, res, next) {
     'datetime' in partnerData && (appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]] = partnerData.datetime);
     'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]] = partnerData.status);
     if (partnerData.partnerIsReceiver) {
+      if (!(partnerData.referral?.id)) {
+        return res.status(400).json({ message: "No referral ID provided" });
+      }
       'referral' in partnerData && (appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null);
     }
 
