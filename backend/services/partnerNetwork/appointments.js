@@ -181,29 +181,43 @@ async function receiveAppointment(req, res, next) {
       return res.status(403).json({ message: 'API key is incorrect' });
     }
 
-    const appointment = { fields: {}, formId: appointmentFormId };
-    appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id;
-    appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]] = partnerData.name;
-    appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]] = partnerData.datetime;
-    appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]] = partnerData.status || 'Pending';
+    if (!(partnerData.referral?.id)) {
+      return res.status(400).json({ message: "No referral ID provided" });
+    }
+
+    const originalAppointment = await GDBAppointmentModel.findOne({ idInPartnerDeployment: partnerData.id },
+      { populates: ['characteristicOccurrences', 'questionOccurrences'] });
+    const originalAppointmentJson = originalAppointment?.toJSON() || {};
+    originalAppointmentJson.characteristicOccurrences?.forEach(characteristicOccurrence => {
+      originalAppointmentJson[characteristicOccurrence.occurrenceOf.split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+    });
+    delete originalAppointmentJson.characteristicOccurrences;
+    delete originalAppointmentJson._id;
+
+    const appointment = { fields: originalAppointmentJson || {}, formId: appointmentFormId };
+    'id' in partnerData && (appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id);
+    'name' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]] = partnerData.name);
+    'datetime' in partnerData && (appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]] = partnerData.datetime);
+    'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]] = partnerData.status);
     if (partnerData.partnerIsReceiver) {
-      appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null;
+      'referral' in partnerData && (appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null);
     }
 
     if (req.method === 'POST') { // partnerData.partnerIsReceiver must be true here
-      appointment.fields[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]] = await getClient(partnerData.client, req.method);
+      const referralGeneric = await fetchSingleGenericHelper('referral', partnerData.referral?.id);
+      await getClient(partnerData.client, false, referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]]?.split('_')[1]);
+      appointment.fields[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]] = referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] || null;
+
       const newAppointment = GDBAppointmentModel(await createSingleGenericHelper(appointment, 'appointment'));
       await newAppointment.save();
 
       return res.status(201).json({ success: true, newId: newAppointment._id });
     } else {
-      const originalAppointment = await GDBAppointmentModel.findOne({ idInPartnerDeployment: partnerData.id },
-        { populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences', 'receivingServiceProvider', 'referringServiceProvider', 'program', 'service'] });
       if (partnerData.partnerIsReceiver) {
-        await getClient(partnerData.client, req.method, originalAppointment.client?.split('_')[1]);
+        await getClient(partnerData.client, req.method === 'POST', originalAppointmentJson.client?.split('_')[1]);
       } else {
         // Only the ID in Partner Deployment and Appointment Status are taken from the partner; other fields stay the same
-        appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = originalAppointment.referral;
+        appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = originalAppointmentJson.referral || null;
       }
       await (await updateSingleGenericHelper(originalAppointment._id, appointment, 'appointment')).save();
 

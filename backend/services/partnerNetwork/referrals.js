@@ -158,7 +158,7 @@ async function sendReferral(req, res, next) {
   }
 }
 
-async function getClient(partnerClientData, method, originalId) {
+async function getClient(partnerClientData, isNew, originalId) {
   const clientForms = await getDynamicFormsByFormTypeHelper('client');
   if (clientForms.length > 0) {
     var clientFormId = clientForms[0]._id; // Select the first form
@@ -170,10 +170,10 @@ async function getClient(partnerClientData, method, originalId) {
   client.fields[PredefinedCharacteristics['First Name']._uri.split('#')[1]] = partnerClientData.firstName;
   client.fields[PredefinedCharacteristics['Last Name']._uri.split('#')[1]] = partnerClientData.lastName;
   client.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerClientData.id;
-  if (method === 'POST') {
+  if (isNew) {
     return GDBClientModel(await createSingleGenericHelper(client, 'client'));
   } else {
-    await (await updateSingleGenericHelper(originalId, client, 'client')).save();
+    !!originalId && await (await updateSingleGenericHelper(originalId, client, 'client')).save();
     return null;
   }
 }
@@ -215,33 +215,40 @@ async function receiveReferral(req, res, next) {
     var receivingServiceProvider = partnerData.partnerIsReceiver ? homeServiceProvider : partnerServiceProvider;
     var referringServiceProvider = partnerData.partnerIsReceiver ? partnerServiceProvider : homeServiceProvider;
 
-    const referral = {fields: {}, formId: referralFormId};
-    referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id;
-    referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = partnerData.status || 'Pending';
+    const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
+      {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences', 'receivingServiceProvider', 'referringServiceProvider', 'program', 'service']});
+    const originalReferralJson = originalReferral?.toJSON() || {};
+    originalReferralJson.characteristicOccurrences?.forEach(characteristicOccurrence => {
+      originalReferralJson[characteristicOccurrence.occurrenceOf.split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+    });
+    delete originalReferralJson.characteristicOccurrences;
+    delete originalReferralJson._id;
+
+    const referral = {fields: originalReferralJson || {}, formId: referralFormId};
+    'id' in partnerData && (referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id);
+    'status' in partnerData && (referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = partnerData.status || 'Pending');
     if (partnerData.partnerIsReceiver) {
       referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = receivingServiceProvider._uri;
       referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = referringServiceProvider._uri;
-      referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = partnerData.program ? 'http://snmi#program_' + partnerData.program?.id : null;
-      referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = partnerData.service ? 'http://snmi#service_' + partnerData.service?.id : null;
+      'program' in partnerData && (referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = 'http://snmi#program_' + partnerData.program.id);
+      'service' in partnerData && (referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = 'http://snmi#service_' + partnerData.service.id);
     }
 
     if (req.method === 'POST') { // partnerData.partnerIsReceiver must be true here
-      referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] = await getClient(partnerData.client, req.method);
+      referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] = await getClient(partnerData.client, req.method === 'POST');
       const newReferral = GDBReferralModel(await createSingleGenericHelper(referral, 'referral'));
       await newReferral.save();
 
       return res.status(201).json({success: true, newId: newReferral._id});
     } else {
-      const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
-        {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences', 'receivingServiceProvider', 'referringServiceProvider', 'program', 'service']});
       if (partnerData.partnerIsReceiver) {
-        await getClient(partnerData.client, req.method, originalReferral.client?.split('_')[1]);
+        await getClient(partnerData.client, req.method === 'POST', originalReferralJson.client?.split('_')[1]);
       } else {
         // Only the ID in Partner Deployment and Referral Status are taken from the partner; other fields stay the same
-        referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.receivingServiceProvider;
-        referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.referringServiceProvider;
-        referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = originalReferral.program;
-        referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = originalReferral.service;
+        referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.receivingServiceProvider || null;
+        referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = originalReferral.referringServiceProvider || null;
+        referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] = originalReferral.program || null;
+        referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = originalReferral.service || null;
       }
       await (await updateSingleGenericHelper(originalReferral._id, referral, 'referral')).save();
 
