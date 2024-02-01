@@ -307,11 +307,11 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
   let assets = await fetchGenericDatasHelper(assetType);
   assets = assets.filter(asset => (
     (asset.serviceProvider?.organization?._id === organizationId || asset.organization?._id === organizationId)
-      && (asset.shareability === 'Shareable with all organizations'
-        || (asset.shareability === 'Shareable with partner organizations'
-          && (asset.partnerOrganizations?.some(org => partnerOrganizations.includes(org))
-            || asset.partnerOrganizations?.map(org => org._uri).some(org => partnerOrganizations.includes(org))))
-        || (assetType === 'service' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
+    && (asset.shareability === 'Shareable with all organizations'
+      || (asset.shareability === 'Shareable with partner organizations'
+        && (asset.partnerOrganizations?.some(org => partnerOrganizations.includes(org))
+          || asset.partnerOrganizations?.map(org => org._uri).some(org => !!org && partnerOrganizations.includes(org))))
+      || (assetType === 'service' && asset.shareability === 'Not shareable' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
   ));
 
   return getGenericAsset(assets, characteristics, types);
