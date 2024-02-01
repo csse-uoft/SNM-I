@@ -10,6 +10,8 @@ const {initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInter
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
 const {getGenericAsset} = require("./index");
+const { createNotificationHelper } = require("../notification/notification");
+const { sanitize } = require("../../helpers/sanitizer");
 
 async function populateReferral(referralGeneric, receiverId) {
   const referral = {};
@@ -218,8 +220,8 @@ async function receiveReferral(req, res, next) {
     const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
       {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences', 'receivingServiceProvider', 'referringServiceProvider', 'program', 'service']});
     const originalReferralJson = originalReferral?.toJSON() || {};
-    originalReferralJson.characteristicOccurrences?.forEach(characteristicOccurrence => {
-      originalReferralJson[characteristicOccurrence.occurrenceOf.split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+    (originalReferralJson.characteristicOccurrences || []).forEach(characteristicOccurrence => {
+      originalReferralJson[(characteristicOccurrence.occurrenceOf._uri || characteristicOccurrence.occurrenceOf).split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
     });
     delete originalReferralJson.characteristicOccurrences;
     delete originalReferralJson._id;
@@ -239,6 +241,11 @@ async function receiveReferral(req, res, next) {
       const newReferral = GDBReferralModel(await createSingleGenericHelper(referral, 'referral'));
       await newReferral.save();
 
+      createNotificationHelper({
+        name: 'A referral was received',
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just sent you <a href="/referrals/${newReferral._id}">a new referral</a>.`
+      });
+
       return res.status(201).json({success: true, newId: newReferral._id});
     } else {
       if (partnerData.partnerIsReceiver) {
@@ -251,6 +258,11 @@ async function receiveReferral(req, res, next) {
         referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]] = originalReferral.service || null;
       }
       await (await updateSingleGenericHelper(originalReferral._id, referral, 'referral')).save();
+
+      createNotificationHelper({
+        name: 'A referral was updated',
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just updated <a href="/referrals/${originalReferral._id}">this referral</a>.`
+      });
 
       return res.status(200).json({success: true});
     }

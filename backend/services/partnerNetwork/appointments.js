@@ -184,8 +184,8 @@ async function receiveAppointment(req, res, next) {
     const originalAppointment = await GDBAppointmentModel.findOne({ idInPartnerDeployment: partnerData.id },
       { populates: ['characteristicOccurrences', 'questionOccurrences'] });
     const originalAppointmentJson = originalAppointment?.toJSON() || {};
-    originalAppointmentJson.characteristicOccurrences?.forEach(characteristicOccurrence => {
-      originalAppointmentJson[characteristicOccurrence.occurrenceOf.split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+    (originalAppointmentJson.characteristicOccurrences || []).forEach(characteristicOccurrence => {
+      originalAppointmentJson[(characteristicOccurrence.occurrenceOf._uri || characteristicOccurrence.occurrenceOf).split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
     });
     delete originalAppointmentJson.characteristicOccurrences;
     delete originalAppointmentJson._id;
@@ -227,7 +227,7 @@ async function receiveAppointment(req, res, next) {
 
       createNotificationHelper({
         name: 'An appointment was updated',
-        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just updated the status of <a href="/appointments/${originalAppointment._id}">this appointment</a>.`
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just updated <a href="/appointments/${originalAppointment._id}">this appointment</a>.`
       });
 
       return res.status(200).json({ success: true });
