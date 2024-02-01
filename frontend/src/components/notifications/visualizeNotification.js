@@ -18,10 +18,16 @@ export default function VisualizeNotification() {
     (async function () {
       const notification = (await fetchNotification(id)).notification;
       setNotificationData({ ...notification, isRead: true });
+    })();
+  }, [id]);
+
+  useEffect(() => {
+    (async function () {
+      if (!notificationData) return;
       await updateNotification(id, notificationData); // Mark as read
       updateNavbarNotificationIcon(userContext);
     })();
-  }, [id]);
+  }, [notificationData])
 
   useEffect(() => {
     (async function () {
@@ -29,7 +35,7 @@ export default function VisualizeNotification() {
 
       setInformation([
         { label: 'Name', value: notificationData.name },
-        { label: 'Description', value: notificationData.description },
+        { label: 'Description', value: <div dangerouslySetInnerHTML={{__html: notificationData.description}} /> },
         { label: 'Datetime', value: new Date(notificationData.datetime).toLocaleString() },
         { label: 'Read?', value: notificationData.isRead ? 'Yes' : 'No' },
       ]);

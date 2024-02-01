@@ -2,19 +2,31 @@
 const { GDBNotificationModel } = require("../../models/notification");
 
 const formFormatChecking = (form) => {
-  return (!form || !form.name || !form.description || !form.datetime || !form.hasOwnProperty('isRead'));
+  return (!form || !form.name || !form.description);
+}
+
+const createNotificationHelper = async form => {
+  if (formFormatChecking(form))
+    throw Error('Wrong information format');
+
+  if (!form.hasOwnProperty('isRead')) {
+    form.isRead = false;
+  }
+  if (!form.datetime) {
+    form.datetime = new Date();
+  }
+
+  const notification = GDBNotificationModel(form);
+  await notification.save();
 }
 
 const createNotification = async (req, res, next) => {
   const form = req.body;
-  if (formFormatChecking(form))
-    return res.status(400).json({success: false, message: 'Wrong information format'})
   try {
-    const notification = GDBNotificationModel(form);
-    await notification.save();
+    await createNotificationHelper(form);
     return res.status(200).json({success: true});
   } catch (e) {
-    next(e);
+    return res.status(400).json({success: false, message: e?.message})
   }
 };
 
@@ -61,4 +73,4 @@ const updateNotification = async (req, res, next) => {
 }
 
 
-module.exports = {createNotification, fetchNotifications, fetchNotification, updateNotification};
+module.exports = {createNotificationHelper, createNotification, fetchNotifications, fetchNotification, updateNotification};

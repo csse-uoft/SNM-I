@@ -8,6 +8,8 @@ const { getDynamicFormsByFormTypeHelper } = require("../dynamicForm");
 const { getGenericAsset } = require("./index");
 const { GDBReferralModel } = require("../../models/referral");
 const { getClient } = require("./referrals");
+const { createNotificationHelper } = require("../notification/notification");
+const { sanitize } = require("../../helpers/sanitizer");
 
 async function populateAppointment(appointmentGeneric, receiverId) {
   const appointment = {};
@@ -208,6 +210,11 @@ async function receiveAppointment(req, res, next) {
       const newAppointment = GDBAppointmentModel(await createSingleGenericHelper(appointment, 'appointment'));
       await newAppointment.save();
 
+      createNotificationHelper({
+        name: 'An appointment was received',
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just sent you <a href="/appointments/${newAppointment._id}">a new appointment</a>.`
+      });
+
       return res.status(201).json({ success: true, newId: newAppointment._id });
     } else {
       if (partnerData.partnerIsReceiver) {
@@ -217,6 +224,11 @@ async function receiveAppointment(req, res, next) {
         appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = originalAppointmentJson.referral || null;
       }
       await (await updateSingleGenericHelper(originalAppointment._id, appointment, 'appointment')).save();
+
+      createNotificationHelper({
+        name: 'An appointment was updated',
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just updated the status of <a href="/appointments/${originalAppointment._id}">this appointment</a>.`
+      });
 
       return res.status(200).json({ success: true });
     }
