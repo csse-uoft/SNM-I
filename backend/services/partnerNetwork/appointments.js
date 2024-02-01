@@ -11,7 +11,7 @@ const { getClient } = require("./referrals");
 const { createNotificationHelper } = require("../notification/notification");
 const { sanitize } = require("../../helpers/sanitizer");
 
-async function populateAppointment(appointmentGeneric, receiverId) {
+async function populateAppointment(appointmentGeneric) {
   const appointment = {};
 
   appointment.idInPartnerDeployment = appointmentGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
@@ -102,7 +102,7 @@ async function sendAppointment(req, res, next) {
       return res.status(404).json({ message: 'Service provider for appointment\'s referral not found' + (e.message ? ': ' + e.message : '') });
     }
 
-    const appointment = await populateAppointment(appointmentGeneric, receiverId);
+    const appointment = await populateAppointment(appointmentGeneric);
     appointment.id = id;
     appointment.partnerIsReceiver = partnerGeneric.isReceiver;
 
@@ -117,7 +117,7 @@ async function sendAppointment(req, res, next) {
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
-        'X-MY-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
         'Referer': req.headers.host,
       },
       body: JSON.stringify(appointment),
@@ -176,8 +176,8 @@ async function receiveAppointment(req, res, next) {
       throw new Error('This deployment has no home organization');
     }
 
-    const myApiKey = req.header('X-MY-API-KEY');
-    if (myApiKey !== homeOrganization.apiKey) {
+    const receiverApiKey = req.header('X-RECEIVER-API-KEY');
+    if (receiverApiKey !== homeOrganization.apiKey) {
       return res.status(403).json({ message: 'API key is incorrect' });
     }
 

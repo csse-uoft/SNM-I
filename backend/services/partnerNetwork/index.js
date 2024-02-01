@@ -36,9 +36,9 @@ async function fetchOrganization(req, res, next) {
         url.port = organization.endpointPort;
 
         const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
-        let yourApiKey = null;
+        let senderApiKey = null;
         if (!!homeOrganization) {
-          yourApiKey = homeOrganization.apiKey;
+          senderApiKey = homeOrganization.apiKey;
         }
 
         const controller = new AbortController();
@@ -47,8 +47,8 @@ async function fetchOrganization(req, res, next) {
           signal: controller.signal,
           method: 'GET',
           headers: {
-            'X-MY-API-KEY': organization.apiKey,
-            ...(!!yourApiKey && {'X-YOUR-API-KEY': yourApiKey}),
+            'X-RECEIVER-API-KEY': organization.apiKey,
+            ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
           },
         });
         clearTimeout(timeout);
@@ -327,15 +327,15 @@ async function sendOrganization(req, res, next) {
     }
     const genericId = organization._id;
 
-    const myApiKey = req.header('X-MY-API-KEY');
-    const yourApiKey = req.header('X-YOUR-API-KEY');
-    if (myApiKey !== organization.apiKey) {
+    const receiverApiKey = req.header('X-RECEIVER-API-KEY');
+    const senderApiKey = req.header('X-SENDER-API-KEY');
+    if (receiverApiKey !== organization.apiKey) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
 
     var partnerOrganizations = await fetchGenericDatasHelper('organization')
     partnerOrganizations = partnerOrganizations
-      .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === yourApiKey)
+      .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey)
       .map(organizationObj => organizationObj._uri);
     
     for (characteristicOccurrence of organization.characteristicOccurrences) {

@@ -127,7 +127,7 @@ async function sendReferral(req, res, next) {
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
-        'X-MY-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
         'Referer': req.headers.host,
       },
       body: JSON.stringify(referral),
@@ -208,8 +208,8 @@ async function receiveReferral(req, res, next) {
     }
     const homeServiceProvider = await GDBServiceProviderModel.findOne({organization: homeOrganization});
 
-    const myApiKey = req.header('X-MY-API-KEY');
-    if (myApiKey !== homeOrganization.apiKey) {
+    const receiverApiKey = req.header('X-RECEIVER-API-KEY');
+    if (receiverApiKey !== homeOrganization.apiKey) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
 
