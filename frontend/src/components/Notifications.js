@@ -24,18 +24,22 @@ const columnsWithoutOptions = [
     sortBy: ({isRead}) => isRead,
   },
   {
-    label: 'Datetime',
+    label: 'Date and Time',
     body: ({datetime}) => {
       return new Date(datetime).toLocaleString();
     },
     sortBy: ({datetime}) => {
-      return Number(new Date(datetime));
+      // Descending order
+      return (new Date(datetime)).toISOString().split('').map(
+        // If the character is a digit, make it 9 minus the digit
+        character => /\d/.test(character) ? '' + (9 - parseInt(character)) : character
+      ).join('');
     },
   },
 ];
 
 export default function Notifications() {
-const userContext = useContext(UserContext);
+  const userContext = useContext(UserContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const title = 'Notifications';
@@ -48,10 +52,10 @@ const userContext = useContext(UserContext);
       const notificationData = {_id: notification._id};
       if (notification.name)
         notificationData.name = notification.name;
-        if (notification.description)
-          notificationData.description = notification.description;
-          if (notification.datetime)
-            notificationData.datetime = notification.datetime;
+      if (notification.description)
+        notificationData.description = notification.description;
+      if (notification.datetime)
+        notificationData.datetime = notification.datetime;
       if (notification.hasOwnProperty('isRead'))
         notificationData.isRead = notification.isRead;
 
@@ -83,12 +87,12 @@ const userContext = useContext(UserContext);
           const notification = data.find(notification => notification._id == _id);
           if (notification.isRead)
             return <Tooltip title="Mark as unread">
-                <MarkEmailUnread fontSize="small" onClick={() => onChangeIsRead(_id)}/>
-              </Tooltip>
+              <MarkEmailUnread fontSize="small" onClick={() => onChangeIsRead(_id)}/>
+            </Tooltip>
           else
             return <Tooltip title="Mark as read">
-            <MarkEmailRead fontSize="small" onClick={() => onChangeIsRead(_id)}/>
-          </Tooltip>
+              <MarkEmailRead fontSize="small" onClick={() => onChangeIsRead(_id)}/>
+            </Tooltip>
         }
       },
     ]
@@ -104,7 +108,8 @@ const userContext = useContext(UserContext);
           columns={columns}
           data={data}
           title={title}
-          defaultOrderBy={columnsWithoutOptions[1].sortBy} // sort by status
+          // sort by status (Unread followed by Read) + date (newest first)
+          defaultOrderBy={props => columnsWithoutOptions[1].sortBy(props) + columnsWithoutOptions[2].sortBy(props)}
         />
       </Container>
     </Fade>

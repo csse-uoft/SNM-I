@@ -36,7 +36,7 @@ export default function VisualizeNotification() {
       setInformation([
         { label: 'Name', value: notificationData.name },
         { label: 'Description', value: <div dangerouslySetInnerHTML={{__html: notificationData.description}} /> },
-        { label: 'Datetime', value: new Date(notificationData.datetime).toLocaleString() },
+        { label: 'Date and Time', value: new Date(notificationData.datetime).toLocaleString() },
         { label: 'Read?', value: notificationData.isRead ? 'Yes' : 'No' },
       ]);
 
