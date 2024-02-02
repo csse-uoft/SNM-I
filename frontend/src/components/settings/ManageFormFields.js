@@ -154,6 +154,7 @@ export default function ManageFormFields() {
     //if this is not the case, then the error message is displayed and the form
     //is not created/updated
     form.formStructure.forEach(step => {
+      form
       if (step.fields.length <= 0){
         setErrors(errors => ({...errors, formName: 'Blank step detected.'}));
         empty_step = true;
@@ -163,6 +164,19 @@ export default function ManageFormFields() {
     if (empty_step){
       return;
     }
+
+      if ((formType) === 'client'){
+        //the "48" is the internal type ID for "Needs" and is hardcoded in, there
+        //must be some sort of dynamic way to acquire this, which I will need to look into
+        const hasNeeds = usedInternalTypeIds.some(item => item = 48);
+        if (!hasNeeds){
+          setErrors(errors => ({...errors, formName: 'Client Forms must have a needs category'}));
+          return;
+        }
+      }
+    
+
+
 
 
     try {
@@ -176,7 +190,7 @@ export default function ManageFormFields() {
     } catch (e) {
       console.error(e)
     }
-  };
+  }; 
 
   const handleChange = useCallback(name => e => {
     const value = e.target.value;
