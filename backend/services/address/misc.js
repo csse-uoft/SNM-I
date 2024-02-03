@@ -1,6 +1,25 @@
 const {GDBSchemaCountry, GDBSchemaState, GDBStreetType, GDBStreetDirection} = require('../../models/address');
 const {GDBFieldTypeModel} = require("../../models");
+const { getIndividualsInClass } = require('../dynamicForm');
 
+var streetTypeOptions = null;
+var streetDirectionOptions = null;
+var stateOptions = null;
+
+async function convertAddressForSerialization(address) {
+  if (!streetTypeOptions || !streetDirectionOptions || !stateOptions) {
+    streetTypeOptions = await getIndividualsInClass('ic:StreetType');
+    streetDirectionOptions = await getIndividualsInClass('ic:StreetDirection');
+    stateOptions = await getIndividualsInClass('schema:State');
+  }
+
+  if (address.streetType)
+    address.streetType = streetTypeOptions[address.streetType];      
+  if (address.streetDirection)
+    address.streetDirection = streetDirectionOptions[address.streetDirection];
+  if (address.state)
+    address.state = stateOptions[address.state];
+}
 
 /**
  *
@@ -32,3 +51,4 @@ async function initAddress() {
   }
 }
 
+module.exports = {convertAddressForSerialization}

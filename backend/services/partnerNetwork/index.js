@@ -9,6 +9,7 @@ const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericH
 const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
+const {convertAddressForSerialization} = require("../address/misc");
 
 async function fetchOrganization(req, res, next) {
   try {
@@ -289,11 +290,15 @@ async function getGenericAsset(assetGenerics, characteristics, types) {
   const assets = [];
   for (assetGeneric of assetGenerics) {
     const asset = types.reduce((accumulator, current) => (accumulator[current.key] = assetGeneric[current.value], accumulator), {}); // comma operator
+    if (asset.address) {
+      convertAddressForSerialization(asset.address);
+    }
+
     for (let [key, data] of Object.entries(assetGeneric)) {
       if (key === 'characteristicOccurrences') {
         for (object of data) {
           if (object.occurrenceOf?.name in characteristics) {
-            asset[characteristics[object.occurrenceOf?.name]] = object.dataStringValue || object.dataNumberValue || object;
+            asset[characteristics[object.occurrenceOf?.name]] = object.dataStringValue || object.dataNumberValue || object.dataBooleanValue || object.dataDateValue || object;
           }
         }
       }
@@ -319,11 +324,16 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
 
 async function sendOrganization(req, res, next) {
   try {
-    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf']});
+    const organization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: ['characteristicOccurrences.occurrenceOf', 'address']});
     if (!organization) {
       throw new Error('This deployment has no home organization');
     }
     const genericId = organization._id;
+
+    // Convert address to sendable format
+    if (organization.address) {
+      convertAddressForSerialization(organization.address);
+    }
 
     const receiverApiKey = req.header('X-RECEIVER-API-KEY');
     const senderApiKey = req.header('X-SENDER-API-KEY');
@@ -350,7 +360,6 @@ async function sendOrganization(req, res, next) {
         'Program Name': 'programName',
         'Description': 'description',
         'Shareability': 'shareability',
-        // 'Address': 'address'
       }, [
         {key: 'id', value: '_id'},
         {key: 'manager', value: 'manager'},
@@ -360,7 +369,6 @@ async function sendOrganization(req, res, next) {
         'Service Name': 'serviceName',
         'Description': 'description',
         'Shareability': 'shareability',
-        // 'Address': 'address'
       }, [
         {key: 'id', value: '_id'},
         {key: 'manager', value: 'manager'},
@@ -375,7 +383,7 @@ async function sendOrganization(req, res, next) {
       }, [
         {key: 'id', value: '_id'},
         {key: 'organization', value: 'organization'},
-        // {key: 'address', value: 'address'}
+        {key: 'address', value: 'address'},
       ], partnerOrganizations);
 
     return res.status(200).json({organization, success: true});
