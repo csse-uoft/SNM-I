@@ -9,7 +9,7 @@ const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericH
 const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
-const {convertAddressForSerialization} = require("../address/misc");
+const {convertAddressForSerialization, convertAddressForDeserialization} = require("../address/misc");
 
 async function fetchOrganization(req, res, next) {
   try {
@@ -144,11 +144,20 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
     for (internalType in internalTypes) {
       volunteer.fields[PredefinedInternalTypes[internalType]._uri.split('#')[1]] = internalTypes[internalType]();
     }
+    if (volunteerData.address) {
+      volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = await convertAddressForDeserialization(volunteerData.address);
+    }
     volunteer.formId = formId;
 
     for (providerIndex in providers) {
       const provider = providers[providerIndex];
       if (provider.volunteer.idInPartnerDeployment == volunteerData.id) {
+        const oldGeneric = await fetchSingleGenericHelper('volunteer', provider.volunteer._id);
+        if (volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
+          volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
+          volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
+        }
+
         const generic = await updateSingleGenericHelper(provider.volunteer._id, volunteer, 'volunteer');
         provider.volunteer = generic;
         await provider.save();
@@ -191,12 +200,15 @@ async function updateOrganization(req, res, next) {
     if (Object.keys(PredefinedCharacteristics).length == 0) {
       await initPredefinedCharacteristics();
     }
-    console.log(JSON.stringify(PredefinedCharacteristics));
+
+    if (!partnerData.organization) {
+      return res.status(400).json({message: 'Data does not include an organization'});
+    }
+
     organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]] = partnerData.organization.name || '';
     organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]] = partnerData.organization.description || partnerData.organization.Description || '';
-//    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address; // TODO
+    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] = partnerData.organization.address ? await convertAddressForDeserialization(partnerData.organization.address) : null;
     organization.formId = organizationFormId;
-    console.log(organization);
 
     const provider = await getProviderById(id);
     const providerType = provider.type;
@@ -204,6 +216,13 @@ async function updateOrganization(req, res, next) {
       throw new Error('Provider is not an organization');
     }
     const genericId = provider[providerType]._id;
+
+    const oldGeneric = await fetchSingleGenericHelper('organization', genericId);
+    if (organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
+      organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
+      organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
+    }
+
     const organizationObj = await updateSingleGenericHelper(genericId, organization, 'organization');
     provider['organization'] = organizationObj;
     await provider.save();
@@ -291,7 +310,7 @@ async function getGenericAsset(assetGenerics, characteristics, types) {
   for (assetGeneric of assetGenerics) {
     const asset = types.reduce((accumulator, current) => (accumulator[current.key] = assetGeneric[current.value], accumulator), {}); // comma operator
     if (asset.address) {
-      convertAddressForSerialization(asset.address);
+      await convertAddressForSerialization(asset.address);
     }
 
     for (let [key, data] of Object.entries(assetGeneric)) {
@@ -332,7 +351,7 @@ async function sendOrganization(req, res, next) {
 
     // Convert address to sendable format
     if (organization.address) {
-      convertAddressForSerialization(organization.address);
+      await convertAddressForSerialization(organization.address);
     }
 
     const receiverApiKey = req.header('X-RECEIVER-API-KEY');
