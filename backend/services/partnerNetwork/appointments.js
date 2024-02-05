@@ -4,7 +4,7 @@ const { GDBAppointmentModel } = require("../../models/appointment");
 const { createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper } = require("../genericData");
 const { initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes } = require("../characteristics");
 const { getProviderById } = require("../genericData/serviceProvider");
-const { getDynamicFormsByFormTypeHelper } = require("../dynamicForm");
+const { getDynamicFormsByFormTypeHelper, getIndividualsInClass } = require("../dynamicForm");
 const { getGenericAsset } = require("./index");
 const { GDBReferralModel } = require("../../models/referral");
 const { getClient } = require("./referrals");
@@ -12,12 +12,13 @@ const { createNotificationHelper } = require("../notification/notification");
 const { sanitize } = require("../../helpers/sanitizer");
 
 async function populateAppointment(appointmentGeneric) {
+  const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');
   const appointment = {};
 
   appointment.idInPartnerDeployment = appointmentGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
   appointment.name = appointmentGeneric[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]];
   appointment.datetime = appointmentGeneric[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]];
-  appointment.status = appointmentGeneric[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]];
+  appointment.status = appointmentStatuses[appointmentGeneric[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]]];
 
   const referralId = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] || appointmentGeneric.referral)?.split('_')[1]);
   if (!!referralId) {
@@ -190,11 +191,13 @@ async function receiveAppointment(req, res, next) {
     delete originalAppointmentJson.characteristicOccurrences;
     delete originalAppointmentJson._id;
 
+    const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');
+
     const appointment = { fields: originalAppointmentJson || {}, formId: appointmentFormId };
     'id' in partnerData && (appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id);
     'name' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]] = partnerData.name);
     'datetime' in partnerData && (appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]] = partnerData.datetime);
-    'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]] = partnerData.status);
+    'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]] = Object.keys(appointmentStatuses).find(key => appointmentStatuses[key] === partnerData.status) || null);
     if (partnerData.partnerIsReceiver) {
       if (!(partnerData.referral?.id)) {
         return res.status(400).json({ message: "No referral ID provided" });

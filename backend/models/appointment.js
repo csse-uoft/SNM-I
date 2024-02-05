@@ -11,7 +11,7 @@ const GDBAppointmentModel = createGraphDBModel({
   datetime: {type: Date, internalKey: ':hasDatetime'},
   person: {type: GDBPersonModel, internalKey: ':hasPerson'},
   user: {type: GDBUserAccountModel, internalKey: ':withUser'},
-  status: {type: String, internalKey: ':hasStatus'},
+  status: {type: String, internalKey: ':hasAppointmentStatus'},
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},

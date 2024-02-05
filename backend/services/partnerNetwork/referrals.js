@@ -8,16 +8,17 @@ const {GDBReferralModel} = require("../../models/referral");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper} = require("../genericData");
 const {initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
-const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
+const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {getGenericAsset} = require("./index");
 const { createNotificationHelper } = require("../notification/notification");
 const { sanitize } = require("../../helpers/sanitizer");
 
 async function populateReferral(referralGeneric, receiverId) {
+  const referralStatuses = await getIndividualsInClass(':ReferralStatus');
   const referral = {};
 
   referral.idInPartnerDeployment = referralGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
-  referral.status = referralGeneric[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]];
+  referral.status = referralStatuses[referralGeneric[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]]];
 
   const programId = parseInt((referralGeneric[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]] || referralGeneric.program)?.split('_')[1]);
   if (!!programId) {
@@ -226,9 +227,11 @@ async function receiveReferral(req, res, next) {
     delete originalReferralJson.characteristicOccurrences;
     delete originalReferralJson._id;
 
+    const referralStatuses = await getIndividualsInClass(':ReferralStatus');
+
     const referral = {fields: originalReferralJson || {}, formId: referralFormId};
     'id' in partnerData && (referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id);
-    'status' in partnerData && (referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = partnerData.status || 'Pending');
+    'status' in partnerData && (referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]] = Object.keys(referralStatuses).find(key => referralStatuses[key] === partnerData.status) || null);
     if (partnerData.partnerIsReceiver) {
       referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] = receivingServiceProvider._uri;
       referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] = referringServiceProvider._uri;
