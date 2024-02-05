@@ -8,7 +8,7 @@ const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericH
   deleteSingleGenericHelper, fetchGenericDatasHelper} = require("../genericData");
 const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 const {getProviderById} = require("../genericData/serviceProvider");
-const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
+const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {convertAddressForSerialization, convertAddressForDeserialization} = require("../address/misc");
 const {GDBVolunteerModel} = require("../../models/volunteer");
 
@@ -329,10 +329,11 @@ async function getGenericAsset(assetGenerics, characteristics, types) {
 
 async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations, programs) {
   let assets = await fetchGenericDatasHelper(assetType);
+  const shareabilities = await getIndividualsInClass(':Shareability');
   assets = assets.filter(asset => (
     (asset.serviceProvider?.organization?._id === organizationId || asset.organization?._id === organizationId)
-    && (asset.shareability === 'Shareable with all organizations'
-      || (asset.shareability === 'Shareable with partner organizations'
+    && (shareabilities[asset.shareability] === 'Shareable with all organizations'
+      || (shareabilities[asset.shareability] === 'Shareable with partner organizations'
         && (asset.partnerOrganizations?.some(org => partnerOrganizations.includes(org))
           || asset.partnerOrganizations?.map(org => org._uri).some(org => !!org && partnerOrganizations.includes(org))))
       || (assetType === 'service' && asset.shareability === 'Not shareable' && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
