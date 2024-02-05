@@ -6,6 +6,7 @@ import {getServiceProviderName, getServiceProviderType} from "./shared/ServicePr
 import {getServiceProviderNameCharacteristicIds} from "./shared/CharacteristicIds";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 import {formatProviderName} from "./Providers";
+import { getInstancesInClass } from '../api/dynamicFormApi';
 
 const TYPE = 'services';
 
@@ -59,6 +60,7 @@ export default function Services() {
   const fetchData = async () => {
     const services = (await fetchMultipleGeneric('service')).data;
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const shareabilities = await getInstancesInClass(':Shareability');
     const characteristicIds = (await getServiceProviderNameCharacteristicIds());
     const data = [];
     for (const service of services) {
@@ -88,7 +90,7 @@ export default function Services() {
       }
 
       if (service.shareability) {
-        serviceData.shareability = service.shareability;
+        serviceData.shareability = shareabilities[service.shareability];
         if (service.partnerOrganization) {
           serviceData.partnerOrganizations = service.partnerOrganization;
         }
