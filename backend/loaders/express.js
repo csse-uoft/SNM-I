@@ -18,6 +18,7 @@ const config = require('../config');
 const {initUserAccounts} = require('../services/userAccount/user');
 const {initFieldTypes, initPredefinedCharacteristics, initPredefinedInternalType} = require('../services/characteristics');
 const {initStreetTypes, initStreetDirections} = require('../services/address');
+const {initShareabilities} = require('../services/options');
 
 const app = express();
 
@@ -77,6 +78,8 @@ app.use('/public', partnerNetworkPublicRoute);
 
   await initStreetTypes();
   await initStreetDirections();
+
+  await initShareabilities();
 })()
 
 

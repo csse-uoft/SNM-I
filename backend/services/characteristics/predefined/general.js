@@ -69,6 +69,7 @@ module.exports = [{
       label: 'Shareability',
       valueDataType: 'xsd:string',
       fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: ':Shareability'
     },
   },
   {
