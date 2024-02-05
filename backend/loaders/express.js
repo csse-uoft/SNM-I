@@ -18,7 +18,7 @@ const config = require('../config');
 const {initUserAccounts} = require('../services/userAccount/user');
 const {initFieldTypes, initPredefinedCharacteristics, initPredefinedInternalType} = require('../services/characteristics');
 const {initStreetTypes, initStreetDirections} = require('../services/address');
-const {initShareabilities} = require('../services/options');
+const {initOptions} = require('../services/options');
 
 const app = express();
 
@@ -79,7 +79,15 @@ app.use('/public', partnerNetworkPublicRoute);
   await initStreetTypes();
   await initStreetDirections();
 
-  await initShareabilities();
+  await initOptions('Shareabilities',
+    ["Shareable with partner organizations", "Shareable with all organizations", "Not shareable"],
+    'Shareability', 'shareability');
+  await initOptions('Referral Statuses',
+    ["Requested", "Confirmed", "Cancelled", "Fulfilled"],
+    'ReferralStatus', 'referralStatus');
+  await initOptions('Appointment Statuses',
+    ["Requested", "Confirmed", "Cancelled", "Fulfilled", "Client No Show", "Postponed"],
+    'AppointmentStatus', 'appointmentStatus');
 })()
 
 
