@@ -10,6 +10,7 @@ const {findCharacteristicById, initPredefinedCharacteristics, PredefinedCharacte
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper} = require("../dynamicForm");
 const {convertAddressForSerialization, convertAddressForDeserialization} = require("../address/misc");
+const {GDBVolunteerModel} = require("../../models/volunteer");
 
 async function fetchOrganization(req, res, next) {
   try {
@@ -152,7 +153,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
     for (providerIndex in providers) {
       const provider = providers[providerIndex];
       if (provider.volunteer.idInPartnerDeployment == volunteerData.id) {
-        const oldGeneric = await fetchSingleGenericHelper('volunteer', provider.volunteer._id);
+        const oldGeneric = await GDBVolunteerModel.findOne({ _id: id }, {populates: ['address']});
         if (volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
           volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
           volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
@@ -217,7 +218,7 @@ async function updateOrganization(req, res, next) {
     }
     const genericId = provider[providerType]._id;
 
-    const oldGeneric = await fetchSingleGenericHelper('organization', genericId);
+    const oldGeneric = await GDBOrganizationModel.findOne({ _id: id }, {populates: ['address']});
     if (organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
       organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
       organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
@@ -260,7 +261,6 @@ async function updateOrganization(req, res, next) {
         'First Name': 'firstName',
         'Last Name': 'lastName',
         'ID in Partner Deployment': 'id',
-        //'Address': 'address' TODO
       }, {
         'organizationForVolunteer': () => provider[providerType]._uri
       });
