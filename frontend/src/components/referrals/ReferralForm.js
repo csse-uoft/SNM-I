@@ -83,7 +83,7 @@ export default function ReferralForm() {
         programOccurrenceFieldId={programOccurrenceFieldId}
         fixedProgramId={serviceOrProgramId}/>
     } else if (implementation.label === "Referral Status") {
-      const statusFieldKey = `characteristic_${characteristics['ReferralStatus']?._id}`;
+      const statusFieldKey = `characteristic_${characteristics['Referral Status']._id}`;
       if (!statusFieldKey || !statusOptions) {
         return <Box minWidth={"350px"}><Loading message=""/></Box>;
       }

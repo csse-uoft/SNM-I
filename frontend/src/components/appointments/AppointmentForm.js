@@ -4,6 +4,10 @@ import { fetchInternalTypeByFormType } from "../../api/internalTypeApi";
 import { AppointmentClientField } from './AppointmentClientField';
 import { tr } from 'date-fns/locale';
 import { fetchCharacteristics } from '../../api/characteristicApi';
+import { getInstancesInClass } from '../../api/dynamicFormApi';
+import { Box } from '@mui/material';
+import { Loading } from '../shared';
+import SelectField from '../shared/fields/SelectField';
 
 export default function AppointmentForm() {
   const formType = 'appointment';
@@ -50,7 +54,7 @@ export default function AppointmentForm() {
         fields={fields}
       />
     } else if (implementation.label === "Appointment Status") {
-      const statusFieldKey = `characteristic_${characteristics['AppointmentStatus']?._id}`;
+      const statusFieldKey = `characteristic_${characteristics['Appointment Status']._id}`;
       if (!statusFieldKey || !statusOptions) {
         return <Box minWidth={"350px"}><Loading message=""/></Box>;
       }
