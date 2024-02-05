@@ -3,9 +3,22 @@ import GenericForm from "../shared/GenericForm";
 import { fetchInternalTypeByFormType } from "../../api/internalTypeApi";
 import { AppointmentClientField } from './AppointmentClientField';
 import { tr } from 'date-fns/locale';
+import { fetchCharacteristics } from '../../api/characteristicApi';
 
 export default function AppointmentForm() {
   const formType = 'appointment';
+
+  const [characteristics, setCharacteristics] = useState({});
+  useEffect(() => {
+    fetchCharacteristics().then(characteristics => {
+      const data = {};
+      for (const {implementation, name, _id} of characteristics.data) {
+        data[name] = {implementation, _id}
+      }
+      setCharacteristics(data);
+    });
+  }, []);
+
   const [internalTypes, setInternalTypes] = useState({});
   useEffect(() => {
     fetchInternalTypeByFormType(formType).then(({ internalTypes }) => {
@@ -15,7 +28,12 @@ export default function AppointmentForm() {
       }
       setInternalTypes(data);
     });
-    
+  }, []);
+
+  const [statusOptions, setStatusOptions] = useState(null);
+  useEffect(() => {
+    getInstancesInClass(':AppointmentStatus')
+      .then(options => setStatusOptions(options));
   }, []);
 
   /*
@@ -31,6 +49,14 @@ export default function AppointmentForm() {
         step = {step}
         fields={fields}
       />
+    } else if (implementation.label === "Appointment Status") {
+      const statusFieldKey = `characteristic_${characteristics['AppointmentStatus']?._id}`;
+      if (!statusFieldKey || !statusOptions) {
+        return <Box minWidth={"350px"}><Loading message=""/></Box>;
+      }
+
+      return <SelectField key={statusFieldKey} label="Appointment Status" required value={fields[statusFieldKey]}
+        options={statusOptions} onChange={handleChange(statusFieldKey)}/>;
     }else if (implementation.label === "Last Name") {
       return "";
     }else if (implementation.label === "First Name") {
