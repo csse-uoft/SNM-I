@@ -6,6 +6,8 @@ const {parsePhoneNumber} = require("../../helpers/phoneNumber");
 const {GDBServiceModel} = require("../../models/service/service");
 const {GDBProgramModel} = require("../../models/program/program");
 
+const {graphdb} = require('../../config');
+
 
 const genericType2Model = {
   client: GDBClientModel,
@@ -18,7 +20,7 @@ const genericItemType2Model = {
 
 };
 
-const baseURI = "http://localhost:7200/repositories/snmi?query=";
+const baseURI = graphdb.addr + "/repositories/snmi?query=";
 
 // ex. return all characteristics associated with client
 async function fetchForAdvancedSearch(req, res, next) {
@@ -263,7 +265,6 @@ async function fts_service_search(searchitems) {
       `;
 
   let query = baseURI + encodeURIComponent(sparqlQuery);
-  console.log("SPARQL QUERY: " + sparqlQuery)
 
   const response = await fetch(query);
   const text = await response.text();
@@ -301,7 +302,6 @@ async function fts_program_search(searchitems) {
       `;
 
   let query = baseURI + encodeURIComponent(sparqlQuery);
-  console.log("SPARQL QUERY: " + sparqlQuery)
 
   const response = await fetch(query);
   const text = await response.text();
@@ -339,8 +339,6 @@ async function fts_serviceprovider_search(searchitems) {
 
       }
       `;
-
-  console.log("SPARQL QUERY: " + sparqlQuery)
 
   let query = baseURI + encodeURIComponent(sparqlQuery);
 
