@@ -42,7 +42,7 @@ async function setupConnector(){
   const queries = fileContent.split(EOL)
   // read the query not the name of the query
   for (let i = 1; i < queries.length; i+=2) {
-    await fetch(queries[i], {
+    await fetch(graphdb.addr + queries[i], {
       method: 'POST',
       headers: {
         ContentType: 'application/json'
