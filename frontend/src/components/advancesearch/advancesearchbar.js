@@ -41,10 +41,10 @@ export default function AdvancedSearchBar({handleAdvanceSearchClose, handleAdvan
             </>)
         }
 
-        <div style={{marginTop: '20px', padding: '10px', border: '1px solid #ccc'}}>
-          <h2>Debug Form Data:</h2>
-          <pre>{JSON.stringify(formData, null, 2)}</pre>
-        </div>
+        {/*<div style={{marginTop: '20px', padding: '10px', border: '1px solid #ccc'}}>*/}
+        {/*  <h2>Debug Form Data:</h2>*/}
+        {/*  <pre>{JSON.stringify(formData, null, 2)}</pre>*/}
+        {/*</div>*/}
 
         <Container>
           <Button onClick={handleAdvanceSearchClose}>Close</Button>
