@@ -217,7 +217,7 @@ const genericType2InternalTypeUpdateTreater = {
     'person': personInternalTypeUpdateTreater
 };
 
-const config = require('../../config');
+const {graphdb} = require('../config');
 
 const specialField2Model = {
     'address': GDBAddressModel,
@@ -717,7 +717,7 @@ const fetchGenericDatas = async (req, res, next) => {
 
 async function fts_search(searchtype, searchitem) {
     // The initial query sent to the database
-    const baseURI = config.graphdb.addr + "/repositories/snmi?query=";
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
     let query = "";
 
     search_type_in_string = ['service', 'program', 'serviceProvision', 'client']
@@ -781,7 +781,7 @@ async function fts_search(searchtype, searchitem) {
 
 async function connector_search(searchtype, searchitem) {
     // The initial query sent to the database
-    const baseURI = config.graphdb.addr + "/repositories/snmi?query=";
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
 
     let query = "";
 
