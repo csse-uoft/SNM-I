@@ -7,6 +7,7 @@ const {
 } = require("./index");
 const {Server400Error} = require("../../utils");
 
+const config = require('../../config');
 
 const createSingleServiceProvider = async (req, res, next) => {
     const {providerType, data} = req.body;
@@ -67,7 +68,7 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
 };
 
 async function fts_provider_search(searchitem) {
-    const baseURI = "http://localhost:7200/repositories/snmi?query=";
+    const baseURI = config.graphdb.addr + "/repositories/snmi?query=";
 
     const sparqlQuery =
         `
@@ -125,7 +126,7 @@ async function fts_provider_search(searchitem) {
 
 async function connector_provider_search(searchitem) {
     console.log("Seachitem", searchitem);
-    const baseURI = "http://localhost:7200/repositories/snmi?query=";
+    const baseURI = config.graphdb.addr + "/repositories/snmi?query=";
 
     const sparqlQuery =
         `
