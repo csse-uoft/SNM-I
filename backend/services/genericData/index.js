@@ -217,7 +217,7 @@ const genericType2InternalTypeUpdateTreater = {
     'person': personInternalTypeUpdateTreater
 };
 
-const {graphdb} = require('../config');
+const {graphdb} = require('../../config');
 
 const specialField2Model = {
     'address': GDBAddressModel,
