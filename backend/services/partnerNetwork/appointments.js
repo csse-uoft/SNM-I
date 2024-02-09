@@ -7,7 +7,7 @@ const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {getGenericAsset} = require("./index");
 const {GDBReferralModel} = require("../../models/referral");
-const {getClient} = require("./referrals");
+const {getClient, getReferralPartnerGeneric} = require("./referrals");
 const {createNotificationHelper} = require("../notification/notification");
 const {sanitize} = require("../../helpers/sanitizer");
 
@@ -17,7 +17,6 @@ const {sanitize} = require("../../helpers/sanitizer");
  * @returns {Object} The appointment with characteristic/internal type labels mapping to characteristics/internal types.
  */
 async function populateAppointment(appointmentGeneric) {
-  console.log('typeof appointmentGeneric' + typeof appointmentGeneric + '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
   const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');
   const appointment = {};
 
@@ -48,53 +47,6 @@ async function populateAppointment(appointmentGeneric) {
   }
 
   return appointment;
-}
-
-/**
- * If the given referral's receiver or referrer is a partner organization, return the partner
- * @param {Object} referralGeneric 
- * @returns {Object|null} The partner organization, if any, that is the referral's receiver or referrer,
- * along with a property isReceiver.
- */
-async function getReferralPartnerGeneric(referralGeneric) {
-  // Get the appointment's referral's receiver
-  const receiverId = parseInt((referralGeneric[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]] || referralGeneric.receivingServiceProvider)?.split('_')[1]);
-  if (!receiverId || isNaN(receiverId)) {
-    return null;
-  }
-
-  const receivingProvider = await getProviderById(receiverId);
-  const receivingProviderType = receivingProvider.type;
-  if (receivingProviderType !== 'organization') {
-    return null;
-  }
-  const receiverGenericId = receivingProvider[receivingProviderType]._id;
-  const receiverGeneric = await fetchSingleGenericHelper(receivingProviderType, receiverGenericId);
-
-  // Get the appointment's referral's referrer
-  const referrerId = parseInt((referralGeneric[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]] || referralGeneric.referringServiceProvider)?.split('_')[1]);
-  if (!referrerId || isNaN(referrerId)) {
-    return null;
-  }
-
-  const referringProvider = await getProviderById(referrerId);
-  const referringProviderType = referringProvider.type;
-  if (referringProviderType !== 'organization') {
-    return null;
-  }
-  const referrerGenericId = referringProvider[referringProviderType]._id;
-  const referrerGeneric = await fetchSingleGenericHelper(referringProviderType, referrerGenericId);
-
-  let partnerGeneric;
-  if (receiverGeneric[PredefinedCharacteristics['Organization Status']._uri.split('#')[1]] === 'Partner') {
-    partnerGeneric = { ...receiverGeneric, isReceiver: true };
-  } else if (referrerGeneric[PredefinedCharacteristics['Organization Status']._uri.split('#')[1]] === 'Partner') {
-    partnerGeneric = { ...referrerGeneric, isReceiver: false };
-  } else {
-    return null;
-  }
-
-  return partnerGeneric;
 }
 
 /**
@@ -154,7 +106,7 @@ async function sendAppointment(req, res, next) {
       return res.status(400).json({ message: 'Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json)) });
     } else if (response.status === 201) {
       // This was a successful POST request
-      // The partner returned the ID of the new appointment in their referral; save it as ID in Partner Deployment locally
+      // The partner returned the ID of the new appointment in their response; save it as ID in Partner Deployment locally
       const json = await response.json();
 
       const newId = json.newId;
@@ -267,6 +219,7 @@ async function receiveAppointment(req, res, next) {
       }
       await (await updateSingleGenericHelper(originalAppointment._id, appointment, 'appointment')).save();
 
+      // Notify the user of the updated appointment
       createNotificationHelper({
         name: 'An appointment was updated',
         description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just updated <a href="/appointments/${originalAppointment._id}">this appointment</a>.`
