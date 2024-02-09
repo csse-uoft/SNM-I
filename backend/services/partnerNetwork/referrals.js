@@ -10,9 +10,13 @@ const {initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInter
 const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {getGenericAsset} = require("./index");
-const { createNotificationHelper } = require("../notification/notification");
-const { sanitize } = require("../../helpers/sanitizer");
+const {createNotificationHelper} = require("../notification/notification");
+const {sanitize} = require("../../helpers/sanitizer");
 
+/**
+ * Given a referral generic, return an object representing that referral that
+ * can be sent to a partner.
+ */
 async function populateReferral(referralGeneric, receiverId) {
   const referralStatuses = await getIndividualsInClass(':ReferralStatus');
   const referral = {};
@@ -161,6 +165,15 @@ async function sendReferral(req, res, next) {
   }
 }
 
+/**
+ * Converts the given partnerClientData into a format that can be saved.
+ * If isNew is true, the client data is returnedd as a Client object that can be saved.
+ * If isNew is false, the Client with ID originalId is updated using the client data.
+ * @param {Object} partnerClientData - Client data from the partner
+ * @param {boolean} isNew - Whether a client is to be created (true) or updated (false) with the given data
+ * @param {number} [originalId] - The ID of the client to be updated if not isNew
+ * @returns the new client object if isNew; else null.
+ */
 async function getClient(partnerClientData, isNew, originalId) {
   const clientForms = await getDynamicFormsByFormTypeHelper('client');
   if (clientForms.length > 0) {
