@@ -42,7 +42,7 @@ export async function fetchMultipleGeneric(type) {
 }
 
 export async function fetchSearchGeneric(type, searchitem) {
-  return getJson(`/api/generics/${type}?searchitem=${searchitem}`);
+  return getJson(`/api/generics/${type}/search?searchitem=${searchitem}`);
 }
 
 
@@ -52,3 +52,4 @@ export async function fetchSearchGeneric(type, searchitem) {
 export async function deleteSingleGeneric(type, id) {
   return deleteJson(`/api/generic/${type}/${id}`);
 }
+

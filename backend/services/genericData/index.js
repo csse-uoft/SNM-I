@@ -672,7 +672,32 @@ async function deleteSingleGeneric(req, res, next) {
     }
 }
 
+async function fetchGenericDatasHelper(genericType) {
+    if (!genericType2Model[genericType])
+        return null;
+    const extraPopulates = genericType2Populates[genericType] || [];
+    const data = await genericType2Model[genericType].find({},
+        {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
+    return data;
+}
+
+
 const fetchGenericDatas = async (req, res, next) => {
+    const {genericType} = req.params;
+    try {
+        const result = await fetchGenericDatasHelper(genericType);
+        if (!result) {
+            return res.status(400).json({success: false, message: 'No such generic type'});
+        }
+        return res.status(200).json({data: result, success: true});
+    } catch (e) {
+        next(e);
+    }
+};
+
+
+
+const searchGenericDatas = async (req, res, next) => {
     const {genericType} = req.params;
 
     let connector_search_result;
@@ -860,6 +885,6 @@ async function connector_search(searchtype, searchitem) {
 
 module.exports = {
     genericType2Model,
-    fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
+    fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas, searchGenericDatas,
     createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper
 };
