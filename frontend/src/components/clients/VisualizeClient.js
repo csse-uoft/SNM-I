@@ -12,7 +12,6 @@ export default function VisualizeClient() {
   return (
     <>
       <VisualizeGeneric genericType={'client'}/>
-      <Matching/>
     </>
   )
 }

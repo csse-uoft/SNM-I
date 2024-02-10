@@ -121,10 +121,15 @@ async function getAllDynamicForms(req, res, next) {
   });
 }
 
-async function getDynamicFormsByFormType(req, res, next) {
-  const forms = await MDBDynamicFormModel.find({formType: req.params.formType}, 'forOrganization createdBy modifiedAt name');
+async function getDynamicFormsByFormTypeHelper(formType) {
+  const forms = await MDBDynamicFormModel.find({formType}, 'forOrganization createdBy modifiedAt name');
 
   const formsWithUserInfo = await getFormsWithUserInfo(forms);
+  return formsWithUserInfo;
+}
+
+async function getDynamicFormsByFormType(req, res, next) {
+  const formsWithUserInfo = await getDynamicFormsByFormTypeHelper(req.params.formType);
 
   res.json({
     success: true,
@@ -133,9 +138,9 @@ async function getDynamicFormsByFormType(req, res, next) {
 }
 
 
-async function getIndividualsInClass(req, res) {
+async function getIndividualsInClass(className) {
   const instances = {};
-  const fullURI = SPARQL.ensureFullURI(req.params.class) ;
+  const fullURI = SPARQL.ensureFullURI(className) ;
 
   const query = `
     ${SPARQL.getSPARQLPrefixes()}
@@ -170,7 +175,12 @@ async function getIndividualsInClass(req, res) {
       instances[s.id] = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
   });
-  res.json(sortObjectByKey(instances));
+  return instances;
+}
+
+
+async function getIndividualsInClassHandler(req, res) {
+  res.json(sortObjectByKey(await getIndividualsInClass(req.params.class)));
 }
 
 async function getURILabel(req, res) {
@@ -213,5 +223,5 @@ async function getURILabel(req, res) {
 
 module.exports = {
   createDynamicForm, getAllDynamicForms, getDynamicForm, deleteDynamicForm, updateDynamicForm, getDynamicFormsByFormType,
-  getIndividualsInClass, getURILabel
+  getIndividualsInClass, getIndividualsInClassHandler, getURILabel, getDynamicFormsByFormTypeHelper
 }

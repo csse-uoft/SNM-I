@@ -1,7 +1,8 @@
 import React from 'react';
 import {Link} from "../shared"
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'programRegistrations';
 
@@ -31,21 +32,12 @@ const columnsWithoutOptions = [
 
 export default function ProgramRegistrations() {
 
-  const nameFormatter = program => program.name;
+  const nameFormatter = programRegistration => 'Program Registration ' + programRegistration._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: {lat: Number(program.location.lat), lng: Number(program.location.lng)},
-      title: program.name,
-      link: `/${TYPE}/${program.id}`,
-      content: program.desc,
-    })).filter(program => program.position.lat && program.position.lng);
-  };
+  const linkFormatter = programRegistration => `/${TYPE}/${programRegistration._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const programs = (await fetchMultipleGeneric('programRegistration')).data;
     const data = [];
     for (const program of programs) {
@@ -58,6 +50,8 @@ export default function ProgramRegistrations() {
             programData.referralStatus = occ.objectValue;
           }
         }
+      if (program.address)
+        programData.address = program.address;
       data.push(programData);
     }
     return data;
@@ -72,8 +66,8 @@ export default function ProgramRegistrations() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgramRegistration}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

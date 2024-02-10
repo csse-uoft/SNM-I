@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+	base: '/docs',
 	integrations: [
 		starlight({
 			title: 'SNM-I',
@@ -30,6 +31,7 @@ export default defineConfig({
 						{ label: 'GraphDB utils', link: '/guides/graphdb-utils' },
 						{ label: 'Data model', link: '/guides/data-model' },
 						{ label: 'Troubleshooting', link: '/guides/troubleshooting' },
+						{ label: 'Deployment', link: '/guides/deployment' },
 					],
 				},
 				{

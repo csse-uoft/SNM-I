@@ -2,9 +2,9 @@ import React from 'react'
 import {Link} from './shared';
 import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchSingleGeneric, fetchMultipleGeneric} from "../api/genericDataApi";
+import {getUserProfileById} from "../api/userApi";
 import {getInstancesInClass} from "../api/dynamicFormApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
-import {formatLocation} from '../helpers/location_helpers'
 
 const TYPE = 'appointments';
 
@@ -20,19 +20,25 @@ const columnsWithoutOptions = [
   {
     label: 'Client',
     body: ({client}) => {
-      return client;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      if (client) {
+        return <Link color to={`/clients/${client._id.split('_')[1]}`}>{client.name || ':' + client._id}</Link>;
+      }
     }
   },
   {
     label: 'Person',
     body: ({person}) => {
-      return person;
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
+      if (person) {
+        return <Link color to={`/person/${person._id.split('_')[1]}`}>{person.name || ':' + person._id}</Link>;
+      }
+    }
+  },
+  {
+    label: 'User',
+    body: ({user}) => {
+      if (user) {
+        return <Link color to={`/users/${user._id.split('_')[1]}`}>{user.name || ':' + user._id}</Link>;
+      }
     }
   },
   {
@@ -42,9 +48,6 @@ const columnsWithoutOptions = [
         return new Date(datetime).toLocaleDateString();
       else if (dateType === 'DateTime')
         return new Date(datetime).toLocaleString();
-      // return  <Link color to={`/providers/${provider.id}`}>
-      //   {formatProvider({provider})}
-      // </Link>
     },
     sortBy: ({datetime, dateType}) => {
       return Number(new Date(datetime));
@@ -62,22 +65,13 @@ const columnsWithoutOptions = [
 
 export default function Appointments() {
 
-  const nameFormatter = appointment => appointment.name;
+  const nameFormatter = appointment => 'Appointment ' + appointment._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected 
-    const currPageAppointments = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageAppointments.map(appointment => ({
-      position: {lat: Number(appointment.address.lat), lng: Number(appointment.address.lng)},
-      title: 'appointment ' + appointment._id,
-      link: `/${TYPE}/${appointment._id}`,
-      content: appointment.address && formatLocation(appointment.address),
-    })).filter(appointment => appointment.position.lat && appointment.position.lng);
-  };
+  const linkFormatter = appointment => `/${TYPE}/${appointment._id}`;
 
   const fetchData = async () => {
     // get all appointments data
-    const appointmens = (await fetchMultipleGeneric('appointment')).data;
+    const appointments = (await fetchMultipleGeneric('appointment')).data;
     const addressCharacteristicId = await getAddressCharacteristicId();
     const clients = {};
     // get all clients data
@@ -97,7 +91,7 @@ export default function Appointments() {
       });
     });
     const data = [];
-    for (const appointment of appointmens) {
+    for (const appointment of appointments) {
       //parse appointment data and assgin to corresponding fields
       const appointmentData = {_id: appointment._id, address: {}};
       if (appointment.characteristicOccurrences)
@@ -114,23 +108,35 @@ export default function Appointments() {
           } else if (occ.occurrenceOf?.name === 'Date') {
             appointmentData.datetime = occ.dataDateValue;
             appointmentData.dateType = 'Date';
-          } else if (occ.occurrenceOf?.name === 'Address') {
-            const clientObj = (await fetchSingleGeneric("appointment", appointment._id)).data; // TODO: inefficient!
-            appointmentData.address = {
-              lat: clientObj['characteristic_' + addressCharacteristicId].lat,
-              lng: clientObj['characteristic_' + addressCharacteristicId].lng,
-            };
           }
         }
       if (appointment.client) {
         // get corresponding client data
-        appointmentData.client = clients[appointment.client.slice(1)]
+        appointmentData.client = {
+          _id: appointment.client.split('#')[1],
+          name: clients[appointment.client.split('#')[1]
+                || ':' + appointment.client.split('#')[1]]
+        };
       }
       if (appointment.person) {
         // get corresponding person data
-        appointmentData.person = persons[appointment.person.slice(1)]
-      } else if (appointment.user) {
-        // const userData = await fetchSingleGeneric('user', appointment.user);
+        appointmentData.person = {
+          _id: appointment.person.split('#')[1],
+          name: persons[appointment.person.split('#')[1]
+                || ':' + appointment.person.split('#')[1]]
+        };
+      }
+      if (appointment.user) {
+        const userData = await getUserProfileById(appointment.user.split('_')[1]);
+        appointmentData.user = {
+          _id: appointment.user.split('#')[1],
+          name: userData.primaryContact
+                ? userData.primaryContact.lastName + ', ' + userData.primaryContact.firstName
+                : ':' + appointment.user.split('#')[1],
+        };
+      }
+      if (appointment.address) {
+        appointmentData.address = appointment.address;
       }
 
       data.push(appointmentData);
@@ -146,8 +152,8 @@ export default function Appointments() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteAppointment}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

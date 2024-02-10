@@ -19,6 +19,7 @@ export default function ServiceProvisionForm() {
       setInternalTypes(data);
     });
   }, []);
+
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
     console.log(implementation)
     if (implementation.optionsFromClass === ":Client") {
@@ -27,12 +28,20 @@ export default function ServiceProvisionForm() {
                                            clientFieldId={internalTypes.clientForServiceProvision._id}
                                            needOccFieldId={internalTypes.needOccurrenceForServiceProvision._id}/>
     } else if (implementation.optionsFromClass === ":Service") {
+      const serviceFieldId = internalTypes.serviceForServiceProvision._id;
+      const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForServiceProvision._id;
+      const needSatisfierFieldId = internalTypes.needSatisfierForServiceProvision._id;
+
+      if (!serviceFieldId || !serviceOccurrenceFieldId || !needSatisfierFieldId) {
+        return <Box minWidth={"350px"}><Loading message=""/></Box>;
+      }
+
       // Render Service & Service Occurrence & Need Satisfier
       return <ServiceAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
-        serviceFieldId={internalTypes.serviceForServiceProvision._id}
-        serviceOccurrenceFieldId={internalTypes.serviceOccurrenceForServiceProvision._id}
-        needSatisfierFieldId={internalTypes.needSatisfierForServiceProvision._id}/>
+        serviceFieldId={serviceFieldId}
+        serviceOccurrenceFieldId={serviceOccurrenceFieldId}
+        needSatisfierFieldId={needSatisfierFieldId}/>
 
     } else if (implementation.optionsFromClass === ':NeedOccurrence') {
       return "";

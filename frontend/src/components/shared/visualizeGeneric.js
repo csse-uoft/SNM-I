@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useMemo} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, Link} from "react-router-dom";
+import {useSnackbar} from 'notistack';
+
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass, getURILabel} from "../../api/dynamicFormApi";
 import {
   Box, Button, Chip, Container, Grid, Paper, Typography
@@ -12,6 +14,7 @@ import {fetchQuestion} from "../../api/questionApi";
 import {fetchSingleProvider} from "../../api/providersApi";
 import VirtualizeTable from "./virtualizeTable";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
+import {formatLocation} from "../../helpers/location_helpers";
 
 
 async function getOptionLabels(uris, options) {
@@ -36,7 +39,7 @@ async function getOptionLabels(uris, options) {
  * This function is the frontend for visualizing single generic
  * @returns {JSX.Element}
  */
-export default function VisualizeGeneric({genericType,}) {
+export default function VisualizeGeneric({genericType, getAdditionalButtons,}) {
 
   const navigate = useNavigate();
   const {id} = useParams();
@@ -45,6 +48,19 @@ export default function VisualizeGeneric({genericType,}) {
   const [information, setInformation] = useState([]);
   const [allForms, setAllForms] = useState({}); // a list with all forms
   const [selectedFormId, setSelectedFormId] = useState('all'); // the id of the selected form
+  const [genericData, setGenericData] = useState({});
+  const [additionalButtons, setAdditionalButtons] = useState(null);
+  const {enqueueSnackbar} = useSnackbar();
+
+  useEffect(() => {
+    (async function () {
+      setGenericData(
+        (genericType === 'organization' || genericType === 'volunteer')
+        ? (await fetchSingleProvider(genericType, id)).data
+        : (await fetchSingleGeneric(genericType, id)).data
+      );
+    })();
+  }, [id, genericType]);
 
   useEffect(() => {
     (async function () {
@@ -64,16 +80,15 @@ export default function VisualizeGeneric({genericType,}) {
         getInstancesInClass('ic:StreetDirection').then((data) => streetDirections = data),
         getInstancesInClass('schema:State').then((data) => states = data),
       ]);
+      const addressInfo = {streetTypes, streetDirections, states};
 
-      const {data: genericData} = (genericType === 'organization' || genericType === 'volunteer')
-        ? await fetchSingleProvider(genericType, id)
-        : await fetchSingleGeneric(genericType, id);
+      if (!genericData) return;
 
       const information = [];
       for (let [key, data] of Object.entries(genericData)) {
-        const [type, id] = key.split('_');
+        const [type, instanceId] = key.split('_');
         if (type === 'characteristic') {
-          const characteristic = await fetchCharacteristic(id);
+          const characteristic = await fetchCharacteristic(instanceId);
           const fieldType = characteristic.fetchData.fieldType;
           const isOption = typeof data === "string" && data.startsWith('http://snmi#option');
 
@@ -96,13 +111,15 @@ export default function VisualizeGeneric({genericType,}) {
             });
           } else if (fieldType === 'AddressField') {
             value = <Typography>
-              {`${data.unitNumber ? data.unitNumber + '-' : ''}${data.streetNumber ? data.streetNumber : ''} ${data.streetName} ${data.streetType ? streetTypes[data.streetType] : ''}
-                ${data.streetDirection ? streetDirections[data.streetDirection] : ''}, ${data.city}, ${states[data.state]}, ${data.postalCode}`}
+              {formatLocation(data, addressInfo)}
             </Typography>;
           } else if (['DateField', 'DateTimeField', 'TimeField'].includes(fieldType)) {
             value = <Typography>{new Date(data).toLocaleString()}</Typography>;
           } else if (typeof data === "boolean") {
             value = data ? <Typography>Yes</Typography> : <Typography>No</Typography>;
+          } else if (fieldType === 'EligibilityField') {
+            if (!data.formula) continue;
+            value = data.formula;
           } else {
             value = <Typography>{data}</Typography>;
           }
@@ -111,7 +128,7 @@ export default function VisualizeGeneric({genericType,}) {
           })
 
         } else if (type === 'question') {
-          const question = await fetchQuestion(id);
+          const question = await fetchQuestion(instanceId);
           information.push({
             label: <Typography>{question.question.content}</Typography>,
             value: <Typography>{data}</Typography>,
@@ -123,13 +140,40 @@ export default function VisualizeGeneric({genericType,}) {
             value = [];
             for (const [idx, uri] of data.entries()) {
               const label = await getURILabel(uri);
-              value.push(<Chip key={idx} label={label} sx={{mr: 1}}/>)
+              // Render clickable needs
+              if (genericType === 'client' && internalTypes[instanceId].implementation.label === 'Need') {
+                const needId = uri.split('_')[1];
+                value.push(<Button sx={{textTransform: 'none', mr: 1}}
+                                   variant="outlined" key={idx} color="success"
+                                   onClick={() => navigate(`/clients/${id}/match/${needId}`)}>{label}</Button>)
+              } else {
+                value.push(<Chip key={idx} label={label} sx={{mr: 1}}/>)
+              }
             }
           } else {
-            value = await getURILabel(data)
+            const dataGenericType = data.split('#')[1].split('_')[0];
+            const dataGenericId = data.split('#')[1].split('_')[1];
+            if (['program', 'service'].includes(dataGenericType)) {
+              try {
+                const dataGeneric = (await fetchSingleGeneric(dataGenericType, dataGenericId)).data;
+                for (let [innerKey, innerData] of Object.entries(dataGeneric)) {
+                  if (innerKey.split('_')[0] === 'characteristic') {
+                    const innerCharacteristic = await fetchCharacteristic(innerKey.split('_')[1]);
+                    if (['Program Name', 'Service Name'].includes(innerCharacteristic.fetchData.name)) {
+                      value = <Link to={`/${dataGenericType}s/${dataGenericId}/`}>{innerData}</Link>;
+                    }
+                  }
+                }
+              } catch (e) {
+                value = await getURILabel(data)
+              }
+            }
+            if (!value) {
+              value = await getURILabel(data);
+            }
           }
           information.push({
-            label: <Typography>{internalTypes[id].implementation.label}</Typography>,
+            label: <Typography>{internalTypes[instanceId].implementation.label}</Typography>,
             value,
             id: key
           })
@@ -140,7 +184,7 @@ export default function VisualizeGeneric({genericType,}) {
 
       setLoading(false);
     })();
-  }, [id, genericType]);
+  }, [genericData]);
 
   useEffect(() => {
     if (selectedFormId === 'all') {
@@ -165,6 +209,11 @@ export default function VisualizeGeneric({genericType,}) {
 
   }, [selectedFormId, information]);
 
+  useEffect(() => {
+    if (getAdditionalButtons)
+      getAdditionalButtons(genericType, genericData, enqueueSnackbar)
+        .then(buttons => setAdditionalButtons(buttons));
+  }, [genericType, genericData, enqueueSnackbar]);
 
   const formOptions = useMemo(() => {
     const options = {'all': 'Display All'};
@@ -199,6 +248,7 @@ export default function VisualizeGeneric({genericType,}) {
           <Grid item>
             <Button variant="outlined" onClick={() => navigate(`edit`)}>Edit</Button>
           </Grid>
+            {additionalButtons}
         </Grid>
 
         <VirtualizeTable rows={display}/>

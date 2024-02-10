@@ -4,7 +4,6 @@ import { GenericPage } from "./shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
 import { fetchForAdvancedSearch } from "../api/advancedSearchApi";
 import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
-import { formatLocation } from '../helpers/location_helpers'
 
 const TYPE = 'programOccurrence';
 
@@ -31,18 +30,15 @@ const columnsWithoutOptions = [
 
 export default function ProgramOccurrences() {
 
-  const nameFormatter = (programOccurrence) => {return programOccurrence.description;};
-
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: {lat: Number(program.address.lat), lng: Number(program.address.lng)},
-      title: nameFormatter(program),
-      link: `/${TYPE}/${program._id}`,
-      content: program.address && formatLocation(program.address),
-    })).filter(program => program.position.lat && program.position.lng);
+  const nameFormatter = (programOccurrence) => {
+    if (programOccurrence.description) {
+      return programOccurrence.description;
+    } else {
+      return 'Program Occurrence ' + programOccurrence._id;
+    }
   };
+
+  const linkFormatter = (programOccurrence) => {return `/${TYPE}/${programOccurrence._id}`;};
 
   const fetchData = async () => {
     var programNameCharacteristicId;
@@ -53,21 +49,11 @@ export default function ProgramOccurrences() {
       }
     }
  
-    const programOccurrences = (await fetchMultipleGeneric(TYPE)).data; // TODO: Does not contain address info
+    const programOccurrences = (await fetchMultipleGeneric(TYPE)).data;
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const data = [];
     for (const programOccurrence of programOccurrences) {
       const programOccurrenceData = {_id: programOccurrence._id, address: {}};
-       if (programOccurrence.characteristicOccurrences)
-         for (const occ of programOccurrence.characteristicOccurrences) {
-           if (occ.occurrenceOf?.name === 'Address') {
-             const obj = (await fetchSingleGeneric("programOccurrence", programOccurrence._id)).data; // TODO: inefficient!
-             programOccurrenceData.address = {
-               lat: obj['characteristic_' + addressCharacteristicId].lat,
-               lng: obj['characteristic_' + addressCharacteristicId].lng,
-             };
-            }
-         }
       if (programOccurrence.description) {
         programOccurrenceData.description = programOccurrence.description;
       }
@@ -75,6 +61,9 @@ export default function ProgramOccurrences() {
         programOccurrenceData.programID = programOccurrence.occurrenceOf.split('_')[1];
         const programData = (await fetchSingleGeneric('program', programOccurrenceData.programID)).data;
         programOccurrenceData.programName = programData['characteristic_' + programNameCharacteristicId];
+      }
+      if (programOccurrence.address) {
+        programOccurrenceData.address = programOccurrence.address;
       }
       data.push(programOccurrenceData);
     }
@@ -90,8 +79,8 @@ export default function ProgramOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgram}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

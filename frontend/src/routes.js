@@ -88,6 +88,8 @@ import PersonForm from './components/person/PersonForm';
 import VisualizePerson from './components/person/VisualizePerson';
 import VisualizeClientAssessment from "./components/clientAssessment/VisualizeClientAssessment";
 import VisualizeReferral from "./components/referrals/VisualizeReferral";
+import Matching from "./components/clients/Matching";
+
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -107,6 +109,7 @@ const routes = (
     <Route path="/clients/new" element={<PrivateRoute element={ClientForm}/>}/>
     <Route path="/clients/advance-search" element={<PrivateRoute element={ClientSearch}/>}/>
     <Route path="/clients/:id" element={<PrivateRoute element={VisualizeClient}/>}/>
+    <Route path="/clients/:clientId/match/:needId" element={<PrivateRoute element={Matching}/>}/>
     <Route path="/clients" element={<PrivateRoute element={Clients}/>}/>
     <Route path="/profile/:id/edit" element={<PrivateRoute element={UpdateUserProfile}/>}/>
     <Route path="/profile/:id" element={<PrivateRoute element={UserProfile}/>}/>
@@ -147,16 +150,22 @@ const routes = (
 
     <Route path="/referrals/:id/edit" element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/new" element={<PrivateRoute element={ReferralForm}/>}/>
+    <Route path="/referrals/new/:clientId/:needId/:serviceOrProgramType/:serviceOrProgramId/"
+           element={<PrivateRoute element={ReferralForm}/>}/>
     <Route path="/referrals/:id" element={<PrivateRoute element={VisualizeReferral}/>}/>
     <Route path="/referrals" element={<PrivateRoute element={Referrals}/>}/>
 
     <Route path="/serviceRegistrations/:id/edit" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
     <Route path="/serviceRegistrations/new" element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
+    <Route path="/serviceRegistrations/new/:clientId/:serviceOrProgramId/"
+           element={<PrivateRoute element={ServiceRegistrationForm}/>}/>
     {<Route path="/serviceRegistrations/:id" element={<PrivateRoute element={VisualizeServiceRegistration}/>}/>}
     <Route path="/serviceRegistrations" element={<PrivateRoute element={ServiceRegistrations}/>}/>
 
     <Route path="/programRegistrations/:id/edit" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     <Route path="/programRegistrations/new" element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
+    <Route path="/programRegistrations/new/:clientId/:serviceOrProgramId/"
+           element={<PrivateRoute element={ProgramRegistrationForm}/>}/>
     {<Route path="/programRegistrations/:id" element={<PrivateRoute element={VisualizeProgramRegistration}/>}/>}
     <Route path="/programRegistrations" element={<PrivateRoute element={ProgramRegistrations}/>}/>
 
@@ -175,6 +184,7 @@ const routes = (
     <Route path="/appointments/:id/edit" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments/:id" element={<PrivateRoute element={VisualizeAppointment}/>}/>
     <Route path="/appointments/new" element={<PrivateRoute element={AppointmentForm}/>}/>
+    <Route path="/appointments/new/:clientId/" element={<PrivateRoute element={AppointmentForm}/>}/>
     <Route path="/appointments" element={<PrivateRoute element={Appointments}/>}/>
 
     <Route path="/person" element={<PrivateRoute element={Person}/>}/>

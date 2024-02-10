@@ -6,9 +6,10 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Paper, Typography, Link } from "@mui/material";
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { useNavigate } from "react-router-dom";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
+import { formatLocation } from '../../helpers/location_helpers';
 
 const Google = window.google || {maps: {}};
 const {Map, Marker, InfoWindow, Size} = Google.maps;
@@ -31,17 +32,23 @@ function ReactInfoWindow({marker, navigate}) {
 }
 
 // Mount a react component into uncontrolled component
-const createInfoWindow = (map, markerElement, marker, navigate, idx) => {
+const createInfoWindow = (map, markerElement, marker, navigate, idx, addressInfo) => {
   const infoWindow = new InfoWindow({
     content: `<div id="infoWindow-${idx}" />`,
-    position: marker.position,
+    position: markerElement.position,
     pixelOffset: new Size(0, -42),
   });
+
+  let container = null;
   infoWindow.addListener('domready', e => {
-    render(
-      <ReactInfoWindow navigate={navigate} marker={marker}/>,
-      document.getElementById(`infoWindow-${idx}`))
+    if (!container) {
+      container = document.getElementById(`infoWindow-${idx}`);
+      const root = createRoot(container);
+      marker.content = formatLocation(marker.position, addressInfo);
+      root.render(<ReactInfoWindow navigate={navigate} marker={marker}/>);
+    }
   });
+
   // 'clicked' and 'show' act as an instance variable.
   let clicked = false, show = false;
   document.querySelector(`infoWindow-${idx} button`);
@@ -72,47 +79,53 @@ if (Map) {
   GoogleMap = function (props) {
     const navigate = useNavigate();
     const defaultCenter = useMemo(() => ({lat: 43.6870, lng: -79.4132}), []);
-    const {
-      zoom = 11,
-      center = defaultCenter, // Toronto
-      markers = [],
-    } = props;
     const [map, setMap] = useState(null);
+    const [addressInfo, setAddressInfo] = useState();
+    const [zoom, setZoom] = useState(11);
+    const [center, setCenter] = useState(defaultCenter);
+    const [markers, setMarkers] = useState(props.markers);
 
     useEffect(() => {
+      setMarkers(props.markers);
       setMap(new Map(document.getElementById('map'), {
         center: center,
         zoom: zoom
       }));
-    }, [zoom, center]);
+    }, [zoom, center, addressInfo, props.markers]);
 
     useEffect(() => {
-      let streetTypes, streetDirections, states;
-      getInstancesInClass('ic:StreetType').then((data) => streetTypes = data);
-      getInstancesInClass('ic:StreetDirection').then((data) => streetDirections = data);
-      getInstancesInClass('schema:State').then((data) => states = data);
+      const fetchAddressInfo = async () => {
+        const data = {};
 
+        const streetTypes = (await getInstancesInClass('ic:StreetType'));
+        const streetDirections = (await getInstancesInClass('ic:StreetDirection'));
+        const states = (await getInstancesInClass('schema:State'));
+        data.streetTypes = streetTypes;
+        data.streetDirections = streetDirections;
+        data.states = states;
+
+        setAddressInfo(data);
+      }
+
+      fetchAddressInfo();
+    }, []);
+
+    useEffect(() => {
       for (let i = 0; i < markers.length; i++) {
         const marker = markers[i];
-	      console.log(JSON.stringify(marker));
         let addressText;
         if (!marker.position) {
           continue;
-        } else if (marker.position.lat && marker.position.lng) {
-          addressText = `${marker.position.lat}, ${marker.position.lng}`;
-        } else if (marker.position.streetName && marker.position.city) {
-          addressText = `${marker.position.unitNumber ? marker.position.unitNumber + '-' : ''}${marker.position.streetNumber ? marker.position.streetNumber : ''} ${marker.position.streetName} ${marker.position.streetType ? streetTypes[marker.position.streetType] : ''}${marker.position.streetDirection ? ' ' + streetDirections[marker.position.streetDirection] : ''}, ${marker.position.city}${marker.position.state ? ', ' + states[marker.position.state] : ''}${marker.position.postalCode ? ', ' + marker.position.postalCode : ''}`;
         } else {
+          addressText = formatLocation(marker.position, addressInfo);
+        }
+        if (addressText === '') {
           continue;
         }
 
         let position;
         geocoder.geocode({'address': addressText}, function(results, status) {
-		console.log('Got here');
-		console.log(JSON.stringify(results[0].geometry.location));
-		console.log(JSON.stringify(status));
           if (status === Google.maps.GeocoderStatus.OK) {
-                console.log('Got here x2!');
             const currMarker = new Marker({
               position: results[0].geometry.location,
               map: map,
@@ -121,13 +134,13 @@ if (Map) {
 
             // Info window is opened when mouse over the marker.
             // It also stays open after the marker is clicked.
-            createInfoWindow(map, currMarker, marker, navigate, i);
+            createInfoWindow(map, currMarker, marker, navigate, i, addressInfo);
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
       }
-    }, [markers, map, navigate]);
+    }, [map, navigate]);
 
     return useMemo(() =>
         <Paper elevation={5} style={{width: '100%', height: '40vh', marginTop: 5}} id="map"/>

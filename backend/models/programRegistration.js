@@ -5,6 +5,7 @@ const {GDBReferralModel} = require("./referral");
 const {GDBAppointmentModel} = require("./appointment");
 const {GDBCOModel} = require("./ClientFunctionalities/characteristicOccurrence");
 const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
+const {GDBAddressModel} = require('./address');
 
 const GDBProgramRegistrationModel = createGraphDBModel({
   needOccurrence: {type: GDBNeedOccurrenceModel, internalKey: ':forNeedOccurrence'},
@@ -12,7 +13,8 @@ const GDBProgramRegistrationModel = createGraphDBModel({
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   appointment: {type: GDBAppointmentModel, internalKey: ':hasAppointment'},
-  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
+  characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
 }, {
   rdfTypes: [':ProgramRegistration'], name: 'programRegistration'
 });

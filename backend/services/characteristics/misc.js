@@ -18,10 +18,12 @@ const type2Label = {
 
   PhoneNumberField: 'Phone Number Field',
   AddressField: 'Address Field',
+  EligibilityField: 'Eligibility Field',
 }
 
 const fieldTypeCache = {};
 const predefinedCharacteristicCache = {};
+const predefinedInternalTypeCache = {};
 
 const dataTypes = [
   {label: 'String', value: 'xsd:string'},
@@ -104,6 +106,9 @@ async function initPredefinedInternalType() {
       // This won't be triggered if the predefined characteristic is not changed.
       await existingInternalType.save();
       delete predefined[existingInternalType.name];
+
+      // Cache it
+      predefinedInternalTypeCache[existingInternalType.name] = existingInternalType;
     }
   }
 
@@ -161,5 +166,6 @@ async function getAllClasses(req, res) {
 module.exports = {
   initFieldTypes, getFieldTypes, getDataTypes, getAllClasses,
   initPredefinedCharacteristics, FieldTypes: fieldTypeCache, initPredefinedInternalType,
-  PredefinedCharacteristics: predefinedCharacteristicCache
+  PredefinedCharacteristics: predefinedCharacteristicCache,
+  PredefinedInternalTypes: predefinedInternalTypeCache
 }

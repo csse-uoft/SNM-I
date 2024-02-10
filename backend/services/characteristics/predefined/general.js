@@ -51,4 +51,34 @@ module.exports = [{
       fieldType: FieldTypes.TextField,
     }
   },
+  {
+    name: 'Eligibility',
+    description: 'The eligibility of a program or a service.',
+    predefinedProperty: 'http://snmi#hasEligibility',
+    implementation: {
+      label: 'Eligibility',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.EligibilityField,
+    }
+  },
+  {
+    name: 'Shareability',
+    description: 'Shareability',
+    predefinedProperty: 'http://snmi#hasShareability',
+    implementation: {
+      label: 'Shareability',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.SingleSelectField,
+    },
+  },
+  {
+    name: 'ID in Partner Deployment',
+    description: 'ID in Partner Deployment',
+    predefinedProperty: 'http://snmi#hasIdInPartnerDeployment',
+    implementation: {
+      label: 'ID in Partner Deployment',
+      valueDataType: 'xsd:number',
+      fieldType: FieldTypes.NumberField,
+    },
+  },
 ]

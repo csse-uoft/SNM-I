@@ -4,6 +4,8 @@ import {GenericPage} from "./shared";
 import {deleteSingleGeneric, fetchMultipleGeneric, fetchSearchGeneric, fetchSingleGeneric} from "../api/genericDataApi";
 import {formatLocation} from '../helpers/location_helpers'
 import {fetchForProgramAdvancedSearch} from "../api/advancedSearchApi";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import {formatProviderName} from "./Providers";
 
 const TYPE = 'programs';
 
@@ -16,17 +18,24 @@ const columnsWithoutOptions = [
     sortBy: ({name}) => name,
   },
   {
+    label: 'Shareability',
+    body: ({shareability}) => {
+      return shareability;
+    },
+    sortBy: ({shareability}) => shareability,
+  },
+  {
     label: 'Provider',
     body: ({serviceProvider}) => {
       if (serviceProvider) {
         return <Link color to={`/providers/${serviceProvider.type}/${serviceProvider._id}`}>
-          {serviceProvider.name}
+          {formatProviderName(serviceProvider)}
         </Link>;
       } else {
         return "";
       }
     },
-    sortBy: ({serviceProvider}) => serviceProvider?.name,
+    sortBy: ({serviceProvider}) => serviceProvider ? formatProviderName(serviceProvider) : '',
   },
   {
     label: 'Manager',
@@ -78,21 +87,19 @@ const columnsWithoutOptions = [
 export default function Programs() {
 
   const nameFormatter = (program) => {
-    return program.name;
+    if (program.name) {
+      return program.name;
+    } else {
+      return 'Program ' + program._id;
+    }
   };
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: {lat: Number(program.address.lat), lng: Number(program.address.lng)},
-      title: nameFormatter(program),
-      link: `/${TYPE}/${program._id}`,
-      content: program.address && formatLocation(program.address),
-    })).filter(program => program.position.lat && program.position.lng);
+  const linkFormatter = (program) => {
+    return `/${TYPE}/${program._id}`;
   };
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const programs = (await fetchMultipleGeneric('program')).data;
     const data = [];
     for (const program of programs) {
@@ -111,7 +118,9 @@ export default function Programs() {
       if (program.serviceProvider) {
         programData.serviceProvider = {
           _id: program.serviceProvider._id,
-          name: program.serviceProvider.organization?.name || program.serviceProvider.volunteer?.name,
+          name: program.serviceProvider.organization?.name,
+          lastName: program.serviceProvider.volunteer?.lastName,
+          firstName: program.serviceProvider.volunteer?.firstName,
           type: program.serviceProvider.type
         }
       }
@@ -122,6 +131,19 @@ export default function Programs() {
           lastName: program.manager.lastName,
         }
       }
+      if (program.serviceProvider?.organization?.address) {
+        programData.address = program.serviceProvider.organization.address;
+      } else if (program.serviceProvider?.volunteer?.address) {
+        programData.address = program.serviceProvider.volunteer.address;
+      }
+
+      if (program.shareability) {
+        programData.shareability = program.shareability;
+        if (program.partnerOrganizations) {
+          programData.partnerOrganizations = program.partnerOrganizations;
+        }
+      }
+
       data.push(programData);
     }
     return data;
@@ -210,8 +232,8 @@ export default function Programs() {
       searchData={searchData}
       advancedSearch={advancedProgramSearch}
       deleteItem={deleteProgram}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

@@ -2,11 +2,10 @@ import React from 'react';
 
 // TODO: createClients  (CSV Upload)
 import { useClientAPIs } from '../api/clientApi'
-import { formatLocation } from '../helpers/location_helpers'
 import { GenericPage, Link } from "./shared";
 import { fetchSingleGeneric } from "../api/genericDataApi";
 import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
-
+import { fetchNeed } from '../api/needApi';
 const TYPE = 'clients';
 
 // mui-table column configurations
@@ -23,6 +22,15 @@ const columnsWithoutOptions = [
     label: 'Last Name',
     body: ({lastName}) => {
       return lastName;
+    }
+  },
+  {
+    label: 'Needs',
+    body: ({needs}) => {
+      if (needs === null || needs === undefined){
+        needs = "None"
+      }
+      return needs;
     }
   },
   // {
@@ -54,26 +62,21 @@ export default function Clients() {
 
   const {fetchClients, deleteClient, searchClients} = useClientAPIs();
   const nameFormatter = (client) => {
-    return client.firstName + ' ' + client.lastName;
+    if (client?.firstName && client?.lastName) {
+      return client?.firstName + ' ' + client?.lastName;
+    } else {
+      return 'Client ' + client?._id;
+    }
   };
 
-  const generateMarkers = (clients, pageNumber, rowsPerPage) => {
-    // TODO: verify this works as expected
-    const currPageClients = clients.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageClients.map(client => ({
-      position: {lat: Number(client.address.lat), lng: Number(client.address.lng)},
-      title: nameFormatter(client),
-      link: `/${TYPE}/${client._id}`,
-      content: client.address && formatLocation(client.address),
-    })).filter(client => client.position.lat && client.position.lng);
-  };
+  const linkFormatter = client => `/${TYPE}/${client._id}`;
 
   /**
    * Fetch and transform data
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
-    const clients = (await fetchClients()).data; // TODO: Does not contain address info
+    const clients = (await fetchClients()).data;
     const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const data = [];
     for (const client of clients) {
@@ -89,12 +92,15 @@ export default function Clients() {
           } else if (occ.occurrenceOf?.name === 'Address') {
             const clientObj = (await fetchSingleGeneric("client", client._id)).data; // TODO: inefficient!
             clientData.address = clientObj['characteristic_' + addressCharacteristicId];
-	  }
+	        }
         }
+      if (client.needs){
+        clientData.needs = client.needs;
+      }
       data.push(clientData);
     }
-    return data;
 
+    return data;
   }
 
   const searchData = async (searchitem) => {
@@ -129,8 +135,8 @@ export default function Clients() {
       fetchData={fetchData}
       searchData={searchData}
       deleteItem={deleteClient}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

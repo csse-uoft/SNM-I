@@ -1,35 +1,38 @@
 const {GDBClientModel} = require("../../models/ClientFunctionalities/client");
 const {WeightedDirectedGraph} = require("./graph");
-const {getNeeds2NeedSatisfiers, getNeeds2Characteristics, getCharacteristics2NeedSatisfiers,
+const {
+  getNeeds2NeedSatisfiers, getNeeds2Characteristics, getCharacteristics2NeedSatisfiers,
   getNeedSatisfier2ProgramsOrServices, getKindOfParentDistances
 } = require("./queries");
+const {getEligibilityFormulaEvaluator} = require("../eligibility/formula/interpreter");
+const {GDBServiceModel} = require("../../models/service/service");
+const {GDBProgramModel} = require("../../models/program/program");
+const {fetchSingleGenericHelper} = require("../genericData");
+const {SPARQL} = require("graphdb-utils");
 
 
 async function matchFromClientHandler(req, res, next) {
-  const {matches, services2Name, program2Name} = await matchFromClient(req.params.clientId);
+  try {
+    const {matches, services2Name, program2Name} = await matchFromClient(req.params.clientId, req.params.needId);
 
-  for (const match of matches) {
-    const targetURI = match.path[match.path.length - 1];
-    if (services2Name.has(targetURI)) {
-      match.type = 'service';
-      match.name = services2Name.get(targetURI);
-    } else if (program2Name.has(targetURI)) {
-      match.type = 'program';
-      match.name = program2Name.get(targetURI);
-    }
+    res.json({
+      success: true,
+      data: matches,
+    });
+  } catch (e) {
+    console.error(e);
+    next(e);
   }
 
-  res.json({
-    success: true,
-    data: matches,
-  });
 }
 
 
-async function matchFromClient(clientId) {
+async function matchFromClient(clientId, needId) {
   const graph = new WeightedDirectedGraph();
   const client = await GDBClientModel.findById(clientId);
-  if (client.needs == null) {
+  const clientData = await fetchSingleGenericHelper('client', clientId);
+  const specifiedNeedURI = SPARQL.ensureFullURI(`:need_${needId}`);
+  if (client.needs == null || !client.needs.includes(specifiedNeedURI)) {
     return {
       matches: [],
       program2Name: new Map(),
@@ -37,11 +40,12 @@ async function matchFromClient(clientId) {
     }
   }
 
-  client.needs.forEach(need => graph.addEdge(client._uri, need, 0));
+  graph.addEdge(client._uri, specifiedNeedURI, 0)
+  // client.needs.forEach(need => graph.addEdge(client._uri, need, 0));
 
   // Get Need -> parent Need
-  const needDistances = await getKindOfParentDistances(client.needs, ':Need');
-  const allNeeds = new Set(client.needs);
+  const needDistances = await getKindOfParentDistances([specifiedNeedURI], ':Need');
+  const allNeeds = new Set([specifiedNeedURI]);
   for (const {src, dst, distance} of needDistances) {
     graph.addEdge(src, dst, distance * 2)
     allNeeds.add(dst);
@@ -104,9 +108,41 @@ async function matchFromClient(clientId) {
     services2Name.set(service, name);
   }
 
+  const matches = graph.findShortestPath(client._uri, [...program2Name.keys(), ...services2Name.keys()]);
+
+
+  // Initialize the formula evaluator
+  const EligibilityFormulaEvaluator = await getEligibilityFormulaEvaluator();
+  const evaluator = new EligibilityFormulaEvaluator({...clientData});
+
+  for (const match of matches) {
+    const targetURI = match.path[match.path.length - 1];
+
+    // Add type and service/program name
+    if (services2Name.has(targetURI)) {
+      match.type = 'service';
+      match.name = services2Name.get(targetURI);
+    } else if (program2Name.has(targetURI)) {
+      match.type = 'program';
+      match.name = program2Name.get(targetURI);
+    }
+
+    // Evaluate the formula if existed
+    // In the case where the formula does not exist, set eligibilityMatched to `null`
+    match.eligibilityMatched = null;
+    const Model = match.type === 'service' ? GDBServiceModel : GDBProgramModel;
+    const {eligibility} = await Model.findByUri(targetURI, {populates: ['eligibility']});
+    if (eligibility && eligibility.formula) {
+      const formula = eligibility.formula;
+      const result = evaluator.evaluateFormula(formula);
+      match.eligibilityMatched = !!result;
+    }
+  }
+
+
   // graph.printGraph();
   return {
-    matches: graph.findShortestPath(client._uri, [...program2Name.keys(), ...services2Name.keys()]),
+    matches,
     program2Name,
     services2Name
   };

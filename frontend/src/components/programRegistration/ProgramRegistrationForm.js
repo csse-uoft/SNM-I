@@ -19,27 +19,30 @@ export default function ProgramRegistrationForm() {
       setInternalTypes(data);
     });
   }, []);
-  const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
+  const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
     console.log(implementation)
-    if (implementation.optionsFromClass === ":Client") {
+    if (implementation.optionsFromClass?.endsWith("Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForProgramRegistration._id}
                                            needOccFieldId={internalTypes.needOccurrenceForProgramRegistration._id}/>
-    } else if (implementation.optionsFromClass === ":ProgramOccurrence") {
+    } else if (implementation.optionsFromClass?.endsWith("ProgramOccurrence")) {
+      const programOccurrenceFieldId = internalTypes.programOccurrenceForProgramRegistration._id;
+
+      if (!programOccurrenceFieldId) {
+        return <Box minWidth={"350px"}><Loading message=""/></Box>;
+      }
+
       // Render Program & Program Occurrence & Need Satisfier
       return <ProgramAndOccurrenceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
-        programFieldId={internalTypes.programForProgramRegistration._id}
-        programOccurrenceFieldId={internalTypes.programOccurrenceForProgramRegistration._id}
-        needSatisfierFieldId={internalTypes.needSatisfierForProgramRegistration._id}/>
-
-    } else if (implementation.optionsFromClass === ':NeedOccurrence') {
+        programOccurrenceFieldId={programOccurrenceFieldId}
+        fixedProgramId={serviceOrProgramId}/>
+    } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
       return "";
     }
   }
-
   return (
-    <GenericForm name={'programRegistration'} mainPage={'/programRegistrations'}/>
+    <GenericForm name={'programRegistration'} mainPage={'/programRegistrations'} onRenderField={handleRenderField}/>
   );
 };

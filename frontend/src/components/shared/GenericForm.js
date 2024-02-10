@@ -11,6 +11,8 @@ import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
 import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
+import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
+import {sendPartnerReferral, updatePartnerReferral} from "../../api/partnerNetworkApi";
 
 const contentStyle = {
   width: '80%',
@@ -30,7 +32,7 @@ const contentStyle = {
  */
 export default function GenericForm({name, mainPage, isProvider, onRenderField}) {
   const navigate = useNavigate();
-  const {id} = useParams();
+  const {id, clientId, needId, serviceOrProgramType, serviceOrProgramId} = useParams();
   const mode = id ? 'edit' : 'new';
 
   const [form, setForm] = useState({});
@@ -100,9 +102,26 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
           }
         }
 
-        // Get data
-        if (id) {
+        if (mode === 'edit') {
+          // Get data
           const {data} = await (isProvider ? fetchSingleProvider : fetchSingleGeneric)(name, id);
+          setForm(form => ({...form, fields: data}));
+        } else {
+          // Prefill form with any given attributes
+          const {internalTypes} = await fetchInternalTypeByFormType(name);
+          const capitalizedType = serviceOrProgramType?.charAt(0).toUpperCase() + serviceOrProgramType?.substring(1);
+          const data = {};
+          for (const internalType of internalTypes) {
+            if (internalType.implementation?.optionsFromClass === 'http://snmi#Client' && clientId) {
+              data[internalType._uri.split('#')[1]] = "http://snmi#client_" + clientId;
+            } else if (internalType.implementation?.optionsFromClass === 'http://snmi#Need' && needId) {
+              data[internalType._uri.split('#')[1]] = "http://snmi#need_" + needId;
+            } else if (internalType.implementation?.optionsFromClass === 'http://snmi#' + capitalizedType && serviceOrProgramId) {
+              data[internalType._uri.split('#')[1]] = "http://snmi#" + serviceOrProgramType + '_' + serviceOrProgramId;
+              // TODO: Add receivingServiceProvider
+              // TODO: Add serviceorProgramOccurrence
+            }
+          }
           setForm(form => ({...form, fields: data}));
         }
 
@@ -122,26 +141,51 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
     console.log(form);
     if (mode === 'new') {
       try {
-        await (isProvider ? createSingleProvider : createSingleGeneric)(name, form).then(() => navigate(mainPage));
-        enqueueSnackbar(name + ' created', {variant: 'success'});
+        await (isProvider ? createSingleProvider : createSingleGeneric)(name, form)
+          .then(async (response) => {
+            enqueueSnackbar(name + ' created', {variant: 'success'});
+            if (name === 'referral') {
+              try {
+                await sendPartnerReferral(response.createdId);
+                navigate(mainPage);
+              } catch (e) {
+                console.log(e)
+                enqueueSnackbar(`Failed to send ${name}: ` + e.json?.message || e.message, {variant: 'error'});
+              }
+            } else {
+              navigate(mainPage);
+            }
+          });
       } catch (e) {
-        console.log(e);
-        enqueueSnackbar(`Failed to create ${name}: ` + e.message, {variant: 'error'});
+        enqueueSnackbar(`Failed to create ${name}: ` + e.json?.message || e.message, {variant: 'error'});
       }
 
     } else {
       try {
-        await (isProvider ? updateSingleProvider : updateSingleGeneric)(name, id, form).then(() => navigate(mainPage));
-        enqueueSnackbar(`${name} updated`, {variant: 'success'});
+        await (isProvider ? updateSingleProvider : updateSingleGeneric)(name, id, form)
+          .then(async () => {
+            enqueueSnackbar(name + ' updated', {variant: 'success'});
+            if (name === 'referral') {
+              try {
+                await updatePartnerReferral(id);
+                navigate(mainPage);
+              } catch (e) {
+                console.log(e)
+                enqueueSnackbar(`Failed to send ${name}: ` + e.json?.message || e.message, {variant: 'error'});
+              }
+            } else {
+              navigate(mainPage);
+            }
+          });
       } catch (e) {
-        enqueueSnackbar(`Failed to update ${name}: ` + e.message, {variant: 'error'});
+        enqueueSnackbar(`Failed to update ${name}: ` + e.json?.message || e.message, {variant: 'error'});
       }
     }
 
   };
 
   const handleChange = typeAndId => (e) => {
-    form.fields[typeAndId] = e?.target ? e?.target?.value || undefined : e;
+    form.fields[typeAndId] = e?.target ? e?.target?.value ?? undefined : e;
   };
 
   const getStepContent = stepIdx => {
@@ -153,8 +197,8 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         id = id || _id;
 
         // Check if there is an external rendering logic.
-        const Field = onRenderField && onRenderField({required, id, type, implementation, content},
-          index, form.fields, handleChange, step);
+        const Field = onRenderField && onRenderField({required, id, type, implementation, content, serviceOrProgramId},
+          index, form.fields, handleChange);
         if (Field != null) return Field;
 
         if (type === 'question') {

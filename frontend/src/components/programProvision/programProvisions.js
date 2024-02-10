@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'programProvisions';
 
@@ -17,9 +18,13 @@ const columnsWithoutOptions = [
     label: 'Program Occurrence',
     body: ({programOccurrence}) => {
       if (programOccurrence) {
-        return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
+        if (programOccurrence.description) {
+          return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{programOccurrence.description}</Link>;
+        } else {
+          return <Link color to={`/programOccurrence/${programOccurrence._id}/`}>{'Program Occurrence ' + programOccurrence._id}</Link>;
+        }
       } else {
-        return "";
+        return "Unavailable";
       }
     },
     sortBy: ({programOccurrence}) => programOccurrence.description,
@@ -29,7 +34,7 @@ const columnsWithoutOptions = [
     body: ({startDate}) => {
       const startDateObj = new Date(startDate);
       if (isNaN(startDateObj)) {
-        return "";
+        return "Unspecified";
       } else {
         return startDateObj.toLocaleString();
       }
@@ -41,7 +46,7 @@ const columnsWithoutOptions = [
     body: ({endDate}) => {
       const endDateObj = new Date(endDate);
       if (isNaN(endDateObj)) {
-        return "";
+        return "Unspecified";
       } else {
         return endDateObj.toLocaleString();
       }
@@ -60,21 +65,12 @@ const columnsWithoutOptions = [
 
 export default function ProgramProvisions() {
 
-  const nameFormatter = appointment => appointment.name;
+  const nameFormatter = programProvision => 'Program Provision ' + programProvision._id;
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPagePrograms = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPagePrograms.map(program => ({
-      position: {lat: Number(program.location.lat), lng: Number(program.location.lng)},
-      title: program.name,
-      link: `/${TYPE}/${program.id}`,
-      content: program.desc,
-    })).filter(program => program.position.lat && program.position.lng);
-  };
+  const linkFormatter = programProvision => `/${TYPE}/${programProvision._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const appointmens = (await fetchMultipleGeneric('programProvision')).data;
     const data = [];
     for (const appointment of appointmens) {
@@ -89,6 +85,8 @@ export default function ProgramProvisions() {
         }
       if (appointment.programOccurrence)
         appointmentData.programOccurrence = appointment.programOccurrence
+      if (appointment.address)
+        appointmentData.address = appointment.address;
       data.push(appointmentData);
     }
     return data;
@@ -103,8 +101,8 @@ export default function ProgramProvisions() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteProgramProvision}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

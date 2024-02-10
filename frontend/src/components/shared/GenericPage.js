@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CSVUploadModal, CustomToolbar, DeleteModal, DropdownMenu, GoogleMap, Loading, DataTable } from "./index";
-import {Container, Fade} from "@mui/material";
+import { Container, Fade } from "@mui/material";
 
 /**
  * Generate markers on google map.
@@ -13,13 +13,13 @@ import {Container, Fade} from "@mui/material";
 
 /**
  * A generic page component for clients, services, programs, goods, providers.
- * @param props {{fetchData, deleteItem, generateMarkers: GenerateMarkers, tableOptions?: {},
- * type: ("clients", "services", "programs", "goods", "providers"), nameFormatter, columnsWithoutOptions}}
+ * @param props {{fetchData, deleteItem, tableOptions?: {},
+ * type: ("clients", "services", "programs", "goods", "providers"), nameFormatter, linkFormatter, columnsWithoutOptions}}
  */
 export default function GenericPage(props) {
   const {
-    fetchData, searchData, deleteItem, generateMarkers, advancedSearch, type,
-    nameFormatter, columnsWithoutOptions
+    fetchData, searchData, deleteItem, advancedSearch, type,
+    nameFormatter, linkFormatter, columnsWithoutOptions
   } = props;
   let title = props.title;
   if (!title)
@@ -123,9 +123,20 @@ export default function GenericPage(props) {
     ...props.tableOptions,
   };
 
+  const generateMarkers = (data, pageNumber, rowsPerPage) => {
+    const currPageItems = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
+    return currPageItems.map(item => ({
+      position: (item.address?.lat && item.address?.lng)
+        ? {lat: Number(item.address.lat), lng: Number(item.address.lng)}
+        : {...item.address},
+      title: nameFormatter(item),
+      link: linkFormatter(item),
+      })).filter(item => (item.position?.lat && item.position?.lng) || (item.position?.streetName && item.position?.city))
+  };
+
   // This also filters out providers without lat / lng.
   const markers = useMemo(() => generateMarkers(state.data, state.pageNumber, state.rowsPerPage),
-    [generateMarkers, state.data, state.pageNumber, state.rowsPerPage]);
+    [state.data, state.pageNumber, state.rowsPerPage]);
 
   if (state.loading)
     return <Loading message={`Loading ${title}...`}/>;

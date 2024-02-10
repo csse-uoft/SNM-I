@@ -2,22 +2,22 @@
 title: Business and functional requirements
 ---
 
-## Business requirements
-Provide or improve service providers' ability to
-- intake and manage clients
+## **Business Requirements**
+Provide or improve service providers' ability to:
+- intake and manage clients:
   - collect and manage client information
   - assess client problems, goals and needs
   - connect clients with services
   - track client progress (via milestones and outcomes)
-- setup and manage programs and services
+- setup and manage programs and services:
   - assess program/service outcomes
   - identify program/services trends, bottlenecks, etc.
   - improve service delivery
     - assess operational efficiency
-- onboard and manage staff
+- onboard and manage staff:
   - collect and manage staff information
   - assess staff performance
-- onboard and manage volunteers
+- onboard and manage volunteers:
   - collect and manage volunteer information
   - assess volunteer performance
 - make informed day-to-day or strategic decisions
@@ -25,9 +25,9 @@ Provide or improve service providers' ability to
 - support the development of compelling funding proposals
 - intake and manage donors
 
-## Functional requirements
+## **Functional Requirements**
 - Case management: ability to manage information about individual client
-  files including contact information, goals, needs, services accessed and
+  files. Includes contact information, goals, needs, services accessed and
   outcomes, and manage and track referrals for individual clients as they move
   through an agency's programs.
 - Program/Service management: ability to monitor and manage programs within an
@@ -36,7 +36,7 @@ Provide or improve service providers' ability to
 - Assessment management: ability to produce up-to-date reports on client and
   program progress towards pre-defined outcomes, staff and volunteer
   performance, and service efficiency.
-- Reporting: ability to access standard reports and to build new
+- Reporting: ability to access standard reports and build new
   queries/reports using an intuitive interface.
 - Funder reporting: ability to submit reports to funders via email or web
   services.
@@ -45,21 +45,21 @@ Provide or improve service providers' ability to
 - Customization: ability to add new fields/connections and interface
   templates/forms without interfering with the core operation of the system.
 
-### User
+### **User**
 - Register with the application through an invitation from an admin ([API](/guides/api/#register))
 - Log in and out ([API](/guides/api/#base))
 - Reset password ([API](/guides/api/#forgotpassword))
 - Change password ([API](/guides/api/#user))
 - Edit profile information ([API](/guides/api/#user))
 
-### Admin
+### **Admin**
 - Account creation and management
   - Create accounts for employees of the organization (and send invitations for
     them to complete the registration)
     ([API](/guides/api/#register))
-    - Required information: person's first and last name, email, and role in
+    - Required information: employee's first and last name, email, and role in
       the organization
-    - Activate account after they register ([API](/guides/api/#register))
+    - Activate account after registration ([API](/guides/api/#register))
   - Automatically deactivate accounts
   - Manually deactivate accounts ([API](/guides/api/#user))
   - Search for specific accounts based on user information
@@ -69,10 +69,10 @@ Provide or improve service providers' ability to
   - Create and manage attributes (eg. data, user, roles)
   - Create and manage functionality/resource access policies
 - Form-item (e.g. characteristics, questions, notes) management
-  - Create characteristic/question for clients, services, referrals, etc.
+  - Create characteristics/questions for clients, services, referrals, etc.
     ([API 1](/guides/api/#characteristic); [API 2](/guides/api/#question))
     - Required information: name and description of the item (e.g.
-      characteristic, question), and item implementation information
+      characteristic, question), and item implementation information:
   - Create generic goals
   - Create generic needs ([API](/guides/api/#need))
   - Create generic need satisfiers ([API](/guides/api/#needsatisfier))
@@ -81,7 +81,7 @@ Provide or improve service providers' ability to
     - Required information: description and implementation information
 - Form management ([API](/guides/api/#dynamicform))
   - Create forms by specifying what form items (e.g. characteristics,
-    questions) to be included and whether they are mandatory
+    questions) to be included and whether they are mandatory:
     - client
     - assessment
     - service
@@ -89,14 +89,14 @@ Provide or improve service providers' ability to
     - referral
     - service registration
     - goods
-- Application log management
+- Application log management:
   - Browse log
   - Manage log (eg. change location, max size, overwriting rules)
   - Delete log
   - Generate audit reports to support regulatory compliance with HIPAA, GDPR,
     PCI DSS, etc.
 
-### Client management
+### **Client management**
 - Create clients using one of the forms available in the system
   - Required information: the information corresponding to the items in the
     (client intake) form selected (e.g. client name, date of birth, email)
@@ -111,7 +111,7 @@ Provide or improve service providers' ability to
 - Search existing clients (based on selected characteristics)
 - Register client for service
 
-#### Sample questions
+#### **Sample questions**
 - Is Jason in the [...] system?
 - What are Jason's current goals and things he is working on?
 - How can I edit or change this information later if needed?
@@ -120,15 +120,15 @@ Provide or improve service providers' ability to
 - Which programs and services has Jason previously connected with?
 - Which programs and services is Jason currently connected with?
 
-### Matching management
+### **Matching management**
 - Manual match: browse existing services and match/link to client needs
 - Semi-automatic service-need match via recommendations provided by the system
 
-#### Sample questions
+#### **Sample questions**
 - What services are available for affordable housing?
 - Which services match my mental health needs?
 
-### Service provider management
+### **Service provider management**
 ([API](/guides/api/#serviceproviders))
 - Create service providers (volunteer, external organization, independent
   professional) using one of the forms available in the system
@@ -140,12 +140,12 @@ Provide or improve service providers' ability to
 - Edit/delete the profile of a selected provider
 - Search existing providers based on selected characteristics
 
-#### Sample questions
+#### **Sample questions**
 - What service providers offer LINC language assessments?
 - What is the location of the providers that manage safe consumption sites in
   Vancouver?
 
-### Program/service management
+### **Program/service management**
 - Create new programs/services using one of the service management forms
   available in the system
   - Required information: the information corresponding to the characteristics
@@ -159,7 +159,7 @@ Provide or improve service providers' ability to
 - Search for programs/services based on selected characteristics, including
   services from partner organizations
 
-### [Internal] Appointment management
+### **[Internal] Appointment management**
 - Create appointments using one of the forms available in the system
   - Required information: e.g. client, user, service requested, notes
 - Browse appointments
@@ -168,7 +168,7 @@ Provide or improve service providers' ability to
 - [Advanced] Search existing appointments based on selected characteristics
 - Send appointment reminders to a client/user
 
-### Referral management
+### **Referral management**
 - Create referrals using one of the referral forms available in the system
   - Required information: e.g. client, organization, service/program
 - Browse incoming/outgoing referrals
@@ -177,7 +177,7 @@ Provide or improve service providers' ability to
 - [Advanced] Search existing incoming/outgoing referrals based on selected
   characteristics
 
-### Assessment management
+### **Assessment management**
 - Create assessments using one of the assessment forms available in the system
   - Required information: e.g. client, organization, service/program
 - Browse assessments
@@ -185,6 +185,6 @@ Provide or improve service providers' ability to
 - Edit the content of a selected assessment
 - [Advanced] Search existing assessment (based on selected characteristics)
 
-### Reporting
+### **Reporting**
 - Create reports using one of the forms available in the system
 - Browse existing reports

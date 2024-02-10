@@ -16,7 +16,8 @@ export default function () {
       padding: '4px',
       '@media print': {
         display: 'none'
-      }
+      },
+      zIndex: 10
     }}>
       <Typography variant="caption">
         <Link href="https://csse.utoronto.ca/" target="_blank" sx={{color: "#ababab", textDecoration: 'none'}}>

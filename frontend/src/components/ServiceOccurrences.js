@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'serviceOccurrence';
 
@@ -25,21 +26,18 @@ const columnsWithoutOptions = [
 
 export default function ServiceOccurrences() {
 
-  const nameFormatter = serviceOccurrence => serviceOccurrence._id;
+  const nameFormatter = serviceOccurrence => {
+    if (serviceOccurrence.description) {
+      return serviceOccurrence.description;
+    } else {
+      return 'Service Occurrence ' + serviceOccurrence._id;
+    }
+  }
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageServices = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageServices.map(service => ({
-      position: {lat: Number(service.location.lat), lng: Number(service.location.lng)},
-      title: service.name,
-      link: `/${TYPE}/${service.id}`,
-      content: service.desc,
-    })).filter(service => service.position.lat && service.position.lng);
-  };
+  const linkFormatter = serviceOccurrence => `/${TYPE}/${serviceOccurrence._id}`;
 
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const serviceOccurrences = (await fetchMultipleGeneric(TYPE)).data;
     console.log(serviceOccurrences)
     const data = [];
@@ -51,10 +49,12 @@ export default function ServiceOccurrences() {
       //       serviceOccurrenceData.description = occ.dataStringValue;
       //     }
       //   }
-      if(serviceOccurrence.description)
+      if (serviceOccurrence.description)
         serviceOccurrenceData.description = serviceOccurrence.description
-      if(serviceOccurrence.occurrenceOf)
+      if (serviceOccurrence.occurrenceOf)
         serviceOccurrenceData.occurrenceOf = serviceOccurrence.occurrenceOf
+      if (serviceOccurrence.address)
+        serviceOccurrenceData.address = serviceOccurrence.address;
       data.push(serviceOccurrenceData);
     }
     return data;
@@ -69,8 +69,8 @@ export default function ServiceOccurrences() {
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
       deleteItem={deleteService}
-      generateMarkers={generateMarkers}
       nameFormatter={nameFormatter}
+      linkFormatter={linkFormatter}
       tableOptions={{
         idField: '_id'
       }}

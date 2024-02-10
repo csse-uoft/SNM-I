@@ -8,6 +8,7 @@ const {GDBOutcomeOccurrenceModel} = require("./outcome/outcomeOccurrence");
 const {GDBNeedModel} = require("./need/need");
 const {GDBNeedOccurrenceModel} = require("./need/needOccurrence");
 const {GDBQuestionModel} = require("./ClientFunctionalities/question");
+const {GDBAddressModel} = require('./address');
 
 const GDBClientAssessmentModel = createGraphDBModel({
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
@@ -20,6 +21,7 @@ const GDBClientAssessmentModel = createGraphDBModel({
   outcomes: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
   outcomeOccurrences: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence'},
   needOccurrences: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
   questions: {type: [GDBQuestionModel], internalKey: ':hasQuestion'},
 }, {
   rdfTypes: [':ClientAssessment'], name: 'clientAssessment'

@@ -1,21 +1,31 @@
 import React from 'react';
 // TODO: createProviderWithCSV  (CSV Upload)
 
-import { formatLocation } from '../helpers/location_helpers'
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
 
 import { GenericPage, Link } from "./shared";
-import {deleteSingleProvider, fetchMultipleProviders, searchMultipleProviders} from "../api/providersApi";
+import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders, searchMultipleProviders } from "../api/providersApi";
 import { fetchForServiceProviderAdvancedSearch } from "../api/advancedSearchApi";
+import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 
 const TYPE = 'providers';
 
-const formatProviderName = provider => {
-  const {profile} = provider;
-  if (provider.type === 'Individual')
-    return profile && profile.first_name + " " + profile.last_name;
-  else
-    return provider.company;
+export const formatProviderName = provider => {
+  if (typeof provider === 'undefined') {
+    return '';
+  } else if (provider.name) {
+    return provider.name;
+  } else if (provider.lastName || provider.firstName) {
+    return `${provider.lastName || ''}, ${provider.firstName || ''}`;
+  } else if (provider.type === 'organization') {
+    return 'Organization ' + provider._id;
+  } else {
+    return 'Volunteer ' + provider._id;
+  }
+};
+
+export const formatProviderLink = provider => {
+  return `/${TYPE}/${provider.type.toLowerCase()}/${provider._id}`;
 };
 
 // mui-table column configurations
@@ -24,15 +34,34 @@ const columnsWithoutOptions = [
   {
     label: 'Name',
     body: ({_id, name, type, lastName, firstName}) => {
-      return <Link color to={`/${TYPE}/${type.toLowerCase()}/${_id}/edit`}>
-        {name || `${lastName || ''}, ${firstName || ''}`}
+      return <Link color to={formatProviderLink({_id, name, type, lastName, firstName}) + `/edit`}>
+        {formatProviderName({_id, name, type, lastName, firstName})}
       </Link>
     },
-    sortBy: ({name, lastName, firstName}) => name || `${lastName || ''}, ${firstName || ''}`,
+    sortBy: ({_id, name, type, lastName, firstName}) => formatProviderName({_id, name, type, lastName, firstName}),
   },
   {
     label: 'Type',
     body: ({type}) => type,
+  },
+  {
+    label: 'Status',
+    body: ({type, status, organization}) => {
+      if (type === 'organization') {
+        return status;
+      } else if (organization) {
+        organization = {...organization, type: 'organization'}
+        return <p>
+          From <Link color to={formatProviderLink(organization)}>{organization.status}</Link>
+        </p>;
+      } else {
+        return 'Unaffiliated';
+      }
+    },
+  },
+  {
+    label: 'Shareability',
+    body: ({shareability}) => shareability,
   },
   // {
   //   label: 'Email',
@@ -59,23 +88,12 @@ const columnsWithoutOptions = [
 
 export default function Providers() {
 
-  const generateMarkers = (data, pageNumber, rowsPerPage) => {
-    return [];
-    // TODO: verify this works as expected
-    const currPageProviders = data.slice((pageNumber - 1) * rowsPerPage, pageNumber * rowsPerPage);
-    return currPageProviders.map(provider => ({
-      position: {lat: Number(provider.main_address.lat), lng: Number(provider.main_address.lng)},
-      title: formatProviderName(provider),
-      link: `/${TYPE}/${provider.id}`,
-      content: provider.main_address && formatLocation(provider.main_address),
-    })).filter(provider => provider.position.lat && provider.position.lng);
-  };
-
   /**
    * Fetch and transform data
    * @returns {Promise<*[]>}
    */
   const fetchData = async () => {
+    const addressCharacteristicId = await getAddressCharacteristicId();
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
@@ -86,8 +104,6 @@ export default function Providers() {
         for (const occ of innerData.characteristicOccurrences) {
           if (occ.occurrenceOf?.name === 'Organization Name') {
             providerData.name = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Organization Address') {
-            providerData.address = occ.objectValue;
           } else if (occ.occurrenceOf?.name === 'Email') {
             providerData.email = occ.dataStringValue;
           } else if (occ.occurrenceOf?.name === 'First Name') {
@@ -95,12 +111,26 @@ export default function Providers() {
           } else if (occ.occurrenceOf?.name === 'Last Name') {
             providerData.lastName = occ.dataStringValue;
           }
-
         }
+      if (innerData.address)
+        providerData.address = innerData.address;
+      if (innerData.status)
+        providerData.status = innerData.status;
+      if (innerData.endpointUrl)
+        providerData.endpointUrl = innerData.endpointUrl;
+      if (innerData.endpointPort)
+        providerData.endpointPort = innerData.endpointPort;
+      if (innerData.apiKey)
+        providerData.apiKey = innerData.apiKey;
+      if (innerData.shareability)
+        providerData.shareability = innerData.shareability;
+      if (innerData.organization)
+        providerData.organization = innerData.organization;
+      if (innerData.partnerOrganizations)
+        providerData.partnerOrganizations = innerData.partnerOrganizations;
       data.push(providerData);
     }
     return data;
-
   }
 
   const searchData = async (searchitem) => {
@@ -169,8 +199,8 @@ export default function Providers() {
       advancedSearch={advancedProviderSearch}
       searchData={searchData}
       deleteItem={deleteSingleProvider}
-      generateMarkers={generateMarkers}
       nameFormatter={formatProviderName}
+      linkFormatter={formatProviderLink}
       tableOptions={{
         idField: '_id'
       }}

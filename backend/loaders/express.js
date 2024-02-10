@@ -9,7 +9,7 @@ const {
   baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
   characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute,needRoute,
   needSatisfierRoute, outcomeRoute, internalTypeRoute, serviceProvisionRoute, programProvisionRoute,
-  matchingRoute
+  matchingRoute, partnerNetworkApiRoute, partnerNetworkPublicRoute, partnerOrganizationRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -21,8 +21,8 @@ const {initStreetTypes, initStreetDirections} = require('../services/address');
 
 const app = express();
 
-// Trust our reverse proxy
-app.set('trust proxy', ['::ffff:172.31.12.233', '172.31.12.233']);
+// Trust the first proxy
+app.set('trust proxy', 1);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use(cors({
   credentials: true,
   origin: config.allowedOrigins
 }));
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(cookieSession(config.cookieSession));
 
 // Public routes
@@ -60,6 +60,11 @@ app.use('/api', internalTypeRoute);
 app.use('/api', serviceProvisionRoute);
 app.use('/api', programProvisionRoute);
 app.use('/api', matchingRoute);
+app.use('/api', partnerNetworkApiRoute);
+app.use('/api', partnerOrganizationRoute);
+
+// Authentication not required
+app.use('/public', partnerNetworkPublicRoute);
 
 (async function () {
   await initUserAccounts();

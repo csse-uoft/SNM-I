@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {Loading} from "../shared";
 import {getInstancesInClass} from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
@@ -7,29 +7,45 @@ import {
   getNeedSatisfiersByProgramOcc,
   getProgramOccurrencesByProgram
 } from "../../api/programProvision";
+import {fetchSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
+import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 
 export function ProgramAndOccurrenceAndNeedSatisfierField({
                                             fields,
                                             programFieldId,
                                             programOccurrenceFieldId,
                                             needSatisfierFieldId,
-                                            handleChange
+                                            handleChange,
+                                            fixedProgramId // full URI of the program which all shown occurrences must be of, if given
                                           }) {
-  if (!programFieldId || !programOccurrenceFieldId || !needSatisfierFieldId) {
-    return <Box minWidth={"350px"}><Loading message=""/></Box>;
-  }
-  const programKey = `internalType_${programFieldId}`;
+  const programKey = programFieldId ? `internalType_${programFieldId}` : null;
   const programOccKey = `internalType_${programOccurrenceFieldId}`;
-  const needSatisfierKey = `internalType_${needSatisfierFieldId}`;
+  const needSatisfierKey = needSatisfierFieldId ? `internalType_${needSatisfierFieldId}` : null;
 
-  const [selectedProgram, setSelectedProgram] = useState(fields[programKey]);
+  const [selectedProgram, setSelectedProgram] = useState(fixedProgramId ? 'http://snmi#program_' + fixedProgramId : fields[programKey]);
   const [selectedProgramOcc, setSelectedProgramOcc] = useState(fields[programOccKey]);
   const [dynamicOptions, setDynamicOptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [loadingProgramOcc, setLoadingProgramOcc] = useState(true);
+  const firstProgram = useRef(true);
+  const [programOccurrenceInternalTypes, setProgramOccurrenceInternalTypes] = useState({});
+
+  useEffect(() => {
+    fetchInternalTypeByFormType('programOccurrence').then(({internalTypes}) => {
+      const data = {}
+      for (const {implementation, name, _id} of internalTypes) {
+        data[name] = {implementation, _id}
+      }
+      setProgramOccurrenceInternalTypes(data);
+    });
+  }, []);
 
   const handleChangeProgram = key => (e) => {
+    setLoadingProgramOcc(true);
+    firstProgram.current = false;
     const value = e.target.value;
     setSelectedProgram(value);
-    // handleChange(key)(e);
+    handleChange(key)(e);
   }
 
   const handleChangeProgramOcc = key => (e) => {
@@ -40,16 +56,32 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
 
   useEffect(() => {
     getInstancesInClass(":Program")
-      .then(options => setDynamicOptions(prev => ({...prev, ":Program": options})));
+      .then(options => setDynamicOptions(prev => ({...prev, ":Program": options})))
+      .then(() => setLoading(false));
   }, []);
+
+  const handleGetProgramOccs = () => {
+    // unset program occurrence after another program is selected
+    if (!firstProgram.current) {
+      setSelectedProgramOcc(null);
+      handleChange(programOccKey)(null);
+    }
+    setLoadingProgramOcc(false);
+  }
 
   useEffect(() => {
     if (selectedProgram) {
-      getProgramOccurrencesByProgram(selectedProgram).then(options => {
-        setDynamicOptions(prev => ({...prev, ":ProgramOccurrence": options}));
-      });
+      getProgramOccurrencesByProgram(selectedProgram)
+        .then(options => setDynamicOptions(prev => ({...prev, ":ProgramOccurrence": options})))
+        .then(() => handleGetProgramOccs());
+    } else {
+      // fetch all program occurrences
+      fetchMultipleGeneric('programOccurrence')
+        .then(options => setDynamicOptions(prev => ({...prev, ":ProgramOccurrence": options.data
+          .reduce((options, option) => (options[option._uri] = option.description || option._uri, options), {})}))) // comma operator
+        .then(() => handleGetProgramOccs());
     }
-  }, [selectedProgram]);
+  }, [selectedProgram, programOccurrenceInternalTypes]);
 
   useEffect(() => {
     if (selectedProgramOcc) {
@@ -59,18 +91,27 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
     }
   }, [selectedProgramOcc]);
 
-  const showProgramOcc = !!selectedProgram;
-  const showNeedSatisfier = showProgramOcc && !!selectedProgramOcc;
+  const showProgram = !!programKey;
+  const showProgramOcc = !!selectedProgram || (!programKey && !!programOccKey);
+  const showNeedSatisfier = showProgramOcc && !!selectedProgramOcc && !!needSatisfierKey;
+
+  if ((showProgram && loading) || (showProgramOcc && loadingProgramOcc)) {
+    return <Loading />
+  }
 
   return <>
-    <SelectField key={programKey} label="Program" required value={fields[programKey]}
-                 options={dynamicOptions[":Program"] || {}} onChange={handleChangeProgram(programKey)}/>
+    {showProgram ?
+      <SelectField key={programKey} label="Program" required value={fields[programKey]}
+                   options={dynamicOptions[":Program"] || {}} onChange={handleChangeProgram(programKey)}
+                   controlled/>
+      : null
+    }
     {showProgramOcc ?
       <Fade in={showProgramOcc}>
         <div>
           <SelectField key={programOccKey} label="Program Occurrence" required value={fields[programOccKey]}
-                       options={dynamicOptions[":ProgramOccurrence"] || {}}
-                       onChange={handleChangeProgramOcc(programOccKey)}/>
+                       options={dynamicOptions[":ProgramOccurrence"] || {}} loading={loadingProgramOcc}
+                       onChange={handleChangeProgramOcc(programOccKey)} controlled/>
         </div>
       </Fade>
       : null
@@ -80,7 +121,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={needSatisfierKey} label="Program Need Satisfier" required value={fields[needSatisfierKey]}
                        options={dynamicOptions[":NeedSatisfier"] || {}}
-                       onChange={handleChange(needSatisfierKey)}/>
+                       onChange={handleChange(needSatisfierKey)} controlled/>
         </div>
       </Fade>
       : null

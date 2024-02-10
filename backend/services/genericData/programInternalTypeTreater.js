@@ -9,11 +9,13 @@ const programInternalTypeCreateTreater = async (internalType, instanceData, valu
     instanceData[property] = value;
   } else if (property === 'needSatisfiers') {
     instanceData['needSatisfiers'] = value;
+  } else if (property === 'partnerOrganizations') {
+    instanceData['partnerOrganizations'] = value;
   }
 }
 
 const programInternalTypeFetchTreater = async (data) => {
-  return getInternalTypeValues(['serviceProvider', 'manager', 'needSatisfiers'], data, FORMTYPE)
+  return getInternalTypeValues(['serviceProvider', 'manager', 'needSatisfiers', 'partnerOrganizations'], data, FORMTYPE)
 }
 
 const programInternalTypeUpdateTreater = async (internalType, value, result) => {
