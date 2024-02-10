@@ -9,7 +9,8 @@ const {
   baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
   characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute,needRoute,
   needSatisfierRoute, outcomeRoute, internalTypeRoute, serviceProvisionRoute, programProvisionRoute,
-  matchingRoute
+  matchingRoute,
+  calendarRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -60,6 +61,7 @@ app.use('/api', internalTypeRoute);
 app.use('/api', serviceProvisionRoute);
 app.use('/api', programProvisionRoute);
 app.use('/api', matchingRoute);
+app.use('/api', calendarRoute);
 
 (async function () {
   await initUserAccounts();

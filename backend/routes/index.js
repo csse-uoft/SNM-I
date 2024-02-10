@@ -17,4 +17,6 @@ module.exports = {
   serviceProvisionRoute: require('./serviceProvision'),
   programProvisionRoute: require('./programProvision'),
   matchingRoute: require('./matching'),
+
+  calendarRoute: require('./calendar'),
 }
