@@ -2,10 +2,10 @@ const {GDBClientModel} = require("../../models");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBAppointmentModel} = require("../../models/appointment");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper} = require("../genericData");
-const {initPredefinedCharacteristics, PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
-const {getProviderById} = require("../genericData/serviceProvider");
+const {initPredefinedCharacteristics, PredefinedCharacteristics,
+  PredefinedInternalTypes} = require("../characteristics");
 const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
-const {getGenericAsset} = require("./index");
+const {getGenericAssets} = require("./index");
 const {GDBReferralModel} = require("../../models/referral");
 const {getClient, getReferralPartnerGeneric} = require("./referrals");
 const {createNotificationHelper} = require("../notification/notification");
@@ -14,31 +14,35 @@ const {sanitize} = require("../../helpers/sanitizer");
 /**
  * Converts an appointment generic into a format in which it can be sent to a partner deployment
  * @param {Object} appointmentGeneric 
- * @returns {Object} The appointment with characteristic/internal type labels mapping to characteristics/internal types.
+ * @returns {Object} The appointment with characteristic/internal type labels mapping to characteristics/internal
+ *     types.
  */
 async function populateAppointment(appointmentGeneric) {
   const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');
   const appointment = {};
 
-  appointment.idInPartnerDeployment = appointmentGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
+  appointment.idInPartnerDeployment
+    = appointmentGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
   appointment.name = appointmentGeneric[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]];
   appointment.datetime = appointmentGeneric[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]];
   appointment.status = appointmentStatuses[appointmentGeneric[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]]];
 
-  const referralId = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] || appointmentGeneric.referral)?.split('_')[1]);
+  const referralId = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+    || appointmentGeneric.referral)?.split('_')[1]);
   if (!!referralId) {
     const referralGeneric = await GDBReferralModel.findOne({ _id: referralId },
       { populates: ['characteristicOccurrences.occurrenceOf'] });
-    appointment.referral = (await getGenericAsset([referralGeneric], {
+    appointment.referral = (await getGenericAssets([referralGeneric], {
       'ID in Partner Deployment': 'id',
     }, []))[0];
   }
 
-  const clientId = parseInt((appointmentGeneric[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]] || appointmentGeneric.client)?.split('_')[1]);
+  const clientId = parseInt((appointmentGeneric[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]]
+    || appointmentGeneric.client)?.split('_')[1]);
   if (!!clientId) {
     const clientGeneric = await GDBClientModel.findOne({ _id: clientId },
       { populates: ['characteristicOccurrences.occurrenceOf'] });
-    appointment.client = (await getGenericAsset([clientGeneric], {
+    appointment.client = (await getGenericAssets([clientGeneric], {
       'First Name': 'firstName',
       'Last Name': 'lastName'
     }, [
@@ -70,7 +74,9 @@ async function sendAppointment(req, res, next) {
       return res.status(400).json({ message: 'No id provided' });
     }
 
-    const referralId = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] || appointmentGeneric.referral)?.split('_')[1]);
+    const referralId
+      = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+        || appointmentGeneric.referral)?.split('_')[1]);
     const referralGeneric = await fetchSingleGenericHelper('referral', referralId);
 
     const partnerGeneric = getReferralPartnerGeneric(referralGeneric);
@@ -84,7 +90,8 @@ async function sendAppointment(req, res, next) {
     appointment.partnerIsReceiver = partnerGeneric.isReceiver; // True iff we are sending to the appointment's referral's receiver
 
     const endpointUrl = partnerGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
-    const url = new URL('/public/partnerNetwork/appointment/', endpointUrl.startsWith('http') ? endpointUrl : 'https://' + endpointUrl);
+    const url = new URL('/public/partnerNetwork/appointment/', endpointUrl.startsWith('http') ? endpointUrl
+      : 'https://' + endpointUrl);
     url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
     const controller = new AbortController();
@@ -103,10 +110,12 @@ async function sendAppointment(req, res, next) {
 
     if (response.status >= 400 && response.status < 600) {
       const json = await response.json();
-      return res.status(400).json({ message: 'Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json)) });
+      return res.status(400).json({ message: 'Bad response from partner: ' + response.status + ': '
+        + (json.message || JSON.stringify(json)) });
     } else if (response.status === 201) {
       // This was a successful POST request
-      // The partner returned the ID of the new appointment in their response; save it as ID in Partner Deployment locally
+      // The partner returned the ID of the new appointment in their response; save it as ID in Partner Deployment
+      // locally
       const json = await response.json();
 
       const newId = json.newId;
@@ -119,7 +128,8 @@ async function sendAppointment(req, res, next) {
         return res.status(400).json({ message: 'No appointment form available' });
       }
 
-      await (await updateSingleGenericHelper(id, { fields: appointmentGeneric, formId: appointmentFormId }, 'appointment')).save();
+      await (await updateSingleGenericHelper(id, { fields: appointmentGeneric, formId: appointmentFormId },
+        'appointment')).save();
     }
 
     return res.status(202).json({ success: true, message: `Successfully sent a appointment` });
@@ -154,7 +164,8 @@ async function receiveAppointment(req, res, next) {
       throw new Error("Could not find partner organization with the same endpoint URL as the sender");
     }
 
-    const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' }, { populates: ['characteristicOccurrences.occurrenceOf'] });
+    const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' },
+      { populates: ['characteristicOccurrences.occurrenceOf'] });
     if (!homeOrganization) {
       throw new Error('This deployment has no home organization');
     }
@@ -171,7 +182,10 @@ async function receiveAppointment(req, res, next) {
     // instead of a list of characteristicOccurrences
     const originalAppointmentJson = originalAppointment?.toJSON() || {};
     (originalAppointmentJson.characteristicOccurrences || []).forEach(characteristicOccurrence => {
-      originalAppointmentJson[(characteristicOccurrence.occurrenceOf._uri || characteristicOccurrence.occurrenceOf).split('#')[1]] = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+      originalAppointmentJson[(characteristicOccurrence.occurrenceOf._uri
+        || characteristicOccurrence.occurrenceOf).split('#')[1]]
+          = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue
+            || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
     });
     delete originalAppointmentJson.characteristicOccurrences;
     delete originalAppointmentJson._id;
@@ -180,15 +194,22 @@ async function receiveAppointment(req, res, next) {
     const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');
 
     const appointment = { fields: originalAppointmentJson || {}, formId: appointmentFormId };
-    'id' in partnerData && (appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id);
-    'name' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]] = partnerData.name);
-    'datetime' in partnerData && (appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]] = partnerData.datetime);
-    'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]] = Object.keys(appointmentStatuses).find(key => appointmentStatuses[key] === partnerData.status) || null);
+    'id' in partnerData
+      && (appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]]
+        = partnerData.id);
+    'name' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]]
+      = partnerData.name);
+    'datetime' in partnerData && (appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]]
+      = partnerData.datetime);
+    'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]]
+      = Object.keys(appointmentStatuses).find(key => appointmentStatuses[key] === partnerData.status) || null);
     if (partnerData.partnerIsReceiver) {
       if (!(partnerData.referral?.id)) {
         return res.status(400).json({ message: "No referral ID provided" });
       }
-      'referral' in partnerData && (appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null);
+      'referral' in partnerData
+        && (appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+          = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null);
     }
 
     if (req.method === 'POST') {
@@ -197,8 +218,10 @@ async function receiveAppointment(req, res, next) {
       }
 
       const referralGeneric = await fetchSingleGenericHelper('referral', partnerData.referral.id);
-      await getClient(partnerData.client, false, referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]]?.split('_')[1]);
-      appointment.fields[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]] = referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] || null;
+      await getClient(partnerData.client, false,
+        referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]]?.split('_')[1]);
+      appointment.fields[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]]
+        = referralGeneric[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]] || null;
 
       const newAppointment = GDBAppointmentModel(await createSingleGenericHelper(appointment, 'appointment'));
       await newAppointment.save();
@@ -206,7 +229,8 @@ async function receiveAppointment(req, res, next) {
       // Notify the user of the new appointment
       createNotificationHelper({
         name: 'An appointment was received',
-        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just sent you <a href="/appointments/${newAppointment._id}">a new appointment</a>.`
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your `
+        + `partner organizations, just sent you <a href="/appointments/${newAppointment._id}">a new appointment</a>.`
       });
 
       return res.status(201).json({ success: true, newId: newAppointment._id });
@@ -215,14 +239,17 @@ async function receiveAppointment(req, res, next) {
         await getClient(partnerData.client, req.method === 'POST', originalAppointmentJson.client?.split('_')[1]);
       } else {
         // Referral and client stay the same
-        appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]] = originalAppointmentJson.referral || null;
+        appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+          = originalAppointmentJson.referral || null;
       }
       await (await updateSingleGenericHelper(originalAppointment._id, appointment, 'appointment')).save();
 
       // Notify the user of the updated appointment
       createNotificationHelper({
         name: 'An appointment was updated',
-        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your partner organizations, just updated <a href="/appointments/${originalAppointment._id}">this appointment</a>.`
+        description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your `
+        + `partner organizations, just updated <a href="/appointments/${originalAppointment._id}">this appointment`
+        + `</a>.`
       });
 
       return res.status(200).json({ success: true });
