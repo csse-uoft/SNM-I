@@ -88,6 +88,7 @@ import PersonForm from './components/person/PersonForm';
 import VisualizePerson from './components/person/VisualizePerson';
 import VisualizeClientAssessment from "./components/clientAssessment/VisualizeClientAssessment";
 import VisualizeReferral from "./components/referrals/VisualizeReferral";
+import PersonalCalendar from "./components/calendar/PersonalCalendar";
 const routes = (
   <Routes>
     <Route exact path="/" element={<Landing/>}/>
@@ -195,6 +196,8 @@ const routes = (
     {<Route path="/outcomeOccurrences/:id" element={<PrivateRoute element={VisualizeOutcomeOccurrence}/>}/>}
     <Route path="/outcomeOccurrences/new" element={<PrivateRoute element={OutcomeOccurrenceForm}/>}/>
     <Route path="/outcomeOccurrences" element={<PrivateRoute element={OutcomeOccurrences}/>}/>
+
+    <Route path="/calendar" element={<PrivateRoute element={PersonalCalendar}/>}/>
 
 
     <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
