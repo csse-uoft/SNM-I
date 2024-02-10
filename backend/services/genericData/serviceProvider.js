@@ -185,12 +185,16 @@ async function connector_provider_search(searchitem) {
 
 
 function extractAllIndexes(inputString) {
-    const allIndexes = [];
+    // Normal split will give result like  [ 'xx', 'http://snmi#xx_xx', '' ]
+    // So, we need to remove the first and last element
 
-    let lines = inputString.split(/\r?\n/);
-    for (let i = 1; i < lines.length - 1; i++) {
-        allIndexes.push(lines[i])
-    }
+    let allIndexes = [];
+
+    allIndexes = inputString.split(/\r?\n/);
+
+    allIndexes.shift()
+
+    allIndexes.pop()
 
     return allIndexes;
 }
