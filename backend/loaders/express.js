@@ -9,7 +9,8 @@ const {
   baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
   characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute,needRoute,
   needSatisfierRoute, outcomeRoute, internalTypeRoute, serviceProvisionRoute, programProvisionRoute,
-  matchingRoute, partnerNetworkApiRoute, partnerNetworkPublicRoute, partnerOrganizationRoute
+  matchingRoute, partnerNetworkApiRoute, partnerNetworkPublicRoute, partnerOrganizationRoute,
+  calendarRoute
 } = require('../routes');
 const {authMiddleware, errorHandler} = require('../services/middleware');
 
@@ -62,6 +63,7 @@ app.use('/api', programProvisionRoute);
 app.use('/api', matchingRoute);
 app.use('/api', partnerNetworkApiRoute);
 app.use('/api', partnerOrganizationRoute);
+app.use('/api', calendarRoute)
 
 // Authentication not required
 app.use('/public', partnerNetworkPublicRoute);
