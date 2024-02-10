@@ -224,6 +224,7 @@ const specialField2Model = {
     'phoneNumber': GDBPhoneNumberModel
 };
 
+const {extractAllIndexes} = require('../../helpers/stringProcess');
 
 async function fetchSingleGenericHelper(genericType, id) {
 
@@ -852,21 +853,8 @@ async function connector_search(searchtype, searchitem) {
 
     const response = await fetch(query);
     const text = await response.text();
-    return extractAllIndexes(searchtype, text);
+    return extractAllIndexes(text);
 
-}
-
-
-
-function extractAllIndexes(searchtype, inputString) {
-    const allIndexes = [];
-
-    let lines = inputString.split(/\r?\n/);
-    for (let i = 1; i < lines.length - 1; i++) {
-        allIndexes.push(lines[i])
-    }
-
-    return allIndexes;
 }
 
 

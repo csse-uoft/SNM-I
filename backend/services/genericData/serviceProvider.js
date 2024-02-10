@@ -9,6 +9,8 @@ const {Server400Error} = require("../../utils");
 
 const {graphdb} = require('../../config');
 
+const {extractAllIndexes} = require('../../helpers/stringProcess');
+
 const createSingleServiceProvider = async (req, res, next) => {
     const {providerType, data} = req.body;
     if (!providerType || !data)
@@ -180,23 +182,6 @@ async function connector_provider_search(searchitem) {
     const text = await response.text();
     return extractAllIndexes(text);
 
-}
-
-
-
-function extractAllIndexes(inputString) {
-    // Normal split will give result like  [ 'xx', 'http://snmi#xx_xx', '' ]
-    // So, we need to remove the first and last element
-
-    let allIndexes = [];
-
-    allIndexes = inputString.split(/\r?\n/);
-
-    allIndexes.shift()
-
-    allIndexes.pop()
-
-    return allIndexes;
 }
 
 

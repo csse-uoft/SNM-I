@@ -8,6 +8,8 @@ const {GDBProgramModel} = require("../../models/program/program");
 
 const {graphdb} = require('../../config');
 
+const {extractAllIndexes} = require('../../helpers/stringProcess');
+
 
 const genericType2Model = {
   client: GDBClientModel,
@@ -347,20 +349,6 @@ async function fts_serviceprovider_search(searchitems) {
   return extractAllIndexes(text);
 
 }
-
-
-
-function extractAllIndexes(inputString) {
-  const allIndexes = [];
-
-  let lines = inputString.split(/\r?\n/);
-  for (let i = 1; i < lines.length - 1; i++) {
-    allIndexes.push(lines[i])
-  }
-
-  return allIndexes;
-}
-
 
 
 module.exports = {
