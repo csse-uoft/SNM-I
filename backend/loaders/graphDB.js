@@ -33,21 +33,416 @@ async function cleanup() {
 
 async function setupConnector(){
   // service, program, characteristicoccurrence, address, organization, volunteer
-  let queries = [
-    "/repositories/snmi/statements?update=PREFIX%20%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20inst%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20INSERT%20DATA%20%7B%20%09inst%3Aservice_connector%20%3AcreateConnector%20'''%20%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22Name%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Forganization%23hasName%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22Eligibility%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasEligibilityCondition%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22languages%22%3A%20%5B%5D%2C%20%20%20%22types%22%3A%20%5B%20%20%20%20%20%22http%3A%2F%2Fsnmi%23Service%22%20%20%20%5D%2C%20%20%20%22readonly%22%3A%20false%2C%20%20%20%22detectFields%22%3A%20false%2C%20%20%20%22importGraph%22%3A%20false%2C%20%20%20%22skipInitialIndexing%22%3A%20false%2C%20%20%20%22boostProperties%22%3A%20%5B%5D%2C%20%20%20%22stripMarkup%22%3A%20false%20%7D%20'''%20.%20%7D",
-    "/repositories/snmi/statements?update=PREFIX%20%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20inst%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20INSERT%20DATA%20%7B%20%09inst%3Aprogram_connector%20%3AcreateConnector%20'''%20%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22Name%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Forganization%23hasName%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22languages%22%3A%20%5B%5D%2C%20%20%20%22types%22%3A%20%5B%20%20%20%20%20%22http%3A%2F%2Fsnmi%23Program%22%20%20%20%5D%2C%20%20%20%22readonly%22%3A%20false%2C%20%20%20%22detectFields%22%3A%20false%2C%20%20%20%22importGraph%22%3A%20false%2C%20%20%20%22skipInitialIndexing%22%3A%20false%2C%20%20%20%22boostProperties%22%3A%20%5B%5D%2C%20%20%20%22stripMarkup%22%3A%20false%20%7D%20'''%20.%20%7D",
-    "/repositories/snmi/statements?update=PREFIX%20%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20inst%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20INSERT%20DATA%20%7B%20%09inst%3Acharacteristicoccurrence_connector%20%3AcreateConnector%20'''%20%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22string%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasStringValue%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22object%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasObjectValue%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22date%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasDateValue%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22number%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasNumberValue%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22boolean%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasBooleanValue%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22multipleobject%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fsnmi%23hasMultipleObjectValue%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22languages%22%3A%20%5B%5D%2C%20%20%20%22types%22%3A%20%5B%20%20%20%20%20%22http%3A%2F%2Fsnmi%23CharacteristicOccurrence%22%20%20%20%5D%2C%20%20%20%22readonly%22%3A%20false%2C%20%20%20%22detectFields%22%3A%20false%2C%20%20%20%22importGraph%22%3A%20false%2C%20%20%20%22skipInitialIndexing%22%3A%20false%2C%20%20%20%22boostProperties%22%3A%20%5B%5D%2C%20%20%20%22stripMarkup%22%3A%20false%20%7D%20'''%20.%20%7D",
-    "/repositories/snmi/statements?update=PREFIX%20%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20inst%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20INSERT%20DATA%20%7B%20%09inst%3Aaddress_connector%20%3AcreateConnector%20'''%20%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22city%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasCityS%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22citysection%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasCitySection%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22postalcode%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasPostalCode%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22state%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasState%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22street%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasStreet%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22streetdirection%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasStreetDirection%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22streetnumber%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasStreetNumber%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22streettype%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasStreetType%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22unitnumber%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23hasUnitNumber%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22type%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22languages%22%3A%20%5B%5D%2C%20%20%20%22types%22%3A%20%5B%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Ficontact%23Address%22%20%20%20%5D%2C%20%20%20%22readonly%22%3A%20false%2C%20%20%20%22detectFields%22%3A%20false%2C%20%20%20%22importGraph%22%3A%20false%2C%20%20%20%22skipInitialIndexing%22%3A%20false%2C%20%20%20%22boostProperties%22%3A%20%5B%5D%2C%20%20%20%22stripMarkup%22%3A%20false%20%7D%20'''%20.%20%7D",
-    "/repositories/snmi/statements?update=PREFIX%20%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20inst%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20INSERT%20DATA%20%7B%20%09inst%3Aorganization_connector%20%3AcreateConnector%20'''%20%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22name%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fontology.eil.utoronto.ca%2Ftove%2Forganization%23hasName%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22languages%22%3A%20%5B%5D%2C%20%20%20%22types%22%3A%20%5B%20%20%20%20%20%22http%3A%2F%2Fsnmi%23Organization%22%20%20%20%5D%2C%20%20%20%22readonly%22%3A%20false%2C%20%20%20%22detectFields%22%3A%20false%2C%20%20%20%22importGraph%22%3A%20false%2C%20%20%20%22skipInitialIndexing%22%3A%20false%2C%20%20%20%22boostProperties%22%3A%20%5B%5D%2C%20%20%20%22stripMarkup%22%3A%20false%20%7D%20'''%20.%20%7D",
-    "/repositories/snmi/statements?update=PREFIX%20%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%23%3E%20PREFIX%20inst%3A%3Chttp%3A%2F%2Fwww.ontotext.com%2Fconnectors%2Flucene%2Finstance%23%3E%20INSERT%20DATA%20%7B%20%09inst%3Avolunteer_connector%20%3AcreateConnector%20'''%20%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22firstname%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2FgivenName%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22fieldName%22%3A%20%22lastname%22%2C%20%20%20%20%20%20%20%22propertyChain%22%3A%20%5B%20%20%20%20%20%20%20%20%20%22http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2FfamilyName%22%20%20%20%20%20%20%20%5D%2C%20%20%20%20%20%20%20%22indexed%22%3A%20true%2C%20%20%20%20%20%20%20%22stored%22%3A%20true%2C%20%20%20%20%20%20%20%22analyzed%22%3A%20true%2C%20%20%20%20%20%20%20%22multivalued%22%3A%20true%2C%20%20%20%20%20%20%20%22ignoreInvalidValues%22%3A%20false%2C%20%20%20%20%20%20%20%22facet%22%3A%20true%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22languages%22%3A%20%5B%5D%2C%20%20%20%22types%22%3A%20%5B%20%20%20%20%20%22http%3A%2F%2Fsnmi%23Volunteer%22%20%20%20%5D%2C%20%20%20%22readonly%22%3A%20false%2C%20%20%20%22detectFields%22%3A%20false%2C%20%20%20%22importGraph%22%3A%20false%2C%20%20%20%22skipInitialIndexing%22%3A%20false%2C%20%20%20%22boostProperties%22%3A%20%5B%5D%2C%20%20%20%22stripMarkup%22%3A%20false%20%7D%20'''%20.%20%7D"
-  ]
 
-  for (let i = 0; i < queries.length; i++) {
-    await fetch(graphdb.addr + queries[i], {
+  let service_query = `
+PREFIX :<http://www.ontotext.com/connectors/lucene#>
+PREFIX inst:<http://www.ontotext.com/connectors/lucene/instance#>
+INSERT DATA {
+\tinst:service_connector :createConnector '''
+{
+  "fields": [
+    {
+      "fieldName": "Name",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/organization#hasName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "Eligibility",
+      "propertyChain": [
+        "http://snmi#hasEligibilityCondition"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    }
+  ],
+  "languages": [],
+  "types": [
+    "http://snmi#Service"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "skipInitialIndexing": false,
+  "boostProperties": [],
+  "stripMarkup": false
+}
+''' .
+}  
+`
+  let program_query = `
+PREFIX :<http://www.ontotext.com/connectors/lucene#>
+PREFIX inst:<http://www.ontotext.com/connectors/lucene/instance#>
+INSERT DATA {
+\tinst:program_connector :createConnector '''
+{
+  "fields": [
+    {
+      "fieldName": "Name",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/organization#hasName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    }
+  ],
+  "languages": [],
+  "types": [
+    "http://snmi#Program"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "skipInitialIndexing": false,
+  "boostProperties": [],
+  "stripMarkup": false
+}
+''' .
+}
+  `
+  let characteristicoccurrence_query = `
+PREFIX :<http://www.ontotext.com/connectors/lucene#>
+PREFIX inst:<http://www.ontotext.com/connectors/lucene/instance#>
+INSERT DATA {
+\tinst:characteristicoccurrence_connector :createConnector '''
+{
+  "fields": [
+    {
+      "fieldName": "string",
+      "propertyChain": [
+        "http://snmi#hasStringValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "object",
+      "propertyChain": [
+        "http://snmi#hasObjectValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "date",
+      "propertyChain": [
+        "http://snmi#hasDateValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "number",
+      "propertyChain": [
+        "http://snmi#hasNumberValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "boolean",
+      "propertyChain": [
+        "http://snmi#hasBooleanValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "multipleobject",
+      "propertyChain": [
+        "http://snmi#hasMultipleObjectValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    }
+  ],
+  "languages": [],
+  "types": [
+    "http://snmi#CharacteristicOccurrence"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "skipInitialIndexing": false,
+  "boostProperties": [],
+  "stripMarkup": false
+}
+''' .
+}
+  `
+  let address_query = `
+PREFIX :<http://www.ontotext.com/connectors/lucene#>
+PREFIX inst:<http://www.ontotext.com/connectors/lucene/instance#>
+INSERT DATA {
+\tinst:address_connector :createConnector '''
+{
+  "fields": [
+    {
+      "fieldName": "city",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasCityS"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "citysection",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasCitySection"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "postalcode",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasPostalCode"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "state",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasState"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "street",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasStreet"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "streetdirection",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasStreetDirection"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "streetnumber",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasStreetNumber"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "streettype",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasStreetType"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "unitnumber",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/icontact#hasUnitNumber"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "type",
+      "propertyChain": [
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    }
+  ],
+  "languages": [],
+  "types": [
+    "http://ontology.eil.utoronto.ca/tove/icontact#Address"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "skipInitialIndexing": false,
+  "boostProperties": [],
+  "stripMarkup": false
+}
+''' .
+}
+  `
+  let organization_query = `
+PREFIX :<http://www.ontotext.com/connectors/lucene#>
+PREFIX inst:<http://www.ontotext.com/connectors/lucene/instance#>
+INSERT DATA {
+\tinst:organization_connector :createConnector '''
+{
+  "fields": [
+    {
+      "fieldName": "name",
+      "propertyChain": [
+        "http://ontology.eil.utoronto.ca/tove/organization#hasName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    }
+  ],
+  "languages": [],
+  "types": [
+    "http://snmi#Organization"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "skipInitialIndexing": false,
+  "boostProperties": [],
+  "stripMarkup": false
+}
+''' .
+}
+  `
+  let volunteer_query = `
+PREFIX :<http://www.ontotext.com/connectors/lucene#>
+PREFIX inst:<http://www.ontotext.com/connectors/lucene/instance#>
+INSERT DATA {
+\tinst:volunteer_connector :createConnector '''
+{
+  "fields": [
+    {
+      "fieldName": "firstname",
+      "propertyChain": [
+        "http://xmlns.com/foaf/0.1/givenName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    },
+    {
+      "fieldName": "lastname",
+      "propertyChain": [
+        "http://xmlns.com/foaf/0.1/familyName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "facet": true
+    }
+  ],
+  "languages": [],
+  "types": [
+    "http://snmi#Volunteer"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "skipInitialIndexing": false,
+  "boostProperties": [],
+  "stripMarkup": false
+}
+''' .
+}
+  `
+
+  let query_list = [service_query, program_query, characteristicoccurrence_query, address_query, organization_query, volunteer_query]
+
+  let url;
+  for (let query of query_list){
+    url = `${graphdb.addr}/repositories/snmi/statements?update=${encodeURIComponent(query)}`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
-        ContentType: 'application/json'
-      }
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+        },
     });
   }
   console.log("All connectors are loaded")
