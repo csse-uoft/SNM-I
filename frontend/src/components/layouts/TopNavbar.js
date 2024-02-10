@@ -17,6 +17,9 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LoginIcon from '@mui/icons-material/Login';
 import {useSnackbar} from "notistack";
 
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
+
 const ITEM_HEIGHT = 48;
 
 /**
@@ -225,6 +228,14 @@ function TopNavBar() {
                 </ListItemIcon>
                 <Typography variant="inherit">Persons</Typography>
               </MenuItem>
+
+              <MenuItem onClick={handleLink(`/calendar`)}>
+                <ListItemIcon>
+                  <CalendarTodayIcon fontSize="medium" sx={{color: 'black'}}/>
+                </ListItemIcon>
+                <Typography variant="inherit">Calendar</Typography>
+              </MenuItem>
+
 
             </Menu>
           </div>
