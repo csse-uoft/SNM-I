@@ -31,8 +31,22 @@ const createSingleServiceProvider = async (req, res, next) => {
 };
 
 const fetchMultipleServiceProviders = async (req, res, next) => {
+    try {
+        const data = await GDBServiceProviderModel.find({},
+            {
+                populates: ['organization.characteristicOccurrences.occurrenceOf',
+                    'organization.questionOccurrence', 'volunteer.characteristicOccurrences.occurrenceOf',
+                    'volunteer.questionOccurrence', 'organization.address', 'volunteer.address',
+                    'volunteer.organization',]
+            });
+        return res.status(200).json({success: true, data});
+    } catch (e) {
+        next(e);
+    }
+};
 
 
+const searchMultipleServiceProviders = async (req, res, next) => {
     try {
         let data = [];
 
@@ -44,8 +58,8 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
                         'volunteer.questionOccurrence',]
                 });
         } else {
-            fts_search_result = await fts_provider_search(req.query.searchitem + '*');
-            connector_search_result = await connector_provider_search(req.query.searchitem + '*');
+            let fts_search_result = await fts_provider_search(req.query.searchitem + '*');
+            let connector_search_result = await connector_provider_search(req.query.searchitem + '*');
 
             let array = [...new Set([...fts_search_result, ...connector_search_result])];
             if (array.length !== 0) {
@@ -205,6 +219,8 @@ const updateServiceProvider = async (req, res, next) => {
 }
 
 const getProviderById = async (providerId) => {
+    console.log("providerId: ", providerId)
+
     if (!providerId)
         throw new Server400Error('No id is given');
     const provider = await GDBServiceProviderModel.findOne({_id: providerId},
@@ -252,5 +268,5 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 
 module.exports = {
     createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
-    updateServiceProvider
+    updateServiceProvider, searchMultipleServiceProviders
 };
