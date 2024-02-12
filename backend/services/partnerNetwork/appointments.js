@@ -128,8 +128,9 @@ async function sendAppointment(req, res, next) {
         return res.status(400).json({ message: 'No appointment form available' });
       }
 
-      await (await updateSingleGenericHelper(id, { fields: appointmentGeneric, formId: appointmentFormId },
-        'appointment')).save();
+      const {generic} = await updateSingleGenericHelper(id, {fields: appointmentGeneric, formId: appointmentFormId},
+          'appointment');
+      await generic.save();
     }
 
     return res.status(202).json({ success: true, message: `Successfully sent a appointment` });
@@ -243,7 +244,8 @@ async function receiveAppointment(req, res, next) {
         appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
           = originalAppointmentJson.referral || null;
       }
-      await (await updateSingleGenericHelper(originalAppointment._id, appointment, 'appointment')).save();
+      const {generic} = await updateSingleGenericHelper(originalAppointment._id, appointment, 'appointment');
+      await generic.save();
 
       // Notify the user of the updated appointment
       createNotificationHelper({
