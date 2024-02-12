@@ -20,6 +20,7 @@ export const allForms = {
   serviceOccurrence: 'Service Occurrence',
   serviceRegistration: 'Service Registration',
   serviceProvision: 'Service Provision',
+  serviceWaitlist: 'Service Waitlist',
   programOccurrence: 'Program Occurrence',
   programRegistration: 'Program Registration',
   programProvision: 'Program Provision',

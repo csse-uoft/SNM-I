@@ -4,6 +4,7 @@ import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
+import client from '../../../../backend/services/characteristics/predefined/client';
 
 const TYPE = 'serviceWaitlists';
 
@@ -11,20 +12,27 @@ const columnsWithoutOptions = [
   {
     label: 'ID',
     body: ({_id}) => {
+      console.log(_id);
+      console.log(<Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>);
+
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>
     }
   },
   {
     label: 'Service',
     body: ({service}) => {
-      return <Link color to={`/${TYPE}/${service}/edit`}>{service}</Link>
+      console.log(service);
+      console.log(service.name);
+      return service.name;
     }
   },
   {
     label: 'Waitlist Size',
     body: ({clients}) => {
       if (clients) {
-        return <Link color to={`/need/${clients}/edit`}>{clients}</Link>;
+        console.log(clients);
+        console.log(clients.length);
+        return clients.length;
       } else {
         return "";
       }
@@ -51,6 +59,11 @@ export default function ServiceWaitlists() {
     const serviceWaitlists = (await fetchMultipleGeneric('serviceWatilist')).data;
     const data = [];
     for (const serviceWaitlist of serviceWaitlists) {
+      console.log(serviceWaitlist._id);
+      console.log(serviceWaitlist.service);
+      console.log(serviceWaitlist.clients);
+
+
       const serviceWaitlistData = {
               _id: serviceWaitlist._id,
               service: serviceWaitlist.service,
