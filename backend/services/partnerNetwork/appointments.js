@@ -74,9 +74,13 @@ async function sendAppointment(req, res, next) {
       return res.status(400).json({ message: 'No id provided' });
     }
 
-    const referralId
-      = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
-        || appointmentGeneric.referral)?.split('_')[1]);
+    const referralId = parseInt((
+      appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+      || appointmentGeneric.referral)?.split('_')[1]);
+    if (!referralId || isNaN(referralId)) {
+      // This is a valid case (the appointment is not meant to be sent)
+      return res.status(200).json({success: true});
+    }
     const referralGeneric = await fetchSingleGenericHelper('referral', referralId);
 
     const partnerGeneric = await getReferralPartnerGeneric(referralGeneric);
@@ -128,8 +132,8 @@ async function sendAppointment(req, res, next) {
         return res.status(400).json({ message: 'No appointment form available' });
       }
 
-      const {generic} = await updateSingleGenericHelper(id, {fields: appointmentGeneric, formId: appointmentFormId},
-          'appointment');
+      const {generic} = await updateSingleGenericHelper(id,
+        {fields: appointmentGeneric, formId: appointmentFormId}, 'appointment');
       await generic.save();
     }
 

@@ -10,13 +10,14 @@ async function sendPartnerUpdateNotification(partnerId) {
     if (organization.status === 'Partner') {
       if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
         const endpointUrl = organization.endpointUrl;
-        const url = new URL('/public/partnerNetwork/update/', endpointUrl.startsWith('http') ? endpointUrl : 'https://' + endpointUrl);
+        const url = new URL('/public/partnerNetwork/update/', endpointUrl.startsWith('http') ? endpointUrl
+          : 'https://' + endpointUrl);
         url.port = organization.endpointPort;
 
         const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' }, { populates: [] });
-        let yourApiKey = null;
+        let senderApiKey = null;
         if (!!homeOrganization) {
-          yourApiKey = homeOrganization.apiKey;
+          senderApiKey = homeOrganization.apiKey;
         } else {
           return;
         }
@@ -27,15 +28,17 @@ async function sendPartnerUpdateNotification(partnerId) {
           signal: controller.signal,
           method: 'POST',
           headers: {
-            'X-MY-API-KEY': organization.apiKey,
-            ...(!!yourApiKey && { 'X-YOUR-API-KEY': yourApiKey }),
+            'X-RECEIVER-API-KEY': organization.apiKey,
+            ...(!!senderApiKey && { 'X-SENDER-API-KEY': senderApiKey }),
+            'Referer': req.headers.host,
           },
         });
         clearTimeout(timeout);
 
         if (response.status >= 400 && response.status < 600) {
           const json = await response.json();
-          throw new Error('Bad response from partner: ' + response.status + ': ' + (json.message || JSON.stringify(json)));
+          throw new Error('Bad response from partner: ' + response.status + ': '
+            + (json.message || JSON.stringify(json)));
         }
       } else {
         throw new Error('The partner organization does not have a valid URL, port, and/or API key');
@@ -50,23 +53,28 @@ async function sendPartnerUpdateNotification(partnerId) {
 
 async function receivePartnerUpdateNotification(req, res, next) {
   const { fetchOrganizationHelper, deleteOrganizationHelper, updateOrganizationHelper } = require(".");
+
   try {
-    const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' }, { populates: ['characteristicOccurrences.occurrenceOf'] });
+    const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' },
+      { populates: ['characteristicOccurrences.occurrenceOf'] });
     if (!homeOrganization) {
       throw new Error('This deployment has no home organization');
     }
 
-    const myApiKey = req.header('X-MY-API-KEY');
-    const yourApiKey = req.header('X-YOUR-API-KEY');
-    if (myApiKey !== homeOrganization.apiKey) {
+    const receiverApiKey = req.header('X-RECEIVER-API-KEY');
+    const senderApiKey = req.header('X-SENDER-API-KEY');
+    if (receiverApiKey !== homeOrganization.apiKey) {
       return res.status(403).json({ message: 'API key is incorrect' });
     }
 
-    const partnerOrganization = await GDBOrganizationModel.findOne({ apiKey: yourApiKey });
-    if (partnerOrganization) {
+    const partnerOrganization = await GDBOrganizationModel.findOne({ apiKey: senderApiKey,
+      endpointUrl: req.headers.referer });
+    if (partnerOrganization && partnerOrganization.apiKey === senderApiKey
+        && partnerOrganization.endpointUrl === req.headers.referer) {
       const partnerData = await fetchOrganizationHelper(partnerOrganization._id);
 
-      const partnerServiceProvider = await GDBServiceProviderModel.findOne({organization: {_id: partnerOrganization._id}});
+      const partnerServiceProvider = await GDBServiceProviderModel
+        .findOne({organization: {_id: partnerOrganization._id}});
       if (!partnerData.organization || Object.keys(partnerData.organization).length === 0) {
         await deleteOrganizationHelper(partnerServiceProvider._id, partnerData);
         return res.status(204).send();

@@ -70,7 +70,8 @@ async function populateReferral(referralGeneric, receiverId) {
 }
 
 /**
- * If the given referral's receiver or referrer is a partner organization, return the partner
+ * If the given referral's receiver or referrer is a partner organization, returns the partner.
+ * Otherwise, returns null.
  * @param {Object} referralGeneric 
  * @returns {Object|null} The partner organization, if any, that is the referral's receiver or referrer,
  *     along with a property isReceiver.
@@ -120,6 +121,9 @@ async function getReferralPartnerGeneric(referralGeneric) {
   return partnerGeneric;
 }
 
+/**
+ * Sends the referral with the given id to its partner organization (as defined by getReferralPartnerGeneric).
+ */
 async function sendReferral(req, res, next) {
   try {
     const id = req.params.id;
@@ -191,8 +195,9 @@ async function sendReferral(req, res, next) {
         return res.status(400).json({message: 'No referral form available'});
       }
 
-      await (await updateSingleGenericHelper(id,
-        {fields: referralGeneric, formId: referralFormId}, 'referral')).save();
+      const { generic } = await updateSingleGenericHelper(id,
+        {fields: referralGeneric, formId: referralFormId}, 'referral');
+      await generic.save();
     }
 
     return res.status(202).json({success: true, message: `Successfully sent a referral`});
@@ -235,7 +240,7 @@ async function getClient(partnerClientData, isNew, originalId) {
 }
 
 /**
- * Save the given partner data as a referral (creating a new referral if the request method is POST,
+ * Saves the given partner data as a referral (creating a new referral if the request method is POST,
  * or updating an referral if the request method is PUT).
  */
 async function receiveReferral(req, res, next) {
@@ -288,7 +293,7 @@ async function receiveReferral(req, res, next) {
       originalReferralJson[(characteristicOccurrence.occurrenceOf._uri
         || characteristicOccurrence.occurrenceOf).split('#')[1]]
           = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue
-          || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+            || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
     });
     delete originalReferralJson.characteristicOccurrences;
     delete originalReferralJson._id;

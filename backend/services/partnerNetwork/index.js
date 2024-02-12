@@ -220,7 +220,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
 }
 
 /**
- * Using the given partner data, update the partner organization with the given
+ * Using the given partner data, updates the partner organization with the given
  * providerId, as well as the organization's programs, services, and volunteers.
  */
 async function updateOrganizationHelper(providerId, partnerData) {
@@ -249,7 +249,7 @@ async function updateOrganizationHelper(providerId, partnerData) {
       ? await convertAddressForDeserialization(partnerData.organization.address) : null;
   organization.formId = organizationFormId;
 
-  const provider = await getProviderById(id);
+  const provider = await getProviderById(providerId);
   const providerType = provider.type;
   if (providerType !== 'organization') {
     throw new Error('Provider is not an organization');
@@ -262,8 +262,8 @@ async function updateOrganizationHelper(providerId, partnerData) {
     organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
   }
 
-  const organizationObj = await updateSingleGenericHelper(genericId, organization, 'organization');
-  provider['organization'] = organizationObj;
+  const { generic } = await updateSingleGenericHelper(genericId, organization, 'organization');
+  provider['organization'] = generic;
   await provider.save();
 
   await updateOrganizationGenericAssets(genericId, partnerData, 'program', {
@@ -304,6 +304,10 @@ async function updateOrganizationHelper(providerId, partnerData) {
     });
 }
 
+/**
+ * Deletes the partner organization with the given providerId, as well as the organization's
+ * programs, services, and volunteers as per the given partner data.
+ */
 async function deleteOrganizationHelper(providerId, partnerData) {
   const provider = await getProviderById(providerId);
   const providerType = provider.type;
@@ -320,6 +324,11 @@ async function deleteOrganizationHelper(providerId, partnerData) {
   await GDBServiceProviderModel.findByIdAndDelete(providerId);
 }
 
+/**
+ * Given non-empty partner data, updates the partner organization with the
+ * given id, as well as the organization's programs, services, and volunteers;
+ * or deletes them if the given partner data is empty.
+ */
 async function updateOrganization(req, res, next) {
   try {
     const partnerData = req.body;
@@ -435,7 +444,7 @@ async function getOrganizationAssets(organizationId, assetType, characteristics,
         && (asset.partnerOrganizations?.some(org => partnerOrganizations.includes(org))
           || asset.partnerOrganizations?.map(org => org._uri)
             .some(org => !!org && partnerOrganizations.includes(org))))
-      || (assetType === 'service' && asset.shareability === 'Not shareable'
+      || (assetType === 'service' && shareabilities[asset.shareability] === 'Not shareable'
         && programs.map(program => program.id).includes(asset.program?.split('_')[1])))
   ));
 
