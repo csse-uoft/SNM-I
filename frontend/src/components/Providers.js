@@ -6,6 +6,7 @@ import { formatPhoneNumber } from '../helpers/phone_number_helpers'
 import { GenericPage, Link } from "./shared";
 import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders } from "../api/providersApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import { getInstancesInClass } from '../api/dynamicFormApi';
 
 const TYPE = 'providers';
 
@@ -93,6 +94,7 @@ export default function Providers() {
    */
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const shareabilities = await getInstancesInClass(':Shareability');
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
@@ -122,7 +124,7 @@ export default function Providers() {
       if (innerData.apiKey)
         providerData.apiKey = innerData.apiKey;
       if (innerData.shareability)
-        providerData.shareability = innerData.shareability;
+        providerData.shareability = shareabilities[innerData.shareability];
       if (innerData.organization)
         providerData.organization = innerData.organization;
       if (innerData.partnerOrganizations)

@@ -20,4 +20,5 @@ module.exports = {
   partnerNetworkApiRoute: require('./partnerNetworkApi'),
   partnerNetworkPublicRoute: require('./partnerNetworkPublic'),
   partnerOrganizationRoute: require('./partnerOrganization'),
+  notificationRoute: require('./notification'),
 }

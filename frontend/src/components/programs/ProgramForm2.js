@@ -3,6 +3,8 @@ import GenericForm from "../shared/GenericForm";
 import {fetchCharacteristics} from "../../api/characteristicApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ShareabilityField} from "../shared/ShareabilityField";
+import {Box} from '@mui/material';
+import {Loading} from '../shared';
 
 export default function ProviderForm() {
   const formType = 'program';

@@ -5,7 +5,7 @@ import { useClientAPIs } from '../api/clientApi'
 import { GenericPage, Link } from "./shared";
 import { fetchSingleGeneric } from "../api/genericDataApi";
 import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
-
+import { fetchNeed } from '../api/needApi';
 const TYPE = 'clients';
 
 // mui-table column configurations
@@ -22,6 +22,15 @@ const columnsWithoutOptions = [
     label: 'Last Name',
     body: ({lastName}) => {
       return lastName;
+    }
+  },
+  {
+    label: 'Needs',
+    body: ({needs}) => {
+      if (needs === null || needs === undefined){
+        needs = "None"
+      }
+      return needs;
     }
   },
   // {
@@ -83,8 +92,11 @@ export default function Clients() {
           } else if (occ.occurrenceOf?.name === 'Address') {
             const clientObj = (await fetchSingleGeneric("client", client._id)).data; // TODO: inefficient!
             clientData.address = clientObj['characteristic_' + addressCharacteristicId];
-	  }
+	        }
         }
+      if (client.needs){
+        clientData.needs = client.needs;
+      }
       data.push(clientData);
     }
 

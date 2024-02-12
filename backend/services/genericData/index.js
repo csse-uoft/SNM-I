@@ -160,9 +160,9 @@ const genericType2Populates = {
   'serviceOccurrence': ['address'],
   'programOccurrence': ['address'],
   'client': ['address'],
-  'appointment': ['address'],
+  'appointment': ['address', 'referral'],
   'person': ['address'],
-  'volunteer': ['partnerOrganizations', 'organization'],
+  'volunteer': ['partnerOrganizations', 'organization', 'address'],
 };
 
 const genericType2Checker = {

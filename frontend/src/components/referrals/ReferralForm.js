@@ -5,9 +5,25 @@ import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ClientAndNeedOccurrenceField} from "../serviceProvision/ClientAndNeedOccurrenceField";
 import {ServiceAndOccurrenceAndNeedSatisfierField} from "../serviceProvision/ServiceAndOccurrenceAndNeedSatisfierField";
 import {ProgramAndOccurrenceAndNeedSatisfierField} from "../programProvision/ProgramAndOccurrenceAndNeedSatisfierField";
+import {fetchCharacteristics} from '../../api/characteristicApi';
+import {Box} from '@mui/material';
+import {Loading} from '../shared';
+import SelectField from '../shared/fields/SelectField';
+import {getInstancesInClass} from '../../api/dynamicFormApi';
 
 export default function ReferralForm() {
   const formType = 'referral';
+
+  const [characteristics, setCharacteristics] = useState({});
+  useEffect(() => {
+    fetchCharacteristics().then(characteristics => {
+      const data = {};
+      for (const {implementation, name, _id} of characteristics.data) {
+        data[name] = {implementation, _id}
+      }
+      setCharacteristics(data);
+    });
+  }, []);
 
   const [internalTypes, setInternalTypes] = useState({});
   useEffect(() => {
@@ -18,6 +34,12 @@ export default function ReferralForm() {
       }
       setInternalTypes(data);
     });
+  }, []);
+
+  const [statusOptions, setStatusOptions] = useState(null);
+  useEffect(() => {
+    getInstancesInClass(':ReferralStatus')
+      .then(options => setStatusOptions(options));
   }, []);
 
   const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
@@ -60,6 +82,14 @@ export default function ReferralForm() {
         programFieldId={programFieldId}
         programOccurrenceFieldId={programOccurrenceFieldId}
         fixedProgramId={serviceOrProgramId}/>
+    } else if (implementation.label === "Referral Status") {
+      const statusFieldKey = `characteristic_${characteristics['Referral Status']._id}`;
+      if (!statusFieldKey || !statusOptions) {
+        return <Box minWidth={"350px"}><Loading message=""/></Box>;
+      }
+
+      return <SelectField key={statusFieldKey} label="Referral Status" required value={fields[statusFieldKey]}
+        options={statusOptions} onChange={handleChange(statusFieldKey)}/>;
     } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
       return "";
     } else if (implementation.optionsFromClass?.endsWith("ServiceOccurrence")) {

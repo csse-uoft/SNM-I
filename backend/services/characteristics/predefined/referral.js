@@ -13,11 +13,12 @@ module.exports = [
   {
     name: 'Referral Status',
     description: 'The status of a referral',
-    predefinedProperty: 'http://snmi#hasStatus',
+    predefinedProperty: 'http://snmi#hasReferralStatus',
     implementation: {
       label: 'Referral Status',
       valueDataType: 'xsd:string',
-      fieldType: FieldTypes.TextField,
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: ':ReferralStatus'
     }
   }
 ]
