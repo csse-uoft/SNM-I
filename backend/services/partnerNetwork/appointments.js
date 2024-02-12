@@ -79,7 +79,7 @@ async function sendAppointment(req, res, next) {
         || appointmentGeneric.referral)?.split('_')[1]);
     const referralGeneric = await fetchSingleGenericHelper('referral', referralId);
 
-    const partnerGeneric = getReferralPartnerGeneric(referralGeneric);
+    const partnerGeneric = await getReferralPartnerGeneric(referralGeneric);
     if (!partnerGeneric) {
       // This is a valid case (the appointment is not meant to be sent)
       return res.status(200).json({success: true});
@@ -134,6 +134,7 @@ async function sendAppointment(req, res, next) {
 
     return res.status(202).json({ success: true, message: `Successfully sent a appointment` });
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ message: e?.message });
   }
 }

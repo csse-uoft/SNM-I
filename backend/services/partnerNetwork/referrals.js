@@ -143,7 +143,7 @@ async function sendReferral(req, res, next) {
       return res.status(200).json({success: true});
     }
   
-    const partnerGeneric = getReferralPartnerGeneric(referralGeneric);
+    const partnerGeneric = await getReferralPartnerGeneric(referralGeneric);
     if (!partnerGeneric) {
       // This is a valid case (the referral is not meant to be sent)
       return res.status(200).json({success: true});
@@ -197,6 +197,7 @@ async function sendReferral(req, res, next) {
 
     return res.status(202).json({success: true, message: `Successfully sent a referral`});
   } catch (e) {
+    console.log(e);
     return res.status(400).json({message: e?.message});
   }
 }
