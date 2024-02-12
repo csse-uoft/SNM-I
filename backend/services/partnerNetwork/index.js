@@ -16,65 +16,67 @@ const {GraphDBModel} = require("graphdb-utils");
 
 /**
  * Requests that a partner deployment represented locally as the partner
- * organization with the given id send its home organization, and returns the
- * resulting data.
+ * organization with the given genericId send its home organization, and
+ * returns the resulting data.
  */
+async function fetchOrganizationHelper(genericId) {
+  let organizationGeneric;
+  try {
+    organizationGeneric = await fetchSingleGenericHelper('organization', genericId);
+  } catch (e) {
+    throw new Error('Partner organization not found' + (e.message ? ': ' + e.message : ''));
+  }
+
+  const organization = await getOrganization(organizationGeneric);
+
+  if (organization.status === 'Partner') {
+    if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
+      const endpointUrl = organization.endpointUrl;
+      const url = new URL('/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl
+                          : 'https://' + endpointUrl);
+      url.port = organization.endpointPort;
+
+      const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
+      const senderApiKey = !!homeOrganization ? homeOrganization.apiKey : null;
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(url, {
+        signal: controller.signal,
+        method: 'GET',
+        headers: {
+          'X-RECEIVER-API-KEY': organization.apiKey,
+          ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
+          'Referer': req.headers.host,
+        },
+      });
+      clearTimeout(timeout);
+
+      if (response.status >= 400 && response.status < 600) {
+        const json = await response.json();
+        throw new Error('Bad response from partner: ' + response.status + ': '
+                        + (json.message || JSON.stringify(json)));
+      }
+      return await response.json();
+    } else {
+      throw new Error('The partner organization does not have a valid URL, port, and/or API key');
+    }
+  } else {
+    throw new Error('The entity to refresh is not a partner organization');
+  }
+}
+
 async function fetchOrganization(req, res, next) {
   try {
     const {id} = req.params;
-
-    let organizationGeneric;
-    try {
-      const provider = await getProviderById(id);
-      const providerType = provider.type;
-      if (providerType !== 'organization') {
-        throw new Error('Provider is not an organization');
-      }
-      const genericId = provider[providerType]._id;
-      organizationGeneric = await fetchSingleGenericHelper(providerType, genericId);
-    } catch (e) {
-      return res.status(404).json({message: 'Partner organization not found' + (e.message ? ': ' + e.message : '')});
+    
+    const provider = await getProviderById(id);
+    const providerType = provider.type;
+    if (providerType !== 'organization') {
+      throw new Error('Provider is not an organization');
     }
-
-    const organization = await getOrganization(organizationGeneric);
-
-    if (organization.status === 'Partner') {
-      if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
-        const endpointUrl = organization.endpointUrl;
-        const url = new URL('/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl
-          : 'https://' + endpointUrl);
-        url.port = organization.endpointPort;
-
-        const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
-        const senderApiKey = !!homeOrganization ? homeOrganization.apiKey : null;
-
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        const response = await fetch(url, {
-          signal: controller.signal,
-          method: 'GET',
-          headers: {
-            'X-RECEIVER-API-KEY': organization.apiKey,
-            ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
-            'Referer': req.headers.host,
-          },
-        });
-        clearTimeout(timeout);
-
-        if (response.status >= 400 && response.status < 600) {
-          const json = await response.json();
-          return res.status(404).json({message: 'Bad response from partner: ' + response.status + ': '
-            + (json.message || JSON.stringify(json))});
-        }
-        return res.json(await response.json());
-      } else {
-        return res.status(400).json({
-          message: 'The partner organization does not have a valid URL, port, and/or API key'
-        });
-      }
-    } else {
-      return res.status(400).json({message: 'The entity to refresh is not a partner organization'});
-    }
+    const genericId = provider[providerType]._id;
+    return res.json(await fetchOrganizationHelper(genericId));
   } catch (e) {
     console.log(e);
     return res.status(400).json({message: e?.message});
@@ -104,12 +106,10 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
   }
 
   let assets = await fetchGenericDatasHelper(assetType);
-console.log(JSON.stringify(assets))
-console.log(organizationGenericId)
   assets = assets.filter(asset => asset.serviceProvider?.organization?._id === organizationGenericId);
 
   assetLoop:
-  for (assetData of partnerData.organization[assetType + 's']) {
+  for (assetData of partnerData.organization[assetType + 's'] || []) {
     const asset = {fields: {}};
     for (characteristic in characteristics) {
       asset.fields[PredefinedCharacteristics[characteristic]._uri.split('#')[1]]
@@ -120,16 +120,11 @@ console.log(organizationGenericId)
         = internalTypes[internalType](assetData.program?.split('_')[1]);
     }
     asset.formId = formId;
-console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-console.log(JSON.stringify(assetData))
-console.log(JSON.stringify(assets))
     for (assetIndex in assets) {
       const assetGeneric = assets[assetIndex];
-console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-console.log(assetGeneric.idInPartnerDeployment)
-console.log(assetData.id)
       if (assetGeneric.idInPartnerDeployment == assetData.id) {
-        await (await updateSingleGenericHelper(assetGeneric._id, asset, assetType)).save();
+        const { generic } = await updateSingleGenericHelper(assetGeneric._id, asset, assetType);
+        await generic.save();
         assets.splice(assetIndex, 1);
         continue assetLoop;
       }
@@ -174,7 +169,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
   providers = providers.filter(provider => provider.volunteer?.organization?._id === organizationGenericId);
 
   providerLoop:
-  for (const volunteerData of partnerData.organization['volunteers']) {
+  for (const volunteerData of partnerData.organization['volunteers'] || []) {
     const volunteer = {fields: {}};
     for (const characteristic in characteristics) {
       volunteer.fields[PredefinedCharacteristics[characteristic]._uri.split('#')[1]]
@@ -198,7 +193,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
           volunteer.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
         }
 
-        const generic = await updateSingleGenericHelper(provider.volunteer._id, volunteer, 'volunteer');
+        const { generic } = await updateSingleGenericHelper(provider.volunteer._id, volunteer, 'volunteer');
         provider.volunteer = generic;
         await provider.save();
 
@@ -225,94 +220,120 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
 }
 
 /**
- * Using the given partner data, update the partner organization with the given id,
- * as well as the organization's programs, services, and volunteers.
+ * Using the given partner data, update the partner organization with the given
+ * providerId, as well as the organization's programs, services, and volunteers.
  */
+async function updateOrganizationHelper(providerId, partnerData) {
+  const organizationForms = await getDynamicFormsByFormTypeHelper('organization');
+  if (organizationForms.length > 0) {
+    var organizationFormId = organizationForms[0]._id; // Select the first form
+  } else {
+    throw new Error('No organization form available');
+  }
+
+  const organization = {fields: {}};
+  if (Object.keys(PredefinedCharacteristics).length == 0) {
+    await initPredefinedCharacteristics();
+  }
+
+  if (!partnerData.organization) {
+    throw new Error('Data does not include an organization');
+  }
+
+  organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]]
+    = partnerData.organization.name || '';
+  organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]]
+    = partnerData.organization.description || partnerData.organization.Description || '';
+  organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]
+    = partnerData.organization.address
+      ? await convertAddressForDeserialization(partnerData.organization.address) : null;
+  organization.formId = organizationFormId;
+
+  const provider = await getProviderById(id);
+  const providerType = provider.type;
+  if (providerType !== 'organization') {
+    throw new Error('Provider is not an organization');
+  }
+  const genericId = provider[providerType]._id;
+
+  const oldGeneric = await GDBOrganizationModel.findOne({ _id: genericId }, {populates: ['address']});
+  if (organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
+    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
+    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
+  }
+
+  const organizationObj = await updateSingleGenericHelper(genericId, organization, 'organization');
+  provider['organization'] = organizationObj;
+  await provider.save();
+
+  await updateOrganizationGenericAssets(genericId, partnerData, 'program', {
+      'Program Name': 'programName',
+      'Description': 'description',
+      'ID in Partner Deployment': 'id',
+    }, {
+      'serviceProviderForProgram': () => provider._uri
+    }, GDBProgramModel);
+
+  const partnerProgramIds = {}; // mapping from local program IDs to IDs of programs in the partner deployment
+  let programs = await fetchGenericDatasHelper('program');
+  programs = programs.filter(program => program.serviceProvider?._id === genericId);
+  for (programData of partnerData.organization['programs']) {
+    for (programIndex in programs) {
+      const programGeneric = programs[programIndex];
+      if (programGeneric.idInPartnerDeployment == programData.id) {
+        partnerProgramIds[programData.id] = programGeneric._uri;
+      }
+    }
+  }
+
+  await updateOrganizationGenericAssets(genericId, partnerData, 'service', {
+      'Service Name': 'serviceName',
+      'Description': 'description',
+      'ID in Partner Deployment': 'id',
+    }, {
+      'serviceProviderForService': () => provider._uri,
+      'programForService': (partnerDeploymentProgramId) => partnerProgramIds[partnerDeploymentProgramId]
+    }, GDBServiceModel);
+
+  await updateOrganizationVolunteers(genericId, partnerData, {
+      'First Name': 'firstName',
+      'Last Name': 'lastName',
+      'ID in Partner Deployment': 'id',
+    }, {
+      'organizationForVolunteer': () => provider[providerType]._uri
+    });
+}
+
+async function deleteOrganizationHelper(providerId, partnerData) {
+  const provider = await getProviderById(providerId);
+  const providerType = provider.type;
+  if (providerType !== 'organization') {
+    throw new Error('Provider is not an organization');
+  }
+  const genericId = provider[providerType]._id;
+
+  await updateOrganizationGenericAssets(genericId, partnerData, 'program', {}, {}, GDBProgramModel);
+  await updateOrganizationGenericAssets(genericId, partnerData, 'service', {}, {}, GDBServiceModel);
+  await updateOrganizationVolunteers(genericId, partnerData, {}, {});
+  
+  await deleteSingleGenericHelper('organization', genericId);
+  await GDBServiceProviderModel.findByIdAndDelete(providerId);
+}
+
 async function updateOrganization(req, res, next) {
   try {
     const partnerData = req.body;
     const {id} = req.params;
 
-    const organizationForms = await getDynamicFormsByFormTypeHelper('organization');
-    if (organizationForms.length > 0) {
-      var organizationFormId = organizationForms[0]._id; // Select the first form
-    } else {
-      return res.status(400).json({message: 'No organization form available'});
-    }
-
-    const organization = {fields: {}};
-    if (Object.keys(PredefinedCharacteristics).length == 0) {
-      await initPredefinedCharacteristics();
-    }
-
     if (!partnerData.organization) {
-      return res.status(400).json({message: 'Data does not include an organization'});
+      return res.status(400).json({message: 'No organization provided'});
+    } else if (Object.keys(partnerData.organization).length === 0) {
+      await deleteOrganizationHelper(id, partnerData);
+      return res.status(204);
+    } else {
+      await updateOrganizationHelper(id, partnerData);
+      return res.status(200).json({success: true});
     }
-
-    organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]]
-      = partnerData.organization.name || '';
-    organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]]
-      = partnerData.organization.description || partnerData.organization.Description || '';
-    organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]
-      = partnerData.organization.address
-        ? await convertAddressForDeserialization(partnerData.organization.address) : null;
-    organization.formId = organizationFormId;
-
-    const provider = await getProviderById(id);
-    const providerType = provider.type;
-    if (providerType !== 'organization') {
-      throw new Error('Provider is not an organization');
-    }
-    const genericId = provider[providerType]._id;
-
-    const oldGeneric = await GDBOrganizationModel.findOne({ _id: genericId }, {populates: ['address']});
-    if (organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
-      organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
-      organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
-    }
-
-    const organizationObj = await updateSingleGenericHelper(genericId, organization, 'organization');
-    provider['organization'] = organizationObj;
-    await provider.save();
-
-    await updateOrganizationGenericAssets(genericId, partnerData, 'program', {
-        'Program Name': 'programName',
-        'Description': 'description',
-        'ID in Partner Deployment': 'id',
-      }, {
-        'serviceProviderForProgram': () => provider._uri
-      }, GDBProgramModel);
-
-    const partnerProgramIds = {}; // mapping from local program IDs to IDs of programs in the partner deployment
-    let programs = await fetchGenericDatasHelper('program');
-    programs = programs.filter(program => program.serviceProvider?._id === genericId);
-    for (programData of partnerData.organization['programs']) {
-      for (programIndex in programs) {
-        const programGeneric = programs[programIndex];
-        if (programGeneric.idInPartnerDeployment == programData.id) {
-          partnerProgramIds[programData.id] = programGeneric._uri;
-        }
-      }
-    }
-
-    await updateOrganizationGenericAssets(genericId, partnerData, 'service', {
-        'Service Name': 'serviceName',
-        'Description': 'description',
-        'ID in Partner Deployment': 'id',
-      }, {
-        'serviceProviderForService': () => provider._uri,
-        'programForService': (partnerDeploymentProgramId) => partnerProgramIds[partnerDeploymentProgramId]
-      }, GDBServiceModel);
-
-    await updateOrganizationVolunteers(genericId, partnerData, {
-        'First Name': 'firstName',
-        'Last Name': 'lastName',
-        'ID in Partner Deployment': 'id',
-      }, {
-        'organizationForVolunteer': () => provider[providerType]._uri
-      });
-
-    return res.status(200).json({success: true});
   } catch (e) {
     console.log(e);
     return res.status(400).json({message: e?.message});
@@ -431,7 +452,8 @@ async function sendOrganization(req, res, next) {
     const organization = await GDBOrganizationModel.findOne({status: 'Home'},
       {populates: ['characteristicOccurrences.occurrenceOf', 'address']});
     if (!organization) {
-      throw new Error('This deployment has no home organization');
+      // Will delete the copy of the organization in the partner deployment if it exists
+      return res.status(200).json({organization: {}, success: true});
     }
     const genericId = organization._id;
 
@@ -446,7 +468,7 @@ async function sendOrganization(req, res, next) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
 
-    var partnerOrganizations = await fetchGenericDatasHelper('organization')
+    var partnerOrganizations = await fetchGenericDatasHelper('organization');
     partnerOrganizations = partnerOrganizations
       .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey
         && organizationObj.endpointUrl === req.headers.referer)
@@ -503,7 +525,11 @@ async function sendOrganization(req, res, next) {
 
 module.exports = {
   fetchOrganization,
+  fetchOrganizationHelper,
   updateOrganization,
+  updateOrganizationHelper,
+  deleteOrganizationHelper,
   getGenericAssets,
-  sendOrganization
+  sendOrganization,
+  getOrganization
 };

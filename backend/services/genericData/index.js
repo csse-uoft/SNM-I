@@ -1,8 +1,6 @@
 const {
   GDBClientModel,
-  GDBServiceProviderModel,
   GDBPhoneNumberModel,
-  GDBCharacteristicModel,
   GDBAddressModel,
   GDBQOModel
 } = require("../../models");
@@ -42,12 +40,18 @@ const {GDBReferralModel} = require("../../models/referral");
 const {
   serviceInternalTypeCreateTreater,
   serviceInternalTypeFetchTreater,
-  serviceInternalTypeUpdateTreater
+  serviceInternalTypeUpdateTreater,
+  afterCreateService,
+  afterUpdateService,
+  afterDeleteService
 } = require("./serviceInternalTypeTreater");
 const {
   programInternalTypeCreateTreater,
   programInternalTypeFetchTreater,
-  programInternalTypeUpdateTreater
+  programInternalTypeUpdateTreater,
+  afterCreateProgram,
+  afterUpdateProgram,
+  afterDeleteProgram
 } = require("./programInternalTypeTreater");
 const {
   referralInternalTypeCreateTreater,
@@ -95,7 +99,8 @@ const {
 const {
   outcomeOccurrenceInternalTypeUpdateTreater,
   outcomeOccurrenceInternalTypeCreateTreater,
-  outcomeOccurrenceInternalTypeFetchTreater
+  outcomeOccurrenceInternalTypeFetchTreater,
+  beforeDeleteOutcomeOccurrence
 } = require("./outcomeOccurrenceInternalTypeTreater");
 const {
   clientAssessmentInternalTypeUpdateTreater,
@@ -112,7 +117,10 @@ const {
 const {
   volunteerInternalTypeCreateTreater,
   volunteerInternalTypeFetchTreater,
-  volunteerInternalTypeUpdateTreater
+  volunteerInternalTypeUpdateTreater,
+  afterCreateVolunteer,
+  afterUpdateVolunteer,
+  afterDeleteVolunteer
 } = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const genericType2Model = {
@@ -143,7 +151,7 @@ const genericType2Populates = {
   'serviceRegistration': ['address', 'needOccurrence', 'serviceOccurrence'],
   'programRegistration' : ['address', 'needOccurrence', 'programOccurrence'],
   'needOccurrence': ['address', 'occurrenceOf', 'client'],
-  'outcomeOccurrence': ['address'],
+  'outcomeOccurrence': ['address', 'occurrenceOf', 'client'],
   'needSatisfierOccurrence': ['address'],
   'clientAssessment': ['address', 'client'],
   'referral': ['address', 'client'],
@@ -174,7 +182,8 @@ const genericType2BeforeUpdateTreater = {
 }
 
 const genericType2BeforeDeleteTreater = {
-  'needOccurrence': beforeDeleteNeedOccurrence
+  'needOccurrence': beforeDeleteNeedOccurrence,
+  'outcomeOccurrence': beforeDeleteOutcomeOccurrence
 }
 
 // this dict will be shared by all generic types with internal types as their properties
@@ -235,6 +244,24 @@ const genericType2InternalTypeUpdateTreater = {
   'person': personInternalTypeUpdateTreater,
   'volunteer': volunteerInternalTypeUpdateTreater
 };
+
+const genericType2AfterCreateTreater = {
+  'program': afterCreateProgram,
+  'service': afterCreateService,
+  'volunteer': afterCreateVolunteer
+}
+
+const genericType2AfterUpdateTreater = {
+  'program': afterUpdateProgram,
+  'service': afterUpdateService,
+  'volunteer': afterUpdateVolunteer
+}
+
+const genericType2AfterDeleteTreater = {
+  'program': afterDeleteProgram,
+  'service': afterDeleteService,
+  'volunteer': afterDeleteVolunteer
+}
 
 
 const specialField2Model = {
@@ -463,6 +490,10 @@ const createSingleGeneric = async (req, res, next) => {
       // the instance data is stored into graphdb
       const newGeneric = genericType2Model[genericType](instanceData);
       await newGeneric.save();
+
+      if (genericType2AfterCreateTreater[genericType])
+        await genericType2AfterCreateTreater[genericType](data);
+  
       return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`, createdId: newGeneric._id});
     }
 
@@ -606,6 +637,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
   if (genericType2BeforeUpdateTreater[genericType])
     await genericType2BeforeUpdateTreater[genericType](generic, internalTypes, data.fields);
 
+  const oldGeneric = generic.toJSON();
 
   // TODO: Fix the issue where the new value is undefined, it never triggers the genericType2InternalTypeUpdateTreater()
   for (const [key, value] of Object.entries(data.fields)) {
@@ -618,7 +650,8 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
       }
     }
   }
-  return generic;
+
+  return { oldGeneric, generic };
 }
 
 // what should we do if the field is empty
@@ -632,13 +665,16 @@ async function updateSingleGeneric(req, res, next) {
     if (!id) {
       return res.status(400).json({success: false, message: `No ${genericType} id is given`});
     }
-    await (await updateSingleGenericHelper(id, data, genericType)).save();
-    res.status(200).json({success: true});
+    const { oldGeneric, generic } = await updateSingleGenericHelper(id, data, genericType);
+    await generic.save();
 
+    if (genericType2AfterUpdateTreater[genericType])
+      await genericType2AfterUpdateTreater[genericType](data, oldGeneric);
+
+    res.status(200).json({success: true});
   } catch (e) {
     next(e);
   }
-
 }
 
 async function deleteSingleGenericHelper(genericType, id) {
@@ -652,6 +688,8 @@ async function deleteSingleGenericHelper(genericType, id) {
 
   if (genericType2BeforeDeleteTreater[genericType])
     genericType2BeforeDeleteTreater[genericType](generic);
+
+  const oldGeneric = generic.toJSON();
 
   const characteristicsOccurrences = generic.characteristicOccurrences;
   const questionsOccurrences = generic.questionOccurrences;
@@ -682,17 +720,20 @@ async function deleteSingleGenericHelper(genericType, id) {
     }
   }
   await genericType2Model[genericType].findByIdAndDelete(id);
+
+  return oldGeneric;
 }
 
 async function deleteSingleGeneric(req, res, next) {
   try {
     // check the package from frontend
     const {genericType, id} = req.params;
-    await deleteSingleGenericHelper(genericType, id);
+    const oldGeneric = await deleteSingleGenericHelper(genericType, id);
+
+    if (genericType2AfterDeleteTreater[genericType])
+      await genericType2AfterDeleteTreater[genericType](oldGeneric);
 
     return res.status(200).json({success: true});
-
-
   } catch (e) {
     next(e);
   }

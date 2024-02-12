@@ -37,6 +37,26 @@ const beforeUpdateClientAssessment = async function (instanceData, internalTypes
 const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   // get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
+
+  // Get start and end date cached Characteristics
+  const startDateC = PredefinedCharacteristics['Start Date'];
+  const endDateC = PredefinedCharacteristics['End Date'];
+  // Get the COs
+  const startDateCO = instanceData.characteristicOccurrences.find(co => co.occurrenceOf === startDateC._uri || co.occurrenceOf?._uri === startDateC._uri);
+  const endDateCO = instanceData.characteristicOccurrences.find(co => co.occurrenceOf === endDateC._uri || co.occurrenceOf?._uri === endDateC._uri);
+  const newCOs = [];
+  // addIdToUsage is not called since it is not required for predefined characteristics
+  if (startDateCO) {
+    const data = startDateCO.toJSON ? startDateCO.toJSON() : startDateCO;
+    delete data._id;
+    newCOs.push(GDBCOModel(data));
+  }
+  if (endDateCO) {
+    const data = endDateCO.toJSON ? endDateCO.toJSON() : endDateCO;
+    delete data._id;
+    newCOs.push(GDBCOModel(data));
+  }
+
   // instantiate the property with the value
   if (property === 'person' || property === 'userAccount') {
     instanceData[property] = value;
@@ -45,25 +65,6 @@ const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceD
     instanceData.needs = value;
     // Create need + need occurrence
     instanceData.client.needs.push(...value);
-
-    // Get start and end date cached Characteristics
-    const startDateC = PredefinedCharacteristics['Start Date'];
-    const endDateC = PredefinedCharacteristics['End Date'];
-    // Get the COs
-    const startDateCO = instanceData.characteristicOccurrences.find(co => co.occurrenceOf === startDateC._uri || co.occurrenceOf?._uri === startDateC._uri);
-    const endDateCO = instanceData.characteristicOccurrences.find(co => co.occurrenceOf === endDateC._uri || co.occurrenceOf?._uri === endDateC._uri);
-    const newCOs = [];
-    // addIdToUsage is not called since it is not required for predefined characteristics
-    if (startDateCO) {
-      const data = startDateCO.toJSON ? startDateCO.toJSON() : startDateCO;
-      delete data._id;
-      newCOs.push(GDBCOModel(data));
-    }
-    if (endDateCO) {
-      const data = endDateCO.toJSON ? endDateCO.toJSON() : endDateCO;
-      delete data._id;
-      newCOs.push(GDBCOModel(data));
-    }
 
     for (const needURI of value) {
       instanceData.client.needOccurrences.push(GDBNeedOccurrenceModel({
@@ -79,11 +80,17 @@ const clientAssessmentInternalTypeCreateTreater = async (internalType, instanceD
 
   else if (property === 'outcomes') {
     instanceData.outcomes = value;
+    // Create need + need occurrence
     instanceData.client.outcomes.push(...value);
 
     for (const outcomeURI of value) {
       instanceData.client.outcomeOccurrences.push(GDBOutcomeOccurrenceModel({
-        occurrenceOf: outcomeURI
+        occurrenceOf: outcomeURI,
+        client: instanceData.client,
+
+        characteristicOccurrences: newCOs,
+        startDate: startDateCO ? startDateCO.dataDateValue : undefined,
+        endDate: endDateCO ? endDateCO.dataDateValue : undefined,
       }))
     }
   }

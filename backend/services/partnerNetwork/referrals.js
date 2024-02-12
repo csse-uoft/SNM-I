@@ -226,7 +226,10 @@ async function getClient(partnerClientData, isNew, originalId) {
   if (isNew) {
     return GDBClientModel(await createSingleGenericHelper(client, 'client'));
   } else {
-    !!originalId && await (await updateSingleGenericHelper(originalId, client, 'client')).save();
+    if (!!originalId) {
+      const { generic } = await updateSingleGenericHelper(originalId, client, 'client');
+      await generic.save();
+    }
     return null;
   }
 }
@@ -341,7 +344,8 @@ async function receiveReferral(req, res, next) {
         referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]]
           = originalReferral.service || null;
       }
-      await (await updateSingleGenericHelper(originalReferral._id, referral, 'referral')).save();
+      const { generic } = await updateSingleGenericHelper(originalReferral._id, referral, 'referral');
+      await generic.save();
 
       // Notify the user of the updated referral
       createNotificationHelper({

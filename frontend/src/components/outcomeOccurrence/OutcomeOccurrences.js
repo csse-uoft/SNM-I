@@ -69,14 +69,6 @@ export default function OutcomeOccurrences() {
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
     const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
-    const outcomes = {};
-    // get all outcomes data
-    await getInstancesInClass(':Outcome').then((res) => {
-      Object.keys(res).forEach((key) => {
-        const outcomeId = key.split('#')[1];
-        outcomes[outcomeId] = res[key];
-      });
-    });
     const data = [];
     for (const outcomeOccurrence of outcomeOccurrences) {
       const outcomeOccurrenceData = {
@@ -87,8 +79,8 @@ export default function OutcomeOccurrences() {
       if (outcomeOccurrence.occurrenceOf){
         // get corresponding outcome data
         outcomeOccurrenceData.outcome = {
-          name: outcomes[outcomeOccurrence.occurrenceOf.slice(1)],
-          _id: outcomeOccurrence.occurrenceOf.split('_')[1],
+          name: outcomeOccurrence.occurrenceOf.description,
+          _id: outcomeOccurrence.occurrenceOf._id,
         }
       }
       if (outcomeOccurrence.address) {
