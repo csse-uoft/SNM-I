@@ -203,7 +203,7 @@ const routes = (
     <Route path="/outcomeOccurrences/new" element={<PrivateRoute element={OutcomeOccurrenceForm}/>}/>
     <Route path="/outcomeOccurrences" element={<PrivateRoute element={OutcomeOccurrences}/>}/>
 
-    <Route path="/calendar" element={<PrivateRoute element={PersonalCalendar}/>}/>
+    <Route path="/calendar/:id" element={<PrivateRoute element={PersonalCalendar}/>}/>
 
     <Route path="/serviceProvisions/:id/edit" element={<PrivateRoute element={ServiceProvisionForm}/>}/>
     {<Route path="/serviceProvisions/:id" element={<PrivateRoute element={VisualizeServiceProvision}/>}/>}

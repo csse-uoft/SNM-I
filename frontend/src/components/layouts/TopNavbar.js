@@ -229,7 +229,7 @@ function TopNavBar() {
                 <Typography variant="inherit">Persons</Typography>
               </MenuItem>
 
-              <MenuItem onClick={handleLink(`/calendar`)}>
+              <MenuItem onClick={handleLink(`/calendar/` + id + '/')}>
                 <ListItemIcon>
                   <CalendarTodayIcon fontSize="medium" sx={{color: 'black'}}/>
                 </ListItemIcon>

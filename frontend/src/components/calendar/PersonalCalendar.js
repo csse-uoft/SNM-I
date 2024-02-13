@@ -1,6 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Calendar from 'react-calendar';
 import {fetchCalendarAppointments} from '../../api/calendarAPI';
+import {useParams} from "react-router-dom";
+import {UserContext} from "../../context";
 
 function convertDate(date) {
   // Convert date to ISO string
@@ -8,16 +10,18 @@ function convertDate(date) {
   return date.toISOString();
 }
 
-
 const PersonalCalendar = () => {
   const [selectedStartDate, setSelectedStartDate] = useState(new Date().toISOString());
   const [selectedEndDate, setSelectedEndDate] = useState(new Date().toISOString());
 
   const [appointments, setAppointments] = useState([]);
 
+  const {id} = useParams();
+
+
   // Fetch appointments from the API
   const fetchAppointments = async () => {
-    const data = await fetchCalendarAppointments({startDate: selectedStartDate, endDate: selectedEndDate});
+    const data = await fetchCalendarAppointments({user_id: id, startDate: selectedStartDate, endDate: selectedEndDate});
     setAppointments(data.data);
     console.log(data.data)
   };
