@@ -23,18 +23,18 @@ const serviceInternalTypeUpdateTreater = async (internalType, value, result) => 
 }
 
 
-const afterCreateService = async function (data) {
+const afterCreateService = async function (data, req) {
   if (!(await isPartnerUpdateNeeded(data, 'Service'))) {
     return;
   }
 
   const partnersAfterUpdate = await getGenericPartners(data, 'Service');
   for (const partnerId of partnersAfterUpdate) {
-    sendPartnerUpdateNotification(partnerId); // no await
+    sendPartnerUpdateNotification(req, partnerId); // no await
   }
 }
 
-const afterUpdateService = async function (data, oldGeneric) {
+const afterUpdateService = async function (data, oldGeneric, req) {
   if (!(await isPartnerUpdateNeeded(data, 'Service') || await isPartnerUpdateNeeded(oldGeneric, 'Service'))) {
     return;
   }
@@ -43,18 +43,18 @@ const afterUpdateService = async function (data, oldGeneric) {
   const partnersAfterUpdate = await getGenericPartners(data, 'Service');
   const allPartners = [...new Set([...partnersBeforeUpdate, ...partnersAfterUpdate])];
   for (const partnerId of allPartners) {
-    sendPartnerUpdateNotification(partnerId); // no await
+    sendPartnerUpdateNotification(req, partnerId); // no await
   }
 }
 
-const afterDeleteService = async function (oldGeneric) {
+const afterDeleteService = async function (oldGeneric, req) {
   if (!(await isPartnerUpdateNeeded(oldGeneric, 'Service'))) {
     return;
   }
 
   const partnersBeforeUpdate = await getGenericPartners(oldGeneric, 'Service');
   for (const partnerId of partnersBeforeUpdate) {
-    sendPartnerUpdateNotification(partnerId); // no await
+    sendPartnerUpdateNotification(req, partnerId); // no await
   }
 }
 

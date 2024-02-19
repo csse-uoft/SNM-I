@@ -1,7 +1,7 @@
 const { GDBServiceProviderModel } = require("../../models");
 const { GDBOrganizationModel } = require("../../models/organization");
 
-async function sendPartnerUpdateNotification(partnerId) {
+async function sendPartnerUpdateNotification(req, partnerId) {
   const { fetchSingleGenericHelper } = require("../genericData");
   const { getOrganization } = require(".");
 
@@ -71,7 +71,7 @@ async function receivePartnerUpdateNotification(req, res, next) {
       endpointUrl: req.headers.referer });
     if (partnerOrganization && partnerOrganization.apiKey === senderApiKey
         && partnerOrganization.endpointUrl === req.headers.referer) {
-      const partnerData = await fetchOrganizationHelper(partnerOrganization._id);
+      const partnerData = await fetchOrganizationHelper(req, partnerOrganization._id);
 
       const partnerServiceProvider = await GDBServiceProviderModel
         .findOne({organization: {_id: partnerOrganization._id}});

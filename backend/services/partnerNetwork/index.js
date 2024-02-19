@@ -12,14 +12,13 @@ const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {convertAddressForSerialization, convertAddressForDeserialization} = require("../address/misc");
 const {GDBVolunteerModel} = require("../../models/volunteer");
-const {GraphDBModel} = require("graphdb-utils");
 
 /**
  * Requests that a partner deployment represented locally as the partner
  * organization with the given genericId send its home organization, and
  * returns the resulting data.
  */
-async function fetchOrganizationHelper(genericId) {
+async function fetchOrganizationHelper(req, genericId) {
   let organizationGeneric;
   try {
     organizationGeneric = await fetchSingleGenericHelper('organization', genericId);
@@ -76,7 +75,7 @@ async function fetchOrganization(req, res, next) {
       throw new Error('Provider is not an organization');
     }
     const genericId = provider[providerType]._id;
-    return res.json(await fetchOrganizationHelper(genericId));
+    return res.json(await fetchOrganizationHelper(req, genericId));
   } catch (e) {
     console.log(e);
     return res.status(400).json({message: e?.message});
@@ -94,7 +93,7 @@ async function fetchOrganization(req, res, next) {
  * @param {Object} internalTypes - An object mapping internal type URI to a function that optionally takes the ID of a
  *     program (so that if assetType is a service, and a service in the partner's data has a program, the service's
  *     program can be saved) and returns the value of the internal type
- * @param {GraphDBModel} model - The model of the generics to update.
+ * @param {import("graphdb-utils").GraphDBModelConstructor} model - The model of the generics to update.
  */
 async function updateOrganizationGenericAssets(organizationGenericId, partnerData, assetType,
     characteristics, internalTypes, model) {
@@ -109,18 +108,18 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
   assets = assets.filter(asset => asset.serviceProvider?.organization?._id === organizationGenericId);
 
   assetLoop:
-  for (assetData of partnerData.organization[assetType + 's'] || []) {
+  for (const assetData of partnerData.organization[assetType + 's'] || []) {
     const asset = {fields: {}};
-    for (characteristic in characteristics) {
+    for (const characteristic in characteristics) {
       asset.fields[PredefinedCharacteristics[characteristic]._uri.split('#')[1]]
         = assetData[characteristics[characteristic]];
     }
-    for (internalType in internalTypes) {
+    for (const internalType in internalTypes) {
       asset.fields[PredefinedInternalTypes[internalType]._uri.split('#')[1]]
         = internalTypes[internalType](assetData.program?.split('_')[1]);
     }
     asset.formId = formId;
-    for (assetIndex in assets) {
+    for (const assetIndex in assets) {
       const assetGeneric = assets[assetIndex];
       if (assetGeneric.idInPartnerDeployment == assetData.id) {
         const { generic } = await updateSingleGenericHelper(assetGeneric._id, asset, assetType);
@@ -135,7 +134,7 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
   }
 
   // Local assets associated with this organization still left in this array are to be deleted
-  for (asset of assets) {
+  for (const asset of assets) {
     await deleteSingleGenericHelper(assetType, asset._id);
   }
 }
@@ -184,7 +183,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
     }
     volunteer.formId = formId;
 
-    for (providerIndex in providers) {
+    for (const providerIndex in providers) {
       const provider = providers[providerIndex];
       if (provider.volunteer.idInPartnerDeployment == volunteerData.id) {
         const oldGeneric = await GDBVolunteerModel.findOne({ _id: provider.volunteer._id }, {populates: ['address']});
@@ -213,7 +212,7 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
   }
 
   // Local volunteers associated with this organization still left in this array are to be deleted
-  for (provider of providers) {
+  for (const provider of providers) {
     await deleteSingleGenericHelper('volunteer', provider.volunteer._id);
     await GDBServiceProviderModel.findByIdAndDelete(provider._id);
   }
@@ -277,8 +276,8 @@ async function updateOrganizationHelper(providerId, partnerData) {
   const partnerProgramIds = {}; // mapping from local program IDs to IDs of programs in the partner deployment
   let programs = await fetchGenericDatasHelper('program');
   programs = programs.filter(program => program.serviceProvider?._id === genericId);
-  for (programData of partnerData.organization['programs']) {
-    for (programIndex in programs) {
+  for (const programData of partnerData.organization['programs']) {
+    for (const programIndex in programs) {
       const programGeneric = programs[programIndex];
       if (programGeneric.idInPartnerDeployment == programData.id) {
         partnerProgramIds[programData.id] = programGeneric._uri;
@@ -352,7 +351,7 @@ async function updateOrganization(req, res, next) {
 /**
  * Convert an organization generic into a format in which it can be sent to a partner deployment.
  * @param {Object} organizationGeneric 
- * @returns {Object} The organization with characteristic/internal type labels mapping to characteristics/internal
+ * @returns {Promise<Object>} The organization with characteristic/internal type labels mapping to characteristics/internal
  *     types.
  */
 async function getOrganization(organizationGeneric) {
@@ -386,12 +385,12 @@ async function getOrganization(organizationGeneric) {
 
 /**
  * Convert the given generic assets into a format in which they can be sent to a partner deployment.
- * @param {[Object]} assetGenerics - The assets to be converted
+ * @param {Object[]} assetGenerics - The assets to be converted
  * @param {Object} characteristics - An object mapping characteristic label to characteristic name
- * @param {[Object]} types - A list of objects, each of which represents an internal type and has two properties:
+ * @param {Object[]} types - A list of objects, each of which represents an internal type and has two properties:
  *     key (the type label that the partner will read) and value (the type label used to store the internal type
  *     locally)
- * @returns {[Object]} The assets with characteristic/internal type labels mapping to characteristics/internal types.
+ * @returns {Promise<Object[]>} The assets with characteristic/internal type labels mapping to characteristics/internal types.
  */
 async function getGenericAssets(assetGenerics, characteristics, types) {
   const assets = [];
@@ -423,12 +422,12 @@ async function getGenericAssets(assetGenerics, characteristics, types) {
  * @param {number} organizationId - The ID of the organization the assets belong to
  * @param {string} assetType - The type of the assets to be converted
  * @param {Object} characteristics - An object mapping characteristic label to characteristic name
- * @param {[Object]} types - A list of objects, each of which represents an internal type and has two properties:
+ * @param {Object[]} types - A list of objects, each of which represents an internal type and has two properties:
  *     key (the type label that the partner will read) and value (the type label used to store the internal type
  *     locally)
- * @param {[string]} partnerOrganizations - URIs of the partner organizations to which the assets are to be sent
- * @param {[Object]} programs - A list of the organization's programs
- * @returns {[Object]} The organization's assets with characteristic/internal type labels mapping to
+ * @param {string[]} partnerOrganizations - URIs of the partner organizations to which the assets are to be sent
+ * @param {Object[]} programs - A list of the organization's programs
+ * @returns {Promise<Object[]>} The organization's assets with characteristic/internal type labels mapping to
  *     characteristics/internal types.
  */
 async function getOrganizationAssets(organizationId, assetType, characteristics, types, partnerOrganizations,
@@ -483,7 +482,7 @@ async function sendOrganization(req, res, next) {
         && organizationObj.endpointUrl === req.headers.referer)
       .map(organizationObj => organizationObj._uri);
     
-    for (characteristicOccurrence of organization.characteristicOccurrences) {
+    for (const characteristicOccurrence of organization.characteristicOccurrences) {
       if ('occurrenceOf' in characteristicOccurrence) {
         if ('dataStringValue' in characteristicOccurrence) {
           organization[characteristicOccurrence.occurrenceOf.description.split(' ').join('_')]
@@ -503,7 +502,7 @@ async function sendOrganization(req, res, next) {
         {key: 'id', value: '_id'},
         {key: 'manager', value: 'manager'},
         {key: 'serviceProvider', value: 'serviceProvider'}
-      ], partnerOrganizations);
+      ], partnerOrganizations, []);
     organization.services = await getOrganizationAssets(genericId, 'service', {
         'Service Name': 'serviceName',
         'Description': 'description',
@@ -523,7 +522,7 @@ async function sendOrganization(req, res, next) {
         {key: 'id', value: '_id'},
         {key: 'organization', value: 'organization'},
         {key: 'address', value: 'address'},
-      ], partnerOrganizations);
+      ], partnerOrganizations, []);
 
     return res.status(200).json({organization, success: true});
   } catch (e) {

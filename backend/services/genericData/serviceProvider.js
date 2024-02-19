@@ -23,7 +23,7 @@ const createSingleServiceProvider = async (req, res, next) => {
       await provider.save();
 
       if (providerType === 'volunteer') {
-        await afterCreateVolunteer(data);
+        await afterCreateVolunteer(data, req);
       }
 
       return res.status(200).json({success: true});
@@ -73,9 +73,9 @@ const updateServiceProvider = async (req, res, next) => {
     await provider.save();
 
     if (providerType === 'volunteer') {
-      await afterUpdateVolunteer(data, oldGeneric);
+      await afterUpdateVolunteer(data, oldGeneric, req);
     } else {
-      await afterUpdateOrganization(data, oldGeneric);
+      await afterUpdateOrganization(data, oldGeneric, req);
     }
 
     return res.status(200).json({success: true});
@@ -124,9 +124,9 @@ const deleteSingleServiceProvider = async (req, res, next) => {
     await GDBServiceProviderModel.findByIdAndDelete(id);
 
     if (providerType === 'volunteer') {
-      await afterDeleteVolunteer(oldGeneric);
+      await afterDeleteVolunteer(oldGeneric, req);
     } else {
-      await afterDeleteOrganization(oldGeneric);
+      await afterDeleteOrganization(oldGeneric, req);
     }
 
     return res.status(200).json({success: true});

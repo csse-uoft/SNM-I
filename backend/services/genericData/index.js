@@ -142,7 +142,6 @@ const genericType2Model = {
   'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel,
-  'volunteer': GDBVolunteerModel,
 };
 
 const genericType2Populates = {
@@ -492,7 +491,7 @@ const createSingleGeneric = async (req, res, next) => {
       await newGeneric.save();
 
       if (genericType2AfterCreateTreater[genericType])
-        await genericType2AfterCreateTreater[genericType](data);
+        await genericType2AfterCreateTreater[genericType](data, req);
   
       return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`, createdId: newGeneric._id});
     }
@@ -669,7 +668,7 @@ async function updateSingleGeneric(req, res, next) {
     await generic.save();
 
     if (genericType2AfterUpdateTreater[genericType])
-      await genericType2AfterUpdateTreater[genericType](data, oldGeneric);
+      await genericType2AfterUpdateTreater[genericType](data, oldGeneric, req);
 
     res.status(200).json({success: true});
   } catch (e) {
@@ -731,7 +730,7 @@ async function deleteSingleGeneric(req, res, next) {
     const oldGeneric = await deleteSingleGenericHelper(genericType, id);
 
     if (genericType2AfterDeleteTreater[genericType])
-      await genericType2AfterDeleteTreater[genericType](oldGeneric);
+      await genericType2AfterDeleteTreater[genericType](oldGeneric, req);
 
     return res.status(200).json({success: true});
   } catch (e) {

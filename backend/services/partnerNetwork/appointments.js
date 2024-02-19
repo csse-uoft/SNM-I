@@ -14,7 +14,7 @@ const {sanitize} = require("../../helpers/sanitizer");
 /**
  * Converts an appointment generic into a format in which it can be sent to a partner deployment
  * @param {Object} appointmentGeneric 
- * @returns {Object} The appointment with characteristic/internal type labels mapping to characteristics/internal
+ * @returns {Promise<any>} The appointment with characteristic/internal type labels mapping to characteristics/internal
  *     types.
  */
 async function populateAppointment(appointmentGeneric) {

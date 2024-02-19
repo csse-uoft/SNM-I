@@ -2,7 +2,7 @@ const { PredefinedCharacteristics } = require("../characteristics");
 const { sendPartnerUpdateNotification } = require("../partnerNetwork/update");
 const { getPartnerOrganizationsHelper } = require("../partnerOrganization");
 
-const afterUpdateOrganization = async function (data, oldGeneric) {
+const afterUpdateOrganization = async function (data, oldGeneric, req) {
   const wasHomeOrganization = oldGeneric.status === 'Home';
   const isHomeOrganization = data.fields?.[PredefinedCharacteristics['Organization Status']?._uri.split('#')[1]] === 'Home';
   if (!wasHomeOrganization && !isHomeOrganization) {
@@ -16,12 +16,12 @@ const afterUpdateOrganization = async function (data, oldGeneric) {
   }
 
   for (const partnerId of partners) {
-    sendPartnerUpdateNotification(partnerId); // no await
+    sendPartnerUpdateNotification(req, partnerId); // no await
   }
 }
 
-const afterDeleteOrganization = async function (oldGeneric) {
-  await afterUpdateOrganization({}, oldGeneric);
+const afterDeleteOrganization = async function (oldGeneric, req) {
+  await afterUpdateOrganization({}, oldGeneric, req);
 }
 
 module.exports = {

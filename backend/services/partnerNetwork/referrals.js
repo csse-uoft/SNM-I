@@ -19,7 +19,8 @@ const {sanitize} = require("../../helpers/sanitizer");
  * The referral's program/service is included only if it belongs to the partner organization receiving the referral.
  * @param {Object} referralGeneric 
  * @param {number} receiverId The ID of the partner organization that is to receive the referral
- * @returns {Object} The referral with characteristic/internal type labels mapping to characteristics/internal types.
+ * @returns {Promise<Object>} The referral with characteristic/internal type labels mapping to characteristics/internal
+ *     types.
  */
 async function populateReferral(referralGeneric, receiverId) {
   const referralStatuses = await getIndividualsInClass(':ReferralStatus');
@@ -73,7 +74,7 @@ async function populateReferral(referralGeneric, receiverId) {
  * If the given referral's receiver or referrer is a partner organization, returns the partner.
  * Otherwise, returns null.
  * @param {Object} referralGeneric 
- * @returns {Object|null} The partner organization, if any, that is the referral's receiver or referrer,
+ * @returns {Promise<Object|null>} The partner organization, if any, that is the referral's receiver or referrer,
  *     along with a property isReceiver.
  */
 async function getReferralPartnerGeneric(referralGeneric) {
