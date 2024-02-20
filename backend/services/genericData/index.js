@@ -165,10 +165,10 @@ const genericType2Populates = {
 };
 
 const genericType2Checker = {
-  'service': noQuestion,
-  'serviceOccurrence': noQuestion,
-  'programOccurrence': noQuestion,
-  'program' : noQuestion
+    'service': noQuestion,
+    'serviceOccurrence': noQuestion,
+    'programOccurrence': noQuestion,
+    'program': noQuestion
 };
 
 
@@ -262,12 +262,14 @@ const genericType2AfterDeleteTreater = {
   'volunteer': afterDeleteVolunteer
 }
 
+const {graphdb} = require('../../config');
 
 const specialField2Model = {
   'address': GDBAddressModel,
   'phoneNumber': GDBPhoneNumberModel
 };
 
+const {extractAllIndexes} = require('../../helpers/stringProcess');
 
 async function fetchSingleGenericHelper(genericType, id) {
 
@@ -760,10 +762,196 @@ const fetchGenericDatas = async (req, res, next) => {
   }
 };
 
+const searchGenericDatas = async (req, res, next) => {
+  const {genericType} = req.params;
+
+  let connector_search_result;
+  let fts_search_result;
+  try {
+    if (!genericType2Model[genericType])
+      return res.status(400).json({success: false, message: 'No such generic type'})
+    const extraPopulates = genericType2Populates[genericType] || [];
+
+    let data = [];
+
+    if (req.query.searchitem === undefined || req.query.searchitem === "") {
+      // nothing is entered in the search bar
+      // or it's just requesting all the objects
+      data = await genericType2Model[genericType].find({},
+          {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
+    } else {
+      fts_search_result = await fts_search(genericType, req.query.searchitem + '*');
+      connector_search_result = await connector_search(genericType, req.query.searchitem + '*');
+      // merge the two arrays
+      let array = [...new Set([...fts_search_result, ...connector_search_result])];
+
+      if (array.length !== 0) {
+        let data_array = [];
+        for (let i = 0; i < array.length; i++) {
+          data_array.push(await genericType2Model[genericType].find({_uri: array[i]},
+              {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]}));
+        }
+        data = data_array.flat();
+      }
+
+    }
+
+    return res.status(200).json({data, success: true});
+
+  } catch (e) {
+    next(e);
+  }
+
+
+};
+
+
+
+async function fts_search(searchtype, searchitem) {
+    // The initial query sent to the database
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
+    let query = "";
+
+    search_type_in_string = ['service', 'program', 'serviceProvision', 'client']
+    search_type_in_object = [':Service', ':Program', ':ServiceProvision', ':Client']
+
+    let search_object = '';
+    // if search type is in search_type_in_string, set search_object to the corresponding object
+    for (let i = 0; i < search_type_in_string.length; i++) {
+        if (searchtype === search_type_in_string[i]) {
+            search_object = search_type_in_object[i];
+            break
+        }
+    }
+
+    // FTS search part
+    const sparqlQuery =
+        `
+            PREFIX onto: <http://www.ontotext.com/>
+            PREFIX : <http://snmi#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            
+            select distinct ?e0
+            where 
+            {
+                BIND("${searchitem}" AS ?searchitem)
+                
+                # Search :Service objects
+                {
+                    ?e0 ?p0 ?o0 .
+                    ?e0 rdf:type ${search_object} .
+                }.
+                
+                # Check if the object itself contains the search item
+                {
+                    ?o0 onto:fts ?searchitem .
+                }
+                UNION
+                # Check if the object contains object containing the search item
+                {   
+                    ?o0 ?p1 ?o1 .
+                    
+                    {
+                        ?o1 onto:fts ?searchitem .
+                    }
+                    UNION
+                    {
+                        ?o1 ?p2 ?o2 .
+                        ?o2 onto:fts ?searchitem .
+                    }
+                }
+            }            
+        `;
+
+    query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(searchtype, text);
+
+}
+
+async function connector_search(searchtype, searchitem) {
+    // The initial query sent to the database
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
+
+    let query = "";
+
+    search_type_in_string = ['service', 'program', 'serviceProvision', 'client']
+    search_type_in_object = [':Service', ':Program', ':ServiceProvision', ':Client']
+
+    let search_object = '';
+    // if search type is in search_type_in_string, set search_object to the corresponding object
+    for (let i = 0; i < search_type_in_string.length; i++) {
+        if (searchtype === search_type_in_string[i]) {
+            search_object = search_type_in_object[i];
+            break
+        }
+    }
+
+    // FTS search part
+    const sparqlQuery =
+        `
+            PREFIX onto: <http://www.ontotext.com/>
+            PREFIX : <http://snmi#>
+            
+            PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
+            PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            
+            select distinct ?e0
+            where 
+            {                
+                # Search :Service objects
+                {
+                    ?e0 ?p0 ?o0 .
+                    ?e0 rdf:type ${search_object} .
+                }.
+                
+                {
+                    ?search a luc-index:service_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?e0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:program_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?e0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:client_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?e0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:characteristicoccurrence_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?o0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:address_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?o0 .
+                }
+            }        
+        `;
+
+    query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(text);
+
+}
+
 
 module.exports = {
   genericType2Model,
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas, searchGenericDatas,
   createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper,
   fetchGenericDatasHelper
 };

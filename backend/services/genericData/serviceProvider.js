@@ -2,6 +2,10 @@ const {GDBServiceProviderModel} = require("../../models");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper} = require("./index");
 const {Server400Error} = require("../../utils");
+
+const {graphdb} = require('../../config');
+
+const {extractAllIndexes} = require('../../helpers/stringProcess');
 const {PredefinedCharacteristics} = require("../characteristics");
 const { afterCreateVolunteer, afterUpdateVolunteer, afterDeleteVolunteer } = require("./volunteerInternalTypeTreater");
 const { afterUpdateOrganization, afterDeleteOrganization } = require("./organizationInternalTypeTreater");
@@ -50,6 +54,160 @@ const fetchMultipleServiceProviders = async (req, res, next) => {
     next(e);
   }
 };
+
+const searchMultipleServiceProviders = async (req, res, next) => {
+  try {
+    let data = [];
+
+    if (req.query.searchitem === undefined || req.query.searchitem === "") {
+      data = await GDBServiceProviderModel.find({},
+          {
+            populates: ['organization.characteristicOccurrences.occurrenceOf',
+              'organization.questionOccurrence', 'volunteer.characteristicOccurrences.occurrenceOf',
+              'volunteer.questionOccurrence',]
+          });
+    } else {
+      let fts_search_result = await fts_provider_search(req.query.searchitem + '*');
+      let connector_search_result = await connector_provider_search(req.query.searchitem + '*');
+
+      let array = [...new Set([...fts_search_result, ...connector_search_result])];
+      if (array.length !== 0) {
+        let data_array = [];
+        for (let i = 0; i < array.length; i++) {
+          data_array.push(await GDBServiceProviderModel.find({_uri: array[i]},
+              {
+                populates: ['organization.characteristicOccurrences.occurrenceOf',
+                  'organization.questionOccurrence', 'volunteer.characteristicOccurrences.occurrenceOf',
+                  'volunteer.questionOccurrence',]
+              }));
+        }
+        data = data_array.flat();
+      }
+
+    }
+
+    return res.status(200).json({success: true, data});
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+async function fts_provider_search(searchitem) {
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
+
+    const sparqlQuery =
+        `
+          PREFIX onto: <http://www.ontotext.com/>
+          PREFIX : <http://snmi#>
+          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+          
+          select distinct ?e0
+          where 
+          {
+              BIND("${searchitem}" AS ?searchitem)
+          
+              # Search :Service objects
+              {
+                  ?e0 ?p0 ?o0 .
+                  ?e0 rdf:type :ServiceProvider .
+              }.
+          
+              # Check if the object itself contains the search item
+              {
+                  ?o0 onto:fts ?searchitem .
+              }
+              UNION
+              # Check if the object contains object containing the search item
+              {   
+                  ?o0 ?p1 ?o1 .
+          
+                  {
+                      ?o1 onto:fts ?searchitem .
+                  }
+                  UNION
+                  {
+                      ?o1 ?p2 ?o2 .
+          
+                      {
+                          ?o2 onto:fts ?searchitem .
+                      }
+                      UNION
+                      {
+                          ?o2 ?p3 ?o3 .
+                          ?o3 onto:fts ?searchitem .
+                      }
+                  }
+              }
+          }            
+      `
+
+    let query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(text);
+
+}
+
+async function connector_provider_search(searchitem) {
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
+
+    const sparqlQuery =
+        `
+            PREFIX  :     <http://snmi#>
+            PREFIX  luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+            PREFIX  luc:  <http://www.ontotext.com/connectors/lucene#>
+            PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX  onto: <http://www.ontotext.com/>
+            
+            SELECT DISTINCT  ?e0 
+            WHERE
+              { 
+                { ?e0  ?p0       ?o0 ;
+                       rdf:type  :ServiceProvider
+                }
+                  { ?o0  rdf:type  :Organization
+                    { ?search  rdf:type      luc-index:organization_connector ;
+                               luc:query     "${searchitem}" ;
+                               luc:entities  ?o0
+                    }
+                  }
+                UNION
+                  { ?o0  rdf:type  :Volunteer
+                    { ?search  rdf:type      luc-index:volunteer_connector ;
+                               luc:query     "${searchitem}" ;
+                               luc:entities  ?o0
+                    }
+                  }
+                UNION
+                  { ?o0  ?p1  ?o1
+                      { ?o0  rdf:type  :Organization }
+                    UNION
+                      { ?o0  rdf:type  :Volunteer }
+                      { ?o1      rdf:type      :CharacteristicOccurrence .
+                        ?search  rdf:type      luc-index:characteristicoccurrence_connector ;
+                                 luc:query     "${searchitem}" ;
+                                 luc:entities  ?o1
+                      }
+                    UNION
+                      { ?o1      rdf:type      :Address .
+                        ?search  rdf:type      luc-index:address_connector ;
+                                 luc:query     "${searchitem}" ;
+                                 luc:entities  ?o1
+                      }
+                  }
+              }      
+        `
+
+    let query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(text);
+
+}
+
 
 const updateServiceProvider = async (req, res, next) => {
   const {data, providerType} = req.body;
@@ -138,6 +296,6 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 };
 
 module.exports = {
-  createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
-  updateServiceProvider, getProviderById
+    createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
+    updateServiceProvider, searchMultipleServiceProviders, getProviderById
 };
