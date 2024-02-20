@@ -1,5 +1,6 @@
 const {GDBStreetType} = require('../../models/address');
 const {GraphDB} = require('graphdb-utils')
+const {randomUUID} = require("crypto");
 
 
 // https://www150.statcan.gc.ca/n1/pub/92-500-g/2013001/tbl/tbl4-2-eng.htm
@@ -46,10 +47,8 @@ async function initStreetTypes() {
       }
     `);
     const triples = [];
-    let cnt = 1;
     for (const type of streetTypes) {
-      triples.push(`:streetType_${cnt} rdf:type owl:NamedIndividual, ic:StreetType;\n\t rdfs:label "${type}".`);
-      cnt++;
+      triples.push(`:streetType_${randomUUID()} rdf:type owl:NamedIndividual, ic:StreetType;\n\t rdfs:label "${type}".`);
     }
     await GraphDB.sendUpdateQuery(`
       PREFIX ic: <http://ontology.eil.utoronto.ca/tove/icontact#>
