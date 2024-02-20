@@ -2,9 +2,12 @@
 // node ./backend/migrations/2024-1-29-uuid.js
 
 require('dotenv').config()
-const {GraphDB, UUIDGenerator, Transaction} = require("graphdb-utils");
+const {GraphDB, UUIDGenerator, Transaction, SPARQL} = require("graphdb-utils");
+const {db: mongoDB} = require("../loaders/mongoDB");
+const {MDBDynamicFormModel} = require("../models/dynamicForm");
 const {load} = require("../loaders/graphDB");
 const crypto = require("crypto");
+const {MDBUsageModel} = require("../models/usage");
 
 async function getAllEntitiesWithId() {
   const uris = new Set();
@@ -28,7 +31,6 @@ async function getAllEntitiesWithId() {
 }
 
 async function migration_uuid() {
-  await load();
 
   // Get all entities
   const uris = await getAllEntitiesWithId();
@@ -39,25 +41,18 @@ async function migration_uuid() {
     const [name, id] = uri.split('_');
     uriMap.set(uri, name + '_' + crypto.randomUUID());
   }
-  // console.log(uris)
-  await Transaction.beginTransaction();
 
-  try {
-    for (const uri of uris) {
-      await renameEntity(uri, uriMap);
-    }
-    const entitiesLeft = await getAllEntitiesWithId();
-    if (entitiesLeft.size > 0) {
-      console.log(entitiesLeft)
-      console.error(`Something wrong happened, not all entities are renamed (${entitiesLeft.size}), rolling back...`)
-      await Transaction.rollback();
-    } else {
-      await Transaction.commit();
-    }
-  } catch (e) {
-    console.error(e);
-    await Transaction.rollback();
+  for (const uri of uris) {
+    await renameEntity(uri, uriMap);
   }
+  const entitiesLeft = await getAllEntitiesWithId();
+  if (entitiesLeft.size > 0) {
+    console.log(entitiesLeft)
+    throw new Error(`Something wrong happened, not all entities are renamed (${entitiesLeft.size})`);
+  } else {
+    return uriMap;
+  }
+
 }
 
 // Get all relative triples and rename it.
@@ -123,8 +118,107 @@ async function renameEntity(uri, uriMap) {
   await GraphDB.sendUpdateQuery(query);
 }
 
+function updateInstance(uriMap, field) {
+  if (!field._uri) return;
+
+  // Update _id, _uri, id, iri, based on _uri
+  const uri = SPARQL.ensureFullURI(field._uri);
+  if (uri && uriMap.has(uri)) {
+    field._uri = uriMap.get(uri);
+    const id = field._uri.split('_').slice(-1)[0];
+    if (field._id) field._id = id;
+    if (field.id) field.id = id;
+    if (field.iri) field.iri = uri;
+  }
+}
+
+async function migrateFormStructure(uriMap) {
+  const forms = await MDBDynamicFormModel.find({});
+  for (const form of forms) {
+    const oldCreatedBy = SPARQL.ensureFullURI(form.createdBy);
+    if (uriMap.has(oldCreatedBy)) {
+      form.createdBy = SPARQL.ensurePrefixedURI(uriMap.get(oldCreatedBy));
+    }
+    for (const step of form.formStructure) {
+      for (const field of step.fields) {
+        updateInstance(uriMap, field);
+
+        const implementation = field.implementation;
+        if (implementation) {
+          updateInstance(uriMap, implementation);
+          updateInstance(uriMap, implementation.fieldType);
+          if (implementation.options) {
+            for (const option of implementation.options) {
+              updateInstance(uriMap, option)
+            }
+          }
+        } else if (field.type === 'question') {
+          const uri = `:question_${field.id}`;
+          field.id = uriMap.get(SPARQL.ensureFullURI(uri)).split('_').slice(-1)[0];
+        } else {
+          throw Error("Should not reach here.")
+        }
+
+
+      }
+    }
+    form.markModified('formStructure');
+    await form.save();
+    // console.log(JSON.stringify(form.toJSON(), null, 2));
+  }
+
+}
+
+async function migrateUsages(uriMap) {
+  const usages = await MDBUsageModel.find({});
+  for (const usage of usages) {
+    const {optionKeys, option, genericType} = usage;
+    const newOptionKeys = [];
+    for (const id of optionKeys) {
+      const uri = SPARQL.ensureFullURI(`:${option}_${id}`);
+      if (uriMap.has(uri)) {
+        const newUri = uriMap.get(uri);
+        newOptionKeys.push(newUri.split('_').slice(-1)[0]);
+      }
+    }
+    usage.optionKeys = newOptionKeys;
+    await usage.save();
+  }
+}
+
+async function main() {
+  await load();
+
+  await Transaction.beginTransaction();
+
+  const session = await mongoDB.startSession();
+  session.startTransaction();
+
+  let uriMap;
+  try {
+    // GraphDB
+    uriMap = await migration_uuid();
+
+    // MongoDB
+    await migrateFormStructure(uriMap);
+    await migrateUsages(uriMap);
+
+    // commit
+    await Transaction.commit();
+    session.commitTransaction();
+    session.endSession();
+
+    console.log('UUID Migration done.')
+    process.exit(0);
+
+  } catch (e) {
+    console.log('UUID Migration failed. Rolling back...')
+    await Transaction.rollback();
+  }
+}
 if (!module.parent) {
-  migration_uuid().then(() => console.log('UUID Migration done.'));
+  main().catch(console.error);
+
 } else {
   throw new Error(`You should not import this file, this is meant to be run standalone.`);
 }
