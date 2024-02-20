@@ -45,6 +45,15 @@ const columnsWithoutOptions = [
       }
     }
   },
+  {
+    label: 'Client Name/ID',
+    body: ({client}) => {
+      if (client == null || client == undefined){
+        return 'None';
+      }
+      return client;
+    }
+  },
   // {
   //   label: 'Description',
   //   body: ({desc}) => desc
@@ -68,13 +77,15 @@ export default function NeedOccurrences() {
       const needOccurrenceData = {
               _id: needOccurrence._id,
               startDate: needOccurrence.startDate,
-              endDate: needOccurrence.endDate
+              endDate: needOccurrence.endDate,
+              client: needOccurrence.client
       };
       if (needOccurrence.occurrenceOf){
         // get corresponding need data
         needOccurrenceData.need = {
           name: needOccurrence.occurrenceOf.description,
           _id: needOccurrence.occurrenceOf._id,
+          client: needOccurrence.occurrenceOf.client
         }
       }
       if (needOccurrence.address) {

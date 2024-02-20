@@ -1549,7 +1549,7 @@ google-libphonenumber@>=3.2.22:
   resolved "git+https://github.com/csse-uoft/graphdb-utils.git#5492f4c829a38a4dae89801c2b1e28350adfbb1c"
   dependencies:
     form-data "^4.0.0"
-    graphdb "^3.0.1"
+    graphdb "^3.0.0"
     mongoose "^6.9.0"
     node-fetch "^3.3.0"
     redis "^4.6.4"
@@ -1572,7 +1572,7 @@ graphdb@^2.0.0:
     sparqlxml-parse "^1.4.0"
     uuid "^3.4.0"
 
-graphdb@^3.0.1:
+graphdb@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/graphdb/-/graphdb-3.0.1.tgz#783b5c3f2dc578aab700f93fc0ab89dc75d2e73e"
   integrity sha512-pG1f5XGD7oxpP8Nexeszo86SdOhdGhiTF+gKxJ7Ctix1nl/6o19IK6EO4ivUvutFJ2JlilOFJrRsxLqw2wYtgw==
@@ -1872,6 +1872,18 @@ mongodb@4.17.1:
     "@aws-sdk/credential-providers" "^3.186.0"
     "@mongodb-js/saslprep" "^1.1.0"
 
+mongodb@4.17.2:
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-4.17.2.tgz#237c0534e36a3449bd74c6bf6d32f87a1ca7200c"
+  integrity sha512-mLV7SEiov2LHleRJPMPrK2PMyhXFZt2UQLC4VD4pnth3jMjYKHhtqfwwkkvS/NXuo/Fp3vbhaNcXrIDaLRb9Tg==
+  dependencies:
+    bson "^4.7.2"
+    mongodb-connection-string-url "^2.6.0"
+    socks "^2.7.1"
+  optionalDependencies:
+    "@aws-sdk/credential-providers" "^3.186.0"
+    "@mongodb-js/saslprep" "^1.1.0"
+
 mongodb@4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-4.7.0.tgz#99f7323271d93659067695b60e7b4efee2de9bf0"
@@ -1929,13 +1941,13 @@ mongoose@*, mongoose@>=6.0.7:
     sift "16.0.0"
 
 mongoose@^6.12.1:
-  version "6.12.1"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.12.1.tgz#5347e997b9da3cc3d59c6c0fb9ed4569e280e18f"
-  integrity sha512-VEawZMiMaclKrR5q8rj+Bu95PfUmx0ld+dk/poi37fqPlSd93sE4TlIPSqBY9GKY9tZPxu0aDEtgFDuHoI8sOg==
+  version "6.12.6"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.12.6.tgz#7474de5f125f88d372ac759116dc57aed5a22cb1"
+  integrity sha512-VFxDnWj8esgswwplmpQYMT+lYcvuIhl76WDLz/vgp41/FOhBPM/n3GjyztK8R3r2ljsM6kudvKgqLhfcZEih1Q==
   dependencies:
     bson "^4.7.2"
     kareem "2.5.1"
-    mongodb "4.17.1"
+    mongodb "4.17.2"
     mpath "0.9.0"
     mquery "4.0.3"
     ms "2.1.3"
