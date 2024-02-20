@@ -154,7 +154,9 @@ async function migrateFormStructure(uriMap) {
           }
         } else if (field.type === 'question') {
           const uri = `:question_${field.id}`;
-          field.id = uriMap.get(SPARQL.ensureFullURI(uri)).split('_').slice(-1)[0];
+          if (uriMap.has(SPARQL.ensureFullURI(uri))) {
+            field.id = uriMap.get(SPARQL.ensureFullURI(uri)).split('_').slice(-1)[0];
+          }
         } else {
           throw Error("Should not reach here.")
         }
@@ -179,6 +181,8 @@ async function migrateUsages(uriMap) {
       if (uriMap.has(uri)) {
         const newUri = uriMap.get(uri);
         newOptionKeys.push(newUri.split('_').slice(-1)[0]);
+      } else {
+        newOptionKeys.push(id);
       }
     }
     usage.optionKeys = newOptionKeys;
@@ -212,8 +216,10 @@ async function main() {
     process.exit(0);
 
   } catch (e) {
+    console.error(e);
     console.log('UUID Migration failed. Rolling back...')
     await Transaction.rollback();
+    process.exit(1);
   }
 }
 if (!module.parent) {
