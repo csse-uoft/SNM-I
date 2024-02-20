@@ -457,7 +457,7 @@ async function sendOrganization(req, res, next) {
   try {
     const organization = await GDBOrganizationModel.findOne({status: 'Home'},
       {populates: ['characteristicOccurrences.occurrenceOf', 'address']});
-    if (!organization) {
+    if (!organization || organization.status !== 'Home') { // Redundant check for findOne bug
       // Will delete the copy of the organization in the partner deployment if it exists
       return res.status(200).json({organization: {}, success: true});
     }

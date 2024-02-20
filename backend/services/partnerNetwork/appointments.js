@@ -163,13 +163,13 @@ async function receiveAppointmentHelper(req, partnerData) {
 
   // Use the "Referer" header to identify the partner organization who sent the data
   const partner = await GDBOrganizationModel.findOne({ endpointUrl: req.headers.referer });
-  if (!partner || partner.endpointUrl !== req.headers.referer) {
+  if (!partner || partner.endpointUrl !== req.headers.referer) { // Redundant check for findOne bug
     throw new Error("Could not find partner organization with the same endpoint URL as the sender");
   }
 
   const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' },
     { populates: ['characteristicOccurrences.occurrenceOf'] });
-  if (!homeOrganization) {
+  if (!homeOrganization || homeOrganization.status !== 'Home') {
     throw new Error('This deployment has no home organization');
   }
 
@@ -182,6 +182,11 @@ async function receiveAppointmentHelper(req, partnerData) {
 
   const originalAppointment = await GDBAppointmentModel.findOne({ idInPartnerDeployment: partnerData.id },
     { populates: ['characteristicOccurrences', 'questionOccurrences', 'address'] });
+  if (req.method === 'PUT' && (!originalAppointment || originalAppointment.idInPartnerDeployment != partnerData.id)) {
+    const error = new Error('Appointment not found');
+    error.name = '404 Not Found';
+    throw error;
+  }
 
   // Convert the locally existing appointment (if any) to an object with characteristics as key-value pairs
   // instead of a list of characteristicOccurrences

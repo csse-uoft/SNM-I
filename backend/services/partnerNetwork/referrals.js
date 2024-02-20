@@ -259,14 +259,14 @@ async function receiveReferralHelper(req, partnerData) {
 
   // Use the "Referer" header to identify the partner organization who sent the data
   const partner = await GDBOrganizationModel.findOne({endpointUrl: req.headers.referer});
-  if (!partner || partner.endpointUrl !== req.headers.referer) {
+  if (!partner || partner.endpointUrl !== req.headers.referer) { // Redundant check for findOne bug
     throw new Error('Could not find partner organization with the same endpoint URL as the sender');
   }
   const partnerServiceProvider = await GDBServiceProviderModel.findOne({organization: partner});
 
   const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'},
     {populates: ['characteristicOccurrences.occurrenceOf']});
-  if (!homeOrganization) {
+  if (!homeOrganization || homeOrganization.status !== 'Home') {
     throw new Error('This deployment has no home organization');
   }
   const homeServiceProvider = await GDBServiceProviderModel.findOne({organization: homeOrganization});

@@ -20,7 +20,7 @@ async function sendPartnerUpdateNotification(req, partnerId) {
 
         const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' }, { populates: [] });
         let senderApiKey = null;
-        if (!!homeOrganization) {
+        if (!!homeOrganization && homeOrganization.status === 'Home') { // Redundant check for findOne bug
           senderApiKey = homeOrganization.apiKey;
         } else {
           return;
@@ -74,7 +74,7 @@ async function receivePartnerUpdateNotification(req, res, next) {
   try {
     const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' },
       { populates: ['characteristicOccurrences.occurrenceOf'] });
-    if (!homeOrganization) {
+    if (!homeOrganization || homeOrganization.status !== 'Home') { // Redundant check for findOne bug
       throw new Error('This deployment has no home organization');
     }
 
