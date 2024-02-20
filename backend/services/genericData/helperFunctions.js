@@ -5,6 +5,9 @@ const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question"
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
 const {GDBEligibilityModel} = require("../../models/eligibility");
+const { GDBServiceProviderModel } = require("../../models");
+const { GDBOrganizationModel } = require("../../models/organization");
+const { PredefinedInternalTypes } = require("../characteristics");
 
 // help to detect the time
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
@@ -134,7 +137,30 @@ async function getInternalTypeValues(properties, doc, FORMTYPE) {
   return result;
 }
 
+const isPartnerUpdateNeeded = async function (data, type) {
+  const serviceProviderId = data.fields?.['internalType_' + PredefinedInternalTypes[`serviceProviderFor${type}`]?._id]?.split('_')[1]
+    || data.serviceProvider?.split('_')[1];
+  if (serviceProviderId) {
+    const provider = await GDBServiceProviderModel.findOne({ _id: serviceProviderId }, {
+      populates: ['organization']
+    });
+    if (provider?.type !== 'organization') {
+      return false;
+    }
+    var organization = provider[provider.type];
+  } else {
+    const organizationId = data.fields?.['internalType_' + PredefinedInternalTypes[`organizationFor${type}`]?._id]?.split('_')[1]
+      || data.organization?.split('_')[1];
+    if (!organizationId) {
+      return false;
+    }
+    var organization = await GDBOrganizationModel.findOne({ _id: organizationId });
+  }
+
+  return organization.status === 'Home';
+}
+
 module.exports = {
   fetchCharacteristicQuestionsInternalTypesBasedOnForms, implementCharacteristicOccurrence,
-  getPredefinedProperty, getInternalTypeValues
+  getPredefinedProperty, getInternalTypeValues, isPartnerUpdateNeeded
 }

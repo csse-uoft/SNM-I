@@ -1,11 +1,11 @@
-const {getPredefinedProperty, getInternalTypeValues} = require("./helperFunctions");
-const {GDBInternalTypeModel} = require("../../models/internalType");
-const {SPARQL} = require("graphdb-utils");
+const { sendPartnerUpdateNotification } = require("../partnerNetwork/update");
+const { getGenericPartners } = require("../partnerOrganization");
+const { getPredefinedProperty, getInternalTypeValues, isPartnerUpdateNeeded } = require("./helperFunctions");
 
 const FORMTYPE = 'volunteer'
 const volunteerInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  if (property === 'partnerOrganizations' || property === 'organization'){
+  if (property === 'partnerOrganizations' || property === 'organization') {
     instanceData[property] = value;
   }
 }
@@ -18,5 +18,42 @@ const volunteerInternalTypeUpdateTreater = async (internalType, value, result) =
   await volunteerInternalTypeCreateTreater(internalType, result, value);
 }
 
+const afterCreateVolunteer = async function (data, req) {
+  if (!(await isPartnerUpdateNeeded(data, 'Volunteer'))) {
+    return;
+  }
 
-module.exports = {volunteerInternalTypeCreateTreater, volunteerInternalTypeFetchTreater, volunteerInternalTypeUpdateTreater}
+  const partnersAfterUpdate = await getGenericPartners(data, 'Volunteer');
+  for (const partnerId of partnersAfterUpdate) {
+    sendPartnerUpdateNotification(req, partnerId); // no await
+  }
+}
+
+const afterUpdateVolunteer = async function (data, oldGeneric, req) {
+  if (!(await isPartnerUpdateNeeded(data, 'Volunteer') || await isPartnerUpdateNeeded(oldGeneric, 'Volunteer'))) {
+    return;
+  }
+
+  const partnersBeforeUpdate = await getGenericPartners(oldGeneric, 'Volunteer');
+  const partnersAfterUpdate = await getGenericPartners(data, 'Volunteer');
+  const allPartners = [...new Set([...partnersBeforeUpdate, ...partnersAfterUpdate])];
+  for (const partnerId of allPartners) {
+    sendPartnerUpdateNotification(req, partnerId); // no await
+  }
+}
+
+const afterDeleteVolunteer = async function (oldGeneric, req) {
+  if (!(await isPartnerUpdateNeeded(oldGeneric, 'Volunteer'))) {
+    return;
+  }
+
+  const partnersBeforeUpdate = await getGenericPartners(oldGeneric, 'Volunteer');
+  for (const partnerId of partnersBeforeUpdate) {
+    sendPartnerUpdateNotification(req, partnerId); // no await
+  }
+}
+
+module.exports = {
+  volunteerInternalTypeCreateTreater, volunteerInternalTypeFetchTreater, volunteerInternalTypeUpdateTreater,
+  afterCreateVolunteer, afterUpdateVolunteer, afterDeleteVolunteer
+}

@@ -11,7 +11,7 @@ const {GDBAddressModel} = require('./address');
 
 const GDBReferralModel = createGraphDBModel({
   referralType: {type: String, internalKey: ':hasType'},
-  referralStatus: {type: String, internalKey: ':hasStatus'},
+  referralStatus: {type: String, internalKey: ':hasReferralStatus'},
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   date: {type: Date, internalKey: ':hasDate'},
   referringServiceProvider: {type: GDBServiceProviderModel, internalKey: ':hasReferringServiceProvider'},

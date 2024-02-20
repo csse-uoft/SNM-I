@@ -3,6 +3,8 @@ const {GDBOrganizationModel} = require("../../models/organization");
 const {createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper} = require("./index");
 const {Server400Error} = require("../../utils");
 const {PredefinedCharacteristics} = require("../characteristics");
+const { afterCreateVolunteer, afterUpdateVolunteer, afterDeleteVolunteer } = require("./volunteerInternalTypeTreater");
+const { afterUpdateOrganization, afterDeleteOrganization } = require("./organizationInternalTypeTreater");
 
 const createSingleServiceProvider = async (req, res, next) => {
   const {providerType, data} = req.body;
@@ -19,6 +21,11 @@ const createSingleServiceProvider = async (req, res, next) => {
     provider[providerType] = await createSingleGenericHelper(data, providerType);
     if (provider[providerType]) {
       await provider.save();
+
+      if (providerType === 'volunteer') {
+        await afterCreateVolunteer(data, req);
+      }
+
       return res.status(200).json({success: true});
     } else {
       return res.status(400).json({message: 'Fail to create the provider'});
@@ -61,9 +68,16 @@ const updateServiceProvider = async (req, res, next) => {
       return res.status(400).json({message: 'Cannot create more than one home organization'});
     }
 
-    const generic = await updateSingleGenericHelper(genericId, data, providerType);
+    const { oldGeneric, generic } = await updateSingleGenericHelper(genericId, data, providerType);
     provider[providerType] = generic;
     await provider.save();
+
+    if (providerType === 'volunteer') {
+      await afterUpdateVolunteer(data, oldGeneric, req);
+    } else {
+      await afterUpdateOrganization(data, oldGeneric, req);
+    }
+
     return res.status(200).json({success: true});
   } catch (e) {
     next(e);
@@ -105,9 +119,16 @@ const deleteSingleServiceProvider = async (req, res, next) => {
     const genericId = provider[providerType]._id;
 
     // delete the generic
-    await deleteSingleGenericHelper(providerType, genericId);
+    const oldGeneric = await deleteSingleGenericHelper(providerType, genericId);
     // delete the provider
     await GDBServiceProviderModel.findByIdAndDelete(id);
+
+    if (providerType === 'volunteer') {
+      await afterDeleteVolunteer(oldGeneric, req);
+    } else {
+      await afterDeleteOrganization(oldGeneric, req);
+    }
+
     return res.status(200).json({success: true});
 
   } catch (e) {

@@ -22,6 +22,7 @@ import AddEditNeed from "./components/need/addEditNeed";
 import AddEditOutcome from "./components/outcome/addEditOutcome";
 import PrivateRoute from './components/routes/PrivateRoute';
 import AdminRoute from './components/routes/AdminRoute';
+import Notifications from './components/Notifications';
 import Providers from './components/Providers';
 import ProviderForm from './components/providers/ProviderForm2';
 import Services from './components/Services';
@@ -89,6 +90,7 @@ import VisualizePerson from './components/person/VisualizePerson';
 import VisualizeClientAssessment from "./components/clientAssessment/VisualizeClientAssessment";
 import VisualizeReferral from "./components/referrals/VisualizeReferral";
 import Matching from "./components/clients/Matching";
+import VisualizeNotification from './components/notifications/visualizeNotification';
 
 const routes = (
   <Routes>
@@ -128,6 +130,8 @@ const routes = (
     <Route path="/users" element={<AdminRoute element={Users}/>}/>
     <Route path="/admin-logs" element={<AdminRoute element={AdminLogs}/>}/>
 
+    <Route path="/notifications" element={<PrivateRoute element={Notifications}/>}/>
+    <Route path="/notifications/:id" element={<PrivateRoute element={VisualizeNotification}/>}/>
 
     {/*<PrivateRoute path='/needs/:need_id/edit' element={NeedForm}/>}/>*/}
     {/*<PrivateRoute path='/needs/:need_id' element={Need}/>}/>*/}
