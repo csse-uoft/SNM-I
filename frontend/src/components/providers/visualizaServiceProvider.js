@@ -31,7 +31,7 @@ export default function visualizeServiceProvider(){
     if (!!genericData) {
       for (let [key, data] of Object.entries(genericData)) {
         const [type, key_id] = key.split('_');
-        if (typeof data === 'string') {
+        if (type === 'characteristic' && typeof data === 'string') {
           const characteristic = await fetchCharacteristic(key_id);
           if (characteristic.fetchData.name === 'Organization Status' && data === 'Partner') {
             return (
