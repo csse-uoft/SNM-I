@@ -30,7 +30,7 @@ const columnsWithoutOptions = [
       if (needs === null || needs === undefined){
         needs = "None"
       }
-      return needs;
+      return needs.map(need => need.type).join(', ');
     }
   },
   // {
