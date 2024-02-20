@@ -93,29 +93,32 @@ async function receivePartnerUpdateNotification(req, res, next) {
       const partnerServiceProvider = await GDBServiceProviderModel
         .findOne({organization: {_id: partnerOrganization._id}});
       if (!partnerData.organization || Object.keys(partnerData.organization).length === 0) {
-        const {partnerJson} = await deleteOrganizationHelper(partnerServiceProvider._id, partnerData);
+        await deleteOrganizationHelper(partnerServiceProvider._id, partnerData);
         // Notify the user of the deleted partner organization
         createNotificationHelper({
           name: 'A partner deployment deleted its home organization',
-          description: `<div><p>${sanitize(partnerJson.name)}, one of your partners, just deleted its home organization.</p>`
+          description: `<div><p>${sanitize(partnerOrganization.name)}, one of your partners, `
+            + `just deleted its home organization.</p>`
             + `<p>To reconnect with them, ask them to set up a home organization again and then create a partner `
             + `organization for that partner.</p>`
             + `<p>For reference, here are the details of the partner:</p>`
             + `<dl>`
-            + (partnerJson.description?.length > 0 ? `<dt>Description:</dt><dd>${sanitize(partnerJson.description)}</dd>` : '')
-            + (partnerJson.address ? `<dt>Address:</dt><dd>${await printAddress(partnerJson.address)}</dd>` : '')
-            + `<dt>Endpoint URL:</dt><dd>${partnerJson.endpointUrl}</dd>`
-            + `<dt>Endpoint Port:</dt><dd>${partnerJson.endpointPort}</dd>`
+            + (partnerOrganization.description?.length > 0 ? `<dt>Description:</dt>`
+               + `<dd>${sanitize(partnerOrganization.description)}</dd>` : '')
+            + (partnerOrganization.address ? `<dt>Address:</dt>`
+               + `<dd>${await printAddress(partnerOrganization.address)}</dd>` : '')
+            + `<dt>Endpoint URL:</dt><dd>${partnerOrganization.endpointUrl}</dd>`
+            + `<dt>Endpoint Port:</dt><dd>${partnerOrganization.endpointPort}</dd>`
             + `</dl></div>`
         });
         return res.status(200).json({success: true});
       } else {
-        const {partnerJson} = await updateOrganizationHelper(partnerServiceProvider._id, partnerData);
+        await updateOrganizationHelper(partnerServiceProvider._id, partnerData);
         // Notify the user of the updated partner organization
         createNotificationHelper({
           name: 'A partner deployment updated its home organization',
-          description: `<a href="/providers/organization/${partnerJson._id}">${sanitize(partnerJson.name)}</a>, one of your `
-            + `partners, just updated its home organization.`
+          description: `<a href="/providers/organization/${partnerServiceProvider._id}">`
+            + `${sanitize(partnerOrganization.name)}</a>, one of your partners, just updated its home organization.`
         });
         return res.status(200).json({success: true});
       }

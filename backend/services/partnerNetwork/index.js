@@ -254,7 +254,6 @@ async function updateOrganizationHelper(providerId, partnerData) {
     throw new Error('Provider is not an organization');
   }
   const genericId = provider[providerType]._id;
-  const partnerJson = provider[providerType].toJSON();
 
   const oldGeneric = await GDBOrganizationModel.findOne({ _id: genericId }, {populates: ['address']});
   if (organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]] && oldGeneric.address) {
@@ -302,8 +301,6 @@ async function updateOrganizationHelper(providerId, partnerData) {
     }, {
       'organizationForVolunteer': () => provider[providerType]._uri
     });
-
-  return {partnerJson};
 }
 
 /**
@@ -317,7 +314,6 @@ async function deleteOrganizationHelper(providerId, partnerData) {
     throw new Error('Provider is not an organization');
   }
   const genericId = provider[providerType]._id;
-  const partnerJson = provider[providerType].toJSON();
 
   await updateOrganizationGenericAssets(genericId, partnerData, 'program', {}, {}, GDBProgramModel);
   await updateOrganizationGenericAssets(genericId, partnerData, 'service', {}, {}, GDBServiceModel);
@@ -325,8 +321,6 @@ async function deleteOrganizationHelper(providerId, partnerData) {
   
   await deleteSingleGenericHelper('organization', genericId);
   await GDBServiceProviderModel.findByIdAndDelete(providerId);
-
-  return {partnerJson};
 }
 
 /**
