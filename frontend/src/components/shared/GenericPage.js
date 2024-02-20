@@ -18,7 +18,7 @@ import { Container, Fade } from "@mui/material";
  */
 export default function GenericPage(props) {
   const {
-    fetchData, deleteItem, type,
+    fetchData, searchData, deleteItem, advancedSearch, type,
     nameFormatter, linkFormatter, columnsWithoutOptions
   } = props;
   let title = props.title;
@@ -93,13 +93,23 @@ export default function GenericPage(props) {
     ]
   }, [showDeleteDialog, columnsWithoutOptions, type]);
 
+  const fulltextSearchAndRefreshPage = (searchitem) => {
+    searchData(searchitem).then(data => setState(state => ({...state, data, loading: false})));
+  }
+
+  const advancedSearchAndRefreshPage = (searchitems) => {
+    advancedSearch(searchitems).then(data => setState(state => ({...state, data, loading: false})));
+  }
+
   const tableOptions = {
     customToolbar:
       <CustomToolbar
         type={type}
         handleAdd={() => navigate(`/${type}/new`)}
-        handleSearch={() => navigate(`/${type}/advance-search`)}
+        handleSearch={fulltextSearchAndRefreshPage}
         handleUpload={() => setState(state => ({...state, showUploadDialog: true}))}
+        handleAdvancedSearch={advancedSearchAndRefreshPage}
+        // handleDelete={fulltextSearchAndRefreshPage}
       />,
     onDelete: async (ids) => {
       // TODO: Lester 8/30/2021

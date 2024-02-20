@@ -122,11 +122,46 @@ Route | Method
 `generic/:genericType/:id` | PUT
 `generic/:genericType/:id` | DELETE
 
+## Search
+The genericType GET routes are used for getting all the generic items of a certain type.
+If we pass another parameter, searchitem, we can search for a specific string.
+
+Route | Method
+---|---
+`genericSearch/:genericType?searchitem=item` | GET
+
+Example
+`/api/generics/program?searchitem=AAA` can be used to search program that contains 'AAA' or 
+program that have a attribute that contains 'AAA'.
+
+The query are down below. It uses FTS GraphDB searching function and 
+Lucene Connector searching function. We use both of them in case one of them misses some data.
+
+The current design support limited ability of blurring search. \
+eg. searching for "B" will contain "Ben".
+
+
 ## advancedSearch
 Route | Method
 ---|---
 `advancedSearch/fetchForAdvancedSearch/:genericType/:genericItemType` | GET
 `advancedSearch/:genericType/:genericItemType` | PUT
+`advancedSearch/service`| POST
+
+### service
+The advanced search over service is the first advanced search function completed.
+The advanced search function for different types are not completed yet, therefore service searching will be independent from other types so far.
+
+The advanced search function for service required POST calls with a JSON format body sent to the backend.
+With the attributed include "Name" and "Eligibility Condition" (So far).  
+
+The JSON format is as below:
+```
+{
+    "Name": "Service Name",
+    "Eligibility Condition": "Eligibility Condition"
+}
+```
 
 ## serviceProviders
 This section is for the

@@ -19,6 +19,10 @@ export async function fetchMultipleProviders() {
   return getJson(`/api/providers`);
 }
 
+export async function searchMultipleProviders(searchitem) {
+  return getJson(`/api/providers/search?searchitem=${searchitem}`);
+}
+
 export async function deleteSingleProvider(id) {
   return deleteJson(`/api/providers/${id}`);
 }
