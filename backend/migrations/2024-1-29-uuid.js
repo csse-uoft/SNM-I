@@ -118,6 +118,49 @@ async function renameEntity(uri, uriMap) {
   await GraphDB.sendUpdateQuery(query);
 }
 
+async function updateEligibility(uriMap) {
+  const triples = [];
+  await GraphDB.sendSelectQuery(`
+    PREFIX : <http://snmi#>
+    select * where { 
+      ?s :hasFormulaJSON ?o .
+      ?s a :Eligibility.
+      ?s :hasFormula ?formula.
+    }`, false, ({s, o, formula}) => {
+    triples.push([s.value, o.value, formula.value]);
+  });
+
+  const deletions = [];
+  const insertions = [];
+
+  for (let [s, o, formula] of triples) {
+    const replacer =  (match) => {
+      const uri = SPARQL.ensureFullURI(`:${match}`);
+      if (uriMap.has(uri)) {
+        const newURI = uriMap.get(uri);
+        return 'characteristic_' + newURI.split('_').slice(-1)[0];
+      }
+      return match;
+    };
+
+    const newO = o.replace(/characteristic_\d+/, replacer);
+    const newFormula = formula.replace(/characteristic_\d+/, replacer);
+    // console.log('eligibility ', o, '->', newO)
+
+    if (o !== newO) {
+      deletions.push(`<${s}> :hasFormulaJSON ${JSON.stringify(o)}.`);
+      deletions.push(`<${s}> :hasFormula ${JSON.stringify(formula)}.`);
+
+      insertions.push(`<${s}> :hasFormulaJSON ${JSON.stringify(newO)}.`)
+      insertions.push(`<${s}> :hasFormula ${JSON.stringify(newFormula)}.`)
+    }
+  }
+  if (deletions && insertions) {
+    const query = `PREFIX : <http://snmi#>\nDELETE WHERE {\n\t${deletions.join('\n\t')}\n};\nINSERT DATA {\n\t${insertions.join('\n\t')}\n}`;
+    await GraphDB.sendUpdateQuery(query);
+  }
+}
+
 function updateInstance(uriMap, field) {
   if (!field._uri) return;
 
@@ -202,6 +245,7 @@ async function main() {
   try {
     // GraphDB
     uriMap = await migration_uuid();
+    await updateEligibility(uriMap);
 
     // MongoDB
     await migrateFormStructure(uriMap);
