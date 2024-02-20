@@ -3,7 +3,6 @@ import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
-import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'outcomeOccurrences';
 
@@ -67,7 +66,6 @@ export default function OutcomeOccurrences() {
   const linkFormatter = outcomeOccurrence => `/${TYPE}/${outcomeOccurrence._id}`;
 
   const fetchData = async () => {
-    const addressCharacteristicId = await getAddressCharacteristicId();
     const outcomeOccurrences = (await fetchMultipleGeneric('outcomeOccurrence')).data;
     const data = [];
     for (const outcomeOccurrence of outcomeOccurrences) {
