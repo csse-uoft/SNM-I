@@ -181,7 +181,7 @@ async function receiveAppointmentHelper(req, partnerData) {
   }
 
   const originalAppointment = await GDBAppointmentModel.findOne({ idInPartnerDeployment: partnerData.id },
-    { populates: ['characteristicOccurrences', 'questionOccurrences'] });
+    { populates: ['characteristicOccurrences', 'questionOccurrences', 'address'] });
 
   // Convert the locally existing appointment (if any) to an object with characteristics as key-value pairs
   // instead of a list of characteristicOccurrences
@@ -190,10 +190,14 @@ async function receiveAppointmentHelper(req, partnerData) {
     originalAppointmentJson[(characteristicOccurrence.occurrenceOf._uri
       || characteristicOccurrence.occurrenceOf).split('#')[1]]
         = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue
-          || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+          || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue
+          || characteristicOccurrence.dataObjectValue || null;
   });
   delete originalAppointmentJson.characteristicOccurrences;
   delete originalAppointmentJson._id;
+  !!originalAppointmentJson.address
+    && (originalAppointmentJson[PredefinedCharacteristics['Address']._uri.split('#')[1]]
+      = originalAppointmentJson.address);
 
   // URIs of possible appointment statuses
   const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');

@@ -284,7 +284,7 @@ async function receiveReferralHelper(req, partnerData) {
 
   const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
     {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences',
-      'receivingServiceProvider', 'referringServiceProvider', 'program', 'service']});
+      'receivingServiceProvider', 'referringServiceProvider', 'program', 'service', 'address']});
 
   // Convert the locally existing referral (if any) to an object with characteristics as key-value pairs
   // instead of a list of characteristicOccurrences
@@ -293,10 +293,14 @@ async function receiveReferralHelper(req, partnerData) {
     originalReferralJson[(characteristicOccurrence.occurrenceOf._uri
       || characteristicOccurrence.occurrenceOf).split('#')[1]]
         = characteristicOccurrence.dataStringValue || characteristicOccurrence.dataNumberValue
-          || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue || null;
+          || characteristicOccurrence.dataBooleanValue || characteristicOccurrence.dataDateValue
+          || characteristicOccurrence.dataObjectValue || null;
   });
   delete originalReferralJson.characteristicOccurrences;
   delete originalReferralJson._id;
+  !!originalReferralJson.address
+    && (originalReferralJson[PredefinedCharacteristics['Address']._uri.split('#')[1]]
+      = originalReferralJson.address);
 
   // URIs of possible referral statuses
   const referralStatuses = await getIndividualsInClass(':ReferralStatus');
