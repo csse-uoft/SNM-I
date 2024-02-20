@@ -12,9 +12,6 @@ const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {convertAddressForSerialization, convertAddressForDeserialization} = require("../address/misc");
 const {GDBVolunteerModel} = require("../../models/volunteer");
-const {createNotificationHelper} = require("../notification/notification");
-const {sanitize} = require("../../helpers/sanitizer");
-const {formatLocation} = require("../../helpers/location");
 
 /**
  * Requests that a partner deployment represented locally as the partner
@@ -332,19 +329,6 @@ async function deleteOrganizationHelper(providerId, partnerData) {
   return {partnerJson};
 }
 
-async function printAddress(address) {
-  const streetTypes = await getIndividualsInClass('ic:StreetType');
-  const streetDirections = await getIndividualsInClass('ic:StreetDirection');
-  const states = await getIndividualsInClass('schema:State');
-  const addressInfo = {streetTypes, streetDirections, states};
-
-  if (typeof address === 'string') {
-    address = await GDBAddressModel.findOne({_id: address.split('_')[1]});
-  }
-
-  return sanitize(formatLocation(address, addressInfo));
-}
-
 /**
  * Given non-empty partner data, updates the partner organization with the
  * given id, as well as the organization's programs, services, and volunteers;
@@ -358,30 +342,10 @@ async function updateOrganization(req, res, next) {
     if (!partnerData.organization) {
       return res.status(400).json({message: 'No organization provided'});
     } else if (Object.keys(partnerData.organization).length === 0) {
-      const {partnerJson} = await deleteOrganizationHelper(id, partnerData);
-      // Notify the user of the deleted partner organization
-      createNotificationHelper({
-        name: 'A partner deployment deleted its home organization',
-        description: `<div><p>${sanitize(partnerJson.name)}, one of your partners, just deleted its home organization.</p>`
-          + `<p>To reconnect with them, ask them to set up a home organization again and then create a partner `
-          + `organization for that partner.</p>`
-          + `<p>For reference, here are the details of the partner:</p>`
-          + `<dl>`
-          + (partnerJson.description?.length > 0 ? `<dt>Description:</dt><dd>${sanitize(partnerJson.description)}</dd>` : '')
-          + (partnerJson.address ? `<dt>Address:</dt><dd>${await printAddress(partnerJson.address)}</dd>` : '')
-          + `<dt>Endpoint URL:</dt><dd>${partnerJson.endpointUrl}</dd>`
-          + `<dt>Endpoint Port:</dt><dd>${partnerJson.endpointPort}</dd>`
-          + `</dl></div>`
-      });
+      await deleteOrganizationHelper(id, partnerData);
       return res.status(200).json({success: true});
     } else {
-      const {partnerJson} = await updateOrganizationHelper(id, partnerData);
-      // Notify the user of the updated partner organization
-      createNotificationHelper({
-        name: 'A partner deployment updated its home organization',
-        description: `<a href="/providers/organization/${id}">${sanitize(partnerJson.name)}</a>, one of your `
-          + `partners, just updated its home organization.`
-      });
+      await updateOrganizationHelper(id, partnerData);
       return res.status(200).json({success: true});
     }
   } catch (e) {
