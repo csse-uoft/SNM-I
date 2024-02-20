@@ -77,7 +77,7 @@ async function receivePartnerUpdateNotification(req, res, next) {
         .findOne({organization: {_id: partnerOrganization._id}});
       if (!partnerData.organization || Object.keys(partnerData.organization).length === 0) {
         await deleteOrganizationHelper(partnerServiceProvider._id, partnerData);
-        return res.status(204).send();
+        return res.status(200).json({success: true});
       } else {
         await updateOrganizationHelper(partnerServiceProvider._id, partnerData);
         return res.status(200).json({success: true});

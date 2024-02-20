@@ -337,7 +337,7 @@ async function updateOrganization(req, res, next) {
       return res.status(400).json({message: 'No organization provided'});
     } else if (Object.keys(partnerData.organization).length === 0) {
       await deleteOrganizationHelper(id, partnerData);
-      return res.status(204);
+      return res.status(200).json({success: true});
     } else {
       await updateOrganizationHelper(id, partnerData);
       return res.status(200).json({success: true});
