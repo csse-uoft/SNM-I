@@ -1,6 +1,4 @@
-const {
-  GDBServiceProviderModel, GDBAddressModel
-} = require("../../models");
+const {GDBServiceProviderModel} = require("../../models");
 const {GDBProgramModel} = require("../../models/program/program");
 const {GDBServiceModel} = require("../../models/service/service");
 const {GDBOrganizationModel} = require("../../models/organization");
@@ -239,15 +237,6 @@ async function updateOrganizationHelper(providerId, partnerData) {
     throw new Error('Data does not include an organization');
   }
 
-  organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]]
-    = partnerData.organization.name || '';
-  organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]]
-    = partnerData.organization.description || partnerData.organization.Description || '';
-  organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]
-    = partnerData.organization.address
-      ? await convertAddressForDeserialization(partnerData.organization.address) : null;
-  organization.formId = organizationFormId;
-
   const provider = await getProviderById(providerId);
   const providerType = provider.type;
   if (providerType !== 'organization') {
@@ -260,6 +249,15 @@ async function updateOrganizationHelper(providerId, partnerData) {
     organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._uri = oldGeneric.address._uri;
     organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]._id = oldGeneric.address._id;
   }
+
+  organization.fields[PredefinedCharacteristics['Organization Name']._uri.split('#')[1]]
+    = partnerData.organization.name || '';
+  organization.fields[PredefinedCharacteristics['Description']._uri.split('#')[1]]
+    = partnerData.organization.description || partnerData.organization.Description || '';
+  organization.fields[PredefinedCharacteristics['Address']._uri.split('#')[1]]
+    = partnerData.organization.address
+      ? await convertAddressForDeserialization(partnerData.organization.address) : null;
+  organization.formId = organizationFormId;
 
   const { generic } = await updateSingleGenericHelper(genericId, organization, 'organization');
   provider['organization'] = generic;
