@@ -1,5 +1,3 @@
-const {GDBSchemaCountry, GDBSchemaState, GDBStreetType, GDBStreetDirection} = require('../../models/address');
-const {GDBFieldTypeModel} = require("../../models");
 const { getIndividualsInClass } = require('../dynamicForm');
 
 var streetTypeOptions = null;
@@ -12,6 +10,11 @@ async function getAddressOptions() {
   stateOptions = await getIndividualsInClass('schema:State');
 }
 
+/**
+ * Convert the given address into a form in which it can be sent.
+ * @param {Object} address - The address to convert
+ * @returns The converted address.
+ */
 async function convertAddressForSerialization(address) {
   if (!streetTypeOptions || !streetDirectionOptions || !stateOptions) {
     await getAddressOptions();
@@ -27,6 +30,11 @@ async function convertAddressForSerialization(address) {
   return address;
 }
 
+/**
+ * Convert the given address into a form in which it can be saved locally.
+ * @param {Object} address - The address to convert
+ * @returns The converted address.
+ */
 async function convertAddressForDeserialization(address) {
   if (!streetTypeOptions || !streetDirectionOptions || !stateOptions) {
     await getAddressOptions();
@@ -45,36 +53,6 @@ async function convertAddressForDeserialization(address) {
     delete address._id;
 
   return address;
-}
-
-/**
- *
- * Init FieldTypes.
- * @returns {Promise<void>}
- */
-async function initAddress() {
-  const newFieldTypes = {...type2Label};
-  const fieldTypes = await GDBFieldTypeModel.find({});
-  for (const fieldType of fieldTypes) {
-    if (Object.keys(type2Label).includes(fieldType.type)) {
-      fieldType.label = type2Label[fieldType.type];
-      // This won't be triggered if label is unchanged.
-      await fieldType.save();
-      delete newFieldTypes[fieldType.type];
-
-      // Cache it
-      fieldTypeCache[fieldType.type] = fieldType;
-    }
-  }
-
-  // Create new field types
-  for (const [type, label] of Object.entries(newFieldTypes)) {
-    const newFieldType = new GDBFieldTypeModel({type, label});
-    await newFieldType.save();
-
-    // Cache it
-    fieldTypeCache[newFieldType.type] = newFieldType;
-  }
 }
 
 module.exports = {convertAddressForSerialization, convertAddressForDeserialization}
