@@ -15,7 +15,7 @@ export default function AppointmentForm() {
       }
       setInternalTypes(data);
     });
-    
+
   }, []);
 
   /*
@@ -24,9 +24,9 @@ export default function AppointmentForm() {
   * It will also check if the implementation is last name or first name, if yes then it will not render the field (to make sure that the corresponding text field is not rendered)
   */
   const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange) => {
-    if ([":Client", "http://snmi#Client"].includes(implementation.optionsFromClass)) {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       return <AppointmentClientField
-        handleChange={handleChange} 
+        handleChange={handleChange}
         clientFieldId={internalTypes.clientForAppointment._id}
         fields={fields}
       />
@@ -37,7 +37,7 @@ export default function AppointmentForm() {
     }
   }
 
-  
+
 
 
   return (

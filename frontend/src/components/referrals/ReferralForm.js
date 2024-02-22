@@ -22,12 +22,12 @@ export default function ReferralForm() {
 
   const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
     console.log(implementation)
-    if (implementation.optionsFromClass?.endsWith("Client")) {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForReferral._id}
                                            needOccFieldId={internalTypes.needOccurrenceForReferral._id}/>
-    } else if (implementation.optionsFromClass?.endsWith("Service")) {
+    } else if (implementation.optionsFromClass?.endsWith("#Service")) {
       const serviceFieldId = internalTypes.serviceForReferral._id;
       const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForReferral._id;
 
@@ -41,12 +41,12 @@ export default function ReferralForm() {
         serviceFieldId={serviceFieldId}
         serviceOccurrenceFieldId={serviceOccurrenceFieldId}
         fixedServiceId={serviceOrProgramId}/>
-    } else if (implementation.optionsFromClass?.endsWith("Client")) {
+    } else if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForReferral._id}
                                            needOccFieldId={internalTypes.needOccurrenceForReferral._id}/>
-    } else if (implementation.optionsFromClass?.endsWith("Program")) {
+    } else if (implementation.optionsFromClass?.endsWith("#Program")) {
       const programFieldId = internalTypes.programForReferral._id;
       const programOccurrenceFieldId = internalTypes.programOccurrenceForReferral._id;
 
@@ -60,11 +60,11 @@ export default function ReferralForm() {
         programFieldId={programFieldId}
         programOccurrenceFieldId={programOccurrenceFieldId}
         fixedProgramId={serviceOrProgramId}/>
-    } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
+    } else if (implementation.optionsFromClass?.endsWith("#NeedOccurrence")) {
       return "";
-    } else if (implementation.optionsFromClass?.endsWith("ServiceOccurrence")) {
+    } else if (implementation.optionsFromClass?.endsWith("#ServiceOccurrence")) {
       return "";
-    } else if (implementation.optionsFromClass?.endsWith("ProgramOccurrence")) {
+    } else if (implementation.optionsFromClass?.endsWith("#ProgramOccurrence")) {
       return "";
     }
   }
