@@ -22,12 +22,12 @@ export default function ServiceProvisionForm() {
 
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
     console.log(implementation)
-    if (implementation.optionsFromClass === ":Client") {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForServiceProvision._id}
                                            needOccFieldId={internalTypes.needOccurrenceForServiceProvision._id}/>
-    } else if (implementation.optionsFromClass === ":Service") {
+    } else if (implementation.optionsFromClass?.endsWith("#Service")) {
       const serviceFieldId = internalTypes.serviceForServiceProvision._id;
       const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForServiceProvision._id;
       const needSatisfierFieldId = internalTypes.needSatisfierForServiceProvision._id;
@@ -43,9 +43,9 @@ export default function ServiceProvisionForm() {
         serviceOccurrenceFieldId={serviceOccurrenceFieldId}
         needSatisfierFieldId={needSatisfierFieldId}/>
 
-    } else if (implementation.optionsFromClass === ':NeedOccurrence') {
+    } else if (implementation.optionsFromClass?.endsWith('#NeedOccurrence')) {
       return "";
-    } else if (implementation.optionsFromClass === ':ServiceOccurrence') {
+    } else if (implementation.optionsFromClass?.endsWith('#ServiceOccurrence')) {
       return "";
     }
   }

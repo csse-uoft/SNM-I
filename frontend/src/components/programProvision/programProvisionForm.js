@@ -21,12 +21,12 @@ export default function ProgramProvisionForm() {
   }, []);
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
     console.log(implementation)
-    if (implementation.optionsFromClass === ":Client") {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForProgramProvision._id}
                                            needOccFieldId={internalTypes.needOccurrenceForProgramProvision._id}/>
-    } else if (implementation.optionsFromClass === ":Program") {
+    } else if (implementation.optionsFromClass?.endsWith("#Program")) {
       const programFieldId = internalTypes.programForProgramProvision._id;
       const programOccurrenceFieldId = internalTypes.programOccurrenceForProgramProvision._id
       const needSatisfierFieldId = internalTypes.needSatisfierForProgramProvision._id;
@@ -42,9 +42,9 @@ export default function ProgramProvisionForm() {
         programOccurrenceFieldId={programOccurrenceFieldId}
         needSatisfierFieldId={needSatisfierFieldId}/>
 
-    } else if (implementation.optionsFromClass === ':NeedOccurrence') {
+    } else if (implementation.optionsFromClass?.endsWith('#NeedOccurrence')) {
       return "";
-    } else if (implementation.optionsFromClass === ':ProgramOccurrence') {
+    } else if (implementation.optionsFromClass?.endsWith('#ProgramOccurrence')) {
       return "";
     }
   }

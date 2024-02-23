@@ -21,12 +21,12 @@ export default function ProgramRegistrationForm() {
   }, []);
   const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
     console.log(implementation)
-    if (implementation.optionsFromClass?.endsWith("Client")) {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForProgramRegistration._id}
                                            needOccFieldId={internalTypes.needOccurrenceForProgramRegistration._id}/>
-    } else if (implementation.optionsFromClass?.endsWith("ProgramOccurrence")) {
+    } else if (implementation.optionsFromClass?.endsWith("#ProgramOccurrence")) {
       const programOccurrenceFieldId = internalTypes.programOccurrenceForProgramRegistration._id;
 
       if (!programOccurrenceFieldId) {
@@ -38,7 +38,7 @@ export default function ProgramRegistrationForm() {
         handleChange={handleChange} fields={fields}
         programOccurrenceFieldId={programOccurrenceFieldId}
         fixedProgramId={serviceOrProgramId}/>
-    } else if (implementation.optionsFromClass?.endsWith("NeedOccurrence")) {
+    } else if (implementation.optionsFromClass?.endsWith("#NeedOccurrence")) {
       return "";
     }
   }
