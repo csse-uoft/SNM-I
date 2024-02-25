@@ -25,7 +25,7 @@ const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurre
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {noQuestion} = require('./checkers')
+const {noQuestion, checkCapacity} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
@@ -171,11 +171,11 @@ const genericType2Populates = {
 };
 
 const genericType2Checker = {
-  'service': noQuestion,
-  'serviceOccurrence': noQuestion,
-  'programOccurrence': noQuestion,
-  'program' : noQuestion,
-  'serviceWaitlist': noQuestion
+  'service': [noQuestion],
+  'serviceOccurrence': [noQuestion, checkCapacity],
+  'programOccurrence': [noQuestion, checkCapacity],
+  'program': [noQuestion],
+  'serviceWaitlist': [noQuestion],
 };
 
 
@@ -428,7 +428,8 @@ const createSingleGenericHelper = async (data, genericType) => {
   // extract questions and characteristics based on fields from the database
   await fetchCharacteristicQuestionsInternalTypesBasedOnForms(characteristics, questions, internalTypes, data.fields);
   if (genericType2Checker[genericType])
-    genericType2Checker[genericType](characteristics, questions);
+    for (const checker of genericType2Checker[genericType])
+      checker(characteristics, questions, data.fields);
 
   const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
   // iterating over all fields and create occurrences and store them into instanceData
@@ -545,6 +546,10 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
   const characteristics = {};
   const internalTypes = {};
   await fetchCharacteristicQuestionsInternalTypesBasedOnForms(characteristics, questions, internalTypes, data.fields);
+
+  if (genericType2Checker[genericType])
+    for (const checker of genericType2Checker[genericType])
+      checker(characteristics, questions, data.fields);
 
   // check should we update or create a characteristicOccurrence or questionOccurrence
   // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import GenericForm from "../shared/GenericForm";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ProgramAndNeedSatisfierField} from "./ProgramAndNeedSatisfierField";
+import FieldGroup from '../shared/FieldGroup';
 
 export default function ProgramOccurrenceForm() {
   const formType = 'programOccurrence';
@@ -26,6 +27,10 @@ export default function ProgramOccurrenceForm() {
 
     } else if (implementation.optionsFromClass?.endsWith('#NeedSatisfier')) {
       return "";
+    } else if (implementation.label === 'Capacity') {
+      return <FieldGroup component={implementation.fieldType.type} key={`${type}_${id}`}
+                         label={implementation.label} required={required} inputProps={{min: 0}}
+                         value={fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
     }
   }
 

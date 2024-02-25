@@ -82,4 +82,14 @@ module.exports = [{
       fieldType: FieldTypes.NumberField,
     },
   },
+  {
+    name: 'Capacity',
+    description: 'The capacity of a program or service occurrence.',
+    predefinedProperty: 'http://snmi#hasCapacity',
+    implementation: {
+      label: 'Capacity',
+      valueDataType: 'xsd:number',
+      fieldType: FieldTypes.NumberField,
+    },
+  },
 ]

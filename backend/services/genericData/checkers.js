@@ -5,4 +5,13 @@ function noQuestion(characteristics, questions) {
     throw new Server400Error('Service should not contain question.');
 }
 
-module.exports = {noQuestion}
+function checkCapacity(characteristics, questions, fields) {
+  const capacityId = Object.keys(characteristics).find(id => characteristics[id].name === 'Capacity');
+  if (!!capacityId) {
+    if (fields['characteristic_' + capacityId] < 0) {
+      throw new Server400Error('Capacity must be zero or greater.');
+    }
+  }
+}
+
+module.exports = {noQuestion, checkCapacity}
