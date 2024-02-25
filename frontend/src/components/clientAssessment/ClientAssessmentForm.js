@@ -24,7 +24,7 @@ export default function ClientAssessmentForm() {
     if (implementation === undefined) {
       return "";
     }
-    if ([":Client", "http://snmi#Client"].includes(implementation.optionsFromClass)) {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Using the component from `Appointment`
       return <AppointmentClientField
         handleChange={handleChange}

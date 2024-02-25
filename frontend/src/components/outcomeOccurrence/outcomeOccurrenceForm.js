@@ -16,10 +16,10 @@ export default function OutcomeOccurrenceForm() {
     });
   }, []);
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
-    console.log(implementation)
-    if (implementation.optionsFromClass === ':occurrenceOf') {
-      return "";
-    }
+    // ?
+    // if (implementation.optionsFromClass === ':occurrenceOf') {
+    //   return "";
+    // }
   }
 
   return (
