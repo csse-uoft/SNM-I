@@ -1,10 +1,12 @@
-const {createGraphDBModel, Types} = require("graphdb-utils");
+const {createGraphDBModel, Types, DeleteType} = require("graphdb-utils");
 const {GDBTimeIntervalModel} = require("./timeInterval");
 
 
 const GDBDayScheduleModel = createGraphDBModel({
-  dayOfWeek: {type: Types.NamedIndividual, internalKey: 'hasDayOfWeek'},
-  timeIntervals: {type: GDBTimeIntervalModel, internalKey: 'hasTimeInterval'}
+  // instance of time:DayOfWeek
+  dayOfWeek: {type: Types.NamedIndividual, internalKey: ':hasDayOfWeek'},
+  // time intervals in a single day, includes timezone
+  timeIntervals: {type: [GDBTimeIntervalModel], internalKey: ':hasTimeInterval', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':DaySchedule'], name: 'daySchedule'
 });

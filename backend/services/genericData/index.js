@@ -24,6 +24,14 @@ const {GDBPersonModel} = require("../../models/person");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurrence");
 const {GDBInternalTypeModel} = require("../../models/internalType");
+const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
+const {GDBProgramProvisionModel} = require("../../models/programProvision");
+const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
+const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
+const {GDBOutcomeOccurrenceModel} = require("../../models/outcome/outcomeOccurrence");
+const {GDBClientAssessmentModel} = require("../../models/clientAssessment");
+const {GDBEligibilityModel} = require("../../models/eligibility");
+const {GDBHoursOfOperationModel} = require("../../models/timeRelated/hoursOfOperation");
 const {noQuestion} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
@@ -69,12 +77,6 @@ const {
   appointmentInternalTypeFetchTreater,
   appointmentInternalTypeUpdateTreater
 } = require("./appointment");
-const {GDBServiceProvisionModel} = require("../../models/serviceProvision");
-const {GDBProgramProvisionModel} = require("../../models/programProvision");
-const {GDBNeedSatisfierOccurrenceModel} = require("../../models/needSatisfierOccurrence");
-const {GDBNeedOccurrenceModel} = require("../../models/need/needOccurrence");
-const {GDBOutcomeOccurrenceModel} = require("../../models/outcome/outcomeOccurrence");
-const {GDBClientAssessmentModel} = require("../../models/clientAssessment");
 const {
   serviceProvisionInternalTypeCreateTreater, serviceProvisionInternalTypeFetchTreater,
   serviceProvisionInternalTypeUpdateTreater
@@ -114,7 +116,9 @@ const {
   volunteerInternalTypeFetchTreater,
   volunteerInternalTypeUpdateTreater
 } = require("./volunteerInternalTypeTreater");
-const {GDBEligibilityModel} = require("../../models/eligibility");
+
+
+
 const genericType2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
@@ -291,6 +295,9 @@ async function fetchSingleGenericHelper(genericType, id) {
           const id = co.objectValue.split('_')[1];
           co.objectValue = (await GDBEligibilityModel.findOne({_id: id})).toJSON();
           if (co.objectValue.formulaJSON) co.objectValue.formulaJSON = JSON.parse(co.objectValue.formulaJSON);
+        } else if (co.occurrenceOf.implementation.fieldType === FieldTypes.HoursOfOperationField._uri) {
+          const id = co.objectValue.split('_')[1];
+          co.objectValue = (await GDBHoursOfOperationModel.findOne({_id: id})).toJSON();
         }
 
       } else if (co.multipleObjectValues) {

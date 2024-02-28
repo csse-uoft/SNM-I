@@ -81,4 +81,14 @@ module.exports = [{
       fieldType: FieldTypes.NumberField,
     },
   },
+  {
+    name: 'Hours of Operation',
+    description: 'The hours of operation.',
+    predefinedProperty: 'http://snmi#hasHoursOfOperation',
+    implementation: {
+      label: 'Hours of Operation',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.HoursOfOperationField,
+    }
+  },
 ]

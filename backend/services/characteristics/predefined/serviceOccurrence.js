@@ -21,16 +21,6 @@ module.exports = [
       fieldType: FieldTypes.DateTimeField,
     },
   },
-  {
-    name: 'Hours of Operation',
-    description: 'Hours of Operation for the service occurrence',
-    predefinedProperty: 'http://snmi#hasOperatingHours',
-    implementation: {
-      label: 'Hours of Operation',
-      valueDataType: 'xsd:number',
-      fieldType: FieldTypes.NumberField,
-    }
-  },
 
 
   // todo: mode and codes

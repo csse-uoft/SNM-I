@@ -5,6 +5,7 @@ const {GDBQuestionModel} = require("../../models/ClientFunctionalities/question"
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
 const {GDBEligibilityModel} = require("../../models/eligibility");
+const {GDBHoursOfOperationModel} = require("../../models/timeRelated/hoursOfOperation");
 
 // help to detect the time
 const TIMEPATTERN = /^\d\d:\d\d:\d\d$/;
@@ -73,6 +74,19 @@ const implementCharacteristicOccurrence = async (characteristic, occurrence, val
       }
       await eligibility.save();
       occurrence.objectValue = eligibility._uri;
+
+    }  else if (prefixedFieldType === FieldTypes.HoursOfOperationField.individualName) {
+      let hoursOfOperation;
+      // Reuse the existing instance
+      if (occurrence.objectValue) {
+        const [_, id] = occurrence.objectValue.split('_');
+        hoursOfOperation = await GDBHoursOfOperationModel.findById(id)
+        Object.assign(hoursOfOperation, value);
+      } else {
+        hoursOfOperation = GDBEligibilityModel(value);
+      }
+      await hoursOfOperation.save();
+      occurrence.objectValue = hoursOfOperation._uri;
 
     } else {
       throw Error(`Should not reach here. ${fieldType}`);
