@@ -14,7 +14,7 @@ const GDBServiceModel = createGraphDBModel({
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
   serviceProvider: {type: GDBServiceProviderModel, internalKey: ':hasServiceProvider'},
   eligibilityCondition: {type: String, internalKey: ':hasEligibilityCondition'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   program: {type: GDBProgramModel, internalKey: ':hasProgram'},

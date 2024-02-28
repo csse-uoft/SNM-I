@@ -21,7 +21,7 @@ const GDBClientAssessmentModel = createGraphDBModel({
   outcomes: {type: [GDBOutcomeModel], internalKey: ':hasOutcome'},
   outcomeOccurrences: {type: [GDBOutcomeOccurrenceModel], internalKey: ':hasOutcomeOccurrence'},
   needOccurrences: {type: [GDBNeedOccurrenceModel], internalKey: ':hasNeedOccurrence'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
   questions: {type: [GDBQuestionModel], internalKey: ':hasQuestion'},
 }, {
   rdfTypes: [':ClientAssessment'], name: 'clientAssessment'
