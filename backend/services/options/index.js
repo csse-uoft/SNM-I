@@ -1,4 +1,5 @@
-const { GraphDB } = require('graphdb-utils')
+const { GraphDB } = require('graphdb-utils');
+const {randomUUID} = require("crypto");
 
 async function initOptions(optionText, options, optionType, uriPrefix) {
   console.log(`Initializing ${optionText}...`);
@@ -30,7 +31,7 @@ async function initOptions(optionText, options, optionType, uriPrefix) {
     const triples = [];
     let cnt = 1;
     for (const option of options) {
-      triples.push(`:${uriPrefix}_${cnt} rdf:type owl:NamedIndividual, :${optionType};\n\t rdfs:label "${option}".`);
+      triples.push(`:${uriPrefix}_${randomUUID()} rdf:type owl:NamedIndividual, :${optionType};\n\t rdfs:label "${option}".`);
       cnt++;
     }
     await GraphDB.sendUpdateQuery(`
