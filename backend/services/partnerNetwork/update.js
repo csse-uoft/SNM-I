@@ -53,6 +53,7 @@ async function sendPartnerUpdateNotification(req, partnerId) {
     }
   } catch (e) {
     console.log(e);
+    throw new Error('Failed to notify partner: ' + e.message);
   }
 }
 

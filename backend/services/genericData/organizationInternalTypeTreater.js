@@ -16,7 +16,7 @@ const afterUpdateOrganization = async function (data, oldGeneric, req) {
   }
 
   for (const partnerId of partners) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 

@@ -25,7 +25,7 @@ const afterCreateVolunteer = async function (data, req) {
 
   const partnersAfterUpdate = await getGenericPartners(data, 'Volunteer');
   for (const partnerId of partnersAfterUpdate) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
@@ -38,7 +38,7 @@ const afterUpdateVolunteer = async function (data, oldGeneric, req) {
   const partnersAfterUpdate = await getGenericPartners(data, 'Volunteer');
   const allPartners = [...new Set([...partnersBeforeUpdate, ...partnersAfterUpdate])];
   for (const partnerId of allPartners) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
@@ -49,7 +49,7 @@ const afterDeleteVolunteer = async function (oldGeneric, req) {
 
   const partnersBeforeUpdate = await getGenericPartners(oldGeneric, 'Volunteer');
   for (const partnerId of partnersBeforeUpdate) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 

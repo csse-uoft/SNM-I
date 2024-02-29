@@ -30,7 +30,7 @@ const afterCreateService = async function (data, req) {
 
   const partnersAfterUpdate = await getGenericPartners(data, 'Service');
   for (const partnerId of partnersAfterUpdate) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
@@ -43,7 +43,7 @@ const afterUpdateService = async function (data, oldGeneric, req) {
   const partnersAfterUpdate = await getGenericPartners(data, 'Service');
   const allPartners = [...new Set([...partnersBeforeUpdate, ...partnersAfterUpdate])];
   for (const partnerId of allPartners) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
@@ -54,7 +54,7 @@ const afterDeleteService = async function (oldGeneric, req) {
 
   const partnersBeforeUpdate = await getGenericPartners(oldGeneric, 'Service');
   for (const partnerId of partnersBeforeUpdate) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 

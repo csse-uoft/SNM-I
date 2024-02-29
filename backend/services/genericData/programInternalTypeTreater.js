@@ -29,7 +29,7 @@ const afterCreateProgram = async function (data, req) {
 
   const partnersAfterUpdate = await getGenericPartners(data, 'Program');
   for (const partnerId of partnersAfterUpdate) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
@@ -42,7 +42,7 @@ const afterUpdateProgram = async function (data, oldGeneric, req) {
   const partnersAfterUpdate = await getGenericPartners(data, 'Program');
   const allPartners = [...new Set([...partnersBeforeUpdate, ...partnersAfterUpdate])];
   for (const partnerId of allPartners) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
@@ -53,7 +53,7 @@ const afterDeleteProgram = async function (oldGeneric, req) {
 
   const partnersBeforeUpdate = await getGenericPartners(oldGeneric, 'Program');
   for (const partnerId of partnersBeforeUpdate) {
-    sendPartnerUpdateNotification(req, partnerId); // no await
+    await sendPartnerUpdateNotification(req, partnerId);
   }
 }
 
