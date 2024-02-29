@@ -10,6 +10,7 @@ const {GDBReferralModel} = require("../../models/referral");
 const {getClient, getReferralPartnerGeneric} = require("./referrals");
 const {createNotificationHelper} = require("../notification/notification");
 const {sanitize} = require("../../helpers/sanitizer");
+const {regexBuilder} = require("graphdb-utils");
 
 /**
  * Converts an appointment generic into a format in which it can be sent to a partner deployment
@@ -106,7 +107,7 @@ async function sendAppointment(req, res, next) {
       headers: {
         'Content-Type': 'application/json',
         'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
-        'Referer': req.headers.host,
+        'Referer': new URL(req.headers.origin).hostname,
       },
       body: JSON.stringify(appointment),
     });
@@ -162,8 +163,10 @@ async function receiveAppointmentHelper(req, partnerData) {
   }
 
   // Use the "Referer" header to identify the partner organization who sent the data
-  const partner = await GDBOrganizationModel.findOne({ endpointUrl: req.headers.referer });
-  if (!partner || partner.endpointUrl !== req.headers.referer) { // Redundant check for findOne bug
+  const partner = await GDBOrganizationModel.findOne({
+    endpointUrl: {$regex: regexBuilder(`(https?://)?${req.header.referer}`)}
+  });
+  if (!partner || new URL(partner.endpointUrl).hostname !== req.headers.referer) { // Redundant check for findOne bug
     throw new Error("Could not find partner organization with the same endpoint URL as the sender");
   }
 

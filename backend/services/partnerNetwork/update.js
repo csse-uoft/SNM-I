@@ -4,6 +4,7 @@ const {GDBServiceProviderModel, GDBAddressModel} = require("../../models");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {getIndividualsInClass} = require("../dynamicForm");
 const {createNotificationHelper} = require("../notification/notification");
+const {regexBuilder} = require("graphdb-utils");
 
 async function sendPartnerUpdateNotification(req, partnerId) {
   const { fetchSingleGenericHelper } = require("../genericData");
@@ -34,7 +35,7 @@ async function sendPartnerUpdateNotification(req, partnerId) {
           headers: {
             'X-RECEIVER-API-KEY': organization.apiKey,
             ...(!!senderApiKey && { 'X-SENDER-API-KEY': senderApiKey }),
-            'Referer': req.headers.host,
+            'Referer': new URL(req.headers.origin).hostname,
           },
         });
         clearTimeout(timeout);
@@ -83,11 +84,13 @@ async function receivePartnerUpdateNotification(req, res, next) {
     if (receiverApiKey !== homeOrganization.apiKey) {
       return res.status(403).json({ message: 'API key is incorrect' });
     }
-
-    const partnerOrganization = await GDBOrganizationModel.findOne({ apiKey: senderApiKey,
-      endpointUrl: req.headers.referer });
+    // `req.headers.referer` should always be a hostname
+    const partnerOrganization = await GDBOrganizationModel.findOne({
+      apiKey: senderApiKey,
+      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.headers.referer}`)}
+    });
     if (partnerOrganization && partnerOrganization.apiKey === senderApiKey
-        && partnerOrganization.endpointUrl === req.headers.referer) {
+        && new URL(partnerOrganization.endpointUrl).hostname === req.headers.referer) {
       const partnerData = await fetchOrganizationHelper(req, partnerOrganization._id);
 
       const partnerServiceProvider = await GDBServiceProviderModel

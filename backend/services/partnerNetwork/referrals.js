@@ -13,6 +13,7 @@ const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dyn
 const {getGenericAssets} = require("./index");
 const {createNotificationHelper} = require("../notification/notification");
 const {sanitize} = require("../../helpers/sanitizer");
+const {regexBuilder} = require("graphdb-utils");
 
 /**
  * Converts a referral generic into a format in which it can be sent to a partner deployment.
@@ -171,7 +172,7 @@ async function sendReferral(req, res, next) {
       headers: {
         'Content-Type': 'application/json',
         'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
-        'Referer': req.headers.host,
+        'Referer': new URL(req.headers.origin).hostname,
       },
       body: JSON.stringify(referral),
     });
@@ -253,23 +254,27 @@ async function receiveReferralHelper(req, partnerData) {
     throw new Error('No referral form available');
   }
 
-  if (Object.keys(PredefinedCharacteristics).length == 0) {
+  if (Object.keys(PredefinedCharacteristics).length === 0) {
     await initPredefinedCharacteristics();
   }
 
   // Use the "Referer" header to identify the partner organization who sent the data
-  const partner = await GDBOrganizationModel.findOne({endpointUrl: req.headers.referer});
-  if (!partner || partner.endpointUrl !== req.headers.referer) { // Redundant check for findOne bug
+  const partnerServiceProvider = await GDBServiceProviderModel.findOne({
+    organization: {
+      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.header.referer}`)}
+    }
+  });
+  const partner = partnerServiceProvider.organization;
+  if (!partner || new URL(partner.endpointUrl).hostname !== req.headers.referer) { // Redundant check for findOne bug
     throw new Error('Could not find partner organization with the same endpoint URL as the sender');
   }
-  const partnerServiceProvider = await GDBServiceProviderModel.findOne({organization: partner});
 
-  const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'},
-    {populates: ['characteristicOccurrences.occurrenceOf']});
-  if (!homeOrganization || homeOrganization.status !== 'Home') {
+  const homeServiceProvider = await GDBServiceProviderModel.findOne({'organization': {status: 'Home'}},
+      {populates: ['organization.characteristicOccurrences.occurrenceOf']});
+  const homeOrganization = homeServiceProvider?.organization;
+  if (!homeServiceProvider || homeOrganization.status !== 'Home') {
     throw new Error('This deployment has no home organization');
   }
-  const homeServiceProvider = await GDBServiceProviderModel.findOne({organization: homeOrganization});
 
   const receiverApiKey = req.header('X-RECEIVER-API-KEY');
   if (receiverApiKey !== homeOrganization.apiKey) {
