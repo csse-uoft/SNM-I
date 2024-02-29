@@ -219,9 +219,8 @@ const updateServiceProvider = async (req, res, next) => {
     const providerType = provider.type;
     const genericId = provider[providerType]._id;
 
-    const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
-    const homeServiceProvider = await GDBServiceProviderModel.findOne({'organization': homeOrganization._uri}, {populates: ['organization']});
-    if (!!homeOrganization && homeServiceProvider._id != id && providerType === 'organization'
+    const homeServiceProvider = await GDBServiceProviderModel.findOne({'organization': {status: 'Home'}}, {populates: ['organization']});
+    if (homeServiceProvider && homeServiceProvider._id !== id && providerType === 'organization'
         && data.fields[PredefinedCharacteristics['Organization Status']?._uri.split('#')[1]] === 'Home') {
       return res.status(400).json({message: 'Cannot create more than one home organization'});
     }
