@@ -32,6 +32,8 @@ export default function ServiceOccurrenceForm() {
       return <FieldGroup component={implementation.fieldType.type} key={`${type}_${id}`}
                          label={implementation.label} required={required} inputProps={{min: 0}}
                          value={fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
+    } else if (implementation.label === 'Occupancy') {
+      return ''; // Not editable by the user
     }
   }
 

@@ -14,4 +14,13 @@ function checkCapacity(characteristics, questions, fields) {
   }
 }
 
-module.exports = {noQuestion, checkCapacity}
+function checkOccupancy(characteristics, questions, fields) {
+  const occupancyId = Object.keys(characteristics).find(id => characteristics[id].name === 'Occupancy');
+  if (!!occupancyId) {
+    if (fields['characteristic_' + occupancyId] < 0) {
+      throw new Server400Error('Occupancy must be zero or greater.');
+    }
+  }
+}
+
+module.exports = {noQuestion, checkCapacity, checkOccupancy}

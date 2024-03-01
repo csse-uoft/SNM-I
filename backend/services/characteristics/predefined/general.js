@@ -92,4 +92,14 @@ module.exports = [{
       fieldType: FieldTypes.NumberField,
     },
   },
+  {
+    name: 'Occupancy',
+    description: 'The current occupancy of a program or service occurrence.',
+    predefinedProperty: 'http://snmi#hasOccupancy',
+    implementation: {
+      label: 'Occupancy',
+      valueDataType: 'xsd:number',
+      fieldType: FieldTypes.NumberField,
+    },
+  },
 ]

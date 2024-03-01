@@ -25,7 +25,7 @@ const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurre
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {noQuestion, checkCapacity} = require('./checkers')
+const {noQuestion, checkCapacity, checkOccupancy} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
@@ -172,8 +172,8 @@ const genericType2Populates = {
 
 const genericType2Checker = {
   'service': [noQuestion],
-  'serviceOccurrence': [noQuestion, checkCapacity],
-  'programOccurrence': [noQuestion, checkCapacity],
+  'serviceOccurrence': [noQuestion, checkCapacity, checkOccupancy],
+  'programOccurrence': [noQuestion, checkCapacity, checkOccupancy],
   'program': [noQuestion],
   'serviceWaitlist': [noQuestion],
 };
