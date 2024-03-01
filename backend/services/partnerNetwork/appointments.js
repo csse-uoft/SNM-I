@@ -127,8 +127,9 @@ async function sendAppointment(req, res, next) {
       appointmentGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = newId;
 
       const appointmentForms = await getDynamicFormsByFormTypeHelper('appointment');
+      let appointmentFormId;
       if (appointmentForms.length > 0) {
-        var appointmentFormId = appointmentForms[0]._id; // Select the first form
+        appointmentFormId = appointmentForms[0]._id; // Select the first form
       } else {
         return res.status(400).json({ message: 'No appointment form available' });
       }
@@ -152,8 +153,9 @@ async function sendAppointment(req, res, next) {
  */
 async function receiveAppointmentHelper(req, partnerData) {
   const appointmentForms = await getDynamicFormsByFormTypeHelper('appointment');
+  let appointmentFormId;
   if (appointmentForms.length > 0) {
-    var appointmentFormId = appointmentForms[0]._id; // Select the first form
+    appointmentFormId = appointmentForms[0]._id; // Select the first form
   } else {
     throw new Error('No appointment form available');
   }

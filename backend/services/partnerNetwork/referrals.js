@@ -191,8 +191,9 @@ async function sendReferral(req, res, next) {
       referralGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = newId;
 
       const referralForms = await getDynamicFormsByFormTypeHelper('referral');
+      let referralFormId;
       if (referralForms.length > 0) {
-        var referralFormId = referralForms[0]._id; // Select the first form
+        referralFormId = referralForms[0]._id; // Select the first form
       } else {
         return res.status(400).json({message: 'No referral form available'});
       }
@@ -220,8 +221,9 @@ async function sendReferral(req, res, next) {
  */
 async function getClient(partnerClientData, isNew, originalId) {
   const clientForms = await getDynamicFormsByFormTypeHelper('client');
+  let clientFormId;
   if (clientForms.length > 0) {
-    var clientFormId = clientForms[0]._id; // Select the first form
+    clientFormId = clientForms[0]._id; // Select the first form
   } else {
     throw new Error('No client form available');
   }
@@ -248,8 +250,9 @@ async function getClient(partnerClientData, isNew, originalId) {
  */
 async function receiveReferralHelper(req, partnerData) {
   const referralForms = await getDynamicFormsByFormTypeHelper('referral');
+  let referralFormId;
   if (referralForms.length > 0) {
-    var referralFormId = referralForms[0]._id; // Select the first form
+    referralFormId = referralForms[0]._id; // Select the first form
   } else {
     throw new Error('No referral form available');
   }
@@ -284,8 +287,8 @@ async function receiveReferralHelper(req, partnerData) {
   }
 
   // Determine which of the partner and home organizations is the receiver and which is the referrer
-  var receivingServiceProvider = partnerData.partnerIsReceiver ? homeServiceProvider : partnerServiceProvider;
-  var referringServiceProvider = partnerData.partnerIsReceiver ? partnerServiceProvider : homeServiceProvider;
+  let receivingServiceProvider = partnerData.partnerIsReceiver ? homeServiceProvider : partnerServiceProvider;
+  let referringServiceProvider = partnerData.partnerIsReceiver ? partnerServiceProvider : homeServiceProvider;
 
   const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
     {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences',

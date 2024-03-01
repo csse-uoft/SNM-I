@@ -1,8 +1,8 @@
 const { getIndividualsInClass } = require('../dynamicForm');
 
-var streetTypeOptions = null;
-var streetDirectionOptions = null;
-var stateOptions = null;
+let streetTypeOptions = null;
+let streetDirectionOptions = null;
+let stateOptions = null;
 
 async function getAddressOptions() {
   streetTypeOptions = await getIndividualsInClass('ic:StreetType');

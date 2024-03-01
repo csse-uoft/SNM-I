@@ -96,8 +96,9 @@ async function fetchOrganization(req, res, next) {
 async function updateOrganizationGenericAssets(organizationGenericId, partnerData, assetType,
     characteristics, internalTypes, model) {
   const forms = await getDynamicFormsByFormTypeHelper(assetType);
+  let formId;
   if (forms.length > 0) {
-    var formId = forms[0]._id; // Select the first form
+    formId = forms[0]._id; // Select the first form
   } else {
     throw Error(`No ${assetType} form available`);
   }
@@ -150,8 +151,9 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
 async function updateOrganizationVolunteers(organizationGenericId, partnerData,
     characteristics, internalTypes) {
   const forms = await getDynamicFormsByFormTypeHelper('volunteer');
+  let formId;
   if (forms.length > 0) {
-    var formId = forms[0]._id; // Select the first form
+    formId = forms[0]._id; // Select the first form
   } else {
     throw Error(`No volunteer form available`);
   }
@@ -222,8 +224,9 @@ async function updateOrganizationVolunteers(organizationGenericId, partnerData,
  */
 async function updateOrganizationHelper(providerId, partnerData) {
   const organizationForms = await getDynamicFormsByFormTypeHelper('organization');
+  let organizationFormId;
   if (organizationForms.length > 0) {
-    var organizationFormId = organizationForms[0]._id; // Select the first form
+    organizationFormId = organizationForms[0]._id; // Select the first form
   } else {
     throw new Error('No organization form available');
   }
@@ -474,7 +477,7 @@ async function sendOrganization(req, res, next) {
       return res.status(403).json({message: 'API key is incorrect'});
     }
 
-    var partnerOrganizations = await fetchGenericDatasHelper('organization');
+    let partnerOrganizations = await fetchGenericDatasHelper('organization');
     partnerOrganizations = partnerOrganizations
       .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey
         && organizationObj.endpointUrl === req.headers.referer)

@@ -140,6 +140,7 @@ async function getInternalTypeValues(properties, doc, FORMTYPE) {
 const isPartnerUpdateNeeded = async function (data, type) {
   const serviceProviderId = data.fields?.['internalType_' + PredefinedInternalTypes[`serviceProviderFor${type}`]?._id]?.split('_')[1]
     || data.serviceProvider?.split('_')[1];
+  let organization;
   if (serviceProviderId) {
     const provider = await GDBServiceProviderModel.findOne({ _id: serviceProviderId }, {
       populates: ['organization']
@@ -147,14 +148,14 @@ const isPartnerUpdateNeeded = async function (data, type) {
     if (provider?.type !== 'organization') {
       return false;
     }
-    var organization = provider[provider.type];
+    organization = provider[provider.type];
   } else {
     const organizationId = data.fields?.['internalType_' + PredefinedInternalTypes[`organizationFor${type}`]?._id]?.split('_')[1]
       || data.organization?.split('_')[1];
     if (!organizationId) {
       return false;
     }
-    var organization = await GDBOrganizationModel.findOne({ _id: organizationId });
+    organization = await GDBOrganizationModel.findOne({ _id: organizationId });
   }
 
   return organization.status === 'Home';
