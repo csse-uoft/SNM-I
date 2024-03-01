@@ -73,7 +73,8 @@ function TopNavBar() {
   }
 
   useEffect(() => {
-    updateNavbarNotificationIcon(userContext);
+    if (isLoggedin)
+      updateNavbarNotificationIcon(userContext);
   }, [])
 
   return (
