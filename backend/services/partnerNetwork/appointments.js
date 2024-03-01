@@ -205,30 +205,30 @@ async function receiveAppointmentHelper(req, partnerData) {
   });
   delete originalAppointmentJson.characteristicOccurrences;
   delete originalAppointmentJson._id;
-  !!originalAppointmentJson.address
-    && (originalAppointmentJson[PredefinedCharacteristics['Address']._uri.split('#')[1]]
-      = originalAppointmentJson.address);
+  if (!!originalAppointmentJson.address)
+    originalAppointmentJson[PredefinedCharacteristics['Address']._uri.split('#')[1]]
+      = originalAppointmentJson.address;
 
   // URIs of possible appointment statuses
   const appointmentStatuses = await getIndividualsInClass(':AppointmentStatus');
 
   const appointment = { fields: originalAppointmentJson || {}, formId: appointmentFormId };
-  'id' in partnerData
-    && (appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]]
-      = partnerData.id);
-  'name' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]]
-    = partnerData.name);
-  'datetime' in partnerData && (appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]]
-    = partnerData.datetime);
-  'status' in partnerData && (appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]]
-    = Object.keys(appointmentStatuses).find(key => appointmentStatuses[key] === partnerData.status) || null);
+  if ('id' in partnerData)
+    appointment.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id;
+  if ('name' in partnerData)
+    appointment.fields[PredefinedCharacteristics['Appointment Name']._uri.split('#')[1]] = partnerData.name;
+  if ('datetime' in partnerData)
+    appointment.fields[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]] = partnerData.datetime;
+  if ('status' in partnerData)
+    appointment.fields[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]]
+      = Object.keys(appointmentStatuses).find(key => appointmentStatuses[key] === partnerData.status) || null;
   if (partnerData.partnerIsReceiver) {
     if (!(partnerData.referral?.id)) {
       throw new Error('No referral ID provided');
     }
-    'referral' in partnerData
-      && (appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
-        = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null);
+    if ('referral' in partnerData)
+      appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+        = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null;
   }
 
   return {appointment, originalAppointment, originalAppointmentJson, partner};

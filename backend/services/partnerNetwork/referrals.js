@@ -306,27 +306,29 @@ async function receiveReferralHelper(req, partnerData) {
   });
   delete originalReferralJson.characteristicOccurrences;
   delete originalReferralJson._id;
-  !!originalReferralJson.address
-    && (originalReferralJson[PredefinedCharacteristics['Address']._uri.split('#')[1]]
-      = originalReferralJson.address);
+  if (!!originalReferralJson.address)
+    originalReferralJson[PredefinedCharacteristics['Address']._uri.split('#')[1]] = originalReferralJson.address;
 
   // URIs of possible referral statuses
   const referralStatuses = await getIndividualsInClass(':ReferralStatus');
 
   const referral = {fields: originalReferralJson || {}, formId: referralFormId};
-  'id' in partnerData && (referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]]
-    = partnerData.id);
-  'status' in partnerData && (referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]]
-    = Object.keys(referralStatuses).find(key => referralStatuses[key] === partnerData.status) || null);
+  if ('id' in partnerData)
+    referral.fields[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]] = partnerData.id;
+  if ('status' in partnerData)
+    referral.fields[PredefinedCharacteristics['Referral Status']._uri.split('#')[1]]
+      = Object.keys(referralStatuses).find(key => referralStatuses[key] === partnerData.status) || null;
   if (partnerData.partnerIsReceiver) {
     referral.fields[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]]
       = receivingServiceProvider._uri;
     referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]]
       = referringServiceProvider._uri;
-    'program' in partnerData && (referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]]
-      = 'http://snmi#program_' + partnerData.program.id);
-    'service' in partnerData && (referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]]
-      = 'http://snmi#service_' + partnerData.service.id);
+    if ('program' in partnerData)
+      referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]]
+        = 'http://snmi#program_' + partnerData.program.id;
+    if ('service' in partnerData)
+      referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]]
+        = 'http://snmi#service_' + partnerData.service.id;
   }
 
   return {referral, originalReferral, originalReferralJson, partner};
