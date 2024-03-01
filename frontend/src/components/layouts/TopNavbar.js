@@ -75,7 +75,7 @@ function TopNavBar() {
   useEffect(() => {
     if (isLoggedin)
       updateNavbarNotificationIcon(userContext);
-  }, [])
+  }, [userContext]);
 
   return (
     <AppBar position="fixed" sx={{backgroundColor: 'rgb(39, 44, 52)'}}>
