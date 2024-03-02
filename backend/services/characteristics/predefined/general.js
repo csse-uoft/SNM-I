@@ -109,7 +109,8 @@ module.exports = [{
     implementation: {
       label: 'Occurrence Status',
       valueDataType: 'xsd:string',
-      fieldType: FieldTypes.TextField,
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: ':OccurrenceStatus'
     }
   },
 ]
