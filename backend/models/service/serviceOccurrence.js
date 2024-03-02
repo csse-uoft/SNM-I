@@ -17,6 +17,7 @@ const GDBServiceOccurrenceModel = createGraphDBModel({
   description: {type: String, internalKey: 'cids:hasDescription'},
   capacity: {type: Number, internalKey: ':hasCapacity'},
   occupancy: {type: Number, internalKey: ':hasOccupancy'},
+  status: {type: String, internalKey: ':hasOccurrenceStatus'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'}
 }, {
   rdfTypes: [':ServiceOccurrence'], name: 'serviceOccurrence'

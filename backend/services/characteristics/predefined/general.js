@@ -102,4 +102,14 @@ module.exports = [{
       fieldType: FieldTypes.NumberField,
     },
   },
+  {
+    name: 'Occurrence Status',
+    description: 'The status of a program or service occurrence.',
+    predefinedProperty: 'http://snmi#hasOccurrenceStatus',
+    implementation: {
+      label: 'Occurrence Status',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.TextField,
+    }
+  },
 ]
