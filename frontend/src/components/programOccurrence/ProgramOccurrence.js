@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import GenericForm from "../shared/GenericForm";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ProgramAndNeedSatisfierField} from "./ProgramAndNeedSatisfierField";
-import FieldGroup from '../shared/FieldGroup';
 import {fetchCharacteristics} from '../../api/characteristicApi';
 import {getInstancesInClass} from '../../api/dynamicFormApi';
 import {Box} from '@mui/material';
 import {Loading} from '../shared';
 import SelectField from '../shared/fields/SelectField';
+import {CapacityField} from '../shared/CapacityField';
 
 export default function ProgramOccurrenceForm() {
   const formType = 'programOccurrence';
@@ -51,13 +51,12 @@ export default function ProgramOccurrenceForm() {
     } else if (implementation.optionsFromClass?.endsWith('#NeedSatisfier')) {
       return "";
     } else if (implementation.label === 'Capacity') {
-      return <FieldGroup component={implementation.fieldType.type} key={`${type}_${id}`}
-                         label={implementation.label} required={required} inputProps={{min: 0}}
-                         value={fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
+      return <CapacityField fields={fields} handleChange={handleChange}
+                            capacityFieldId={characteristics['Capacity']._id} />;
     } else if (implementation.label === 'Occupancy') {
       return ''; // Not editable by the user
     } else if (implementation.label === "Occurrence Status") {
-      const statusFieldKey = `characteristic_${characteristics['Occurrence Status']?._id}`;
+      const statusFieldKey = `characteristic_${characteristics['Occurrence Status']._id}`;
       if (!statusFieldKey || !statusOptions) {
         return <Box minWidth={"350px"}><Loading message=""/></Box>;
       }

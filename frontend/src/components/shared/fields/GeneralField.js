@@ -35,7 +35,7 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
       else
         return null;
     }
-    return defaultValue || '';
+    return defaultValue ?? '';
   });
 
   const handleChange = useCallback(e => {
