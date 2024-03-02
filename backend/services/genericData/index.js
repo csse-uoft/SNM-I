@@ -25,7 +25,7 @@ const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurre
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {noQuestion, checkCapacity, checkOccupancy} = require('./checkers')
+const {noQuestion, checkCapacity, setOccupancy} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
@@ -170,10 +170,18 @@ const genericType2Populates = {
   'volunteer': ['partnerOrganizations', 'organization', 'address'],
 };
 
-const genericType2Checker = {
+const genericType2BeforeCreateChecker = {
   'service': [noQuestion],
-  'serviceOccurrence': [noQuestion, checkCapacity, checkOccupancy],
-  'programOccurrence': [noQuestion, checkCapacity, checkOccupancy],
+  'serviceOccurrence': [noQuestion, checkCapacity, setOccupancy],
+  'programOccurrence': [noQuestion, checkCapacity, setOccupancy],
+  'program': [noQuestion],
+  'serviceWaitlist': [noQuestion],
+};
+
+const genericType2BeforeUpdateChecker = {
+  'service': [noQuestion],
+  'serviceOccurrence': [noQuestion, checkCapacity],
+  'programOccurrence': [noQuestion, checkCapacity],
   'program': [noQuestion],
   'serviceWaitlist': [noQuestion],
 };
@@ -427,9 +435,9 @@ const createSingleGenericHelper = async (data, genericType) => {
 
   // extract questions and characteristics based on fields from the database
   await fetchCharacteristicQuestionsInternalTypesBasedOnForms(characteristics, questions, internalTypes, data.fields);
-  if (genericType2Checker[genericType])
-    for (const checker of genericType2Checker[genericType])
-      checker(characteristics, questions, data.fields);
+  if (genericType2BeforeCreateChecker[genericType])
+    for (const checker of genericType2BeforeCreateChecker[genericType])
+      await checker(characteristics, questions, data.fields);
 
   const instanceData = {characteristicOccurrences: [], questionOccurrences: []};
   // iterating over all fields and create occurrences and store them into instanceData
@@ -547,9 +555,9 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
   const internalTypes = {};
   await fetchCharacteristicQuestionsInternalTypesBasedOnForms(characteristics, questions, internalTypes, data.fields);
 
-  if (genericType2Checker[genericType])
-    for (const checker of genericType2Checker[genericType])
-      checker(characteristics, questions, data.fields);
+  if (genericType2BeforeUpdateChecker[genericType])
+    for (const checker of genericType2BeforeUpdateChecker[genericType])
+      await checker(characteristics, questions, data.fields);
 
   // check should we update or create a characteristicOccurrence or questionOccurrence
   // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,

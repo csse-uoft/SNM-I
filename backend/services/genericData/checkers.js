@@ -1,4 +1,6 @@
+const {GDBCharacteristicModel} = require("../../models");
 const {Server400Error} = require("../../utils");
+const {PredefinedCharacteristics} = require("../characteristics");
 
 function noQuestion(characteristics, questions) {
   if (Object.keys(questions).length > 0)
@@ -14,13 +16,12 @@ function checkCapacity(characteristics, questions, fields) {
   }
 }
 
-function checkOccupancy(characteristics, questions, fields) {
-  const occupancyId = Object.keys(characteristics).find(id => characteristics[id].name === 'Occupancy');
-  if (!!occupancyId) {
-    if (fields['characteristic_' + occupancyId] < 0) {
-      throw new Server400Error('Occupancy must be zero or greater.');
-    }
-  }
+async function setOccupancy(characteristics, questions, fields) {
+  const occupancyId = PredefinedCharacteristics['Occupancy']._id;
+  const occupancyCharacteristic = await GDBCharacteristicModel.findOne({_id: occupancyId},
+                                                                       {populates: ['implementation']});
+  characteristics[occupancyId] = occupancyCharacteristic;
+  fields[`characteristic_${occupancyId}`] = '0';
 }
 
-module.exports = {noQuestion, checkCapacity, checkOccupancy}
+module.exports = {noQuestion, checkCapacity, setOccupancy}
