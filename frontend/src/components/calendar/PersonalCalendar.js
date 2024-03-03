@@ -8,7 +8,14 @@ import { Calendar, momentLocalizer  } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from 'moment-timezone';
 import 'moment-timezone';
-import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {Box, Container, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+
+import dayjs from 'dayjs';
+
 
 function convertDate(date) {
   // Convert date to ISO string
@@ -70,6 +77,17 @@ const PersonalCalendar = () => {
     // Therefore we need to reload the page to apply the timezone change
   };
 
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [bigCalendarDate, setBigCalendarDate] = useState(new Date());
+
+  const handleDateChange = (newDate) => {
+    // Update the state with the new selected date
+    setSelectedDate(newDate);
+    console.log("Selected Date: ", newDate.$d);
+    setBigCalendarDate(newDate.$d);
+  };
+
+
 
   return (
     <div>
@@ -92,16 +110,38 @@ const PersonalCalendar = () => {
 
       <h2>Timezone: {selectedTimezone}</h2>
 
-      <Calendar
-        localizer={localizer}
-        events = {appointments}
-        style={{height: 500, width: 1000}}
-        onSelectEvent={event => handleEventClick(event)}
-      />
+      <Box display={"flex"}>
+        <Box flex={"1"}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              label="Select Date"
+              value={selectedDate}
+              onChange={(newDate) => handleDateChange(newDate)}
+            />
+          </LocalizationProvider>
+          {selectedDate !== null && (
+            <p>Selected Date: {typeof selectedDate}</p>
+            // You might need to format the date based on your requirements
+          )}
+        </Box>
+        <Box display="flex" flex={"4"} justifyContent="center" alignItems="center">
+          <Calendar
+            localizer={localizer}
+            events = {appointments}
+            style={{height: 600, width: 1000}}
+            onSelectEvent={event => handleEventClick(event)}
+            date={bigCalendarDate}
+            dayPropGetter={date => (moment(date).format('DD') === moment(bigCalendarDate).format('DD')) && ({ className: 'rbc-selected-day' })}
+          />
+        </Box>
+      </Box>
+
+
 
     </div>
   );
 };
+
 
 
 export default PersonalCalendar;
