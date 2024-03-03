@@ -17,6 +17,7 @@
     "notistack": "^2.0.5",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.0",
+    "react-big-calendar": "^1.10.3",
     "react-bootstrap": "^1.6.1",
     "react-calendar": "^4.8.0",
     "react-dom": "^18.2.0",
