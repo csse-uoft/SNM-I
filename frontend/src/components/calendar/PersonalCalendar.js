@@ -39,8 +39,9 @@ const PersonalCalendar = () => {
     const data = await fetchCalendarAppointments({user_id: id});
     // For each of the appointments, convert the start and end date to a Date object that can be used by the react-big-calendar
     for (let i = 0; i < data.data.length; i++) {
-      data.data[i].start = moment.tz(data.data[i].start, selectedTimezone).toDate();
-      data.data[i].end = moment.tz(data.data[i].end, selectedTimezone).toDate();
+      data.data[i].start = moment.tz(data.data[i].startDate, selectedTimezone).toDate();
+      data.data[i].end = moment.tz(data.data[i].endDate, selectedTimezone).toDate();
+      data.data[i].title = data.data[i].appointmentName;
     }
     // Set the appointments to the state
     setAppointments(data.data);
