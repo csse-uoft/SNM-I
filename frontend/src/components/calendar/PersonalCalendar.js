@@ -8,7 +8,7 @@ import { Calendar, momentLocalizer  } from 'react-big-calendar'
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from 'moment-timezone';
 import 'moment-timezone';
-import {Box, Container, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {Box, Button, Container, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -91,22 +91,30 @@ const PersonalCalendar = () => {
 
   return (
     <div>
-      <FormControl size={"small"} >
-        <InputLabel id="timezone-label">Time Zone</InputLabel>
-        <Select
-          labelId="timezone-label"
-          id="timezone-select"
-          value={selectedTimezone}
-          label="Time Zone"
-          onChange={handleTimeZoneChange}
-        >
-          {moment.tz.names().map((zone) => (
-            <MenuItem key={zone} value={zone}>
-              {zone}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Box display={"flex"}>
+        <Box marginRight={2}>
+          <FormControl size={"small"}>
+            <InputLabel id="timezone-label">Time Zone</InputLabel>
+            <Select
+              labelId="timezone-label"
+              id="timezone-select"
+              value={selectedTimezone}
+              label="Time Zone"
+              onChange={handleTimeZoneChange}
+            >
+              {moment.tz.names().map((zone) => (
+                <MenuItem key={zone} value={zone}>
+                  {zone}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+        </Box>
+        <Button variant="outlined" onClick={() => window.location.href = `/appointments/new`}>Create New Appointment</Button>
+
+      </Box>
+
 
       <h2>Timezone: {selectedTimezone}</h2>
 
