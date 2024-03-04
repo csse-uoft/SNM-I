@@ -39,8 +39,11 @@ export default function GeneralField({type, onChange, value: defaultValue, ...pr
   });
 
   const handleChange = useCallback(e => {
-    const val = e.target.value;
+    let val = e.target.value;
     setValue(val);
+    if (type === 'number' && val === '') {
+      val = null;
+    }
     onChange({target: {value: val}});
   }, [onChange, type]);
 

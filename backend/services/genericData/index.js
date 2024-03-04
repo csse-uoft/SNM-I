@@ -617,6 +617,11 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
           await specialField2Model[fieldType]?.findByIdAndDelete(id);
         }
         await GDBCOModel.findByIdAndDelete(existedCO._id); // remove the occurrence
+
+        // Remove the CO
+        generic.characteristicOccurrences.splice(generic.characteristicOccurrences.indexOf(existedCO), 1)
+        generic.markModified('characteristicOccurrences');
+
         // also have to remove from usage if necessary
         await deleteIdFromUsageAfterChecking('characteristic', genericType, existedCO.occurrenceOf._id);
       }
