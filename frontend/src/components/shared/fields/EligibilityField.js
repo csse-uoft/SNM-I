@@ -131,20 +131,22 @@ export function CustomEligibilityField({value, handleChange, fields, onDelete}) 
   });
 
   const handleLeftOperandChange = e => {
-    const leftOperand = e.target.value;
-    const changes = {leftOperand, rightOperand: ''};
+    if (e.target.value) {
+      const leftOperand = e.target.value;
+      const changes = {leftOperand, rightOperand: ''};
 
-    const config = getConfigByCharacteristic(fields[leftOperand]);
+      const config = getConfigByCharacteristic(fields[leftOperand]);
 
-    const ops = config.operators;
-    if (!ops.includes(value[1])) {
-      changes.operator = ops[0];
-      setState(state => ({...state, operator: ops[0], ...config}));
-    } else {
-      setState(state => ({...state, ...config}));
+      const ops = config.operators;
+      if (!ops.includes(value[1])) {
+        changes.operator = ops[0];
+        setState(state => ({...state, operator: ops[0], ...config}));
+      } else {
+        setState(state => ({...state, ...config}));
+      }
+      handleChange(changes);
+      value[2] = undefined;
     }
-    handleChange(changes);
-    value[2] = undefined;
   }
 
   let rightOperandComponent;
@@ -225,10 +227,11 @@ export default function EligibilityField({value: defaultValue, required, onChang
         if (left == null || right == null) continue;
         const config = getConfigByCharacteristic(fields[left]);
         const formatter = getFormatter(config.type);
+        const leftEscaped = `GetVar(${JSON.stringify(left)})`;
         if (config.toFormula) {
-          inner.push(config.toFormula(left, operator, right));
+          inner.push(config.toFormula(leftEscaped, operator, right));
         } else {
-          inner.push(`${left} ${operator} ${formatter(right)}`);
+          inner.push(`${leftEscaped} ${operator} ${formatter(right)}`);
         }
       }
       if (inner.length > 0) formula.push(inner.join(' && '));

@@ -54,7 +54,7 @@ This section serves as a summary of the overarching file system for the frontend
         * shared/: A subdirectory of components that are frequently re-used in subpages. Examples include alert dialogs and link buttons.
     * constants/: A subdirectory of frequently reused JavaScript objects used for field population and message strings in forms.
     * context/: Defines the context object used for storing the current user's profile. Additionally contains the object's getter function that tracks its global state.
-    * helpers/: Contains various function for field verification in forms. This section also defines verification error messages and regex strings to check the correct formatting of user input.
+    * helpers/: Contains various functions for field verification in forms. This section also defines verification error messages and regex strings to check the correct formatting of user input.
     * store/:
         * actions/: **DEFUNCT**, React hooks have been used instead of Redux
         * reducers/: **DEFUNCT**, React hooks have been used instead of Redux
@@ -73,6 +73,7 @@ This section serves as a summary of the overarching file system for the frontend
         * index.js: Contains host/port configs for graphdb, mongodb, and frontend
         * cert.pem: Required for hosting the http server
         * key.pem: Required for hosting the http server
+    * helpers/: Contains functions for the conversion of objects (e.g. addresses) and sanitizing user input for security.
     * loaders/: Contains the express, graphdb, and mongodb functions called on startup
     * models/: Defines the graphdb and mongodb data models
     * routes/: Defines the api routes and binds them to corresponding function in /services

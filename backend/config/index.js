@@ -72,7 +72,9 @@ if (process.env.GRAPHDB_PASSWORD)
 if (process.env.MONGODB_ADDRESS)
   config.mongodb.addr = process.env.MONGODB_ADDRESS;
 
-if (process.env.FRONTEND_ADDRESS)
+if (process.env.FRONTEND_ADDRESS) {
   config.frontend.addr = process.env.FRONTEND_ADDRESS;
+  config.allowedOrigins.push(process.env.FRONTEND_ADDRESS);
+}
 
 module.exports = config

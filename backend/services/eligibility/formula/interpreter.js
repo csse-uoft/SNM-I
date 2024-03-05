@@ -177,6 +177,9 @@ async function getInterpreter() {
     functionExpression(ctx) {
       const functionName = ctx.functionName[0].image.slice(0, -1);
       const args = this.visit(ctx.arguments);
+      if (functionName === 'GetVar' && args.length === 1) {
+        return this.globals[args[0]];
+      }
       if (this.globals[functionName] == null) {
         throw new Error(`Function '${functionName}' does not exist.`)
       }

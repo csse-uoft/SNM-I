@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from '../shared';
 import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import { deleteSingleGeneric, fetchMultipleGeneric, fetchSearchGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'serviceProvisions';
@@ -92,6 +92,27 @@ export default function ServiceProvisions() {
     return data;
   }
 
+
+  const searchData = async (searchitem) => {
+    const appointmens = (await fetchSearchGeneric('serviceProvision', searchitem)).data;
+    const data = [];
+    for (const appointment of appointmens) {
+      const appointmentData = {_id: appointment._id};
+      if (appointment.characteristicOccurrences)
+        for (const occ of appointment.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Start Date') {
+            appointmentData.startDate = occ.dataDateValue;
+          } else if (occ.occurrenceOf?.name === 'End Date') {
+            appointmentData.endDate = occ.dataDateValue;
+          }
+        }
+      if (appointment.serviceOccurrence)
+        appointmentData.serviceOccurrence = appointment.serviceOccurrence
+      data.push(appointmentData);
+    }
+    return data;
+  }
+
   const deleteServiceProvision = (id) => deleteSingleGeneric('serviceProvision', id);
 
   return (
@@ -100,6 +121,7 @@ export default function ServiceProvisions() {
       title={"Service Provisions"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
+      searchData = {searchData}
       deleteItem={deleteServiceProvision}
       nameFormatter={nameFormatter}
       linkFormatter={linkFormatter}

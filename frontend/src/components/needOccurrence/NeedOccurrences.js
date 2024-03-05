@@ -3,7 +3,6 @@ import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
-import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'needOccurrences';
 
@@ -46,6 +45,15 @@ const columnsWithoutOptions = [
       }
     }
   },
+  {
+    label: 'Client Name/ID',
+    body: ({client}) => {
+      if (client == null || client == undefined){
+        return 'None';
+      }
+      return client;
+    }
+  },
   // {
   //   label: 'Description',
   //   body: ({desc}) => desc
@@ -63,24 +71,26 @@ export default function NeedOccurrences() {
   const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence._id}`;
 
   const fetchData = async () => {
-    const addressCharacteristicId = await getAddressCharacteristicId();
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
     const data = [];
     for (const needOccurrence of needOccurrences) {
       const needOccurrenceData = {
               _id: needOccurrence._id,
               startDate: needOccurrence.startDate,
-              endDate: needOccurrence.endDate
+              endDate: needOccurrence.endDate,
+              client: needOccurrence.client
       };
       if (needOccurrence.occurrenceOf){
         // get corresponding need data
         needOccurrenceData.need = {
           name: needOccurrence.occurrenceOf.description,
           _id: needOccurrence.occurrenceOf._id,
+          client: needOccurrence.occurrenceOf.client
         }
       }
-      if (needOccurrence.address)
+      if (needOccurrence.address) {
         needOccurrenceData.address = needOccurrence.address;
+      }
       data.push(needOccurrenceData);
       console.log(data)
     }

@@ -11,5 +11,16 @@ module.exports = [
       fieldType: FieldTypes.TextField,
     },
   },
+  {
+    name: 'Appointment Status',
+    description: 'The status of an appointment',
+    predefinedProperty: 'http://snmi#hasAppointmentStatus',
+    implementation: {
+      label: 'Appointment Status',
+      valueDataType: 'xsd:string',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: ':AppointmentStatus'
+    }
+  },
 
 ]

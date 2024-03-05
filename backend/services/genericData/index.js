@@ -1,8 +1,6 @@
 const {
   GDBClientModel,
-  GDBServiceProviderModel,
   GDBPhoneNumberModel,
-  GDBCharacteristicModel,
   GDBAddressModel,
   GDBQOModel
 } = require("../../models");
@@ -42,12 +40,18 @@ const {GDBReferralModel} = require("../../models/referral");
 const {
   serviceInternalTypeCreateTreater,
   serviceInternalTypeFetchTreater,
-  serviceInternalTypeUpdateTreater
+  serviceInternalTypeUpdateTreater,
+  afterCreateService,
+  afterUpdateService,
+  afterDeleteService
 } = require("./serviceInternalTypeTreater");
 const {
   programInternalTypeCreateTreater,
   programInternalTypeFetchTreater,
-  programInternalTypeUpdateTreater
+  programInternalTypeUpdateTreater,
+  afterCreateProgram,
+  afterUpdateProgram,
+  afterDeleteProgram
 } = require("./programInternalTypeTreater");
 const {
   referralInternalTypeCreateTreater,
@@ -95,7 +99,8 @@ const {
 const {
   outcomeOccurrenceInternalTypeUpdateTreater,
   outcomeOccurrenceInternalTypeCreateTreater,
-  outcomeOccurrenceInternalTypeFetchTreater
+  outcomeOccurrenceInternalTypeFetchTreater,
+  beforeDeleteOutcomeOccurrence
 } = require("./outcomeOccurrenceInternalTypeTreater");
 const {
   clientAssessmentInternalTypeUpdateTreater,
@@ -112,7 +117,10 @@ const {
 const {
   volunteerInternalTypeCreateTreater,
   volunteerInternalTypeFetchTreater,
-  volunteerInternalTypeUpdateTreater
+  volunteerInternalTypeUpdateTreater,
+  afterCreateVolunteer,
+  afterUpdateVolunteer,
+  afterDeleteVolunteer
 } = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const genericType2Model = {
@@ -134,7 +142,6 @@ const genericType2Model = {
   'outcomeOccurrence': GDBOutcomeOccurrenceModel,
   'clientAssessment': GDBClientAssessmentModel,
   'person': GDBPersonModel,
-  'volunteer': GDBVolunteerModel,
 };
 
 const genericType2Populates = {
@@ -143,25 +150,25 @@ const genericType2Populates = {
   'serviceRegistration': ['address', 'needOccurrence', 'serviceOccurrence'],
   'programRegistration' : ['address', 'needOccurrence', 'programOccurrence'],
   'needOccurrence': ['address', 'occurrenceOf', 'client'],
-  'outcomeOccurrence': ['address'],
+  'outcomeOccurrence': ['address', 'occurrenceOf', 'client'],
   'needSatisfierOccurrence': ['address'],
   'clientAssessment': ['address', 'client'],
   'referral': ['address', 'client'],
   'service': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address'],
   'program': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
-  'serviceOccurrence': ['address'],
-  'programOccurrence': ['address'],
-  'client': ['address'],
-  'appointment': ['address'],
+  'serviceOccurrence': ['address', 'occurrenceOf'],
+  'programOccurrence': ['address', 'occurrenceOf'],
+  'client': ['address', 'needs'],
+  'appointment': ['address', 'referral'],
   'person': ['address'],
-  'volunteer': ['partnerOrganizations', 'organization'],
+  'volunteer': ['partnerOrganizations', 'organization', 'address'],
 };
 
 const genericType2Checker = {
-  'service': noQuestion,
-  'serviceOccurrence': noQuestion,
-  'programOccurrence': noQuestion,
-  'program' : noQuestion
+    'service': noQuestion,
+    'serviceOccurrence': noQuestion,
+    'programOccurrence': noQuestion,
+    'program': noQuestion
 };
 
 
@@ -174,7 +181,8 @@ const genericType2BeforeUpdateTreater = {
 }
 
 const genericType2BeforeDeleteTreater = {
-  'needOccurrence': beforeDeleteNeedOccurrence
+  'needOccurrence': beforeDeleteNeedOccurrence,
+  'outcomeOccurrence': beforeDeleteOutcomeOccurrence
 }
 
 // this dict will be shared by all generic types with internal types as their properties
@@ -236,12 +244,32 @@ const genericType2InternalTypeUpdateTreater = {
   'volunteer': volunteerInternalTypeUpdateTreater
 };
 
+const genericType2AfterCreateTreater = {
+  'program': afterCreateProgram,
+  'service': afterCreateService,
+  'volunteer': afterCreateVolunteer
+}
+
+const genericType2AfterUpdateTreater = {
+  'program': afterUpdateProgram,
+  'service': afterUpdateService,
+  'volunteer': afterUpdateVolunteer
+}
+
+const genericType2AfterDeleteTreater = {
+  'program': afterDeleteProgram,
+  'service': afterDeleteService,
+  'volunteer': afterDeleteVolunteer
+}
+
+const {graphdb} = require('../../config');
 
 const specialField2Model = {
   'address': GDBAddressModel,
   'phoneNumber': GDBPhoneNumberModel
 };
 
+const {extractAllIndexes} = require('../../helpers/stringProcess');
 
 async function fetchSingleGenericHelper(genericType, id) {
 
@@ -463,6 +491,10 @@ const createSingleGeneric = async (req, res, next) => {
       // the instance data is stored into graphdb
       const newGeneric = genericType2Model[genericType](instanceData);
       await newGeneric.save();
+
+      if (genericType2AfterCreateTreater[genericType])
+        await genericType2AfterCreateTreater[genericType](data, req);
+  
       return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`, createdId: newGeneric._id});
     }
 
@@ -606,6 +638,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
   if (genericType2BeforeUpdateTreater[genericType])
     await genericType2BeforeUpdateTreater[genericType](generic, internalTypes, data.fields);
 
+  const oldGeneric = generic.toJSON();
 
   // TODO: Fix the issue where the new value is undefined, it never triggers the genericType2InternalTypeUpdateTreater()
   for (const [key, value] of Object.entries(data.fields)) {
@@ -618,7 +651,8 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
       }
     }
   }
-  return generic;
+
+  return { oldGeneric, generic };
 }
 
 // what should we do if the field is empty
@@ -632,13 +666,16 @@ async function updateSingleGeneric(req, res, next) {
     if (!id) {
       return res.status(400).json({success: false, message: `No ${genericType} id is given`});
     }
-    await (await updateSingleGenericHelper(id, data, genericType)).save();
-    res.status(200).json({success: true});
+    const { oldGeneric, generic } = await updateSingleGenericHelper(id, data, genericType);
+    await generic.save();
 
+    if (genericType2AfterUpdateTreater[genericType])
+      await genericType2AfterUpdateTreater[genericType](data, oldGeneric, req);
+
+    res.status(200).json({success: true});
   } catch (e) {
     next(e);
   }
-
 }
 
 async function deleteSingleGenericHelper(genericType, id) {
@@ -652,6 +689,8 @@ async function deleteSingleGenericHelper(genericType, id) {
 
   if (genericType2BeforeDeleteTreater[genericType])
     genericType2BeforeDeleteTreater[genericType](generic);
+
+  const oldGeneric = generic.toJSON();
 
   const characteristicsOccurrences = generic.characteristicOccurrences;
   const questionsOccurrences = generic.questionOccurrences;
@@ -682,17 +721,20 @@ async function deleteSingleGenericHelper(genericType, id) {
     }
   }
   await genericType2Model[genericType].findByIdAndDelete(id);
+
+  return oldGeneric;
 }
 
 async function deleteSingleGeneric(req, res, next) {
   try {
     // check the package from frontend
     const {genericType, id} = req.params;
-    await deleteSingleGenericHelper(genericType, id);
+    const oldGeneric = await deleteSingleGenericHelper(genericType, id);
+
+    if (genericType2AfterDeleteTreater[genericType])
+      await genericType2AfterDeleteTreater[genericType](oldGeneric, req);
 
     return res.status(200).json({success: true});
-
-
   } catch (e) {
     next(e);
   }
@@ -720,10 +762,196 @@ const fetchGenericDatas = async (req, res, next) => {
   }
 };
 
+const searchGenericDatas = async (req, res, next) => {
+  const {genericType} = req.params;
+
+  let connector_search_result;
+  let fts_search_result;
+  try {
+    if (!genericType2Model[genericType])
+      return res.status(400).json({success: false, message: 'No such generic type'})
+    const extraPopulates = genericType2Populates[genericType] || [];
+
+    let data = [];
+
+    if (req.query.searchitem === undefined || req.query.searchitem === "") {
+      // nothing is entered in the search bar
+      // or it's just requesting all the objects
+      data = await genericType2Model[genericType].find({},
+          {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]});
+    } else {
+      fts_search_result = await fts_search(genericType, req.query.searchitem + '*');
+      connector_search_result = await connector_search(genericType, req.query.searchitem + '*');
+      // merge the two arrays
+      let array = [...new Set([...fts_search_result, ...connector_search_result])];
+
+      if (array.length !== 0) {
+        let data_array = [];
+        for (let i = 0; i < array.length; i++) {
+          data_array.push(await genericType2Model[genericType].find({_uri: array[i]},
+              {populates: ['characteristicOccurrences.occurrenceOf', 'questionOccurrence', ...extraPopulates]}));
+        }
+        data = data_array.flat();
+      }
+
+    }
+
+    return res.status(200).json({data, success: true});
+
+  } catch (e) {
+    next(e);
+  }
+
+
+};
+
+
+
+async function fts_search(searchtype, searchitem) {
+    // The initial query sent to the database
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
+    let query = "";
+
+    search_type_in_string = ['service', 'program', 'serviceProvision', 'client']
+    search_type_in_object = [':Service', ':Program', ':ServiceProvision', ':Client']
+
+    let search_object = '';
+    // if search type is in search_type_in_string, set search_object to the corresponding object
+    for (let i = 0; i < search_type_in_string.length; i++) {
+        if (searchtype === search_type_in_string[i]) {
+            search_object = search_type_in_object[i];
+            break
+        }
+    }
+
+    // FTS search part
+    const sparqlQuery =
+        `
+            PREFIX onto: <http://www.ontotext.com/>
+            PREFIX : <http://snmi#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            
+            select distinct ?e0
+            where 
+            {
+                BIND("${searchitem}" AS ?searchitem)
+                
+                # Search :Service objects
+                {
+                    ?e0 ?p0 ?o0 .
+                    ?e0 rdf:type ${search_object} .
+                }.
+                
+                # Check if the object itself contains the search item
+                {
+                    ?o0 onto:fts ?searchitem .
+                }
+                UNION
+                # Check if the object contains object containing the search item
+                {   
+                    ?o0 ?p1 ?o1 .
+                    
+                    {
+                        ?o1 onto:fts ?searchitem .
+                    }
+                    UNION
+                    {
+                        ?o1 ?p2 ?o2 .
+                        ?o2 onto:fts ?searchitem .
+                    }
+                }
+            }            
+        `;
+
+    query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(searchtype, text);
+
+}
+
+async function connector_search(searchtype, searchitem) {
+    // The initial query sent to the database
+    const baseURI = graphdb.addr + "/repositories/snmi?query=";
+
+    let query = "";
+
+    search_type_in_string = ['service', 'program', 'serviceProvision', 'client']
+    search_type_in_object = [':Service', ':Program', ':ServiceProvision', ':Client']
+
+    let search_object = '';
+    // if search type is in search_type_in_string, set search_object to the corresponding object
+    for (let i = 0; i < search_type_in_string.length; i++) {
+        if (searchtype === search_type_in_string[i]) {
+            search_object = search_type_in_object[i];
+            break
+        }
+    }
+
+    // FTS search part
+    const sparqlQuery =
+        `
+            PREFIX onto: <http://www.ontotext.com/>
+            PREFIX : <http://snmi#>
+            
+            PREFIX luc: <http://www.ontotext.com/connectors/lucene#>
+            PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            
+            select distinct ?e0
+            where 
+            {                
+                # Search :Service objects
+                {
+                    ?e0 ?p0 ?o0 .
+                    ?e0 rdf:type ${search_object} .
+                }.
+                
+                {
+                    ?search a luc-index:service_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?e0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:program_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?e0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:client_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?e0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:characteristicoccurrence_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?o0 .
+                }
+                UNION
+                {
+                    ?search a luc-index:address_connector ;
+                    luc:query "${searchitem}" ;
+                    luc:entities ?o0 .
+                }
+            }        
+        `;
+
+    query = baseURI + encodeURIComponent(sparqlQuery);
+
+    const response = await fetch(query);
+    const text = await response.text();
+    return extractAllIndexes(text);
+
+}
+
 
 module.exports = {
   genericType2Model,
-  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas,
+  fetchSingleGeneric, createSingleGeneric, updateSingleGeneric, deleteSingleGeneric, fetchGenericDatas, searchGenericDatas,
   createSingleGenericHelper, fetchSingleGenericHelper, deleteSingleGenericHelper, updateSingleGenericHelper,
   fetchGenericDatasHelper
 };

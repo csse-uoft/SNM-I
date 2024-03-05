@@ -17,6 +17,11 @@ export default function SelectField(props) {
     onChange({target: {value}});
   }, [onChange]);
 
+  if (options == null || options == undefined){
+    options = {}
+  }
+
+
   return (
     <Autocomplete
       sx={noDefaultStyle ? sx : {mt: '16px', maxWidth: 350, ...sx}}

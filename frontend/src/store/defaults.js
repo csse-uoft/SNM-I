@@ -2,9 +2,9 @@ const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
 if (hostname === 'www.socialneedsmarketplace.ca') {
-  serverHost = 'https://api.socialneedsmarketplace.ca'
+  serverHost = 'https://socialneedsmarketplace.ca'
 } else if (hostname === 'beta.socialneedsmarketplace.ca') {
-  serverHost = 'https://api.beta.socialneedsmarketplace.ca'
+  serverHost = 'https://beta.socialneedsmarketplace.ca'
 } else {
   serverHost = 'https://localhost:5001';
 }

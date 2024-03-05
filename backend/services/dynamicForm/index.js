@@ -164,13 +164,14 @@ async function getIndividualsInClass(className) {
         OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client
         OPTIONAL {?s :hasType ?type . } # for needSatisfier
         OPTIONAL {?s tove_org:hasName ?toveHasName . } # for tove_org:hasName property
+        OPTIONAL {?s :hasPrimaryEmail ?primaryEmail . } # for :hasPrimaryEmail property
         FILTER (isIRI(?s))
     }`;
 
   // todo: volunteer will only give last name
-  await GraphDB.sendSelectQuery(query, false, ({s, label, labelEn, labelFr, name, familyName, givenName, type, lastName, toveHasName}) => {
-    if (labelEn?.value || labelFr?.value || label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value) {
-      instances[s.id] = labelEn?.value || labelFr?.value || label?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+  await GraphDB.sendSelectQuery(query, false, ({s, label, labelEn, labelFr, name, familyName, givenName, type, lastName, toveHasName, primaryEmail}) => {
+    if (labelEn?.value || labelFr?.value || label?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value || primaryEmail?.value) {
+      instances[s.id] = labelEn?.value || labelFr?.value || label?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || primaryEmail?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
       instances[s.id] = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }
@@ -207,13 +208,15 @@ async function getURILabel(req, res) {
         OPTIONAL {?s :hasVolunteer [foaf:familyName ?lastName] .} # For Service Provider: volunteer 
         OPTIONAL {?s foaf:familyName ?familyName. ?s foaf:givenName ?givenName. } # For Person/Client
         OPTIONAL {?s :hasType ?type . } # for needSatisfier
+        OPTIONAL {?s tove_org:hasName ?toveHasName . } # for tove_org:hasName property
+        OPTIONAL {?s :hasPrimaryEmail ?primaryEmail . } # for :hasPrimaryEmail property
         FILTER (isIRI(?s))
     }`;
 
   let result = ''
-  await GraphDB.sendSelectQuery(query, false, ({s, label, labelEn, labelFr, label2, name, familyName, givenName, type, lastName}) => {
-    if (labelEn?.value || labelFr?.value || label?.value || label2?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value) {
-      result = labelEn?.value || labelFr?.value || label?.value || label2?.value || name?.value || lastName?.value || type?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
+  await GraphDB.sendSelectQuery(query, false, ({s, label, labelEn, labelFr, label2, name, familyName, givenName, type, lastName, toveHasName, primaryEmail}) => {
+    if (labelEn?.value || labelFr?.value || label?.value || label2?.value || name?.value || (familyName?.value || givenName?.value) || type?.value || lastName?.value || toveHasName?.value || primaryEmail?.value) {
+      result = labelEn?.value || labelFr?.value || label?.value || label2?.value || name?.value || lastName?.value || type?.value || toveHasName?.value || primaryEmail?.value || `${familyName?.value || ''}, ${givenName?.value || ''}`;
     } else {
       result = SPARQL.ensurePrefixedURI(s.id) || s.id;
     }

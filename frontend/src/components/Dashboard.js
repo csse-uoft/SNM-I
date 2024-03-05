@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Link} from './shared'
 
 import {Container, Button, Typography} from "@mui/material";
-import {Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria} from "@mui/icons-material";
+import {Edit, Create, People, ViewHeadline as Log, CheckCircleOutline as Criteria, Notifications} from "@mui/icons-material";
 import {UserContext} from "../context";
 
 function NavButton({to, text, icon, disabled}) {
@@ -61,6 +61,9 @@ function Dashboard() {
 
       <NavButton to={`/admin-logs`} icon={<Log/>} disabled
                  text="Admin Logs"/>
+
+      <NavButton to={`/notifications`} icon={<Notifications/>}
+                 text="View Notifications"/>
 
       {/*<NavButton to={`/eligibility-criteria`} icon={<Criteria/>}*/}
       {/*           text="Manage Eligibility Criteria"/>*/}

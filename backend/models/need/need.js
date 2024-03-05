@@ -1,4 +1,4 @@
-const {createGraphDBModel, Types} = require("graphdb-utils");
+const {createGraphDBModel, Types, DeleteType} = require("graphdb-utils");
 const {GDBNeedSatisfierModel} = require("../needSatisfier");
 const {GDBCharacteristicModel} = require("../ClientFunctionalities/characteristic");
 const {GDBAddressModel} = require('../address');
@@ -11,7 +11,7 @@ const GDBNeedModel = createGraphDBModel({
   characteristic: {type: GDBCharacteristicModel, internalKey: ':forCharacteristic'},
   codes: {type: [Types.NamedIndividual], internalKey: 'cids:hasCode'},
   kindOf: {type: [() => GDBNeedModel], internalKey: ':kindOf'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':Need'], name: 'need'
 });
