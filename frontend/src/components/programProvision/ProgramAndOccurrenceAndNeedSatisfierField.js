@@ -16,6 +16,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
                                             programOccurrenceFieldId,
                                             needSatisfierFieldId,
                                             handleChange,
+                                            changeProgramOcc,
                                             fixedProgramId // full URI of the program which all shown occurrences must be of, if given
                                           }) {
   const programKey = programFieldId ? `internalType_${programFieldId}` : null;
@@ -52,6 +53,8 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
     const value = e.target.value;
     setSelectedProgramOcc(value);
     handleChange(key)(e);
+    if (changeProgramOcc)
+      changeProgramOcc(value);
   }
 
   useEffect(() => {
@@ -64,6 +67,8 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
     // unset program occurrence after another program is selected
     if (!firstProgram.current) {
       setSelectedProgramOcc(null);
+      if (changeProgramOcc)
+        changeProgramOcc(null);
       handleChange(programOccKey)(null);
     }
     setLoadingProgramOcc(false);
