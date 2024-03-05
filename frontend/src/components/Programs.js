@@ -6,6 +6,7 @@ import {formatLocation} from '../helpers/location_helpers'
 import {fetchForProgramAdvancedSearch} from "../api/advancedSearchApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
 import {formatProviderName} from "./Providers";
+import {getInstancesInClass} from '../api/dynamicFormApi';
 
 const TYPE = 'programs';
 
@@ -100,6 +101,7 @@ export default function Programs() {
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const shareabilities = await getInstancesInClass(':Shareability');
     const programs = (await fetchMultipleGeneric('program')).data;
     const data = [];
     for (const program of programs) {
@@ -138,7 +140,7 @@ export default function Programs() {
       }
 
       if (program.shareability) {
-        programData.shareability = program.shareability;
+        programData.shareability = shareabilities[program.shareability];
         if (program.partnerOrganizations) {
           programData.partnerOrganizations = program.partnerOrganizations;
         }

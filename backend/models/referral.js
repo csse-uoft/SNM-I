@@ -11,7 +11,7 @@ const {GDBAddressModel} = require('./address');
 
 const GDBReferralModel = createGraphDBModel({
   referralType: {type: String, internalKey: ':hasType'},
-  referralStatus: {type: String, internalKey: ':hasStatus'},
+  referralStatus: {type: String, internalKey: ':hasReferralStatus'},
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   date: {type: Date, internalKey: ':hasDate'},
   referringServiceProvider: {type: GDBServiceProviderModel, internalKey: ':hasReferringServiceProvider'},
@@ -24,8 +24,8 @@ const GDBReferralModel = createGraphDBModel({
   program: {type: GDBProgramModel, internalKey: ':forProgram'},
   programOccurrence: {type: GDBProgramOccurrenceModel, internalKey: ':hasProgramOccurrence'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
-  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
+  idInPartnerDeployment: {type: String, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Referral'], name: 'referral'
 });

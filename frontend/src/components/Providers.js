@@ -7,6 +7,7 @@ import { GenericPage, Link } from "./shared";
 import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders, searchMultipleProviders } from "../api/providersApi";
 import { fetchForServiceProviderAdvancedSearch } from "../api/advancedSearchApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import { getInstancesInClass } from '../api/dynamicFormApi';
 
 const TYPE = 'providers';
 
@@ -94,6 +95,7 @@ export default function Providers() {
    */
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const shareabilities = await getInstancesInClass(':Shareability');
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
@@ -123,7 +125,7 @@ export default function Providers() {
       if (innerData.apiKey)
         providerData.apiKey = innerData.apiKey;
       if (innerData.shareability)
-        providerData.shareability = innerData.shareability;
+        providerData.shareability = shareabilities[innerData.shareability];
       if (innerData.organization)
         providerData.organizationProvider = providers.find(obj => obj.organization?._id === innerData.organization._id);
       if (innerData.partnerOrganizations)

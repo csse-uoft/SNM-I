@@ -18,6 +18,12 @@ const columnsWithoutOptions = [
     sortBy: ({_id}) => Number(_id),
   },
   {
+    label: 'Status',
+    body: ({appointmentStatus}) => {
+      return appointmentStatus;
+    }
+  },
+  {
     label: 'Client',
     body: ({client}) => {
       if (client) {
@@ -73,6 +79,7 @@ export default function Appointments() {
     // get all appointments data
     const appointments = (await fetchMultipleGeneric('appointment')).data;
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const statuses = await getInstancesInClass(':AppointmentStatus');
     const clients = {};
     // get all clients data
     await getInstancesInClass(':Client').then((res) => {
@@ -108,6 +115,8 @@ export default function Appointments() {
           } else if (occ.occurrenceOf?.name === 'Date') {
             appointmentData.datetime = occ.dataDateValue;
             appointmentData.dateType = 'Date';
+          } else if (occ.occurrenceOf?.name === 'Appointment Status') {
+            appointmentData.appointmentStatus = statuses[occ.dataStringValue];
           }
         }
       if (appointment.client) {

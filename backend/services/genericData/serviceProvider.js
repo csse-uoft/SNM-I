@@ -7,6 +7,8 @@ const {graphdb} = require('../../config');
 
 const {extractAllIndexes} = require('../../helpers/stringProcess');
 const {PredefinedCharacteristics} = require("../characteristics");
+const { afterCreateVolunteer, afterUpdateVolunteer, afterDeleteVolunteer } = require("./volunteerInternalTypeTreater");
+const { afterUpdateOrganization, afterDeleteOrganization } = require("./organizationInternalTypeTreater");
 
 const createSingleServiceProvider = async (req, res, next) => {
   const {providerType, data} = req.body;
@@ -23,6 +25,11 @@ const createSingleServiceProvider = async (req, res, next) => {
     provider[providerType] = await createSingleGenericHelper(data, providerType);
     if (provider[providerType]) {
       await provider.save();
+
+      if (providerType === 'volunteer') {
+        await afterCreateVolunteer(data, req);
+      }
+
       return res.status(200).json({success: true});
     } else {
       return res.status(400).json({message: 'Fail to create the provider'});
@@ -212,16 +219,22 @@ const updateServiceProvider = async (req, res, next) => {
     const providerType = provider.type;
     const genericId = provider[providerType]._id;
 
-    const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
-    const homeServiceProvider = await GDBServiceProviderModel.findOne({'organization': homeOrganization}, {populates: ['organization']});
-    if (!!homeOrganization && homeServiceProvider._id != id && providerType === 'organization'
+    const homeServiceProvider = await GDBServiceProviderModel.findOne({'organization': {status: 'Home'}}, {populates: ['organization']});
+    if (homeServiceProvider && homeServiceProvider._id !== id && providerType === 'organization'
         && data.fields[PredefinedCharacteristics['Organization Status']?._uri.split('#')[1]] === 'Home') {
       return res.status(400).json({message: 'Cannot create more than one home organization'});
     }
 
-    const generic = await updateSingleGenericHelper(genericId, data, providerType);
+    const { oldGeneric, generic } = await updateSingleGenericHelper(genericId, data, providerType);
     provider[providerType] = generic;
     await provider.save();
+
+    if (providerType === 'volunteer') {
+      await afterUpdateVolunteer(data, oldGeneric, req);
+    } else {
+      await afterUpdateOrganization(data, oldGeneric, req);
+    }
+
     return res.status(200).json({success: true});
   } catch (e) {
     next(e);
@@ -263,9 +276,16 @@ const deleteSingleServiceProvider = async (req, res, next) => {
     const genericId = provider[providerType]._id;
 
     // delete the generic
-    await deleteSingleGenericHelper(providerType, genericId);
+    const oldGeneric = await deleteSingleGenericHelper(providerType, genericId);
     // delete the provider
     await GDBServiceProviderModel.findByIdAndDelete(id);
+
+    if (providerType === 'volunteer') {
+      await afterDeleteVolunteer(oldGeneric, req);
+    } else {
+      await afterDeleteOrganization(oldGeneric, req);
+    }
+
     return res.status(200).json({success: true});
 
   } catch (e) {

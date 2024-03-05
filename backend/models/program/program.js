@@ -15,7 +15,7 @@ const GDBProgramModel = createGraphDBModel({
     internalKey: ':hasCharacteristicOccurrence', onDelete: DeleteType.CASCADE},
   serviceProvider: {type: GDBServiceProviderModel, internalKey: ':hasServiceProvider'},
   manager: {type: GDBPersonModel, internalKey: ':hasManager'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
   mode: {type: Types.NamedIndividual, internalKey: ':hasMode'},
   needSatisfiers: {type: [GDBNeedSatisfierModel], internalKey: ':hasNeedSatisfier'},
   startDate: {type: Date, internalKey: ':hasStartDate'},
@@ -24,7 +24,7 @@ const GDBProgramModel = createGraphDBModel({
 
   shareability: {type: String, internalKey: ':hasShareability'},
   partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'},
-  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
+  idInPartnerDeployment: {type: String, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Program'], name: 'program'
 });

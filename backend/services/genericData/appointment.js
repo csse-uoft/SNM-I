@@ -7,7 +7,7 @@ const appointmentInternalTypeCreateTreater = async (internalType, instanceData, 
   //get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
   //if the property is client, person or user, then set the value to the instanceData
-  if (property === 'client' || property === 'person' || property === 'user'){
+  if (property === 'client' || property === 'person' || property === 'user' || property === 'referral') {
     instanceData[property] = value;
   }
 };
@@ -17,7 +17,7 @@ const appointmentInternalTypeFetchTreater = async (data) => {
   const schema =  data.schema; 
   // for each property in data, if the property is client, person or user, then set the value to the result
   for (const property in data) {
-    if (property === 'client' || property === 'person' || property === 'user') {
+    if (property === 'client' || property === 'person' || property === 'user' || property === 'referral') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
       result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
     }

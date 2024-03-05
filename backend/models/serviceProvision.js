@@ -14,7 +14,7 @@ const GDBServiceProvisionModel = createGraphDBModel({
   needSatisfierOccurrence: {type: GDBNeedSatisfierOccurrenceModel, internalKey: ':hasNeedSatisfierOccurrence'},
   characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   client: {type: GDBClientModel, internalKey: ':hasClient'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':ServiceProvision'], name: 'serviceProvision'
 });
