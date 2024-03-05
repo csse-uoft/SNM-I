@@ -297,7 +297,7 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 const fetchHomeServiceProvider = async (req, res, next) => {
   try {
     const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
-    if (!homeOrganization || homeOrganization.status !== 'Home') {
+    if (!homeOrganization) {
       return res.status(400).json({message: 'This deployment has no home organization'})
     }
     const provider = await GDBServiceProviderModel.findOne({organization: homeOrganization});
