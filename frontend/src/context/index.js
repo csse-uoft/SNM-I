@@ -13,6 +13,7 @@ export const defaultUserContext = {
   phoneNumber:null,
   errorMessage:[],
   expiresAt: 0,
+  anyUnreadNotifications: false,
 }
 
 export const getUserContext = () => {

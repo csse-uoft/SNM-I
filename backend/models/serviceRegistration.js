@@ -14,7 +14,7 @@ const GDBServiceRegistrationModel = createGraphDBModel({
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   appointment: {type: GDBAppointmentModel, internalKey: ':hasAppointment'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':ServiceRegistration'], name: 'serviceRegistration'
 });

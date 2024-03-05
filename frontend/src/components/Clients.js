@@ -28,9 +28,9 @@ const columnsWithoutOptions = [
     label: 'Needs',
     body: ({needs}) => {
       if (needs === null || needs === undefined){
-        needs = "None"
+        return "None";
       }
-      return needs;
+      return needs.map(need => need.type).join(', ');
     }
   },
   // {

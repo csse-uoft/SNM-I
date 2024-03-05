@@ -18,14 +18,14 @@ export default function ServiceOccurrenceForm() {
     });
   }, []);
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange,step) => {
-    if (implementation.optionsFromClass === ":Service") {
+    if (implementation.optionsFromClass?.endsWith("#Service")) {
       // Render Service & Service Occurrence & Need Satisfier
       return <ServiceAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
         serviceFieldId={internalTypes.serviceForServiceOccurrence._id}
         needSatisfierFieldId={internalTypes.needSatisfierForServiceOccurrence._id}/>
 
-    } else if (implementation.optionsFromClass === ':NeedSatisfier') {
+    } else if (implementation.optionsFromClass?.endsWith('#NeedSatisfier')) {
       return "";
     }
   }

@@ -7,6 +7,7 @@ import { GenericPage, Link } from "./shared";
 import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders, searchMultipleProviders } from "../api/providersApi";
 import { fetchForServiceProviderAdvancedSearch } from "../api/advancedSearchApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import { getInstancesInClass } from '../api/dynamicFormApi';
 
 const TYPE = 'providers';
 
@@ -46,13 +47,13 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({type, status, organization}) => {
+    body: ({type, status, organizationProvider}) => {
       if (type === 'organization') {
         return status;
-      } else if (organization) {
-        organization = {...organization, type: 'organization'}
+      } else if (organizationProvider) {
+        organizationProvider = {...organizationProvider, type: 'organization'}
         return <p>
-          From <Link color to={formatProviderLink(organization)}>{organization.status}</Link>
+          From <Link color to={formatProviderLink(organizationProvider)}>{organizationProvider.organization.status}</Link>
         </p>;
       } else {
         return 'Unaffiliated';
@@ -94,6 +95,7 @@ export default function Providers() {
    */
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const shareabilities = await getInstancesInClass(':Shareability');
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
@@ -123,9 +125,9 @@ export default function Providers() {
       if (innerData.apiKey)
         providerData.apiKey = innerData.apiKey;
       if (innerData.shareability)
-        providerData.shareability = innerData.shareability;
+        providerData.shareability = shareabilities[innerData.shareability];
       if (innerData.organization)
-        providerData.organization = innerData.organization;
+        providerData.organizationProvider = providers.find(obj => obj.organization?._id === innerData.organization._id);
       if (innerData.partnerOrganizations)
         providerData.partnerOrganizations = innerData.partnerOrganizations;
       data.push(providerData);

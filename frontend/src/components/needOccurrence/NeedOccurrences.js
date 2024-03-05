@@ -3,7 +3,6 @@ import { Link } from '../shared';
 import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
-import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 
 const TYPE = 'needOccurrences';
 
@@ -72,7 +71,6 @@ export default function NeedOccurrences() {
   const linkFormatter = needOccurrence => `/${TYPE}/${needOccurrence._id}`;
 
   const fetchData = async () => {
-    const addressCharacteristicId = await getAddressCharacteristicId();
     const needOccurrences = (await fetchMultipleGeneric('needOccurrence')).data;
     const data = [];
     for (const needOccurrence of needOccurrences) {
@@ -90,8 +88,9 @@ export default function NeedOccurrences() {
           client: needOccurrence.occurrenceOf.client
         }
       }
-      if (needOccurrence.address)
+      if (needOccurrence.address) {
         needOccurrenceData.address = needOccurrence.address;
+      }
       data.push(needOccurrenceData);
       console.log(data)
     }

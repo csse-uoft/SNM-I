@@ -26,7 +26,7 @@ const GDBClientModel = createGraphDBModel({
   firstName: {type: String, internalKey: 'foaf:givenName'},
   lastName: {type: String, internalKey: 'foaf:familyName'},
   gender: {type: Types.NamedIndividual, internalKey: 'cp:hasGender'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
 }, {
   rdfTypes: [':Client'], name: 'client'
 });
