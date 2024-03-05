@@ -32,6 +32,7 @@ async function sendPartnerUpdateNotification(req, partnerId) {
           headers: {
             'X-RECEIVER-API-KEY': organization.apiKey,
             ...(!!senderApiKey && { 'X-SENDER-API-KEY': senderApiKey }),
+            // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
             'Referer': new URL(req.headers.origin).hostname,
           },
         });

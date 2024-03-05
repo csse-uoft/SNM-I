@@ -44,7 +44,8 @@ async function fetchOrganizationHelper(req, genericId) {
         headers: {
           'X-RECEIVER-API-KEY': organization.apiKey,
           ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
-          'Referer': req.headers.host,
+          // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
+          'Referer': new URL(req.headers.origin).hostname,
         },
       });
       clearTimeout(timeout);
@@ -480,7 +481,7 @@ async function sendOrganization(req, res, next) {
     let partnerOrganizations = await fetchGenericDatasHelper('organization');
     partnerOrganizations = partnerOrganizations
       .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey
-        && organizationObj.endpointUrl === req.headers.referer)
+        && new URL(organizationObj.endpointUrl).hostname === req.headers.referer)
       .map(organizationObj => organizationObj._uri);
     
     for (const characteristicOccurrence of organization.characteristicOccurrences) {

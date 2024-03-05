@@ -107,6 +107,7 @@ async function sendAppointment(req, res, next) {
       headers: {
         'Content-Type': 'application/json',
         'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
         'Referer': new URL(req.headers.origin).hostname,
       },
       body: JSON.stringify(appointment),
