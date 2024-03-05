@@ -1,8 +1,9 @@
 import React from 'react';
 import {Link} from "../shared"
-import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {GenericPage } from "../shared";
+import {deleteSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
+import {getInstancesInClass} from '../../api/dynamicFormApi';
 
 const TYPE = 'serviceRegistrations';
 
@@ -16,8 +17,8 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({referralStatus}) =>{
-      return referralStatus
+    body: ({status}) =>{
+      return status;
     }
   },
   // {
@@ -39,15 +40,14 @@ export default function ServiceRegistrations() {
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
     const services = (await fetchMultipleGeneric('serviceRegistration')).data;
+    const statuses = await getInstancesInClass(':RegistrationStatus');
     const data = [];
     for (const service of services) {
       const serviceData = {_id: service._id};
       if (service.characteristicOccurrences)
         for (const occ of service.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Referral Type') {
-            serviceData.referralType = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Referral Status') {
-            serviceData.referralStatus = occ.objectValue;
+          if (occ.occurrenceOf?.name === 'Registration Status') {
+            serviceData.status = statuses[occ.dataStringValue];
           }
         }
       if (service.address)

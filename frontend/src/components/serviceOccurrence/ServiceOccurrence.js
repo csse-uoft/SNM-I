@@ -3,10 +3,6 @@ import GenericForm from "../shared/GenericForm";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ServiceAndNeedSatisfierField} from "./ServiceAndNeedSatisfierField";
 import {fetchCharacteristics} from '../../api/characteristicApi';
-import {getInstancesInClass} from '../../api/dynamicFormApi';
-import {Box} from '@mui/material';
-import {Loading} from '../shared';
-import SelectField from '../shared/fields/SelectField';
 import {CapacityField} from '../shared/CapacityField';
 
 export default function ServiceOccurrenceForm() {
@@ -35,12 +31,6 @@ export default function ServiceOccurrenceForm() {
     });
   }, []);
 
-  const [statusOptions, setStatusOptions] = useState(null);
-  useEffect(() => {
-    getInstancesInClass(':OccurrenceStatus')
-      .then(options => setStatusOptions(options));
-  }, []);
-
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange,step) => {
     if (implementation.optionsFromClass?.endsWith("#Service")) {
       // Render Service & Service Occurrence & Need Satisfier
@@ -56,14 +46,6 @@ export default function ServiceOccurrenceForm() {
                             capacityFieldId={characteristics['Capacity']._id} />;
     } else if (implementation.label === 'Occupancy') {
       return ''; // Not editable by the user
-    } else if (implementation.label === "Occurrence Status") {
-      const statusFieldKey = `characteristic_${characteristics['Occurrence Status']._id}`;
-      if (!statusFieldKey || !statusOptions) {
-        return <Box minWidth={"350px"}><Loading message=""/></Box>;
-      }
-
-      return <SelectField key={statusFieldKey} label="Occurrence Status" required value={fields[statusFieldKey]}
-        options={statusOptions} onChange={handleChange(statusFieldKey)}/>;
     }
   }
 

@@ -88,9 +88,9 @@ app.use('/public', partnerNetworkPublicRoute);
   await initOptions('Appointment Statuses',
     ["Requested", "Confirmed", "Cancelled", "Fulfilled", "Client No Show", "Postponed"],
     'AppointmentStatus', 'appointmentStatus');
-  await initOptions('Service and Program Occurrence Statuses',
+  await initOptions('Service and Program Registration Statuses',
     ["Registered", "Not Registered", "Waitlisted"],
-    'OccurrenceStatus', 'occurrenceStatus');
+    'RegistrationStatus', 'registrationStatus');
 })()
 
 

@@ -103,14 +103,14 @@ module.exports = [{
     },
   },
   {
-    name: 'Occurrence Status',
-    description: 'The status of a program or service occurrence.',
-    predefinedProperty: 'http://snmi#hasOccurrenceStatus',
+    name: 'Registration Status',
+    description: 'The status of a program or service registration.',
+    predefinedProperty: 'http://snmi#hasRegistrationStatus',
     implementation: {
-      label: 'Occurrence Status',
+      label: 'Registration Status',
       valueDataType: 'xsd:string',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: ':OccurrenceStatus'
+      optionsFromClass: ':RegistrationStatus'
     }
   },
 ]

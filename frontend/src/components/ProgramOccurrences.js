@@ -20,6 +20,21 @@ const columnsWithoutOptions = [
     },
     sortBy: ({programName}) => programName,
   },
+  {
+    label: 'Occupancy',
+    body: ({occupancy, capacity}) => {
+      return `${occupancy}/${capacity ?? '∞'}`;
+    },
+    sortBy: ({occupancy, capacity}) => {
+      if (!!capacity) {
+        return occupancy / capacity;
+      } else {
+        // If capacity is 0, occupancy must also be 0 (letting 0 / 0 = 0)
+        // If capacity is unlimited, % occupancy is 0
+        return 0;
+      }
+    },
+  },
   // {
   //   label: 'Category',
   //   body: ({category}) => category
@@ -46,6 +61,8 @@ export default function ProgramOccurrences() {
       if (programOccurrence.description) {
         programOccurrenceData.description = programOccurrence.description;
       }
+      programOccurrenceData.capacity = programOccurrence.capacity;
+      programOccurrenceData.occupancy = programOccurrence.occupancy;
       if (programOccurrence.occurrenceOf) {
         programOccurrenceData.programID = programOccurrence.occurrenceOf._id;
         programOccurrenceData.programName = programOccurrence.occurrenceOf.name;

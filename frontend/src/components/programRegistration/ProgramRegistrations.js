@@ -1,8 +1,9 @@
 import React from 'react';
 import {Link} from "../shared"
-import { GenericPage } from "../shared";
-import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
+import {GenericPage} from "../shared";
+import {deleteSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
+import {getInstancesInClass} from '../../api/dynamicFormApi';
 
 const TYPE = 'programRegistrations';
 
@@ -16,8 +17,8 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({referralStatus}) =>{
-      return referralStatus
+    body: ({status}) =>{
+      return status;
     }
   },
   // {
@@ -39,15 +40,14 @@ export default function ProgramRegistrations() {
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
     const programs = (await fetchMultipleGeneric('programRegistration')).data;
+    const statuses = await getInstancesInClass(':RegistrationStatus');
     const data = [];
     for (const program of programs) {
       const programData = {_id: program._id};
       if (program.characteristicOccurrences)
         for (const occ of program.characteristicOccurrences) {
-          if (occ.occurrenceOf?.name === 'Referral Type') {
-            programData.referralType = occ.dataStringValue;
-          } else if (occ.occurrenceOf?.name === 'Referral Status') {
-            programData.referralStatus = occ.objectValue;
+          if (occ.occurrenceOf?.name === 'Registration Status') {
+            programData.status = statuses[occ.dataStringValue];
           }
         }
       if (program.address)
