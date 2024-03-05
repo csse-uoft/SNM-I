@@ -59,13 +59,13 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
         const hasCapacity = (capacity == null) || (occupancy < capacity);
 
         const registeredUri = Object.keys(allStatusOptions).find(uri => allStatusOptions[uri] === 'Registered');
-        const notRegisteredUri = Object.keys(allStatusOptions).find(uri => allStatusOptions[uri] === 'Not registered');
+        const notRegisteredUri = Object.keys(allStatusOptions).find(uri => allStatusOptions[uri] === 'Not Registered');
         const waitlistedUri = Object.keys(allStatusOptions).find(uri => allStatusOptions[uri] === 'Waitlisted');
 
         let options = {};
         if (mode === 'new') {
           if (hasCapacity) {
-            options[registeredUri] = 'Register immediately';
+            options[registeredUri] = 'Register';
             options[notRegisteredUri] = 'Save without registering';
           } else {
             options[waitlistedUri] = 'Waitlist';
@@ -75,17 +75,17 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
         } else {
           fetchSingleGeneric('serviceRegistration', id)
             .then(reg => {
-              const status = reg.data[`characteristic_${characteristics['Registration Status']._id}`];
+              const status = allStatusOptions[reg.data[`characteristic_${characteristics['Registration Status']._id}`]];
               if (status === 'Registered') {
                 options[registeredUri] = 'Remain registered';
                 options[notRegisteredUri] = 'Unregister';
               } else if (status === 'Waitlisted') {
-                options[waitlistedUri] = 'Remain waitlisted';
+                options[waitlistedUri] = 'Stay on waitlist';
                 options[notRegisteredUri] = 'Withdraw from waitlist';
               } else {
                 // If updating a not-registered registration, options are the same as when creating a new registration
                 if (hasCapacity) {
-                  options[registeredUri] = 'Register immediately';
+                  options[registeredUri] = 'Register';
                   options[notRegisteredUri] = 'Save without registering';
                 } else {
                   options[waitlistedUri] = 'Waitlist';
@@ -98,7 +98,7 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
       });
   }, [selectedServiceOcc]);
 
-  if (!characteristics || !internalTypes || !statusOptions) {
+  if (!characteristics || !internalTypes) {
     return <Box minWidth={"350px"}><Loading message=""/></Box>;
   }
 
@@ -109,8 +109,8 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
       serviceOccurrenceFieldId={serviceOccurrenceFieldId}
       fixedServiceId={serviceOrProgramId}
       changeServiceOcc={value => setSelectedServiceOcc(value)}/>
-    {!!selectedServiceOcc ?
-      <Fade in={!!selectedServiceOcc}>
+    {!!selectedServiceOcc && !!statusOptions ?
+      <Fade in={!!selectedServiceOcc && !!statusOptions}>
         <div>
           <SelectField key={statusFieldKey} label="Registration Status" required value={fields[statusFieldKey]}
             options={statusOptions} onChange={handleChange(statusFieldKey)}/>
