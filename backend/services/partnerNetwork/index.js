@@ -128,7 +128,8 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
     }
 
     // If we reach this point, then assetData is a new asset in the partner deployment
-    await model(await createSingleGenericHelper(asset, assetType)).save();
+    const instanceData = await createSingleGenericHelper(asset, assetType);
+    await model(instanceData).save();
   }
 
   // Local assets associated with this organization still left in this array are to be deleted
