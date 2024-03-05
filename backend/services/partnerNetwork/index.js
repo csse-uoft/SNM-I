@@ -37,7 +37,7 @@ async function fetchOrganizationHelper(req, genericId) {
       const senderApiKey = !!homeOrganization ? homeOrganization.apiKey : null;
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const response = await fetch(url, {
         signal: controller.signal,
         method: 'GET',

@@ -25,7 +25,7 @@ async function sendPartnerUpdateNotification(req, partnerId) {
         const senderApiKey = homeOrganization.apiKey;
 
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
+        const timeout = setTimeout(() => controller.abort(), 15000);
         const response = await fetch(url, {
           signal: controller.signal,
           method: 'POST',

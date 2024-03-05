@@ -165,7 +165,7 @@ async function sendReferral(req, res, next) {
     url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
     const response = await fetch(url, {
       signal: controller.signal,
       method: req.method,
