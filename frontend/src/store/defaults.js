@@ -2,7 +2,7 @@ const hostname = window && window.location && window.location.hostname;
 
 let serverHost;
 if (hostname === 'www.socialneedsmarketplace.ca') {
-  serverHost = 'https://socialneedsmarketplace.ca'
+  serverHost = 'https://www.socialneedsmarketplace.ca'
 } else if (hostname === 'beta.socialneedsmarketplace.ca') {
   serverHost = 'https://beta.socialneedsmarketplace.ca'
 } else {
