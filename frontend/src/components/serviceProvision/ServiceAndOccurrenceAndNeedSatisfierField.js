@@ -16,6 +16,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
                                             serviceOccurrenceFieldId,
                                             needSatisfierFieldId,
                                             handleChange,
+                                            changeServiceOcc,
                                             fixedServiceId // full URI of the service which all shown occurrences must be of, if given
                                           }) {
   const serviceKey = serviceFieldId ? `internalType_${serviceFieldId}` : null;
@@ -52,6 +53,8 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     const value = e.target.value;
     setSelectedServiceOcc(value);
     handleChange(key)(e);
+    if (changeServiceOcc)
+      changeServiceOcc(value);
   }
 
   useEffect(() => {
@@ -64,6 +67,8 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     // unset service occurrence after another service is selected
     if (!firstService.current) {
       setSelectedServiceOcc(null);
+      if (changeServiceOcc)
+        changeServiceOcc(null);
       handleChange(serviceOccKey)(null);
     }
     setLoadingServiceOcc(false);
