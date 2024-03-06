@@ -211,27 +211,42 @@ module.exports = [
 
   // below are for servic waitlist
   {
-    name: 'clientForServiceWaitlist',
-    predefinedProperty: 'http://snmi#hasClient',
+    name: 'waitlistForServiceWaitlist',
+    predefinedProperty: 'http://snmi#hasWaitlist',
     formType: 'serviceWaitlist',
     implementation: {
-      label: 'Client',
+      label: 'Waitlist',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.MultiSelectField,
-      optionsFromClass: 'http://snmi#Client'
+      optionsFromClass: 'http://snmi#WaitlistEntry'
     }
   },
   {
-    name: 'serviceForServiceWaitlist',
-    predefinedProperty: 'http://snmi#hasService',
+    name: 'serviceOccurrenceForServiceWaitlist',
+    predefinedProperty: 'http://snmi#hasServiceOccurrence',
     formType: 'serviceWaitlist',
     implementation: {
-      label: 'Service',
+      label: 'ServiceOccurrence',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#Service'
+      optionsFromClass: 'http://snmi#ServiceOccurrence'
     }
   },
+
+  //below are for waitlist Entry
+  {
+    name: 'clientForWaitlistEntry',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'waitlistEntry',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
+    }
+  },
+
+  //TODO: Do I need something for the priority as well???
 
 
 

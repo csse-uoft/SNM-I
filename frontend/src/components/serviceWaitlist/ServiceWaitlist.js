@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import GenericForm from "../shared/GenericForm";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
-import {ServiceAndNeedSatisfierField} from "../serviceOccurrence/ServiceAndNeedSatisfierField";
 
 export default function ServiceWaitlistForm() {
   const formType = 'serviceWaitlist';
