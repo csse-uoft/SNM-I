@@ -35,7 +35,7 @@ const updateOccurrenceOccupancyOnProgramRegistrationCreate = async function (cha
       throw new Error('The requested program occurrence is now at capacity. Please refresh the form to review your current options.');
     }
   } else if (status === 'Waitlisted') {
-    // TODO
+    // TODO: Push new registration to waitlist (probably after create instead of before)
   }
 }
 
@@ -64,8 +64,9 @@ const updateOccurrenceOccupancyOnProgramRegistrationUpdate = async function (ins
   } else if (oldStatus === 'Registered' && newStatus === 'Not Registered') {
     occ.occupancy -= 1;
     occ.save();
-  } else if (oldStatus === 'Waitlisted' && newStatus === 'Not Registered') { // TODO
-  } else if (oldStatus === 'Not Registered' && newStatus === 'Waitlisted') { // TODO
+    // TODO: Pop one registration from waitlist, if any, and change its status to registered
+  } else if (oldStatus === 'Waitlisted' && newStatus === 'Not Registered') { // TODO: Remove this registration from waitlist
+  } else if (oldStatus === 'Not Registered' && newStatus === 'Waitlisted') { // TODO: Push this registration to waitlist
   } else {
     throw new Error('Invalid registration status chosen.');
   }
@@ -80,7 +81,8 @@ const updateOccurrenceOccupancyOnProgramRegistrationDelete = async function (old
   if (status === 'Registered') {
     occ.occupancy -= 1;
     occ.save();
-  } else if (status === 'Waitlisted') { // TODO
+    // TODO: Pop one registration from waitlist, if any, and change its status to registered
+  } else if (status === 'Waitlisted') { // TODO: Remove this registration from waitlist
   }
 }
 
