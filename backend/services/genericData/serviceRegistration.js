@@ -3,7 +3,7 @@ const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {getIndividualsInClass} = require("../dynamicForm");
-const { PredefinedCharacteristics, PredefinedInternalTypes } = require("../characteristics");
+const {PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
 
 const FORMTYPE = 'serviceRegistration'
 

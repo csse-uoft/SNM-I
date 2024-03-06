@@ -71,7 +71,9 @@ const {
 } = require("./serviceRegistration");
 const {
   programRegistrationInternalTypeCreateTreater, programRegistrationInternalTypeFetchTreater,
-  programRegistrationInternalTypeUpdateTreater
+  programRegistrationInternalTypeUpdateTreater,
+  updateOccurrenceOccupancyOnProgramRegistrationCreate, updateOccurrenceOccupancyOnProgramRegistrationUpdate,
+  updateOccurrenceOccupancyOnProgramRegistrationDelete, checkProgramOccurrenceUnchanged,
 } = require("./programRegistration");
 const {
   appointmentInternalTypeCreateTreater,
@@ -178,6 +180,7 @@ const genericType2BeforeCreateChecker = {
   'serviceRegistration': [updateOccurrenceOccupancyOnServiceRegistrationCreate],
   'program': [noQuestion],
   'programOccurrence': [noQuestion, checkCapacity, setOccupancy],
+  'programRegistration': [updateOccurrenceOccupancyOnProgramRegistrationCreate],
   'serviceWaitlist': [noQuestion],
 };
 
@@ -187,11 +190,13 @@ const genericType2BeforeUpdateChecker = {
   'serviceRegistration': [checkServiceOccurrenceUnchanged, updateOccurrenceOccupancyOnServiceRegistrationUpdate],
   'program': [noQuestion],
   'programOccurrence': [noQuestion, checkCapacity, unsetOccupancy],
+  'programRegistration': [checkProgramOccurrenceUnchanged, updateOccurrenceOccupancyOnProgramRegistrationUpdate],
   'serviceWaitlist': [noQuestion],
 };
 
 const genericType2BeforeDeleteChecker = {
   'serviceRegistration': [updateOccurrenceOccupancyOnServiceRegistrationDelete],
+  'programRegistration': [updateOccurrenceOccupancyOnProgramRegistrationDelete],
 }
 
 const genericType2BeforeCreateTreater = {
