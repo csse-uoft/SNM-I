@@ -24,7 +24,7 @@ const GDBProgramModel = createGraphDBModel({
 
   shareability: {type: String, internalKey: ':hasShareability'},
   partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'},
-  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
+  idInPartnerDeployment: {type: String, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Program'], name: 'program'
 });

@@ -15,7 +15,7 @@ const GDBAppointmentModel = createGraphDBModel({
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   characteristicOccurrences : {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
-  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
+  idInPartnerDeployment: {type: String, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Appointment'], name: 'appointment'
 });

@@ -37,14 +37,13 @@ async function fetchOrganizationHelper(req, genericId) {
       const senderApiKey = !!homeOrganization ? homeOrganization.apiKey : null;
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const response = await fetch(url, {
         signal: controller.signal,
         method: 'GET',
         headers: {
           'X-RECEIVER-API-KEY': organization.apiKey,
-          ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
-          'Referer': req.headers.host,
+          ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey})
         },
       });
       clearTimeout(timeout);
@@ -129,7 +128,8 @@ async function updateOrganizationGenericAssets(organizationGenericId, partnerDat
     }
 
     // If we reach this point, then assetData is a new asset in the partner deployment
-    await model(await createSingleGenericHelper(asset, assetType)).save();
+    const instanceData = await createSingleGenericHelper(asset, assetType);
+    await model(instanceData).save();
   }
 
   // Local assets associated with this organization still left in this array are to be deleted
@@ -480,7 +480,7 @@ async function sendOrganization(req, res, next) {
     let partnerOrganizations = await fetchGenericDatasHelper('organization');
     partnerOrganizations = partnerOrganizations
       .filter(organizationObj => organizationObj.status === 'Partner' && organizationObj.apiKey === senderApiKey
-        && organizationObj.endpointUrl === req.headers.referer)
+        && new URL(organizationObj.endpointUrl).hostname === req.headers.referer)
       .map(organizationObj => organizationObj._uri);
     
     for (const characteristicOccurrence of organization.characteristicOccurrences) {

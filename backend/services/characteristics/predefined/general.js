@@ -78,7 +78,7 @@ module.exports = [{
     predefinedProperty: 'http://snmi#hasIdInPartnerDeployment',
     implementation: {
       label: 'ID in Partner Deployment',
-      valueDataType: 'xsd:number',
+      valueDataType: 'xsd:string',
       fieldType: FieldTypes.NumberField,
     },
   },

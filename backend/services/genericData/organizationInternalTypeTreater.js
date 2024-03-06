@@ -15,9 +15,7 @@ const afterUpdateOrganization = async function (data, oldGeneric, req) {
     partners.push(partner.split('_')[1]);
   }
 
-  for (const partnerId of partners) {
-    await sendPartnerUpdateNotification(req, partnerId);
-  }
+  await Promise.all(partners.map(partnerId => sendPartnerUpdateNotification(req, partnerId)));
 }
 
 const afterDeleteOrganization = async function (oldGeneric, req) {

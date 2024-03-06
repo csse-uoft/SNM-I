@@ -28,20 +28,20 @@ async function populateAppointment(appointmentGeneric) {
   appointment.datetime = appointmentGeneric[PredefinedCharacteristics['Date and Time']._uri.split('#')[1]];
   appointment.status = appointmentStatuses[appointmentGeneric[PredefinedCharacteristics['Appointment Status']._uri.split('#')[1]]];
 
-  const referralId = parseInt((appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
-    || appointmentGeneric.referral)?.split('_')[1]);
-  if (!!referralId) {
-    const referralGeneric = await GDBReferralModel.findOne({ _id: referralId },
+  const referralUri = (appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
+    || appointmentGeneric.referral);
+  if (referralUri) {
+    const referralGeneric = await GDBReferralModel.findByUri(referralUri,
       { populates: ['characteristicOccurrences.occurrenceOf'] });
     appointment.referral = (await getGenericAssets([referralGeneric], {
       'ID in Partner Deployment': 'id',
     }, []))[0];
   }
 
-  const clientId = parseInt((appointmentGeneric[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]]
-    || appointmentGeneric.client)?.split('_')[1]);
-  if (!!clientId) {
-    const clientGeneric = await GDBClientModel.findOne({ _id: clientId },
+  const clientUri = (appointmentGeneric[PredefinedInternalTypes['clientForAppointment']._uri.split('#')[1]]
+    || appointmentGeneric.client);
+  if (clientUri) {
+    const clientGeneric = await GDBClientModel.findByUri(clientUri,
       { populates: ['characteristicOccurrences.occurrenceOf'] });
     appointment.client = (await getGenericAssets([clientGeneric], {
       'First Name': 'firstName',
@@ -75,10 +75,10 @@ async function sendAppointment(req, res, next) {
       return res.status(400).json({ message: 'No id provided' });
     }
 
-    const referralId = parseInt((
+    const referralId = (
       appointmentGeneric[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
-      || appointmentGeneric.referral)?.split('_')[1]);
-    if (!referralId || isNaN(referralId)) {
+      || appointmentGeneric.referral)?.split('_')[1];
+    if (!referralId) {
       // This is a valid case (the appointment is not meant to be sent)
       return res.status(200).json({success: true});
     }
@@ -100,13 +100,14 @@ async function sendAppointment(req, res, next) {
     url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
     const response = await fetch(url, {
       signal: controller.signal,
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
         'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
+        // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
         'Referer': new URL(req.headers.origin).hostname,
       },
       body: JSON.stringify(appointment),
@@ -160,7 +161,7 @@ async function receiveAppointmentHelper(req, partnerData) {
     throw new Error('No appointment form available');
   }
 
-  if (Object.keys(PredefinedCharacteristics).length == 0) {
+  if (Object.keys(PredefinedCharacteristics).length === 0) {
     await initPredefinedCharacteristics();
   }
 
@@ -168,13 +169,13 @@ async function receiveAppointmentHelper(req, partnerData) {
   const partner = await GDBOrganizationModel.findOne({
     endpointUrl: {$regex: regexBuilder(`(https?://)?${req.header.referer}`)}
   });
-  if (!partner || new URL(partner.endpointUrl).hostname !== req.headers.referer) { // Redundant check for findOne bug
+  if (!partner) {
     throw new Error("Could not find partner organization with the same endpoint URL as the sender");
   }
 
   const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' },
     { populates: ['characteristicOccurrences.occurrenceOf'] });
-  if (!homeOrganization || homeOrganization.status !== 'Home') {
+  if (!homeOrganization) {
     throw new Error('This deployment has no home organization');
   }
 

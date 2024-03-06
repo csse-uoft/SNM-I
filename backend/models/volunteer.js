@@ -16,7 +16,7 @@ const GDBVolunteerModel = createGraphDBModel({
   organization: {type: GDBOrganizationModel, internalKey: ':hasOrganization'},
   shareability: {type: String, internalKey: ':hasShareability'},
   partnerOrganizations: {type: [GDBOrganizationModel], internalKey: ':hasPartnerOrganization'},
-  idInPartnerDeployment: {type: Number, internalKey: ':hasIdInPartnerDeployment'},
+  idInPartnerDeployment: {type: String, internalKey: ':hasIdInPartnerDeployment'},
 }, {
   rdfTypes: [':Volunteer'], name: 'volunteer'
 });

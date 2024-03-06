@@ -20,21 +20,19 @@ async function sendPartnerUpdateNotification(req, partnerId) {
         url.port = organization.endpointPort;
 
         const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' }, { populates: [] });
-        let senderApiKey = null;
-        if (!!homeOrganization && homeOrganization.status === 'Home') { // Redundant check for findOne bug
-          senderApiKey = homeOrganization.apiKey;
-        } else {
-          return;
-        }
+        // Do not send the notification if the home organization does not have an api key.
+        if (!homeOrganization || !homeOrganization.apiKey) return;
+        const senderApiKey = homeOrganization.apiKey;
 
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
+        const timeout = setTimeout(() => controller.abort(), 15000);
         const response = await fetch(url, {
           signal: controller.signal,
           method: 'POST',
           headers: {
             'X-RECEIVER-API-KEY': organization.apiKey,
             ...(!!senderApiKey && { 'X-SENDER-API-KEY': senderApiKey }),
+            // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
             'Referer': new URL(req.headers.origin).hostname,
           },
         });
@@ -64,7 +62,7 @@ async function printAddress(address) {
   const addressInfo = {streetTypes, streetDirections, states};
 
   if (typeof address === 'string') {
-    address = await GDBAddressModel.findOne({_id: address.split('_')[1]});
+    address = await GDBAddressModel.findByUri(address);
   }
 
   return sanitize(formatLocation(address, addressInfo));
@@ -76,7 +74,7 @@ async function receivePartnerUpdateNotification(req, res, next) {
   try {
     const homeOrganization = await GDBOrganizationModel.findOne({ status: 'Home' },
       { populates: ['characteristicOccurrences.occurrenceOf'] });
-    if (!homeOrganization || homeOrganization.status !== 'Home') { // Redundant check for findOne bug
+    if (!homeOrganization) {
       throw new Error('This deployment has no home organization');
     }
 
@@ -90,8 +88,7 @@ async function receivePartnerUpdateNotification(req, res, next) {
       apiKey: senderApiKey,
       endpointUrl: {$regex: regexBuilder(`(https?://)?${req.headers.referer}`)}
     });
-    if (partnerOrganization && partnerOrganization.apiKey === senderApiKey
-        && new URL(partnerOrganization.endpointUrl).hostname === req.headers.referer) {
+    if (partnerOrganization) {
       const partnerData = await fetchOrganizationHelper(req, partnerOrganization._id);
 
       const partnerServiceProvider = await GDBServiceProviderModel
