@@ -65,7 +65,9 @@ const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration"
 const {GDBProgramRegistrationModel} = require("../../models/programRegistration");
 const {
   serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
-  serviceRegistrationInternalTypeUpdateTreater
+  serviceRegistrationInternalTypeUpdateTreater,
+  updateOccurrenceOccupancyOnServiceRegistrationCreate, updateOccurrenceOccupancyOnServiceRegistrationUpdate,
+  updateOccurrenceOccupancyOnServiceRegistrationDelete, checkServiceOccurrenceUnchanged,
 } = require("./serviceRegistration");
 const {
   programRegistrationInternalTypeCreateTreater, programRegistrationInternalTypeFetchTreater,
@@ -173,19 +175,24 @@ const genericType2Populates = {
 const genericType2BeforeCreateChecker = {
   'service': [noQuestion],
   'serviceOccurrence': [noQuestion, checkCapacity, setOccupancy],
-  'programOccurrence': [noQuestion, checkCapacity, setOccupancy],
+  'serviceRegistration': [updateOccurrenceOccupancyOnServiceRegistrationCreate],
   'program': [noQuestion],
+  'programOccurrence': [noQuestion, checkCapacity, setOccupancy],
   'serviceWaitlist': [noQuestion],
 };
 
 const genericType2BeforeUpdateChecker = {
   'service': [noQuestion],
   'serviceOccurrence': [noQuestion, checkCapacity],
-  'programOccurrence': [noQuestion, checkCapacity],
+  'serviceRegistration': [checkServiceOccurrenceUnchanged, updateOccurrenceOccupancyOnServiceRegistrationUpdate],
   'program': [noQuestion],
+  'programOccurrence': [noQuestion, checkCapacity],
   'serviceWaitlist': [noQuestion],
 };
 
+const genericType2BeforeDeleteChecker = {
+  'serviceRegistration': [updateOccurrenceOccupancyOnServiceRegistrationDelete],
+}
 
 const genericType2BeforeCreateTreater = {
   'clientAssessment': beforeCreateClientAssessment
@@ -240,7 +247,6 @@ const genericType2InternalTypeFetchTreater = {
   'person': personInternalTypeFetchTreater,
   'volunteer': volunteerInternalTypeFetchTreater,
   'serviceWaitlist': serviceWaitlistInternalTypeFetchTreater
-
 };
 
 const genericType2InternalTypeUpdateTreater = {
@@ -557,7 +563,7 @@ async function updateSingleGenericHelper(genericId, data, genericType) {
 
   if (genericType2BeforeUpdateChecker[genericType])
     for (const checker of genericType2BeforeUpdateChecker[genericType])
-      await checker(characteristics, questions, data.fields);
+      await checker(characteristics, questions, data.fields, generic);
 
   // check should we update or create a characteristicOccurrence or questionOccurrence
   // in other words, is there a characteristicOccurrence/questionOccurrence belong to this user,
@@ -715,6 +721,9 @@ async function deleteSingleGenericHelper(genericType, id) {
     {populates: ['characteristicOccurrences', 'questionOccurrences']});
   if (!generic)
     throw new Server400Error('Invalid genericType or id');
+
+  if (genericType2BeforeDeleteChecker[genericType])
+    genericType2BeforeDeleteChecker[genericType](generic);
 
   if (genericType2BeforeDeleteTreater[genericType])
     genericType2BeforeDeleteTreater[genericType](generic);
