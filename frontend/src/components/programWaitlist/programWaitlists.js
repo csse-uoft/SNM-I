@@ -4,9 +4,9 @@ import { GenericPage } from "../shared";
 import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../../api/genericDataApi";
 import { getInstancesInClass } from "../../api/dynamicFormApi";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
-import client from '../../../../backend/services/characteristics/predefined/client';
+import client from '../../../../backend/programs/characteristics/predefined/client';
 
-const TYPE = 'serviceWaitlists';
+const TYPE = 'programWaitlists';
 
 const columnsWithoutOptions = [
   {
@@ -19,11 +19,11 @@ const columnsWithoutOptions = [
     }
   },
   {
-    label: 'ServiceOccurrence',
-    body: ({serviceOccurrence}) => {
-      console.log(serviceOccurrence);
-      console.log(serviceOccurrence._id);
-      return serviceOccurrence._id;
+    label: 'ProgramOccurrence',
+    body: ({ProgramOccurrence}) => {
+      console.log(programOccurrence);
+      console.log(programOccurrence._id);
+      return programOccurrence._id;
     }
   },
   {
@@ -48,42 +48,42 @@ const columnsWithoutOptions = [
   // }
 ];
 
-export default function ServiceWaitlists() {
+export default function ProgramWaitlists() {
 
-  const nameFormatter = serviceWaitlist => 'Service Waitlist' + serviceWaitlist._id;
+  const nameFormatter = programWaitlist => 'Program Waitlist' + programWaitlist._id;
 
-  const linkFormatter = needOccurrence => `/${TYPE}/${serviceWaitlist._id}`;
+  const linkFormatter = needOccurrence => `/${TYPE}/${programWaitlist._id}`;
 
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
-    const serviceWaitlists = (await fetchMultipleGeneric('serviceWatilist')).data;
+    const programWaitlists = (await fetchMultipleGeneric('programWatilist')).data;
     const data = [];
-    for (const serviceWaitlist of serviceWaitlists) {
-      console.log(serviceWaitlist._id);
-      console.log(serviceWaitlist.serviceOccurrence._id);
-      console.log(serviceWaitlist.clients);
+    for (const programWaitlist of programWaitlists) {
+      console.log(programWaitlist._id);
+      console.log(programWaitlist.programOccurrence._id);
+      console.log(programWaitlist.clients);
 
 
-      const serviceWaitlistData = {
-              _id: serviceWaitlist._id,
-              serviceOccurrence: serviceWaitlist.serviceOccurrence,
-              clients: serviceWaitlist.clients
+      const programWaitlistData = {
+              _id: programWaitlist._id,
+              programOccurrence: programWaitlist.programOccurrence,
+              clients: programWaitlist.clients
       };
-      data.push(serviceWaitlistData);
+      data.push(programWaitlistData);
       console.log(data)
     }
     return data;
   }
 
-  const deleteServiceWaitlist = (id) => deleteSingleGeneric('serviceWaitlist', id);
+  const deleteProgramWaitlist = (id) => deleteSingleGeneric('programWaitlist', id);
 
   return (
     <GenericPage
       type={TYPE}
-      title={"Service Waitlist"}
+      title={"Program Waitlist"}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
-      deleteItem={deleteServiceWaitlist}
+      deleteItem={deleteProgramWaitlist}
       nameFormatter={nameFormatter}
       linkFormatter={linkFormatter}
       tableOptions={{

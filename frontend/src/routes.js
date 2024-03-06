@@ -28,6 +28,9 @@ import ProviderForm from './components/providers/ProviderForm2';
 import ServiceWaitlists from './components/ServiceWaitlists';
 import ServiceWaitlistForm from './components/serviceWaitlist/ServiceWaitlist';
 
+import ProgramWaitlists from './components/ProgramWaitlists';
+import ProgramWaitlistForm from './components/programWaitlist/ProgramWaitlist';
+
 
 
 import Services from './components/Services';
@@ -59,6 +62,8 @@ import VisualizeServiceOccurrence from "./components/serviceOccurrence/visualize
 import VisualizeProgramOccurrence from "./components/programOccurrence/visualizeProgramOccurrence";
 
 import VisualizeServiceWaitlist from "./components/serviceWaitlist/visualizeServiceWaitlist";
+import VisualizeProgramWaitlist from "./components/programWaitlist/visualizeProgramWaitlist";
+
 
 import VisualizeServiceRegistration from "./components/serviceRegistration/visualizeServiceRegistration";
 import VisualizeProgramRegistration from "./components/programRegistration/visualizeProgramRegistration";
@@ -66,8 +71,6 @@ import VisualizeServiceProvision from "./components/serviceProvision/visualizeSe
 import VisualizeProgramProvision from "./components/programProvision/visualizeProgramProvision";
 import VisualizeAppointment from "./components/appointments/visualizeAppointment";
 import VisualizeServices from "./components/programs/visualizeServices";
-
-//import VisualizeServiceWaitlists from "./components/programs/visualizeServiceWaitlists"; //TODO: Figure out what this does
 
 import VisualizeNeedOccurrence from "./components/needOccurrence/visualizeNeedOccurrence";
 import VisualizeOutcomeOccurrence from "./components/outcomeOccurrence/visualizeOutcomeOccurrence";
@@ -187,14 +190,6 @@ const routes = (
     <Route path="/serviceOccurrence/:id/edit" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
     <Route path="/serviceOccurrence/:id" element={<PrivateRoute element={VisualizeServiceOccurrence}/>}/>
 
-    
-
-
-
-
-
-
-
 
 
 
@@ -204,14 +199,10 @@ const routes = (
     <Route path="/serviceWaitlist/:id" element={<PrivateRoute element={VisualizeServiceWaitlist}/>}/>
 
 
-
-
-
-
-
-
-
-
+    <Route path="/programWaitlists" element={<PrivateRoute element={ProgramWaitlists}/>}/>
+    <Route path="/programWaitlist/new" element={<PrivateRoute element={ProgramWaitlistForm}/>}/>
+    <Route path="/programWaitlist/:id/edit" element={<PrivateRoute element={ProgramWaitlistForm}/>}/>
+    <Route path="/programWaitlist/:id" element={<PrivateRoute element={VisualizeProgramWaitlist}/>}/>
 
 
 

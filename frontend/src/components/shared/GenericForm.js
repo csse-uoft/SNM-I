@@ -144,6 +144,53 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         await (isProvider ? createSingleProvider : createSingleGeneric)(name, form)
           .then(async (response) => {
             enqueueSnackbar(name + ' created', {variant: 'success'});
+
+
+            //quick fix for now: send another request to make a corresponding waitlist when we create
+            //a new serviceOccurence
+
+            if (name === 'serviceOccurrence'){
+                getDynamicFormsByFormType('serviceWaitlist').then(async ({ forms }) => {
+                  if (forms.length > 0) {
+                    const firstForm = forms[0];
+
+
+                    const serviceWaitlistFormObj = {formId: firstForm._id, fields: {}};
+                    try{
+
+                     await createSingleGeneric('serviceWaitlist', serviceWaitlistFormObj);
+                  }catch (e){
+                    enqueueSnackbar(`Failed to create corresponding waitlist to service occurence ` + e.json?.message || e.message, {variant: 'error'});
+                  }
+
+                  } else {
+                    // Handle case where no forms are available
+                    console.log("No forms available.");
+                  }
+                });
+            }else if (name === 'programOccurrence'){
+              getDynamicFormsByFormType('programWaitlist').then(async ({ forms }) => {
+                if (forms.length > 0) {
+                  const firstForm = forms[0];
+
+
+                  const programWaitlistFormObj = {formId: firstForm._id, fields: {}};
+                  try{
+
+                   await createSingleGeneric('programWaitlist', programWaitlistFormObj);
+                }catch (e){
+                  enqueueSnackbar(`Failed to create corresponding waitlist to program occurence ` + e.json?.message || e.message, {variant: 'error'});
+                }
+
+                } else {
+                  // Handle case where no forms are available
+                  console.log("No forms available.");
+                }
+              });
+            }
+
+            //end of quick fix
+
             if (name === 'referral') {
               try {
                 await sendPartnerReferral(response.createdId);
@@ -159,6 +206,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
       } catch (e) {
         enqueueSnackbar(`Failed to create ${name}: ` + e.json?.message || e.message, {variant: 'error'});
       }
+
 
     } else {
       try {

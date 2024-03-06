@@ -8,8 +8,8 @@ const TYPE = 'serviceWaitlist';
 
 const columnsWithoutOptions = [
   {
-    label: 'Service Name',
-    body: ({service}) => <Link color to={`/${TYPE}/${service?._id}/edit`}>{service?.name}</Link>
+    label: 'Service Occurrence id',
+    body: ({serviceOccurrence}) => <Link color to={`/${TYPE}/${serviceOccurrence?._id}/edit`}>{serviceOccurrence?._id}</Link>
 
   },
   {
@@ -43,8 +43,8 @@ export default function ServiceWaitlists() {
       const serviceWaitlistData = {_id: serviceWaitlist._id};
       if (serviceWaitlist.clients)
         serviceWaitlistData.clients = serviceWaitlist.clients;
-      if (serviceWaitlist.service)
-        serviceWaitlistData.service = serviceWaitlist.service;
+      if (serviceWaitlist.serviceOccurrence)
+        serviceWaitlistData.serviceOccurrence = serviceWaitlist.serviceOccurrence;
       data.push(serviceWaitlistData);
     }
     return data;

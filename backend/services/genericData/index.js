@@ -24,6 +24,8 @@ const {GDBPersonModel} = require("../../models/person");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurrence");
 
+const {GDBProgramWaitlistModel} = require("../../models/program/programWaitlist");
+
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 
 const {GDBInternalTypeModel} = require("../../models/internalType");
@@ -119,6 +121,10 @@ const {
 } = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const { serviceWaitlistInternalTypeCreateTreater, serviceWaitlistInternalTypeFetchTreater, serviceWaitlistInternalTypeUpdateTreater } = require("./serviceWaitlist");
+const { programWaitlistInternalTypeCreateTreater, programWaitlistInternalTypeFetchTreater, programWaitlistInternalTypeUpdateTreater } = require("./programWaitlist");
+
+
+
 const genericType2Model = {
   'client': GDBClientModel,
   'organization': GDBOrganizationModel,
@@ -129,6 +135,8 @@ const genericType2Model = {
   'serviceOccurrence': GDBServiceOccurrenceModel,
 
   'serviceWaitlist': GDBServiceWaitlistModel,
+  'programWaitlist': GDBProgramWaitlistModel,
+
   
   'programOccurrence': GDBProgramOccurrenceModel,
   'referral': GDBReferralModel,
@@ -158,7 +166,8 @@ const genericType2Populates = {
   'service': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address'],
   'program': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
   'serviceOccurrence': ['address'],
-  'serviceWaitlist': ['service', 'clients'],
+  'serviceWaitlist': ['serviceWaitlist', 'clients'],
+  'programWaitlist': ['programWaitlist', 'clients'],
   'programOccurrence': ['address'],
   'client': ['address'],
   'appointment': ['address'],
@@ -172,7 +181,8 @@ const genericType2Checker = {
   'programOccurrence': noQuestion,
   'program' : noQuestion,
 
-  'serviceWaitlist': noQuestion
+  'serviceWaitlist': noQuestion,
+  'programWaitlist': noQuestion
 };
 
 
@@ -207,7 +217,9 @@ const genericType2InternalTypeCreateTreater = {
   'clientAssessment': clientAssessmentInternalTypeCreateTreater,
   'person': personInternalTypeCreateTreater,
   'volunteer': volunteerInternalTypeCreateTreater,
-  'serviceWaitlist': serviceWaitlistInternalTypeCreateTreater
+  'serviceWaitlist': serviceWaitlistInternalTypeCreateTreater,
+  'programWaitlist': programWaitlistInternalTypeCreateTreater
+
 };
 
 const genericType2InternalTypeFetchTreater = {
@@ -227,7 +239,9 @@ const genericType2InternalTypeFetchTreater = {
   'clientAssessment': clientAssessmentInternalTypeFetchTreater,
   'person': personInternalTypeFetchTreater,
   'volunteer': volunteerInternalTypeFetchTreater,
-  'serviceWaitlist': serviceWaitlistInternalTypeFetchTreater
+  'serviceWaitlist': serviceWaitlistInternalTypeFetchTreater,
+  'programWaitlist': programWaitlistInternalTypeFetchTreater
+
 
 };
 
@@ -248,7 +262,9 @@ const genericType2InternalTypeUpdateTreater = {
   'clientAssessment': clientAssessmentInternalTypeUpdateTreater,
   'person': personInternalTypeUpdateTreater,
   'volunteer': volunteerInternalTypeUpdateTreater,
-  'serviceWaitlist': serviceWaitlistInternalTypeUpdateTreater
+  'serviceWaitlist': serviceWaitlistInternalTypeUpdateTreater,
+  'programWaitlist': programWaitlistInternalTypeUpdateTreater
+
 };
 
 

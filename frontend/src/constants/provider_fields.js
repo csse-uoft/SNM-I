@@ -24,6 +24,7 @@ export const allForms = {
   programOccurrence: 'Program Occurrence',
   programRegistration: 'Program Registration',
   programProvision: 'Program Provision',
+  programWaitlist: 'Program Waitlist',
   needSatisfierOccurrence: 'Need Satisfier Occurrence',
   needOccurrence: 'Need Occurrence',
   outcomeOccurrence: 'Outcome Occurrence',

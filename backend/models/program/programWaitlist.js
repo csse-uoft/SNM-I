@@ -4,23 +4,22 @@ const {createGraphDBModel, DeleteType, Types} = require("graphdb-utils");
 
 
 //These might need tweaking, need to figure out what things we need for this model
-const {GDBServiceModel} = require("./service");
 const {GDBClientModel} = require("../ClientFunctionalities/client");
 const { GDBCOModel } = require("../ClientFunctionalities/characteristicOccurrence");
-const { GDBServiceOccurenceModel } = require("./serviceOccurrence");
+const { GDBProgramOccurenceModel } = require("./programOccurrence");
 
 
 
-const GDBServiceWaitlistModel = createGraphDBModel({
+const GDBProgramWaitlistModel = createGraphDBModel({
 
     clients: {type: [GDBClientModel], internalKey: ':hasClient'},
-    serviceOccurrence: {type: GDBServiceOccurenceModel, internalKey: ':hasServiceOccurence'}
+    service: {type: GDBProgramOccurenceModel, internalKey: ':hasProgramOccurence'}
 },
 {  
-    rdfTypes: [':ServiceWaitlist'], name: 'serviceWaitlist'
+    rdfTypes: [':ProgramWaitlist'], name: 'ProgramWaitlist'
 }
 
 );
 module.exports = {
-    GDBServiceWaitlistModel
+    GDBProgramWaitlistModel
   }
