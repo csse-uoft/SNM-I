@@ -16,6 +16,12 @@ function checkCapacity(characteristics, questions, fields) {
   }
 }
 
+function unsetOccupancy(characteristics, questions, fields) {
+  const occupancyId = PredefinedCharacteristics['Occupancy']._id;
+  delete characteristics[occupancyId];
+  delete fields[`characteristic_${occupancyId}`];
+}
+
 async function setOccupancy(characteristics, questions, fields) {
   const occupancyId = PredefinedCharacteristics['Occupancy']._id;
   const occupancyCharacteristic = await GDBCharacteristicModel.findOne({_id: occupancyId},
@@ -24,4 +30,4 @@ async function setOccupancy(characteristics, questions, fields) {
   fields[`characteristic_${occupancyId}`] = '0';
 }
 
-module.exports = {noQuestion, checkCapacity, setOccupancy}
+module.exports = {noQuestion, checkCapacity, unsetOccupancy, setOccupancy}

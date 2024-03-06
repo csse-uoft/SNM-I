@@ -25,7 +25,7 @@ const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurre
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {noQuestion, checkCapacity, setOccupancy} = require('./checkers')
+const {noQuestion, checkCapacity, setOccupancy, unsetOccupancy} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater
@@ -183,10 +183,10 @@ const genericType2BeforeCreateChecker = {
 
 const genericType2BeforeUpdateChecker = {
   'service': [noQuestion],
-  'serviceOccurrence': [noQuestion, checkCapacity],
+  'serviceOccurrence': [noQuestion, checkCapacity, unsetOccupancy],
   'serviceRegistration': [checkServiceOccurrenceUnchanged, updateOccurrenceOccupancyOnServiceRegistrationUpdate],
   'program': [noQuestion],
-  'programOccurrence': [noQuestion, checkCapacity],
+  'programOccurrence': [noQuestion, checkCapacity, unsetOccupancy],
   'serviceWaitlist': [noQuestion],
 };
 
@@ -723,7 +723,8 @@ async function deleteSingleGenericHelper(genericType, id) {
     throw new Server400Error('Invalid genericType or id');
 
   if (genericType2BeforeDeleteChecker[genericType])
-    genericType2BeforeDeleteChecker[genericType](generic);
+    for (const checker of genericType2BeforeDeleteChecker[genericType])
+      await checker(generic);
 
   if (genericType2BeforeDeleteTreater[genericType])
     genericType2BeforeDeleteTreater[genericType](generic);
