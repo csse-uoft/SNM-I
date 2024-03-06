@@ -15,8 +15,8 @@ export default function ProgramOccurrenceAndStatusField({handleChange, fields, s
   const [characteristics, setCharacteristics] = useState(null);
   const [internalTypes, setInternalTypes] = useState(null);
   const [allStatusOptions, setAllStatusOptions] = useState(null);
-  const programOccurrenceFieldId = internalTypes?.programOccurrenceForProgramRegistration._id;
-  const programOccKey = `internalType_${programOccurrenceFieldId}`;
+  const [programOccurrenceFieldId, setProgramOccurrenceFieldId] = useState(null);
+  const [programOccKey, setProgramOccKey] = useState(null);
   const statusFieldKey = `characteristic_${characteristics?.['Registration Status']._id}`;
   const [selectedProgramOcc, setSelectedProgramOcc] = useState(null);
   const [statusOptions, setstatusOptions] = useState(null);
@@ -47,8 +47,16 @@ export default function ProgramOccurrenceAndStatusField({handleChange, fields, s
   }, []);
 
   useEffect(() => {
+    setProgramOccurrenceFieldId(internalTypes?.programOccurrenceForProgramRegistration._id);
+  }, [internalTypes]);
+
+  useEffect(() => {
+    setProgramOccKey(`internalType_${programOccurrenceFieldId}`);
+  }, [programOccurrenceFieldId]);
+
+  useEffect(() => {
     setSelectedProgramOcc(fields[programOccKey]);
-  }, [internalTypes])
+  }, [programOccKey]);
 
   useEffect(() => {
     if (!selectedProgramOcc || !allStatusOptions || !characteristics) return;
@@ -96,7 +104,7 @@ export default function ProgramOccurrenceAndStatusField({handleChange, fields, s
             });
         }
       });
-  }, [selectedProgramOcc]);
+  }, [selectedProgramOcc, allStatusOptions, characteristics]);
 
   if (!characteristics || !internalTypes) {
     return <Box minWidth={"350px"}><Loading message=""/></Box>;

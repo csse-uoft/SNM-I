@@ -15,8 +15,8 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
   const [characteristics, setCharacteristics] = useState(null);
   const [internalTypes, setInternalTypes] = useState(null);
   const [allStatusOptions, setAllStatusOptions] = useState(null);
-  const serviceOccurrenceFieldId = internalTypes?.serviceOccurrenceForServiceRegistration._id;
-  const serviceOccKey = `internalType_${serviceOccurrenceFieldId}`;
+  const [serviceOccurrenceFieldId, setServiceOccurrenceFieldId] = useState(null);
+  const [serviceOccKey, setServiceOccKey] = useState(null);
   const statusFieldKey = `characteristic_${characteristics?.['Registration Status']._id}`;
   const [selectedServiceOcc, setSelectedServiceOcc] = useState(null);
   const [statusOptions, setstatusOptions] = useState(null);
@@ -47,8 +47,16 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
   }, []);
 
   useEffect(() => {
+    setServiceOccurrenceFieldId(internalTypes?.serviceOccurrenceForServiceRegistration._id);
+  }, [internalTypes]);
+
+  useEffect(() => {
+    setServiceOccKey(`internalType_${serviceOccurrenceFieldId}`);
+  }, [serviceOccurrenceFieldId]);
+
+  useEffect(() => {
     setSelectedServiceOcc(fields[serviceOccKey]);
-  }, [internalTypes])
+  }, [serviceOccKey]);
 
   useEffect(() => {
     if (!selectedServiceOcc || !allStatusOptions || !characteristics) return;
@@ -96,7 +104,7 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
             });
         }
       });
-  }, [selectedServiceOcc]);
+  }, [selectedServiceOcc, allStatusOptions, characteristics]);
 
   if (!characteristics || !internalTypes) {
     return <Box minWidth={"350px"}><Loading message=""/></Box>;
