@@ -9,6 +9,7 @@
     "@mui/material": "^5.8.0",
     "@mui/styles": "^5.8.0",
     "@mui/x-date-pickers": "^6.19.6",
+    "@react-oauth/google": "^0.12.1",
     "cross-env": "^7.0.3",
     "dagre": "^0.8.5",
     "date-fns": "^2.23.0",

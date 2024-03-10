@@ -15,6 +15,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 import dayjs from 'dayjs';
+import GoogleCalendarLogin from "./GoogleCalendarLogin";
 
 
 function convertDate(date) {
@@ -111,7 +112,14 @@ const PersonalCalendar = () => {
           </FormControl>
 
         </Box>
-        <Button variant="outlined" onClick={() => window.location.href = `/appointments/new`}>Create New Appointment</Button>
+        <Box marginRight={2}>
+          <Button variant="outlined" onClick={() => window.location.href = `/appointments/new`} marginRight={2}>Create New Appointment</Button>
+        </Box>
+
+        <Box>
+          <GoogleCalendarLogin />
+
+        </Box>
 
       </Box>
 
