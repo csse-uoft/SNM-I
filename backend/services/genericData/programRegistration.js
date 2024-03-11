@@ -26,10 +26,13 @@ const updateOccurrenceOccupancyOnProgramRegistrationCreate = async function (cha
   const status = statuses[fields[`characteristic_${PredefinedCharacteristics['Registration Status']._id}`]];
   const occUri = fields['internalType_' + PredefinedInternalTypes['programOccurrenceForProgramRegistration']._id];
   if (!occUri) return;
-  const occ = await GDBProgramOccurrenceModel.findOne({_uri: occUri});
+  const occ = await GDBProgramOccurrenceModel.findOne({_uri: occUri}, {populates: ['characteristicOccurrences']});
   if (status === 'Registered') {
     if (!occ.capacity || (occ.occupancy < occ.capacity)) {
       occ.occupancy += 1;
+      const occupancyC = PredefinedCharacteristics['Occupancy'];
+      const occupancyCO = occ.characteristicOccurrences.find(co => co.occurrenceOf === occupancyC._uri);
+      occupancyCO.dataNumberValue += 1;
       occ.save();
     } else {
       throw new Error('The requested program occurrence is now at capacity. Please refresh the form to review your current options.');
@@ -53,16 +56,20 @@ const updateOccurrenceOccupancyOnProgramRegistrationUpdate = async function (ins
   const newStatus = statuses[fields[`characteristic_${PredefinedCharacteristics['Registration Status']._id}`]];
   const occUri = fields['internalType_' + PredefinedInternalTypes['programOccurrenceForProgramRegistration']._id];
   if (!occUri) return;
-  const occ = await GDBProgramOccurrenceModel.findOne({_uri: occUri});
+  const occ = await GDBProgramOccurrenceModel.findOne({_uri: occUri}, {populates: ['characteristicOccurrences']});
+  const occupancyC = PredefinedCharacteristics['Occupancy'];
+  const occupancyCO = occ.characteristicOccurrences.find(co => co.occurrenceOf === occupancyC._uri);
   if (oldStatus === 'Not Registered' && newStatus === 'Registered') {
     if (!occ.capacity || (occ.occupancy < occ.capacity)) {
       occ.occupancy += 1;
+      occupancyCO.dataNumberValue += 1;
       occ.save();
     } else {
       throw new Error('The requested program occurrence is now at capacity. Please refresh the form to review your current options.');
     }
   } else if (oldStatus === 'Registered' && newStatus === 'Not Registered') {
     occ.occupancy -= 1;
+    occupancyCO.dataNumberValue -= 1;
     occ.save();
     // TODO: Pop one registration from waitlist, if any, and change its status to registered
   } else if (oldStatus === 'Waitlisted' && newStatus === 'Not Registered') { // TODO: Remove this registration from waitlist
@@ -77,9 +84,12 @@ const updateOccurrenceOccupancyOnProgramRegistrationDelete = async function (old
   const status = statuses[oldGeneric.status];
   const occUri = oldGeneric.programOccurrence;
   if (!occUri) return;
-  const occ = await GDBProgramOccurrenceModel.findOne({_uri: occUri});
+  const occ = await GDBProgramOccurrenceModel.findOne({_uri: occUri}, {populates: ['characteristicOccurrences']});
   if (status === 'Registered') {
     occ.occupancy -= 1;
+    const occupancyC = PredefinedCharacteristics['Occupancy'];
+    const occupancyCO = occ.characteristicOccurrences.find(co => co.occurrenceOf === occupancyC._uri);
+    occupancyCO.dataNumberValue -= 1;
     occ.save();
     // TODO: Pop one registration from waitlist, if any, and change its status to registered
   } else if (status === 'Waitlisted') { // TODO: Remove this registration from waitlist
