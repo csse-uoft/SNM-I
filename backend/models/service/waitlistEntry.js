@@ -3,7 +3,7 @@ const { GDBServiceRegistrationModel } = require("../serviceRegistration");
 
 const GDBWaitlistEntryModel = createGraphDBModel({
 
-    client: {type: GDBServiceRegistrationModel, internalKey: ':hasRegs'},
+    serviceRegistration: {type: GDBServiceRegistrationModel, internalKey: ':hasServiceRegistration'},
     priority: {type: Number, internalKey: ':hasPriority'},
     date: {type: Date, internalKey: ':hasDate'},
 },
