@@ -536,6 +536,16 @@ const createSingleGeneric = async (req, res, next) => {
       const newGeneric = genericType2Model[genericType](instanceData);
       await newGeneric.save();
 
+      //create a new waitlist here that corresponds to the serviceOccurrence
+      if(genericType === 'serviceOccurrence'){
+          const occurrenceWaitlist = genericType2Model['serviceWaitllist']({'serviceOccurrence': newGeneric, 'waitlist':[]});
+          //pass in the serviceOccurrence that was just created ("newGeneric").
+          //and an empty list for the queue.
+          await occurrenceWaitlist.save();
+        }
+
+
+      
       if (genericType2AfterCreateTreater[genericType])
         await genericType2AfterCreateTreater[genericType](data, req);
   
