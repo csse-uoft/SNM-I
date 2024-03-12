@@ -174,7 +174,7 @@ const genericType2Populates = {
   'program': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
   'serviceOccurrence': ['address', 'occurrenceOf'],
   'serviceWaitlist': ['waitlist', 'serviceOccurrence'],
-  'waitlistEntry': ['client', 'priority'],
+  'waitlistEntry': ['serviceRegistration', 'priority', 'date'],
   'programOccurrence': ['address', 'occurrenceOf'],
   'client': ['address', 'needs'],
   'appointment': ['address', 'referral'],
