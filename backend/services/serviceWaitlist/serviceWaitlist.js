@@ -1,4 +1,4 @@
-const { GDBClientModel } = require("../../models");
+const {GDBServiceRegistrationModel} = require("../../models");
 const { GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 const { GDBwaitlistEntryModel, GDBWaitlistEntryModel} = require("../../models/service/waitlistEntry");
 
@@ -6,7 +6,10 @@ const { GDBwaitlistEntryModel, GDBWaitlistEntryModel} = require("../../models/se
 //TODO: NOTE THESE FUNCTIONS ARE UNTESTED AS OF MARCH 6 2024
 
 
-/*given a waitlist and some registration in "req"
+/*
+-- OLD/DEPRECATED DOCUMENTATION --
+
+given a waitlist and some registration in "req"
 (which I will assume has the id to some serviceWaitlist
 and the "client" and "priority" for a waitlistEntry, see /backend/models/service/waitlistEntry.js),
 add this new registration on the waitlist accordingly.
@@ -23,13 +26,44 @@ Note that for now I am treating priority as a number (see the waitlistEntry mode
 where a smaller number has more priority (like ranking/tiers, e.g. tier 1, tier 2, ..., tier n etc. 
 where tier 1 is the highest priority). This might make it easier as if we use dates instead, we could
 possible just convert the date into a number meaning that the smaller number should theoretically have a 
-earlier date (if formatted correctly)*/
+earlier date (if formatted correctly)
+
+--END OF OUTDATED DOCUMENTATION--
+*/
+
+
+
+/*
+UPDATE:
+
+NEW: changing input to take in a serviceOccurrence ID instead of the ID of the waitlist
+
+given a serviceOccurrence ID and some serviceRegistration ID in "req.params", as well as priority (Number), and date (Date)
+in "req.body" (see /backend/models/service/waitlistEntry.js),
+add this new registration on the waitlist accordingly.
+That is, we should have three attributes:
+
+1. the id of the serviceOccurrence: req.params.id
+2. the id of the serviceRegistration to be inserted: req.body.serviceRegistrationId
+3. the priority this registration will have in the waitlist: req.body.priority
+4. the date the registration was made: req.body.date
+
+Waitlist insertion is based on specified priority.
+Note that for now I am treating priority as a number (see the waitlistEntry model)
+where a smaller number has more priority (like ranking/tiers, e.g. tier 1, tier 2, ..., tier n etc. 
+where tier 1 is the highest priority). Date could theoretically be used to determine the priority
+however this can/will be added in a future update.
+
+*/
+
+
 const pushToWaitlist = async (req, res, next) => {
     //probably need some more security checks to make sure that what I'm about to operate on safe data. 
     //Will touch this up later as I just need things to work at the moment.
 
-    //get id of the waitlist
-    const {id} = req.params;
+    //get id of the serviceOccurrence
+
+    const{id} = req.params;
 
     //SHOULD contain the id of the client and their priority
     const form = req.body;
@@ -37,12 +71,12 @@ const pushToWaitlist = async (req, res, next) => {
     try{
         
         //grab the waitlist, and the corresponding client to be registered
-        const waitlist = await GDBServiceWaitlistModel.findById(id);
-        const client = await GDBClientModel.findById(form.clientId);
+        const waitlist = GDBServiceWaitlistModel.findOne({'serviceOccurrence._id': id});
+        const serviceRegistration = await GDBServiceRegistrationModel.findById(form.serviceRegistrationId);
 
 
         //create a new entry, this will be added to our waitlist
-        const newEntry = GDBWaitlistEntryModel({client: client, priority: form.priority});
+        const newEntry = GDBWaitlistEntryModel({'serviceRegistration': serviceRegistration, 'priority': form.priority, 'date': date});
 
         //save this new entry to the db
         await newEntry.save();
@@ -88,11 +122,11 @@ const pushToWaitlist = async (req, res, next) => {
 }
 
 
-/*given a waitlist, remove and return the registration (waitlistEntry) of the client that is next in line from
- the waitlist. See the notes above on top of pushToWaitlist().
+/*given a serviceOccurrence, remove and return the registration (as a waitlistEntry) of the client that is next in line 
+from the serviceOccurrence's correspondingwaitlist. See the notes above on top of pushToWaitlist().
 
 assume that we have:
-1. the waitlist id: req.params.id
+1. the serviceOccurrence id: req.params.id
  */
 const popFromWaitlist = async (req, res, next) => {
     //again, might need to do some checks/security measures to make sure we
@@ -102,7 +136,7 @@ const popFromWaitlist = async (req, res, next) => {
     
     try{
         //get the waitlist we need to modify
-        const waitlist = await GDBServiceWaitlistModel.findById(id);
+        const waitlist = GDBServiceWaitlistModel.findOne({'serviceOccurrence._id': id});
 
         //go into our waitlist, pop out the item in the front of our list/queue (since we are sorting)
         //from ascending priority where the lowest priority value = the client that should get off the waitlist first
@@ -123,13 +157,14 @@ const popFromWaitlist = async (req, res, next) => {
 
 
 
-/*given a waitlist and a client to remove off of it, delete the registration including this client from the
-waitlist. See the notes above on top of pushToWaitlist().
+/*given a serviceOccurrence ID and the id 
+of a serviceRegistration that must be dequeued from it, delete the registration (waitlistEntry) 
+from the queue. See the notes above on top of pushToWaitlist().
 
 assume that we will get the following from req:
 
-1. the waitlist id: req.params.id
-2.the id of the client that needs to be removed from the waitlist: req.body.clientId
+1. the serviceOccurrence id: req.params.id
+2.the id of the serviceRegistration that needs to be removed from the waitlist: req.body.serviceRegistrationId
 
 
 */
@@ -144,25 +179,27 @@ const removeFromWaitlist = async (req, res, next) => {
     try{
 
         //get the waitlist we need to modify 
-        const waitlist = await GDBServiceWaitlistModel.findById(id);
+        const waitlist = GDBServiceWaitlistModel.findOne({'serviceOccurrence._id': id});
 
         //now we go through the waitlist and find where the client we need to delete is based
         //on the given id.
 
         let removedEntry;
         const newWaitlist = waitlist.waitlist.filter(entry => {
-            if (entry.client.id === form.clientId){
+            if (entry.serviceRegistration._id === form.serviceRegistrationId){
                 removedEntry = entry; //save this so we can delete the registration from the db as well
                 return false; //returning false means that the item we are deleting is no long in the waitlist.
             }
-            return true; //if the client's id is not equal to the one we need to delete, we keep it in the nre waitlist
+            //if the serviceRegistration's id is not equal to the one we need to delete, we keep it in the new waitlist
+            //(it is not filtered out)
+            return true; 
         });
 
         //our new waitlist is the same as the old one except with the target client removed from the "queue"
         waitlist.waitlist = newWaitlist;
 
         //delete the entry from our database
-        await GDBwaitlistEntryModel.findByIdAndDelete(removedEntry);
+        await GDBwaitlistEntryModel.findByIdAndDelete(removedEntry._id);
 
         //save the changes
         await waitlist.save();
