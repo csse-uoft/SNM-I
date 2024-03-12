@@ -1,8 +1,5 @@
 const {createGraphDBModel, DeleteType, Types} = require("graphdb-utils");
-
-//These might need tweaking, need to figure out what things we need for this model
-const {GDBClientModel} = require("../ClientFunctionalities/client");
-
+const { GDBServiceRegistrationModel } = require("../serviceRegistration");
 
 const GDBWaitlistEntryModel = createGraphDBModel({
 
