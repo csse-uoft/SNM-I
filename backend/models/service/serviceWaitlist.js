@@ -8,7 +8,7 @@ const GDBServiceWaitlistModel = createGraphDBModel({
 
 
 
-    clients: {type: [GDBWaitlistEntryModel], internalKey: ':hasWaitlist'},
+    waitlist: {type: [GDBWaitlistEntryModel], internalKey: ':hasWaitlist'},
     serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
 
 },

@@ -209,7 +209,7 @@ module.exports = [
 
 
 
-  // below are for servic waitlist
+  // below are for service waitlist
   {
     name: 'waitlistForServiceWaitlist',
     predefinedProperty: 'http://snmi#hasWaitlist',
