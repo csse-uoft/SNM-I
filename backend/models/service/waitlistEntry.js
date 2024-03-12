@@ -6,9 +6,9 @@ const {GDBClientModel} = require("../ClientFunctionalities/client");
 
 const GDBWaitlistEntryModel = createGraphDBModel({
 
-    client: {type: GDBClientModel, internalKey: ':hasClient'},
+    client: {type: GDBServiceRegistrationModel, internalKey: ':hasRegs'},
     priority: {type: Number, internalKey: ':hasPriority'},
-
+    date: {type: Date, internalKey: ':hasDate'},
 },
 {  
     rdfTypes: [':WaitlistEntry'], name: 'waitlistEntry'
