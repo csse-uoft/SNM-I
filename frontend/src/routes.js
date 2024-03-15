@@ -190,35 +190,11 @@ const routes = (
     <Route path="/serviceOccurrence/new" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
     <Route path="/serviceOccurrence/:id/edit" element={<PrivateRoute element={ServiceOccurrenceForm}/>}/>
     <Route path="/serviceOccurrence/:id" element={<PrivateRoute element={VisualizeServiceOccurrence}/>}/>
-
     
-
-
-
-
-
-
-
-
-
-
     <Route path="/serviceWaitlists" element={<PrivateRoute element={ServiceWaitlists}/>}/>
     <Route path="/serviceWaitlist/new" element={<PrivateRoute element={ServiceWaitlistForm}/>}/>
     <Route path="/serviceWaitlist/:id/edit" element={<PrivateRoute element={ServiceWaitlistForm}/>}/>
     <Route path="/serviceWaitlist/:id" element={<PrivateRoute element={VisualizeServiceWaitlist}/>}/>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <Route path="/programOccurrences" element={<PrivateRoute element={ProgramOccurrences}/>}/>
     <Route path="/programOccurrence/new" element={<PrivateRoute element={ProgramOccurrenceForm}/>}/>
