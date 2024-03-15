@@ -4,6 +4,7 @@ const {SPARQL} = require("graphdb-utils");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {getIndividualsInClass} = require("../dynamicForm");
 const {PredefinedCharacteristics, PredefinedInternalTypes} = require("../characteristics");
+const {pushToWaitlist, popFromWaitlist, removeFromWaitlist} = require("../serviceWaitlist/serviceWaitlist");
 
 const FORMTYPE = 'serviceRegistration'
 
@@ -47,12 +48,21 @@ const updateOccurrenceOccupancyOnServiceRegistrationCreate = async function (cha
       const occupancyC = PredefinedCharacteristics['Occupancy'];
       const occupancyCO = occ.characteristicOccurrences.find(co => co.occurrenceOf === occupancyC._uri);
       occupancyCO.dataNumberValue += 1;
-      occ.save();
+      await occ.save();
     } else {
       throw new Error('The requested service occurrence is now at capacity. Please refresh the form to review your current options.');
     }
   } else if (status === 'Waitlisted') {
-    // TODO: Push new registration to waitlist (probably after create instead of before)
+    // Registration will be pushed to waitlist after creation
+  }
+}
+
+const afterCreateServiceRegistration = async function (data, req, newGeneric) {
+  // If the new service registration is waitlisted, push it to the appropriate waitlist
+  const statuses = await getIndividualsInClass(':RegistrationStatus');
+  if (statuses[newGeneric.status] === 'Waitlisted') {
+    const date = new Date();
+    await pushToWaitlist(newGeneric.serviceOccurrence.split('_')[1], newGeneric._id, date, date);
   }
 }
 
@@ -77,18 +87,30 @@ const updateOccurrenceOccupancyOnServiceRegistrationUpdate = async function (ins
     if (!occ.capacity || (occ.occupancy < occ.capacity)) {
       occ.occupancy += 1;
       occupancyCO.dataNumberValue += 1;
-      occ.save();
+      await occ.save();
     } else {
       throw new Error('The requested service occurrence is now at capacity. Please refresh the form to review your current options.');
     }
   } else if (oldStatus === 'Registered' && newStatus === 'Not Registered') {
-    occ.occupancy -= 1;
-    occupancyCO.dataNumberValue -= 1;
-    occ.save();
-    // TODO: Pop one registration from waitlist, if any, and change its status to registered
-  } else if (oldStatus === 'Waitlisted' && newStatus === 'Not Registered') { // TODO: Remove this registration from waitlist
-  } else if (oldStatus === 'Not Registered' && newStatus === 'Waitlisted') { // TODO: Push this registration to waitlist
-  } else {
+    // Pop one registration from waitlist, if any, and change its status to registered
+    const registration = await popFromWaitlist(occ._id);
+    if (!!registration) {
+      registration.status = 'Registered';
+      await registration.save();
+      // occ.occupancy doesn't change
+    } else {
+      occ.occupancy -= 1;
+      occupancyCO.dataNumberValue -= 1;
+      await occ.save();
+    }
+  } else if (oldStatus === 'Waitlisted' && newStatus === 'Not Registered') {
+    // Remove this registration from waitlist
+    await removeFromWaitlist(oldGeneric.serviceOccurrence.split('_')[1], oldGeneric._id);
+  } else if (oldStatus === 'Not Registered' && newStatus === 'Waitlisted') {
+    // Push this registration to waitlist
+    const date = new Date();
+    await pushToWaitlist(oldGeneric.serviceOccurrence.split('_')[1], oldGeneric._id, date, date);
+  } else if (oldStatus !== newStatus) {
     throw new Error('Invalid registration status chosen.');
   }
 }
@@ -100,12 +122,19 @@ const updateOccurrenceOccupancyOnServiceRegistrationDelete = async function (old
   if (!occUri) return;
   const occ = await GDBServiceOccurrenceModel.findOne({_uri: occUri}, {populates: ['characteristicOccurrences']});
   if (status === 'Registered') {
-    occ.occupancy -= 1;
-    const occupancyC = PredefinedCharacteristics['Occupancy'];
-    const occupancyCO = occ.characteristicOccurrences.find(co => co.occurrenceOf === occupancyC._uri);
-    occupancyCO.dataNumberValue -= 1;
-    occ.save();
-    // TODO: Pop one registration from waitlist, if any, and change its status to registered
+    // Pop one registration from waitlist, if any, and change its status to registered
+    const registration = await popFromWaitlist(occ._id);
+    if (!!registration) {
+      registration.status = 'Registered';
+      await registration.save();
+      // occ.occupancy doesn't change
+    } else {
+      const occupancyC = PredefinedCharacteristics['Occupancy'];
+      const occupancyCO = occ.characteristicOccurrences.find(co => co.occurrenceOf === occupancyC._uri);
+      occ.occupancy -= 1;
+      occupancyCO.dataNumberValue -= 1;
+      await occ.save();
+    }
   } else if (status === 'Waitlisted') { // TODO: Remove this registration from waitlist
   }
 }
@@ -116,6 +145,7 @@ module.exports = {
   serviceRegistrationInternalTypeUpdateTreater,
   checkServiceOccurrenceUnchanged,
   updateOccurrenceOccupancyOnServiceRegistrationCreate,
+  afterCreateServiceRegistration,
   updateOccurrenceOccupancyOnServiceRegistrationUpdate,
   updateOccurrenceOccupancyOnServiceRegistrationDelete,
 }

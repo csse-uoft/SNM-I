@@ -71,7 +71,7 @@ const {
   serviceRegistrationInternalTypeCreateTreater, serviceRegistrationInternalTypeFetchTreater,
   serviceRegistrationInternalTypeUpdateTreater,
   updateOccurrenceOccupancyOnServiceRegistrationCreate, updateOccurrenceOccupancyOnServiceRegistrationUpdate,
-  updateOccurrenceOccupancyOnServiceRegistrationDelete, checkServiceOccurrenceUnchanged,
+  updateOccurrenceOccupancyOnServiceRegistrationDelete, checkServiceOccurrenceUnchanged, afterCreateServiceRegistration,
 } = require("./serviceRegistration");
 const {
   programRegistrationInternalTypeCreateTreater, programRegistrationInternalTypeFetchTreater,
@@ -308,7 +308,8 @@ const genericType2InternalTypeUpdateTreater = {
 const genericType2AfterCreateTreater = {
   'program': afterCreateProgram,
   'service': afterCreateService,
-  'volunteer': afterCreateVolunteer
+  'volunteer': afterCreateVolunteer,
+  'serviceRegistration': afterCreateServiceRegistration,
 }
 
 const genericType2AfterUpdateTreater = {
@@ -567,10 +568,8 @@ const createSingleGeneric = async (req, res, next) => {
           await occurrenceWaitlist.save();
         }
 
-
-      
       if (genericType2AfterCreateTreater[genericType])
-        await genericType2AfterCreateTreater[genericType](data, req);
+        await genericType2AfterCreateTreater[genericType](data, req, newGeneric);
   
       return res.status(202).json({success: true, message: `Successfully created a/an ${genericType}`, createdId: newGeneric._id});
     }

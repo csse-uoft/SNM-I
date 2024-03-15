@@ -1,6 +1,6 @@
-const {GDBServiceRegistrationModel} = require("../../models");
-const { GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
-const { GDBwaitlistEntryModel, GDBWaitlistEntryModel} = require("../../models/service/waitlistEntry");
+const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration");
+const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
+const {GDBWaitlistEntryModel} = require("../../models/service/waitlistEntry");
 
 
 //TODO: NOTE THESE FUNCTIONS ARE UNTESTED AS OF MARCH 6 2024
@@ -57,66 +57,51 @@ however this can/will be added in a future update.
 */
 
 
-const pushToWaitlist = async (req, res, next) => {
+const pushToWaitlist = async (id, serviceRegistrationId, priority, date) => {
     //probably need some more security checks to make sure that what I'm about to operate on safe data. 
     //Will touch this up later as I just need things to work at the moment.
 
-    //get id of the serviceOccurrence
-
-    const{id} = req.params;
-
-    //SHOULD contain the id of the client and their priority
-    const form = req.body;
-
-    try{
-        
+    try {
         //grab the waitlist, and the corresponding client to be registered
-        const waitlist = GDBServiceWaitlistModel.findOne({'serviceOccurrence._id': id});
-        const serviceRegistration = await GDBServiceRegistrationModel.findById(form.serviceRegistrationId);
-
-
+        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}});
+        const serviceRegistration = await GDBServiceRegistrationModel.findById(serviceRegistrationId);
         //create a new entry, this will be added to our waitlist
-        const newEntry = GDBWaitlistEntryModel({'serviceRegistration': serviceRegistration, 'priority': form.priority, 'date': date});
-
+        const newEntry = GDBWaitlistEntryModel({'serviceRegistration': serviceRegistration, 'priority': priority, 'date': date});
         //save this new entry to the db
         await newEntry.save();
 
-
         //now begin insertion:
-
 
         //try to find the index of the first element in the "waitlist" attribute
         //whose priority is greater than the priority of our new entry into the waitlist, as highest
         //priority = lower number
-        let insertionIndex = waitlist.waitlist.findIndex(entry => entry.priority > newEntry.priority);
+        let insertionIndex;
+        if (!waitlist.waitlist) {
+            waitlist.waitlist = [];
+            insertionIndex = -1;
+        } else {
+            insertionIndex = waitlist.waitlist.findIndex(entry => entry.priority > priority);
+        }
 
         //in the event that no index is found, add our value to the end of the waitlist:
-        if (index === -1){
+        if (insertionIndex === -1) {
             waitlist.waitlist.push(newEntry);
-        }else{
+        } else {
             //now we need to find where the last index is with the same priority as the new registration
             //this is because if someone was already there with the same priority as the new registration,
             //they should go first still
-            while (insertionIndex < waitlist.waitlist.length && waitlist.waitlist[insertionIndex].priority === newEntry.priority){
-                index ++; //just incrementing until we find where we need to insert
+            while (insertionIndex < waitlist.waitlist.length && waitlist.waitlist[insertionIndex].priority === newEntry.priority) {
+                insertionIndex++; //just incrementing until we find where we need to insert
             } 
 
             //insert the new registration to where it belongs
-            waitlist.waitlist.splice(waitlistIndex, 0, newEntry);
+            waitlist.waitlist.splice(insertionIndex, 0, newEntry);
         }
         
         //save the changes made to this waitlist after insertion
         await waitlist.save();
-
-        //successfully inserted registration into waitlist
-        return res.status(200).json({success:true});
-
-
-
-
-    }catch (e){
-        //not sure what this is, should ask
-        next(e);
+    } catch (e) {
+        throw e;
     }
     //end of function :)))
 }
@@ -128,28 +113,29 @@ from the serviceOccurrence's correspondingwaitlist. See the notes above on top o
 assume that we have:
 1. the serviceOccurrence id: req.params.id
  */
-const popFromWaitlist = async (req, res, next) => {
+const popFromWaitlist = async (id) => {
     //again, might need to do some checks/security measures to make sure we
     //aren't doing anything we aren't supposed to, will do this later
     
-    const{id} = req.params;
-    
-    try{
+    try {
         //get the waitlist we need to modify
-        const waitlist = GDBServiceWaitlistModel.findOne({'serviceOccurrence._id': id});
-
+        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}}, {populates: ['serviceOccurrence.characteristicOccurrences']});
         //go into our waitlist, pop out the item in the front of our list/queue (since we are sorting)
         //from ascending priority where the lowest priority value = the client that should get off the waitlist first
-        const dequeuedEntry = waitlist.waitlist.shift();
+        const dequeuedEntry = waitlist.waitlist?.shift();
+        if (!dequeuedEntry) {
+            return null;
+        }
+        const serviceRegistration = dequeuedEntry.serviceRegistration;
 
         //now delete the item
-        await GDBWaitlistEntryModel.findByIdAndDelete(dequeuedEntry.id);
+        await GDBWaitlistEntryModel.findByIdAndDelete(dequeuedEntry._id);
         //TODO: ASK IF THIS IS THE RIGHT WAY TO GET THE ID FROM AN OBJECT, NOT SURE IF THIS IS RIGHT OR NOT
 
         //now return success and the thing that just got deleted:
-        return res.status(200).json({success: true, dequeuedEntry});
-    }catch (e){
-        next(e);
+        return serviceRegistration;
+    } catch (e) {
+        throw e;
     }
     //end of function :)))
 }
@@ -168,50 +154,50 @@ assume that we will get the following from req:
 
 
 */
-const removeFromWaitlist = async (req, res, next) => {
+const removeFromWaitlist = async (id, serviceRegistrationId) => {
     // like the other two function, I may need to do some checks sure we're not doing any
     //operations that are invalid, or on things that do not exist.
 
-    const {id} = req.params;
-    const form = req.body;
-
-
-    try{
+    try {
 
         //get the waitlist we need to modify 
-        const waitlist = GDBServiceWaitlistModel.findOne({'serviceOccurrence._id': id});
+        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}});
 
         //now we go through the waitlist and find where the client we need to delete is based
         //on the given id.
 
         let removedEntry;
         const newWaitlist = waitlist.waitlist.filter(entry => {
-            if (entry.serviceRegistration._id === form.serviceRegistrationId){
+            if (entry.serviceRegistration._id === serviceRegistrationId){
                 removedEntry = entry; //save this so we can delete the registration from the db as well
                 return false; //returning false means that the item we are deleting is no long in the waitlist.
             }
             //if the serviceRegistration's id is not equal to the one we need to delete, we keep it in the new waitlist
             //(it is not filtered out)
             return true; 
-        });
+        })[0];
+        if (!removedEntry) {
+            return false;
+        }
 
         //our new waitlist is the same as the old one except with the target client removed from the "queue"
         waitlist.waitlist = newWaitlist;
 
         //delete the entry from our database
-        await GDBwaitlistEntryModel.findByIdAndDelete(removedEntry._id);
+        await GDBWaitlistEntryModel.findByIdAndDelete(removedEntry._id);
 
         //save the changes
         await waitlist.save();
 
-        //indicate that the target client's registration in the waitlsit has been successfully deleted 
-        return res.status(200).json({success:true});
-
-
-    }catch (e){
-        next(e);
+        return true;
+    } catch (e) {
+        throw e;
     }
     //end of function :)))
+}
 
-
+module.exports = {
+    pushToWaitlist,
+    popFromWaitlist,
+    removeFromWaitlist,
 }
