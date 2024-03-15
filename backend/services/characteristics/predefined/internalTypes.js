@@ -248,6 +248,45 @@ module.exports = [
 
 
 
+  // below are for service waitlist
+  {
+    name: 'waitlistForProgramWaitlist',
+    predefinedProperty: 'http://snmi#hasWaitlist',
+    formType: 'programWaitlist',
+    implementation: {
+      label: 'Waitlist',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.MultiSelectField,
+      optionsFromClass: 'http://snmi#ProgramWaitlistEntry'
+    }
+  },
+  {
+    name: 'programOccurrenceForProgramWaitlist',
+    predefinedProperty: 'http://snmi#hasProgramOccurrence',
+    formType: 'programWaitlist',
+    implementation: {
+      label: 'ProgramOccurrence',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProramOccurrence'
+    }
+  },
+
+  //below are for programWaitlistEntry
+  {
+    name: 'programRegistrationForProgramWaitlistEntry',
+    predefinedProperty: 'http://snmi#hasProgramRegistration',
+    formType: 'programWaitlistEntry',
+    implementation: {
+      label: 'ProgramRegistration',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#ProgramRegistration'
+    }
+  },
+
+
+
 
   // below are for program Provision
   {

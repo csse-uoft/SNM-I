@@ -21,6 +21,7 @@ export const allForms = {
   serviceRegistration: 'Service Registration',
   serviceProvision: 'Service Provision',
   serviceWaitlist: 'Service Waitlist',
+  programWaitlist: 'Program Waitlist',
   programOccurrence: 'Program Occurrence',
   programRegistration: 'Program Registration',
   programProvision: 'Program Provision',
