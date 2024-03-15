@@ -246,31 +246,6 @@ module.exports = [
     }
   },
 
-  //NOTE: has not been tested yet, priority and date below could be wrong
-  {
-    name: 'priorityForWaitlistEntry',
-    predefinedProperty: 'http://snmi#hasPriority',
-    formType: 'waitlistEntry',
-    implementation: {
-      label: 'Priority',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.NumberField,
-      optionsFromClass: 'http://snmi#Number'
-    }
-  },
-
-  {
-    name: 'dateForWaitlistEntry',
-    predefinedProperty: 'http://snmi#hasDate',
-    formType: 'waitlistEntry',
-    implementation: {
-      label: 'Date',
-      valueDataType: 'owl:NamedIndividual',
-      fieldType: FieldTypes.DateField,
-      optionsFromClass: 'http://snmi#Date'
-    }
-  },
-
 
 
 

@@ -6,7 +6,7 @@ const FORMTYPE = 'waitlistEntry'
 const waitlistEntryInternalTypeCreateTreater = async (internalType, instanceData, value) => { 
   //get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  if (property === 'serviceRegistration' || property === 'priority' || property === 'date'){
+  if (property === 'serviceRegistration'){
     instanceData[property] = value;
   }
 };
@@ -15,7 +15,7 @@ const waitlistEntryInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema =  data.schema; 
   for (const property in data) {
-    if (property === 'serviceRegistration' || property === 'priority' || property === 'date') {
+    if (property === 'serviceRegistration') {
       const internalType = await GDBInternalTypeModel.findOne({predefinedProperty: schema[property].internalKey, formType: FORMTYPE});
       result[ 'internalType_'+ internalType._id] = SPARQL.ensureFullURI(data[property]);
     }

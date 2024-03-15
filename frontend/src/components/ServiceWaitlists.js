@@ -9,7 +9,7 @@ const TYPE = 'serviceWaitlist';
 const columnsWithoutOptions = [
   {
     label: 'Service Occurrence ID',
-    body: ({serviceOccurrence}) => <Link color to={`/${TYPE}/${service?._id}/edit`}>{service?._id}</Link>
+    body: ({serviceOccurrence}) => <Link color to={`/${TYPE}/${serviceOccurrence?._id}/edit`}>{serviceOccurrence?._id}</Link>
 
   },
   {
