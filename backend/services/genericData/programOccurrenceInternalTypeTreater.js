@@ -6,7 +6,7 @@ const {SPARQL} = require('graphdb-utils');
 const {GDBProgramWaitlistModel} = require("../../models/program/programWaitlist");
 const {getIndividualsInClass} = require("../dynamicForm");
 const {PredefinedCharacteristics} = require("../characteristics");
-const {popFromWaitlist} = require("../serviceWaitlist/serviceWaitlist");
+const {popFromWaitlist} = require("../programWaitlist/programWaitlist");
 
 const programOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty('programOccurrence', internalType);
