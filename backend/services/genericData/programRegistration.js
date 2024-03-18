@@ -42,14 +42,14 @@ const updateOccurrenceOccupancyOnProgramRegistrationCreate = async function (cha
   }
 }
 
-const checkProgramOccurrenceUnchanged = async function (instanceData, internalTypes, fields, oldGeneric) {
+const checkProgramOccurrenceUnchanged = async function (characteristics, questions, fields, oldGeneric) {
   const newOccUri = fields['internalType_' + PredefinedInternalTypes['programOccurrenceForProgramRegistration']._id];
   const oldOccUri = oldGeneric.programOccurrence;
   if (newOccUri !== oldOccUri)
     throw new Error('A program registration\'s program occurrence cannot change.');
 }
 
-const updateOccurrenceOccupancyOnProgramRegistrationUpdate = async function (instanceData, internalTypes, fields, oldGeneric) {
+const updateOccurrenceOccupancyOnProgramRegistrationUpdate = async function (characteristics, questions, fields, oldGeneric) {
   // checkProgramOccurrenceUnchanged must be called before this
   const statuses = await getIndividualsInClass(':RegistrationStatus');
   const oldStatus = statuses[oldGeneric.status];

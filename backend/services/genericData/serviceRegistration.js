@@ -71,14 +71,14 @@ const afterCreateServiceRegistration = async function (data, req, newGeneric) {
   }
 }
 
-const checkServiceOccurrenceUnchanged = async function (instanceData, internalTypes, fields, oldGeneric) {
+const checkServiceOccurrenceUnchanged = async function (characteristics, questions, fields, oldGeneric) {
   const newOccUri = fields['internalType_' + PredefinedInternalTypes['serviceOccurrenceForServiceRegistration']._id];
   const oldOccUri = oldGeneric.serviceOccurrence;
   if (newOccUri !== oldOccUri)
     throw new Error('A service registration\'s service occurrence cannot change.');
 }
 
-const updateOccurrenceOccupancyOnServiceRegistrationUpdate = async function (instanceData, internalTypes, fields, oldGeneric) {
+const updateOccurrenceOccupancyOnServiceRegistrationUpdate = async function (characteristics, questions, fields, oldGeneric) {
   // checkServiceOccurrenceUnchanged must be called before this
   const statuses = await getIndividualsInClass(':RegistrationStatus');
   const oldStatus = statuses[oldGeneric.status];

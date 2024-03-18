@@ -7,7 +7,7 @@ function noQuestion(characteristics, questions) {
     throw new Server400Error('Service should not contain question.');
 }
 
-function checkCapacity(characteristics, questions, fields) {
+function checkCapacityNonNegative(characteristics, questions, fields) {
   const capacityId = Object.keys(characteristics).find(id => characteristics[id].name === 'Capacity');
   if (!!capacityId) {
     if (fields['characteristic_' + capacityId] < 0) {
@@ -16,6 +16,7 @@ function checkCapacity(characteristics, questions, fields) {
   }
 }
 
+// Prevent overwriting the read-only occupancy characteristic
 function unsetOccupancy(characteristics, questions, fields) {
   const occupancyId = PredefinedCharacteristics['Occupancy']._id;
   delete characteristics[occupancyId];
@@ -30,4 +31,4 @@ async function setOccupancy(characteristics, questions, fields) {
   fields[`characteristic_${occupancyId}`] = '0';
 }
 
-module.exports = {noQuestion, checkCapacity, unsetOccupancy, setOccupancy}
+module.exports = {noQuestion, checkCapacityNonNegative, unsetOccupancy, setOccupancy}

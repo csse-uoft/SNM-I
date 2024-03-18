@@ -29,10 +29,11 @@ const{GDBProgramWaitlistEntryModel} = require("../../models/program/programWaitl
 
 
 const {GDBInternalTypeModel} = require("../../models/internalType");
-const {noQuestion, checkCapacity, setOccupancy, unsetOccupancy} = require('./checkers')
+const {noQuestion, checkCapacityNonNegative, setOccupancy, unsetOccupancy} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
-  serviceOccurrenceInternalTypeUpdateTreater
+  serviceOccurrenceInternalTypeUpdateTreater,
+  checkCapacityOnServiceOccurrenceUpdate
 } = require("./serviceOccurrenceInternalTypeTreater");
 const {
   programOccurrenceInternalTypeCreateTreater, programOccurrenceInternalTypeFetchTreater,
@@ -192,10 +193,10 @@ const genericType2Populates = {
 
 const genericType2BeforeCreateChecker = {
   'service': [noQuestion],
-  'serviceOccurrence': [noQuestion, checkCapacity, setOccupancy],
+  'serviceOccurrence': [noQuestion, checkCapacityNonNegative, setOccupancy],
   'serviceRegistration': [updateOccurrenceOccupancyOnServiceRegistrationCreate],
   'program': [noQuestion],
-  'programOccurrence': [noQuestion, checkCapacity, setOccupancy],
+  'programOccurrence': [noQuestion, checkCapacityNonNegative, setOccupancy],
   'programRegistration': [updateOccurrenceOccupancyOnProgramRegistrationCreate],
   'serviceWaitlist': [noQuestion],
   'waitlistEntry': [noQuestion],
@@ -205,10 +206,10 @@ const genericType2BeforeCreateChecker = {
 
 const genericType2BeforeUpdateChecker = {
   'service': [noQuestion],
-  'serviceOccurrence': [noQuestion, checkCapacity, unsetOccupancy],
+  'serviceOccurrence': [noQuestion, checkCapacityNonNegative, checkCapacityOnServiceOccurrenceUpdate, unsetOccupancy],
   'serviceRegistration': [checkServiceOccurrenceUnchanged, updateOccurrenceOccupancyOnServiceRegistrationUpdate],
   'program': [noQuestion],
-  'programOccurrence': [noQuestion, checkCapacity, unsetOccupancy],
+  'programOccurrence': [noQuestion, checkCapacityNonNegative, unsetOccupancy],
   'programRegistration': [checkProgramOccurrenceUnchanged, updateOccurrenceOccupancyOnProgramRegistrationUpdate],
   'serviceWaitlist': [noQuestion],
   'waitlistEntry' : [noQuestion],
