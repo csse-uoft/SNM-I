@@ -3,7 +3,7 @@ const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
 const FORMTYPE = 'waitlistEntry'
 
-const waitlistEntryInternalTypeCreateTreater = async (internalType, instanceData, value) => { 
+const serviceWaitlistEntryInternalTypeCreateTreater = async (internalType, instanceData, value) => { 
   //get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
   if (property === 'serviceRegistration'){
@@ -11,7 +11,7 @@ const waitlistEntryInternalTypeCreateTreater = async (internalType, instanceData
   }
 };
 
-const waitlistEntryInternalTypeFetchTreater = async (data) => {
+const serviceWaitlistEntryInternalTypeFetchTreater = async (data) => {
   const result = {};
   const schema =  data.schema; 
   for (const property in data) {
@@ -23,10 +23,12 @@ const waitlistEntryInternalTypeFetchTreater = async (data) => {
   return result;
 };
 
-
-const waitlistEntryInternalTypeUpdateTreater = async (internalType, value, result) => {
-  await waitlistEntryInternalTypeCreateTreater(internalType, result, value);
+const serviceWaitlistEntryInternalTypeUpdateTreater = async (internalType, value, result) => {
+  await serviceWaitlistEntryInternalTypeCreateTreater(internalType, result, value);
 }
 
-
-module.exports = {waitlistEntryInternalTypeCreateTreater, waitlistEntryInternalTypeFetchTreater, waitlistEntryInternalTypeUpdateTreater}
+module.exports = {
+  serviceWaitlistEntryInternalTypeCreateTreater,
+  serviceWaitlistEntryInternalTypeFetchTreater,
+  serviceWaitlistEntryInternalTypeUpdateTreater
+}

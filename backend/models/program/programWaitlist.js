@@ -5,12 +5,8 @@ const {GDBProgramOccurrenceModel} = require("./programOccurrence");
 const {GDBProgramWaitlistEntryModel} = require("./programWaitlistEntry");
 
 const GDBProgramWaitlistModel = createGraphDBModel({
-
-
-
     waitlist: {type: [GDBProgramWaitlistEntryModel], internalKey: ':hasWaitlist'},
     programOccurrence: {type: GDBProgramOccurrenceModel, internalKey: ':hasProgramOccurrence'},
-
 },
 {  
     rdfTypes: [':ProgramWaitlist'], name: 'programWaitlist'

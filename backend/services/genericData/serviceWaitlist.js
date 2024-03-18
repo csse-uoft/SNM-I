@@ -25,10 +25,12 @@ const serviceWaitlistInternalTypeFetchTreater = async (data) => {
   return result;
 };
 
-
 const serviceWaitlistInternalTypeUpdateTreater = async (internalType, value, result) => {
   await serviceWaitlistInternalTypeCreateTreater(internalType, result, value);
 }
 
-
-module.exports = {serviceWaitlistInternalTypeCreateTreater, serviceWaitlistInternalTypeFetchTreater, serviceWaitlistInternalTypeUpdateTreater}
+module.exports = {
+  serviceWaitlistInternalTypeCreateTreater,
+  serviceWaitlistInternalTypeFetchTreater,
+  serviceWaitlistInternalTypeUpdateTreater
+}

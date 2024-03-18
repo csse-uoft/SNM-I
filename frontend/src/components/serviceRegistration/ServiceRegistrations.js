@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from "../shared"
-import {GenericPage } from "../shared";
+import {GenericPage} from "../shared";
 import {deleteSingleGeneric, fetchMultipleGeneric} from "../../api/genericDataApi";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
 import {getInstancesInClass} from '../../api/dynamicFormApi';

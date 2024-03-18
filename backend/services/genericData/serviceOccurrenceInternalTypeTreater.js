@@ -6,6 +6,7 @@ const {SPARQL} = require('graphdb-utils');
 const {popFromWaitlist} = require("../serviceWaitlist/serviceWaitlist");
 const {getIndividualsInClass} = require("../dynamicForm");
 const {PredefinedCharacteristics} = require("../characteristics");
+const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 
 const serviceOccurrenceInternalTypeCreateTreater = async (internalType, instanceData, value) => {
   const property = getPredefinedProperty('serviceOccurrence', internalType);
@@ -30,7 +31,7 @@ const checkCapacityOnServiceOccurrenceUpdate = async function (characteristics, 
     return;
   const capacity = fields['characteristic_' + capacityId];
   if (capacity < oldGeneric.occupancy) {
-    throw new Error('The new capacity of this service occurence is less than its current occupancy. Please unregister '
+    throw new Error('The new capacity of this service occurrence is less than its current occupancy. Please unregister '
       + 'service registrations until the occupancy is below the desired capacity, and then try editing this service '
       + 'occurrence again.');
   } else {
@@ -58,9 +59,18 @@ const checkCapacityOnServiceOccurrenceUpdate = async function (characteristics, 
   }
 }
 
+// Create a new waitlist here that corresponds to the serviceOccurrence newGeneric
+const afterCreateServiceOccurrence = async function (data, req, newGeneric) {
+  const occurrenceWaitlist = GDBServiceWaitlistModel({'serviceOccurrence': newGeneric, 'waitlist': []});
+  // pass in the serviceOccurrence that was just created ("newGeneric")
+  // and an empty list for the queue.
+  await occurrenceWaitlist.save();
+}
+
 module.exports = {
   serviceOccurrenceInternalTypeCreateTreater,
   serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater,
   checkCapacityOnServiceOccurrenceUpdate,
+  afterCreateServiceOccurrence,
 }

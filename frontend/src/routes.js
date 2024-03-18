@@ -25,13 +25,10 @@ import AdminRoute from './components/routes/AdminRoute';
 import Notifications from './components/Notifications';
 import Providers from './components/Providers';
 import ProviderForm from './components/providers/ProviderForm2';
-
 import ServiceWaitlists from './components/ServiceWaitlists';
 import ServiceWaitlistForm from './components/serviceWaitlist/ServiceWaitlist';
-
 import ProgramWaitlists from './components/ProgramWaitlists';
 import ProgramWaitlistForm from './components/programWaitlist/ProgramWaitlist';
-
 import Services from './components/Services';
 import Programs from './components/Programs';
 // import ServiceForm from './components/services/ServiceForm'
@@ -59,19 +56,14 @@ import VisualizeService from "./components/services/visualizeService";
 import VisualizeProgram from "./components/programs/visualizeProgram";
 import VisualizeServiceOccurrence from "./components/serviceOccurrence/visualizeServiceOccurrence";
 import VisualizeProgramOccurrence from "./components/programOccurrence/visualizeProgramOccurrence";
-
 import VisualizeServiceWaitlist from "./components/serviceWaitlist/visualizeServiceWaitlist";
 import VisualizeProgramWaitlist from "./components/programWaitlist/visualizeProgramWaitlist";
-
-
 import VisualizeServiceRegistration from "./components/serviceRegistration/visualizeServiceRegistration";
 import VisualizeProgramRegistration from "./components/programRegistration/visualizeProgramRegistration";
 import VisualizeServiceProvision from "./components/serviceProvision/visualizeServiceProvision";
 import VisualizeProgramProvision from "./components/programProvision/visualizeProgramProvision";
 import VisualizeAppointment from "./components/appointments/visualizeAppointment";
 import VisualizeServices from "./components/programs/visualizeServices";
-
-
 import VisualizeNeedOccurrence from "./components/needOccurrence/visualizeNeedOccurrence";
 import VisualizeOutcomeOccurrence from "./components/outcomeOccurrence/visualizeOutcomeOccurrence";
 import Needs from "./components/need/needs";
@@ -80,7 +72,6 @@ import NeedSatisfiers from "./components/needSatisfier/needSatisfiers";
 import Outcomes from "./components/outcome/outcomes";
 import ServiceOccurrences from "./components/ServiceOccurrences";
 import ServiceOccurrenceForm from "./components/serviceOccurrence/ServiceOccurrence";
-
 import ProgramOccurrences from "./components/ProgramOccurrences";
 import ProgramOccurrenceForm from "./components/programOccurrence/ProgramOccurrence";
 import ReferralForm from "./components/referrals/ReferralForm";

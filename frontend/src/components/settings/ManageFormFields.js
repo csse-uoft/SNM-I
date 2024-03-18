@@ -154,7 +154,6 @@ export default function ManageFormFields() {
     //if this is not the case, then the error message is displayed and the form
     //is not created/updated
     form.formStructure.forEach(step => {
-      form
       if (step.fields.length <= 0){
         setErrors(errors => ({...errors, formName: 'Blank step detected.'}));
         empty_step = true;
@@ -174,10 +173,6 @@ export default function ManageFormFields() {
           return;
         }
       }
-    
-
-
-
 
     try {
       if (method === 'new') {
@@ -190,7 +185,7 @@ export default function ManageFormFields() {
     } catch (e) {
       console.error(e)
     }
-  }; 
+  };
 
   const handleChange = useCallback(name => e => {
     const value = e.target.value;

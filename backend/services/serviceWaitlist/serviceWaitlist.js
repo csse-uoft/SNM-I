@@ -1,6 +1,6 @@
 const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration");
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
-const {GDBWaitlistEntryModel} = require("../../models/service/waitlistEntry");
+const {GDBServiceWaitlistEntryModel} = require("../../models/service/serviceWaitlistEntry");
 
 
 //TODO: NOTE THESE FUNCTIONS ARE UNTESTED AS OF MARCH 6 2024
@@ -66,7 +66,7 @@ const pushToWaitlist = async (id, serviceRegistrationId, priority, date) => {
         const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}});
         const serviceRegistration = await GDBServiceRegistrationModel.findById(serviceRegistrationId);
         //create a new entry, this will be added to our waitlist
-        const newEntry = GDBWaitlistEntryModel({'serviceRegistration': serviceRegistration, 'priority': priority, 'date': date});
+        const newEntry = GDBServiceWaitlistEntryModel({'serviceRegistration': serviceRegistration, 'priority': priority, 'date': date});
         //save this new entry to the db
         await newEntry.save();
 
@@ -134,7 +134,7 @@ const popFromWaitlist = async (id) => {
         const serviceRegistration = dequeuedEntry.serviceRegistration;
 
         //now delete the item
-        await GDBWaitlistEntryModel.findByIdAndDelete(dequeuedEntry._id);
+        await GDBServiceWaitlistEntryModel.findByIdAndDelete(dequeuedEntry._id);
         //TODO: ASK IF THIS IS THE RIGHT WAY TO GET THE ID FROM AN OBJECT, NOT SURE IF THIS IS RIGHT OR NOT
 
         //now return success and the thing that just got deleted:
@@ -189,7 +189,7 @@ const removeFromWaitlist = async (id, serviceRegistrationId) => {
         waitlist.waitlist = newWaitlist;
 
         //delete the entry from our database
-        await GDBWaitlistEntryModel.findByIdAndDelete(removedEntry._id);
+        await GDBServiceWaitlistEntryModel.findByIdAndDelete(removedEntry._id);
 
         //save the changes
         await waitlist.save();

@@ -1,4 +1,4 @@
-const {createGraphDBModel, DeleteType, Types, getGraphDBModel} = require("graphdb-utils");
+const {createGraphDBModel, DeleteType, Types} = require("graphdb-utils");
 const {GDBProgramOccurrenceModel} = require("./program/programOccurrence");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBReferralModel} = require("./referral");

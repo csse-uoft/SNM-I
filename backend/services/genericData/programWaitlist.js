@@ -22,10 +22,12 @@ const programWaitlistInternalTypeFetchTreater = async (data) => {
   return result;
 };
 
-
 const programWaitlistInternalTypeUpdateTreater = async (internalType, value, result) => {
   await programWaitlistInternalTypeCreateTreater(internalType, result, value);
 }
 
-
-module.exports = {programWaitlistInternalTypeCreateTreater, programWaitlistInternalTypeFetchTreater, programWaitlistInternalTypeUpdateTreater}
+module.exports = {
+  programWaitlistInternalTypeCreateTreater,
+  programWaitlistInternalTypeFetchTreater,
+  programWaitlistInternalTypeUpdateTreater
+}

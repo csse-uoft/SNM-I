@@ -21,23 +21,23 @@ const {GDBAppointmentModel} = require("../../models/appointment");
 const {GDBPersonModel} = require("../../models/person");
 const {GDBServiceOccurrenceModel} = require("../../models/service/serviceOccurrence");
 const {GDBProgramOccurrenceModel} = require("../../models/program/programOccurrence");
-
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
-const{GDBWaitlistEntryModel} = require("../../models/service/waitlistEntry");
+const {GDBServiceWaitlistEntryModel} = require("../../models/service/serviceWaitlistEntry");
 const {GDBProgramWaitlistModel} = require("../../models/program/programWaitlist");
-const{GDBProgramWaitlistEntryModel} = require("../../models/program/programWaitlistEntry");
-
-
+const {GDBProgramWaitlistEntryModel} = require("../../models/program/programWaitlistEntry");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {noQuestion, checkCapacityNonNegative, setOccupancy, unsetOccupancy} = require('./checkers')
 const {
   serviceOccurrenceInternalTypeCreateTreater, serviceOccurrenceInternalTypeFetchTreater,
   serviceOccurrenceInternalTypeUpdateTreater,
-  checkCapacityOnServiceOccurrenceUpdate
+  checkCapacityOnServiceOccurrenceUpdate,
+  afterCreateServiceOccurrence
 } = require("./serviceOccurrenceInternalTypeTreater");
 const {
   programOccurrenceInternalTypeCreateTreater, programOccurrenceInternalTypeFetchTreater,
-  programOccurrenceInternalTypeUpdateTreater
+  programOccurrenceInternalTypeUpdateTreater,
+  afterCreateProgramOccurrence,
+  checkCapacityOnProgramOccurrenceUpdate
 } = require("./programOccurrenceInternalTypeTreater");
 const {
   fetchCharacteristicQuestionsInternalTypesBasedOnForms,
@@ -78,7 +78,7 @@ const {
   programRegistrationInternalTypeCreateTreater, programRegistrationInternalTypeFetchTreater,
   programRegistrationInternalTypeUpdateTreater,
   updateOccurrenceOccupancyOnProgramRegistrationCreate, updateOccurrenceOccupancyOnProgramRegistrationUpdate,
-  updateOccurrenceOccupancyOnProgramRegistrationDelete, checkProgramOccurrenceUnchanged,
+  updateOccurrenceOccupancyOnProgramRegistrationDelete, checkProgramOccurrenceUnchanged, afterCreateProgramRegistration,
 } = require("./programRegistration");
 const {
   appointmentInternalTypeCreateTreater,
@@ -136,11 +136,9 @@ const {
 } = require("./volunteerInternalTypeTreater");
 const {GDBEligibilityModel} = require("../../models/eligibility");
 const { serviceWaitlistInternalTypeCreateTreater, serviceWaitlistInternalTypeFetchTreater, serviceWaitlistInternalTypeUpdateTreater } = require("./serviceWaitlist");
-const { waitlistEntryInternalTypeCreateTreater, waitlistEntryInternalTypeFetchTreater, waitlistEntryInternalTypeUpdateTreater } = require("./waitlistEntry");
-
+const { serviceWaitlistEntryInternalTypeCreateTreater, serviceWaitlistEntryInternalTypeFetchTreater, serviceWaitlistEntryInternalTypeUpdateTreater } = require("./serviceWaitlistEntry");
 const { programWaitlistInternalTypeCreateTreater, programWaitlistInternalTypeFetchTreater, programWaitlistInternalTypeUpdateTreater } = require("./programWaitlist");
 const { programWaitlistEntryInternalTypeCreateTreater, programWaitlistEntryInternalTypeFetchTreater, programWaitlistEntryInternalTypeUpdateTreater } = require("./programWaitlistEntry");
-
 
 const genericType2Model = {
   'client': GDBClientModel,
@@ -151,7 +149,7 @@ const genericType2Model = {
   'appointment': GDBAppointmentModel,
   'serviceOccurrence': GDBServiceOccurrenceModel,
   'serviceWaitlist': GDBServiceWaitlistModel,
-  'waitlistEntry' : GDBWaitlistEntryModel,
+  'serviceWaitlistEntry' : GDBServiceWaitlistEntryModel,
   'programWaitlist': GDBProgramWaitlistModel,
   'programWaitlistEntry' : GDBProgramWaitlistEntryModel,
   'programOccurrence': GDBProgramOccurrenceModel,
@@ -180,11 +178,11 @@ const genericType2Populates = {
   'service': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address'],
   'program': ['serviceProvider.organization.address', 'serviceProvider.volunteer.address', 'serviceProvider.organization', 'serviceProvider.volunteer', 'manager'],
   'serviceOccurrence': ['address', 'occurrenceOf'],
+  'programOccurrence': ['address', 'occurrenceOf'],
   'serviceWaitlist': ['waitlist', 'serviceOccurrence'],
-  'waitlistEntry': ['serviceRegistration', 'priority', 'date'],
+  'serviceWaitlistEntry': ['serviceRegistration', 'priority', 'date'],
   'programWaitlist': ['waitlist', 'programOccurrence'],
   'programWaitlistEntry': ['programRegistration', 'priority', 'date'],
-  'programOccurrence': ['address', 'occurrenceOf'],
   'client': ['address', 'needs'],
   'appointment': ['address', 'referral'],
   'person': ['address'],
@@ -199,7 +197,7 @@ const genericType2BeforeCreateChecker = {
   'programOccurrence': [noQuestion, checkCapacityNonNegative, setOccupancy],
   'programRegistration': [updateOccurrenceOccupancyOnProgramRegistrationCreate],
   'serviceWaitlist': [noQuestion],
-  'waitlistEntry': [noQuestion],
+  'serviceWaitlistEntry': [noQuestion],
   'programWaitlist': [noQuestion],
   'programWaitlistEntry': [noQuestion],
 };
@@ -209,10 +207,10 @@ const genericType2BeforeUpdateChecker = {
   'serviceOccurrence': [noQuestion, checkCapacityNonNegative, checkCapacityOnServiceOccurrenceUpdate, unsetOccupancy],
   'serviceRegistration': [checkServiceOccurrenceUnchanged, updateOccurrenceOccupancyOnServiceRegistrationUpdate],
   'program': [noQuestion],
-  'programOccurrence': [noQuestion, checkCapacityNonNegative, unsetOccupancy],
+  'programOccurrence': [noQuestion, checkCapacityNonNegative, checkCapacityOnProgramOccurrenceUpdate, unsetOccupancy],
   'programRegistration': [checkProgramOccurrenceUnchanged, updateOccurrenceOccupancyOnProgramRegistrationUpdate],
   'serviceWaitlist': [noQuestion],
-  'waitlistEntry' : [noQuestion],
+  'serviceWaitlistEntry' : [noQuestion],
   'programWaitlist': [noQuestion],
   'programWaitlistEntry' : [noQuestion],
 };
@@ -255,7 +253,7 @@ const genericType2InternalTypeCreateTreater = {
   'person': personInternalTypeCreateTreater,
   'volunteer': volunteerInternalTypeCreateTreater,
   'serviceWaitlist': serviceWaitlistInternalTypeCreateTreater,
-  'waitlistEntry': waitlistEntryInternalTypeCreateTreater,
+  'serviceWaitlistEntry': serviceWaitlistEntryInternalTypeCreateTreater,
   'programWaitlist': programWaitlistInternalTypeCreateTreater,
   'programWaitlistEntry': programWaitlistEntryInternalTypeCreateTreater
 };
@@ -278,7 +276,7 @@ const genericType2InternalTypeFetchTreater = {
   'person': personInternalTypeFetchTreater,
   'volunteer': volunteerInternalTypeFetchTreater,
   'serviceWaitlist': serviceWaitlistInternalTypeFetchTreater,
-  'waitlistEntry': waitlistEntryInternalTypeFetchTreater,
+  'serviceWaitlistEntry': serviceWaitlistEntryInternalTypeFetchTreater,
   'programWaitlist': programWaitlistInternalTypeFetchTreater,
   'programWaitlistEntry': programWaitlistEntryInternalTypeFetchTreater
 };
@@ -301,7 +299,7 @@ const genericType2InternalTypeUpdateTreater = {
   'person': personInternalTypeUpdateTreater,
   'volunteer': volunteerInternalTypeUpdateTreater,
   'serviceWaitlist': serviceWaitlistInternalTypeUpdateTreater,
-  'waitlistEntry' : waitlistEntryInternalTypeUpdateTreater,
+  'serviceWaitlistEntry' : serviceWaitlistEntryInternalTypeUpdateTreater,
   'programWaitlist': programWaitlistInternalTypeUpdateTreater,
   'programWaitlistEntry' : programWaitlistEntryInternalTypeUpdateTreater
 };
@@ -311,6 +309,9 @@ const genericType2AfterCreateTreater = {
   'service': afterCreateService,
   'volunteer': afterCreateVolunteer,
   'serviceRegistration': afterCreateServiceRegistration,
+  'programRegistration': afterCreateProgramRegistration,
+  'serviceOccurrence': afterCreateServiceOccurrence,
+  'programOccurrence': afterCreateProgramOccurrence,
 }
 
 const genericType2AfterUpdateTreater = {
@@ -555,19 +556,6 @@ const createSingleGeneric = async (req, res, next) => {
       // the instance data is stored into graphdb
       const newGeneric = genericType2Model[genericType](instanceData);
       await newGeneric.save();
-
-      //create a new waitlist here that corresponds to the serviceOccurrence
-      if(genericType === 'serviceOccurrence'){
-          const occurrenceWaitlist = genericType2Model['serviceWaitlist']({'serviceOccurrence': newGeneric, 'waitlist':[]});
-          //pass in the serviceOccurrence that was just created ("newGeneric").
-          //and an empty list for the queue.
-          await occurrenceWaitlist.save();
-        }
-        //same thing as above, but for programOccurrences
-        if(genericType === 'programOccurrence'){
-          const occurrenceWaitlist = genericType2Model['programWaitlist']({'programOccurrence': newGeneric, 'waitlist':[]});
-          await occurrenceWaitlist.save();
-        }
 
       if (genericType2AfterCreateTreater[genericType])
         await genericType2AfterCreateTreater[genericType](data, req, newGeneric);

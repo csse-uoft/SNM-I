@@ -207,8 +207,6 @@ module.exports = [
     }
   },
 
-
-
   // below are for service waitlist
   {
     name: 'waitlistForServiceWaitlist',
@@ -218,7 +216,7 @@ module.exports = [
       label: 'Waitlist',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.MultiSelectField,
-      optionsFromClass: 'http://snmi#WaitlistEntry'
+      optionsFromClass: 'http://snmi#ServiceWaitlistEntry'
     }
   },
   {
@@ -226,29 +224,27 @@ module.exports = [
     predefinedProperty: 'http://snmi#hasServiceOccurrence',
     formType: 'serviceWaitlist',
     implementation: {
-      label: 'ServiceOccurrence',
+      label: 'Service Occurrence',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#ServiceOccurrence'
     }
   },
 
-  //below are for waitlist Entry
+  // below are for service waitlist entry
   {
-    name: 'serviceRegistrationForWaitlistEntry',
+    name: 'serviceRegistrationForServiceWaitlistEntry',
     predefinedProperty: 'http://snmi#hasServiceRegistration',
-    formType: 'waitlistEntry',
+    formType: 'serviceWaitlistEntry',
     implementation: {
-      label: 'ServiceRegistration',
+      label: 'Service Registration',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#ServiceRegistration'
     }
   },
 
-
-
-  // below are for service waitlist
+  // below are for program waitlist
   {
     name: 'waitlistForProgramWaitlist',
     predefinedProperty: 'http://snmi#hasWaitlist',
@@ -265,28 +261,25 @@ module.exports = [
     predefinedProperty: 'http://snmi#hasProgramOccurrence',
     formType: 'programWaitlist',
     implementation: {
-      label: 'ProgramOccurrence',
+      label: 'Program Occurrence',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
-      optionsFromClass: 'http://snmi#ProramOccurrence'
+      optionsFromClass: 'http://snmi#ProgramOccurrence'
     }
   },
 
-  //below are for programWaitlistEntry
+  // below are for program waitlist entry
   {
     name: 'programRegistrationForProgramWaitlistEntry',
     predefinedProperty: 'http://snmi#hasProgramRegistration',
     formType: 'programWaitlistEntry',
     implementation: {
-      label: 'ProgramRegistration',
+      label: 'Program Registration',
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#ProgramRegistration'
     }
   },
-
-
-
 
   // below are for program Provision
   {
