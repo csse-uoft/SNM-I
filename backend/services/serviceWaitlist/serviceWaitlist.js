@@ -119,10 +119,15 @@ const popFromWaitlist = async (id) => {
     
     try {
         //get the waitlist we need to modify
-        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}}, {populates: ['serviceOccurrence.characteristicOccurrences']});
+        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}},
+            {
+                populates: ['serviceOccurrence.characteristicOccurrences', 'waitlist', 'waitlist.serviceRegistration',
+                    'waitlist.serviceRegistration.characteristicOccurrences']
+            });
         //go into our waitlist, pop out the item in the front of our list/queue (since we are sorting)
         //from ascending priority where the lowest priority value = the client that should get off the waitlist first
         const dequeuedEntry = waitlist.waitlist?.shift();
+        await waitlist.save();
         if (!dequeuedEntry) {
             return null;
         }
@@ -161,21 +166,21 @@ const removeFromWaitlist = async (id, serviceRegistrationId) => {
     try {
 
         //get the waitlist we need to modify 
-        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}});
+        const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}}, {populates: ['waitlist']});
 
         //now we go through the waitlist and find where the client we need to delete is based
         //on the given id.
 
         let removedEntry;
-        const newWaitlist = waitlist.waitlist.filter(entry => {
-            if (entry.serviceRegistration._id === serviceRegistrationId){
+        const newWaitlist = waitlist.waitlist?.filter(entry => {
+            if (entry.serviceRegistration?.split('_')[1] === serviceRegistrationId){
                 removedEntry = entry; //save this so we can delete the registration from the db as well
                 return false; //returning false means that the item we are deleting is no long in the waitlist.
             }
             //if the serviceRegistration's id is not equal to the one we need to delete, we keep it in the new waitlist
             //(it is not filtered out)
             return true; 
-        })[0];
+        });
         if (!removedEntry) {
             return false;
         }
