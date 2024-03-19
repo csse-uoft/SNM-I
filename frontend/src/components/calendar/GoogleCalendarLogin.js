@@ -4,11 +4,14 @@ import { useGoogleLogin } from '@react-oauth/google';
 import {useEffect, useState} from "react";
 import {fetchGoogleCalendarAppointments} from "../../api/calendarAPI";
 
-const GoogleCalendarLogin = () => {
+const GoogleCalendarLogin = (props) => {
 
   const login =
     useGoogleLogin({
-    onSuccess: async codeResponse => await fetchGoogleCalendarAppointments(codeResponse).then(response => console.log(response)),
+    onSuccess: async codeResponse =>
+      await fetchGoogleCalendarAppointments(codeResponse).then(response => {
+        props.insertGoogleAppointments(response.data);
+      }),
     flow: 'auth-code'
   });
 

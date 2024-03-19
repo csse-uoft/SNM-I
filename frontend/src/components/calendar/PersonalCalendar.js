@@ -33,9 +33,24 @@ const PersonalCalendar = () => {
   // The variable to store the appointments that will be shown on the calendar
   const [appointments, setAppointments] = useState([]);
 
+  const insertIntoLocalAppointments = (newAppointments) => {
+    // start with state appointments, then insert appointments in the new appointments one by one
+    let newAppointmentsArray = [...appointments];
+    for (let i = 0; i < newAppointments.length; i++) {
+      let insertedAppointment = {};
+      insertedAppointment.start = moment.tz(newAppointments[i].startDate, selectedTimezone).toDate();
+      insertedAppointment.end = moment.tz(newAppointments[i].endDate, selectedTimezone).toDate();
+      insertedAppointment.title = newAppointments[i].appointmentName;
+      newAppointmentsArray.push(insertedAppointment);
+    }
+
+    // console.log("New Appointments Array: ", newAppointmentsArray);
+    setAppointments(newAppointmentsArray);
+  }
+
   // Local storage might store teh timezone, if so, use that, otherwise use the default timezone
   // This variable is used to initialize the timezone selector
-  const initialTimeZone = localStorage.getItem('timezone') || 'Atlantic/Faeroe';
+  const initialTimeZone = localStorage.getItem('timezone') || 'Etc/GMT-4';
   const [selectedTimezone, setSelectedTimezone] = useState(initialTimeZone);
 
 
@@ -54,12 +69,16 @@ const PersonalCalendar = () => {
       data.data[i].title = data.data[i].appointmentName;
     }
     // Set the appointments to the state
-    setAppointments(data.data);
+    return data.data
   };
 
   // Fetch appointments when the component mounts
-  useEffect(() => {
-    fetchAppointments();
+  useEffect(async () => {
+    // fetch appointments when the appointments state is empty
+    if (appointments.length === 0) {
+      let local_appointments = await fetchAppointments();
+      setAppointments(local_appointments);
+    }
   }, []);
 
   // Handle the event click
@@ -119,7 +138,7 @@ const PersonalCalendar = () => {
         </Box>
 
         <Box>
-          <GoogleCalendarLogin />
+          <GoogleCalendarLogin insertGoogleAppointments={insertIntoLocalAppointments}/>
 
         </Box>
 
