@@ -1,19 +1,26 @@
 import { GoogleLogin } from '@react-oauth/google';
+import {Button} from "@mui/material";
+import { useGoogleLogin } from '@react-oauth/google';
+import {useEffect, useState} from "react";
+import {fetchGoogleCalendarAppointments} from "../../api/calendarAPI";
 
 const GoogleCalendarLogin = () => {
+
+  const login =
+    useGoogleLogin({
+    onSuccess: async codeResponse => await fetchGoogleCalendarAppointments(codeResponse).then(response => console.log(response)),
+    flow: 'auth-code'
+  });
+
+  const authenticate = async () => {
+    await login();
+  }
+
+
   return (
     <div>
-      <GoogleLogin
-        // clientId={"97097151571-5rej5u8kh24uanvm4q72jaqm9sf3v5mf.apps.googleusercontent.com"}
-        onSuccess={(response) => {
-          console.log(response);
-        }}
-        onFailure={(response) => {
-          console.log(response);
-        }}
-        // cookiePolicy={'single_host_origin'}
-        // isSignedIn={true}
-      />
+      <Button onClick={authenticate}>Authenticate with Google Calendar</Button>;
+
     </div>
   );
 }
