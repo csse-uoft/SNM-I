@@ -22,7 +22,7 @@ const GoogleCalendarLogin = (props) => {
 
   return (
     <div>
-      <Button onClick={authenticate}>Authenticate with Google Calendar</Button>;
+      <Button onClick={authenticate}>Authenticate with Google Calendar</Button>
 
     </div>
   );

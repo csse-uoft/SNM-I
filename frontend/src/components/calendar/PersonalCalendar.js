@@ -156,10 +156,6 @@ const PersonalCalendar = () => {
               onChange={(newDate) => handleDateChange(newDate)}
             />
           </LocalizationProvider>
-          {selectedDate !== null && (
-            <p>Selected Date: {typeof selectedDate}</p>
-            // You might need to format the date based on your requirements
-          )}
         </Box>
         <Box display="flex" flex={"4"} justifyContent="center" alignItems="center">
           <Calendar
