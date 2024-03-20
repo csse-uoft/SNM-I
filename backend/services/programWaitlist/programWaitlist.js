@@ -29,7 +29,7 @@ const pushToWaitlist = async (id, programRegistrationId, priority, date) => {
     const waitlist = await GDBProgramWaitlistModel.findOne({'programOccurrence': {_id: id}});
     const programRegistration = await GDBProgramRegistrationModel.findById(programRegistrationId);
     //create a new entry, this will be added to our waitlist
-    const newEntry = GDBprogramWaitlistEntryModel({'programRegistration': programRegistration, 'priority': priority, 'date': date});
+    const newEntry = GDBProgramWaitlistEntryModel({'programRegistration': programRegistration, 'priority': priority, 'date': date});
     //save this new entry to the db
     await newEntry.save();
     //now begin insertion:
@@ -78,7 +78,7 @@ const popFromWaitlist = async (id) => {
     //get the waitlist we need to modify
     const waitlist = await GDBProgramWaitlistModel.findOne({'programOccurrence': {_id: id}},
     {
-      populates: ['programOccurrence.characteristicOccurrences', 'waitlist', 'waitlist.serviceRegistration',
+      populates: ['programOccurrence.characteristicOccurrences', 'waitlist', 'waitlist.programRegistration',
       'waitlist.programRegistration.characteristicOccurrences']
     });
     //go into our waitlist, pop out the item in the front of our list/queue (since we are sorting)
