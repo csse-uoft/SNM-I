@@ -17,7 +17,8 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
                                             needSatisfierFieldId,
                                             handleChange,
                                             changeServiceOcc,
-                                            fixedServiceId // full URI of the service which all shown occurrences must be of, if given
+                                            fixedServiceId, // full URI of the service which all shown occurrences must be of, if given
+                                            ...others
                                           }) {
   const serviceKey = serviceFieldId ? `internalType_${serviceFieldId}` : null;
   const serviceOccKey = `internalType_${serviceOccurrenceFieldId}`;
@@ -108,7 +109,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     {showService ?
       <SelectField key={serviceKey} label="Service" required value={fields[serviceKey]}
                    options={dynamicOptions[":Service"] || {}} onChange={handleChangeService(serviceKey)}
-                   controlled/>
+                   controlled {...others}/>
       : null
     }
     {showServiceOcc ?
@@ -116,7 +117,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={serviceOccKey} label="Service Occurrence" required value={fields[serviceOccKey]}
                        options={dynamicOptions[":ServiceOccurrence"] || {}} loading={loadingServiceOcc}
-                       onChange={handleChangeServiceOcc(serviceOccKey)} controlled/>
+                       onChange={handleChangeServiceOcc(serviceOccKey)} controlled {...others}/>
         </div>
       </Fade>
       : null
@@ -126,7 +127,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={needSatisfierKey} label="Service Need Satisfier" required value={fields[needSatisfierKey]}
                        options={dynamicOptions[":NeedSatisfier"] || {}}
-                       onChange={handleChange(needSatisfierKey)} controlled/>
+                       onChange={handleChange(needSatisfierKey)} controlled {...others}/>
         </div>
       </Fade>
       : null

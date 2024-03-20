@@ -116,7 +116,7 @@ export default function ProgramOccurrenceAndStatusField({handleChange, fields, s
       handleChange={handleChange} fields={fields}
       programOccurrenceFieldId={programOccurrenceFieldId}
       fixedProgramId={serviceOrProgramId}
-      changeProgramOcc={value => setSelectedProgramOcc(value)}/>
+      changeProgramOcc={value => setSelectedProgramOcc(value)} disabled={mode === 'edit'}/>
     {!!selectedProgramOcc && !!statusOptions ?
       <Fade in={!!selectedProgramOcc && !!statusOptions}>
         <div>

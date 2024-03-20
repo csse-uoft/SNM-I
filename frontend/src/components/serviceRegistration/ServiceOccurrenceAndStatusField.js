@@ -116,7 +116,7 @@ export default function ServiceOccurrenceAndStatusField({handleChange, fields, s
       handleChange={handleChange} fields={fields}
       serviceOccurrenceFieldId={serviceOccurrenceFieldId}
       fixedServiceId={serviceOrProgramId}
-      changeServiceOcc={value => setSelectedServiceOcc(value)}/>
+      changeServiceOcc={value => setSelectedServiceOcc(value)} disabled={mode === 'edit'}/>
     {!!selectedServiceOcc && !!statusOptions ?
       <Fade in={!!selectedServiceOcc && !!statusOptions}>
         <div>
