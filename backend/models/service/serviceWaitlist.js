@@ -5,14 +5,14 @@ const {GDBServiceOccurrenceModel} = require("./serviceOccurrence");
 const {GDBServiceWaitlistEntryModel} = require("./serviceWaitlistEntry");
 
 const GDBServiceWaitlistModel = createGraphDBModel({
-    waitlist: {type: [GDBServiceWaitlistEntryModel], internalKey: ':hasWaitlist'},
-    serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
+  waitlist: {type: [GDBServiceWaitlistEntryModel], internalKey: ':hasWaitlist'},
+  serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
 },
 {  
-    rdfTypes: [':ServiceWaitlist'], name: 'serviceWaitlist'
+  rdfTypes: [':ServiceWaitlist'], name: 'serviceWaitlist'
 }
 
 );
 module.exports = {
-    GDBServiceWaitlistModel
-  }
+  GDBServiceWaitlistModel
+}

@@ -1,16 +1,16 @@
-const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration");
-const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
-const {GDBServiceWaitlistEntryModel} = require("../../models/service/serviceWaitlistEntry");
+const {GDBProgramRegistrationModel} = require("../../models/programRegistration");
+const {GDBProgramWaitlistModel} = require("../../models/program/programWaitlist");
+const {GDBProgramWaitlistEntryModel} = require("../../models/program/programWaitlistEntry");
 
 /*
 
-given a serviceOccurrence ID and some serviceRegistration ID in "req.params", as well as priority (Number), and date (Date)
-in "req.body" (see /backend/models/service/waitlistEntry.js),
+given a programOccurrence ID and some programRegistration ID in "req.params", as well as priority (Number), and date (Date)
+in "req.body" (see /backend/models/program/waitlistEntry.js),
 add this new registration on the waitlist accordingly.
 That is, we should have three attributes:
 
-1. the id of the serviceOccurrence: req.params.id
-2. the id of the serviceRegistration to be inserted: req.body.serviceRegistrationId
+1. the id of the programOccurrence: req.params.id
+2. the id of the programRegistration to be inserted: req.body.programRegistrationId
 3. the priority this registration will have in the waitlist: req.body.priority
 4. the date the registration was made: req.body.date
 
@@ -23,13 +23,13 @@ however this can/will be added in a future update.
 */
 
 
-const pushToWaitlist = async (id, serviceRegistrationId, priority, date) => {
+const pushToWaitlist = async (id, programRegistrationId, priority, date) => {
   try {
     //grab the waitlist, and the corresponding client to be registered
-    const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}});
-    const serviceRegistration = await GDBServiceRegistrationModel.findById(serviceRegistrationId);
+    const waitlist = await GDBProgramWaitlistModel.findOne({'programOccurrence': {_id: id}});
+    const programRegistration = await GDBProgramRegistrationModel.findById(programRegistrationId);
     //create a new entry, this will be added to our waitlist
-    const newEntry = GDBServiceWaitlistEntryModel({'serviceRegistration': serviceRegistration, 'priority': priority, 'date': date});
+    const newEntry = GDBprogramWaitlistEntryModel({'programRegistration': programRegistration, 'priority': priority, 'date': date});
     //save this new entry to the db
     await newEntry.save();
     //now begin insertion:
@@ -67,19 +67,19 @@ const pushToWaitlist = async (id, serviceRegistrationId, priority, date) => {
 }
 
 
-/*given a serviceOccurrence, remove and return the registration (as a waitlistEntry) of the client that is next in line 
-from the serviceOccurrence's correspondingwaitlist. See the notes above on top of pushToWaitlist().
+/*given a programOccurrence, remove and return the registration (as a waitlistEntry) of the client that is next in line 
+from the programOccurrence's correspondingwaitlist. See the notes above on top of pushToWaitlist().
 
 assume that we have:
-1. the serviceOccurrence id: req.params.id
+1. the programOccurrence id: req.params.id
  */
 const popFromWaitlist = async (id) => {
   try {
     //get the waitlist we need to modify
-    const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}},
+    const waitlist = await GDBProgramWaitlistModel.findOne({'programOccurrence': {_id: id}},
     {
-      populates: ['serviceOccurrence.characteristicOccurrences', 'waitlist', 'waitlist.serviceRegistration',
-      'waitlist.serviceRegistration.characteristicOccurrences']
+      populates: ['programOccurrence.characteristicOccurrences', 'waitlist', 'waitlist.serviceRegistration',
+      'waitlist.programRegistration.characteristicOccurrences']
     });
     //go into our waitlist, pop out the item in the front of our list/queue (since we are sorting)
     //from ascending priority where the lowest priority value = the client that should get off the waitlist first
@@ -88,12 +88,12 @@ const popFromWaitlist = async (id) => {
     if (!dequeuedEntry) {
       return null;
     }
-    const serviceRegistration = dequeuedEntry.serviceRegistration;
+    const programRegistration = dequeuedEntry.programRegistration;
 
     //now delete the item
-    await GDBServiceWaitlistEntryModel.findByIdAndDelete(dequeuedEntry._id);
+    await GDBProgramWaitlistEntryModel.findByIdAndDelete(dequeuedEntry._id);
     //now return success and the thing that just got deleted:
-    return serviceRegistration;
+    return programRegistration;
   } catch (e) {
     throw e;
   }
@@ -102,33 +102,33 @@ const popFromWaitlist = async (id) => {
 
 
 
-/*given a serviceOccurrence ID and the id 
-of a serviceRegistration that must be dequeued from it, delete the registration (waitlistEntry) 
+/*given a programOccurrence ID and the id 
+of a programRegistration that must be dequeued from it, delete the registration (waitlistEntry) 
 from the queue. See the notes above on top of pushToWaitlist().
 
 assume that we will get the following from req:
 
-1. the serviceOccurrence id: req.params.id
-2.the id of the serviceRegistration that needs to be removed from the waitlist: req.body.serviceRegistrationId
+1. the programOccurrence id: req.params.id
+2.the id of the programRegistration that needs to be removed from the waitlist: req.body.programRegistrationId
 
 
 */
-const removeFromWaitlist = async (id, serviceRegistrationId) => {
+const removeFromWaitlist = async (id, programRegistrationId) => {
   try {
 
     //get the waitlist we need to modify 
-    const waitlist = await GDBServiceWaitlistModel.findOne({'serviceOccurrence': {_id: id}}, {populates: ['waitlist']});
+    const waitlist = await GDBProgramWaitlistModel.findOne({'programOccurrence': {_id: id}}, {populates: ['waitlist']});
 
     //now we go through the waitlist and find where the client we need to delete is based
     //on the given id.
 
     let removedEntry;
     const newWaitlist = waitlist.waitlist?.filter(entry => {
-      if (entry.serviceRegistration?.split('_')[1] === serviceRegistrationId){
+      if (entry.programRegistration?.split('_')[1] === programRegistrationId){
         removedEntry = entry; //save this so we can delete the registration from the db as well
         return false; //returning false means that the item we are deleting is no long in the waitlist.
       }
-      //if the serviceRegistration's id is not equal to the one we need to delete, we keep it in the new waitlist
+      //if the programRegistration's id is not equal to the one we need to delete, we keep it in the new waitlist
       //(it is not filtered out)
       return true; 
     });
@@ -139,7 +139,7 @@ const removeFromWaitlist = async (id, serviceRegistrationId) => {
     //our new waitlist is the same as the old one except with the target client removed from the "queue"
     waitlist.waitlist = newWaitlist;
     //delete the entry from our database
-    await GDBServiceWaitlistEntryModel.findByIdAndDelete(removedEntry._id);
+    await GDBProgramWaitlistEntryModel.findByIdAndDelete(removedEntry._id);
     //save the changes
     await waitlist.save();
 
