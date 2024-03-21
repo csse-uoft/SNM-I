@@ -179,6 +179,12 @@ beta.socialneedsmarketplace.ca {
 }
 ```
 
+### Add DNS Record
+```text
+Host name                       Type  TTL       Data
+beta.socialneedsmarketplace.ca  A     1 hour    206.12.97.46
+```
+
 ## Set Other Variables
 Add the following Variables as well according to how you ssh to the remote server by using port forwarding:
 - `BETA_SSH_HOST`: 206.12.97.46
