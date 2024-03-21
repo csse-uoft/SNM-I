@@ -19,6 +19,7 @@ const config = {
     'http://localhost:3002',
     'https://www.socialneedsmarketplace.ca',
     'https://beta.socialneedsmarketplace.ca',
+    'https://alpha.socialneedsmarketplace.ca',
     'https://www.snmi.ca'],
 
   frontend: {
