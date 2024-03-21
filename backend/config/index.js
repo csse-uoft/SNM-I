@@ -7,6 +7,7 @@ if (isProduction)
 const config = {
   graphdb: {
     addr: isProduction ? 'http://localhost:7200' : `http://${isDocker ? 'host.docker.internal' : 'localhost'}:7200`,
+    repositoryName: process.env.GRAPHDB_REPO || (process.env.test ? "snmiTest" : "snmi")
   },
   mongodb: {
     addr: isProduction ? 'mongodb://localhost:27017/snmi' : `mongodb://localhost:27017/${process.env.test ? "snmiTest" : "snmi"}`

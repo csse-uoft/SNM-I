@@ -436,7 +436,7 @@ INSERT DATA {
 
   let url;
   for (let query of query_list){
-    url = `${graphdb.addr}/repositories/snmi/statements?update=${encodeURIComponent(query)}`;
+    url = `${graphdb.addr}/repositories/${graphdb.repositoryName}/statements?update=${encodeURIComponent(query)}`;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -464,7 +464,8 @@ async function load() {
     password: graphdb.password,
     namespaces,
     // The repository name, a new repository will be created if it does not exist.
-    repositoryName: process.env.test ? "snmiTest" : "snmi",
+    repositoryName: graphdb.repositoryName,
+    // Set to true if you want to see SPARQL queries
     debug: false
   });
 
