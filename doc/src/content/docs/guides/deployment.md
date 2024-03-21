@@ -22,13 +22,13 @@ Then it ssh into the remote server to executive a sequence of commands to update
 
 We will go through each of the variables/secrets.
 
-| KEY                     | Example Value                                      | Variable or Secret? |
-|-------------------------|----------------------------------------------------|---------------------|
-| RELEASE_SSH_HOST        | 206.12.97.46                                       | Variable            |
-| RELEASE_SSH_KNOWN_HOSTS | [206.12.97.46]:14572 ecdsa-sha2-nistp256 AAAAE2... | Variable            |
-| RELEASE_SSH_PORT        | 14572                                              | Variable            |
-| RELEASE_SSH_USER        | ubuntu                                             | Variable            |
-| RELEASE_SSH_PRIVATE_KEY | -----BEGIN OPENSSH PRIVATE KEY-----\nb3Blbn....    | **Secret**          |
+| KEY                   | Example Value                                      | Variable or Secret? |
+|-----------------------|----------------------------------------------------|---------------------|
+| BETA_SSH_HOST         | 206.12.97.46                                       | Variable            |
+| BETA_SSH_KNOWN_HOSTS  | [206.12.97.46]:14572 ecdsa-sha2-nistp256 AAAAE2... | Variable            |
+| BETA_SSH_PORT         | 14572                                              | Variable            |
+| BETA_SSH_USER         | ubuntu                                             | Variable            |
+| BETA_SSH_PRIVATE_KEY  | -----BEGIN OPENSSH PRIVATE KEY-----\nb3Blbn....    | **Secret**          |
 
 
 ## Remote Servers Overview
@@ -126,8 +126,11 @@ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
 ```
 1. Navigate to "SNM-I Repo Setting" -> "Security" -> "Secrets and variables" -> "Actions" -> ["Secrets"](https://github.com/csse-uoft/SNM-I/settings/secrets/actions).
 1. Click "New repository secret"
-1. Set the name to `RELEASE_SSH_PRIVATE_KEY` and copy the whole private key to the secret field.
+1. Set the name to `BETA_SSH_PRIVATE_KEY` and copy the whole private key to the secret field.
 
+
+
+## Reverse Proxy Server Setup
 
 ### Set up ssh port forwarding on **Reverse Proxy Server**
 > The following command should be executed on the reverse proxy server.
@@ -154,7 +157,6 @@ Add `net.ipv4.ip_forward = 1` to the bottom. Apply the change.
 sysctl -p
 ```
 
-
 Add `PREROUTING` and `POSTROUTING` rules to `iptables`:
 ```shell
 # ens3 is the network interface that has the public ip
@@ -167,32 +169,43 @@ Make the iptables config persistent.
 sudo apt update && sudo apt install iptables-persistent
 sudo sh -c '/sbin/iptables-save > /etc/iptables/rules.v4'
 ```
+### Setup Caddy Reverse Proxy
+```text
+beta.socialneedsmarketplace.ca {
+    handle /api* {
+        reverse_proxy 192.168.41.202:5000
+    }
+    reverse_proxy 192.168.41.202:80
+}
+```
 
-### Set `RELEASE_SSH_KNOWN_HOSTS`
+## Set Other Variables
+Add the following Variables as well according to how you ssh to the remote server by using port forwarding:
+- `BETA_SSH_HOST`: 206.12.97.46
+- `BETA_SSH_PORT`: 14572
+- `BETA_SSH_USER`: ubuntu
+
+### Set `BETA_SSH_KNOWN_HOSTS`
 If the ssh port forward is correctly configured, you can generate the `known_hosts` by:
 ```shell
 ssh-keyscan -p 14572 -t ecdsa-sha2-nistp256 206.12.97.46
 ```
-Output (The second line is `RELEASE_SSH_KNOWN_HOSTS`)
+Output (The second line is `BETA_SSH_KNOWN_HOSTS`)
 ```text
 # 206.12.97.46:14572 SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6
 [206.12.97.46]:14572 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBxpcp7MHTdVfkaFHitfrRdvmXBXDLC+s4FcFb75oaAmxPAj2FeEEwRRaVv0/jXhiaPqsHl92OdY2xiRVHkZsMM=
 ```
 1. Navigate to "SNM-I Repo Setting" -> "Security" -> "Secrets and variables" -> "Actions" -> ["Variables"](https://github.com/csse-uoft/SNM-I/settings/variables/actions).
 1. Click "New repository variable"
-1. Set the name to `RELEASE_SSH_KNOWN_HOSTS` and copy the whole line to the secret field.
+1. Set the name to `BETA_SSH_KNOWN_HOSTS` and copy the whole line to the secret field.
 
-### Set Other Variables
-Add the following Variables as well according to how you ssh to the remote server by using port forwarding:
-- `RELEASE_SSH_HOST`: 206.12.97.46
-- `RELEASE_SSH_PORT`: 14572
-- `RELEASE_SSH_USER`: ubuntu
 
 ## Add GitHub Workflow
-https://github.com/csse-uoft/SNM-I/blob/master/.github/workflows/release.yml
+https://github.com/csse-uoft/SNM-I/blob/master/.github/workflows/beta.yml
 Remember to change the branch name:
 ```yml
 on:
   push:
-    branches: [ master ]
+    branches: [ beta ]
+...
 ```
