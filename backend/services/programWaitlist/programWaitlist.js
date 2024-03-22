@@ -2,6 +2,11 @@ const {GDBProgramRegistrationModel} = require("../../models/programRegistration"
 const {GDBProgramWaitlistModel} = require("../../models/program/programWaitlist");
 const {GDBProgramWaitlistEntryModel} = require("../../models/program/programWaitlistEntry");
 
+
+// **Below are functions related to the programWaitlistModel, primarily for updating the waitlist **
+
+
+
 /*
 
 given a programOccurrence ID and some programRegistration ID in "req.params", as well as priority (Number), and date (Date)

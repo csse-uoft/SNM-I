@@ -2,8 +2,12 @@ const {GDBServiceRegistrationModel} = require("../../models/serviceRegistration"
 const {GDBServiceWaitlistModel} = require("../../models/service/serviceWaitlist");
 const {GDBServiceWaitlistEntryModel} = require("../../models/service/serviceWaitlistEntry");
 
-/*
 
+// **Below are functions related to the serviceWaitlistModel, primarily for updating the waitlist **
+
+
+
+/*
 given a serviceOccurrence ID and some serviceRegistration ID in "req.params", as well as priority (Number), and date (Date)
 in "req.body" (see /backend/models/service/waitlistEntry.js),
 add this new registration on the waitlist accordingly.
