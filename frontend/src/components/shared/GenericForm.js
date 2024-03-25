@@ -10,7 +10,7 @@ import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "..
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
-import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
+import {createSingleProvider, fetchHomeServiceProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {sendPartnerReferral, updatePartnerReferral, sendPartnerAppointment, updatePartnerAppointment} from "../../api/partnerNetworkApi";
 
@@ -128,8 +128,22 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
               data[internalType._uri.split('#')[1]] = "http://snmi#need_" + needId;
             } else if (internalType.implementation?.optionsFromClass === 'http://snmi#' + capitalizedType && serviceOrProgramId) {
               data[internalType._uri.split('#')[1]] = "http://snmi#" + serviceOrProgramType + '_' + serviceOrProgramId;
-              // TODO: Add receivingServiceProvider
-              // TODO: Add serviceorProgramOccurrence
+            } else if (internalType.name === 'receivingServiceProviderForReferral' && serviceOrProgramType && serviceOrProgramId) {
+              const serviceOrProgram = await fetchSingleGeneric(serviceOrProgramType, serviceOrProgramId);
+              const {internalTypes: serviceOrProgramInternalTypes} = await fetchInternalTypeByFormType(serviceOrProgramType)
+              console.log(serviceOrProgramInternalTypes)
+              for (const serviceOrProgramInternalType of serviceOrProgramInternalTypes) {
+                if (serviceOrProgramInternalType.name === `serviceProviderFor${capitalizedType}`) {
+                  data[internalType._uri.split('#')[1]] = serviceOrProgram.data[serviceOrProgramInternalType._uri.split('#')[1]];
+                  break;
+                }
+              }
+            } else if (internalType.name === 'referringServiceProviderForReferral') {
+              // home organization
+              try {
+                const homeServiceProvider = (await fetchHomeServiceProvider())?.provider;
+                data[internalType._uri.split('#')[1]] = homeServiceProvider?._uri;
+              } catch { }
             }
           }
           setForm(form => ({...form, fields: data}));

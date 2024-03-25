@@ -11,3 +11,8 @@
 - URL: https://socialneedsmarketplace.ca
 
 - Docs: https://www.socialneedsmarketplace.ca/docs/
+
+#### `alpha` Branch
+- URL: https://alpha.socialneedsmarketplace.ca
+
+- Docs: https://alpha.socialneedsmarketplace.ca/docs/

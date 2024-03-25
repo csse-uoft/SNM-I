@@ -294,7 +294,21 @@ const deleteSingleServiceProvider = async (req, res, next) => {
 
 };
 
+const fetchHomeServiceProvider = async (req, res, next) => {
+  try {
+    const homeOrganization = await GDBOrganizationModel.findOne({status: 'Home'}, {populates: []});
+    if (!homeOrganization) {
+      return res.status(400).json({message: 'This deployment has no home organization'})
+    }
+    const provider = await GDBServiceProviderModel.findOne({organization: homeOrganization});
+    provider.organization = homeOrganization;
+    return res.status(200).json({provider, success: true});
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
-    createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
-    updateServiceProvider, searchMultipleServiceProviders, getProviderById
+  createSingleServiceProvider, fetchMultipleServiceProviders, fetchSingleServiceProvider, deleteSingleServiceProvider,
+  updateServiceProvider, getProviderById, fetchHomeServiceProvider, searchMultipleServiceProviders
 };

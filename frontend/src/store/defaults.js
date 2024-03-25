@@ -5,6 +5,8 @@ if (hostname === 'www.socialneedsmarketplace.ca') {
   serverHost = 'https://www.socialneedsmarketplace.ca'
 } else if (hostname === 'beta.socialneedsmarketplace.ca') {
   serverHost = 'https://beta.socialneedsmarketplace.ca'
+} else if (hostname === 'alpha.socialneedsmarketplace.ca') {
+  serverHost = 'https://alpha.socialneedsmarketplace.ca'
 } else {
   serverHost = 'https://localhost:5001';
 }
