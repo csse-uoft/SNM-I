@@ -1,4 +1,4 @@
-const {createGraphDBModel, DeleteType, Types, getGraphDBModel} = require("graphdb-utils");
+const {createGraphDBModel, DeleteType, Types} = require("graphdb-utils");
 const {GDBProgramOccurrenceModel} = require("./program/programOccurrence");
 const {GDBClientModel} = require("./ClientFunctionalities/client");
 const {GDBReferralModel} = require("./referral");
@@ -13,6 +13,7 @@ const GDBProgramRegistrationModel = createGraphDBModel({
   client: {type: GDBClientModel, internalKey: ':hasClient'},
   referral: {type: GDBReferralModel, internalKey: ':hasReferral'},
   appointment: {type: GDBAppointmentModel, internalKey: ':hasAppointment'},
+  status: {type: String, internalKey: ':hasRegistrationStatus'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
 }, {
