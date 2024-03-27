@@ -36,7 +36,7 @@ async function updateUserAccount(email, updatedData) {
 
   const {
     securityQuestions, status, givenName, familyName, countryCode,
-    areaCode, phoneNumber, altEmail
+    areaCode, phoneNumber, altEmail, googleRefreshToken
   } = updatedData
   if (securityQuestions) {
     const answer1 = await Hashing.hashPassword(securityQuestions[3]);
@@ -92,6 +92,10 @@ async function updateUserAccount(email, updatedData) {
 
   if (altEmail) {
     userAccount.secondaryEmail = altEmail;
+  }
+
+  if (googleRefreshToken) {
+    userAccount.googleRefreshToken = googleRefreshToken;
   }
 
   await userAccount.save();

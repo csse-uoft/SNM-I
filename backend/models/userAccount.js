@@ -34,7 +34,9 @@ const GDBUserAccountModel = createGraphDBModel({
   status: {type: String, internalKey: ':hasAccountStatus'},
 
   // Exact 3 questions, the answer should be case-insensitive.
-  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', onDelete: DeleteType.CASCADE}
+  securityQuestions: {type: [GDBSecurityQuestion], internalKey: ':hasSecurityQuestion', onDelete: DeleteType.CASCADE},
+
+  googleRefreshToken: {type: String, internalKey: ':hasGoogleRefreshToken'},
 
 }, {
   rdfTypes: [':UserAccount'], name: 'userAccount'
