@@ -123,7 +123,7 @@ docker create -p 127.0.0.1:7200:7200 --name graphdb --restart unless-stopped -t 
 docker run --name mongo -p 27017:27017 --restart unless-stopped -d mongo:latest
 ```
 
-Note that the only difference between the Linux/MacOS and Windows installation in the command line is that the second command uses `docker run` instead of `docker create`. Windows Powershell does not recognize the `-d` flag for `docker create`.
+Note that the only difference between the Linux/MacOS and Windows installation in the command line is that the second command uses `docker run` instead of `docker create`. Windows Powershell does not recognize the `-d` flag for the `docker create` command.
 
 
 :::note
