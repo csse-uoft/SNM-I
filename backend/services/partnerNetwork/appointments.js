@@ -1,4 +1,4 @@
-const {GDBClientModel} = require("../../models");
+const {GDBClientModel, GDBServiceProviderModel} = require("../../models");
 const {GDBOrganizationModel} = require("../../models/organization");
 const {GDBAppointmentModel} = require("../../models/appointment");
 const {createSingleGenericHelper, fetchSingleGenericHelper, updateSingleGenericHelper} = require("../genericData");
@@ -166,10 +166,13 @@ async function receiveAppointmentHelper(req, partnerData) {
   }
 
   // Use the "Referer" header to identify the partner organization who sent the data
-  const partner = await GDBOrganizationModel.findOne({
-    endpointUrl: {$regex: regexBuilder(`(https?://)?${req.headers.referer}`)}
-  });
-  if (!partner) {
+  const partner = await GDBServiceProviderModel.findOne({
+    organization: {
+      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.headers.referer}`)}
+    }
+  }, {populates: ['organization']});
+  const partnerOrganization = partner.organization;
+  if (!partnerOrganization) {
     throw new Error("Could not find partner organization with the same endpoint URL as the sender");
   }
 
@@ -226,10 +229,10 @@ async function receiveAppointmentHelper(req, partnerData) {
   if (partnerData.partnerIsReceiver) {
     if (!(partnerData.referral?.id)) {
       throw new Error('No referral ID provided');
-    }
-    if ('referral' in partnerData)
+    } else {
       appointment.fields[PredefinedInternalTypes['referralForAppointment']._uri.split('#')[1]]
-        = partnerData.referral ? 'http://snmi#referral_' + partnerData.referral?.id : null;
+        = 'http://snmi#referral_' + partnerData.referral?.id;
+    }
   }
 
   return {appointment, originalAppointment, originalAppointmentJson, partner};
@@ -243,8 +246,7 @@ async function receiveNewAppointment(req, res, next) {
     // Note, partnerData.partnerIsReceiver is true iff we are the appointment's referral's receiver
     const partnerData = req.body;
 
-    const {appointment, originalAppointment, originalAppointmentJson, partner}
-      = await receiveAppointmentHelper(req, partnerData);
+    const {appointment, partner} = await receiveAppointmentHelper(req, partnerData);
 
     if (!partnerData.partnerIsReceiver) {
       return res.status(400).json({success: false, message: 'For a POST request, partnerIsReceiver must be true'});
@@ -262,8 +264,9 @@ async function receiveNewAppointment(req, res, next) {
     // Notify the user of the new appointment
     createNotificationHelper({
       name: 'An appointment was received',
-      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your `
-      + `partner organizations, just sent you <a href="/appointments/${newAppointment._id}">a new appointment</a>.`
+      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one `
+      + `of your partner organizations, just sent you <a href="/appointments/${newAppointment._id}">a new `
+      + `appointment</a>.`
     });
 
     return res.status(201).json({ success: true, newId: newAppointment._id });
@@ -302,9 +305,9 @@ async function receiveUpdatedAppointment(req, res, next) {
     // Notify the user of the updated appointment
     createNotificationHelper({
       name: 'An appointment was updated',
-      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your `
-      + `partner organizations, just updated <a href="/appointments/${originalAppointment._id}">this appointment`
-      + `</a>.`
+      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one `
+      + `of your partner organizations, just updated <a href="/appointments/${originalAppointment._id}">this `
+      + `appointment</a>.`
     });
 
     return res.status(200).json({ success: true });
