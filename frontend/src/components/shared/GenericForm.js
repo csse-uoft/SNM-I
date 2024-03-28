@@ -4,7 +4,7 @@ import {useSnackbar} from 'notistack';
 
 import FieldGroup from '../shared/FieldGroup';
 
-import {Box, Container, Typography} from '@mui/material';
+import {Box, Checkbox, Container, FormControlLabel, FormGroup, Typography} from '@mui/material';
 import {FormStepper, Loading} from "../shared";
 import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "../../api/dynamicFormApi";
 import SelectField from "../shared/fields/SelectField";
@@ -13,6 +13,7 @@ import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../.
 import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {sendPartnerReferral, updatePartnerReferral} from "../../api/partnerNetworkApi";
+import {storeGoogleCalendarAppointments} from "../../api/calendarAPI";
 
 const contentStyle = {
   width: '80%',
@@ -138,7 +139,8 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   const handleFinish = async () => {
     // TODO: pretty error message
 
-    console.log(form);
+    console.log("Form: ", form);
+    await addToGoogleCalendar(form);
     if (mode === 'new') {
       try {
         await (isProvider ? createSingleProvider : createSingleGeneric)(name, form)
@@ -230,6 +232,27 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   if (Object.keys(form).length === 0)
     return <Container><Typography variant="h5">No form available</Typography></Container>
 
+  // Functions to send to google calendar
+  const addToGoogleCalendar = async (form) => {
+    let NameToIndex = await getDynamicFormsByFormType(name);
+    let dict = {};
+
+    for (const step of step) {
+      if (step.name == "Appointment Name") {
+        dict["name"] = form.fields[step.type + '_' + step.id];
+      }
+      if (step.name == "Start Date") {
+        dict["start"] = form.fields[step.type + '_' + step.id];
+      }
+      if (step.name == "End Date") {
+        dict["end"] = form.fields[step.type + '_' + step.id];
+      }
+    }
+    await storeGoogleCalendarAppointments(dict);
+
+  }
+
+
   return (
     <Container>
       <SelectField
@@ -242,11 +265,20 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         options={formOptions}
         sx={{mb: 2}}
       />
+
+      {mainPage == '/appointments' &&
+        // The option of adding to Google Calendar only shows up when the main page is '/appointments'
+        <FormGroup>
+        <FormControlLabel control={<Checkbox defaultChecked />} label="Add to Google Calendar" />
+        </FormGroup>
+      }
+
       <FormStepper
         getStepContent={getStepContent}
         handleFinish={handleFinish}
         stepNames={stepNames}
       />
+
     </Container>
   );
 }

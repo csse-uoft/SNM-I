@@ -1,6 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 // import Calendar from 'react-calendar';
-import {fetchCalendarAppointments, fetchGoogleCalendarAppointments} from '../../api/calendarAPI';
+import {
+  fetchCalendarAppointments,
+  fetchGoogleCalendarAppointments,
+  storeGoogleCalendarAppointments
+} from '../../api/calendarAPI';
 import {useParams} from "react-router-dom";
 import {UserContext} from "../../context";
 
@@ -181,7 +185,6 @@ const PersonalCalendar = () => {
             <Switch {...label} defaultChecked onChange={() => setCalendarNumber(1 - calendarNumber)} />}
                             label="Local Calendar Or Google Calendar" />
         </FormGroup>
-
 
       </Box>
 

@@ -78,16 +78,20 @@ async function storeGoogleAppointments(req, res, next) {
 
   const calendar = google.calendar({version: 'v3', auth:
       oAuth2Client});
+
+  let startDate = new Date(req.body.start);
+  let endDate = new Date(req.body.end);
+
   // add an event to the calendar
   const event = {
-    summary: 'Google Calendar API Test',
+    summary: req.body.name,
     description: 'This is a test of the Google Calendar API',
     start: {
-      dateTime: '2022-01-01T09:00:00-07:00',
+      dateTime: startDate,
       timeZone: 'America/Los_Angeles',
     },
     end: {
-      dateTime: '2022-01-01T17:00:00-07:00',
+      dateTime: endDate,
       timeZone: 'America/Los_Angeles',
     },
   };
