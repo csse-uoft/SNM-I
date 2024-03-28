@@ -265,9 +265,9 @@ async function receiveReferralHelper(req, partnerData) {
   // Use the "Referer" header to identify the partner organization who sent the data
   const partnerServiceProvider = await GDBServiceProviderModel.findOne({
     organization: {
-      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.header.referer}`)}
+      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.headers.referer}`)}
     }
-  });
+  }, {populates: ['organization']});
   const partner = partnerServiceProvider.organization;
   if (!partner) {
     throw new Error('Could not find partner organization with the same endpoint URL as the sender');
