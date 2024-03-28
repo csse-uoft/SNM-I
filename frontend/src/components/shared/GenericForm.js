@@ -13,7 +13,8 @@ import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../.
 import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {sendPartnerReferral, updatePartnerReferral} from "../../api/partnerNetworkApi";
-import {storeGoogleCalendarAppointments} from "../../api/calendarAPI";
+import {storeGoogleCalendarAppointments, updateGoogleLogin} from "../../api/calendarAPI";
+import {useGoogleLogin} from "@react-oauth/google";
 
 const contentStyle = {
   width: '80%',
@@ -238,17 +239,32 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
     let dict = {};
 
     for (const step of step) {
-      if (step.name == "Appointment Name") {
+      if (step.name === "Appointment Name") {
         dict["name"] = form.fields[step.type + '_' + step.id];
       }
-      if (step.name == "Start Date") {
+      if (step.name === "Start Date") {
         dict["start"] = form.fields[step.type + '_' + step.id];
       }
-      if (step.name == "End Date") {
+      if (step.name === "End Date") {
         dict["end"] = form.fields[step.type + '_' + step.id];
       }
     }
-    await storeGoogleCalendarAppointments(dict);
+    const result = await storeGoogleCalendarAppointments(dict);
+    if (result.status === 401 || result.status === 500) {
+      const {id} = useParams();
+      const userId = id;
+
+      useGoogleLogin({
+        onSuccess: async codeResponse => {
+          // Insert user ID into the code response
+          codeResponse.userId = userId;
+          await updateGoogleLogin(codeResponse);
+        },
+        flow: 'auth-code',
+        scope: ['https://www.googleapis.com/auth/calendar']
+      });
+
+    }
 
   }
 
