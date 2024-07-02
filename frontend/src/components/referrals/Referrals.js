@@ -4,6 +4,7 @@ import {GenericPage} from "../shared";
 import {deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric} from "../../api/genericDataApi";
 import {formatName} from "../../helpers/formatters";
 import {getAddressCharacteristicId} from "../shared/CharacteristicIds";
+import { getInstancesInClass } from '../../api/dynamicFormApi';
 
 const TYPE = 'referrals';
 
@@ -27,10 +28,7 @@ const columnsWithoutOptions = [
   {
     label: 'Status',
     body: ({referralStatus}) => {
-      return referralStatus
-      // return <Link color to={`/providers/${serviceProvider.split('_')[1]}`}>
-      //   {serviceProvider}
-      // </Link>;
+      return referralStatus;
     }
   },
   {
@@ -51,11 +49,12 @@ export default function Referrals() {
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
     const referrals = (await fetchMultipleGeneric('referral')).data;
+    const statuses = await getInstancesInClass(':ReferralStatus');
     const data = [];
     for (const referral of referrals) {
       const referralData = {
         _id: referral._id,
-        referralStatus: referral.referralStatus,
+        referralStatus: statuses[referral.referralStatus],
         referralType: referral.referralType,
         client: {
           name: formatName(referral.client?.firstName, referral.client?.lastName, 'client',  referral.client?._id),

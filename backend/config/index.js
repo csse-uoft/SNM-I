@@ -6,7 +6,8 @@ if (isProduction)
 
 const config = {
   graphdb: {
-    addr: isProduction ? 'http://127.0.0.1:7200' : `http://${isDocker ? 'host.docker.internal' : '127.0.0.1'}:7200`,
+    addr: isProduction ? 'http://localhost:7200' : `http://${isDocker ? 'host.docker.internal' : 'localhost'}:7200`,
+    repositoryName: process.env.GRAPHDB_REPO || (process.env.test ? "snmiTest" : "snmi")
   },
   mongodb: {
     addr: isProduction ? 'mongodb://localhost:27017/snmi' : `mongodb://localhost:27017/${process.env.test ? "snmiTest" : "snmi"}`
@@ -18,6 +19,7 @@ const config = {
     'http://localhost:3002',
     'https://www.socialneedsmarketplace.ca',
     'https://beta.socialneedsmarketplace.ca',
+    'https://alpha.socialneedsmarketplace.ca',
     'https://www.snmi.ca'],
 
   frontend: {
@@ -72,7 +74,9 @@ if (process.env.GRAPHDB_PASSWORD)
 if (process.env.MONGODB_ADDRESS)
   config.mongodb.addr = process.env.MONGODB_ADDRESS;
 
-if (process.env.FRONTEND_ADDRESS)
+if (process.env.FRONTEND_ADDRESS) {
   config.frontend.addr = process.env.FRONTEND_ADDRESS;
+  config.allowedOrigins.push(process.env.FRONTEND_ADDRESS);
+}
 
 module.exports = config

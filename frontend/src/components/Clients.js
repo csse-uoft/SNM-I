@@ -28,9 +28,9 @@ const columnsWithoutOptions = [
     label: 'Needs',
     body: ({needs}) => {
       if (needs === null || needs === undefined){
-        needs = "None"
+        return "None";
       }
-      return needs;
+      return needs.map(need => need.type).join(', ');
     }
   },
   // {
@@ -60,7 +60,7 @@ const columnsWithoutOptions = [
 
 export default function Clients() {
 
-  const {fetchClients, deleteClient} = useClientAPIs();
+  const {fetchClients, deleteClient, searchClients} = useClientAPIs();
   const nameFormatter = (client) => {
     if (client?.firstName && client?.lastName) {
       return client?.firstName + ' ' + client?.lastName;
@@ -103,11 +103,37 @@ export default function Clients() {
     return data;
   }
 
+  const searchData = async (searchitem) => {
+    const clients = (await searchClients(searchitem)).data; // TODO: Does not contain address info
+    const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
+    const data = [];
+    for (const client of clients) {
+      const clientData = {_id: client._id, address: {}};
+      if (client.characteristicOccurrences)
+        for (const occ of client.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'First Name') {
+            clientData.firstName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Last Name') {
+            clientData.lastName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Email') {
+            clientData.email = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Address') {
+            const clientObj = (await fetchSingleGeneric("client", client._id)).data; // TODO: inefficient!
+            clientData.address = clientObj['characteristic_' + addressCharacteristicId];
+	  }
+        }
+      data.push(clientData);
+    }
+    return data;
+
+  }
+
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
+      searchData={searchData}
       deleteItem={deleteClient}
       nameFormatter={nameFormatter}
       linkFormatter={linkFormatter}

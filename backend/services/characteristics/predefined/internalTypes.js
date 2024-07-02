@@ -367,6 +367,17 @@ module.exports = [
       optionsFromClass: 'http://ontology.eil.utoronto.ca/cids/cids#Person'
     }
   },
+  {
+    name: 'referralForAppointment',
+    predefinedProperty: 'http://snmi#hasReferral',
+    formType: 'appointment',
+    implementation: {
+      label: 'Referral',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Referral'
+    }
+  },
   // below are for referral
   {
     name: 'clientForReferral',
@@ -594,6 +605,17 @@ module.exports = [
       valueDataType: 'owl:NamedIndividual',
       fieldType: FieldTypes.SingleSelectField,
       optionsFromClass: 'http://snmi#Outcome'
+    }
+  },
+  {
+    name: 'clientForOutcomeOccurrence',
+    predefinedProperty: 'http://snmi#hasClient',
+    formType: 'outcomeOccurrence',
+    implementation: {
+      label: 'Client',
+      valueDataType: 'owl:NamedIndividual',
+      fieldType: FieldTypes.SingleSelectField,
+      optionsFromClass: 'http://snmi#Client'
     }
   },
 

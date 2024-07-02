@@ -17,14 +17,14 @@ export default function ProgramOccurrenceForm() {
     });
   }, []);
   const handleRenderField = ({required, id, type, implementation, content, _id}, index, fields, handleChange) => {
-    if (implementation.optionsFromClass === ":Program") {
+    if (implementation.optionsFromClass?.endsWith("#Program") ) {
       // Render Program & Program Occurrence & Need Satisfier
       return <ProgramAndNeedSatisfierField
         handleChange={handleChange} fields={fields}
         programFieldId={internalTypes.programForProgramOccurrence._id}
         needSatisfierFieldId={internalTypes.needSatisfierForProgramOccurrence._id}/>
 
-    } else if (implementation.optionsFromClass === ':NeedSatisfier') {
+    } else if (implementation.optionsFromClass?.endsWith('#NeedSatisfier')) {
       return "";
     }
   }

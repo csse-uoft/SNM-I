@@ -19,17 +19,16 @@ export default function ClientAssessmentForm() {
     });
   }, []);
 
-  const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange, step) => {
+  const handleRenderField = ({ required, id, type, implementation, content, _id }, index, fields, handleChange) => {
     // If the field is not required and the user has not filled it, do not render it
     if (implementation === undefined) {
       return "";
     }
-    if (implementation.optionsFromClass === ":Client") {
+    if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Using the component from `Appointment`
       return <AppointmentClientField
         handleChange={handleChange}
         clientFieldId={internalTypes.clientForClientAssessment._id}
-        step={step}
         fields={fields}
       />
     } else if (implementation.label === "Last Name") {

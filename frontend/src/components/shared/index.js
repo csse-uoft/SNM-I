@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Menu, MenuItem, CircularProgress, Typography, Chip } from '@mui/material';
-import { makeStyles } from "@mui/styles";
-import { Link as DomLink, useNavigate } from 'react-router-dom';
-import { Add as AddIcon, CloudUpload as UploadIcon } from '@mui/icons-material';
+import React, {useState} from 'react';
+import { Menu, MenuItem, CircularProgress, Typography, Chip, TextField, Button, Popper,} from '@mui/material';
+import {makeStyles} from "@mui/styles";
+import {Link as DomLink, useNavigate} from 'react-router-dom';
+import {Add as AddIcon, CloudUpload as UploadIcon} from '@mui/icons-material';
 import GoogleMap from './GoogleMap';
 import CSVUploadModal from './CSVUploadModal';
 import DeleteModal from './DeleteModal';
@@ -14,6 +14,7 @@ import OtherLocationsFields from "./OtherLocationsFields";
 import SearchIcon from '@mui/icons-material/Search';
 
 import { providerFormTypes } from '../../constants/provider_fields.js'
+import AdvancedSearchBar from "../advancesearch/advancesearchbar";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -50,27 +51,56 @@ export function Link({className = '', color, ...props}) {
  * @returns {*}
  * @constructor
  */
-export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
+export function CustomToolbar({handleAdd, handleUpload, handleSearch, handleAdvancedSearch, type}) {
   const navigate = useNavigate();
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl_provider, setAnchorEl_provider] = useState(null);
+  const [anchorEl_search, setAnchorEl_search] = useState(null);
+  const open_add_provider = Boolean(anchorEl_provider);
+  const open_search = Boolean(anchorEl_search);
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+  const handleProviderAddClick = event => {
+    setAnchorEl_provider(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleAdvanceSearchClick = event => {
+    setAnchorEl_search(event.currentTarget);
+  }
+
+  const handleProviderClose = () => {
+    setAnchorEl_provider(null);
   };
+
+  const handleAdvanceSearchClose = () => {
+    setAnchorEl_search(null);
+  }
 
   const handleLink = link => () => {
     navigate(link);
   };
 
+  const [searchItem, setSearchItem] = useState("");
+
+  const handleInputChange = (event) => {
+    setSearchItem(event.target.value);
+  };
+
+
+
   return (
     <>
+      <TextField
+          label="Search"
+          variant="outlined"
+          size="small"
+          // value={searchItem}
+          onChange={handleInputChange}
+      />
+
+      <Button size="small" onClick={() => handleSearch(searchItem)}>Search</Button>
+
+      {/*handleDelete*/}
       {handleUpload && <Chip onClick={handleUpload}
             color="default"
             icon={<UploadIcon/>}
@@ -79,14 +109,18 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
             className={classes.chipButton}
       />}
 
-      <Chip onClick={type === 'providers' ? handleClick : handleSearch}
+      <Chip onClick={handleAdvanceSearchClick}
             color="primary"
             icon={<SearchIcon/>}
             label="Advance Search"
             variant="outlined"
             className={classes.chipButton}
       />
-      <Chip onClick={type === 'providers' ? handleClick : handleAdd}
+      <Popper open={open_search} anchorEl={anchorEl_search} keepMounted={true}
+              sx={{zIndex: 2}}>
+          <AdvancedSearchBar handleAdvanceSearchClose={handleAdvanceSearchClose} handleAdvancedSearch={handleAdvancedSearch} type={type} />
+      </Popper>
+      <Chip onClick={type === 'providers' ? handleProviderAddClick : handleAdd}
             color="primary"
             icon={<AddIcon/>}
             label="Add"
@@ -98,10 +132,10 @@ export function CustomToolbar({handleAdd, handleUpload, handleSearch, type}) {
       {type === 'providers' &&
       <Menu
         id="long-menu"
-        anchorEl={anchorEl}
+        anchorEl={anchorEl_provider}
         keepMounted
-        open={open}
-        onClose={handleClose}
+        open={open_add_provider}
+        onClose={handleProviderClose}
       >
         {Object.entries(providerFormTypes).map(([value, formType]) =>
           <MenuItem disabled={formType !== 'Organization' && formType !== 'Volunteer'} key={formType} onClick={handleLink(`/providers/${value}/new`)}>

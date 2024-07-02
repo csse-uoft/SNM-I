@@ -9,12 +9,11 @@ import { fetchCharacteristics } from "../../api/characteristicApi";
 export function AppointmentClientField({
   fields,
   clientFieldId,
-  step,
   handleChange
 }) {
 
   if (!clientFieldId) {
-    return <Box minWidth={"350px"}><Loading message="" /></Box>;
+    return <Loading />;
   }
 
   const clientKey = `internalType_${clientFieldId}`;
@@ -23,16 +22,9 @@ export function AppointmentClientField({
 
   const [nameKey, setNameKey] = useState({});
   const [nameValue, setNameValue] = useState({ firstName: null, lastName: null });
-  const stepFields = {};
+  const stepFields = {firstName: true, lastName: true};
 
-  // check if the step has first name or last name, if yes then show the text field
-  step.map((s) => {
-    if (s.name === "First Name") {
-      stepFields['firstName'] = true;
-    } else if (s.name === "Last Name") {
-      stepFields['lastName'] = true;
-    }
-  });
+  const [loading, setLoading] = useState(true);
 
   /*
   * This function is used to handle the change of the client field
@@ -43,7 +35,7 @@ export function AppointmentClientField({
     const value = e.target.value;
     setNameValue({firstName: null, lastName: null});
       try{
-        let firstName = dynamicOptions[":Client"][value].split(',')[1].trim();
+        let firstName = dynamicOptions[":Client"][value]?.split(',')[1].trim();
         setNameValue(prev => ({ ...prev, firstName: firstName }));
         handleChange(nameKey.firstName)(firstName);
       } catch (error) {
@@ -51,7 +43,7 @@ export function AppointmentClientField({
       }
     
       try{
-        let lastName = dynamicOptions[":Client"][value].split(',')[0].trim();
+        let lastName = dynamicOptions[":Client"][value]?.split(',')[0].trim();
         setNameValue(prev => ({ ...prev, lastName: lastName }));
         handleChange(nameKey.lastName)(lastName);
       } catch (error) {
@@ -69,7 +61,8 @@ export function AppointmentClientField({
    */
   useEffect(() => {
     getInstancesInClass(":Client")
-      .then(options => setDynamicOptions(prev => ({ ...prev, ":Client": options })));
+      .then(options => setDynamicOptions(prev => ({ ...prev, ":Client": options })))
+      .then(() => setLoading(false));
     fetchCharacteristics().then((characteristics) => {
       characteristics.data.map((c) => {
         if (c.name === 'First Name') {
@@ -80,6 +73,10 @@ export function AppointmentClientField({
       });
     });
   }, []);
+
+  if (loading) {
+    return <Loading />
+  }
 
   // check if the step has first name or last name, if yes then show the text field
   const showFadeContent = stepFields.hasOwnProperty("firstName") || stepFields.hasOwnProperty("lastName");

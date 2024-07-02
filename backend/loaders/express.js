@@ -6,7 +6,7 @@ const cookieSession = require('cookie-session');
 const cors = require('cors');
 
 const {
-  baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, clientsRoute,
+  baseRoute, registerRoute, userRoute, forgotPasswordRoute, usersRoute, notificationRoute, clientsRoute,
   characteristicRoute, questionRoute, dynamicFormRoute, genericRoute, advancedSearchRoute, serviceProviderRoute,needRoute,
   needSatisfierRoute, outcomeRoute, internalTypeRoute, serviceProvisionRoute, programProvisionRoute,
   matchingRoute, partnerNetworkApiRoute, partnerNetworkPublicRoute, partnerOrganizationRoute
@@ -18,6 +18,7 @@ const config = require('../config');
 const {initUserAccounts} = require('../services/userAccount/user');
 const {initFieldTypes, initPredefinedCharacteristics, initPredefinedInternalType} = require('../services/characteristics');
 const {initStreetTypes, initStreetDirections} = require('../services/address');
+const {initOptions} = require('../services/options');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/api', authMiddleware('Authentication Required'));
 // Private routes
 app.use('/api', userRoute);
 app.use('/api', usersRoute);
+app.use('/api', notificationRoute);
 app.use('/api', characteristicRoute);
 app.use('/api', questionRoute);
 app.use('/api', dynamicFormRoute);
@@ -76,6 +78,16 @@ app.use('/public', partnerNetworkPublicRoute);
 
   await initStreetTypes();
   await initStreetDirections();
+
+  await initOptions('Shareabilities',
+    ["Shareable with partner organizations", "Shareable with all organizations", "Not shareable"],
+    'Shareability', 'shareability');
+  await initOptions('Referral Statuses',
+    ["Requested", "Confirmed", "Cancelled", "Fulfilled"],
+    'ReferralStatus', 'referralStatus');
+  await initOptions('Appointment Statuses',
+    ["Requested", "Confirmed", "Cancelled", "Fulfilled", "Client No Show", "Postponed"],
+    'AppointmentStatus', 'appointmentStatus');
 })()
 
 

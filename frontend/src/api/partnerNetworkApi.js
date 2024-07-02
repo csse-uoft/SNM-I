@@ -40,3 +40,23 @@ export async function sendPartnerReferral(id, body) {
 export async function updatePartnerReferral(id, body) {
   return putJson(`/api/partnerNetwork/referral/${id}`, body);
 }
+
+/**
+ * This function sends the appointment with the given ID to its referral's
+ * receiving service provider (if applicable) if it is in a partner deployment.
+ * @param id
+ * @returns {Promise<Response|any>}
+ */
+export async function sendPartnerAppointment(id, body) {
+  return postJson(`/api/partnerNetwork/appointment/${id}`, body);
+}
+
+/**
+ * This function updates the appointment with the given ID in its referral's
+ * receiving service provider's deployment (if applicable).
+ * @param id
+ * @returns {Promise<Response|any>}
+ */
+export async function updatePartnerAppointment(id, body) {
+  return putJson(`/api/partnerNetwork/appointment/${id}`, body);
+}

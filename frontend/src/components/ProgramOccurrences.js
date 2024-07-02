@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from './shared';
 import { GenericPage } from "./shared";
-import { deleteSingleGeneric, fetchMultipleGeneric, fetchSingleGeneric } from "../api/genericDataApi";
-import { fetchForAdvancedSearch } from "../api/advancedSearchApi";
-import { getAddressCharacteristicId } from "./shared/CharacteristicIds";
+import { deleteSingleGeneric, fetchMultipleGeneric } from "../api/genericDataApi";
 
 const TYPE = 'programOccurrence';
 
@@ -41,16 +39,7 @@ export default function ProgramOccurrences() {
   const linkFormatter = (programOccurrence) => {return `/${TYPE}/${programOccurrence._id}`;};
 
   const fetchData = async () => {
-    var programNameCharacteristicId;
-    const programCharacteristics = (await fetchForAdvancedSearch('program', 'characteristic')).data;
-    for (const programCharacteristic of programCharacteristics) {
-      if (programCharacteristic.name === 'Program Name') {
-        programNameCharacteristicId = programCharacteristic._id;
-      }
-    }
- 
     const programOccurrences = (await fetchMultipleGeneric(TYPE)).data;
-    const addressCharacteristicId = await getAddressCharacteristicId(); // TODO: inefficient!
     const data = [];
     for (const programOccurrence of programOccurrences) {
       const programOccurrenceData = {_id: programOccurrence._id, address: {}};
@@ -58,9 +47,8 @@ export default function ProgramOccurrences() {
         programOccurrenceData.description = programOccurrence.description;
       }
       if (programOccurrence.occurrenceOf) {
-        programOccurrenceData.programID = programOccurrence.occurrenceOf.split('_')[1];
-        const programData = (await fetchSingleGeneric('program', programOccurrenceData.programID)).data;
-        programOccurrenceData.programName = programData['characteristic_' + programNameCharacteristicId];
+        programOccurrenceData.programID = programOccurrence.occurrenceOf._id;
+        programOccurrenceData.programName = programOccurrence.occurrenceOf.name;
       }
       if (programOccurrence.address) {
         programOccurrenceData.address = programOccurrence.address;

@@ -9,9 +9,9 @@ import FileTree from '../../components/file-tree.astro';
 ## Overview
 
 **Frontend:**
-The frontend portion of the application is a website (using React) to be operated by the user. The code included in the frontend 
-directory contains the routing of the application's pages and the general layout of each page. 
-user sessions and page content (e.g. the list of users, services, forms, and drop-down menu options)
+The frontend portion of the application is a website (using [React](https://react.dev/)), operated by the user. 
+The code included in the `frontend` directory contains the routing of the application's pages and the general layout 
+of each page. User sessions and page content (e.g. the list of users, services, forms, and drop-down menu options)
 are gathered from the backend via API requests.
 
 **Backend**
@@ -37,8 +37,9 @@ For the handling of specific API calls, the backend can be illustrated by the fo
 * Public Services:
 This handler queries the MongoDB database and sends a response back to the frontend.
 * Private Functions:
-Before invoking this handler, the server will first attempt to authenticate and check the authorization of the user before any operations are executed.
-Only after the user is authenticated and has authorization for the requested operation will the handler be run, which queries either the MongoDB or GraphDB Databases.  
+Before invoking this handler, the server first attempts to authenticate and check the authorization of the user before any operations are executed.
+Only after the user is authenticated and is conirmed to have the correct authorization for the requested operation will the handler be run.
+This queries either the MongoDB or GraphDB Databases.  
 
 ## File tree
 This section serves as a summary of the overarching file system for the frontend and backend source code.
@@ -54,7 +55,7 @@ This section serves as a summary of the overarching file system for the frontend
         * shared/: A subdirectory of components that are frequently re-used in subpages. Examples include alert dialogs and link buttons.
     * constants/: A subdirectory of frequently reused JavaScript objects used for field population and message strings in forms.
     * context/: Defines the context object used for storing the current user's profile. Additionally contains the object's getter function that tracks its global state.
-    * helpers/: Contains various function for field verification in forms. This section also defines verification error messages and regex strings to check the correct formatting of user input.
+    * helpers/: Contains various functions for field verification in forms. This section also defines verification error messages and regex strings to check the correct formatting of user input.
     * store/:
         * actions/: **DEFUNCT**, React hooks have been used instead of Redux
         * reducers/: **DEFUNCT**, React hooks have been used instead of Redux
@@ -66,13 +67,14 @@ This section serves as a summary of the overarching file system for the frontend
 ### /backend
 <FileTree>
 * backend/:
-    * app.js: The main function of the backend (loads the ExpressKS app)
+    * app.js: The main function of the backend (loads the ExpressJS app)
     * bin/:
         * www: The starting script for the backend
     * config/:
         * index.js: Contains host/port configs for graphdb, mongodb, and frontend
         * cert.pem: Required for hosting the http server
         * key.pem: Required for hosting the http server
+    * helpers/: Contains functions for the conversion of objects (e.g. addresses) and sanitizing user input for security.
     * loaders/: Contains the express, graphdb, and mongodb functions called on startup
     * models/: Defines the graphdb and mongodb data models
     * routes/: Defines the api routes and binds them to corresponding function in /services
@@ -88,7 +90,7 @@ be found here.
 ### Frontend
 When you visit any URL on the SNM-I domain or localhost on your browser, the
 React app renders the base component `frontend/src/App.js` and
-`frontend/src/index.js`. The React app then takes the URL path to replaces the content of the
+`frontend/src/index.js`. The React app then takes the URL path to replace the content of the
 current page with the matching component defined in `frontend/src/routes.js`.
 This is a technique for single-page apps (SPA), where the app only has one
 page. Only components that need to be changed are re-rendered upon page navigation.
@@ -135,8 +137,8 @@ scripts in `backend/loaders/`, the GraphDB and MongoDB databases are loaded.
 The backend ExpressJS server then serves the API routes defined in `backend/routes/`.
 
 All API requests involve interactions with either the MongoDB or GraphDB databases.
-The MongoDB database stores all user-related information, meanwhile the GraphDB database
-stores the rest of the backend's information, like forms and services.
+The MongoDB database stores user-related information, meanwhile the GraphDB database
+stores the rest of the backend's information (e.g. forms and services).
 When the backend receives an API call from the frontend, it queries the database(s)
 using the helper utilities in `backend/utils/`. This is discussed in more detail in
 the [GraphDB utils guide](/guides/graphdb-utils/). For more details on the assumptions of the data

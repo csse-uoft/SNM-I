@@ -1,0 +1,58 @@
+name: Deploy Alpha
+
+on:
+  push:
+    branches: [ alpha ]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Write SSH keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.ALPHA_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ vars.ALPHA_SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache-dependency-path: |
+            frontend/yarn.lock
+            backend/yarn.lock
+          cache: 'yarn'
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: CI=false yarn build; cp build/index.html build/404.html
+
+      - name: Install Docs Dependencies
+        working-directory: doc
+        run: yarn install
+
+      - name: Build Docs
+        working-directory: doc
+        run: yarn build; mv ./dist ../frontend/build/docs
+
+      - name: Make sure remote folder exists
+        run: ssh ${{vars.ALPHA_SSH_USER}}@${{vars.ALPHA_SSH_HOST}} -p ${{vars.ALPHA_SSH_PORT}} "mkdir -p SNM-I"
+
+      - name: Rsync built frontend
+        run: rsync -rvz -e "ssh -p ${{vars.ALPHA_SSH_PORT}}" --progress --delete ./frontend/build/* ${{vars.ALPHA_SSH_USER}}@${{vars.ALPHA_SSH_HOST}}:/home/ubuntu/SNM-I/frontend-build
+
+      - name: Rsync backend
+        run: rsync -rvz -e "ssh -p ${{vars.ALPHA_SSH_PORT}}" --progress --delete ./backend ${{vars.ALPHA_SSH_USER}}@${{vars.ALPHA_SSH_HOST}}:/home/ubuntu/SNM-I/
+
+      - name: Rsync scripts
+        run: rsync -rvz -e "ssh -p ${{vars.ALPHA_SSH_PORT}}" --progress --delete ./scripts ${{vars.ALPHA_SSH_USER}}@${{vars.ALPHA_SSH_HOST}}:/home/ubuntu/SNM-I/
+
+      - name: Update & Restart Backend
+        run: ssh ${{vars.ALPHA_SSH_USER}}@${{vars.ALPHA_SSH_HOST}} -p ${{vars.ALPHA_SSH_PORT}} "cd SNM-I && ./scripts/redeploy.sh"

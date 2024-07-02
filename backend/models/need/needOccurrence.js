@@ -1,4 +1,4 @@
-const {createGraphDBModel, getGraphDBModel} = require("graphdb-utils");
+const {createGraphDBModel, getGraphDBModel, DeleteType} = require("graphdb-utils");
 const {GDBNeedModel} = require("./need");
 const {GDBServiceModel} = require("../service/service");
 const {GDBCOModel} = require("../ClientFunctionalities/characteristicOccurrence");
@@ -13,7 +13,7 @@ const GDBNeedOccurrenceModel = createGraphDBModel({
   serviceMatches: {type: [GDBServiceModel], internalKey: ':hasServiceMatch'},
   characteristicOccurrences: {type: [GDBCOModel], internalKey: ':hasCharacteristicOccurrence'},
   client: {type: () => require("../ClientFunctionalities/client").GDBClientModel, internalKey: ':hasClient'},
-  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress'},
+  address: {type: GDBAddressModel, internalKey: 'ic:hasAddress', onDelete: DeleteType.CASCADE},
   // serviceRegistration: {type: GDBServiceRegistrationModel, internalKey: 'hasServiceRegistration'},
   // serviceProvision: {type: GDBServiceProvisionModel, internalKey: 'hasServiceProvision'},
 }, {

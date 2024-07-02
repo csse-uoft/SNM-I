@@ -10,9 +10,9 @@ import {getDynamicForm, getDynamicFormsByFormType, getInstancesInClass} from "..
 import SelectField from "../shared/fields/SelectField";
 import GeneralField from "../shared/fields/GeneralField";
 import {createSingleGeneric, fetchSingleGeneric, updateSingleGeneric} from "../../api/genericDataApi";
-import {createSingleProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
+import {createSingleProvider, fetchHomeServiceProvider, fetchSingleProvider, updateSingleProvider} from "../../api/providersApi";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
-import {sendPartnerReferral, updatePartnerReferral} from "../../api/partnerNetworkApi";
+import {sendPartnerReferral, updatePartnerReferral, sendPartnerAppointment, updatePartnerAppointment} from "../../api/partnerNetworkApi";
 
 const contentStyle = {
   width: '80%',
@@ -47,6 +47,16 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   const [loading, setLoading] = useState(true);
 
   const {enqueueSnackbar} = useSnackbar();
+
+  const nameToPartnerSender = {
+    'referral': sendPartnerReferral,
+    'appointment': sendPartnerAppointment,
+  }
+
+  const nameToPartnerUpdater = {
+    'referral': updatePartnerReferral,
+    'appointment': updatePartnerAppointment,
+  }
 
   useEffect(() => {
     getDynamicFormsByFormType(name).then(({forms}) => {
@@ -118,8 +128,22 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
               data[internalType._uri.split('#')[1]] = "http://snmi#need_" + needId;
             } else if (internalType.implementation?.optionsFromClass === 'http://snmi#' + capitalizedType && serviceOrProgramId) {
               data[internalType._uri.split('#')[1]] = "http://snmi#" + serviceOrProgramType + '_' + serviceOrProgramId;
-              // TODO: Add receivingServiceProvider
-              // TODO: Add serviceorProgramOccurrence
+            } else if (internalType.name === 'receivingServiceProviderForReferral' && serviceOrProgramType && serviceOrProgramId) {
+              const serviceOrProgram = await fetchSingleGeneric(serviceOrProgramType, serviceOrProgramId);
+              const {internalTypes: serviceOrProgramInternalTypes} = await fetchInternalTypeByFormType(serviceOrProgramType)
+              console.log(serviceOrProgramInternalTypes)
+              for (const serviceOrProgramInternalType of serviceOrProgramInternalTypes) {
+                if (serviceOrProgramInternalType.name === `serviceProviderFor${capitalizedType}`) {
+                  data[internalType._uri.split('#')[1]] = serviceOrProgram.data[serviceOrProgramInternalType._uri.split('#')[1]];
+                  break;
+                }
+              }
+            } else if (internalType.name === 'referringServiceProviderForReferral') {
+              // home organization
+              try {
+                const homeServiceProvider = (await fetchHomeServiceProvider())?.provider;
+                data[internalType._uri.split('#')[1]] = homeServiceProvider?._uri;
+              } catch { }
             }
           }
           setForm(form => ({...form, fields: data}));
@@ -191,9 +215,9 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
 
             //end of quick fix
 
-            if (name === 'referral') {
+            if (name in nameToPartnerSender) {
               try {
-                await sendPartnerReferral(response.createdId);
+                await nameToPartnerSender[name](response.createdId);
                 navigate(mainPage);
               } catch (e) {
                 console.log(e)
@@ -213,9 +237,9 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         await (isProvider ? updateSingleProvider : updateSingleGeneric)(name, id, form)
           .then(async () => {
             enqueueSnackbar(name + ' updated', {variant: 'success'});
-            if (name === 'referral') {
+            if (name in nameToPartnerUpdater) {
               try {
-                await updatePartnerReferral(id);
+                await nameToPartnerUpdater[name](id);
                 navigate(mainPage);
               } catch (e) {
                 console.log(e)

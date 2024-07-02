@@ -4,8 +4,10 @@ import React from 'react';
 import { formatPhoneNumber } from '../helpers/phone_number_helpers'
 
 import { GenericPage, Link } from "./shared";
-import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders } from "../api/providersApi";
+import { fetchSingleProvider, deleteSingleProvider, fetchMultipleProviders, searchMultipleProviders } from "../api/providersApi";
+import { fetchForServiceProviderAdvancedSearch } from "../api/advancedSearchApi";
 import {getAddressCharacteristicId} from "./shared/CharacteristicIds";
+import { getInstancesInClass } from '../api/dynamicFormApi';
 
 const TYPE = 'providers';
 
@@ -45,13 +47,13 @@ const columnsWithoutOptions = [
   },
   {
     label: 'Status',
-    body: ({type, status, organization}) => {
+    body: ({type, status, organizationProvider}) => {
       if (type === 'organization') {
         return status;
-      } else if (organization) {
-        organization = {...organization, type: 'organization'}
+      } else if (organizationProvider) {
+        organizationProvider = {...organizationProvider, type: 'organization'}
         return <p>
-          From <Link color to={formatProviderLink(organization)}>{organization.status}</Link>
+          From <Link color to={formatProviderLink(organizationProvider)}>{organizationProvider.organization.status}</Link>
         </p>;
       } else {
         return 'Unaffiliated';
@@ -93,6 +95,7 @@ export default function Providers() {
    */
   const fetchData = async () => {
     const addressCharacteristicId = await getAddressCharacteristicId();
+    const shareabilities = await getInstancesInClass(':Shareability');
     const providers = (await fetchMultipleProviders()).data;
     const data = [];
     for (const provider of providers) {
@@ -122,9 +125,9 @@ export default function Providers() {
       if (innerData.apiKey)
         providerData.apiKey = innerData.apiKey;
       if (innerData.shareability)
-        providerData.shareability = innerData.shareability;
+        providerData.shareability = shareabilities[innerData.shareability];
       if (innerData.organization)
-        providerData.organization = innerData.organization;
+        providerData.organizationProvider = providers.find(obj => obj.organization?._id === innerData.organization._id);
       if (innerData.partnerOrganizations)
         providerData.partnerOrganizations = innerData.partnerOrganizations;
       data.push(providerData);
@@ -132,11 +135,71 @@ export default function Providers() {
     return data;
   }
 
+  const searchData = async (searchitem) => {
+    const providers = (await searchMultipleProviders(searchitem)).data;
+    const data = [];
+    for (const provider of providers) {
+      const providerData = {_id: provider._id, type: provider.type};
+      const innerData = provider[provider.type];
+
+      if (innerData.characteristicOccurrences)
+        for (const occ of innerData.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Organization Name') {
+            providerData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Organization Address') {
+            providerData.address = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Email') {
+            providerData.email = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'First Name') {
+            providerData.firstName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Last Name') {
+            providerData.lastName = occ.dataStringValue;
+          }
+
+        }
+      data.push(providerData);
+    }
+    return data;
+
+  }
+
+  const advancedProviderSearch = async (searchitem) => {
+    const providers = (await fetchForServiceProviderAdvancedSearch(searchitem)).data;
+    const data = [];
+    for (const provider of providers) {
+      const providerData = {_id: provider._id, type: provider.type};
+      const innerData = provider[provider.type];
+
+      if (innerData.characteristicOccurrences)
+        for (const occ of innerData.characteristicOccurrences) {
+          if (occ.occurrenceOf?.name === 'Organization Name') {
+            providerData.name = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Organization Address') {
+            providerData.address = occ.objectValue;
+          } else if (occ.occurrenceOf?.name === 'Email') {
+            providerData.email = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'First Name') {
+            providerData.firstName = occ.dataStringValue;
+          } else if (occ.occurrenceOf?.name === 'Last Name') {
+            providerData.lastName = occ.dataStringValue;
+          }
+
+        }
+      data.push(providerData);
+    }
+    return data;
+
+  }
+
+
+
   return (
     <GenericPage
       type={TYPE}
       columnsWithoutOptions={columnsWithoutOptions}
       fetchData={fetchData}
+      advancedSearch={advancedProviderSearch}
+      searchData={searchData}
       deleteItem={deleteSingleProvider}
       nameFormatter={formatProviderName}
       linkFormatter={formatProviderLink}

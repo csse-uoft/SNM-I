@@ -1,8 +1,7 @@
 :80 {
     encode gzip zstd
-    handle_path /docs/* {
+    handle_path /docs* {
         root * /srv/docs
-        try_files {path} /index.html
         file_server
     }
 
