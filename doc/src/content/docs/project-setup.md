@@ -109,18 +109,11 @@ sudo service docker start # if you use open-rc
 
 Create the Docker containers with the following commands:
 
-**Using the Terminal (Linux and MacOS):**
+**Using the Terminal (Linux and MacOS and Windows):**
 
 ```sh
-docker create -p 127.0.0.1:7200:7200 --name graphdb --restart unless-stopped -t ontotext/graphdb:10.0.2 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000
-docker create --name mongo -p 27017:27017 ––restart unless-stopped -d mongo:latest
-```
-
-**Using the Terminal (Windows Powershell):**
-
-```sh
-docker create -p 127.0.0.1:7200:7200 --name graphdb --restart unless-stopped -t ontotext/graphdb:10.0.2 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000
-docker run --name mongo -p 27017:27017 --restart unless-stopped -d mongo:latest
+docker run -p 127.0.0.1:7200:7200 --name graphdb --restart unless-stopped -t ontotext/graphdb:10.6.4 --GDB_HEAP_SIZE=6G -Dgraphdb.workbench.maxUploadSize=2097152000
+docker run --name mongo -p 127.0.0.1:27017:27017 ––restart unless-stopped -d mongo:latest
 ```
 
 Note that the only difference between the Linux/MacOS and Windows installation in the command line is that the second command uses `docker run` instead of `docker create`. Windows Powershell does not recognize the `-d` flag for the `docker create` command.
