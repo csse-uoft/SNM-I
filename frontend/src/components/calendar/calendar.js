@@ -12,6 +12,8 @@ import calendar, {
   CALENDAR_MONTHS,
 } from "../../helpers/calendarHelper";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { fetchMultipleGeneric, deleteSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
+import { Link } from "../shared"
 
 export default function Calendar({ date, onDateChanged }) {
   const [dateState, setDateState] = useState({
@@ -20,11 +22,15 @@ export default function Calendar({ date, onDateChanged }) {
     year: new Date().getFullYear(),
   });
 
-  const [today, setToday] = useState(new Date());
+  const [today] = useState(new Date());
+  const [appointments, setAppointments] = useState([]);
+  const [selectedDateAppointments, setSelectedDateAppointments] = useState([]);
+  const [editingAppointment, setEditingAppointment] = useState(null);
 
   useEffect(() => {
     addDateToState(date);
-  }, []);
+    fetchAppointments();
+  }, [date]);
 
   const addDateToState = (date) => {
     const isDateObject = isDate(date);
@@ -36,37 +42,145 @@ export default function Calendar({ date, onDateChanged }) {
     });
   };
 
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetchMultipleGeneric('appointment');
+      console.log("Raw appointment data:", response.data);
+
+      const appointmentData = response.data.map(appointment => {
+        let datetime, dateType;
+        const processedAppointment = { ...appointment, characteristicOccurrences: {} };
+        
+        if (appointment.characteristicOccurrences) {
+          for (const occ of appointment.characteristicOccurrences) {
+            processedAppointment.characteristicOccurrences[occ.occurrenceOf?.name] = occ.dataStringValue || occ.dataDateValue || occ.objectValue;
+            
+            if (occ.occurrenceOf?.name === 'Date and Time') {
+              datetime = occ.dataDateValue;
+              dateType = 'DateTime';
+            } else if (occ.occurrenceOf?.name === 'Date') {
+              datetime = occ.dataDateValue;
+              dateType = 'Date';
+            }
+          }
+        }
+        
+        const parsedDate = parseDate(datetime);
+        console.log(`Parsed date for appointment ${appointment._id}:`, parsedDate);
+        
+        return {
+          ...processedAppointment,
+          date: parsedDate,
+          dateType
+        };
+      });
+
+      console.log("Processed appointment data:", appointmentData);
+      
+      setAppointments(appointmentData.filter(app => app.date !== null));
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+
+  const handleEdit = (appointment) => {
+    setEditingAppointment(appointment);
+  };
+  
+  const handleSave = async (updatedAppointment) => {
+    try {
+      await updateSingleGeneric('appointment', updatedAppointment._id, updatedAppointment);
+      setEditingAppointment(null);
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+    }
+  };
+  
+  const handleDelete = async (appointmentId) => {
+    if (window.confirm("Are you sure you want to delete this appointment?")) {
+      try {
+        await deleteSingleGeneric('appointment', appointmentId);
+        fetchAppointments();
+      } catch (error) {
+        console.error("Error deleting appointment:", error);
+      }
+    }
+  };
+
+  const parseDate = (dateString) => {
+    if (!dateString) return null;
+    
+    const parsedDate = new Date(dateString);
+    
+    if (isNaN(parsedDate.getTime())) {
+      console.error(`Failed to parse date: ${dateString}`);
+      return null;
+    }
+    
+    return parsedDate;
+  };
+
   const getCalendarDates = () => {
     const { current, month, year } = dateState;
-    const calendarMonth = month || (current ? current.getMonth() + 1 : THIS_MONTH);
-    const calendarYear = year || (current ? current.getFullYear() : THIS_YEAR);
+    const calendarMonth = month || (current ? current.getMonth() + 1 : today.getMonth() + 1);
+    const calendarYear = year || (current ? current.getFullYear() : today.getFullYear());
     return calendar(calendarMonth, calendarYear);
+  };
+
+  const gotoDate = (date) => {
+    const { current } = dateState;
+    if (!(current && isSameDay(date, current))) {
+      setDateState(prevState => ({
+        ...prevState,
+        current: date,
+        month: date.getMonth() + 1,
+        year: date.getFullYear()
+      }));
+      if (typeof onDateChanged === 'function') {
+        onDateChanged(date);
+      }
+      
+      const selectedAppointments = appointments.filter(app => isSameDay(app.date, date));
+      setSelectedDateAppointments(selectedAppointments);
+    }
+  };
+
+  const gotoPreviousMonth = () => {
+    const { month, year } = dateState;
+    const previousMonth = getPreviousMonth(month, year);
+    setDateState(prevState => ({
+      ...prevState,
+      month: previousMonth.month,
+      year: previousMonth.year
+    }));
+  };
+
+  const gotoNextMonth = () => {
+    const { month, year } = dateState;
+    const nextMonth = getNextMonth(month, year);
+    setDateState(prevState => ({
+      ...prevState,
+      month: nextMonth.month,
+      year: nextMonth.year
+    }));
   };
 
   const renderMonthAndYear = () => {
     const { month, year } = dateState;
-    const formatter = new Intl.DateTimeFormat("zh-CN", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-    const formattedDate = formatter.format(dateState.current);
-
-    // Resolve the month name from the CALENDAR_MONTHS object map
-    const monthname = Object.keys(CALENDAR_MONTHS)[Math.max(0, Math.min(month - 1, 11))];
+    const monthname = CALENDAR_MONTHS[Math.max(0, Math.min(month - 1, 11))];
     return (
       <Styled.CalendarHeader>
-        <Styled.ArrowLeft onClick={handlePrevious} title="Previous Month" />
+        <Styled.ArrowLeft onClick={gotoPreviousMonth} title="Previous Month" />
         <Styled.CalendarMonth>
           {monthname} {year}
         </Styled.CalendarMonth>
-        <Styled.ArrowRight onClick={handleNext} title="Next Month" />
+        <Styled.ArrowRight onClick={gotoNextMonth} title="Next Month" />
       </Styled.CalendarHeader>
     );
   };
 
   const renderDayLabel = (day, index) => {
-    // Resolve the day of the week label
     const daylabel = WEEK_DAYS[day].toUpperCase();
     return (
       <Styled.CalendarDay key={daylabel} index={index}>
@@ -76,18 +190,14 @@ export default function Calendar({ date, onDateChanged }) {
   };
 
   const renderCalendarDate = (date, index) => {
-    const { current, month, year } = dateState;
     const _date = new Date(date.join("-"));
+    const { current, month, year } = dateState;
 
-    // Check if calendar date is same day as today
     const isToday = isSameDay(_date, today);
-    // Check if calendar date is same day as currently selected date
     const isCurrent = current && isSameDay(_date, current);
-    // Check if calendar date is in the same month as the state month and year
-    const inMonth =
-      month && year && isSameMonth(_date, new Date([year, month, 1].join("-")));
-    // The click handler
-    const onClick = gotoDate(_date);
+    const inMonth = month && year && isSameMonth(_date, new Date([year, month, 1].join("-")));
+    const onClick = () => gotoDate(_date);
+
     const props = { index, inMonth, onClick, title: _date.toDateString() };
 
     const DateComponent = isCurrent
@@ -96,48 +206,49 @@ export default function Calendar({ date, onDateChanged }) {
       ? Styled.TodayCalendarDate
       : Styled.CalendarDate;
 
+    const dateAppointments = appointments.filter(app => isSameDay(app.date, _date));
+
     return (
       <DateComponent key={getDateISO(_date)} {...props}>
         {_date.getDate()}
+        {dateAppointments.length > 0 && (
+          <Styled.AppointmentIndicator>
+            {dateAppointments.length}
+          </Styled.AppointmentIndicator>
+        )}
       </DateComponent>
     );
   };
 
-  const gotoDate = (date) => (evt) => {
-    evt && evt.preventDefault();
-    const { current } = dateState;
-    if (!(current && isSameDay(date, current))) {
-      addDateToState(date);
-      onDateChanged(date);
+  const renderAppointmentDetails = (appointment) => {
+    if (editingAppointment && editingAppointment._id === appointment._id) {
+      return (
+        <div key={appointment._id}>
+          <h4>Editing Appointment: {appointment._id}</h4>
+          {/* Add form fields for editing appointment details */}
+          <button onClick={() => handleSave(editingAppointment)}>Save</button>
+          <button onClick={() => setEditingAppointment(null)}>Cancel</button>
+        </div>
+      );
     }
-  };
-
-  const gotoPreviousMonth = () => {
-    const { month, year } = dateState;
-    const previousMonth = getPreviousMonth(month, year);
-    setDateState({
-      month: previousMonth.month,
-      year: previousMonth.year,
-      current: dateState.current,
-    });
-  };
-
-  const gotoNextMonth = () => {
-    const { month, year } = dateState;
-    const nextMonth = getNextMonth(month, year);
-    setDateState({
-      month: nextMonth.month,
-      year: nextMonth.year,
-      current: dateState.current,
-    });
-  };
-
-  const handlePrevious = (evt) => {
-    gotoPreviousMonth();
-  };
-
-  const handleNext = (evt) => {
-    gotoNextMonth();
+    return (
+      <div key={appointment._id}>
+        <h4>Appointment ID: {appointment._id}</h4>
+        <p>Date: {appointment.date.toLocaleDateString()}</p>
+        <p>Time: {appointment.dateType === 'DateTime' ? appointment.date.toLocaleTimeString() : 'N/A'}</p>
+        <h5>Characteristics:</h5>
+        <ul>
+          {Object.entries(appointment.characteristicOccurrences).map(([key, value]) => (
+            <li key={key}>{key}: {value.toString()}</li>
+          ))}
+        </ul>
+        <div>
+          <Link color to={`/appointments/${appointment._id}/edit`}>Edit</Link>
+          <button onClick={() => handleDelete(appointment._id)}>Delete</button>
+        </div>
+        <hr />
+      </div>
+    );
   };
 
   return (
@@ -152,6 +263,13 @@ export default function Calendar({ date, onDateChanged }) {
           {getCalendarDates().map(renderCalendarDate)}
         </Fragment>
       </Styled.CalendarGrid>
+
+      {selectedDateAppointments.length > 0 && (
+        <Styled.AppointmentList>
+          <h3>Appointments for {dateState.current.toDateString()}</h3>
+          {selectedDateAppointments.map(renderAppointmentDetails)}
+        </Styled.AppointmentList>
+      )}
     </Styled.CalendarContainer>
   );
 }
@@ -161,39 +279,7 @@ Calendar.propTypes = {
   onDateChanged: PropTypes.func,
 };
 
-
-
-
-const gotoDate = (date) => (evt) => {
-    evt && evt.preventDefault();
-    const { current } = dateState;
-    if (!(current && isSameDay(date, current))) {
-      addDateToState(date);
-      onDateChanged(date);
-    }
-  };
-  const gotoPreviousMonth = () => {
-    const { month, year } = dateState;
-    const previousMonth = getPreviousMonth(month, year);
-    setDateState({
-      month: previousMonth.month,
-      year: previousMonth.year,
-      current: dateState.current,
-    });
-  };
-  const gotoNextMonth = () => {
-    const { month, year } = dateState;
-    const nextMonth = getNextMonth(month, year);
-    setDateState({
-      month: nextMonth.month,
-      year: nextMonth.year,
-      current: dateState.current,
-    });
-  };
-  const handlePrevious = (evt) => {
-    gotoPreviousMonth();
-  };
-  const handleNext = (evt) => {
-    gotoNextMonth();
-  };
-
+Calendar.defaultProps = {
+  date: new Date(),
+  onDateChanged: () => {},
+};
