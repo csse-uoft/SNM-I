@@ -236,9 +236,11 @@ export default function Calendar({ date, onDateChanged }) {
         <h4>Appointment ID: {appointment._id}</h4>
         <p>Date: {appointment.date.toLocaleDateString()}</p>
         <p>Time: {appointment.dateType === 'DateTime' ? appointment.date.toLocaleTimeString() : 'N/A'}</p>
-        <h5>Characteristics:</h5>
+        {/* <h5>Characteristics:</h5> */}
         <ul>
-          {Object.entries(appointment.characteristicOccurrences).map(([key, value]) => (
+          {Object.entries(appointment.characteristicOccurrences)
+          .filter(([key]) => key !== 'Date')  // Filter out the 'Date' characteristic
+          .map(([key, value]) => (
             <li key={key}>{key}: {value.toString()}</li>
           ))}
         </ul>
