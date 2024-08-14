@@ -35,6 +35,8 @@ app.use(cors({
       cb(null, true)
     } else if (process.env.NODE_ENV !== 'production') {
       cb(null, true)
+    } else {
+      cb(new Error('Not allowed by CORS'))
     }
   }
 }));
