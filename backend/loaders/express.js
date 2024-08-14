@@ -30,7 +30,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors({
   credentials: true,
-  origin: config.allowedOrigins
+  origin: (origin, cb) => {
+    if (config.allowedOrigins.indexOf(origin) !== -1) {
+      cb(null, true)
+    } else if (process.env.NODE_ENV !== 'production') {
+      cb(null, true)
+    }
+  }
 }));
 // app.use(cookieParser());
 app.use(cookieSession(config.cookieSession));
