@@ -20,20 +20,20 @@ export const WEEK_DAYS = {
 }
 
 // Calendar months names and short names
-export const CALENDAR_MONTHS = {
-  January: "Jan",
-  February: "Feb",
-  March: "Mar",
-  April: "Apr",
-  May: "May",
-  June: "Jun",
-  July: "Jul",
-  August: "Aug",
-  September: "Sep",
-  October: "Oct",
-  November: "Nov",
-  December: "Dec"
-}
+export const CALENDAR_MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 // Weeks displayed on calendar
 export const CALENDAR_WEEKS = 6;
