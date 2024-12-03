@@ -1,12 +1,12 @@
 const {getPredefinedProperty} = require("./helperFunctions");
 const {GDBInternalTypeModel} = require("../../models/internalType");
 const {SPARQL} = require("graphdb-utils");
-const FORMTYPE = 'calendar-event';
+const FORMTYPE = 'calendarEvent';
 
 const calendarEventInternalTypeCreateTreater = async (internalType, instanceData, value) => { 
-  //get the property name from the internalType
+  // Get the property name from the internalType
   const property = getPredefinedProperty(FORMTYPE, internalType);
-  //if the property is client, person or user, then set the value to the instanceData
+  // If the property is client, person or user, then set the value to the instanceData
   if (property === 'client' || property === 'person' || property === 'user' || property === 'referral') {
     instanceData[property] = value;
   }
@@ -25,10 +25,8 @@ const calendarEventInternalTypeFetchTreater = async (data) => {
   return result;
 };
 
-
 const calendarEventInternalTypeUpdateTreater = async (internalType, value, result) => {
-  await appointmentInternalTypeCreateTreater(internalType, result, value);
+  await calendarEventInternalTypeCreateTreater(internalType, result, value);
 }
-
 
 module.exports = {calendarEventInternalTypeCreateTreater, calendarEventInternalTypeFetchTreater, calendarEventInternalTypeUpdateTreater}
