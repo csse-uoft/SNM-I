@@ -79,6 +79,10 @@ export const CalendarDay = styled(CalendarCell)`
 `;
 
 export const CalendarDate = styled(CalendarCell)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   font-weight: ${(props) => (props.inMonth ? 500 : 300)};
   font-size: 4em;
   cursor: pointer;
@@ -89,9 +93,14 @@ export const CalendarDate = styled(CalendarCell)`
   color: ${(props) => (props.inMonth ? `#333` : `#ddd`)};
   grid-row: ${(props) => Math.floor(props.index / 7) + 2} / span 1;
   transition: all 0.4s ease-out;
-  :hover {
+
+  &:hover {
     color: #06c;
     background: rgba(0, 102, 204, 0.075);
+  }
+
+  & > ${AppointmentIndicator}:not(:last-child) {
+    margin-bottom: 5px;
   }
 `;
 
@@ -143,26 +152,32 @@ export const BlockedCalendarDate = styled(CalendarDate)`
 export const AppointmentIndicator = styled.div`
   background-color: #007bff;
   color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  margin: 2px 0;
+  display: inline-block;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background-color: #0056b3;
+  }
 `;
 
 export const AppointmentList = styled.div`
   margin-top: 20px;
-  padding: 10px;
+  padding: 15px;
   background-color: #f8f9fa;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 
   h3 {
     margin-bottom: 10px;
+    color: #007bff;
+    font-size: 1.5rem;
   }
 
   ul {
@@ -171,6 +186,25 @@ export const AppointmentList = styled.div`
   }
 
   li {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  li strong {
+    color: #333;
   }
 `;
+
+export const MoreIndicator = styled.div`
+  color: #666;
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 4px;
+
+  &:hover {
+    color: #007bff;
+  }
+`;
+

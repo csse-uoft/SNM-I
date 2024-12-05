@@ -211,47 +211,61 @@ export default function Calendar({ date, onDateChanged }) {
     return (
       <DateComponent key={getDateISO(_date)} {...props}>
         {_date.getDate()}
-        {dateAppointments.length > 0 && (
+        {/* {dateAppointments.length > 0 && (
           <Styled.AppointmentIndicator>
             {dateAppointments.length}
           </Styled.AppointmentIndicator>
-        )}
+        )} */}
+        {displayedAppointments.map((app, idx) => (
+        <Styled.AppointmentIndicator
+          key={app._id}
+          onClick={(e) => {
+            e.stopPropagation();
+            gotoDate(_date); // Highlight the date
+            setSelectedDateAppointments([app]); // Show only the clicked appointment details
+          }}
+        >
+          {app.characteristicOccurrences?.['Title'] || `#${idx + 1}`}
+        </Styled.AppointmentIndicator>
+      ))}
+      {dateAppointments.length > 3 && (
+        <Styled.MoreIndicator
+          onClick={(e) => {
+            e.stopPropagation();
+            gotoDate(_date); // Highlight the date
+            setSelectedDateAppointments(dateAppointments); // Show all details for the day
+          }}
+        >
+          +{dateAppointments.length - 3} more
+        </Styled.MoreIndicator>
+      )}
       </DateComponent>
     );
   };
 
   const renderAppointmentDetails = (appointment) => {
-    if (editingAppointment && editingAppointment._id === appointment._id) {
-      return (
-        <div key={appointment._id}>
-          <h4>Editing Appointment: {appointment._id}</h4>
-          {/* Add form fields for editing appointment details */}
-          <button onClick={() => handleSave(editingAppointment)}>Save</button>
-          <button onClick={() => setEditingAppointment(null)}>Cancel</button>
-        </div>
-      );
-    }
     return (
       <div key={appointment._id}>
         <h4>Appointment ID: {appointment._id}</h4>
         <p>Date: {appointment.date.toLocaleDateString()}</p>
         <p>Time: {appointment.dateType === 'DateTime' ? appointment.date.toLocaleTimeString() : 'N/A'}</p>
-        {/* <h5>Characteristics:</h5> */}
+        <h5>Details:</h5>
         <ul>
           {Object.entries(appointment.characteristicOccurrences)
-          .filter(([key]) => key !== 'Date')  // Filter out the 'Date' characteristic
-          .map(([key, value]) => (
-            <li key={key}>{key}: {value.toString()}</li>
-          ))}
+            .filter(([key]) => key !== 'Date')
+            .map(([key, value]) => (
+              <li key={key}>
+                <strong>{key}</strong>: {value.toString()}
+              </li>
+            ))}
         </ul>
         <div>
-          <Link color to={`/appointments/${appointment._id}/edit`}>Edit</Link>
+          <button onClick={() => handleEdit(appointment)}>Edit</button>
           <button onClick={() => handleDelete(appointment._id)}>Delete</button>
         </div>
-        <hr />
       </div>
     );
-  };
+  };  
 
   return (
     <Styled.CalendarContainer>
