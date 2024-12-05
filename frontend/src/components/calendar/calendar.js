@@ -26,6 +26,9 @@ export default function Calendar({ date, onDateChanged }) {
   const [appointments, setAppointments] = useState([]);
   const [selectedDateAppointments, setSelectedDateAppointments] = useState([]);
   const [editingAppointment, setEditingAppointment] = useState(null);
+  const [googleAppointments, setGoogleAppointments] = useState([]);
+  const [viewGoogleCalendar, setViewGoogleCalendar] = useState(false);
+
 
   useEffect(() => {
     addDateToState(date);
@@ -83,6 +86,19 @@ export default function Calendar({ date, onDateChanged }) {
     }
   };
 
+  const fetchGoogleAppointments = async () => {
+    try {
+      const response = await fetchGoogleCalendarAppointments();
+      const appointments = response.map((event) => ({
+        ...event,
+        date: new Date(event.start.dateTime),
+      }));
+      setGoogleAppointments(appointments);
+    } catch (error) {
+      console.error("Error fetching Google appointments:", error);
+    }
+  };
+  
   const handleEdit = (appointment) => {
     setEditingAppointment(appointment);
   };
@@ -141,8 +157,11 @@ export default function Calendar({ date, onDateChanged }) {
         onDateChanged(date);
       }
       
-      const selectedAppointments = appointments.filter(app => isSameDay(app.date, date));
-      setSelectedDateAppointments(selectedAppointments);
+    const selectedAppointments = (viewGoogleCalendar ? googleAppointments : localAppointments).filter((app) =>
+        isSameDay(app.date, date)
+      );
+    setSelectedDateAppointments(selectedAppointments);
+      
     }
   };
 
@@ -206,7 +225,9 @@ export default function Calendar({ date, onDateChanged }) {
       ? Styled.TodayCalendarDate
       : Styled.CalendarDate;
 
-    const dateAppointments = appointments.filter(app => isSameDay(app.date, _date));
+    const appointments = (viewGoogleCalendar ? googleAppointments : localAppointments).filter((app) =>
+      isSameDay(app.date, _date)
+    );
 
     return (
       <DateComponent key={getDateISO(_date)} {...props}>
@@ -270,7 +291,13 @@ export default function Calendar({ date, onDateChanged }) {
   return (
     <Styled.CalendarContainer>
       {renderMonthAndYear()}
+      <FormControlLabel
+        control={<Switch checked={viewGoogleCalendar} onChange={() => setViewGoogleCalendar((prev) => !prev)} />}
+        label={viewGoogleCalendar ? "Google Calendar" : "Local Calendar"}
+      />
 
+      <GoogleCalendarLogin onSuccess={fetchGoogleAppointments} />
+      
       <Styled.CalendarGrid>
         <Fragment>
           {Object.keys(WEEK_DAYS).map(renderDayLabel)}
