@@ -13,7 +13,8 @@ import calendar, {
 } from "../../helpers/calendarHelper";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { fetchMultipleGeneric, deleteSingleGeneric, updateSingleGeneric } from "../../api/genericDataApi";
-import { Link } from "../shared"
+import { Link } from "../shared";
+import AppointmentModal from "./calendarModal";
 
 export default function Calendar({ date, onDateChanged }) {
   const [dateState, setDateState] = useState({
@@ -26,6 +27,8 @@ export default function Calendar({ date, onDateChanged }) {
   const [appointments, setAppointments] = useState([]);
   const [selectedDateAppointments, setSelectedDateAppointments] = useState([]);
   const [editingAppointment, setEditingAppointment] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     addDateToState(date);
@@ -108,6 +111,13 @@ export default function Calendar({ date, onDateChanged }) {
     }
   };
 
+  const handleAppointmentClick = (e, appointment) => {
+    e.stopPropagation(); // Prevent cell click handler from firing
+    const rect = e.currentTarget.getBoundingClientRect();
+    setModalPosition({ x: rect.right, y: rect.top });
+    setSelectedAppointment(appointment);
+  };
+
   const parseDate = (dateString) => {
     if (!dateString) return null;
     
@@ -141,8 +151,8 @@ export default function Calendar({ date, onDateChanged }) {
         onDateChanged(date);
       }
       
-      const selectedAppointments = appointments.filter(app => isSameDay(app.date, date));
-      setSelectedDateAppointments(selectedAppointments);
+      // const selectedAppointments = appointments.filter(app => isSameDay(app.date, date));
+      // setSelectedDateAppointments(selectedAppointments);
     }
   };
 
@@ -192,31 +202,51 @@ export default function Calendar({ date, onDateChanged }) {
   const renderCalendarDate = (date, index) => {
     const _date = new Date(date.join("-"));
     const { current, month, year } = dateState;
-
+  
     const isToday = isSameDay(_date, today);
     const isCurrent = current && isSameDay(_date, current);
     const inMonth = month && year && isSameMonth(_date, new Date([year, month, 1].join("-")));
     const onClick = () => gotoDate(_date);
-
-    const props = { index, inMonth, onClick, title: _date.toDateString() };
-
-    const DateComponent = isCurrent
-      ? Styled.HighlightedCalendarDate
-      : isToday
-      ? Styled.TodayCalendarDate
-      : Styled.CalendarDate;
-
+  
     const dateAppointments = appointments.filter(app => isSameDay(app.date, _date));
-
+    const maxDisplayAppointments = 3;
+  
+    // Helper function to get the appointment display name
+    const getAppointmentName = (appointment) => {
+      const characteristics = appointment.characteristicOccurrences;
+      return characteristics['Appointment Name'] || 'Untitled Appointment';
+    };
+  
     return (
-      <DateComponent key={getDateISO(_date)} {...props}>
-        {_date.getDate()}
-        {dateAppointments.length > 0 && (
-          <Styled.AppointmentIndicator>
-            {dateAppointments.length}
-          </Styled.AppointmentIndicator>
-        )}
-      </DateComponent>
+      <Styled.CalendarCell 
+        key={getDateISO(_date)}
+        isToday={isToday}
+        isCurrent={isCurrent}
+        inMonth={inMonth}
+        onClick={onClick}
+      >
+        <Styled.DateNumber isToday={isToday}>
+          {_date.getDate()}
+        </Styled.DateNumber>
+        
+        <Styled.AppointmentList>
+          {dateAppointments.slice(0, maxDisplayAppointments).map((app) => (
+            <Styled.AppointmentPreview 
+              key={app._id}
+              title={getAppointmentName(app)}
+              onClick={(e) => handleAppointmentClick(e, app)}
+            >
+              {getAppointmentName(app)}
+            </Styled.AppointmentPreview>
+          ))}
+          
+          {dateAppointments.length > maxDisplayAppointments && (
+            <Styled.MoreAppointments>
+              {dateAppointments.length - maxDisplayAppointments} more
+            </Styled.MoreAppointments>
+          )}
+        </Styled.AppointmentList>
+      </Styled.CalendarCell>
     );
   };
 
@@ -266,12 +296,23 @@ export default function Calendar({ date, onDateChanged }) {
         </Fragment>
       </Styled.CalendarGrid>
 
-      {selectedDateAppointments.length > 0 && (
+      // Appointment details
+      {/* {selectedDateAppointments.length > 0 && (
         <Styled.AppointmentList>
           <h3>Appointments for {dateState.current.toDateString()}</h3>
           {selectedDateAppointments.map(renderAppointmentDetails)}
         </Styled.AppointmentList>
-      )}
+      )} */}
+
+      {selectedAppointment && (
+        <AppointmentModal
+          appointment={selectedAppointment}
+          position={modalPosition}
+          onClose={() => setSelectedAppointment(null)}
+          onEdit={() => handleEdit(selectedAppointment)}
+          onDelete={() => handleDelete(selectedAppointment._id)}
+      />)}
+      
     </Styled.CalendarContainer>
   );
 }
