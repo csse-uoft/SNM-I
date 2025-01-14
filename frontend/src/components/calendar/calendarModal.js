@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Edit2, Trash2, X } from 'lucide-react';
 import * as Styled from '../../styles/calendarModalStyles';
 import { Link } from "../shared";
+import GoogleCalendarSync from './googleCalendarSync';
 
 const AppointmentDetails = ({ appointment, position, onClose, onEdit, onDelete }) => {
   const popupRef = useRef(null);
@@ -71,6 +72,10 @@ const AppointmentDetails = ({ appointment, position, onClose, onEdit, onDelete }
       <Styled.DateTime>
         {date} • {time}
       </Styled.DateTime>
+      
+      <Styled.SyncContainer>
+        <GoogleCalendarSync appointment={appointment} />
+      </Styled.SyncContainer>
     </Styled.Popup>
   );
 };

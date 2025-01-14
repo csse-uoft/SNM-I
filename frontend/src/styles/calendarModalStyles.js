@@ -48,3 +48,9 @@ export const DateTime = styled.div`
   font-size: 14px;
   color: #3c4043;
 `;
+
+export const SyncContainer = styled.div`
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #dadce0;
+`;

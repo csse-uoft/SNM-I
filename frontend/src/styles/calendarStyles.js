@@ -42,25 +42,21 @@ export const CalendarDay = styled.div`
 `;
 
 export const CalendarCell = styled.div`
-  aspect-ratio: 1/1;
+  aspect-ratio: ${props => props.expanded ? 'auto' : '1/1'};
   border-right: 1px solid #dadce0;
   border-bottom: 1px solid #dadce0;
   padding: 8px;
   position: relative;
-  background: white;  // Remove isToday condition
-  color: ${props => props.inMonth ? '#3c4043' : '#70757a'};  // Remove isToday condition
+  background: white;
+  color: ${props => props.inMonth ? '#3c4043' : '#70757a'};
   
   &:last-child {
     border-right: none;
   }
   
   &:hover {
-    background-color: #f8f9fa;  // Remove isToday condition
+    background-color: #f8f9fa;
   }
-
-  ${props => props.isSelected && `
-    background-color: #e8f0fe;
-  `}
 `;
 
 export const DateNumber = styled.div`
@@ -83,38 +79,46 @@ ${props => props.isToday && `
 `}
 `;
 
-export const AppointmentList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-`;
-
 export const AppointmentPreview = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 11px;
   padding: 0 4px;
   height: 18px;
   line-height: 18px;
-  border-radius: 3px;
-  background: #1a73e8;
-  color: white;
+  color: #3c4043;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
 
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a73e8;
+    margin-right: 4px;
+    flex-shrink: 0;
+  }
+
   &:hover {
-    background: #1557b0;
+    background: #f1f3f4;
+    border-radius: 3px;
   }
 `;
 
 export const MoreAppointments = styled.div`
   font-size: 11px;
   color: #70757a;
-  padding: 0 4px;
+  padding: 4px 4px 4px 12px;  // Extra left padding to align with appointments
   cursor: pointer;
+  border-radius: 3px;
 
   &:hover {
     color: #1a73e8;
+    background: #f1f3f4;
   }
 `;
 
@@ -145,5 +149,27 @@ export const ArrowRight = styled(Arrow)`
   &::before {
     content: '›';
     font-size: 24px;
+  }
+`;
+
+export const AppointmentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: ${props => props.expanded ? '200px' : '100%'};
+  overflow-y: auto;
+  scrollbar-width: thin;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
   }
 `;
