@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import PropTypes from "prop-types";
 import * as Styled from "../../styles/calendarStyles";
 import calendar, {
@@ -29,6 +29,7 @@ export default function Calendar({ date, onDateChanged }) {
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [expandedDate, setExpandedDate] = useState(null);
 
   useEffect(() => {
     addDateToState(date);
@@ -116,6 +117,11 @@ export default function Calendar({ date, onDateChanged }) {
     const rect = e.currentTarget.getBoundingClientRect();
     setModalPosition({ x: rect.right, y: rect.top });
     setSelectedAppointment(appointment);
+  };
+
+  const handleMoreClick = (e, date) => {
+    e.stopPropagation(); // Prevent cell click handler
+    setExpandedDate(expandedDate === getDateISO(date) ? null : getDateISO(date));
   };
 
   const parseDate = (dateString) => {
@@ -210,8 +216,8 @@ export default function Calendar({ date, onDateChanged }) {
   
     const dateAppointments = appointments.filter(app => isSameDay(app.date, _date));
     const maxDisplayAppointments = 3;
+    const isExpanded = expandedDate === getDateISO(_date);
   
-    // Helper function to get the appointment display name
     const getAppointmentName = (appointment) => {
       const characteristics = appointment.characteristicOccurrences;
       return characteristics['Appointment Name'] || 'Untitled Appointment';
@@ -223,14 +229,15 @@ export default function Calendar({ date, onDateChanged }) {
         isToday={isToday}
         isCurrent={isCurrent}
         inMonth={inMonth}
+        expanded={isExpanded}
         onClick={onClick}
       >
         <Styled.DateNumber isToday={isToday}>
           {_date.getDate()}
         </Styled.DateNumber>
         
-        <Styled.AppointmentList>
-          {dateAppointments.slice(0, maxDisplayAppointments).map((app) => (
+        <Styled.AppointmentList expanded={isExpanded}>
+          {(isExpanded ? dateAppointments : dateAppointments.slice(0, maxDisplayAppointments)).map((app) => (
             <Styled.AppointmentPreview 
               key={app._id}
               title={getAppointmentName(app)}
@@ -240,8 +247,10 @@ export default function Calendar({ date, onDateChanged }) {
             </Styled.AppointmentPreview>
           ))}
           
-          {dateAppointments.length > maxDisplayAppointments && (
-            <Styled.MoreAppointments>
+          {!isExpanded && dateAppointments.length > maxDisplayAppointments && (
+            <Styled.MoreAppointments
+              onClick={(e) => handleMoreClick(e, _date)}
+            >
               {dateAppointments.length - maxDisplayAppointments} more
             </Styled.MoreAppointments>
           )}
@@ -312,7 +321,7 @@ export default function Calendar({ date, onDateChanged }) {
           onEdit={() => handleEdit(selectedAppointment)}
           onDelete={() => handleDelete(selectedAppointment._id)}
       />)}
-      
+        
     </Styled.CalendarContainer>
   );
 }
