@@ -25,6 +25,7 @@ export async function getJson(url, context) {
     e.json = await response.json();
     throw e;
   }
+  // console.log("GET content: ", url, response);
   return response.json();
 }
 
@@ -60,15 +61,19 @@ async function sendJson({url, body, method, rawResponse = false, context}) {
 }
 
 export async function postJson(url, body, context) {
+  console.log("POST content: ", url, body, context);
   return sendJson({url, body, method: 'POST', context});
 }
 
 export async function putJson(url, body, context) {
+  console.log("PUT content: ", url, body, context);
+  // Appointment uses PUT to update appointment details
   return sendJson({url, body, method: 'PUT', context});
 }
 
 // return raw response
 export async function deleteJson(url, body, context) {
+  console.log("DELETE content: ", url, body, context);
   return sendJson({url, body, method: 'DELETE', context});
 }
 
