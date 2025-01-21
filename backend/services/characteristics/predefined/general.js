@@ -1,15 +1,29 @@
 const {FieldTypes} = require("../misc");
 
-module.exports = [{
-  name: 'Date and Time',
-  description: 'The date and time',
-  predefinedProperty: 'http://snmi#hasDatetime',
-  implementation: {
-    label: 'Date and Time',
-    valueDataType: 'xsd:datetimes',
-    fieldType: FieldTypes.DateTimeField,
-  }
-},
+module.exports = [
+  {
+    name: 'Date and Time',
+    description: 'The date and time',
+    predefinedProperty: 'http://snmi#hasDatetime',
+    implementation: {
+      label: 'Date and Time',
+      valueDataType: 'xsd:datetimes',
+      fieldType: FieldTypes.DateTimeField,
+    }
+  },
+
+  // Add a new predefined property for the end time of an event
+  {
+    name: 'Until',
+    description: 'The end datetime of an event (appointment for now)',
+    predefinedProperty: 'http://snmi#hasUntil',
+    implementation: {
+      label: 'Until',
+      valueDataType: 'xsd:datetimes',
+      fieldType: FieldTypes.DateTimeField,
+    }
+  },
+
   {
     name: 'Address',
     description: 'Address',
