@@ -16,8 +16,16 @@ const columnsWithoutOptions = [
       return <Link color to={`/${TYPE}/${_id}/edit`}>{_id}</Link>
     },
     sortBy: ({_id}) => Number(_id),
-  },
-  {
+    },
+
+    {
+    label: 'Appointment Name',
+    body: ({name}) => {
+      return name;
+    }
+    },
+
+    {
     label: 'Status',
     body: ({appointmentStatus}) => {
       return appointmentStatus;
@@ -57,6 +65,17 @@ const columnsWithoutOptions = [
     },
     sortBy: ({datetime, dateType}) => {
       return Number(new Date(datetime));
+    },
+  },
+  // Show end datetime of an event (appointment for now)
+  {
+    label: 'Until',
+    body: ({until, dateType}) => {
+      console.log("Until: ", until);
+      if (dateType === 'Date')
+        return new Date(until).toLocaleDateString();
+      else if (dateType === 'DateTime')
+        return new Date(until).toLocaleString();
     },
   },
   // {
@@ -117,8 +136,15 @@ export default function Appointments() {
             appointmentData.dateType = 'Date';
           } else if (occ.occurrenceOf?.name === 'Appointment Status') {
             appointmentData.appointmentStatus = statuses[occ.dataStringValue];
+          } 
+            else if (occ.occurrenceOf?.name === 'Until') {
+            appointmentData.until = occ.dataDateValue;
+            appointmentData.dateType = 'DateTime';
+            // console.log("End time: ", appointmentData.enddatetime);
           }
         }
+
+
       if (appointment.client) {
         // get corresponding client data
         appointmentData.client = {
