@@ -128,10 +128,8 @@ export default function ReferralForm() {
     const errors = validateForm(form.fields);
     if (Object.keys(errors).length > 0) {
       Object.values(errors).forEach(error => enqueueSnackbar(error, { variant: 'error' }));
-      return; // Prevent form submission if there are errors
+      return;
     }
-
-    // ... existing handleFinish logic ...
   };
 
   return (
