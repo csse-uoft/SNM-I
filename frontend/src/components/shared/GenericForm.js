@@ -3,6 +3,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useSnackbar} from 'notistack';
 
 import FieldGroup from '../shared/FieldGroup';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+
 
 import {Box, Container, Typography} from '@mui/material';
 import {FormStepper, Loading} from "../shared";
@@ -30,7 +32,7 @@ const contentStyle = {
  * @returns {JSX.Element}
  * @constructor
  */
-export default function GenericForm({name, mainPage, isProvider, onRenderField}) {
+export default function GenericForm({name, mainPage, isProvider, onRenderField, validateForm}) {
   const navigate = useNavigate();
   const {id, clientId, needId, serviceOrProgramType, serviceOrProgramId} = useParams();
   const mode = id ? 'edit' : 'new';
@@ -39,6 +41,9 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   const [allForms, setAllForms] = useState({});
 
   const [step, setStep] = useState({});
+
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const [errorMessages, setErrorMessages] = useState('');
 
   const [selectedFormId, setSelectedFormId] = useState('');
   const [dynamicForm, setDynamicForm] = useState({formStructure: []});
@@ -160,7 +165,14 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   }, [dynamicForm]);
 
   const handleFinish = async () => {
-    // TODO: pretty error message
+    const errors = validateForm ? validateForm(form.fields) : {};
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors).join('\n\n'); 
+        setErrorMessages(errorMessages);
+      setErrorMessages(errorMessages);
+      setOpenErrorDialog(true); 
+      return;
+    }
 
     console.log(form);
     if (mode === 'new') {
@@ -271,6 +283,20 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
         handleFinish={handleFinish}
         stepNames={stepNames}
       />
+
+      <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)}>
+            <DialogTitle>Error</DialogTitle>
+            <DialogContent>
+                <pre>{errorMessages}</pre> {/* Display error messages */}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => setOpenErrorDialog(false)} color="primary">
+                    OK
+                </Button>
+            </DialogActions>
+        </Dialog>
+
     </Container>
   );
 }
+
