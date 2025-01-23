@@ -83,7 +83,7 @@ app.use('/public', partnerNetworkPublicRoute);
     ["Shareable with partner organizations", "Shareable with all organizations", "Not shareable"],
     'Shareability', 'shareability');
   await initOptions('Referral Statuses',
-    ["Requested", "Confirmed", "Cancelled", "Fulfilled", "Rejected"],
+    ["Requested", "Confirmed", "Cancelled", "Fulfilled", "Rejected", "Received"],
     'ReferralStatus', 'referralStatus');
   await initOptions('Appointment Statuses',
     ["Requested", "Confirmed", "Cancelled", "Fulfilled", "Client No Show", "Postponed"],
