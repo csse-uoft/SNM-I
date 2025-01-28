@@ -31,7 +31,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors({
   credentials: true,
   origin: (origin, cb) => {
-    if (config.allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || config.allowedOrigins.indexOf(origin) !== -1) {
       cb(null, true)
     } else if (process.env.NODE_ENV !== 'production') {
       cb(null, true)
