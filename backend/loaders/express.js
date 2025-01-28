@@ -30,7 +30,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors({
   credentials: true,
-  origin: config.allowedOrigins
+  origin: (origin, cb) => {
+    if (!origin || config.allowedOrigins.indexOf(origin) !== -1) {
+      cb(null, true)
+    } else if (process.env.NODE_ENV !== 'production') {
+      cb(null, true)
+    } else {
+      cb(new Error('Not allowed by CORS'))
+    }
+  }
 }));
 // app.use(cookieParser());
 app.use(cookieSession(config.cookieSession));
@@ -40,6 +48,8 @@ app.use(cookieSession(config.cookieSession));
 app.use('/api', baseRoute);
 app.use('/api', registerRoute);
 app.use('/api', forgotPasswordRoute);
+
+app.use('/api/public', partnerNetworkPublicRoute);
 
 // Authentication required for the below routes
 app.use('/api', authMiddleware('Authentication Required'));
@@ -64,9 +74,6 @@ app.use('/api', programProvisionRoute);
 app.use('/api', matchingRoute);
 app.use('/api', partnerNetworkApiRoute);
 app.use('/api', partnerOrganizationRoute);
-
-// Authentication not required
-app.use('/public', partnerNetworkPublicRoute);
 
 (async function () {
   await initUserAccounts();

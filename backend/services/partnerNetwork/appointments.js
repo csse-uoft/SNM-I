@@ -95,7 +95,7 @@ async function sendAppointment(req, res, next) {
     appointment.partnerIsReceiver = partnerGeneric.isReceiver; // True iff we are sending to the appointment's referral's receiver
 
     const endpointUrl = partnerGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
-    const url = new URL('/public/partnerNetwork/appointment/', endpointUrl.startsWith('http') ? endpointUrl
+    const url = new URL('/api/public/partnerNetwork/appointment/', endpointUrl.startsWith('http') ? endpointUrl
       : 'https://' + endpointUrl);
     url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
