@@ -160,7 +160,7 @@ async function sendReferral(req, res, next) {
     referral.partnerIsReceiver = partnerGeneric.isReceiver; // True iff we are sending to the referral's receiver
 
     const endpointUrl = partnerGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
-    const url = new URL('/public/partnerNetwork/referral/', endpointUrl.startsWith('http') ? endpointUrl
+    const url = new URL('/api/public/partnerNetwork/referral/', endpointUrl.startsWith('http') ? endpointUrl
       : 'https://' + endpointUrl);
     url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 
@@ -263,13 +263,13 @@ async function receiveReferralHelper(req, partnerData) {
   }
 
   // Use the "Referer" header to identify the partner organization who sent the data
-  const partnerServiceProvider = await GDBServiceProviderModel.findOne({
+  const partner = await GDBServiceProviderModel.findOne({
     organization: {
-      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.header.referer}`)}
+      endpointUrl: {$regex: regexBuilder(`(https?://)?${req.headers.referer}`)}
     }
-  });
-  const partner = partnerServiceProvider.organization;
-  if (!partner) {
+  }, {populates: ['organization']});
+  const partnerOrganization = partner.organization;
+  if (!partnerOrganization) {
     throw new Error('Could not find partner organization with the same endpoint URL as the sender');
   }
 
@@ -288,8 +288,8 @@ async function receiveReferralHelper(req, partnerData) {
   }
 
   // Determine which of the partner and home organizations is the receiver and which is the referrer
-  let receivingServiceProvider = partnerData.partnerIsReceiver ? homeServiceProvider : partnerServiceProvider;
-  let referringServiceProvider = partnerData.partnerIsReceiver ? partnerServiceProvider : homeServiceProvider;
+  let receivingServiceProvider = partnerData.partnerIsReceiver ? homeServiceProvider : partner;
+  let referringServiceProvider = partnerData.partnerIsReceiver ? partner : homeServiceProvider;
 
   const originalReferral = await GDBReferralModel.findOne({idInPartnerDeployment: partnerData.id},
     {populates: ['characteristicOccurrences.occurrenceOf.implementation', 'questionOccurrences',
@@ -357,7 +357,7 @@ async function receiveNewReferral(req, res, next) {
     // Notify the user of the new referral
     createNotificationHelper({
       name: 'A referral was received',
-      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your `
+      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one of your `
         + `partner organizations, just sent you <a href="/referrals/${newReferral._id}">a new referral</a>.`
     });
 
@@ -402,7 +402,7 @@ async function receiveUpdatedReferral(req, res, next) {
     // Notify the user of the updated referral
     createNotificationHelper({
       name: 'A referral was updated',
-      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.name)}</a>, one of your `
+      description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one of your `
       + `partner organizations, just updated <a href="/referrals/${originalReferral._id}">this referral</a>.`
     });
 

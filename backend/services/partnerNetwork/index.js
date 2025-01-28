@@ -29,7 +29,7 @@ async function fetchOrganizationHelper(req, genericId) {
   if (organization.status === 'Partner') {
     if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
       const endpointUrl = organization.endpointUrl;
-      const url = new URL('/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl
+      const url = new URL('/api/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl
                           : 'https://' + endpointUrl);
       url.port = organization.endpointPort;
 
@@ -43,7 +43,9 @@ async function fetchOrganizationHelper(req, genericId) {
         method: 'GET',
         headers: {
           'X-RECEIVER-API-KEY': organization.apiKey,
-          ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey})
+          ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
+          // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
+          'Referer': new URL(req.headers.origin).hostname,
         },
       });
       clearTimeout(timeout);
