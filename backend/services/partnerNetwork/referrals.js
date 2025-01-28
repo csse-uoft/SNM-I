@@ -160,7 +160,7 @@ async function sendReferral(req, res, next) {
     referral.partnerIsReceiver = partnerGeneric.isReceiver; // True iff we are sending to the referral's receiver
 
     const endpointUrl = partnerGeneric[PredefinedCharacteristics['Endpoint URL']._uri.split('#')[1]];
-    const url = new URL('/public/partnerNetwork/referral/', endpointUrl.startsWith('http') ? endpointUrl
+    const url = new URL('/api/public/partnerNetwork/referral/', endpointUrl.startsWith('http') ? endpointUrl
       : 'https://' + endpointUrl);
     url.port = partnerGeneric[PredefinedCharacteristics['Endpoint Port Number']._uri.split('#')[1]];
 

@@ -49,6 +49,8 @@ app.use('/api', baseRoute);
 app.use('/api', registerRoute);
 app.use('/api', forgotPasswordRoute);
 
+app.use('/api/public', partnerNetworkPublicRoute);
+
 // Authentication required for the below routes
 app.use('/api', authMiddleware('Authentication Required'));
 // TODO: Check authorization
@@ -72,9 +74,6 @@ app.use('/api', programProvisionRoute);
 app.use('/api', matchingRoute);
 app.use('/api', partnerNetworkApiRoute);
 app.use('/api', partnerOrganizationRoute);
-
-// Authentication not required
-app.use('/public', partnerNetworkPublicRoute);
 
 (async function () {
   await initUserAccounts();

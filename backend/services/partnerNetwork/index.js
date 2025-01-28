@@ -29,7 +29,7 @@ async function fetchOrganizationHelper(req, genericId) {
   if (organization.status === 'Partner') {
     if (organization.endpointUrl && organization.endpointPort && organization.apiKey) {
       const endpointUrl = organization.endpointUrl;
-      const url = new URL('/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl
+      const url = new URL('/api/public/partnerNetwork/organization/', endpointUrl.startsWith('http') ? endpointUrl
                           : 'https://' + endpointUrl);
       url.port = organization.endpointPort;
 
