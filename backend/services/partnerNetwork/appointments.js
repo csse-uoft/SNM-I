@@ -11,6 +11,7 @@ const {getClient, getReferralPartnerGeneric} = require("./referrals");
 const {createNotificationHelper} = require("../notification/notification");
 const {sanitize} = require("../../helpers/sanitizer");
 const {regexBuilder} = require("graphdb-utils");
+const {frontend} = require("../../config");
 
 /**
  * Converts an appointment generic into a format in which it can be sent to a partner deployment
@@ -108,7 +109,7 @@ async function sendAppointment(req, res, next) {
         'Content-Type': 'application/json',
         'X-RECEIVER-API-KEY': partnerGeneric[PredefinedCharacteristics['API Key']._uri.split('#')[1]],
         // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
-        'Referer': new URL(req.headers.origin).hostname,
+        'Referer': new URL(frontend.addr).hostname,
       },
       body: JSON.stringify(appointment),
     });
