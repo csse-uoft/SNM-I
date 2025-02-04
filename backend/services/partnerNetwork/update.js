@@ -5,7 +5,18 @@ const {GDBOrganizationModel} = require("../../models/organization");
 const {getIndividualsInClass} = require("../dynamicForm");
 const {createNotificationHelper} = require("../notification/notification");
 const {regexBuilder} = require("graphdb-utils");
+const {frontend} = require("../../config");
 
+/**
+ * Send a notification to a partner organization to update its home organization.
+ * This is triggered when
+ *  - the home organization is updated
+ *  - a program is created, updated, or deleted
+ *  - a volunteer is created, updated, or deleted
+ * @param req - The request object.
+ * @param partnerId - The ID of the partner organization.
+ * @returns {Promise<void>}
+ */
 async function sendPartnerUpdateNotification(req, partnerId) {
   const { fetchSingleGenericHelper } = require("../genericData");
   const { getOrganization } = require(".");
@@ -33,7 +44,7 @@ async function sendPartnerUpdateNotification(req, partnerId) {
             'X-RECEIVER-API-KEY': organization.apiKey,
             ...(!!senderApiKey && { 'X-SENDER-API-KEY': senderApiKey }),
             // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
-            'Referer': new URL(req.headers.origin).hostname,
+            'Referer': new URL(frontend.addr).hostname,
           },
         });
         clearTimeout(timeout);
@@ -68,6 +79,13 @@ async function printAddress(address) {
   return sanitize(formatLocation(address, addressInfo));
 }
 
+/**
+ * Receive a notification from a partner organization to update its home organization.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next middleware function.
+ * @returns {Promise<*>}
+ */
 async function receivePartnerUpdateNotification(req, res, next) {
   const { fetchOrganizationHelper, deleteOrganizationHelper, updateOrganizationHelper } = require(".");
 

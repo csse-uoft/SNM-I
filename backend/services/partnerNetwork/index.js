@@ -10,6 +10,7 @@ const {getProviderById} = require("../genericData/serviceProvider");
 const {getDynamicFormsByFormTypeHelper, getIndividualsInClass} = require("../dynamicForm");
 const {convertAddressForSerialization, convertAddressForDeserialization} = require("../address/misc");
 const {GDBVolunteerModel} = require("../../models/volunteer");
+const {frontend} = require("../../config");
 
 /**
  * Requests that a partner deployment represented locally as the partner
@@ -45,7 +46,7 @@ async function fetchOrganizationHelper(req, genericId) {
           'X-RECEIVER-API-KEY': organization.apiKey,
           ...(!!senderApiKey && {'X-SENDER-API-KEY': senderApiKey}),
           // Frontend hostname without http(s)://. i.e. `127.0.0.1`, `localhost`, `example.com`
-          'Referer': new URL(req.headers.origin).hostname,
+          'Referer': new URL(frontend.addr).hostname,
         },
       });
       clearTimeout(timeout);
