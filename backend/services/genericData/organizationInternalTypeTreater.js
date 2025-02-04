@@ -5,6 +5,9 @@ const { getPartnerOrganizationsHelper } = require("../partnerOrganization");
 const afterUpdateOrganization = async function (data, oldGeneric, req) {
   const wasHomeOrganization = oldGeneric.status === 'Home';
   const isHomeOrganization = data.fields?.[PredefinedCharacteristics['Organization Status']?._uri.split('#')[1]] === 'Home';
+
+  // If the organization is not a home organization, do not send a notification.
+  // If the organization changed to a home organization or vice versa, send a notification to all partners.
   if (!wasHomeOrganization && !isHomeOrganization) {
     return;
   }
