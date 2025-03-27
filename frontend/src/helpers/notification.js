@@ -6,7 +6,10 @@ export const updateNavbarNotificationIcon = (userContext) => {
     .then(notifications => {
       userContext.updateUser({
         ...userContext,
-        anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0
+        anyUnreadNotifications: notifications.filter(notification => !notification.isRead).length > 0,
+        unreadNotifications: notifications.filter(notification => !notification.isRead).length
+
       });
     });
 }
+

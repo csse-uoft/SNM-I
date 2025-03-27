@@ -252,9 +252,12 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField, 
             implementation.options.forEach(option => fieldOptions[option.iri] = option.label);
           }
 
+          const isDisabled = mode === 'edit' && (label === 'Referring Service Provider' || label === 'Receiving Service Provider');
+
           return <FieldGroup component={fieldType} key={`${type}_${id}`} label={label} required={required}
                              options={fieldOptions}
-                             value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}/>;
+                             value={form.fields[`${type}_${id}`]} onChange={handleChange(`${type}_${id}`)}
+                             disabled={isDisabled}/>;
         }
       })}
     </Box>;

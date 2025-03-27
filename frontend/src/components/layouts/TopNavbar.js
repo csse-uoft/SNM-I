@@ -4,6 +4,7 @@ import {AppBar, Toolbar, Typography, Menu, MenuItem, ListItemIcon} from '@mui/ma
 import {IconButton} from "@mui/material";
 import {logout} from '../../api/auth';
 import {UserContext, defaultUserContext} from "../../context";
+import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import ReportIcon from '@mui/icons-material/Report';
@@ -18,6 +19,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import {useSnackbar} from "notistack";
 import { NotificationsNoneSharp, NotificationsSharp } from '@mui/icons-material';
 import { updateNavbarNotificationIcon } from '../../helpers/notification';
+import EmailIcon from '@mui/icons-material/Email';
 
 const ITEM_HEIGHT = 48;
 
@@ -248,12 +250,34 @@ function TopNavBar() {
         {/*The profile button containing dashboard, profile, logout/login*/}
         {isLoggedin ? (
           <div>
+
+            <IconButton
+              onClick={() => navigate('/ReferralNotifications')}
+              size="small"
+              style={{ color: 'white', marginRight: '8px' }} // Adjust spacing
+            >
+              {/* <Badge 
+                badgeContent={userContext.unreadEmails} // Assuming this exists in context
+                color="error"
+                invisible={!userContext.unreadEmails || userContext.unreadEmails === 0}
+              > */}
+                <EmailIcon />
+              {/* </Badge> */}
+            </IconButton>
+            
             <IconButton
               onClick={handleClickNotifications}
               size="small"
               style={{color: 'white'}}
             >
-              {userContext.anyUnreadNotifications ? <NotificationsSharp/> : <NotificationsNoneSharp/>}
+              {/* {userContext.anyUnreadNotifications ? <NotificationsSharp/> : <NotificationsNoneSharp/>} */}
+              <Badge 
+                badgeContent={userContext.unreadNotifications} 
+                color="error"
+                invisible={userContext.unreadNotifications === 0}
+              >
+    {userContext.anyUnreadNotifications > 0 ? <NotificationsSharp/> : <NotificationsNoneSharp/>}
+  </Badge>
             </IconButton>
             <IconButton
               onClick={handleClickRight}

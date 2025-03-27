@@ -11,9 +11,13 @@ import {Loading} from '../shared';
 import SelectField from '../shared/fields/SelectField';
 import {getInstancesInClass} from '../../api/dynamicFormApi';
 import {useSnackbar} from 'notistack';
+import { useLocation } from 'react-router-dom';
 
 export default function ReferralForm() {
   const formType = 'referral';
+
+  const location = useLocation();
+  const isEdit = location.pathname.endsWith('/edit');
 
   const [characteristics, setCharacteristics] = useState({});
   useEffect(() => {
@@ -51,7 +55,8 @@ export default function ReferralForm() {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForReferral._id}
-                                           needOccFieldId={internalTypes.needOccurrenceForReferral._id}/>
+                                           needOccFieldId={internalTypes.needOccurrenceForReferral._id} 
+                                           disableClient={isEdit}/>
     } else if (implementation.optionsFromClass?.endsWith("#Service")) {
       const serviceFieldId = internalTypes.serviceForReferral._id;
       const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForReferral._id;
@@ -65,7 +70,8 @@ export default function ReferralForm() {
         handleChange={handleChange} fields={fields}
         serviceFieldId={serviceFieldId}
         serviceOccurrenceFieldId={serviceOccurrenceFieldId}
-        fixedServiceId={serviceOrProgramId}/>
+        fixedServiceId={serviceOrProgramId}
+        disabled={isEdit}/>
     } else if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
@@ -84,7 +90,8 @@ export default function ReferralForm() {
         handleChange={handleChange} fields={fields}
         programFieldId={programFieldId}
         programOccurrenceFieldId={programOccurrenceFieldId}
-        fixedProgramId={serviceOrProgramId}/>
+        fixedProgramId={serviceOrProgramId}
+        disabled={isEdit}/>
     } else if (implementation.label === "Referral Status") {
       const statusFieldKey = `characteristic_${characteristics['Referral Status']._id}`;
       if (!statusFieldKey || !statusOptions) {
@@ -92,7 +99,7 @@ export default function ReferralForm() {
       }
 
       return <SelectField key={statusFieldKey} label="Referral Status" required value={fields[statusFieldKey]}
-        options={statusOptions} onChange={handleChange(statusFieldKey)}/>;
+        options={statusOptions} onChange={handleChange(statusFieldKey)} />;
     } else if (implementation.optionsFromClass?.endsWith("#NeedOccurrence")) {
       return "";
     } else if (implementation.optionsFromClass?.endsWith("#ServiceOccurrence")) {
