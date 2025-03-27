@@ -371,7 +371,8 @@ async function receiveNewReferral(req, res, next) {
     createNotificationHelper({
       name: 'A referral was received',
       description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one of your `
-        + `partner organizations, just sent you <a href="/referrals/${newReferral._id}">a new referral</a>.`
+        + `partner organizations, just sent you <a href="/referrals/${newReferral._id}">a new referral</a>.`,
+      category: 'referral'
     });
 
     return res.status(201).json({success: true, newId: newReferral._id});
@@ -418,7 +419,8 @@ async function receiveUpdatedReferral(req, res, next) {
     createNotificationHelper({
       name: 'A referral was updated',
       description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one of your `
-      + `partner organizations, just updated <a href="/referrals/${originalReferral._id}">this referral</a>.`
+      + `partner organizations, just updated <a href="/referrals/${originalReferral._id}">this referral</a>.`,
+      category: 'referral'
     });
 
     return res.status(200).json({success: true});

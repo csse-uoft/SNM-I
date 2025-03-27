@@ -72,5 +72,4 @@ const updateNotification = async (req, res, next) => {
   }
 }
 
-
 module.exports = {createNotificationHelper, createNotification, fetchNotifications, fetchNotification, updateNotification};
