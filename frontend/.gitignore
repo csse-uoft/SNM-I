@@ -19,3 +19,8 @@ yarn-error.log*
 #NPM Lock
 *lock.json
 package-lock.json
+
+
+#mkcert
+key.pem
+cert.pem
