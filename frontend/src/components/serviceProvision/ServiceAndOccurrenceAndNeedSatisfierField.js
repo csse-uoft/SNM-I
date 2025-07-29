@@ -16,7 +16,9 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
                                             serviceOccurrenceFieldId,
                                             needSatisfierFieldId,
                                             handleChange,
-                                            fixedServiceId // full URI of the service which all shown occurrences must be of, if given
+                                            changeServiceOcc,
+                                            fixedServiceId, // full URI of the service which all shown occurrences must be of, if given
+                                            ...others
                                           }) {
   const serviceKey = serviceFieldId ? `internalType_${serviceFieldId}` : null;
   const serviceOccKey = `internalType_${serviceOccurrenceFieldId}`;
@@ -52,6 +54,8 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     const value = e.target.value;
     setSelectedServiceOcc(value);
     handleChange(key)(e);
+    if (changeServiceOcc)
+      changeServiceOcc(value);
   }
 
   useEffect(() => {
@@ -64,6 +68,8 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     // unset service occurrence after another service is selected
     if (!firstService.current) {
       setSelectedServiceOcc(null);
+      if (changeServiceOcc)
+        changeServiceOcc(null);
       handleChange(serviceOccKey)(null);
     }
     setLoadingServiceOcc(false);
@@ -103,7 +109,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
     {showService ?
       <SelectField key={serviceKey} label="Service" required value={fields[serviceKey]}
                    options={dynamicOptions[":Service"] || {}} onChange={handleChangeService(serviceKey)}
-                   controlled/>
+                   controlled {...others}/>
       : null
     }
     {showServiceOcc ?
@@ -111,7 +117,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={serviceOccKey} label="Service Occurrence" required value={fields[serviceOccKey]}
                        options={dynamicOptions[":ServiceOccurrence"] || {}} loading={loadingServiceOcc}
-                       onChange={handleChangeServiceOcc(serviceOccKey)} controlled/>
+                       onChange={handleChangeServiceOcc(serviceOccKey)} controlled {...others}/>
         </div>
       </Fade>
       : null
@@ -121,7 +127,7 @@ export function ServiceAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={needSatisfierKey} label="Service Need Satisfier" required value={fields[needSatisfierKey]}
                        options={dynamicOptions[":NeedSatisfier"] || {}}
-                       onChange={handleChange(needSatisfierKey)} controlled/>
+                       onChange={handleChange(needSatisfierKey)} controlled {...others}/>
         </div>
       </Fade>
       : null

@@ -209,7 +209,7 @@ export default function GenericForm({name, mainPage, isProvider, onRenderField})
   };
 
   const handleChange = typeAndId => (e) => {
-    form.fields[typeAndId] = e?.target ? e?.target?.value ?? undefined : e;
+    form.fields[typeAndId] = e?.target ? e?.target?.value ?? null : e;
   };
 
   const getStepContent = stepIdx => {

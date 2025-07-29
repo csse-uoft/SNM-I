@@ -20,6 +20,21 @@ const columnsWithoutOptions = [
     },
     sortBy: ({serviceName}) => serviceName,
   },
+  {
+    label: 'Occupancy',
+    body: ({occupancy, capacity}) => {
+      return `${occupancy}/${capacity ?? '∞'}`;
+    },
+    sortBy: ({occupancy, capacity}) => {
+      if (!!capacity) {
+        return occupancy / capacity;
+      } else {
+        // If capacity is 0, occupancy must also be 0 (letting 0 / 0 = 0)
+        // If capacity is unlimited, % occupancy is 0
+        return 0;
+      }
+    },
+  },
   // {
   //   label: 'Category',
   //   body: ({category}) => category
@@ -46,6 +61,8 @@ export default function ServiceOccurrences() {
       if (serviceOccurrence.description) {
         serviceOccurrenceData.description = serviceOccurrence.description;
       }
+      serviceOccurrenceData.capacity = serviceOccurrence.capacity;
+      serviceOccurrenceData.occupancy = serviceOccurrence.occupancy;
       if (serviceOccurrence.occurrenceOf) {
         serviceOccurrenceData.serviceID = serviceOccurrence.occurrenceOf._id;
         serviceOccurrenceData.serviceName = serviceOccurrence.occurrenceOf.name;

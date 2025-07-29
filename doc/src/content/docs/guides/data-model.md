@@ -273,3 +273,57 @@ const GDBClientModel = createGraphDBModel({
   rdfTypes: [':Client'], name: 'client'
 });
 ```
+
+
+### Waitlists For Service Occurrences
+```js
+const GDBServiceWaitlistModel = createGraphDBModel({
+  waitlist: {type: [GDBServiceWaitlistEntryModel], internalKey: ':hasWaitlist'},
+  serviceOccurrence: {type: GDBServiceOccurrenceModel, internalKey: ':hasServiceOccurrence'},
+},
+{  
+  rdfTypes: [':ServiceWaitlist'], name: 'serviceWaitlist'
+});
+```
+
+### Waitlists for Program Occurrences
+```js
+const GDBProgramWaitlistModel = createGraphDBModel({
+  waitlist: {type: [GDBProgramWaitlistEntryModel], internalKey: ':hasWaitlist'},
+  programOccurrence: {type: GDBProgramOccurrenceModel, internalKey: ':hasProgramOccurrence'},
+},
+{  
+  rdfTypes: [':ProgramWaitlist'], name: 'programWaitlist'
+});
+```
+
+### Entry object for Service Waitlists
+```js
+const GDBServiceWaitlistEntryModel = createGraphDBModel({
+  serviceRegistration: {type: GDBServiceRegistrationModel, internalKey: ':hasServiceRegistration'},
+  priority: {type: Number, internalKey: ':hasPriority'},
+  date: {type: Date, internalKey: ':hasDate'},
+},
+{  
+  rdfTypes: [':ServiceWaitlistEntry'], name: 'serviceWaitlistEntry'
+});
+```
+
+
+
+
+### Entry object for Program Waitlists
+```js
+const GDBProgramWaitlistEntryModel = createGraphDBModel({
+  programRegistration: {type: GDBProgramRegistrationModel, internalKey: ':hasProgramRegistration'},
+  priority: {type: Number, internalKey: ':hasPriority'},
+  date: {type: Date, internalKey: ':hasDate'},
+},
+{  
+  rdfTypes: [':ProgramWaitlistEntry'], name: 'programWaitlistEntry'
+});
+```
+
+
+
+

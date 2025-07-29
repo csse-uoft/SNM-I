@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import GenericForm from "../shared/GenericForm";
-import { useParams } from "react-router-dom";
 import {fetchInternalTypeByFormType} from "../../api/internalTypeApi";
 import {ClientAndNeedOccurrenceField} from "../serviceProvision/ClientAndNeedOccurrenceField";
-import {ProgramAndOccurrenceAndNeedSatisfierField} from "../programProvision/ProgramAndOccurrenceAndNeedSatisfierField";
+import ProgramOccurrenceAndStatusField from './ProgramOccurrenceAndStatusField';
 
 export default function ProgramRegistrationForm() {
-
   const formType = 'programRegistration';
 
   const [internalTypes, setInternalTypes] = useState({});
@@ -19,6 +17,7 @@ export default function ProgramRegistrationForm() {
       setInternalTypes(data);
     });
   }, []);
+
   const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
     console.log(implementation)
     if (implementation.optionsFromClass?.endsWith("#Client")) {
@@ -27,19 +26,12 @@ export default function ProgramRegistrationForm() {
                                            clientFieldId={internalTypes.clientForProgramRegistration._id}
                                            needOccFieldId={internalTypes.needOccurrenceForProgramRegistration._id}/>
     } else if (implementation.optionsFromClass?.endsWith("#ProgramOccurrence")) {
-      const programOccurrenceFieldId = internalTypes.programOccurrenceForProgramRegistration._id;
-
-      if (!programOccurrenceFieldId) {
-        return <Box minWidth={"350px"}><Loading message=""/></Box>;
-      }
-
-      // Render Program & Program Occurrence & Need Satisfier
-      return <ProgramAndOccurrenceAndNeedSatisfierField
-        handleChange={handleChange} fields={fields}
-        programOccurrenceFieldId={programOccurrenceFieldId}
-        fixedProgramId={serviceOrProgramId}/>
+      return <ProgramOccurrenceAndStatusField handleChange={handleChange} fields={fields}
+                                              serviceOrProgramId={serviceOrProgramId} formType={formType}/>;
     } else if (implementation.optionsFromClass?.endsWith("#NeedOccurrence")) {
       return "";
+    } else if (implementation.label === "Registration Status") {
+      return '';
     }
   }
   return (
