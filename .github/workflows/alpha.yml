@@ -18,7 +18,7 @@ jobs:
           echo "${{ vars.ALPHA_SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
       - name: Use Node.js 16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 16
           cache-dependency-path: |
