@@ -10,9 +10,14 @@ import {Box} from '@mui/material';
 import {Loading} from '../shared';
 import SelectField from '../shared/fields/SelectField';
 import {getInstancesInClass} from '../../api/dynamicFormApi';
+import {useSnackbar} from 'notistack';
+import { useLocation } from 'react-router-dom';
 
 export default function ReferralForm() {
   const formType = 'referral';
+
+  const location = useLocation();
+  const isEdit = location.pathname.endsWith('/edit');
 
   const [characteristics, setCharacteristics] = useState({});
   useEffect(() => {
@@ -42,13 +47,16 @@ export default function ReferralForm() {
       .then(options => setStatusOptions(options));
   }, []);
 
+  const {enqueueSnackbar} = useSnackbar();
+
   const handleRenderField = ({required, id, type, implementation, content, serviceOrProgramId}, index, fields, handleChange) => {
     console.log(implementation)
     if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
                                            clientFieldId={internalTypes.clientForReferral._id}
-                                           needOccFieldId={internalTypes.needOccurrenceForReferral._id}/>
+                                           needOccFieldId={internalTypes.needOccurrenceForReferral._id} 
+                                           disableClient={isEdit}/>
     } else if (implementation.optionsFromClass?.endsWith("#Service")) {
       const serviceFieldId = internalTypes.serviceForReferral._id;
       const serviceOccurrenceFieldId = internalTypes.serviceOccurrenceForReferral._id;
@@ -62,7 +70,8 @@ export default function ReferralForm() {
         handleChange={handleChange} fields={fields}
         serviceFieldId={serviceFieldId}
         serviceOccurrenceFieldId={serviceOccurrenceFieldId}
-        fixedServiceId={serviceOrProgramId}/>
+        fixedServiceId={serviceOrProgramId}
+        disabled={isEdit}/>
     } else if (implementation.optionsFromClass?.endsWith("#Client")) {
       // Render client & need occurrence
       return <ClientAndNeedOccurrenceField handleChange={handleChange} fields={fields}
@@ -81,7 +90,8 @@ export default function ReferralForm() {
         handleChange={handleChange} fields={fields}
         programFieldId={programFieldId}
         programOccurrenceFieldId={programOccurrenceFieldId}
-        fixedProgramId={serviceOrProgramId}/>
+        fixedProgramId={serviceOrProgramId}
+        disabled={isEdit}/>
     } else if (implementation.label === "Referral Status") {
       const statusFieldKey = `characteristic_${characteristics['Referral Status']._id}`;
       if (!statusFieldKey || !statusOptions) {
@@ -89,7 +99,7 @@ export default function ReferralForm() {
       }
 
       return <SelectField key={statusFieldKey} label="Referral Status" required value={fields[statusFieldKey]}
-        options={statusOptions} onChange={handleChange(statusFieldKey)}/>;
+        options={statusOptions} onChange={handleChange(statusFieldKey)} />;
     } else if (implementation.optionsFromClass?.endsWith("#NeedOccurrence")) {
       return "";
     } else if (implementation.optionsFromClass?.endsWith("#ServiceOccurrence")) {
@@ -98,7 +108,43 @@ export default function ReferralForm() {
       return "";
     }
   }
+
+  function validateForm(fields) {
+    const errors = {};
+    const clientFieldId = `internalType_${internalTypes.clientForReferral._id}`;
+    const referringServiceProviderFieldId = `internalType_${internalTypes.referringServiceProviderForReferral._id}`;
+    const receivingServiceProviderFieldId = `internalType_${internalTypes.receivingServiceProviderForReferral._id}`;
+
+    if (!fields[clientFieldId]) {
+        errors.client = 'Client field cannot be empty';
+    }
+
+    // Ensure error messages are set correctly
+    if (!fields[referringServiceProviderFieldId]) {
+        errors.referringServiceProvider = 'Referring Service Provider field cannot be empty'; // Added error message
+    }
+
+    if (!fields[receivingServiceProviderFieldId]) {
+        errors.receivingServiceProvider = 'Receiving Service Provider field cannot be empty'; // Added error message
+    }
+
+    return errors;
+};
+
+  const handleFinish = async () => {
+    const errors = validateForm(form.fields);
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach(error => enqueueSnackbar(error, { variant: 'error' }));
+      return;
+    }
+  };
+
   return (
-    <GenericForm name={'referral'} mainPage={'/referrals'} onRenderField={handleRenderField}/>
+    <GenericForm 
+      name={'referral'} 
+      mainPage={'/referrals'} 
+      onRenderField={handleRenderField} 
+      validateForm={validateForm}
+    />
   );
 };

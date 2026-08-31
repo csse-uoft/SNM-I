@@ -16,7 +16,8 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
                                             programOccurrenceFieldId,
                                             needSatisfierFieldId,
                                             handleChange,
-                                            fixedProgramId // full URI of the program which all shown occurrences must be of, if given
+                                            fixedProgramId, // full URI of the program which all shown occurrences must be of, if given
+                                            disabled = false
                                           }) {
   const programKey = programFieldId ? `internalType_${programFieldId}` : null;
   const programOccKey = `internalType_${programOccurrenceFieldId}`;
@@ -103,7 +104,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
     {showProgram ?
       <SelectField key={programKey} label="Program" required value={fields[programKey]}
                    options={dynamicOptions[":Program"] || {}} onChange={handleChangeProgram(programKey)}
-                   controlled/>
+                   controlled disabled={disabled}/>
       : null
     }
     {showProgramOcc ?
@@ -111,7 +112,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={programOccKey} label="Program Occurrence" required value={fields[programOccKey]}
                        options={dynamicOptions[":ProgramOccurrence"] || {}} loading={loadingProgramOcc}
-                       onChange={handleChangeProgramOcc(programOccKey)} controlled/>
+                       onChange={handleChangeProgramOcc(programOccKey)} controlled disabled={disabled}/>
         </div>
       </Fade>
       : null
@@ -121,7 +122,7 @@ export function ProgramAndOccurrenceAndNeedSatisfierField({
         <div>
           <SelectField key={needSatisfierKey} label="Program Need Satisfier" required value={fields[needSatisfierKey]}
                        options={dynamicOptions[":NeedSatisfier"] || {}}
-                       onChange={handleChange(needSatisfierKey)} controlled/>
+                       onChange={handleChange(needSatisfierKey)} controlled disabled={disabled}/>
         </div>
       </Fade>
       : null

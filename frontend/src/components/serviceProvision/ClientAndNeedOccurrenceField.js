@@ -5,7 +5,7 @@ import SelectField from "../shared/fields/SelectField";
 import {Box, Fade} from "@mui/material";
 import {getNeedOccurrencesByClient} from "../../api/serviceProvision";
 
-export function ClientAndNeedOccurrenceField({fields, clientFieldId, needOccFieldId, handleChange}) {
+export function ClientAndNeedOccurrenceField({fields, clientFieldId, needOccFieldId, handleChange, disableClient = false}) {
   if (!clientFieldId || !needOccFieldId) {
     return <Box minWidth={"350px"}><Loading message=""/></Box>;
   }
@@ -48,13 +48,14 @@ export function ClientAndNeedOccurrenceField({fields, clientFieldId, needOccFiel
 
   return <>
     <SelectField key={clientKey} label="Client" required value={fields[clientKey]}
-                 options={dynamicOptions[":Client"] || {}} onChange={handleChangeClient(clientKey)}/>
+                 options={dynamicOptions[":Client"] || {}} onChange={handleChangeClient(clientKey)} disabled={disableClient}/>
     {showNeedOcc ?
       <Fade in={showNeedOcc}>
         <div>
           <SelectField key={needOccKey} label="Client Need Occurrence" required value={fields[needOccKey]}
                        loading={loadingNeedOcc}
-                       options={dynamicOptions[":NeedOccurrence"] || {}} onChange={handleChange(needOccKey)}/>
+                       options={dynamicOptions[":NeedOccurrence"] || {}} onChange={handleChange(needOccKey)}
+                       disabled={disableClient}/>
         </div>
       </Fade>
       : null

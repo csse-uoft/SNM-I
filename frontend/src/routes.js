@@ -91,6 +91,7 @@ import VisualizeClientAssessment from "./components/clientAssessment/VisualizeCl
 import VisualizeReferral from "./components/referrals/VisualizeReferral";
 import Matching from "./components/clients/Matching";
 import VisualizeNotification from './components/notifications/visualizeNotification';
+import ReferralNotifications from './components/ReferralNotifications/ReferralNotifications';
 
 const routes = (
   <Routes>
@@ -132,6 +133,7 @@ const routes = (
 
     <Route path="/notifications" element={<PrivateRoute element={Notifications}/>}/>
     <Route path="/notifications/:id" element={<PrivateRoute element={VisualizeNotification}/>}/>
+    <Route path="/ReferralNotifications" element={<PrivateRoute element={ReferralNotifications}/>}/>
 
     {/*<PrivateRoute path='/needs/:need_id/edit' element={NeedForm}/>}/>*/}
     {/*<PrivateRoute path='/needs/:need_id' element={Need}/>}/>*/}

@@ -27,6 +27,7 @@ const {frontend} = require("../../config");
 async function populateReferral(referralGeneric, receiverId) {
   const referralStatuses = await getIndividualsInClass(':ReferralStatus');
   const referral = {};
+  console.log("************************");
 
   referral.idInPartnerDeployment
     = referralGeneric[PredefinedCharacteristics['ID in Partner Deployment']._uri.split('#')[1]];
@@ -81,6 +82,8 @@ async function populateReferral(referralGeneric, receiverId) {
  */
 async function getReferralPartnerGeneric(referralGeneric) {
   // Get the referral's receiver
+
+  console.log("##########################");
   const receiverId = (
     referralGeneric[PredefinedInternalTypes['receivingServiceProviderForReferral']._uri.split('#')[1]]
     || referralGeneric.receivingServiceProvider)?.split('_')[1];
@@ -130,6 +133,8 @@ async function getReferralPartnerGeneric(referralGeneric) {
 async function sendReferral(req, res, next) {
   try {
     const id = req.params.id;
+
+    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
     let referralGeneric;
     if (id != null) {
@@ -252,6 +257,8 @@ async function getClient(partnerClientData, isNew, originalId) {
  */
 async function receiveReferralHelper(req, partnerData) {
   const referralForms = await getDynamicFormsByFormTypeHelper('referral');
+
+  console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&");
   let referralFormId;
   if (referralForms.length > 0) {
     referralFormId = referralForms[0]._id; // Select the first form
@@ -349,9 +356,15 @@ async function receiveNewReferral(req, res, next) {
     if (!partnerData.partnerIsReceiver) {
       return res.status(400).json({success: false, message: 'For a POST request, partnerIsReceiver must be true'});
     }
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
+    // Ensure the referral status is set to "Requested"
+    const referralStatusKey = PredefinedCharacteristics['Referral Status']._uri.split('#')[1];
+    referral.fields[referralStatusKey] = 'Requested'; // Set to "Requested"
 
     referral.fields[PredefinedInternalTypes['clientForReferral']._uri.split('#')[1]]
       = await getClient(partnerData.client, true);
+
     const newReferral = GDBReferralModel(await createSingleGenericHelper(referral, 'referral'));
     await newReferral.save();
 
@@ -359,7 +372,8 @@ async function receiveNewReferral(req, res, next) {
     createNotificationHelper({
       name: 'A referral was received',
       description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one of your `
-        + `partner organizations, just sent you <a href="/referrals/${newReferral._id}">a new referral</a>.`
+        + `partner organizations, just sent you <a href="/referrals/${newReferral._id}">a new referral</a>.`,
+      category: 'referral'
     });
 
     return res.status(201).json({success: true, newId: newReferral._id});
@@ -380,6 +394,8 @@ async function receiveNewReferral(req, res, next) {
 async function receiveUpdatedReferral(req, res, next) {
   try {
     // Note, partnerData.partnerIsReceiver is true iff we are the referral's receiver
+
+    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     const partnerData = req.body;
 
     const {referral, originalReferral, originalReferralJson, partner} = await receiveReferralHelper(req, partnerData);
@@ -393,7 +409,7 @@ async function receiveUpdatedReferral(req, res, next) {
       referral.fields[PredefinedInternalTypes['referringServiceProviderForReferral']._uri.split('#')[1]]
         = originalReferral.referringServiceProvider || null;
       referral.fields[PredefinedInternalTypes['programForReferral']._uri.split('#')[1]]
-        = originalReferral.program || null;
+        = originalReferral.program || null; 
       referral.fields[PredefinedInternalTypes['serviceForReferral']._uri.split('#')[1]]
         = originalReferral.service || null;
     }
@@ -404,7 +420,8 @@ async function receiveUpdatedReferral(req, res, next) {
     createNotificationHelper({
       name: 'A referral was updated',
       description: `<a href="/providers/organization/${partner._id}">${sanitize(partner.organization.name)}</a>, one of your `
-      + `partner organizations, just updated <a href="/referrals/${originalReferral._id}">this referral</a>.`
+      + `partner organizations, just updated <a href="/referrals/${originalReferral._id}">this referral</a>.`,
+      category: 'referral'
     });
 
     return res.status(200).json({success: true});
@@ -426,3 +443,4 @@ module.exports = {
   getClient,
   getReferralPartnerGeneric,
 };
+
