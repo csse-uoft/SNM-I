@@ -17,7 +17,7 @@ services:
     restart: always
 
   mongodb:
-    image: mongo:latest
+    image: mongo:7
     container_name: mongodb
     ports:
       - "127.0.0.1:27017:27017"  # Do not expose to the public
